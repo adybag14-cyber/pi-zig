@@ -232,12 +232,16 @@ fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, kind: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = operation(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(kind)) catch |err| return fail(engine, err);
     return c.JS_DupValue(context, result);
 }
 fn ordinary(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     var kind: i32 = 0;
@@ -250,6 +254,8 @@ fn function(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, length: c_int,
     return scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, name, length, @intFromEnum(kind), 1, &captures)));
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const prototype = try scope.get(target, "prototype");
@@ -312,4 +318,11 @@ pub fn appendEntry(scope: *Scope, target: c.JSValue, name: c.JSValue, value: c.J
     const state = try stateOf(scope, owner, target);
     try state.entries.ensureUnusedCapacity(scope.engine.gpa, 1);
     state.entries.appendAssumeCapacity(.{ .name = c.JS_DupValue(scope.engine.context, name), .value = c.JS_DupValue(scope.engine.context, value) });
+}
+/// Bundled multipart parser's makeEntry(name,value,filename), including the
+/// captured File constructor's second wrapping when filename is supplied.
+pub fn appendParsedEntry(scope: *Scope, target: c.JSValue, name: c.JSValue, value: c.JSValue, filename: c.JSValue) !void {
+    const owner = scope.engine.native_module_values.get(cache_key) orelse return error.NativeWebFormDataUnavailable;
+    const entry_value = try makeEntry(scope, owner, value, filename);
+    try appendEntry(scope, target, name, entry_value);
 }

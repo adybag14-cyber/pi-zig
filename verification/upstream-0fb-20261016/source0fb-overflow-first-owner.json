@@ -1,0 +1,26 @@
+{
+  "name": "source0fb-overflow-first",
+  "pid": 58508,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "created_utc": "2026-10-16T10:09:09.8447453Z",
+  "launched_utc": "2026-10-16T10:09:09.8404089+00:00",
+  "launch_argv": [
+    "--max-old-space-size=256",
+    "--import",
+    "file:///C:/Users/adyba/pi-upstream-audit-0fbdbd3-20261016/source0fb-observe.mjs",
+    "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\capture-source0fb-overflow.mjs",
+    "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-overflow-source.json"
+  ],
+  "raw_initial_command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --import file:///C:/Users/adyba/pi-upstream-audit-0fbdbd3-20261016/source0fb-observe.mjs C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\capture-source0fb-overflow.mjs C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-overflow-source.json",
+  "identity_source": "live Win32_Process raw CommandLine plus retained handle/executable/UTC start",
+  "retained_handle": true,
+  "status": "passed",
+  "timeout_seconds": 300,
+  "settle_seconds": 10,
+  "peak_private_bytes": 97136640,
+  "peak_working_set_bytes": 119668736,
+  "memory_limit_bytes": 2147483648,
+  "max_old_space_mb": 256,
+  "exit_code": 0,
+  "completed_utc": "2026-10-16T10:09:36.3494902+00:00"
+}

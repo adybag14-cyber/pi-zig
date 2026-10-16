@@ -1,0 +1,132 @@
+[
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-admission.json",
+    "bytes": 12765,
+    "sha256": "8BF5B07CD40E1CE8C1BB25FB6D5CD01541083C699B3AAF072DBEBC179B2E3376"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-after.json",
+    "bytes": 1247,
+    "sha256": "68D950038F5CDC8D6875F50E48237689A667A10B2C4CE8EB536564BEADF535B3"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-authorities.json",
+    "bytes": 4080,
+    "sha256": "300F110DCA53B9EEAFAEC7A043D184C92E5C3B5E9514899004AC026DBEE5246A"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-before.json",
+    "bytes": 1247,
+    "sha256": "68D950038F5CDC8D6875F50E48237689A667A10B2C4CE8EB536564BEADF535B3"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-candidate.json",
+    "bytes": 1391864,
+    "sha256": "F952E5C3EE03C231F3A6554E49305D8A63E6903A4B410EF273D8C08B1EA075B6"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-controls.json",
+    "bytes": 1781,
+    "sha256": "1E033FEF86E154424C02B1361C8E78CA114757E99A6401F44C78A4DF0E893163"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-frozen.json",
+    "bytes": 2377,
+    "sha256": "CFAC45E25948240737B4DE27C8EDAE3D784F97058C70C2D64A5A04B7F92DFC8E"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-launch-intent.json",
+    "bytes": 666,
+    "sha256": "C0F6A77B1226D946DAEA4AAC9B71D8AD9C6C5997B4A122A243E294F2A8BBBF05"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015-vendor.json",
+    "bytes": 278178,
+    "sha256": "E47BA62F1E034CB957FDECCEC5501635E0F8935F161776A0A9ED064CD573E06D"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015.process.json",
+    "bytes": 910,
+    "sha256": "ADB9C9BE110E5C4E56CB4F743BA1D526344EE0E23D4B684D086D59682783C7B6"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015.stderr.log",
+    "bytes": 13193,
+    "sha256": "BAA1C56B6103175E8415BAEC775FC3779AC3A43A1ED2E02C4C68C89DD9A0CB70"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-build-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-admission.json",
+    "bytes": 200,
+    "sha256": "12DBFA636DCF2E411CC0385F56AE498C0C0B865D58832807E36393FB12DAE1B7"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-after.json",
+    "bytes": 1242,
+    "sha256": "BF0A5E67D7136E43F0C225F80ED6D08082ABC010410DB922016D36B7CBA316FD"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-authorities.json",
+    "bytes": 4080,
+    "sha256": "300F110DCA53B9EEAFAEC7A043D184C92E5C3B5E9514899004AC026DBEE5246A"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-before.json",
+    "bytes": 1242,
+    "sha256": "BF0A5E67D7136E43F0C225F80ED6D08082ABC010410DB922016D36B7CBA316FD"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-candidate.json",
+    "bytes": 1391864,
+    "sha256": "F952E5C3EE03C231F3A6554E49305D8A63E6903A4B410EF273D8C08B1EA075B6"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-controls.json",
+    "bytes": 1781,
+    "sha256": "1E033FEF86E154424C02B1361C8E78CA114757E99A6401F44C78A4DF0E893163"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-frozen.json",
+    "bytes": 2367,
+    "sha256": "B8518C357E15C061D31126C1C5E66FFBD4A556B233E08A1A844274552A5DA948"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-launch-intent.json",
+    "bytes": 665,
+    "sha256": "6004F52C97E17E76132CD2DE6DA5139ABA0597B4DFAFCF9022FB0F0D57A158E2"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015-vendor.json",
+    "bytes": 278178,
+    "sha256": "E47BA62F1E034CB957FDECCEC5501635E0F8935F161776A0A9ED064CD573E06D"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015.process.json",
+    "bytes": 907,
+    "sha256": "8DA4AC22803C214D4F54FB63EE33410893EAEB9CDCEA7161FDDEEA0C17821C27"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015.stderr.log",
+    "bytes": 15885,
+    "sha256": "C045A71D1F7BF965F586E6603D6997AA719E2F2B7BACFEA49410F2423C6F50A2"
+  },
+  {
+    "path": "verification/web-fetch-node24-20261015/first-native-negative/web-default-native-web-fetch-debug-test-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  }
+]

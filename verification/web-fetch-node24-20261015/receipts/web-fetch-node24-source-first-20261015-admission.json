@@ -1,0 +1,10 @@
+{
+  "candidate_head": "6030b830452195ec5633155d8ad3d8345a3fbf24",
+  "minimum_free_bytes": 2147483648,
+  "available_bytes": 22679900160,
+  "heap_mb": 256,
+  "outer_seconds": 300,
+  "light_lane": 5,
+  "root_grant": "Root LIGHT5 genuine actual fetch Source39 grant",
+  "checked_utc": "2026-10-15T22:10:55.0622954+00:00"
+}

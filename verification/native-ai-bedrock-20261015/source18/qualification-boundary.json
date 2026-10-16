@@ -1,0 +1,15 @@
+{
+  "source_head": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "source_execution": "passed",
+  "owned_pid": 52568,
+  "source_cases": 18,
+  "owned_http_attempts": 18,
+  "request_method_url_path_query_body_and_fake_auth": "captured verbatim",
+  "output_sha256": "8BD6BD72C082D1CC13939EA65EFC02CE7F7265D213A94BFB1F857B744413D69A",
+  "posthash": "zero Source1967 dependencies31064 Node1774 controls11 manifest and84absences",
+  "light_slot3": "released",
+  "native18_qualified": false,
+  "native14_negative": "preserved unchanged",
+  "full_pi_factory_qualified": false,
+  "public_activation": false
+}

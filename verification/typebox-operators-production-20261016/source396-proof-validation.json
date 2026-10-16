@@ -1,0 +1,15 @@
+{
+  "status": "saved_source396_proof_verified",
+  "captured_candidate": "3ed99011a6f53a7ffb1392fac759ffdf0b0b843b",
+  "cases": 396,
+  "original_payloads": 34,
+  "frozen_inventories": 5,
+  "observed_original_modules": 371,
+  "observed_typebox_modules_per_capture": 369,
+  "expected_sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+  "historical_full_posthash_drift": 0,
+  "native_compiled": false,
+  "native_qualified": false,
+  "full_HOST_GPA": false,
+  "C_malloc_exhaustive": false
+}

@@ -1,0 +1,9 @@
+{
+  "post_drift": 0,
+  "slot": 6,
+  "observed_files": 16,
+  "output_sha256": "781A236CB431E19742A553AE2D8174B9E611675779C82D9EB2739848C2B1458D",
+  "candidate": "8044f315c22468315d0a9fb167979f982483867e",
+  "initial_files": 16,
+  "observed_initial_changes": []
+}

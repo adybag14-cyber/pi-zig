@@ -1,0 +1,9 @@
+# Fetch39 diagnostic pair: post-head abort lifetime negative
+
+Exact clean candidate `5d476eebe2aac79621503d7e323dab9f44bb8aea` compiled under the fresh NATIVE4 grant. Owned pinned Zig PID78116 ran UTC2026-10-15T23:31:47.4038631Z to23:32:04.2477347Z, exit0. Matching runtime PID74872 ran UTC23:33:00.9906644Z to23:33:17.5511683Z, exit1. Normal16GiB/max4/-j1/1320compile/300runtime/120test/10host-await stayed unchanged.
+
+The diagnostic identifies the blocked operation as row29 (zero-based), `fetch abort after headers original reason`. The preceding29 operations settled; the last completed operation was `fetch abort before headers original reason`. Actual peer state reported27 requests, zero peer failures and a pending native HTTP transport. The complete39 final comparison was not reached. Two wrapper tests passed and the complete Fetch39 test failed with `NativeHostPromiseTimeout`; this is not a comparator pass. No expected bytes, response substitute, timeout extension or reduced fixture was used.
+
+Both full postchecks reported zero drift across Source1967/runtime31064/Node1774/candidate6166/vendor1316/compiler19546/controls8/authorities18, actual368 builtin bodies plus the genuine undefined configs entry, and all84 original absent paths. Original Body176, Headers189 and Fetch39 outputs stayed unchanged. Exact owned build/runtime and worktree build/test processes were independently absent after terminal state. NATIVE4 was released and later Request55/multipart3/Headers189 pairs were not launched.
+
+The byte-for-byte original receipts are retained in `second-native-negative`, bound by its ledger. The earlier negative and immutable qualified Headers/Body dependency proofs remain unchanged. Further abort ownership corrections are source-only until a newly sealed matching pair is authorized. Main/release/activation remain unqualified.

@@ -60,7 +60,7 @@ fn replies(gpa: std.mem.Allocator, input: std.json.Value, requests: []const std.
             var iterator = entries.object.iterator();
             while (iterator.next()) |header| try headers.append(gpa, .{ .name = header.key_ptr.*, .value = header.value_ptr.string });
         }
-        try result.append(gpa, .{ .path = request.object.get("path").?.string, .body = try responseBody(gpa, plan), .status = status, .headers = try headers.toOwnedSlice(gpa), .expected_request_method = .POST });
+        try result.append(gpa, .{ .path = request.object.get("path").?.string, .body = try responseBody(gpa, plan), .status = status, .headers = try headers.toOwnedSlice(gpa), .expected_request_method = .POST, .capture_request_headers = true });
     }
     return result.toOwnedSlice(gpa);
 }

@@ -1,0 +1,18 @@
+{
+  "candidate_head": "aa119f26f39b8950310611a843514f2ad0a55794",
+  "owner_script_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+  "runner_sha256": "04F155AD9F4874B8E521C85027AD7774206032707D643B9F3011ED372E5ED683",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "frozen_registry_sha256": "138708B67A2FF855D22EB5DFFE153350484DFE3438084541E4A0D2F1759CA52D",
+  "argv": [
+    "build",
+    "test-native-web-body-dependencies",
+    "-Doptimize=Debug",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "launch_intent_utc": "2026-10-15T20:36:16.5096504+00:00"
+}

@@ -1,0 +1,9 @@
+# First complete Fetch39 native pair, honest runtime negative
+
+Exact sealed candidate `e2079e989395a7cdedf7d7ac10e5d687fa8c9d7d` compiled successfully under Root NATIVE4, normal16GiB/max4/-j1/1320compile/300runtime/120test/10await. Pinned Zig owner66700 ran UTC2026-10-15T23:13:21.3806786Z to23:18:28.1140978Z, exit0. The typed PublicGroup array fix was inspected before launch and already present. No expected or product edits occurred during the pair.
+
+Matching runtime owner62960 ran UTC23:21:09.8419415Z to23:21:26.2680415Z, exit1. Two wrapper tests passed and the complete Fetch39 test failed with `NativeHostPromiseTimeout` from Engine.awaitValueImpl during evalModule, before its final all39 comparison. The ten-second host bound remained unchanged. This is not a comparator pass or a reduced-scope qualification. The blocked individual operation was not yet logged; a source-only successor will add progress diagnostics before another explicitly granted native pair.
+
+Both full postchecks had zero drift: Source1967/runtime31064/Node-tools1774/candidate6138/vendor1316/compiler19546/controls8/authorities18 plus actual368 builtin bodies/369 entries. All84 original absences remained absent. Original Body176/Header189/Fetch39 outputs remained unchanged. The sequence stopped at this first actual negative; Request55, multipartSource3/operationOOM and Headers189 regression pairs were not launched. NATIVE4 was released after terminal state and complete posthash, and the exact owned roots/build/test processes were independently absent.
+
+All original build/runtime owner, admission, launch, freeze, manifest, stdout/stderr and postcheck receipts are retained byte for byte in `first-native-negative`, bound by the ledger. Earlier Headers2d and dependency aa119/a8 qualification remain immutable and do not imply success for this composed native fetch candidate. No main/release/activation is authorized or claimed.

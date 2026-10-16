@@ -1,0 +1,50 @@
+[
+  {
+    "sha256": "375E62AECAA8661D07A10451E354E4C0646B96BEC428758F7584C6B7873A585D",
+    "file": "bedrock-credentials-input25-20261015.json"
+  },
+  {
+    "sha256": "0429B0501663ACA85886BA410F0C0A9C82455278C3DEE0E58C157A417910473F",
+    "file": "bedrock-credentials-source25-20261015.mjs"
+  },
+  {
+    "sha256": "0C5C3B0B2F185F24EF26B806242D05BA9A91A64582D187AA64B68173F771E41D",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-admission.json"
+  },
+  {
+    "sha256": "6F8778392457E8320674D84C21319C2EE342596EC9DC4F40B19568F1030C88B8",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-candidate-before.json"
+  },
+  {
+    "sha256": "50AB18648F84F245A2F78D2CC3B13BBA09D4CBD019D160118CDCF69F707D6FD4",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-extra-before.json"
+  },
+  {
+    "sha256": "9A2F26CEF2D3CDAF631D7E5B9BE28AA5E3DFD8ED4D123E98630A7CB4DB45A7D3",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-output.json"
+  },
+  {
+    "sha256": "6657B8959BD9E25678FF94B10F5E7FC8890E28701066CFCA9AAA91256FE2793C",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-owned-files-post.json"
+  },
+  {
+    "sha256": "624E14294368A67A8C471CB2E3F6FA783B5C0D3595DD96C2E87F06A98066D269",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015-posthash.json"
+  },
+  {
+    "sha256": "3D1C110FA2026AE054F2629F38C3B667F12CA4F6A58CE655AEC9B9308A6BFCF1",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015.json"
+  },
+  {
+    "sha256": "44F6E974255059C0F3E860D6F7855445762200EA87DB676695FBD8D007851AE8",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015.stderr.log"
+  },
+  {
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "file": "bedrock-credentials25-5ab-source25-first-20261015.stdout.log"
+  },
+  {
+    "sha256": "AD137BC6E933B2661F7721BE4B2C7F91F4ABD73BE4AA3E057F58E44C88A0905E",
+    "file": "Run-BedrockCredentials25Source-20261015.ps1"
+  }
+]

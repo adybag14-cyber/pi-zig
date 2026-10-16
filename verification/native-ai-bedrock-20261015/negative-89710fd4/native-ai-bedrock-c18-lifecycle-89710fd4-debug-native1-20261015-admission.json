@@ -1,0 +1,22 @@
+{
+  "status": "admitted",
+  "candidate": "89710fd46e402cb392183e1c97ba4b807de41ce2",
+  "slot": 1,
+  "free_kib": 18674372,
+  "threshold_kib": 16777216,
+  "max_native_roots": 4,
+  "other_native": [],
+  "source": 6513,
+  "vendor": 1316,
+  "tools": 19546,
+  "controls": 9,
+  "authority": "Root native slot grant required before launch; maximum4 coordinated roots",
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_outer_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "native_launched": false,
+  "observed_utc": "2026-10-15T23:23:01.8919225+00:00"
+}

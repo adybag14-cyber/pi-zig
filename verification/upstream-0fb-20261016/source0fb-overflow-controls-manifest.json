@@ -1,0 +1,34 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-overflow.input.txt",
+    "sha256": "D455198D0A08EA29E48BACD59A6EDC3A45D50B1A38B475E3B5CB27658606B57A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-policy.input.txt",
+    "sha256": "35CDC946F6170A05F6FFAFA4A3343BEEA40D64650820EB92ADBDE0763B434582"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-public.input.txt",
+    "sha256": "6B2D8FDE2E69464D53529402344E96483CE00251B885CFDBB851FFDF68F67AD3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-select.input.txt",
+    "sha256": "52EF0868CCDDA613215F6EE2BD717562C12CAD65B14520E703C8D8586AFCABB4"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\source0fb-observe.mjs",
+    "sha256": "A0CB474F1D558D8746072623F502074541D76F084B95650703A8FBCA30D41355"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\capture-source0fb-overflow.mjs",
+    "sha256": "781E26FA19787257020F22F92E4AC7B87BF29F4F126A0E664950351A363D9BF5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\Invoke-ExactSourceProcess.ps1",
+    "sha256": "F5C2F6B102EF2AD266F047BEDD81B6B250757F49C8295A8F9D60D356A526FB28"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\Run-Source0fbOverflow.ps1",
+    "sha256": "0F0875BACE34DFAAD6DA5AFED27B86B28B48EEC282159C06456D198EE4DFD4AA"
+  }
+]

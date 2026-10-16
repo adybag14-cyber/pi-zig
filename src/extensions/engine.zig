@@ -102,7 +102,7 @@ pub const Engine = struct {
     native_sdk_compaction_prepare_callbacks: ?c.JSValue = null,
     native_cache_warmer_bindings: ?c.JSValue = null,
     native_readable_stream_bindings: ?c.JSValue = null,
-    native_readable_stream_classes: ?[3]c.JSClassID = null,
+
     native_sdk_command_runner_constructor: ?c.JSValue = null,
     native_sdk_reserved_shortcuts: ?c.JSValue = null,
     native_sdk_prompt_section_regex: ?c.JSValue = null,
@@ -165,6 +165,7 @@ pub const Engine = struct {
     event_stream_async_atom: c.JSAtom = c.JS_ATOM_NULL,
     buffer_prototype: ?c.JSValue = null,
     buffer_ready: bool = false,
+    native_readable_stream_classes: ?[3]c.JSClassID = null,
     abort_signal_class: c.JSClassID = 0,
     abort_controller_class: c.JSClassID = 0,
     abort_signals_ready: bool = false,

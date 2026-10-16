@@ -1,0 +1,134 @@
+[
+  {
+    "path": "src/extensions/abort_signal.zig",
+    "sha256": "E4074D70EDFC0B2EADA1CE1FACE95C722631D64F5292169B66B572A799D1B0AF"
+  },
+  {
+    "path": "src/extensions/engine.zig",
+    "sha256": "991711D99FC8EF042AF8ABA49806A8BAFA2B291437CDB115E16CC1DE5CC9BAF4"
+  },
+  {
+    "path": "src/extensions/native_ai_http.zig",
+    "sha256": "010F1C4A529DD0B4AD6B96A496C3EAE4210CAC4D0544E55B1C6CBF85C6AD9188"
+  },
+  {
+    "path": "src/extensions/native_ai_http_worker.zig",
+    "sha256": "2E66098D09E82FE8E757C596965E121B2EFEF5B2274BCF9FB4B09B6C46DA27C8"
+  },
+  {
+    "path": "src/extensions/native_body_collect.zig",
+    "sha256": "9CA474E79B7970B95FA9D1FB785B4B1331099C700964806B04783DF3A8073B50"
+  },
+  {
+    "path": "src/extensions/native_headers.zig",
+    "sha256": "DF67915149A842AB1E16C559E27FDC1D36C0EB65DF5EDB9E63245EA6B224D27A"
+  },
+  {
+    "path": "src/extensions/native_headers_source_test.zig",
+    "sha256": "93F319DC40295635457C2ABD71362C22E16EB3D8D60CA9D0E6016402E68D9E0A"
+  },
+  {
+    "path": "src/extensions/native_headers_webidl.zig",
+    "sha256": "6B9383A5354A244F9B2E7FB68B302DA7F071D47F828DD874200D1838E56F1781"
+  },
+  {
+    "path": "src/extensions/native_readable_byte_stream.zig",
+    "sha256": "5DFCC860AAD142D47953482EC9EB20EED28DBDEE9AC22C1A3B6EE1E4460FFB71"
+  },
+  {
+    "path": "src/extensions/native_readable_stream.zig",
+    "sha256": "49486F6D1F069BDF3BD7ECF6F767A22778CA7AF1A37CF180774DF4AAA62BD158"
+  },
+  {
+    "path": "src/extensions/native_readable_stream_iterator.zig",
+    "sha256": "D70680D3B7E87D826E611137AE2C960D99FD5084D9C8BAC223B2769DA911DEF5"
+  },
+  {
+    "path": "src/extensions/native_readable_stream_pipe.zig",
+    "sha256": "E2B0AEA9512E3C2BF28C2CD2076E7734191C2BEA26F091748A4F90687C473097"
+  },
+  {
+    "path": "src/extensions/native_transform_stream.zig",
+    "sha256": "5A640AFC1DB0960A724CBEC74565E2D6628B566DA5C974EBF815C134BE090B07"
+  },
+  {
+    "path": "src/extensions/native_url.zig",
+    "sha256": "B91E8923284E7E951EE6E59D1E65C48165821DEFECBF6D13A012DCC3CD1C6424"
+  },
+  {
+    "path": "src/extensions/native_url_errors.zig",
+    "sha256": "32109F82F1E819621407E146B23EEDF551E7CD63BF7E4C5D0136ADB7BD394A66"
+  },
+  {
+    "path": "src/extensions/native_web_blob.zig",
+    "sha256": "CB3C5BBE4F096483E60B05CD595E3A5ED9D6E4DD9900053FD3973D86BAE1D563"
+  },
+  {
+    "path": "src/extensions/native_web_body.zig",
+    "sha256": "F8120395ED1F4F0A62E75A320CCE520702120A097C93679C5ADDEF456A7E2FFA"
+  },
+  {
+    "path": "src/extensions/native_web_body_dependencies_test.zig",
+    "sha256": "E1F577513C49136CEE0B566E5E408D0E999F4D043D6BF79817E859E4EC563555"
+  },
+  {
+    "path": "src/extensions/native_web_byte_source.zig",
+    "sha256": "5036D1E43936F64081033202B07B459E0F58C3FBB5CEA09A2632AB1101F2B8D0"
+  },
+  {
+    "path": "src/extensions/native_web_data_url.zig",
+    "sha256": "1339A146A9C3003E7693B03BDBC16E78F9A0548957CC74751717CCA4961ECB98"
+  },
+  {
+    "path": "src/extensions/native_web_fetch.zig",
+    "sha256": "B9862A61715D17A0D60DD85772DC122495112498B26547C698F989AD53A68CD8"
+  },
+  {
+    "path": "src/extensions/native_web_fetch_test.zig",
+    "sha256": "D3AA9BE007198D5F3AD1AA64B59DC97A024E4884F47236B645C53B602D81BA94"
+  },
+  {
+    "path": "src/extensions/native_web_form_data.zig",
+    "sha256": "EB44B5FCC386AF4747F4DAE6F8CD5D526B5241D5296A009C6BDC5E645DB0A324"
+  },
+  {
+    "path": "src/extensions/native_web_idl.zig",
+    "sha256": "22A97C8C5ED8AFA72D4DB3BE0F8892FF6093F56ED251BDBAD4CD9F622B893E48"
+  },
+  {
+    "path": "src/extensions/native_web_iterable_source.zig",
+    "sha256": "F815EBF84695496FE0E2928EEB6405CFBC0689A7EF344652F42D399B33DDE029"
+  },
+  {
+    "path": "src/extensions/native_web_mime.zig",
+    "sha256": "093B5C4B3419771E990A461D134D2255EE338973EC8BDC29BBA8220842971C13"
+  },
+  {
+    "path": "src/extensions/native_web_multipart.zig",
+    "sha256": "BD50FA693F2D48A6D3119AA007D7D84D5606725A1AF2ADBA322B0D3C346AC63B"
+  },
+  {
+    "path": "src/extensions/native_web_multipart_test.zig",
+    "sha256": "8EB1EE2EE9BE0DA30D8505613077D37415E0B2B9A9B8016B7FD3BC05E3830BDD"
+  },
+  {
+    "path": "src/extensions/native_web_platform.zig",
+    "sha256": "0E38F9C7D651A3F444B5FB6E58A44322ECA90542E0C94203747AFE7EAEA290CA"
+  },
+  {
+    "path": "src/extensions/native_web_request.zig",
+    "sha256": "C15D1516ABD1571AB8ABE398DCEA355345D1E7A7A812F51B09BAE04C08C61D58"
+  },
+  {
+    "path": "src/extensions/native_web_request_test.zig",
+    "sha256": "F4D866F922A055ECB5C48A22216E598784EA5C066040CD7B8CF4B60533687ABE"
+  },
+  {
+    "path": "src/extensions/native_web_response.zig",
+    "sha256": "3828EFFFB23EAD7290BFC6F797E74109BBD3080E0389423BC023ED1F1FB452BE"
+  },
+  {
+    "path": "src/extensions/native_writable_stream.zig",
+    "sha256": "3E8A175843B939414732D493E52CE63A8514C5BDCA14BEA4A06BFFD6AAFBED6B"
+  }
+]

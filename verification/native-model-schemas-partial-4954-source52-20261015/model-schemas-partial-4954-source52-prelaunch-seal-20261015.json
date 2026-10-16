@@ -1,0 +1,56 @@
+{
+  "candidate_head": "1c5b6735bfe764087f7b05e4ae160205b56b7ce2",
+  "candidate_clean": true,
+  "expected_absent": true,
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "light_lane": "RootLIGHT6",
+  "compiler_files_required": 19546,
+  "compiler_executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\fixtures\\ai-model-schemas-partial-4954.input.mjs",
+      "sha256": "EB4619FFE139943A7227B61D4A793A2B0D24C22F7C1037784AF066E17C7C9B34"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_ai_model_schema_program.zig",
+      "sha256": "E7D6680DEA9271C085F518BB0A111DEC9EC430C222298A2142C56961A3787172"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_ai_model_schemas.zig",
+      "sha256": "6D60B21E92584E3C7AA1680857ED6CCDB8E66E2A5BECF01155F71A55D379B3B2"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_typebox_memory.zig",
+      "sha256": "147DC64A51DC1DE2CFDF7F7409D46955924F1B6A03A224DA959E00EF9FC95E90"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_typebox_partial.zig",
+      "sha256": "B1CBEE2A458B2C302ADF0A79C292B3623778D0722BD1B480086FEEB8C515FBA5"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_typebox_partial_evaluate.zig",
+      "sha256": "4DDA530C858A6D1EE606FA8ED0B190AD3B340E2B651A48BDA1D73988C8667E3E"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\extensions\\native_typebox_schema_core.zig",
+      "sha256": "481B8392BAB6EA938EB47D5AFAE941379AA4E35DC9A3FBB03F05DEE8503D90D7"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015\\src\\native_ai_model_schemas_partial_test.zig",
+      "sha256": "C89ED1B5C637BF1DD7193F18FD0972572E005952E765DC8BD06C09972CF11BD2"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-model-schemas-partial-capture-20261015.mjs",
+      "sha256": "ECB0C232081466C0E7FF255414F9BB7D90DD1DB038FA63374D233F664094E2FB"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Run-ModelSchemasPartial4954Source52-20261015.ps1",
+      "sha256": "945B69CF8B30BDD6780AEDBB078B357C78E1BFB9DFAAFDDADDE6800B19F29FAF"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    }
+  ],
+  "sealed_utc": "2026-10-15T23:23:06.4198675+00:00"
+}

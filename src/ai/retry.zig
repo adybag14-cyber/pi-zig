@@ -186,6 +186,9 @@ const retryable_patterns = [_][]const u8{
     "524",
     "service unavailable",
     "service-unavailable",
+    "service is unavailable",
+    "service temporarily unavailable",
+    "service is temporarily unavailable",
     "server error",
     "server-error",
     "internal error",
@@ -264,11 +267,40 @@ fn containsAsciiFold(haystack: []const u8, needle: []const u8) bool {
     return false;
 }
 
+fn isEcmaWhitespace(bytes: []const u8) bool {
+    if (bytes.len == 0) return false;
+    const length = std.unicode.utf8ByteSequenceLength(bytes[0]) catch return false;
+    if (bytes.len < length) return false;
+    const point = std.unicode.utf8Decode(bytes[0..length]) catch return false;
+    return switch (point) {
+        0x09...0x0d, 0x20, 0xa0, 0x1680, 0x2000...0x200a, 0x2028, 0x2029, 0x202f, 0x205f, 0x3000, 0xfeff => true,
+        else => false,
+    };
+}
+
+/// Exact case-insensitive `request to \S+ failed, reason:` wording (#10996).
+/// Preserve its literal spaces and punctuation rather than applying the
+/// native transport-error name normalization used by the other patterns.
+fn nodeFetchFailure(message: []const u8) bool {
+    const prefix = "request to ";
+    const suffix = " failed, reason:";
+    var start: usize = 0;
+    while (start + prefix.len < message.len) : (start += 1) {
+        if (!std.ascii.eqlIgnoreCase(message[start..][0..prefix.len], prefix)) continue;
+        const first = start + prefix.len;
+        var end = first;
+        while (end < message.len and !isEcmaWhitespace(message[end..])) : (end += 1) {}
+        if (end > first and message.len - end >= suffix.len and std.ascii.eqlIgnoreCase(message[end..][0..suffix.len], suffix)) return true;
+    }
+    return false;
+}
+
 pub fn isRetryableError(error_message: []const u8) bool {
     if (error_message.len == 0) return false;
     for (non_retryable_patterns) |pattern| {
         if (containsAsciiFold(error_message, pattern)) return false;
     }
+    if (nodeFetchFailure(error_message)) return true;
     for (retryable_patterns) |pattern| {
         if (containsAsciiFold(error_message, pattern)) return true;
     }
@@ -414,6 +446,22 @@ test "retry classifier rejects quota billing and deterministic failures" {
     }) |message| {
         try std.testing.expect(!isRetryableError(message));
     }
+}
+
+test "upstream 0fb #10996 retries exact node-fetch wording after quota exclusions" {
+    for ([_][]const u8{
+        "request to https://oauth2.googleapis.com/token failed, reason:",
+        "request to https://oauth2.googleapis.com/token failed, reason: connect ECONNREFUSED 127.0.0.1:9",
+        "REQUEST TO https://example.test/ FAILED, REASON:",
+    }) |message| try std.testing.expect(isRetryableError(message));
+    for ([_][]const u8{
+        "request to  failed, reason:",
+        "request to https://example.test/ failed reason:",
+        "request to https://example.test/\tfailed, reason:",
+        "request to https://example.test/\xc2\xa0 failed, reason:",
+        "request to https://example.test/ failed, reason: billing exhausted",
+    }) |message| try std.testing.expect(!isRetryableError(message));
+    try std.testing.expect(isRetryableError("The service is temporarily unavailable"));
 }
 
 test "retry delay uses saturating exponential backoff" {

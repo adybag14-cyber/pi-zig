@@ -1,0 +1,26 @@
+[
+  {
+    "name": "source",
+    "drift": 0,
+    "changed": [],
+    "files": 1967
+  },
+  {
+    "name": "dependencies",
+    "drift": 0,
+    "changed": [],
+    "files": 31064
+  },
+  {
+    "name": "node_tools",
+    "drift": 0,
+    "changed": [],
+    "files": 1774
+  },
+  {
+    "name": "absences",
+    "drift": 0,
+    "changed": [],
+    "files": 84
+  }
+]

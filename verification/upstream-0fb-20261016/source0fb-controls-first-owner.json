@@ -1,0 +1,26 @@
+{
+  "name": "source0fb-controls-first",
+  "pid": 43136,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "created_utc": "2026-10-16T09:53:25.2559055Z",
+  "launched_utc": "2026-10-16T09:53:25.2513966+00:00",
+  "launch_argv": [
+    "--max-old-space-size=256",
+    "--import",
+    "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\source0fb-observe.mjs",
+    "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\capture-source0fb.mjs",
+    "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016\\src\\extensions\\fixtures\\upstream-0fb-source.json"
+  ],
+  "raw_initial_command_line": null,
+  "identity_source": "retained handle and exact launch argv; no live CIM snapshot captured",
+  "retained_handle": true,
+  "status": "failed",
+  "timeout_seconds": 300,
+  "settle_seconds": 10,
+  "peak_private_bytes": 0,
+  "peak_working_set_bytes": 0,
+  "memory_limit_bytes": 2147483648,
+  "max_old_space_mb": 256,
+  "exit_code": 1,
+  "completed_utc": "2026-10-16T09:53:25.6971796+00:00"
+}

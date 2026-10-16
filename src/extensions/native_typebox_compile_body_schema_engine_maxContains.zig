@@ -1,0 +1,255 @@
+//! Direct native bodies from pinned typebox@1.3.27. Source-only pending qualification.
+const js = @import("native_js_values.zig");
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const o = @import("native_typebox_compile_ops.zig");
+const ordinary = @import("native_legacy_function.zig");
+const class = @import("native_class.zig");
+const sdk = @import("native_sdk.zig");
+const c = js.c;
+const Engine = js.Engine;
+pub fn prepare(e: *Engine, graph: c.JSValue) !void {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const modules = try s.get(graph, "modules");
+    const namespace = try s.get(modules, "schema/engine/maxContains.mjs");
+    const frame = try o.frame(&s, c.pi_js_null());
+    try s.put(frame, "@this", c.pi_js_undefined());
+    try s.put(try s.get(graph, "frames"), "schema/engine/maxContains.mjs", frame);
+    const bindings = try s.object();
+    try s.put(try s.get(graph, "bindings"), "schema/engine/maxContains.mjs", bindings);
+    const v10203 = try s.own(try ordinary.create(e, "IsValid", 1, body10195, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding10191", v10203);
+    const v10257 = try s.own(try ordinary.create(e, "BuildMaxContains", 4, body10204, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding10192", v10257);
+    const v10298 = try s.own(try ordinary.create(e, "CheckMaxContains", 4, body10258, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding10193", v10298);
+    const v10351 = try s.own(try ordinary.create(e, "ErrorMaxContains", 6, body10299, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding10194", v10351);
+    const v10352 = try o.lookup(&s, frame, "binding10192");
+    try s.put(namespace, "BuildMaxContains", v10352);
+    const v10353 = try o.lookup(&s, frame, "binding10193");
+    try s.put(namespace, "CheckMaxContains", v10353);
+    const v10354 = try o.lookup(&s, frame, "binding10194");
+    try s.put(namespace, "ErrorMaxContains", v10354);
+    const v10355 = try o.lookup(&s, frame, "binding10192");
+    try s.put(namespace, "BuildMaxContains", v10355);
+    const v10356 = try o.lookup(&s, frame, "binding10193");
+    try s.put(namespace, "CheckMaxContains", v10356);
+    const v10357 = try o.lookup(&s, frame, "binding10194");
+    try s.put(namespace, "ErrorMaxContains", v10357);
+    try s.put(bindings, "BuildMaxContains", try s.text("binding10192"));
+    try s.put(bindings, "CheckMaxContains", try s.text("binding10193"));
+    try s.put(bindings, "ErrorMaxContains", try s.text("binding10194"));
+}
+fn body10195(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v10197 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10196", v10197);
+    const v10198 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
+    const v10199 = try s.text("IsContains");
+    const v10200 = try s.own(try js.getKey(e, v10198, v10199));
+    const v10201 = try o.lookup(&s, frame, "binding10196");
+    const v10202 = try s.call(v10200, v10198, &.{v10201});
+    return c.JS_DupValue(e.context, v10202);
+}
+fn body10204(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v10211 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10205", v10211);
+    const v10212 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10206", v10212);
+    const v10213 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10207", v10213);
+    const v10214 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10208", v10214);
+    const v10217 = try o.lookup(&s, frame, "binding10191");
+    const v10218 = try o.lookup(&s, frame, "binding10207");
+    const v10219 = try s.call(v10217, c.pi_js_undefined(), &.{v10218});
+    if (s.truthy(o.boolean(&s, !s.truthy(v10219)))) {
+        const v10220 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+        const v10221 = try s.text("Constant");
+        const v10222 = try s.own(try js.getKey(e, v10220, v10221));
+        const v10223 = try s.call(v10222, v10220, &.{o.boolean(&s, true)});
+        return c.JS_DupValue(e.context, v10223);
+    }
+    const v10224 = try s.array();
+    const v10225 = try o.importValue(&s, graph, "schema/engine/_unique.mjs", "Unique");
+    const v10226 = try s.call(v10225, c.pi_js_undefined(), &.{});
+    try o.append(&s, v10224, v10226);
+    var destructure10227 = try o.iterator(e, v10224);
+    defer destructure10227.deinit();
+    errdefer destructure10227.closePreserving();
+    const v10228 = try s.own(if (destructure10227.closed) c.pi_js_undefined() else (try destructure10227.next()) orelse c.pi_js_undefined());
+    try o.assign(&s, frame, "binding10215", v10228);
+    try destructure10227.close();
+    const v10229 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+    const v10230 = try s.text("Counted");
+    const v10231 = try s.own(try js.getKey(e, v10229, v10230));
+    const v10232 = try o.lookup(&s, frame, "binding10208");
+    const v10233 = try s.array();
+    const v10234 = try o.lookup(&s, frame, "binding10215");
+    try o.append(&s, v10233, v10234);
+    const v10235 = try s.text("_");
+    try o.append(&s, v10233, v10235);
+    const v10236 = try o.importValue(&s, graph, "schema/engine/schema.mjs", "BuildSchema");
+    const v10237 = try o.lookup(&s, frame, "binding10205");
+    const v10238 = try o.lookup(&s, frame, "binding10206");
+    const v10239 = try o.lookup(&s, frame, "binding10207");
+    const v10240 = try s.text("contains");
+    const v10241 = try s.own(try js.getKey(e, v10239, v10240));
+    const v10242 = try o.lookup(&s, frame, "binding10215");
+    const v10243 = try s.call(v10236, c.pi_js_undefined(), &.{ v10237, v10238, v10241, v10242 });
+    const v10244 = try s.call(v10231, v10229, &.{ v10232, v10233, v10243 });
+    try o.assign(&s, frame, "binding10216", v10244);
+    const v10245 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+    const v10246 = try s.text("IsLessEqualThan");
+    const v10247 = try s.own(try js.getKey(e, v10245, v10246));
+    const v10248 = try o.lookup(&s, frame, "binding10216");
+    const v10249 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
+    const v10250 = try s.text("Constant");
+    const v10251 = try s.own(try js.getKey(e, v10249, v10250));
+    const v10252 = try o.lookup(&s, frame, "binding10207");
+    const v10253 = try s.text("maxContains");
+    const v10254 = try s.own(try js.getKey(e, v10252, v10253));
+    const v10255 = try s.call(v10251, v10249, &.{v10254});
+    const v10256 = try s.call(v10247, v10245, &.{ v10248, v10255 });
+    return c.JS_DupValue(e.context, v10256);
+}
+fn body10276(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    _ = try o.lookup(&s, frame, "@this");
+    const v10279 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10278", v10279);
+    const v10280 = try o.importValue(&s, graph, "schema/engine/schema.mjs", "CheckSchema");
+    const v10281 = try o.lookup(&s, frame, "binding10259");
+    const v10282 = try o.lookup(&s, frame, "binding10260");
+    const v10283 = try o.lookup(&s, frame, "binding10261");
+    const v10284 = try s.text("contains");
+    const v10285 = try s.own(try js.getKey(e, v10283, v10284));
+    const v10286 = try o.lookup(&s, frame, "binding10278");
+    const v10287 = try s.call(v10280, c.pi_js_undefined(), &.{ v10281, v10282, v10285, v10286 });
+    return c.JS_DupValue(e.context, v10287);
+}
+fn body10276C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const e = Engine.fromContext(ctx.?);
+    return body10276(e, receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, roots[0..2]) catch |err| sdk.fail(e, err);
+}
+fn body10258(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v10264 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10259", v10264);
+    const v10265 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10260", v10265);
+    const v10266 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10261", v10266);
+    const v10267 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10262", v10267);
+    const v10269 = try o.lookup(&s, frame, "binding10191");
+    const v10270 = try o.lookup(&s, frame, "binding10261");
+    const v10271 = try s.call(v10269, c.pi_js_undefined(), &.{v10270});
+    if (s.truthy(o.boolean(&s, !s.truthy(v10271)))) {
+        return c.JS_DupValue(e.context, o.boolean(&s, true));
+    }
+    const v10272 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+    const v10273 = try s.text("Counted");
+    const v10274 = try s.own(try js.getKey(e, v10272, v10273));
+    const v10275 = try o.lookup(&s, frame, "binding10262");
+    const v10288 = try o.arrow(&s, "", 1, body10276C, &.{ graph, frame });
+    const v10289 = try s.call(v10274, v10272, &.{ v10275, v10288 });
+    try o.assign(&s, frame, "binding10268", v10289);
+    const v10290 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
+    const v10291 = try s.text("IsLessEqualThan");
+    const v10292 = try s.own(try js.getKey(e, v10290, v10291));
+    const v10293 = try o.lookup(&s, frame, "binding10268");
+    const v10294 = try o.lookup(&s, frame, "binding10261");
+    const v10295 = try s.text("maxContains");
+    const v10296 = try s.own(try js.getKey(e, v10294, v10295));
+    const v10297 = try s.call(v10292, v10290, &.{ v10293, v10296 });
+    return c.JS_DupValue(e.context, v10297);
+}
+fn body10299(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const graph = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v10307 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10300", v10307);
+    const v10308 = if (args.len > 1) args[1] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10301", v10308);
+    const v10309 = if (args.len > 2) args[2] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10302", v10309);
+    const v10310 = if (args.len > 3) args[3] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10303", v10310);
+    const v10311 = if (args.len > 4) args[4] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10304", v10311);
+    const v10312 = if (args.len > 5) args[5] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding10305", v10312);
+    const v10314 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
+    const v10315 = try s.text("IsMinContains");
+    const v10316 = try s.own(try js.getKey(e, v10314, v10315));
+    const v10317 = try o.lookup(&s, frame, "binding10304");
+    const v10318 = try s.call(v10316, v10314, &.{v10317});
+    const v10320 = conditional10319: {
+        if (s.truthy(v10318)) {
+            const v10321 = try o.lookup(&s, frame, "binding10304");
+            const v10322 = try s.text("minContains");
+            const v10323 = try s.own(try js.getKey(e, v10321, v10322));
+            break :conditional10319 v10323;
+        } else {
+            break :conditional10319 c.JS_NewFloat64(e.context, 1);
+        }
+    };
+    try o.assign(&s, frame, "binding10313", v10320);
+    const v10324 = try o.lookup(&s, frame, "binding10193");
+    const v10325 = try o.lookup(&s, frame, "binding10300");
+    const v10326 = try o.lookup(&s, frame, "binding10301");
+    const v10327 = try o.lookup(&s, frame, "binding10304");
+    const v10328 = try o.lookup(&s, frame, "binding10305");
+    const v10329 = try s.call(v10324, c.pi_js_undefined(), &.{ v10325, v10326, v10327, v10328 });
+    const v10331 = logical10330: {
+        if (s.truthy(v10329)) break :logical10330 v10329;
+        const v10332 = try o.lookup(&s, frame, "binding10301");
+        const v10333 = try s.text("AddError");
+        const v10334 = try s.own(try js.getKey(e, v10332, v10333));
+        const v10335 = try s.object();
+        const v10336 = try s.text("keyword");
+        const v10337 = try s.text("contains");
+        try o.defineKey(&s, v10335, v10336, v10337);
+        const v10338 = try s.text("schemaPath");
+        const v10339 = try o.lookup(&s, frame, "binding10302");
+        try o.defineKey(&s, v10335, v10338, v10339);
+        const v10340 = try s.text("instancePath");
+        const v10341 = try o.lookup(&s, frame, "binding10303");
+        try o.defineKey(&s, v10335, v10340, v10341);
+        const v10342 = try s.text("params");
+        const v10343 = try s.object();
+        const v10344 = try s.text("minContains");
+        const v10345 = try o.lookup(&s, frame, "binding10313");
+        try o.defineKey(&s, v10343, v10344, v10345);
+        const v10346 = try s.text("maxContains");
+        const v10347 = try o.lookup(&s, frame, "binding10304");
+        const v10348 = try s.text("maxContains");
+        const v10349 = try s.own(try js.getKey(e, v10347, v10348));
+        try o.defineKey(&s, v10343, v10346, v10349);
+        try o.defineKey(&s, v10335, v10342, v10343);
+        const v10350 = try s.call(v10334, v10332, &.{v10335});
+        break :logical10330 v10350;
+    };
+    return c.JS_DupValue(e.context, v10331);
+}

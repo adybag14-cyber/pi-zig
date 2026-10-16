@@ -1,0 +1,74 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\src\\extensions\\fixtures\\web-body-node24.json",
+    "sha256": "7518FDCD2401E2C6D8111E3327B6A6D01B85D06F9E95128BD4C62A04CF295ED5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\src\\extensions\\fixtures\\web-body-node24.input.txt",
+    "sha256": "B20ECA3D00631D8B7745C8769DE4790F5FC2E82CA0589CBE633F2C8901756CEA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-output.json",
+    "sha256": "7518FDCD2401E2C6D8111E3327B6A6D01B85D06F9E95128BD4C62A04CF295ED5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "C62030F1E505A4010D9972ECBF40155EDDEB355F2A53A9F019A447214E1A9600"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-body-node24-20261015\\receipts\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-body-node24-20261015\\receipts\\web-body-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "C62030F1E505A4010D9972ECBF40155EDDEB355F2A53A9F019A447214E1A9600"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node-builtin-inventory-second-20261015-output.json",
+    "sha256": "5CAE3E18F9D30C16F5E1E5541EE42C6F866674E2D38F69642D9018150CC3EFFB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node-builtin-inventory-second-20261015.json",
+    "sha256": "C29285C2518A9A6A9E1324E99279539DAA7880E88B896A83D372D296DFA148BD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\src\\extensions\\fixtures\\web-headers-node24.json",
+    "sha256": "93B7096F3EB61BD778948E84B091EE2F2DE39BD0A9A4FC371AE204977CA96149"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\src\\extensions\\fixtures\\web-headers-node24.input.txt",
+    "sha256": "8F3BE8D9C250EEC0048331C461490704207B6E9375FB45C4D4E47EDE9BC0B83B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-headers-node24-source-first-20261015-output.json",
+    "sha256": "93B7096F3EB61BD778948E84B091EE2F2DE39BD0A9A4FC371AE204977CA96149"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\src\\extensions\\fixtures\\web-fetch-node24.json",
+    "sha256": "54D5057EDCD4DA5E0556DCF8746B1F12DE4103C9BC108A11CF813B73189A09E2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\input.mjs",
+    "sha256": "C7968685D3DFBB956F8E542F6E3D18F31F17971F790785FBE11F49AA1E8BA799"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-fetch-node24-source-first-20261015-output.json",
+    "sha256": "54D5057EDCD4DA5E0556DCF8746B1F12DE4103C9BC108A11CF813B73189A09E2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\receipts\\web-fetch-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015\\verification\\web-fetch-node24-20261015\\receipts\\web-fetch-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "C62030F1E505A4010D9972ECBF40155EDDEB355F2A53A9F019A447214E1A9600"
+  }
+]

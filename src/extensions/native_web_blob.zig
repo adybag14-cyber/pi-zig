@@ -168,6 +168,8 @@ fn make(scope: *Scope, owner: c.JSValue, prototype: c.JSValue, bytes: []const u8
     return result;
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const owner = captures[0];
@@ -299,6 +301,8 @@ fn invoke(scope: *Scope, owner: c.JSValue, receiver: c.JSValue, args: []const c.
 }
 fn callback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, tag: c_int, captures: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = invoke(&scope, captures[0], receiver, if (argc > 0) argv[0..@intCast(argc)] else &.{}, @enumFromInt(tag)) catch |err| return fail(engine, err);
@@ -361,6 +365,8 @@ pub fn install(engine: *em.Engine) !void {
     engine.native_module_values.putAssumeCapacity(cache_key, c.JS_DupValue(engine.context, owner));
 }
 pub fn fromBytes(engine: *em.Engine, bytes: []const u8, mime: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     try install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

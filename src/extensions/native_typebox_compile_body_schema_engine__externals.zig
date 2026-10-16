@@ -1,0 +1,102 @@
+//! Direct native bodies from pinned typebox@1.3.27. Source-only pending qualification.
+const js = @import("native_js_values.zig");
+const Scope = @import("native_sdk_prompt_scope.zig").Scope;
+const o = @import("native_typebox_compile_ops.zig");
+const ordinary = @import("native_legacy_function.zig");
+const class = @import("native_class.zig");
+const sdk = @import("native_sdk.zig");
+const c = js.c;
+const Engine = js.Engine;
+pub fn prepare(e: *Engine, graph: c.JSValue) !void {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const modules = try s.get(graph, "modules");
+    const namespace = try s.get(modules, "schema/engine/_externals.mjs");
+    const frame = try o.frame(&s, c.pi_js_null());
+    try s.put(frame, "@this", c.pi_js_undefined());
+    try s.put(try s.get(graph, "frames"), "schema/engine/_externals.mjs", frame);
+    const bindings = try s.object();
+    try s.put(try s.get(graph, "bindings"), "schema/engine/_externals.mjs", bindings);
+    const v4192 = try s.own(try ordinary.create(e, "CreateVariable", 1, body4169, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4166", v4192);
+    const v4197 = try s.own(try ordinary.create(e, "ResetExternal", 0, body4193, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4167", v4197);
+    const v4201 = try s.own(try ordinary.create(e, "GetExternal", 0, body4198, &.{ graph, frame }));
+    try o.assign(&s, frame, "binding4168", v4201);
+    const v4202 = try o.lookup(&s, frame, "binding4166");
+    try s.put(namespace, "CreateVariable", v4202);
+    const v4203 = try o.lookup(&s, frame, "binding4167");
+    try s.put(namespace, "ResetExternal", v4203);
+    const v4204 = try o.lookup(&s, frame, "binding4168");
+    try s.put(namespace, "GetExternal", v4204);
+    const v4205 = try s.object();
+    const v4206 = try s.text("identifier");
+    const v4207 = try s.text("External");
+    try o.defineKey(&s, v4205, v4206, v4207);
+    const v4208 = try s.text("variables");
+    const v4209 = try s.array();
+    try o.defineKey(&s, v4205, v4208, v4209);
+    try o.assign(&s, frame, "binding4165", v4205);
+    const v4210 = try o.lookup(&s, frame, "binding4166");
+    try s.put(namespace, "CreateVariable", v4210);
+    const v4211 = try o.lookup(&s, frame, "binding4167");
+    try s.put(namespace, "ResetExternal", v4211);
+    const v4212 = try o.lookup(&s, frame, "binding4168");
+    try s.put(namespace, "GetExternal", v4212);
+    try s.put(bindings, "CreateVariable", try s.text("binding4166"));
+    try s.put(bindings, "ResetExternal", try s.text("binding4167"));
+    try s.put(bindings, "GetExternal", try s.text("binding4168"));
+}
+fn body4169(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    _ = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4172 = if (args.len > 0) args[0] else c.pi_js_undefined();
+    try o.assign(&s, frame, "binding4170", v4172);
+    const v4174 = try s.text("External[");
+    const v4175 = try o.lookup(&s, frame, "binding4165");
+    const v4176 = try s.text("variables");
+    const v4177 = try s.own(try js.getKey(e, v4175, v4176));
+    const v4178 = try s.text("length");
+    const v4179 = try s.own(try js.getKey(e, v4177, v4178));
+    const v4180 = try s.stringify(v4179);
+    const v4181 = try s.concat(v4174, v4180);
+    const v4182 = try s.text("]");
+    const v4183 = try s.concat(v4181, v4182);
+    try o.assign(&s, frame, "binding4173", v4183);
+    const v4184 = try o.lookup(&s, frame, "binding4165");
+    const v4185 = try s.text("variables");
+    const v4186 = try s.own(try js.getKey(e, v4184, v4185));
+    const v4187 = try s.text("push");
+    const v4188 = try s.own(try js.getKey(e, v4186, v4187));
+    const v4189 = try o.lookup(&s, frame, "binding4170");
+    const v4190 = try s.call(v4188, v4186, &.{v4189});
+    _ = v4190;
+    const v4191 = try o.lookup(&s, frame, "binding4173");
+    return c.JS_DupValue(e.context, v4191);
+}
+fn body4193(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    _ = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4194 = try o.lookup(&s, frame, "binding4165");
+    const v4195 = try s.text("variables");
+    const v4196 = try s.array();
+    try js.setKey(e, v4194, v4195, v4196);
+    return c.pi_js_undefined();
+}
+fn body4198(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    _ = roots[0];
+    const frame = try o.frame(&s, roots[1]);
+    try s.put(frame, "@this", receiver);
+    const v4199 = try s.object();
+    const v4200 = try o.lookup(&s, frame, "binding4165");
+    try js.spreadInto(e, v4199, v4200);
+    return c.JS_DupValue(e.context, v4199);
+}

@@ -8,7 +8,7 @@ const web = @import("native_headers_webidl.zig");
 const utf16 = @import("native_utf16.zig");
 const c = em.c;
 const cache_key = "\x00native-web-Headers";
-pub const Guard = enum { none, request, response, immutable };
+pub const Guard = enum { none, request, request_no_cors, response, immutable };
 const Entry = struct { lower: c.JSValue, name: c.JSValue, value: c.JSValue };
 const Root = struct {
     engine: *em.Engine,
@@ -94,6 +94,31 @@ pub fn setGuard(engine: *em.Engine, target: c.JSValue, guard: Guard) !void {
 pub fn isHeaders(engine: *em.Engine, value: c.JSValue) bool {
     const owner = engine.native_module_values.get(cache_key) orelse return false;
     return c.JS_GetOpaque(value, rootOf(owner).header_class) != null;
+}
+/// Source HeadersList copy for internal Request/Response/fetch paths. This
+/// duplicates genuine native storage without invoking public iteration hooks.
+pub fn clone(engine: *em.Engine, target: c.JSValue, guard: Guard) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const owner = engine.native_module_values.get(cache_key) orelse return error.HeadersNotInstalled;
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const root = rootOf(owner);
+    const source = try privateState(&scope, owner, target, false);
+    const value = try scope.own(try engine.checked(c.JS_NewObjectProtoClass(engine.context, root.prototype, root.header_class)));
+    const state = try engine.gpa.create(State);
+    state.* = .{ .engine = engine, .owner = c.JS_DupValue(engine.context, owner), .guard = guard };
+    _ = c.JS_SetOpaque(value, state);
+    try state.entries.ensureTotalCapacity(engine.gpa, source.entries.items.len);
+    try state.cookies.ensureTotalCapacity(engine.gpa, source.cookies.items.len);
+    for (source.entries.items) |entry| state.entries.appendAssumeCapacity(.{ .lower = c.JS_DupValue(engine.context, entry.lower), .name = c.JS_DupValue(engine.context, entry.name), .value = c.JS_DupValue(engine.context, entry.value) });
+    for (source.cookies.items) |cookie| state.cookies.appendAssumeCapacity(c.JS_DupValue(engine.context, cookie));
+    return c.JS_DupValue(engine.context, value);
+}
+/// Original insertion/name and separate Set-Cookie values for central wire IO.
+pub fn rawPairs(scope: *Scope, target: c.JSValue) !c.JSValue {
+    const owner = scope.engine.native_module_values.get(cache_key) orelse return error.HeadersNotInstalled;
+    return originalPairs(scope, try privateState(scope, owner, target, false));
 }
 fn find(scope: *Scope, state: *State, lower: c.JSValue) ?usize {
     for (state.entries.items, 0..) |entry, position| if (scope.equal(entry.lower, lower)) return position;

@@ -73,6 +73,25 @@ pub fn create(engine: *engine_mod.Engine) !c.JSValue {
     _ = c.JS_SetOpaque(value, state);
     return value;
 }
+/// Native stream composition uses the same actual listener queue as the
+/// public EventTarget methods without consulting mutable instance methods.
+pub fn addNativeListener(engine: *engine_mod.Engine, signal: c.JSValue, callback: c.JSValue) !u32 {
+    const self = try stateFor(engine, signal);
+    if (self.listeners.items.len >= 4096 or self.next_id == std.math.maxInt(u32)) return error.NativeAbortListenerLimit;
+    const retained = c.JS_DupValue(engine.context, callback);
+    errdefer engine.freeValue(retained);
+    const id = self.next_id;
+    try self.listeners.append(engine.gpa, .{ .callback = retained, .once = true, .capture = false, .id = id });
+    self.next_id += 1;
+    return id;
+}
+pub fn removeNativeListener(engine: *engine_mod.Engine, signal: c.JSValue, id: u32) !void {
+    const self = try stateFor(engine, signal);
+    for (self.listeners.items, 0..) |listener, index| if (listener.id == id) {
+        engine.freeValue(self.listeners.orderedRemove(index).callback);
+        return;
+    };
+}
 
 fn defaultReason(engine: *engine_mod.Engine) !c.JSValue {
     return dom_exception.create(engine, "This operation was aborted", "AbortError");
@@ -405,8 +424,8 @@ pub fn install(engine: *engine_mod.Engine) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, controller_prototype, "abort", c.pi_js_function_magic(engine.context, controllerCall, "abort", 0, 1), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
-    if (c.JS_DefinePropertyValueStr(engine.context, global, "AbortSignal", c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E) < 0 or
-        c.JS_DefinePropertyValueStr(engine.context, global, "AbortController", c.JS_DupValue(engine.context, controller_constructor), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "AbortSignal", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0 or
+        c.JS_DefinePropertyValueStr(engine.context, global, "AbortController", c.JS_DupValue(engine.context, controller_constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     engine.abort_signals_ready = true;
 }
 

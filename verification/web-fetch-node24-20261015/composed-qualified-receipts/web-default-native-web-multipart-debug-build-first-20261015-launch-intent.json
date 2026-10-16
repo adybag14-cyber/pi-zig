@@ -1,0 +1,18 @@
+{
+  "candidate_head": "884d47104dfabd4ef1f5a564568e4cd04a600f60",
+  "owner_script_sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+  "runner_sha256": "A8685914B8935C3EEBD5655A1DE1D540E3CFCC9D3AAA0009827C486EED0FB71C",
+  "compiler_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "frozen_registry_sha256": "A7F654956E8262F7A12EC9BC34E1902778C39BF383EE433D6267E090B337C0F4",
+  "argv": [
+    "build",
+    "build-native-web-multipart",
+    "-Doptimize=Debug",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "launch_intent_utc": "2026-10-15T23:45:29.7221270+00:00"
+}

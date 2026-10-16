@@ -1,0 +1,52 @@
+[
+  {
+    "path": "ai-bedrock18-5ab-source-20261015.mjs",
+    "sha256": "97880FA93192A1B3DCEF8B19D3BA20781DC0281BDBF66A1DBDB8B44871BBFA53",
+    "bytes": 4968
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015-admission.json",
+    "sha256": "533E635BBC4687BEF4C9FD838DA603E560025BBED10F0B7C6C8E92202B1BAF50",
+    "bytes": 258
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015-extra-before.json",
+    "sha256": "AF1DEFCD4BC7CABFB0786ADC6DFADB950E9B55C5F00597C999259B1EE527CBE1",
+    "bytes": 2190
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015-posthash.json",
+    "sha256": "ECAD478E3AED8ACBD2BB79E0FFCE7DF02B5CEB2E27632A4FE22BA767BC699F13",
+    "bytes": 627
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015.json",
+    "sha256": "6843CC8977BEA853FFD0913701E424869F7F545109E128B0B6F1CB994DCA3662",
+    "bytes": 1218
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015.stderr.log",
+    "sha256": "24713E27381CB4B27EF907332E9565453CFB6F953E33FF40AE7549DF566461E7",
+    "bytes": 178
+  },
+  {
+    "path": "ai-bedrock18-5ab-source18-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "bytes": 0
+  },
+  {
+    "path": "qualification-boundary.json",
+    "sha256": "CDCFAC63DAA74E065442597225E87B3771525E1E5524F2B6E40E3EAA579D38D6",
+    "bytes": 614
+  },
+  {
+    "path": "Run-AiBedrock18Source-20261015.ps1",
+    "sha256": "732FA211DEABC14924E587811E105B01273E4996B95D2EF75387B9FB25381792",
+    "bytes": 7192
+  },
+  {
+    "path": "source5ab-modules-52568-0-20261015.jsonl",
+    "sha256": "B07EECDCED3C7FAAAF7DB2BB761AADF2A8FD82D089EAEA1278684B2D48B8F4F6",
+    "bytes": 16822
+  }
+]

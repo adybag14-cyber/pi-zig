@@ -1,0 +1,16 @@
+{
+  "name": "typebox-operators-source-first-20261016",
+  "pid": 73412,
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --expose-gc --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016\\verification\\typebox-operators-production-20261016\\capture-genuine-source.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\typebox-operators-source-first-20261016-output.json",
+  "command_line_source": "live Win32_Process",
+  "created_utc": "2026-10-15T23:46:38.5384960Z",
+  "launched_utc": "2026-10-15T23:46:38.5365106+00:00",
+  "identity_captured": true,
+  "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+  "working_directory": "C:/Users/adyba/pi-upstream-source-4954d76-20261015",
+  "status": "passed",
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T23:46:56.3877893+00:00"
+}

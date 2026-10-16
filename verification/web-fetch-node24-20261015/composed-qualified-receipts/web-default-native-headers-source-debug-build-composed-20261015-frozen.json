@@ -1,0 +1,42 @@
+[
+  {
+    "name": "source5ab-full-manifest-20261015.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "name": "durable-19cb534-reference-20261012-all-built-runtime.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "name": "root-current8a-npm-tools-before.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "name": "web-default-native-headers-source-debug-build-composed-20261015-candidate.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-default-native-headers-source-debug-build-composed-20261015-candidate.json",
+    "sha256": "0E9406D95CB9B2B647681165D79735278F7E46BC5CBBEEFB96202988C1C7BA61"
+  },
+  {
+    "name": "web-default-native-headers-source-debug-build-composed-20261015-vendor.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-default-native-headers-source-debug-build-composed-20261015-vendor.json",
+    "sha256": "E47BA62F1E034CB957FDECCEC5501635E0F8935F161776A0A9ED064CD573E06D"
+  },
+  {
+    "name": "web-default-native-headers-source-debug-build-composed-20261015-tools.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-default-native-headers-source-debug-build-composed-20261015-tools.json",
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "name": "web-default-native-headers-source-debug-build-composed-20261015-controls.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-default-native-headers-source-debug-build-composed-20261015-controls.json",
+    "sha256": "1E033FEF86E154424C02B1361C8E78CA114757E99A6401F44C78A4DF0E893163"
+  },
+  {
+    "name": "web-default-native-headers-source-debug-build-composed-20261015-authorities.json",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-default-native-headers-source-debug-build-composed-20261015-authorities.json",
+    "sha256": "300F110DCA53B9EEAFAEC7A043D184C92E5C3B5E9514899004AC026DBEE5246A"
+  }
+]

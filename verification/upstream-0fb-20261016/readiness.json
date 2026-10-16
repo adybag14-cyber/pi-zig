@@ -1,0 +1,48 @@
+{
+  "schema": "pi-zig-upstream-0fb-component-readiness-v1",
+  "status": "source27_pass_native_deferred",
+  "native_candidate_base": "1097e7ff3fa72d3284a762d4ed4cb583ae20072f",
+  "target_source": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "source_control_cases": 27,
+  "source_fixture_sha256": "CD378C5BEBFD7884AA6E53A37B36163F73AE6F7AB219262932058E9B22034301",
+  "source_full_manifest": {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\source0fb-full-manifest.json",
+    "sha256": "9BF47B21424EA3C896C360B089320CE6725DB4E66D64491C662420691CD15E43",
+    "files": 1970,
+    "tracked": 1927,
+    "generated": 43
+  },
+  "runtime_manifest": {
+    "path": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016\\source0fb-runtime-manifest.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "files": 31064
+  },
+  "node_manifest": {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "files": 1774
+  },
+  "generated_provenance": {
+    "source": "source4954-preparation-readiness-20261015.json",
+    "origin_head": "ae7b16d43b7c78c5b6fa3213fdd1215bb339729d",
+    "catalog_sha256": "FFA3E98626230F378F80200DEBB736C4A2238B5F2BA246A92CFC7D8E19604678",
+    "data_manifest_sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF",
+    "generated_at": "1970-01-01T00:00:00Z",
+    "carried_unchanged_bytes": true,
+    "generator_flake_identical_to_4954": true,
+    "generation_executed": false
+  },
+  "canonical_zig": {
+    "path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "version": "0.16.0",
+    "format_check_pass": true
+  },
+  "native_build_executed": false,
+  "native_runtime_qualified": false,
+  "full_pi_qualified": false,
+  "release_qualified": false,
+  "public_activation": false,
+  "upstream_source_mutations": 0,
+  "new_c_source_changes": 0
+}

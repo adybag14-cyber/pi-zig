@@ -1,0 +1,36 @@
+{
+  "completed_utc": "2026-10-15T21:36:08.8923183+00:00",
+  "extra_control_drift": [],
+  "manifests": [
+    {
+      "inventory_drift": false,
+      "changed": [],
+      "files": 6455,
+      "head": "8044f315c22468315d0a9fb167979f982483867e",
+      "drift": 0,
+      "name": "candidate"
+    },
+    {
+      "name": "source",
+      "changed": [],
+      "drift": 0,
+      "files": 1967
+    },
+    {
+      "name": "dependencies",
+      "changed": [],
+      "drift": 0,
+      "files": 31064
+    },
+    {
+      "name": "node_tools",
+      "changed": [],
+      "drift": 0,
+      "files": 1774
+    }
+  ],
+  "control_manifest_drift": false,
+  "absent_dependency_drift": [],
+  "driver_sha256": "8E3FA5B0BCB336744BBF2445A48347D2500B11D054353C6F0F42E5A37C724426",
+  "historical_absence_records": 84
+}

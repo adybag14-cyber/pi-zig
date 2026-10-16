@@ -1,0 +1,30 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\verification\\web-body-node24-20261015\\run-builtin-inventory.ps1",
+    "sha256": "A092FA18723F973FE9015FEBCC4DB3A2E4CEF8D34395E17DD501DC6333034703"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\verification\\web-body-node24-20261015\\builtin-inventory.mjs",
+    "sha256": "E5244F11E75A2A98AE29B593784FA57EB084FE47CF477B84B0CCDF87CA867FA6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:/Program Files/nodejs/node.exe",
+    "sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\src\\extensions\\fixtures\\web-body-node24.json",
+    "sha256": "7518FDCD2401E2C6D8111E3327B6A6D01B85D06F9E95128BD4C62A04CF295ED5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-web-headers-20261015\\src\\extensions\\fixtures\\web-body-node24.input.txt",
+    "sha256": "B20ECA3D00631D8B7745C8769DE4790F5FC2E82CA0589CBE633F2C8901756CEA"
+  }
+]

@@ -1,0 +1,74 @@
+[
+  {
+    "name": "web-fetch-node24-source-first-20261015-admission.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-admission.json",
+    "bytes": 329,
+    "sha256": "43CDC752556DD4A59086A5AE41F7CEE0E87AF4528F1929189F30926C97AB65A2"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-after.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-after.json",
+    "bytes": 578,
+    "sha256": "517FD44C1C5086C81F6415A4117501783B61E3DBAF34AA020AEC8002C69ED4CD"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-before.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-before.json",
+    "bytes": 578,
+    "sha256": "517FD44C1C5086C81F6415A4117501783B61E3DBAF34AA020AEC8002C69ED4CD"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-bundled-undici.js.txt",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-bundled-undici.js.txt",
+    "bytes": 728836,
+    "sha256": "C62030F1E505A4010D9972ECBF40155EDDEB355F2A53A9F019A447214E1A9600"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-candidate.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-candidate.json",
+    "bytes": 1386513,
+    "sha256": "C5A8F8186102C80A695236EFF382C2CBB6C3A63DEE932E56099497A315080CE2"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-controls.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-controls.json",
+    "bytes": 1074,
+    "sha256": "F8512293A25DA270C66FFDC7CCC6277974D94EC055B4267B6B4B259B3915C2B6"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-frozen.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-frozen.json",
+    "bytes": 1365,
+    "sha256": "B65476B025AC3613CB50C80426A54051960A8ADCF9369053CDDF6163D5628058"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-node-builtin-authorities.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-node-builtin-authorities.json",
+    "bytes": 9294918,
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015-output.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015-output.json",
+    "bytes": 53536,
+    "sha256": "54D5057EDCD4DA5E0556DCF8746B1F12DE4103C9BC108A11CF813B73189A09E2"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015.json",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015.json",
+    "bytes": 1342,
+    "sha256": "24CC6827DDE47B13E08C6D45F37E3124644933097890D4F47ACA0539E96EDFDB"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015.stderr.log",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015.stderr.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "web-fetch-node24-source-first-20261015.stdout.log",
+    "path": "verification/web-fetch-node24-20261015/receipts/web-fetch-node24-source-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  }
+]

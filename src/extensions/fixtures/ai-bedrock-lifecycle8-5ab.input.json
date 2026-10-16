@@ -1,0 +1,14 @@
+{
+  "fixedNow":"2030-01-01T00:00:00Z",
+  "fakeDpopPem":"-----BEGIN EC PRIVATE KEY-----\nMDECAQEEIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoAoGCCqGSM49AwEH\n-----END EC PRIVATE KEY-----\n",
+  "cases":[
+    {"name":"explicit-profile-pinned","kind":"facade_lifecycle_explicit_profile","profile":"fixture","mutateAmbient":{"AWS_PROFILE":"other","AWS_ACCESS_KEY_ID":"FAKE_MUTATED_ACCESS","AWS_SECRET_ACCESS_KEY":"fake-mutated-secret"}},
+    {"name":"explicit-static-pinned","kind":"facade_lifecycle_static_config","initialScoped":{"AWS_ACCESS_KEY_ID":"FAKE_SCOPED_ACCESS","AWS_SECRET_ACCESS_KEY":"fake-scoped-secret"},"mutateAmbient":{"AWS_ACCESS_KEY_ID":"FAKE_MUTATED_ACCESS","AWS_SECRET_ACCESS_KEY":"fake-mutated-secret"},"mutateScoped":{"AWS_ACCESS_KEY_ID":"FAKE_CHANGED_SCOPED_ACCESS","AWS_SECRET_ACCESS_KEY":"fake-changed-scoped-secret"}},
+    {"name":"ambient-profile-pinned","kind":"facade_lifecycle_lazy_profile","initialAmbient":{"AWS_PROFILE":"fixture"},"mutateAmbient":{"AWS_PROFILE":"other"}},
+    {"name":"lazy-env-after-payload","kind":"facade_lifecycle_lazy_env","mutateAmbient":{"AWS_ACCESS_KEY_ID":"FAKE_MUTATED_ACCESS","AWS_SECRET_ACCESS_KEY":"fake-mutated-secret"}},
+    {"name":"lazy-bearer-after-payload","kind":"facade_lifecycle_bearer_env","mutateAmbient":{"AWS_BEARER_TOKEN_BEDROCK":"fixture-mutated-bearer"}},
+    {"name":"lazy-region-after-payload","kind":"facade_lifecycle_lazy_region","clearRegion":true,"initialAmbient":{"AWS_PROFILE":"fixture"},"mutateAmbient":{"AWS_REGION":"us-west-2"}},
+    {"name":"explicit-bearer-pinned","kind":"facade_lifecycle_explicit_bearer","bearerToken":"fixture-explicit-bearer","mutateAmbient":{"AWS_BEARER_TOKEN_BEDROCK":"fixture-mutated-bearer"}},
+    {"name":"headers-before-payload","kind":"facade_lifecycle_headers","profile":"fixture","headers":{"x-before":"fixture-before"},"mutateHeaders":{"x-after":"fixture-after"}}
+  ]
+}

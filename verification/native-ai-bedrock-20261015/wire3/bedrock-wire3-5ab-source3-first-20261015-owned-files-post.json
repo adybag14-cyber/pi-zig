@@ -1,0 +1,9 @@
+{
+  "observed_initial_changes": [],
+  "output_sha256": "3E39AD98C02C5412F33A711A36A513554106FFCFA446AB657A8EDE05FEC272D8",
+  "slot": 6,
+  "observed_files": 6,
+  "initial_files": 6,
+  "candidate": "8044f315c22468315d0a9fb167979f982483867e",
+  "post_drift": 0
+}

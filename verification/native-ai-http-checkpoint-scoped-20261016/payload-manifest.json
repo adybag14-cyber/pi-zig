@@ -1,0 +1,22 @@
+[
+  {
+    "name": "native-ai-http-checkpoint-24290770-actual74-proof-audit-20261016.json",
+    "bytes": 430,
+    "sha256": "C48732487C9EE275B2BF6BB1ABFC9B611FBE3E8BE8E844BB682F0300156FACB7"
+  },
+  {
+    "name": "native-ai-http-checkpoint-24290770-actual74-scoped-proof-20261016.zip",
+    "bytes": 59939480,
+    "sha256": "2D6BE84C72060121F9C99F19BB213DC5BD2E3E83EDD7605E4A5D310F35A58B99"
+  },
+  {
+    "name": "native-ai-http-checkpoint-24290770-independent-terminal-20261016.json",
+    "bytes": 2365,
+    "sha256": "AEEB097DEE4C7F8EDDB20CE42ACA07340D2CD76768D1A754A49388A39657EBEE"
+  },
+  {
+    "name": "native-ai-http-microtask-checkpoint-24290770.patch",
+    "bytes": 5184,
+    "sha256": "ECAF0A024C2AA0749D40A7535083D8E16D4A6477719912CA3AABE7619244942D"
+  }
+]
