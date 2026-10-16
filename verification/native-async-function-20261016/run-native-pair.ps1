@@ -19,7 +19,8 @@ $taskCompilerRoot=Split-Path -Parent $taskZig
 $taskNodeManifest=Join-Path $taskEvidence 'source4954-node-tools-before-20261015.json'
 $taskCompilerManifest=Join-Path $taskEvidence 'auth-storage-production-4954-source47-first-20261015-compiler-before.json'
 $taskHelper=Join-Path $taskRoot 'tools\ci\native_qualification_ci.ps1'
-$taskExpectedNamesPath=Join-Path $PSScriptRoot 'expected-tests25.json'
+$taskExpectedNamesPath=Join-Path $PSScriptRoot 'expected-tests26.json'
+$taskPlannedNamesPath=Join-Path $PSScriptRoot 'expected-tests25.json'
 $taskAsyncNamesPath=Join-Path $PSScriptRoot 'expected-async-tests10.json'
 $taskAuthorityPinsPath=Join-Path $PSScriptRoot 'source42-authority-pins.json'
 $taskPublishedHead='8f97c86ec8aeb7aa37f1de1b9743505fcedb470e'
@@ -62,15 +63,16 @@ function Source-Authority {
 }
 $taskAuthorityPaths=@((Join-Path $taskRoot 'src\extensions\fixtures\async-function-body-node24.input.txt'),(Join-Path $taskRoot 'src\extensions\fixtures\async-function-body-node24.json'),(Join-Path $taskEvidence 'async-function-body-node24-source42-review1-20261016-original-input-byte-exact.txt'),(Join-Path $taskEvidence 'native-async-function-reviewed-final-c-h-20261016.patch'),(Join-Path $taskEvidence 'native-async-function-source42-8f97c86e-public-readback-20261016.json'))
 foreach($taskAttempt in @('review1','review2')){foreach($taskSuffix in @('output.json','capture.json','posthash.json','validation.json','controls-before.json','candidate-before.json','before.json','modules.jsonl')){$taskAuthorityPaths+=Join-Path $taskEvidence "async-function-body-node24-source42-$taskAttempt-20261016-$taskSuffix"}}
-$taskControls=File-Rows @($PSCommandPath,$taskOwner,$taskHelper,$taskExpectedNamesPath,$taskAsyncNamesPath,$taskAuthorityPinsPath,$taskNodeManifest,$taskCompilerManifest)
+$taskControls=File-Rows @($PSCommandPath,$taskOwner,$taskHelper,$taskExpectedNamesPath,$taskPlannedNamesPath,$taskAsyncNamesPath,$taskAuthorityPinsPath,$taskNodeManifest,$taskCompilerManifest)
 $taskAuthorities=@(Get-Content -LiteralPath $taskAuthorityPinsPath -Raw|ConvertFrom-Json)
 if(@(Compare-Object (@($taskAuthorityPaths|ForEach-Object {[IO.Path]::GetFullPath($_)})|Sort-Object) (@($taskAuthorities.path)|Sort-Object)).Count -or @(Check-Rows $taskAuthorities).Count){throw 'Previously sealed exact Source42 authority file paths or hashes changed'}
 $taskNodePins=@(Get-Content -LiteralPath $taskNodeManifest -Raw|ConvertFrom-Json)
 $taskCompilerPins=@(Get-Content -LiteralPath $taskCompilerManifest -Raw|ConvertFrom-Json)
 if($taskNodePins.Count -ne 1774 -or $taskCompilerPins.Count -ne 19546 -or @(Check-Rows $taskNodePins).Count -or @(Check-Rows $taskCompilerPins).Count){throw 'Full pinned Node/compiler inventories changed'}
 $taskExpectedNames=@(Get-Content -LiteralPath $taskExpectedNamesPath -Raw|ConvertFrom-Json)
+$taskPlannedNames=@(Get-Content -LiteralPath $taskPlannedNamesPath -Raw|ConvertFrom-Json)
 $taskAsyncNames=@(Get-Content -LiteralPath $taskAsyncNamesPath -Raw|ConvertFrom-Json)
-if($taskExpectedNames.Count -ne 25 -or $taskAsyncNames.Count -ne 10 -or @($taskAsyncNames|Where-Object {$_ -notin $taskExpectedNames}).Count){throw 'Exact25 cohort and10 async metadata names required'}
+if($taskExpectedNames.Count -ne 26 -or $taskPlannedNames.Count -ne 25 -or $taskAsyncNames.Count -ne 10 -or @($taskPlannedNames|Where-Object {$_ -notin $taskExpectedNames}).Count -or @($taskAsyncNames|Where-Object {$_ -notin $taskExpectedNames}).Count){throw 'All25 planned plus actual imported metadata and10 async names required'}
 $taskScopes=@(
  @{name='candidate';inventory=(Get-CiInventory $taskRoot tree @('.git','.zig-cache','zig-out'))},
  @{name='vendor';inventory=(Get-CiInventory (Join-Path $taskRoot 'vendor') tree)},
@@ -110,8 +112,8 @@ try{
  $taskArtifacts=File-Rows @($taskBinary,$taskCachedBinary)
  Save-Json "$taskBase-artifact-frozen.json" $taskArtifacts
  Admit 'metadata'
- $taskMetadata=Read-CiTestMetadata $taskCachedBinary $taskRoot "$taskBase-metadata-owner" 25
- if(@(Compare-Object ($taskExpectedNames|Sort-Object -CaseSensitive) ($taskMetadata.tests|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Actual25 test metadata differs from sealed named cohort'}
+ $taskMetadata=Read-CiTestMetadata $taskCachedBinary $taskRoot "$taskBase-metadata-owner" 26
+ if(@(Compare-Object ($taskExpectedNames|Sort-Object -CaseSensitive) ($taskMetadata.tests|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Actual26 test metadata differs from all25 planned plus imported cohort'}
  $taskActualAsync=@($taskMetadata.tests|Where-Object {$_ -match '\.test\.native async body proposal'})
  if(@(Compare-Object ($taskAsyncNames|Sort-Object -CaseSensitive) ($taskActualAsync|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Actual10 async metadata names differ from sealed subset'}
  Save-Json "$taskBase-metadata.json" $taskMetadata
@@ -129,4 +131,4 @@ try{
  Save-Json "$taskBase-terminal.json" @{status=if($taskFailure -or $taskPostFailure){'failed'}else{'passed'};candidate_head=$ExpectedHead;reviewed_source_checkpoint=$taskPublishedHead;compile=$taskBuild;runtime=$taskRuntime;actual_test_metadata=$taskMetadata;artifacts=$taskArtifacts;failure=$taskFailure;posthash_failure=$taskPostFailure;native_qualified=(!$taskFailure -and !$taskPostFailure -and $null -ne $taskRuntime);full_pi_qualified=$false;root_execution_grant=$RootExecutionGrant;owner_sha256=$ApprovedOwnerSHA256;utc=[DateTimeOffset]::UtcNow.ToString('o')}
 }
 if($taskFailure -or $taskPostFailure){throw "Qualification failed: $taskFailure $taskPostFailure"}
-Write-Output 'GENUINE_ASYNC_SOURCE42_AND_INHERITED_GENERATOR_JSON_SPAN_COHORT25_NATIVE_PASSED'
+Write-Output 'GENUINE_ASYNC_SOURCE42_AND_INHERITED_GENERATOR_JSON_SPAN_ALL25_PLUS_IMPORTED_COHORT26_NATIVE_PASSED'
