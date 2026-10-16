@@ -37,8 +37,12 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     try files.contained(args.run_root, cfg.evidence_packet);
     const actual = try process.identity(w.GetCurrentProcess());
     if (args.control == 0 or args.control == std.math.maxInt(usize)) return error.InvalidInheritedControl;
-    var channel = try Channel.init(@ptrFromInt(args.control));
-    const boot_frame = try common.receive(&channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
+    // Pending OVERLAPPED reads can survive a timeout/error return. Keep their
+    // buffers/state in the retained process arena until actual retirement or
+    // ExitProcess; unwinding run must not invalidate a kernel I/O address.
+    const channel = try permanent.create(Channel);
+    channel.* = try Channel.init(@ptrFromInt(args.control));
+    const boot_frame = try common.receive(channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
     var bootstrap: protocol.WorkerBootstrap = .{ .frame = boot_frame };
     try bootstrap.authenticate(args.nonce, args.intent, actual.pid, args.supervisor_pid,
         actual.creation_filetime_utc, channel.handle);
@@ -46,7 +50,7 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     var sequence: u64 = 1;
     var ready = common.frame(.ready, sequence, args.nonce, actual.pid, args.supervisor_pid,
         actual.creation_filetime_utc, args.intent);
-    try common.send(&channel, &ready, deadline.worker_cutoff_ms);
+    try common.send(channel, &ready, deadline.worker_cutoff_ms);
     sequence += 1;
     var quota: receipts.Quota = .{ .limit = 64 * 1024 * 1024 };
     const pre_dir = try files.join(permanent, args.run_root, "worker-pre");
@@ -99,7 +103,7 @@ pub fn run(storage: *Storage, args: Arguments) !void {
         .deadline_ms = deadline.worker_cutoff_ms, .intent_hash = args.intent });
     const node_intent_hash = try intent_writer.finish();
     var intent_frame = common.frame(.node_intent, sequence, args.nonce, 0, actual.pid, 0, node_intent_hash);
-    try common.send(&channel, &intent_frame, deadline.worker_cutoff_ms);
+    try common.send(channel, &intent_frame, deadline.worker_cutoff_ms);
     sequence += 1;
     _ = try deadline.admitNode();
     try node.createInheritedNode(worker_context, permanent, executable, node_command, cwd, env,
@@ -108,11 +112,11 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     var created = common.frame(.node_created_suspended, sequence, args.nonce, node.info.pid, actual.pid,
         node.kernel.?.creation_filetime_utc, node_intent_hash);
     created.worker_local_node_handle = @intFromPtr(node.info.process.?);
-    try common.send(&channel, &created, deadline.worker_cutoff_ms);
+    try common.send(channel, &created, deadline.worker_cutoff_ms);
     sequence += 1;
     var ack_receiver: protocol.Receiver = .{ .nonce = args.nonce, .direction = .from_supervisor, .worker_pid = actual.pid };
     try ack_receiver.expectNodeAcknowledgement(node.info.pid, node.kernel.?.creation_filetime_utc);
-    const ack = try common.receive(&channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
+    const ack = try common.receive(channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
     if (try ack_receiver.accept(&ack) != .node_resume_ack) return error.NodeAcknowledgementRequired;
     try node.acknowledgeInheritedNode(ack.pid, ack.creation_filetime_utc);
     node.full_identity_bound = true; // authenticated supervisor completed independent binding
@@ -120,7 +124,7 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     try node.resume();
     var resumed = common.frame(.node_resumed, sequence, args.nonce, node.info.pid, actual.pid,
         node.kernel.?.creation_filetime_utc, node_intent_hash);
-    try common.send(&channel, &resumed, deadline.worker_cutoff_ms);
+    try common.send(channel, &resumed, deadline.worker_cutoff_ms);
     sequence += 1;
     while (true) {
         const wait = w.WaitForSingleObject(node.info.process.?, @min(250, Deadline.remaining(node_end)));
@@ -141,10 +145,10 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     var exited = common.frame(.node_exit_recorded, sequence, args.nonce, exit.pid, actual.pid,
         exit.creation_filetime_utc, node_intent_hash);
     exited.code = exit.exit_code;
-    try common.send(&channel, &exited, deadline.worker_cutoff_ms);
+    try common.send(channel, &exited, deadline.worker_cutoff_ms);
     sequence += 1;
     try ack_receiver.expectNodeExitAcknowledgement(exit.exit_code);
-    const persisted = try common.receive(&channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
+    const persisted = try common.receive(channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
     if (try ack_receiver.accept(&persisted) != .node_exit_persisted_ack or
         !std.crypto.timing_safe.eql([32]u8, persisted.input_sha256, node_intent_hash))
         return error.DurableExitAcknowledgementRequired;
@@ -154,7 +158,7 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     try pin.close();
     var released = common.frame(.node_references_released, sequence, args.nonce, exit.pid, actual.pid,
         exit.creation_filetime_utc, node_intent_hash);
-    try common.send(&channel, &released, deadline.worker_cutoff_ms);
+    try common.send(channel, &released, deadline.worker_cutoff_ms);
     sequence += 1;
     if (exit.exit_code != 0) return error.NodeNonzeroExit;
     if (args.selected == .npm_ci_offline) {
@@ -175,13 +179,13 @@ pub fn run(storage: *Storage, args: Arguments) !void {
         actual.creation_filetime_utc, args.intent);
     // This frame is only primary payload completion. Supervisor final assertions
     // remain mandatory on both positive and negative paths after whole-job zero.
-    try common.send(&channel, &primary, deadline.worker_cutoff_ms);
+    try common.send(channel, &primary, deadline.worker_cutoff_ms);
     sequence += 1;
     var terminal = common.frame(.worker_terminal, sequence, args.nonce, actual.pid, args.supervisor_pid,
         actual.creation_filetime_utc, args.intent);
-    try common.send(&channel, &terminal, deadline.worker_cutoff_ms);
+    try common.send(channel, &terminal, deadline.worker_cutoff_ms);
     try channel.cancel();
-    while (!channel.retired() and w.GetTickCount64() < deadline.worker_cutoff_ms) try common.waitChannel(&channel, deadline.worker_cutoff_ms);
+    while (!channel.retired() and w.GetTickCount64() < deadline.worker_cutoff_ms) try common.waitChannel(channel, deadline.worker_cutoff_ms);
     if (!channel.retired()) return error.WorkerControlRetirementUnproven;
     try channel.closeRetired();
     // No asynchronous state remains in worker. Kernel process exit closes stdin/
