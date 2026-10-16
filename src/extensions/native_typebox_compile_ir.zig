@@ -53,6 +53,7 @@ const Op = enum(c_int) {
     MultipleOf,
 };
 const Result = struct { value: c.JSValue, returned: bool = false };
+const Parameter = enum(c_int) { identifier, array };
 fn field(s: *Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
     return s.get(object, name);
 }
@@ -74,6 +75,53 @@ fn snapshot(s: *Scope, array: c.JSValue) !c.JSValue {
     const out = try s.array();
     for (0..try length(s, array)) |i| try s.index(out, @intCast(i), try at(s, array, @intCast(i)));
     return out;
+}
+fn lowerParameter(s: *Scope, input: c.JSValue) anyerror!c.JSValue {
+    if (!c.JS_IsString(input)) return error.NativeTypeBoxParameterPatternUnsupported;
+    const bytes = try s.engine.toString(input);
+    defer s.engine.gpa.free(bytes);
+    const name = std.mem.trim(u8, bytes, " \t\r\n");
+    const node = try private(s);
+    if (std.mem.startsWith(u8, name, "[") and std.mem.endsWith(u8, name, "]")) {
+        try set(s, node, "tag", c.JS_NewInt32(s.engine.context, @intFromEnum(Parameter.array)));
+        const elements = try s.array();
+        const inner = std.mem.trim(u8, name[1 .. name.len - 1], " \t\r\n");
+        if (inner.len > 0) {
+            var parts = std.mem.splitScalar(u8, inner, ',');
+            var index: u32 = 0;
+            while (parts.next()) |part| : (index += 1) try s.index(elements, index, try lowerParameter(s, try s.text(std.mem.trim(u8, part, " \t\r\n"))));
+        }
+        try set(s, node, "elements", elements);
+    } else {
+        if (name.len == 0 or !(std.ascii.isAlphabetic(name[0]) or name[0] == '_' or name[0] == '$')) return error.NativeTypeBoxParameterPatternUnsupported;
+        for (name[1..]) |char| if (!(std.ascii.isAlphanumeric(char) or char == '_' or char == '$')) return error.NativeTypeBoxParameterPatternUnsupported;
+        try set(s, node, "tag", c.JS_NewInt32(s.engine.context, @intFromEnum(Parameter.identifier)));
+        try set(s, node, "name", try s.text(name));
+    }
+    return node;
+}
+fn lowerParameters(s: *Scope, parameters: c.JSValue) !c.JSValue {
+    const result = try s.array();
+    for (0..try length(s, parameters)) |index| try s.index(result, @intCast(index), try lowerParameter(s, try at(s, parameters, @intCast(index))));
+    return result;
+}
+fn bindParameter(s: *Scope, env: c.JSValue, parameter: c.JSValue, value: c.JSValue) anyerror!void {
+    var tag: i32 = 0;
+    if (c.JS_ToInt32(s.engine.context, &tag, try field(s, parameter, "tag")) < 0) return js.capture(s.engine);
+    switch (@as(Parameter, @enumFromInt(tag))) {
+        .identifier => try keyPut(s, env, try field(s, parameter, "name"), value),
+        .array => {
+            var cursor = try o.iterator(s.engine, value);
+            defer cursor.deinit();
+            errdefer cursor.closePreserving();
+            const elements = try field(s, parameter, "elements");
+            for (0..try length(s, elements)) |index| {
+                const element = try s.own(if (cursor.closed) c.pi_js_undefined() else (try cursor.next()) orelse c.pi_js_undefined());
+                try bindParameter(s, env, try at(s, elements, @intCast(index)), element);
+            }
+            try cursor.close();
+        },
+    }
 }
 fn keyPut(s: *Scope, obj: c.JSValue, key: c.JSValue, value: c.JSValue) !void {
     try o.defineKey(s, obj, key, value);
@@ -99,10 +147,10 @@ fn record(e: *Engine, graph: c.JSValue, op: Op, args: []const c.JSValue, code: c
     // These arrays are compiler-owned source arrays. Retain their values as a
     // build-time snapshot; runtime external.variables remains a live VM array.
     switch (op) {
-        .Every => try s.index(inputs, 2, try snapshot(&s, args[2])),
-        .Some, .SomeAll, .Counted => try s.index(inputs, 1, try snapshot(&s, args[1])),
+        .Every => try s.index(inputs, 2, try lowerParameters(&s, args[2])),
+        .Some, .SomeAll, .Counted => try s.index(inputs, 1, try lowerParameters(&s, args[1])),
         .ArrayLiteral, .Statements => try s.index(inputs, 0, try snapshot(&s, args[0])),
-        .ArrowFunction => try s.index(inputs, 0, try snapshot(&s, args[0])),
+        .ArrowFunction => try s.index(inputs, 0, try lowerParameters(&s, args[0])),
         .Call, .New => try s.index(inputs, 1, try snapshot(&s, args[1])),
         else => {},
     }
@@ -213,7 +261,7 @@ fn callArrow(e: *Engine, args: []const c.JSValue, roots: []const c.JSValue) !c.J
     defer s.deinit();
     const env = try o.frame(&s, roots[2]);
     const params = roots[3];
-    for (0..try length(&s, params)) |i| try keyPut(&s, env, try at(&s, params, @intCast(i)), if (i < args.len) args[i] else c.pi_js_undefined());
+    for (0..try length(&s, params)) |i| try bindParameter(&s, env, try at(&s, params, @intCast(i)), if (i < args.len) args[i] else c.pi_js_undefined());
     const result = try evaluate(&s, roots[0], roots[1], env, roots[4]);
     return c.JS_DupValue(e.context, if (result.returned) result.value else result.value);
 }
@@ -227,7 +275,7 @@ fn arrayStep(e: *Engine, args: []const c.JSValue, op: Op, roots: []const c.JSVal
     const env = try o.frame(&s, roots[2]);
     const params = roots[3];
     const delta: usize = if (op == .Counted) 1 else 0;
-    for (0..try length(&s, params)) |i| try keyPut(&s, env, try at(&s, params, @intCast(i)), if (i + delta < args.len) args[i + delta] else c.pi_js_undefined());
+    for (0..try length(&s, params)) |i| try bindParameter(&s, env, try at(&s, params, @intCast(i)), if (i + delta < args.len) args[i + delta] else c.pi_js_undefined());
     if (op == .Every and !(try isText(&s, roots[5], "0"))) {
         const offset = (try evaluate(&s, roots[0], roots[1], env, roots[5])).value;
         const index = if (args.len > 1) args[1] else c.pi_js_undefined();
