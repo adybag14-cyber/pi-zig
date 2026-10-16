@@ -1,0 +1,12 @@
+{
+  "status": "phase1a_attribute_borrow_lifetime_correction_source_only",
+  "prior": "57768b43782dabc41a0e137bfc35e5d8d29fbe5e",
+  "independent_review": "OriginAttributes pointerintoModuleDef dangles afterearlydefinitionfree",
+  "fix": "Origin ownsimmutablesnapshotJSValue, contextmark/freelate; accessorstableuntilcontextteardown eveniftombstoned",
+  "snapshot_rules": "ownenumerablestringkeys/stringvalues, readonce, nonwritable/nonconfigurable/nonextensible, existingabsentemptyequality",
+  "snapshot_helper_invoked": false,
+  "origins_constructed": false,
+  "c_sha256": "021A5A9A65F16236A1DF2D681E0F8DBCA3808B16C8234E4783DCA7CC6371E81A",
+  "h_sha256": "AA94A5480DD7707B7BC38712EEBFF456E9BCD87935F019400A6770CD43117474",
+  "compiler_or_runtime_executed": false
+}

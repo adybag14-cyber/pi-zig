@@ -1327,7 +1327,8 @@ JS_EXTERN JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
 JS_EXTERN JSValue JS_PiCompilePrivateModule(JSContext *ctx,
     JSPiPrivateModuleGraph *graph, const char *source, size_t source_length,
     const char *physical_filename, JSValueConst attributes);
-/* Borrowed until owner context teardown. Attributes is NULL if tombstoned. */
+/* Borrowed until owner context teardown. NULL origin returns NULL. The
+   attributes snapshot survives early definition destruction/tombstoning. */
 JS_EXTERN const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin);
 JS_EXTERN const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin);
 JS_EXTERN JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin);
