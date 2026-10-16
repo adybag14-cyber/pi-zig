@@ -1,0 +1,35 @@
+{
+  "kind": "resumed-resolving-hook-source-only-unexecuted",
+  "base": "595b5482d3a22df37e77b2e78cdf8ab252d0e6bf",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla",
+  "runtime_status": "recovery_pending",
+  "prior_manifest": "resumed-source-manifest.json remains historical prior-candidate bytes",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F06F1F2A23CB024FF381DB02CF43D1C249DE5848689D005918F7D1FB80BE9B5E"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_tla_resumed_fatal_delivery_test.zig",
+      "sha256": "CA2D4784C97BB25305156C5738C2C1CEBF83E43A88E5C0DDBC5D2C665BF76429"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/RESUMED-IMPLEMENTATION.md",
+      "sha256": "67EC09D33E3F29EEFBBA075A0867E68E39C628A1D0003C76EBF0929BAAD054C6"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-resumed-snippet.zig.txt",
+      "sha256": "6B66C1D22459DA3557A96AF563044EFA4497175291E303EAD79902BF532883E8"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, formatter, Node, Source generator or native jobs",
+  "review": "Root and independent C-owner required before execution",
+  "scope": "Fatal pending resolving-call reason; catchable enqueue pressure remains separate"
+}

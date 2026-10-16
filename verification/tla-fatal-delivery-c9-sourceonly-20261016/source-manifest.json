@@ -1,0 +1,39 @@
+{
+  "kind": "source-only-unexecuted",
+  "base": "7bf652e57c2bd5928e1ab2e357a8dc868ddc8c51",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "333ABF5DC0CD17259C77B7A578D321C9836EC92199DAB413DD30EBCB29554F1A"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_tla_fatal_delivery_test.zig",
+      "sha256": "B5195B545E83CC55AA7C7FCD306D1DEBC2E45A02F4D2129D05A9FD3CF0B7F5B9"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DESIGN.md",
+      "sha256": "F7937A1FA5EFCE168E99EFA8733E2CDFC6E242D7EC515C8FB9593694BCAFAEF2"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-snippet.zig.txt",
+      "sha256": "C1953DCFE66BD2CAE8E86E50372D6CBD30A967BAF1A0E17C3A3EA8E99DD06DBF"
+    },
+    {
+      "path": "src/native_tla_resumed_fatal_known_gap_test.zig",
+      "sha256": "293AC4DEBFDB57914ECBA85B6BDEDF6EF74F45905ADCEFA9FFDB3AF98EC624FC"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/RESUMED-DESIGN.md",
+      "sha256": "0E67505A87D445A94F9F58E119EBA0CB898A06C0B4A320F359AE898875C876BB"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, Node, Source or native jobs",
+  "review": "Root and independent C-owner required before execution"
+}

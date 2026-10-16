@@ -1576,7 +1576,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, sdk_exception_boundary_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(sdk_exception_boundary_tests.root_module, sqlite_lib_dir, sqlite_library);
     sdk_exception_boundary_tests.root_module.addImport("catalog_tool", catalog_tool);
-    b.step("build-native-sdk-exception-boundary", "Compile SDK pending-exception ownership regressions").dependOn(&sdk_exception_boundary_tests.step);
+    b.step("build-native-sdk-exception-boundary", "Compile SDK pending-exception ownership regressions").dependOn(&b.addInstallArtifact(sdk_exception_boundary_tests, .{}).step);
     b.step("test-native-sdk-exception-boundary", "Preserve raw property and conversion failures over stale SDK captures").dependOn(&b.addRunArtifact(sdk_exception_boundary_tests).step);
     const session_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_models_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session models"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_models_tests.root_module, quickjs, sqlite_lib_dir);
@@ -2414,6 +2414,18 @@ pub fn build(b: *std.Build) void {
     const typebox_production_run = b.addRunArtifact(typebox_production_tests);
     typebox_production_run.has_side_effects = true;
     b.step("test-native-typebox-production-source", "Replay actual compiler and provider schemas through the shared native TypeBox graph").dependOn(&typebox_production_run.step);
+    const native_tla_fatal_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tla_fatal_delivery_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TLA fatal"}, .use_llvm = use_llvm });
+    linkQuickJs(b, native_tla_fatal_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(native_tla_fatal_tests.root_module, sqlite_lib_dir, sqlite_library);
+    native_tla_fatal_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-tla-fatal-delivery", "Compile reviewed fatal module delivery controls").dependOn(&b.addInstallArtifact(native_tla_fatal_tests, .{}).step);
+    b.step("test-native-tla-fatal-delivery", "Run reviewed fatal module delivery controls").dependOn(&b.addRunArtifact(native_tla_fatal_tests).step);
+    const resumed_tla_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tla_resumed_fatal_delivery_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TLA resumed fatal"}, .use_llvm = use_llvm });
+    linkQuickJs(b, resumed_tla_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(resumed_tla_tests.root_module, sqlite_lib_dir, sqlite_library);
+    resumed_tla_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-tla-resumed-fatal-delivery", "Compile reviewed resumed module and late-callback controls").dependOn(&b.addInstallArtifact(resumed_tla_tests, .{}).step);
+    b.step("test-native-tla-resumed-fatal-delivery", "Run reviewed resumed module and late-callback controls").dependOn(&b.addRunArtifact(resumed_tla_tests).step);
     const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
     headers_source_module.addImport("catalog_tool", catalog_tool);

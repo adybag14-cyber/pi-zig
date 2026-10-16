@@ -995,6 +995,8 @@ typedef struct JSAsyncFunctionData {
     JSGCObjectHeader header; /* must come first */
     JSValue resolving_funcs[2];
     bool is_active; /* true if the async function state is valid */
+    bool module_execution; /* retains inactive-callback guard after termination */
+    JSModuleDef *module; /* borrowed only while the bytecode frame is active */
     JSAsyncFunctionState func_state;
     /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
     JSPiAsyncFunctionBody *native_body;
@@ -1096,6 +1098,8 @@ struct JSModuleDef {
     /* true if evaluation yielded an exception. It is saved in
        eval_exception */
     bool eval_has_exception;
+    bool eval_has_fatal_exception; /* terminal host abort, not promise rejection */
+    JSModuleDef *fatal_next; /* transient allocation-free fatal worklist */
     JSValue eval_exception;
     JSValue meta_obj; /* for import.meta */
     JSValue private_value; /* private value for C modules */
@@ -1517,6 +1521,7 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
                                  JSValueConst options);
 static void free_var_ref(JSRuntime *rt, JSVarRef *var_ref);
 static void js_async_function_free(JSRuntime *rt, JSAsyncFunctionData *s);
+static void js_mark_module_fatal_failure(JSModuleDef *module, JSValueConst error);
 static void js_release_coro(JSRuntime *rt, JSGCObjectHeader *coro);
 static JSValue js_new_promise_capability(JSContext *ctx,
                                          JSValue *resolving_funcs,
@@ -21879,6 +21884,9 @@ static JSValue js_call_generator_function(JSContext *ctx, JSValueConst func_obj,
 
 static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
 {
+    /* The active bytecode function/realm dominates this borrowed identity.
+       Clear it before releasing any frame roots, including GC finalization. */
+    s->module = NULL;
     if (s->is_active) {
         if (s->native_body) {
             int i;
@@ -22068,6 +22076,8 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
 static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
 {
     bool is_success = true;
+    bool module_fatal = false;
+    JSValue module_error = JS_UNDEFINED;
     JSValue func_ret, ret2;
 
     func_ret = async_func_resume(ctx, &s->func_state);
@@ -22079,10 +22089,20 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JSValue error = JS_GetException(ctx);
             ret2 = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED,
                            1, vc(&error));
+            if (s->module_execution &&
+                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                module_error = JS_GetException(ctx);
+                module_fatal = true;
+            }
             JS_FreeValue(ctx, error);
         resolved:
+            /* Resolving callbacks may return undefined while a public hook
+               or enqueue failure leaves a fatal reason pending. It was held
+               before value cleanup; do not require an exception return. */
+            if (module_fatal)
+                is_success = false;
             if (unlikely(JS_IsException(ret2))) {
-                if (JS_IsUncatchableError(ctx->rt->current_exception)) {
+                if (module_fatal || JS_IsUncatchableError(ctx->rt->current_exception)) {
                     is_success = false;
                 } else {
                     abort(); /* BUG */
@@ -22090,7 +22110,15 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             }
             JS_FreeValue(ctx, ret2);
         }
-        js_async_function_terminate(ctx->rt, s);
+        if (!is_success && s->module_execution) {
+            JSValue error = module_fatal ? module_error : JS_GetException(ctx);
+            if (s->module)
+                js_mark_module_fatal_failure(s->module, error);
+            js_async_function_terminate(ctx->rt, s);
+            JS_Throw(ctx, error);
+        } else {
+            js_async_function_terminate(ctx->rt, s);
+        }
     } else {
         JSValue value;
         value = s->func_state.frame.cur_sp[-1];
@@ -22099,6 +22127,11 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             /* function returned */
             ret2 = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED,
                            1, vc(&value));
+            if (s->module_execution &&
+                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                module_error = JS_GetException(ctx);
+                module_fatal = true;
+            }
             JS_FreeValue(ctx, value);
             goto resolved;
         } else {
@@ -22112,8 +22145,25 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JS_FreeValue(ctx, value);
             if (JS_IsException(promise))
                 goto fail;
-            if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+            if (s->module_execution && JS_HasException(ctx)) {
+                JSValue error = JS_GetException(ctx);
                 JS_FreeValue(ctx, promise);
+                JS_Throw(ctx, error);
+                goto fail;
+            }
+            if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+                JSValue error = s->module_execution ? JS_GetException(ctx) : JS_UNDEFINED;
+                JS_FreeValue(ctx, promise);
+                if (s->module_execution)
+                    JS_Throw(ctx, error);
+                goto fail;
+            }
+            if (s->module_execution && JS_HasException(ctx)) {
+                JSValue error = JS_GetException(ctx);
+                JS_FreeValue(ctx, promise);
+                for (i = 0; i < 2; i++)
+                    JS_FreeValue(ctx, resolving_funcs[i]);
+                JS_Throw(ctx, error);
                 goto fail;
             }
 
@@ -22124,10 +22174,15 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             res = perform_promise_then(ctx, promise,
                                        vc(resolving_funcs),
                                        vc(resolving_funcs1));
+            bool module_failed = s->module_execution &&
+                                 (res || JS_HasException(ctx));
+            JSValue error = module_failed ? JS_GetException(ctx) : JS_UNDEFINED;
             JS_FreeValue(ctx, promise);
             for(i = 0; i < 2; i++)
                 JS_FreeValue(ctx, resolving_funcs[i]);
-            if (res)
+            if (module_failed)
+                JS_Throw(ctx, error);
+            if (res || module_failed)
                 goto fail;
         }
     }
@@ -22155,6 +22210,19 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
                 arg))
             return JS_EXCEPTION;
         return JS_UNDEFINED;
+    }
+    if (s->module_execution) {
+        /* Partial await setup can leave a queued callback after termination.
+           Outer attachment failure can also terminalize a suspended module.
+           Neither may touch its freed stack or run more guest instructions.
+           The module's existing terminal reason is delivered by its executor
+           or cached entry; a late callback must not deliver/retag it again. */
+        if (!s->is_active)
+            return JS_UNDEFINED;
+        if (s->module && s->module->eval_has_exception) {
+            js_async_function_terminate(ctx->rt, s);
+            return JS_UNDEFINED;
+        }
     }
     s->func_state.throw_flag = is_reject;
     if (is_reject) {
@@ -22272,11 +22340,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
     return JS_EXCEPTION;
 }
 
-static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func_obj,
                                       JSValueConst this_obj,
-                                      int argc, JSValueConst *argv, int flags)
+                                      int argc, JSValueConst *argv, int flags,
+                                      JSModuleDef *module)
 {
-    JSValue promise;
+    JSValue promise, error;
     JSAsyncFunctionData *s;
 
     if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
@@ -22288,6 +22357,8 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
     JS_REF_COUNT(s) = 1;
     add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
     s->is_active = false;
+    s->module_execution = module != NULL;
+    s->module = NULL;
     s->resolving_funcs[0] = JS_UNDEFINED;
     s->resolving_funcs[1] = JS_UNDEFINED;
 
@@ -22297,8 +22368,15 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
 
     if (async_func_init(ctx, &s->func_state, func_obj, this_obj, argc, argv)) {
     fail:
+        /* Module START failure belongs to its DFS executor, not a later
+           unassociated continuation. Retain the first reason over cleanup. */
+        error = module ? JS_GetException(ctx) : JS_UNDEFINED;
+        if (module)
+            js_async_function_terminate(ctx->rt, s);
         JS_FreeValue(ctx, promise);
         js_async_function_free(ctx->rt, s);
+        if (module)
+            JS_Throw(ctx, error);
         return JS_EXCEPTION;
     }
     s->is_active = true;
@@ -22308,10 +22386,25 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
 
     if (!js_async_function_resume(ctx, s))
         goto fail;
+    if (module && JS_HasException(ctx))
+        goto fail;
+    /* Only the exact module executor supplies this identity, after successful
+       START. Until termination, frame.cur_func -> bytecode.realm retains its
+       owning context/loaded ModuleDef. Initial DFS failures remain unbound. */
+    if (module && s->is_active)
+        s->module = module;
 
     js_async_function_free(ctx->rt, s);
 
     return promise;
+}
+
+static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+                                      JSValueConst this_obj,
+                                      int argc, JSValueConst *argv, int flags)
+{
+    return js_async_function_call_internal(ctx, func_obj, this_obj, argc, argv,
+                                         flags, NULL);
 }
 
 /* AsyncGenerator */
@@ -31231,6 +31324,8 @@ static JSModuleDef *js_new_module_def(JSContext *ctx, JSAtom name)
     m->module_ns = JS_UNDEFINED;
     m->func_obj = JS_UNDEFINED;
     m->eval_exception = JS_UNDEFINED;
+    m->eval_has_fatal_exception = false;
+    m->fatal_next = NULL;
     m->meta_obj = JS_UNDEFINED;
     m->promise = JS_UNDEFINED;
     m->resolving_funcs[0] = JS_UNDEFINED;
@@ -33038,6 +33133,46 @@ static int js_execute_sync_module(JSContext *ctx, JSModuleDef *m,
                                   JSValue *pvalue);
 static void js_promise_set_handled(JSContext *ctx, JSValueConst promise);
 
+/* Fatal module execution has no rejection continuation. Retain its exact
+   reason in the affected modules so cached evaluation cannot return a pending
+   capability. Mark-on-enqueue visits each affected module/parent edge once,
+   without allocating or recursing, including cyclic parent graphs. */
+static void js_mark_module_fatal_failure(JSModuleDef *module,
+                                         JSValueConst error)
+{
+    JSModuleDef *pending, *m, *parent;
+    int i;
+
+    if (module->status == JS_MODULE_STATUS_EVALUATED)
+        return;
+    module->eval_has_exception = true;
+    module->eval_has_fatal_exception = true;
+    module->eval_exception = js_dup(error);
+    module->status = JS_MODULE_STATUS_EVALUATED;
+    module->async_evaluation = false;
+    module->fatal_next = NULL;
+    pending = module;
+    while (pending != NULL) {
+        m = pending;
+        pending = m->fatal_next;
+        m->fatal_next = NULL;
+        for (i = 0; i < m->async_parent_modules_count; i++) {
+            parent = m->async_parent_modules[i];
+            /* Includes modules already enqueued and pre-existing terminal
+               ordinary failures; neither may be overwritten or enqueued. */
+            if (parent->status == JS_MODULE_STATUS_EVALUATED)
+                continue;
+            parent->eval_has_exception = true;
+            parent->eval_has_fatal_exception = true;
+            parent->eval_exception = js_dup(error);
+            parent->status = JS_MODULE_STATUS_EVALUATED;
+            parent->async_evaluation = false;
+            parent->fatal_next = pending;
+            pending = parent;
+        }
+    }
+}
+
 static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst this_val,
                                                   int argc, JSValueConst *argv, int magic,
                                                   JSValueConst *func_data)
@@ -33116,10 +33251,33 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
         if (m->status == JS_MODULE_STATUS_EVALUATED) {
             assert(m->eval_has_exception);
         } else if (m->has_tla) {
-            js_execute_async_module(ctx, m);
+            if (js_execute_async_module(ctx, m) < 0) {
+                JSValue error = JS_GetException(ctx);
+                if (JS_IsUncatchableError(error)) {
+                    js_mark_module_fatal_failure(m, error);
+                    js_free(ctx, exec_list->tab);
+                    return JS_Throw(ctx, error);
+                } else {
+                    JSValue m_obj = JS_NewModuleValue(ctx, m);
+                    JSValue result = js_async_module_execution_rejected(ctx,
+                        JS_UNDEFINED, 1, vc(&error), 0, vc(&m_obj));
+                    JS_FreeValue(ctx, m_obj);
+                    JS_FreeValue(ctx, error);
+                    if (JS_IsException(result)) {
+                        js_free(ctx, exec_list->tab);
+                        return result;
+                    }
+                    JS_FreeValue(ctx, result);
+                }
+            }
         } else {
             JSValue error;
             if (js_execute_sync_module(ctx, m, &error) < 0) {
+                if (JS_IsUncatchableError(error)) {
+                    js_mark_module_fatal_failure(m, error);
+                    js_free(ctx, exec_list->tab);
+                    return JS_Throw(ctx, error);
+                }
                 JSValue m_obj = JS_NewModuleValue(ctx, m);
                 js_async_module_execution_rejected(ctx, JS_UNDEFINED,
                                                    1, vc(&error),
@@ -33137,21 +33295,39 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
 
 static int js_execute_async_module(JSContext *ctx, JSModuleDef *m)
 {
-    JSValue promise, m_obj;
-    JSValue resolve_funcs[2], ret_val;
-    promise = js_async_function_call(ctx, m->func_obj, JS_UNDEFINED, 0, NULL, 0);
-    if (JS_IsException(promise))
-        return -1;
+    JSValue promise = JS_UNDEFINED, m_obj = JS_UNDEFINED;
+    JSValue resolve_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue ret_val = JS_UNDEFINED, error;
+    promise = js_async_function_call_internal(ctx, m->func_obj, JS_UNDEFINED,
+                                             0, NULL, 0, m);
+    if (JS_IsException(promise) || JS_HasException(ctx))
+        goto fail;
     m_obj = JS_NewModuleValue(ctx, m);
     resolve_funcs[0] = JS_NewCFunctionData(ctx, js_async_module_execution_fulfilled, 0, 0, 1, vc(&m_obj));
+    if (JS_IsException(resolve_funcs[0]) || JS_HasException(ctx))
+        goto fail;
     resolve_funcs[1] = JS_NewCFunctionData(ctx, js_async_module_execution_rejected, 0, 0, 1, vc(&m_obj));
+    if (JS_IsException(resolve_funcs[1]) || JS_HasException(ctx))
+        goto fail;
     ret_val = js_promise_then(ctx, promise, 2, vc(resolve_funcs));
+    if (JS_IsException(ret_val) || JS_HasException(ctx))
+        goto fail;
     JS_FreeValue(ctx, ret_val);
     JS_FreeValue(ctx, m_obj);
     JS_FreeValue(ctx, resolve_funcs[0]);
     JS_FreeValue(ctx, resolve_funcs[1]);
     JS_FreeValue(ctx, promise);
     return 0;
+fail:
+    /* Retain the first pending reason across all owned-value cleanup. */
+    error = JS_GetException(ctx);
+    JS_FreeValue(ctx, ret_val);
+    JS_FreeValue(ctx, m_obj);
+    JS_FreeValue(ctx, resolve_funcs[0]);
+    JS_FreeValue(ctx, resolve_funcs[1]);
+    JS_FreeValue(ctx, promise);
+    JS_Throw(ctx, error);
+    return -1;
 }
 
 /* return < 0 in case of exception. *pvalue contains the exception. */
@@ -33195,7 +33371,7 @@ static int js_execute_sync_module(JSContext *ctx, JSModuleDef *m,
    exception) */
 static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
                                       int index, JSModuleDef **pstack_top,
-                                      JSValue *pvalue)
+                                      JSValue *pvalue, bool *pfatal)
 {
     JSModuleDef *m1;
     int i;
@@ -33217,6 +33393,7 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
         m->status == JS_MODULE_STATUS_EVALUATED) {
         if (m->eval_has_exception) {
             *pvalue = js_dup(m->eval_exception);
+            *pfatal |= m->eval_has_fatal_exception;
             return -1;
         } else {
             *pvalue = JS_UNDEFINED;
@@ -33241,7 +33418,7 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
     for(i = 0; i < m->req_module_entries_count; i++) {
         JSReqModuleEntry *rme = &m->req_module_entries[i];
         m1 = rme->module;
-        index = js_inner_module_evaluation(ctx, m1, index, pstack_top, pvalue);
+        index = js_inner_module_evaluation(ctx, m1, index, pstack_top, pvalue, pfatal);
         if (index < 0)
             return -1;
         assert(m1->status == JS_MODULE_STATUS_EVALUATING ||
@@ -33256,6 +33433,7 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
                    m1->status == JS_MODULE_STATUS_EVALUATED);
             if (m1->eval_has_exception) {
                 *pvalue = js_dup(m1->eval_exception);
+                *pfatal |= m1->eval_has_fatal_exception;
                 return -1;
             }
         }
@@ -33279,7 +33457,10 @@ static int js_inner_module_evaluation(JSContext *ctx, JSModuleDef *m,
         m->async_evaluation = true;
         m->async_evaluation_timestamp =
             ctx->rt->module_async_evaluation_next_timestamp++;
-        js_execute_async_module(ctx, m);
+        if (js_execute_async_module(ctx, m) < 0) {
+            *pvalue = JS_GetException(ctx);
+            return -1;
+        }
     } else {
         if (js_execute_sync_module(ctx, m, pvalue) < 0)
             return -1;
@@ -33312,6 +33493,7 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
 {
     JSModuleDef *m1, *stack_top;
     JSValue ret_val, result;
+    bool fatal = false;
 
     assert(m->status == JS_MODULE_STATUS_LINKED ||
            m->status == JS_MODULE_STATUS_EVALUATING_ASYNC ||
@@ -33320,6 +33502,11 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
         m->status == JS_MODULE_STATUS_EVALUATED) {
         m = m->cycle_root;
     }
+    /* The host may have classified/cleared the reason's uncatchable bit.
+       The recorded terminal outcome still must not return a pending promise.
+       Do not retag the old reason or manufacture a fresh allocation failure. */
+    if (m->eval_has_fatal_exception)
+        return JS_Throw(ctx, js_dup(m->eval_exception));
     /* a promise may be created only on the cycle_root of a cycle */
     if (!JS_IsUndefined(m->promise))
         return js_dup(m->promise);
@@ -33328,19 +33515,25 @@ static JSValue js_evaluate_module(JSContext *ctx, JSModuleDef *m)
         return JS_EXCEPTION;
 
     stack_top = NULL;
-    if (js_inner_module_evaluation(ctx, m, 0, &stack_top, &result) < 0) {
+    if (js_inner_module_evaluation(ctx, m, 0, &stack_top, &result, &fatal) < 0) {
+        fatal |= JS_IsUncatchableError(result);
         while (stack_top != NULL) {
             m1 = stack_top;
             assert(m1->status == JS_MODULE_STATUS_EVALUATING);
             m1->status = JS_MODULE_STATUS_EVALUATED;
             m1->eval_has_exception = true;
+            m1->eval_has_fatal_exception = fatal;
             m1->eval_exception = js_dup(result);
+            if (fatal)
+                m1->async_evaluation = false;
             m1->cycle_root = m; /* spec bug: should be present */
             stack_top = m1->stack_prev;
         }
-        JS_FreeValue(ctx, result);
         assert(m->status == JS_MODULE_STATUS_EVALUATED);
         assert(m->eval_has_exception);
+        if (fatal)
+            return JS_Throw(ctx, result);
+        JS_FreeValue(ctx, result);
         ret_val = JS_Call(ctx, m->resolving_funcs[1], JS_UNDEFINED,
                           1, vc(&m->eval_exception));
         JS_FreeValue(ctx, ret_val);
