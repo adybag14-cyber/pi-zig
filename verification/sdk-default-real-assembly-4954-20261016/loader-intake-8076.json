@@ -1,0 +1,196 @@
+{
+  "status": "source_only_loader_body_intake",
+  "base": "bd994a6b790a844c887f8ceb159d5c0dbeb76bab",
+  "modules": [
+    {
+      "path": "src/extensions/native_sdk_agent_directory.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "8A5810EE87528E63BBDBB82205507FEF93342B1DB2BB1B0A5F0E33ECC6B431B4"
+    },
+    {
+      "path": "src/extensions/native_sdk_event_bus.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "D83BAA543F10DAE525CE0FB0DC2046E52ACBB85545B8F6E0D67E26455450FCB8"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_cache.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "5A93738DB714D85991155F65AB368F377DD3A08B9AFF8F9CC27ED3BAB36C65B5"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_package_warnings.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "CCBF95AD8D09F2A18B490E7783355A335947739E65CEC9B909D89500EA43177A"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_replacements.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "6B8FD7E8912012A429BF4F0BEE483FDD2E012CAEF8861437E5B1B11BEC2C0D7D"
+    },
+    {
+      "path": "src/extensions/native_sdk_frontmatter_values.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "A856DE80111E4E4A7614F85000DDBBDB2E84C7B247EA56A41FC2CBE2169D615E"
+    },
+    {
+      "path": "src/extensions/native_sdk_mcp_config.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "76EBC570920FECB0E08497DAE6963887CF6293890D847AADA12B30BA50F66E38"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_accumulator.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "5CCB4849AA1FC261D59D6B71800A08BCED933CB2D40DFA90B6810E46DA49ABEE"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_extension_sources.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "166C7053AE1BCDA854C8483EDAAC3BF08A321BD5C6DC523839F539D944130A8C"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_identity.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "96C6C855F3BAD7C4036BA65C6A77BD3FF490365CE83EFE29B187574711370371"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_manager.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "98B4033E663FA64675003825A6163321EB119B5E823CDB034D08B92EEF5E9130"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_paths.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "634D6ABA1DE412775E8963E6F432E5E3C04756C0D609F8141CF78FAB92D60AE2"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_resolve.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "04EE6155018051B1968BFE049454B500A29F385031743678DA8EF073FFB314FF"
+    },
+    {
+      "path": "src/extensions/native_sdk_pi_manifest.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "CC80EAAB34A169B2663FD9ED52465F89BBBA1D430ACB0324D7297CF683DE95F7"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_file.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "910176A19037E399C1E31A1D4F41437C0DE6F2A1187D801F15F2A324DFA6751F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_loader.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "4FBF4E30ED80BED4A9203A408C419F41547CDD8390FCA7AB9D0958237ADF5A0C"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_async_iterator.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "757D552D30D6D9F262667B0754FDAEC8F3CAC22D4409A55FBD24467369280703"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "026844528C5568C8A048F8F13F80D8BE4B0A5281E727634FABA32C6372E0D4CF"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_current.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "8E1A88856A317CDB57074B2917FE7512A545F828772546571AF5C40B56325D87"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_extend.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "6799A2C57EBA047B07C42EDC3171B1981D654B4F5BB36BD77E8499F859392548"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_factories.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "58A16F92FA1D368C0A9F5A730FE3D3578570E97A982D9C279D4A806587430C5E"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_final.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "85B8FBEE1387761FDCF7D6E4FE1E48E1E38E380871C37B5C5C7FC84540395974"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_load_paths.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "D953D1F1650AADD86DF5A84A3903E2B445587020F260B73C657ECE73D5CF0168"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_paths.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "FC7D42C02D7136FBDBC409D7D553BB371F8807EE3CC91BD4EE418A5FA6CA3CB6"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_prompt_update.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "31192D76998A14D58881CE77C81BC8DC46043A3E44E0102156FB73DD76370EEF"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "E479DB781EA8EF2A7C3ABC0E2541EECBC63D30C4585F3504682B856842B4B9CE"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_skill_update.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "7875886177AB47A4F8A4F826673F0FCF62FC3A6FF59B02DC947241F7E8AD25CE"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_sources.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "F1261FB05C59BF36B6423DA62FC09E84E9B83CE5176ED0709C3D21B329AD0F50"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_theme_update.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "E72746F5B3018DB00A6CD96697DE701327CED13BD5B21136A279770D3CC8FC37"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_themes.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "488F88F938D85612B40BB055B60082E2841C6F677D7B695F9CE77EE1835191D2"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_trust.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "D4E36236CD0DAADE89655CD5C6229FFF9EC1CC26919B4BE4A2AC67C224C5B899"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_context.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "0271C036566798EF9C3D1C83E6DDD00F53E9EFD6A914F6F49F920F2E49A40D1F"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_runtime_owners.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "3CA674530C21504658DC7FFE44F55EDE3B389305098770FFFC55435977FEFDEC"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_spread.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "B0BD3066CB8BDC145DC811FD4AC568E2FF5E530E0D064F3506129D0716C20B4A"
+    },
+    {
+      "path": "src/extensions/native_sdk_skill_file.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "682A8DCD21441BA148DF68036AE87D078F073B50835AC84F066B97062B1F0AF5"
+    },
+    {
+      "path": "src/extensions/native_sdk_skill_loader.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "455391EE9B8334B9F4AA8740056C9FCC9A214D1E5A90530102B9678B5710D4DF"
+    },
+    {
+      "path": "src/extensions/native_sdk_timings.zig",
+      "source_commit": "8076ad746d5738fbfffb62929a0586a43903abbf",
+      "sha256": "F283A6683E71424D1FA769F912A8FEC12BC1BA028BE90B9A9E6BD6A783220BAF"
+    }
+  ],
+  "zig_commands_held": true,
+  "native_compiled": false,
+  "source_capture_inherited": false,
+  "default_selected": false,
+  "remaining": "Actual package transport/discovery, extension initializer/cached loader, MCP namespace, chalk, exec and shared runtime ownership assembly"
+}
