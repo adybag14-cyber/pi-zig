@@ -1,0 +1,15 @@
+{
+  "directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-files",
+  "inventory": [
+    {
+      "path": "",
+      "kind": "directory",
+      "mode": "16822",
+      "size": "0",
+      "ino": "10977524094216566",
+      "mtimeNs": "1792145147685928100",
+      "ctimeNs": "1792145147685928100",
+      "birthtimeNs": "1792145147685928100"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "entry": "source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json"
+  },
+  {
+    "entry": "source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json"
+  },
+  {
+    "entry": "source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json"
+  },
+  {
+    "entry": "sdk-model-dependencies-source-first-20261016-candidate-compiler-before.json",
+    "sha256": "3C77576A35AFE6796CC3047087FF78F7967E2FEA82EE2ED75CCA366E16AF0EAE",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-candidate-compiler-before.json"
+  }
+]

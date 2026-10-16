@@ -1,0 +1,12 @@
+[
+  {
+    "entry": "models-store.json",
+    "sha256": "5E9342B3326CA2227499A6B1D8E98EF3529D8A5FB42F19E70846FAF2A469B209",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-files\\models-store.json"
+  },
+  {
+    "entry": "models.json",
+    "sha256": "BE302461CDA285DB3ED2D45FB767B23E08CA8808B35A638009937DF22B332D73",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-files\\models.json"
+  }
+]

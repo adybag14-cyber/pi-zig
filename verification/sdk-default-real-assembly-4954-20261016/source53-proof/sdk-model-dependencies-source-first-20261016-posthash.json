@@ -1,0 +1,34 @@
+{
+  "manifests": [
+    {
+      "name": "source",
+      "files": 1970,
+      "drift": [],
+      "path_drift": []
+    },
+    {
+      "name": "dependencies",
+      "files": 31064,
+      "drift": [],
+      "path_drift": []
+    },
+    {
+      "name": "node_tools",
+      "files": 1774,
+      "drift": [],
+      "path_drift": []
+    }
+  ],
+  "candidate_files": 8315,
+  "candidate_drift": [],
+  "candidate_path_drift": [],
+  "compiler_files": 19546,
+  "compiler_drift": [],
+  "compiler_path_drift": [],
+  "control_drift": [],
+  "control_manifest_drift": false,
+  "absence_contracts": 84,
+  "absence_drift": [],
+  "expected_still_absent": true,
+  "completed_utc": "2026-10-16T10:06:23.9560029+00:00"
+}

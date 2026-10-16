@@ -1,0 +1,32 @@
+{
+  "candidate": "c667e5fe362bd9d2b8ffbc38d3b73bfea37b9d01",
+  "clean": true,
+  "cases": 53,
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\Run-SdkModelDependenciesSource-20261016.ps1",
+      "sha256": "86DD76FE33BE13AADE23F5497D30BD765BC32A7687B7CF4CDD56F3A9E295D37A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-probe-inventory-20261016.json",
+      "sha256": "BD6B1855873EF04C01977A2F901D718D73E2D44797D888BCA0E337DAE369B718"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-model-dependencies.mjs",
+      "sha256": "29B196F689086233E5D49C685C9B4CA8E25974881FF7CC5280D93301FF21D467"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\src\\extensions\\fixtures\\sdk-model-dependencies-4954.input.mjs",
+      "sha256": "E2ADA2057A4066B7F13CB7F1A44EE532843976B99B7C70A6A1A737002D79F1D8"
+    }
+  ],
+  "source": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "typebox_version": "1.3.27",
+  "slot": "Root LIGHT7",
+  "native_qualification": false,
+  "sealed_utc": "2026-10-16T11:04:10.0342866+01:00"
+}

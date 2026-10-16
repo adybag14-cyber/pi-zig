@@ -63,7 +63,29 @@ path. No genuine output exists until the owned Source terminal passes with full
 posthash/path/control freezes. The native comparator consumes those genuine
 bytes and fails on the first changed row; it supplies no expected values.
 
-Status: formatting, Zig AST and external probe/capture syntax checks passed.
+**Genuine Source53 is now qualified.** Actual Node PID65836 exited 0 at clean
+candidate `c667e5fe362bd9d2b8ffbc38d3b73bfea37b9d01`. All 53 ordered rows passed;
+full Source1970/dependency31064/Node1774/compiler19546/candidate8315 and control
+posthash/path checks reported zero drift, with 84 explicit absences retained.
+The observer recorded 668 TypeBox modules among 709 total original modules.
+The expected fixture was copied only after the actual terminal/full posthash
+passed. Its SHA256 is
+`2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C`.
+
+`source53-proof/` retains 25 indexed payloads, four complete frozen inventories,
+all 709 original observed module bodies, and the two actual physical files with
+their original before/after inode, size and nanosecond timestamps. The original
+physical files remain in the owned audit directory. Run `Validate-Source53Proof.ps1`
+to check every payload/archive body and original terminal/freeze/physical
+receipt against the expected fixture; this is historical proof verification.
+
+The genuine metadata exposed incorrect optional-parameter arities in the first
+native draft. Successor `d1fe7d12` corrects store method/ModelConfig constructor
+lengths and preserves lookup/literal RegExp semantics. It changes no Source
+input or genuine expected bytes and has no inherited native qualification.
+
+Formatting, Zig AST and external probe/capture syntax checks passed before the
+Source capture. Further Zig checks were held at Root's serial-runtime request.
 Native semantic compilation/execution, host GPA, C malloc, whole SDK transport
 qualification and default selection remain unrun. No C or shared Root source
 was edited by this lane.
