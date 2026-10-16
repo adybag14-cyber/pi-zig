@@ -772,6 +772,14 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) stream_web_run.stdio = .inherit;
     b.step("test-native-stream-web-assembly", "Exercise the actual seventeen native stream classes queue strategies and text state").dependOn(&stream_web_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-stream-web-assembly", &.{"test-native-stream-web-assembly"});
+    const stream_web_source_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_stream_web_source16_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native stream web Source16"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    linkQuickJs(b, stream_web_source_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(stream_web_source_tests.root_module, sqlite_lib_dir, sqlite_library);
+    @import("tools/build_native_transform_compression.zig").link(b, stream_web_source_tests.root_module);
+    const stream_web_source_run = b.addRunArtifact(stream_web_source_tests);
+    if (diagnostic_tests) stream_web_source_run.stdio = .inherit;
+    b.step("test-native-stream-web-source16", "Compare every unfiltered actual Node namespace queue and text Source16 packet").dependOn(&stream_web_source_run.step);
+    addCompileOnlyGroup(b, "build-hosted-native-stream-web-source16", &.{"test-native-stream-web-source16"});
     const readable_public_source_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_readable_public_graph_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native readable public Source"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkQuickJs(b, readable_public_source_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(readable_public_source_tests.root_module, sqlite_lib_dir, sqlite_library);
