@@ -42,6 +42,9 @@ function Node-Paths {@(@('C:\Program Files\nodejs\node.exe')+@(Scoped-Paths 'C:/
 if((& git -C $taskTree rev-parse HEAD) -cne $taskHead -or (& git -C $taskTree status --porcelain)){throw 'Exact clean sealed current-Root C9h candidate required'}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned Zig0.16 changed'}
 if((Get-FileHash -LiteralPath (Join-Path $taskTree 'vendor/quickjs/quickjs.c')).Hash -cne 'E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B' -or (Get-FileHash -LiteralPath (Join-Path $taskTree 'vendor/quickjs/quickjs.h')).Hash -cne '341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB'){throw 'Approved C33+9h composition changed'}
+$taskExpected26=Join-Path $taskTree 'verification/native-async-function-20261016/expected-tests26.json'
+if(!(Test-Path -LiteralPath $taskExpected26 -PathType Leaf)){throw 'Original qualified AF26 metadata authority missing before native work'}
+if((Get-FileHash -LiteralPath $taskExpected26).Hash -cne '983E620F3D63ED657102F7C5ECC3A35B584572465BC727931EC5FFC123D0781A'){throw 'Original qualified AF26 metadata authority changed before native work'}
 foreach($item in @(
  @{mode='success';hash='D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6'},
  @{mode='lookup_failure';hash='5AF3FF3C8BA5433DC6D5945B84A99D08F7AACD2F5FF93A4BF972E58C88AF1BEA'},
@@ -76,6 +79,7 @@ $taskBefore=Candidate-Rows
 $taskBefore|ConvertTo-Json -Depth 6|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-before.json") -Encoding utf8NoBOM
 $taskPathSets|ConvertTo-Json -Depth 5|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-paths-before.json") -Encoding utf8NoBOM
 $taskControls=@($PSCommandPath,$taskHelper,$taskOwner,(Join-Path $PSScriptRoot 'gate-plan.json'),$taskAbsenceManifest,(Join-Path $taskEvidence 'Run-HighlightComplete191Source-20261015.ps1'),(Join-Path $taskEvidence 'Run-HighlightComplete191Series-20261015.ps1'),(Join-Path $taskEvidence 'capture-highlight-complete191-20261015.mjs'),(Join-Path $taskEvidence 'source5ab-observe-20261015.mjs'),(Join-Path $taskEvidence 'highlight-complete191-source-series-terminal-20261015.json'))+@($taskSpecs|ForEach-Object {Join-Path $taskEvidence $_.file})
+$taskControls+=$taskExpected26
 foreach($mode in @('success','lookup_failure','safe_factory_failure')){
  foreach($suffix in @('output.json','posthash.json','module-observations.json','controls-before.json','json')){
   $file=if($suffix -ceq 'json'){"highlight-complete191-source-$mode-first-20261015.json"}else{"highlight-complete191-source-$mode-first-20261015-$suffix"}
@@ -156,7 +160,7 @@ try{
   }
   if($version -cne '0.16.0' -or !$names.Count){throw 'Actual metadata/version absent'}
   if($Target -ceq 'async26'){
-   $required=@(Get-Content -LiteralPath (Join-Path $taskTree 'verification/native-async-function-20261016/expected-tests26.json') -Raw|ConvertFrom-Json)
+   $required=@(Get-Content -LiteralPath $taskExpected26 -Raw|ConvertFrom-Json)
    if($names.Count -ne 26 -or @(Compare-Object ($required|Sort-Object -CaseSensitive) ($names|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'All26 qualified AsyncFunction/AG/JSON/span metadata required on C33+9h'}
   }
   if($Target -ceq 'foundation' -and ($names.Count -ne 6 -or $names[-1] -cne 'extensions.native_durable_storage.test_0')){throw 'Foundation requires five selected tests plus actual imported storage test_0'}
