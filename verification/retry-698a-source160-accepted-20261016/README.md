@@ -20,7 +20,13 @@ function metadata. This component binding does not establish whole-package SDK
 composition. The previous typed tests and accepted 273 reference rows remain
 unchanged.
 
-Native compilation, metadata and execution of these new tests are pending.
+Native compilation, metadata and execution passed at exact component head
+`d72194c600abd19da9a125ec0d3a1969656a27e2`: all 160 VM observations and 36 typed
+comparisons matched, and the imported storage test passed. All three protocol
+result flags are zero. The independently audited native proof, including the
+preserved initial test-harness failure, is in
+`../retry-698a-native-proof-20261017`. This establishes this component's parity
+and does not qualify later combined heads or the complete SDK/application.
 The build step installs the test artifact for bounded metadata and runtime
 qualification; it also imports the catalog module used by the current Engine
 graph. These two build-wiring additions extend the preserved prepared snippet.

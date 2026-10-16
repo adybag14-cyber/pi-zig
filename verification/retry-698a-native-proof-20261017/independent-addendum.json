@@ -1,0 +1,25 @@
+{
+  "before_head": "d72194c600abd19da9a125ec0d3a1969656a27e2",
+  "actual_current_head": "d72194c600abd19da9a125ec0d3a1969656a27e2",
+  "actual_dirty": [],
+  "changed_v1_v2_source_rows": [
+    {
+      "relative": "src/native_upstream_698a_retry_test.zig",
+      "sha256": "02A472157A8103981056AA5D28FB3E07A509AABDADAA2E746F4EFCA019F6825F"
+    }
+  ],
+  "driver_recorded": "AB344A4B55881FB86FB3ACA556FC5D106F25AF94EE879279CB6D55053F792D4E",
+  "driver_actual": "AB344A4B55881FB86FB3ACA556FC5D106F25AF94EE879279CB6D55053F792D4E",
+  "ci_recorded": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+  "protocol_recorded": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+  "grant_hash_match": true,
+  "grant_authorized": true,
+  "grant_lifetime_seconds": 240.0,
+  "initial_admission_within_grant": true,
+  "cache_args": [
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\cache",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\global-cache"
+  ],
+  "fresh_output_arg": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\out",
+  "audit_scope": "additive source/control/cache checks; no original audit or package changed"
+}

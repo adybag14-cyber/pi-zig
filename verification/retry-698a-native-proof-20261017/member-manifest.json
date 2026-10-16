@@ -1,0 +1,554 @@
+{
+  "schema": 1,
+  "status": "prepared_public_proof_not_publication_claim",
+  "created_utc": "2026-10-16T22:59:45.7427258+00:00",
+  "scope": "exact retry component d72194c6; v1 negative preserved",
+  "payload_count": 77,
+  "excluded": [
+    "Both original out/bin/test.exe payloads",
+    "Both original out/bin/test.pdb payloads",
+    "Both disposable compiler cache directories",
+    "Compiler executable/library payloads"
+  ],
+  "members": [
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/prepared-manifest.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\prepared-manifest.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1723,
+      "sha256": "B80812EFB8C355D985E6A0D18EE710FEC0F33901445E9327116A0420A7639D97"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\README.md",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 3745,
+      "sha256": "333DD7911FC49B5D034E7306B799DAD1FB105C42473AC81B51E0FD0770AC5C4A"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/reviewed-negative-69D8.ps1.txt",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\reviewed-negative-69D8.ps1.txt",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 13949,
+      "sha256": "69D879BAD9A7C72855F0BB64FFB6877CC01D786756333EADD9EAF7780363B50F"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-grant.template.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-grant.template.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 912,
+      "sha256": "144819C6594FA277DF7DC6FBEF73133593856AFB9DD36B2F4188F968BC3D27FA"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744-grant.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 981,
+      "sha256": "CCED27AB2992E5A0C80BD4D95C1B19B7A3C2F1BC5A10E8AB23FEBDE2B8AEA782"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/Run-Retry698Native.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\Run-Retry698Native.ps1",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 13944,
+      "sha256": "5EC31C47CECC405D9F059FCA2745DCBA20E994448D8D3F12891863DFA2320BB9"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/static-checks.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\static-checks.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 485,
+      "sha256": "29C412A1C651878FDB95DD40974116B490914625A9101FDA09BC8573563CAF01"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/causal-test-fix.patch",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\causal-test-fix.patch",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1393,
+      "sha256": "E4749AEC4245F1ECA0EBB4028E156888789265B5B3DA970575BFAFACAB8470CF"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/prepared-manifest.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\prepared-manifest.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9113,
+      "sha256": "AA63F89200C5962F256C9F7A02E5E4B43CED8A27F61F609BD2F7BC3C695B39B0"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\README.md",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 3331,
+      "sha256": "A26D5F2E097390E010EA60E08050E45EF8E7B946D235ED686B21071D96EE1029"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-grant.template.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-grant.template.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 912,
+      "sha256": "E33C153E466AC0BF06FCB99CBE5E4E64285E03AFA46CFB2805F83035253B00B4"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410-grant.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 984,
+      "sha256": "235C983202DC3D2A40D155C13D89FFA98BAA22C6FF7F44773FD09D4EBD18FC4E"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/Run-Retry698Native.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\Run-Retry698Native.ps1",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 14112,
+      "sha256": "AB344A4B55881FB86FB3ACA556FC5D106F25AF94EE879279CB6D55053F792D4E"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\artifacts-before.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 763,
+      "sha256": "B92568DAB2F0CF1B6A5E5856FE22082E8127752A0CFA0E7544F4CD7C646C7ECC"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\artifacts-between.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 905,
+      "sha256": "3BF03730FBF6438B918C22FCC2F52585779E507887E8B0087E0F9CD47532524B"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\artifacts-final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 905,
+      "sha256": "02E3AA24AF9B15EC49D214025B1724ABAAEDBB89ED9A3EEF94C49506CC7950FD"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\before.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "AF8C4AD080879767CBDDC69ED4315A730517815BB344FD40ED5C1FA496C1927A"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\between.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "549C422F9F061563875893A1BEC53409504261C9E5DA1B7D6F297AFB9C130FF8"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\compile-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "C95204C74371966CFD2B8123B30735FE8EC7479CA148888A81C726D477F8E99B"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\compile.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 2136,
+      "sha256": "B8EDD31910573C5B89E74259DDA8CCF0A253F74674E178C1EFBB45EA6C3F0891"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\compile.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 14083,
+      "sha256": "A5CB615F7D320505A096C57AE8392BD960F8E9B68308919D887995A5EFAF849E"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\compile.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "F40E62B7AE942AE604F366E81F5B1D04080B556B0BBDC90FEAE1936DD7DDB382"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/initial-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\initial-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "B55A661BDE96C866B2575B7670F126FB1D3C769DC501A8D477D1B3DCC0D8899B"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\metadata-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "AB8AD1E54FCCDFCD791ED1B0B2008BEAC0501C7A0673E2335472CBD4FACCFF1A"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\metadata.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1195,
+      "sha256": "9547CC000DF41076470046B58A07CBA0A0076C4194D89B39C1261C19DC9E8608"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\metadata.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\metadata.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 349,
+      "sha256": "3CC3919BB6BA1CABEAD77C20514852A1BF72C6E8EFEE537592A69B83C655804C"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/native-roots-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\native-roots-final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/owner-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\owner-absence.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 931,
+      "sha256": "3C32D70C6D76C018444C776DAE5A702641767DE0F84895EC4111EF8A549085EF"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\result.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 4726,
+      "sha256": "A55B31680DAC3535F07191E63B31CA9CA2FC846EE1C768A21DE64BFBDAD90A28"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/root-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\root-grant.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 981,
+      "sha256": "CCED27AB2992E5A0C80BD4D95C1B19B7A3C2F1BC5A10E8AB23FEBDE2B8AEA782"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\runtime-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "3575F2B0CBCD1E95BC44EF2AAD90373DC5284E20F9E041CD3779074029387EE1"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\runtime.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1367,
+      "sha256": "578315323E292A7D2192B397F335D9091E613D14913FCFA7F5E625DF4710E9A3"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\runtime.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 2159,
+      "sha256": "4042EB8317EC8F19D84DF900E92A3F597B28F2C02B19FD3275C449B5FBAE6AFB"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\runtime.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 22,
+      "sha256": "0AEC21E67B70489EB3ABCB6FA0F9DF33EF13E1337ABEC3FE9F232335F9DE5DBF"
+    },
+    {
+      "member": "evidence/root-retry698-native-prepared-20261016/root-native-retry160-20261016-222744/selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-prepared-20261016\\root-native-retry160-20261016-222744\\selected-tests.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1124,
+      "sha256": "6EC4ED2FCE3EC61E276FAD80652A3D93EE77A8A34C5124B705277C0DD3E3931B"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\artifacts-before.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 781,
+      "sha256": "2B37ACDF899D91CBE7E44D37DEE896DC0E52E70183B43C823A09FC24F35FE77B"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\artifacts-between.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 923,
+      "sha256": "E35281F0E0B9440AED45D5193C9F07AB96646979AD98E1ACBF57F51FEB04343D"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\artifacts-final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 923,
+      "sha256": "E0A51A9D292B33D803154C84C30C598482E7295E93577F226071F6C13E7EC2EC"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\before.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "9F8A360840411759B5C7E86433FF5E33FF0E23BA7601E3AB33997EEC1491817C"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\between.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "6E344144D7CD6D8057B45F332E0DFC2BA1A422C9017E31FAE0704C8AE1C26D27"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\compile-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "5B9ABDFE25493E1C97157C9652E27C48FCE5E73C5D1AFB62F2A94AF655189A4C"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\compile.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 2148,
+      "sha256": "0B4ED8960DAE6591EFBD89060D9AF1475F23BFB1173E0C1D21618BA9FC404BC2"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\compile.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 14061,
+      "sha256": "EDD519782F4801D5EEBEDB42C99F4DF745CC6DE8519A494A32BA322644FAE281"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\compile.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 9630601,
+      "sha256": "6666146F4C9B9D1FCC77427492EA01DD4A274EAAD5B74F6F70C89C410CCAA3CB"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/initial-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\initial-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "424E1C74E72BEF3769CCDED9EAC5F1A9F81081A463C9349EF748D0AC33009273"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\metadata-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "4A4999E16EFF56060E00A6809EFB2D0C126926E46BC3ADC16671728CC5706E85"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\metadata.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1213,
+      "sha256": "D5F64D605829F381C2C6CE52A51ACC87A13810F79267AFFCE06F1177B38E8DF9"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\metadata.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\metadata.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 349,
+      "sha256": "3CC3919BB6BA1CABEAD77C20514852A1BF72C6E8EFEE537592A69B83C655804C"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/native-roots-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\native-roots-final.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/owner-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\owner-absence.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 949,
+      "sha256": "265DB899BD2B1C0AC01B74CF47CA385E7760689A2C9BB1B68F89218D4CD45AA5"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\result.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 5419,
+      "sha256": "0830CF997A37C9D0AC6B7EBC32012773E68F363D09D855FBFD7FAC6FB2BE2E7A"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/root-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\root-grant.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 984,
+      "sha256": "235C983202DC3D2A40D155C13D89FFA98BAA22C6FF7F44773FD09D4EBD18FC4E"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\runtime-admission.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 418,
+      "sha256": "E37436B0B1BB962A0B78D5875E52B2B9390CE15C5B08BDF4A59F4EAA5E86BD3D"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\runtime.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1214,
+      "sha256": "6E04B7D1BD144FC23611ABAE725665EC16781F0AC46657785D70A5FC2697D2A6"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\runtime.results.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 798,
+      "sha256": "CA6DA0345E48B61F70CE0AF38232E523474D74D6BF765D8F126DCBDFE82A12EF"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\runtime.stderr.log",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\runtime.stdout.bin",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 98,
+      "sha256": "33ED66EE95600A2E1783CF21EA51E3BB0A714099B2B9C70073DD6D4B216E072B"
+    },
+    {
+      "member": "evidence/root-retry698-native-v2-prepared-20261016/root-native-retry160-v2-20261016-225410/selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-native-v2-prepared-20261016\\root-native-retry160-v2-20261016-225410\\selected-tests.json",
+      "role": "unchanged original control or raw execution receipt",
+      "bytes": 1130,
+      "sha256": "54570F8D53B22AF259E720A9CD8B159CF323D26A03D3CFC653CA88807CBB6BCE"
+    },
+    {
+      "member": "evidence/root-retry698-negative-independent-async-review-20261016/audit.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-negative-independent-async-review-20261016\\audit.json",
+      "role": "independent audit, preserves original observations",
+      "bytes": 7447,
+      "sha256": "A9D9D50166AEEAA0967C3A6C210CCA058E2A039E8488353C3C6EC06E2C951A6A"
+    },
+    {
+      "member": "evidence/root-retry698-negative-independent-async-review-20261016/v2-source-review.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-negative-independent-async-review-20261016\\v2-source-review.json",
+      "role": "independent audit, preserves original observations",
+      "bytes": 1831,
+      "sha256": "FF5BAB56A88E6A252609FCC27B4AF5B18C53F261FAABD295998ACC2FD85794FE"
+    },
+    {
+      "member": "evidence/root-retry698-positive-independent-async-review-20261016/acceptance.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-positive-independent-async-review-20261016\\acceptance.json",
+      "role": "independent audit, preserves original observations",
+      "bytes": 4698,
+      "sha256": "038BF3DE4540ED9914C43F03154E98CC9329B9EB4E8505F90656ABE288D0BCFA"
+    },
+    {
+      "member": "evidence/root-retry698-positive-independent-async-review-20261016/Audit-Retry.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-retry698-positive-independent-async-review-20261016\\Audit-Retry.ps1",
+      "role": "independent audit, preserves original observations",
+      "bytes": 11019,
+      "sha256": "3DAB724AC429C96793463B90098C6BB38E70513B169AC1ECF8DA559AB70638A6"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/native_upstream_698a_retry_test.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\native_upstream_698a_retry_test.zig",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 4828,
+      "sha256": "02A472157A8103981056AA5D28FB3E07A509AABDADAA2E746F4EFCA019F6825F"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/extensions/fixtures/upstream-698a-retry-source160.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\extensions\\fixtures\\upstream-698a-retry-source160.json",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 29102,
+      "sha256": "C7A60845D59D505EF09FC4038E0B05AFCC13F18364C4BD4178D1EA1F93C00530"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/extensions/fixtures/upstream-698a-retry-source160.input.mjs",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\extensions\\fixtures\\upstream-698a-retry-source160.input.mjs",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 4970,
+      "sha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/extensions/native_ai_error_classification.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\extensions\\native_ai_error_classification.zig",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 7189,
+      "sha256": "33C525AE7F188D63E446A953B8570F11B7B296DA12D0D9C991CA9B91368B2EC7"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/ai/retry.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\ai\\retry.zig",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 24237,
+      "sha256": "3373E226BA4A75A37AF4A1D801E290E3922E8719A31960E756EA04109EED3BE0"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/src/durable/backend/json.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\src\\durable\\backend\\json.zig",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 20247,
+      "sha256": "75BAA4266FBF1F9C069E5751D92382C4622FCE44FFA0DD4AC7E9B84604495304"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/tools/ci/native_qualification_ci.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\tools\\ci\\native_qualification_ci.ps1",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "member": "worktrees/root-retry698-qualification/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-retry698-qualification\\tools\\ci\\Invoke-NativeTestProtocol.ps1",
+      "role": "exact tested source leaf or canonical owner/protocol",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D"
+    },
+    {
+      "member": "evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "role": "original complete compiler authority manifest; paths remain historical",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+    },
+    {
+      "member": "evidence/retry698-native-public-proof-prepared-20261016/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698-native-public-proof-prepared-20261016\\README.md",
+      "role": "new package scope and exclusions",
+      "bytes": 2463,
+      "sha256": "93BF09C04D07AF7D24070CE829500462D78AEDA9751FAECC9C516227D0A8770D"
+    },
+    {
+      "member": "evidence/retry698-native-public-proof-prepared-20261016/Package-RetryProof.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698-native-public-proof-prepared-20261016\\Package-RetryProof.ps1",
+      "role": "new reversible packaging source",
+      "bytes": 7771,
+      "sha256": "553B8E6D1B044E97A5D635C96F90C731E586E091114AFF478393476D36C1A3DC"
+    }
+  ]
+}
