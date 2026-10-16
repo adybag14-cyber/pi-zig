@@ -159,3 +159,4 @@ verification/sdk-default-real-assembly-4954-20261016/source53-proof/Run-SdkModel
 verification/sdk-default-real-assembly-4954-20261016/source44-proof/Run-SdkRuntimeHelpersSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/sdk-default-real-assembly-4954-20261016/source15-proof/Run-SdkAsyncBrandSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
 verification/sdk-default-real-assembly-4954-20261016/source48-proof/Run-SdkLoaderInputsSource-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol
+verification/sdk-default-real-assembly-4954-20261016/source39-proof/Run-SdkModulePolicySourceV2-20261016.ps1 whitespace=blank-at-eol,-blank-at-eof,space-before-tab,cr-at-eol

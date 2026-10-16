@@ -1,0 +1,20 @@
+{
+  "status": "root_independently_reviewed_genuine_source39",
+  "candidate": "c735c1f1b74822f23cca2d79802e27f687ee76e2",
+  "actual_node_pid": 73800,
+  "actual_node_exit": 0,
+  "wrapper_exit": 0,
+  "original_rows": 39,
+  "row_order_drift": 0,
+  "physical_versions": 39,
+  "physical_final_files": 36,
+  "module_rows": 1488,
+  "module_current_byte_matches": 1480,
+  "intentional_loaded_version_matches": 8,
+  "full_posthash_drift": 0,
+  "output_sha256": "0DDCAB7DC649CBA5AC7147C722CE0AB98C9465E9B74290F57CD92C1A1FE89F27",
+  "module_log_sha256": "F3DAA86AE75F612A3EE4001AD895EF8CBA437098C6CB3E1791FC788902C7CDA3",
+  "expected_absent_at_review": true,
+  "native_qualified": false,
+  "reviewed_utc": "2026-10-16T13:11:22.5089834+00:00"
+}

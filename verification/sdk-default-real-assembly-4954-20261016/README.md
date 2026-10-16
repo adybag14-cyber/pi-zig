@@ -193,3 +193,38 @@ caches persist across same-path edits; stale in-flight extension cache tokens
 cannot overwrite a newer factory. Direct native/CJS root policies remain
 outside those14 cases. Native SDK callers, importer and composition remain
 unqualified, with default selection uncalled and no new Zig jobs run.
+
+The genuine **Source39** direct-root/dynamic-import supplement captured clean
+candidate `c735c1f1b74822f23cca2d79802e27f687ee76e2`. Node73800 and its separately
+versioned V2 wrapper both exited0, with independent Node absence and zero full
+posthash/path/control drift. The candidate freeze contained8537 files; the
+Source1970/deps31064/Node1774/compiler19546 and84 absence contracts stayed
+unchanged. Root independently checked every original write version, current
+physical file, module body, row identity and actual package metadata before
+authorizing the exact raw expected copy. Expected SHA256:
+`0DDCAB7DC649CBA5AC7147C722CE0AB98C9465E9B74290F57CD92C1A1FE89F27`.
+
+Its29-payload packet contains four frozen inventories,1488 original observed
+module bodies including668 TypeBox modules,39 original physical write versions
+and36 final physical files with retained metadata. Eight loaded native modules
+are earlier created versions of intentionally edited files; all archived
+original bytes match the original observer hashes. All39 UTF8 write-version
+hashes and sizes and all36 final-file hashes/sizes were independently checked.
+Validate-Source39Proof.ps1 verifies that full saved universe and the positive
+V2 terminal receipt plus explicit independent Root acceptance. Source48's
+original negative wrapper remains unchanged in its separate packet.
+
+Within these cases, direct .mjs/.cjs/.js roots stay cached across file edits,
+including .js package.type module/commonjs/no-type boundaries and an already
+loaded package.type transition. Dynamic TS imports cache on first use within
+the live transformed factory's parent cache. A newly loaded factory sees the
+edited TS dependency; an old factory with that dependency cached keeps its old
+value. An old factory that has never imported it loads the current bytes on
+its first late call. Dynamic CJS/native-ESM imports stay shared and cached.
+Parallel dynamic TS imports with TLA evaluate once and both fulfill with the
+completed value. Full physical stack observations are retained verbatim,
+including jiti's transformed positions; no nonce or native stack parity is
+claimed. .mts/.cts/.tsx, failed-native-import transform fallback, eval-created
+imports and native graph lifetime/serialization are still unobserved policies.
+The Engine/C graph remains a reviewed design task, with no implementation or
+native qualification transferred from these Source controls.
