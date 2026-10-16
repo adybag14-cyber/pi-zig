@@ -1309,6 +1309,34 @@ JS_EXTERN void JS_SetIsHTMLDDA(JSContext *ctx, JSValueConst obj);
 
 typedef struct JSModuleDef JSModuleDef;
 
+/* Experimental trusted-host private module graphs. Capabilities and origins
+   are owned by one context until teardown; this is not graph garbage collection.
+   NULL is the existing shared domain. No generation is exposed to guest code. */
+typedef struct JSPiPrivateModuleGraph JSPiPrivateModuleGraph;
+typedef struct JSPiModuleOrigin JSPiModuleOrigin;
+/* -1: exception, 0: existing shared domain, 1: importer's private graph. */
+typedef int JSPiModuleGraphSelectFunc(JSContext *ctx,
+    const JSPiModuleOrigin *importer, const char *canonical_physical_name,
+    JSValueConst attributes, void *opaque);
+typedef JSModuleDef *JSPiModuleGraphLoadFunc(JSContext *ctx,
+    JSPiPrivateModuleGraph *graph, const char *canonical_physical_name,
+    JSValueConst attributes, void *opaque);
+JS_EXTERN JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
+    JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
+    void *opaque);
+JS_EXTERN JSValue JS_PiCompilePrivateModule(JSContext *ctx,
+    JSPiPrivateModuleGraph *graph, const char *source, size_t source_length,
+    const char *physical_filename, JSValueConst attributes);
+/* Borrowed until owner context teardown. Attributes is NULL if tombstoned. */
+JS_EXTERN const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin);
+JS_EXTERN const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin);
+JS_EXTERN JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin);
+typedef struct JSPiModuleGraphStats {
+    uint64_t created, linked, evaluated, failed, quarantined;
+} JSPiModuleGraphStats;
+JS_EXTERN int JS_PiGetPrivateModuleGraphStats(JSContext *ctx,
+    const JSPiPrivateModuleGraph *graph, JSPiModuleGraphStats *stats);
+
 /* return the module specifier (allocated with js_malloc()) or NULL if
    exception */
 typedef char *JSModuleNormalizeFunc(JSContext *ctx,
