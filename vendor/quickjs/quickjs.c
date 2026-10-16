@@ -995,6 +995,8 @@ typedef struct JSAsyncFunctionData {
     JSGCObjectHeader header; /* must come first */
     JSValue resolving_funcs[2];
     bool is_active; /* true if the async function state is valid */
+    bool module_execution; /* retains inactive-callback guard after termination */
+    JSModuleDef *module; /* borrowed only while the bytecode frame is active */
     JSAsyncFunctionState func_state;
     /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
     JSPiAsyncFunctionBody *native_body;
@@ -1519,6 +1521,7 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
                                  JSValueConst options);
 static void free_var_ref(JSRuntime *rt, JSVarRef *var_ref);
 static void js_async_function_free(JSRuntime *rt, JSAsyncFunctionData *s);
+static void js_mark_module_fatal_failure(JSModuleDef *module, JSValueConst error);
 static void js_release_coro(JSRuntime *rt, JSGCObjectHeader *coro);
 static JSValue js_new_promise_capability(JSContext *ctx,
                                          JSValue *resolving_funcs,
@@ -21881,6 +21884,9 @@ static JSValue js_call_generator_function(JSContext *ctx, JSValueConst func_obj,
 
 static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
 {
+    /* The active bytecode function/realm dominates this borrowed identity.
+       Clear it before releasing any frame roots, including GC finalization. */
+    s->module = NULL;
     if (s->is_active) {
         if (s->native_body) {
             int i;
@@ -22092,7 +22098,15 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             }
             JS_FreeValue(ctx, ret2);
         }
-        js_async_function_terminate(ctx->rt, s);
+        if (!is_success && s->module_execution) {
+            JSValue error = JS_GetException(ctx);
+            if (s->module)
+                js_mark_module_fatal_failure(s->module, error);
+            js_async_function_terminate(ctx->rt, s);
+            JS_Throw(ctx, error);
+        } else {
+            js_async_function_terminate(ctx->rt, s);
+        }
     } else {
         JSValue value;
         value = s->func_state.frame.cur_sp[-1];
@@ -22114,8 +22128,25 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JS_FreeValue(ctx, value);
             if (JS_IsException(promise))
                 goto fail;
-            if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+            if (s->module_execution && JS_HasException(ctx)) {
+                JSValue error = JS_GetException(ctx);
                 JS_FreeValue(ctx, promise);
+                JS_Throw(ctx, error);
+                goto fail;
+            }
+            if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
+                JSValue error = s->module_execution ? JS_GetException(ctx) : JS_UNDEFINED;
+                JS_FreeValue(ctx, promise);
+                if (s->module_execution)
+                    JS_Throw(ctx, error);
+                goto fail;
+            }
+            if (s->module_execution && JS_HasException(ctx)) {
+                JSValue error = JS_GetException(ctx);
+                JS_FreeValue(ctx, promise);
+                for (i = 0; i < 2; i++)
+                    JS_FreeValue(ctx, resolving_funcs[i]);
+                JS_Throw(ctx, error);
                 goto fail;
             }
 
@@ -22126,10 +22157,15 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             res = perform_promise_then(ctx, promise,
                                        vc(resolving_funcs),
                                        vc(resolving_funcs1));
+            bool module_failed = s->module_execution &&
+                                 (res || JS_HasException(ctx));
+            JSValue error = module_failed ? JS_GetException(ctx) : JS_UNDEFINED;
             JS_FreeValue(ctx, promise);
             for(i = 0; i < 2; i++)
                 JS_FreeValue(ctx, resolving_funcs[i]);
-            if (res)
+            if (module_failed)
+                JS_Throw(ctx, error);
+            if (res || module_failed)
                 goto fail;
         }
     }
@@ -22157,6 +22193,19 @@ static JSValue js_async_function_resolve_call(JSContext *ctx,
                 arg))
             return JS_EXCEPTION;
         return JS_UNDEFINED;
+    }
+    if (s->module_execution) {
+        /* Partial await setup can leave a queued callback after termination.
+           Outer attachment failure can also terminalize a suspended module.
+           Neither may touch its freed stack or run more guest instructions.
+           The module's existing terminal reason is delivered by its executor
+           or cached entry; a late callback must not deliver/retag it again. */
+        if (!s->is_active)
+            return JS_UNDEFINED;
+        if (s->module && s->module->eval_has_exception) {
+            js_async_function_terminate(ctx->rt, s);
+            return JS_UNDEFINED;
+        }
     }
     s->func_state.throw_flag = is_reject;
     if (is_reject) {
@@ -22274,11 +22323,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
     return JS_EXCEPTION;
 }
 
-static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func_obj,
                                       JSValueConst this_obj,
-                                      int argc, JSValueConst *argv, int flags)
+                                      int argc, JSValueConst *argv, int flags,
+                                      JSModuleDef *module)
 {
-    JSValue promise;
+    JSValue promise, error;
     JSAsyncFunctionData *s;
 
     if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
@@ -22290,6 +22340,8 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
     JS_REF_COUNT(s) = 1;
     add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
     s->is_active = false;
+    s->module_execution = module != NULL;
+    s->module = NULL;
     s->resolving_funcs[0] = JS_UNDEFINED;
     s->resolving_funcs[1] = JS_UNDEFINED;
 
@@ -22299,8 +22351,15 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
 
     if (async_func_init(ctx, &s->func_state, func_obj, this_obj, argc, argv)) {
     fail:
+        /* Module START failure belongs to its DFS executor, not a later
+           unassociated continuation. Retain the first reason over cleanup. */
+        error = module ? JS_GetException(ctx) : JS_UNDEFINED;
+        if (module)
+            js_async_function_terminate(ctx->rt, s);
         JS_FreeValue(ctx, promise);
         js_async_function_free(ctx->rt, s);
+        if (module)
+            JS_Throw(ctx, error);
         return JS_EXCEPTION;
     }
     s->is_active = true;
@@ -22310,10 +22369,25 @@ static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
 
     if (!js_async_function_resume(ctx, s))
         goto fail;
+    if (module && JS_HasException(ctx))
+        goto fail;
+    /* Only the exact module executor supplies this identity, after successful
+       START. Until termination, frame.cur_func -> bytecode.realm retains its
+       owning context/loaded ModuleDef. Initial DFS failures remain unbound. */
+    if (module && s->is_active)
+        s->module = module;
 
     js_async_function_free(ctx->rt, s);
 
     return promise;
+}
+
+static JSValue js_async_function_call(JSContext *ctx, JSValueConst func_obj,
+                                      JSValueConst this_obj,
+                                      int argc, JSValueConst *argv, int flags)
+{
+    return js_async_function_call_internal(ctx, func_obj, this_obj, argc, argv,
+                                         flags, NULL);
 }
 
 /* AsyncGenerator */
@@ -33207,7 +33281,8 @@ static int js_execute_async_module(JSContext *ctx, JSModuleDef *m)
     JSValue promise = JS_UNDEFINED, m_obj = JS_UNDEFINED;
     JSValue resolve_funcs[2] = { JS_UNDEFINED, JS_UNDEFINED };
     JSValue ret_val = JS_UNDEFINED, error;
-    promise = js_async_function_call(ctx, m->func_obj, JS_UNDEFINED, 0, NULL, 0);
+    promise = js_async_function_call_internal(ctx, m->func_obj, JS_UNDEFINED,
+                                             0, NULL, 0, m);
     if (JS_IsException(promise) || JS_HasException(ctx))
         goto fail;
     m_obj = JS_NewModuleValue(ctx, m);
