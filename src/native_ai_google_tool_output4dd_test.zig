@@ -10,6 +10,9 @@ test "native Google4dd tool output whitespace live trim relational length and ra
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "nativeGoogleToolOutput4dd", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "convertGoogleToolOutput4dd", 2, convert, &.{})));
-    const evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ai-google-tool-output4dd-native.input.txt"), "native-google-tool-output4dd-controls.mjs");
+    const source = @embedFile("extensions/fixtures/ai-google-tool-output4dd.expected.json");
+    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "googleToolOutput4ddSource", try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "genuine-google4dd-Source146.json"))));
+    const evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ai-google-tool-output4dd-native.input.txt") ++
+        "\nif(observations.length!==146||googleToolOutput4ddSource.observations.length!==146)throw Error('all146 required');for(let i=0;i<146;i++)if(JSON.stringify(observations[i])!==JSON.stringify(googleToolOutput4ddSource.observations[i]))throw Error(JSON.stringify({case:i,actual:observations[i],expected:googleToolOutput4ddSource.observations[i]}));", "native-google-tool-output4dd-controls.mjs");
     engine.freeValue(evaluated);
 }

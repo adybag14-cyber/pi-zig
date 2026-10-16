@@ -1,0 +1,10 @@
+{
+  "launcher_sha256": "3C73FA40F44FE6BBF646ADEA75208EE2B794C540565B3F96450D0A842E3015ED",
+  "candidate_head": "accbe7929ed1efb21867fd091967e10c7ac94f62",
+  "nonce": "97d0aa0e7f254f34adaef6813c38d454",
+  "required_free_kib": 16777216,
+  "status": "paused_pending_root",
+  "run_id": "root-accb-google146-20261016",
+  "expires_utc": "2026-10-16T15:50:48.4748873+00:00",
+  "kind": "acceptance"
+}

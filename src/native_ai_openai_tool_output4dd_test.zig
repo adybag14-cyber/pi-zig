@@ -15,6 +15,9 @@ test "native OpenAI4dd tool output whitespace live trim relational length and ra
     var scope: v.Scope = .{ .engine = engine };
     defer scope.deinit();
     try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "nativeToolOutput4dd", try scope.own(try @import("extensions/native_node_function.zig").create(engine, "convertToolOutput4dd", 2, convert, &.{})));
-    const evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-tool-output4dd-native.input.txt"), "native-openai-tool-output4dd-controls.mjs");
+    const source = @embedFile("extensions/fixtures/ai-openai-tool-output4dd.expected.json");
+    try scope.put(try scope.own(c.JS_GetGlobalObject(engine.context)), "openaiToolOutput4ddSource", try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "genuine-openai4dd-Source52.json"))));
+    const evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ai-openai-tool-output4dd-native.input.txt") ++
+        "\nif(observations.length!==52||openaiToolOutput4ddSource.observations.length!==52)throw Error('all52 required');for(let i=0;i<52;i++)if(JSON.stringify(observations[i])!==JSON.stringify(openaiToolOutput4ddSource.observations[i]))throw Error(JSON.stringify({case:i,actual:observations[i],expected:openaiToolOutput4ddSource.observations[i]}));", "native-openai-tool-output4dd-controls.mjs");
     engine.freeValue(evaluated);
 }

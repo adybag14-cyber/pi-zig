@@ -1,0 +1,179 @@
+{
+  "deadline_utc": "2026-10-16T17:21:31.1984369+00:00",
+  "candidate_head": "accbe7929ed1efb21867fd091967e10c7ac94f62",
+  "capture_kinds": [
+    "google"
+  ],
+  "known_owned_identities": [
+    {
+      "pid": 47220,
+      "parent_pid": 71360,
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-16T15:46:31.6652790+00:00",
+      "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\before.json -ConfigSha256 4B5FD95712A6B4D26B2DE436E0BA03DAB0E3E9CF1C5987118BB92BE30515D19E"
+    },
+    {
+      "pid": 79632,
+      "parent_pid": 47220,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "created_utc": "2026-10-16T15:46:31.6682300+00:00",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "pid": 37156,
+      "parent_pid": 71360,
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-16T15:47:39.2070310+00:00",
+      "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\google.json -ConfigSha256 B01EE057C05170DC2F12D1A92A605362115E5E685C16E296F38C7AFB63C7DE51"
+    },
+    {
+      "pid": 37120,
+      "parent_pid": 37156,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "created_utc": "2026-10-16T15:47:39.2107770+00:00",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "pid": 66956,
+      "parent_pid": 37156,
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "created_utc": "2026-10-16T15:47:40.1307880+00:00",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\google-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-raw-source.json"
+    },
+    {
+      "pid": 46520,
+      "parent_pid": 66956,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "created_utc": "2026-10-16T15:47:40.1373320+00:00",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "parent_pid": 0,
+      "pid": 66956,
+      "created_utc": "2026-10-16T15:47:40.1307888Z",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\google-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-raw-source.json",
+      "executable": "C:\\Program Files\\nodejs\\node.exe"
+    },
+    {
+      "pid": 78140,
+      "parent_pid": 71360,
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-16T15:48:15.0427130+00:00",
+      "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-google.json -ConfigSha256 9B63C23EF3C42D555E3E1FDC0B2F439015F60F9AA86A9133AB2AF0AFC62994BF"
+    },
+    {
+      "pid": 6584,
+      "parent_pid": 78140,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "created_utc": "2026-10-16T15:48:15.0468090+00:00",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "pid": 70764,
+      "parent_pid": 71360,
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-16T15:50:25.8264690+00:00",
+      "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\final.json -ConfigSha256 70E576C66EDD751234BD1E01479CAF6D6870EC4A6FF3E1B348C71D270182E62A"
+    },
+    {
+      "pid": 70884,
+      "parent_pid": 70764,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "created_utc": "2026-10-16T15:50:25.8297980+00:00",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+    },
+    {
+      "pid": 75324,
+      "parent_pid": 71360,
+      "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "created_utc": "2026-10-16T15:50:58.0223150+00:00",
+      "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\artifact-seal.json -ConfigSha256 8ED5EC38838490A71D531E7AB3FC47396AB631E501C8D5DCBD142BBC273FD4FD"
+    }
+  ],
+  "requested_records": 146.0,
+  "launcher_sha256": "3C73FA40F44FE6BBF646ADEA75208EE2B794C540565B3F96450D0A842E3015ED",
+  "completed_utc": "2026-10-16T15:50:59.0077259+00:00",
+  "status": "captured_pending_root_expected_review",
+  "expected_files_created": false,
+  "phases": [
+    {
+      "identity": {
+        "pid": 47220,
+        "parent_pid": 71360,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:46:31.6652790+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\before.json -ConfigSha256 4B5FD95712A6B4D26B2DE436E0BA03DAB0E3E9CF1C5987118BB92BE30515D19E"
+      },
+      "label": "before",
+      "completed_utc": "2026-10-16T15:47:07.3623149+00:00",
+      "budget_seconds": 600,
+      "exit_code": 0,
+      "terminal": true,
+      "timed_out": false
+    },
+    {
+      "identity": {
+        "pid": 37156,
+        "parent_pid": 71360,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:47:39.2070310+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\google.json -ConfigSha256 B01EE057C05170DC2F12D1A92A605362115E5E685C16E296F38C7AFB63C7DE51"
+      },
+      "label": "google",
+      "completed_utc": "2026-10-16T15:48:15.0315551+00:00",
+      "budget_seconds": 320,
+      "exit_code": 0,
+      "terminal": true,
+      "timed_out": false
+    },
+    {
+      "identity": {
+        "pid": 78140,
+        "parent_pid": 71360,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:48:15.0427130+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-google.json -ConfigSha256 9B63C23EF3C42D555E3E1FDC0B2F439015F60F9AA86A9133AB2AF0AFC62994BF"
+      },
+      "label": "after-google",
+      "completed_utc": "2026-10-16T15:48:47.9544262+00:00",
+      "budget_seconds": 600,
+      "exit_code": 0,
+      "terminal": true,
+      "timed_out": false
+    },
+    {
+      "identity": {
+        "pid": 70764,
+        "parent_pid": 71360,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:50:25.8264690+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\final.json -ConfigSha256 70E576C66EDD751234BD1E01479CAF6D6870EC4A6FF3E1B348C71D270182E62A"
+      },
+      "label": "final",
+      "completed_utc": "2026-10-16T15:50:57.5687564+00:00",
+      "budget_seconds": 600,
+      "exit_code": 0,
+      "terminal": true,
+      "timed_out": false
+    },
+    {
+      "identity": {
+        "pid": 75324,
+        "parent_pid": 71360,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:50:58.0223150+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\artifact-seal.json -ConfigSha256 8ED5EC38838490A71D531E7AB3FC47396AB631E501C8D5DCBD142BBC273FD4FD"
+      },
+      "label": "artifact-seal",
+      "completed_utc": "2026-10-16T15:50:58.5161540+00:00",
+      "budget_seconds": 120,
+      "exit_code": 0,
+      "terminal": true,
+      "timed_out": false
+    }
+  ],
+  "failures": [],
+  "incomplete_observations": [],
+  "records": 146,
+  "handoff": "requires external supervisor confirmation of outer identity absence"
+}

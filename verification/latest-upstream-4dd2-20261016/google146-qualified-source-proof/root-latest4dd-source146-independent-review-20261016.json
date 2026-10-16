@@ -1,0 +1,15 @@
+{
+  "owned_originals_absent": true,
+  "node_exit": 0,
+  "full_seals_failures": 0,
+  "combined_with_prior_source127": 273,
+  "ordered_ids_valid": true,
+  "recorded_utc": "2026-10-16T15:53:13.9838699+00:00",
+  "raw_sha256": "3F00C88144C6430E6B6B2A162CA005BDF021A679EA727191D9EC09112D573725",
+  "raw_source_records": 146,
+  "status": "accepted_genuine_source146_only",
+  "new_expected_files_created": false,
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "node_pid": 66956,
+  "native_parity_qualified": false
+}

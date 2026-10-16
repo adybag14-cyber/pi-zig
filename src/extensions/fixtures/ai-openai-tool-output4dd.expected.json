@@ -1,0 +1,576 @@
+{
+  "authority": "Actual official4dd exported OpenAI/Responses converters; controlled caller inputs only",
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "actualNode": {
+    "pid": 75000,
+    "version": "v24.14.0",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe"
+  },
+  "files": [
+    {
+      "path": "C:/Users/adyba/pi-upstream-source-4dd2b149-20261016/packages/ai/src/api/openai-completions.ts",
+      "sha256": "8e2b66ed66600e38ab03d12a68338ace5ea0515810a9d1670bd9177f82556465"
+    },
+    {
+      "path": "C:/Users/adyba/pi-upstream-source-4dd2b149-20261016/packages/ai/src/api/openai-responses-shared.ts",
+      "sha256": "19b27740c2552eae10b32c45ebf67711c0b585ec1cf7cfdbc867ab8799f5e145"
+    }
+  ],
+  "observations": [
+    {
+      "api": "openai-completions",
+      "text": " \t\r\n        　﻿",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "(no tool output)",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": " \t\r\n        　﻿",
+      "withImage": true,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "(see attached image)",
+          "tool_call_id": "fixture-call"
+        },
+        {
+          "role": "user",
+          "content": [
+            {
+              "type": "text",
+              "text": "Attached image(s) from tool result:"
+            },
+            {
+              "type": "image_url",
+              "image_url": {
+                "url": "data:image/png;base64,AA=="
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": " \t original ﻿\n",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": " \t original ﻿\n",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "᠎",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "᠎",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "​",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "​",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "fixture-tool-output",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "4294967296",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "fixture-tool-output",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "0.5",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "(no tool output)",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "-1",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "(no tool output)",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "NaN",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "fixture-tool-output",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "1",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "role": "tool",
+          "content": "(no tool output)",
+          "tool_call_id": "fixture-call"
+        }
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "coercionLength": "0",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-completions",
+      "boundary": "trim getter",
+      "trace": [
+        "trim getter"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-completions",
+      "boundary": "trim call",
+      "trace": [
+        "trim getter",
+        "trim call"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-completions",
+      "boundary": "length getter",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-completions",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-completions",
+      "boundary": "length valueOf",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-responses",
+      "text": " \t\r\n        　﻿",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "(no tool output)"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": " \t\r\n        　﻿",
+      "withImage": true,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": [
+            {
+              "type": "input_image",
+              "detail": "auto",
+              "image_url": "data:image/png;base64,AA=="
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": " \t original ﻿\n",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": " \t original ﻿\n"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": ""
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "᠎",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "᠎"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "​",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "​"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "fixture-tool-output"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "4294967296",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "fixture-tool-output"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "0.5",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "(no tool output)"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "-1",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "(no tool output)"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "NaN",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "fixture-tool-output"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "1",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "rows": [
+        {
+          "type": "function_call_output",
+          "call_id": "fixture-call",
+          "output": "(no tool output)"
+        }
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "coercionLength": "0",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ]
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-responses",
+      "boundary": "trim getter",
+      "trace": [
+        "trim getter"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-responses",
+      "boundary": "trim call",
+      "trace": [
+        "trim getter",
+        "trim call"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-responses",
+      "boundary": "length getter",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter"
+      ],
+      "rawSame": true
+    },
+    {
+      "api": "openai-responses",
+      "text": "fixture-tool-output",
+      "withImage": false,
+      "thrownFixture": "owned-raw-trim-reason"
+    },
+    {
+      "api": "openai-responses",
+      "boundary": "length valueOf",
+      "trace": [
+        "trim getter",
+        "trim call",
+        "length getter",
+        "length valueOf"
+      ],
+      "rawSame": true
+    }
+  ],
+  "network": false,
+  "nativeQualified": false
+}

@@ -1,0 +1,13 @@
+{
+  "candidate_head": "accbe7929ed1efb21867fd091967e10c7ac94f62",
+  "run_id": "root-accb-google146-20261016",
+  "issued_utc": "2026-10-16T15:45:29.8897930+00:00",
+  "launcher_sha256": "3C73FA40F44FE6BBF646ADEA75208EE2B794C540565B3F96450D0A842E3015ED",
+  "expires_utc": "2026-10-16T15:50:29.8897930+00:00",
+  "capture_kinds": [
+    "google"
+  ],
+  "manual_fresh_16gib": true,
+  "grant_id": "ROOT-LATEST4DD-GOOGLE146-ONLY-20261016",
+  "authorized": true
+}

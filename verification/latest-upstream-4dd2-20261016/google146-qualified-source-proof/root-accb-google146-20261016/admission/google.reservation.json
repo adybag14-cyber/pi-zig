@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-10-16T15:47:39.2012781+00:00",
+  "heap_mb": 256,
+  "kind": "google",
+  "nonce": "008452b301c643548158f692acf95c21",
+  "source_reserved_kib": 2097152,
+  "approved_sha256": "21D401CAC947B52F903AD1A7C6D08616FF9E3AB41AE7607D6E8EB31488F26050",
+  "admitted": true,
+  "free_kib": 19147660,
+  "required_free_kib": 16777216
+}

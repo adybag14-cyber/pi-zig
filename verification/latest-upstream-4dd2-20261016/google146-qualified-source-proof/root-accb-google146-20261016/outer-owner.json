@@ -1,0 +1,17 @@
+{
+  "expected_files_created": false,
+  "start_utc": "2026-10-16T15:46:31.1984369+00:00",
+  "deadline_utc": "2026-10-16T17:21:31.1984369+00:00",
+  "status": "running",
+  "launcher_sha256": "3C73FA40F44FE6BBF646ADEA75208EE2B794C540565B3F96450D0A842E3015ED",
+  "run_id": "root-accb-google146-20261016",
+  "maximum_seconds": 5700,
+  "identity": {
+    "pid": 71360,
+    "parent_pid": 63780,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T15:46:30.1966430+00:00",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Run-Latest4ddSerialCapture.ps1 -CandidateHead accbe7929ed1efb21867fd091967e10c7ac94f62 -RunId root-accb-google146-20261016 -RootGrant C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-root-grant-accb-google-20261016.json -CaptureKinds google"
+  },
+  "candidate_head": "accbe7929ed1efb21867fd091967e10c7ac94f62"
+}

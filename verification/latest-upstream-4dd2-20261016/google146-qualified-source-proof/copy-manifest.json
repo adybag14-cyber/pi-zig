@@ -1,0 +1,312 @@
+[
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\after-google-fullhash.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\after-google-fullhash.json",
+    "sha256": "278E78CE8E936822FE627B8D8AAF1F0CB4834506F50C668CC478169414718F3D"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\after-google-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\after-google-phase.json",
+    "sha256": "18CEA94C981BF061C933866B2E3F4DC1C9D75ED1B9B65D086C764FDD3E2B05BE"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\after-google.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\after-google.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\after-google.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\after-google.stdout.log",
+    "sha256": "32D03FF248194D4CE49064E70ABD373FD626C338DF3C7A95CE601A1B6761460A"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\artifact-manifest.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\artifact-manifest.json",
+    "sha256": "15279589E664CDC048E958DC37DD47A6A4A17939A4E49B805062A64464573895"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\artifact-seal-independent-absence.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\artifact-seal-independent-absence.json",
+    "sha256": "8B7E78A531BA4FDC67563BF72734DFB9F6AA3ABD18E7ACB658E78B26E2D6FB87"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\artifact-seal-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\artifact-seal-phase.json",
+    "sha256": "CA49CD964042543430E2F30EF70B2E53B2C1F40B1543955034B6E03B01DE70D7"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\artifact-seal.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\artifact-seal.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\artifact-seal.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\artifact-seal.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\before-fullhash.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\before-fullhash.json",
+    "sha256": "5B5503286C6A2807408900E46209E479DE640F05C347379F026A45A0C6AA3D1B"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\before-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\before-phase.json",
+    "sha256": "8FD2491CD8AA53C69C89F6FDEF0B18CB4946FCA4BD9594303E3769BD5B351437"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\before.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\before.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\before.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\before.stdout.log",
+    "sha256": "11992201566CA0C81107F6B0FAE256644AA5205D18698BB512EFF5DE6BFE7ECD"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\captured-artifact-freeze.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\captured-artifact-freeze.json",
+    "sha256": "B752F8FB50243B9A7A78A2E95FAECD48AE4B9C345566BF22ABFC327156EFF04F"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\environment-policy.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\environment-policy.json",
+    "sha256": "000028951D8EAD10C4C53624ABBE03706A68007038606258E755328D614C9840"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\expected-absence-before.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\expected-absence-before.json",
+    "sha256": "F58F0C23223DEE93B2E1DF37AA5D23EC4B380F3B47E93E126162E565E5A7A995"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\expected-absence-final.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\expected-absence-final.json",
+    "sha256": "52C8926AC560B498E6D71E3D72341EB75F145F7AEA741AC1A87174DC9D94414E"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\final-fullhash.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\final-fullhash.json",
+    "sha256": "90186AB65F38D076791A3CF011436B83092BB9BE4226FF824D6B8158778C98D1"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\final-independent-absence.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\final-independent-absence.json",
+    "sha256": "5A66E4AB8BCFA55896C569576E6ADA096FAD0DD288D8DCFF5D7E5BD70664B4A2"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\final-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\final-phase.json",
+    "sha256": "48CAAA4407B00429FAE83EB8729BDAFBCA502D129F1FFF822C9561DF5DC9B7D0"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\final.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\final.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\final.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\final.stdout.log",
+    "sha256": "32D03FF248194D4CE49064E70ABD373FD626C338DF3C7A95CE601A1B6761460A"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\full-before.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\full-before.json",
+    "sha256": "97B0A231787371DB4BE00B7783FFA940181184426CD7EEA653CB0ECE52E4E7D0"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\full-before.json.controls.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\full-before.json.controls.json",
+    "sha256": "C9FF78D2929FDFD7CC2DCDF093A380FEC6648358D779C040FDA082B00E1ED08D"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-independent-absence.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google-independent-absence.json",
+    "sha256": "651F16828B7A4A312459BC61860D6B1D80701B45CC9197BB0A6765C717A5A79C"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-phase.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google-phase.json",
+    "sha256": "C9A0294E52C53CCC2A4CD45BDC03EBEBDB02FB539FD2A880D5D904DC32882C68"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-probe-complete.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google-probe-complete.json",
+    "sha256": "7366B14C2EEA3B1E173627BE1E1189EC346AC3C45C0B19B8D3C7C7B644553EB2"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-raw-source.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google-raw-source.json",
+    "sha256": "3F00C88144C6430E6B6B2A162CA005BDF021A679EA727191D9EC09112D573725"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google.stderr.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\google.stdout.log",
+    "sha256": "EBDF9C6B0C9FB40C5AD330F259DF2C7017873B4375BD84ACE53FA09F70C6DCD5"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\initial-admission.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\initial-admission.json",
+    "sha256": "3D5F3D7CF31A17973F8CA1D46679B54A37E08A1E8BFE4296AF4D438E8B02AB52"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\initial-root-grant.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\initial-root-grant.json",
+    "sha256": "A187DAF2A6847E5F1E5DDB316ECE881A0C916AE9BFF4D3F93B6DDE4DD7A33D4B"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\Invoke-OwnedModelsClassSource-20261016.ps1",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\Invoke-OwnedModelsClassSource-20261016.ps1",
+    "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google-node-admission.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google-node-admission.json",
+    "sha256": "55C984748348CD5C39A93D558E9029DE92ED6D326E22764739EB12FEEEFB7562"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.json",
+    "sha256": "EBDF9C6B0C9FB40C5AD330F259DF2C7017873B4375BD84ACE53FA09F70C6DCD5"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.stderr.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.stderr.log",
+    "sha256": "C8FE79C02C275ED82918816BCAC91AEC2F8F963234557F194488B4AB431B7204"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.stdout.log",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\latest4dd-root-accb-google146-20261016-google.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\original-146-observations.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\original-146-observations.json",
+    "sha256": "F7C53856AA66B06662349309B1B2790C8401C14F1E2F3DCBA004556FA6D4BB1D"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\outer-owner.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\outer-owner.json",
+    "sha256": "6904EA7393900858C80F4332FA9EF80ADD9BF2BE13FCA82A0C9B0D6CD68552B8"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\run-controls.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\run-controls.json",
+    "sha256": "D28150569F9974E60E699B9E2E7AAFDAF767D80E3965E3C5D993DF99A377F4D2"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\supervisor-handoff.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\supervisor-handoff.json",
+    "sha256": "2BECED9BCAED69512F0FDEFAE0EFDDA963D513624893EEB3AEF1FC69DF18D1EA"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\terminal.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\terminal.json",
+    "sha256": "7DC7DBA1F33C07B6871B876F13F2BCC4697C7EF17ABAFCAE4E2FC85D3B0FB420"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\acceptance.approval.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\acceptance.approval.json",
+    "sha256": "D3EB2DC89994460B90C7C4CC18E05103BF30CD6C714D25A60F2A5B88557B30F2"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\acceptance.request.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\acceptance.request.json",
+    "sha256": "C733AE499376BC385552826D9C4F132C7F32BEBEC98ABBB93B0EBF6C88760E32"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\acceptance.reservation.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\acceptance.reservation.json",
+    "sha256": "89D56CDC3623674C59E6D869C80F1DB86831EB6961D897F3E520BFAEA9942BC3"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\google.approval.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\google.approval.json",
+    "sha256": "21D401CAC947B52F903AD1A7C6D08616FF9E3AB41AE7607D6E8EB31488F26050"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\google.request.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\google.request.json",
+    "sha256": "80BB1A76CA73B070676C246C3F8EC39ED7AED280F5AD06507592A40F23CD0C97"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\admission\\google.reservation.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\admission\\google.reservation.json",
+    "sha256": "16D9528AFDECB613B166EA7AFB3EC64100BECEA11D18748530CAC35238668C24"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-google.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\after-google.json",
+    "sha256": "9B63C23EF3C42D555E3E1FDC0B2F439015F60F9AA86A9133AB2AF0AFC62994BF"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-openai52.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\after-openai52.json",
+    "sha256": "06E327D5AB7EC2E17D58D79F51EB258340F57BB998541A28C2838EAF566D8F8E"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-summary30.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\after-summary30.json",
+    "sha256": "A003F47E9674451B12AC82D0BF2762369951D61FAA9212F16EB2E403BDF31BBF"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\after-summary45.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\after-summary45.json",
+    "sha256": "3EAECDF3E0DBDE7E8AC8961CD71C5A5D230E92CFD418A48B44D0A055F09C90E5"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\artifact-seal.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\artifact-seal.json",
+    "sha256": "8ED5EC38838490A71D531E7AB3FC47396AB631E501C8D5DCBD142BBC273FD4FD"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\before.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\before.json",
+    "sha256": "4B5FD95712A6B4D26B2DE436E0BA03DAB0E3E9CF1C5987118BB92BE30515D19E"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\final.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\final.json",
+    "sha256": "70E576C66EDD751234BD1E01479CAF6D6870EC4A6FF3E1B348C71D270182E62A"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\google.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\configs\\google.json",
+    "sha256": "B01EE057C05170DC2F12D1A92A605362115E5E685C16E296F38C7AFB63C7DE51"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\ModuleAnalysisCache-0C86AEE9",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\ModuleAnalysisCache-0C86AEE9",
+    "sha256": "13487475FF5C8BF5C70A9A42E672712CA667C251A87F970F95882ADC3E639EC5"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+    "sha256": "3B6AA07F8C8D9DDBFE7AB8BAC07E9F2EE22A65BE1513FD0DAD9D9D4DD1ABF114"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\records\\environment-66956.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\records\\environment-66956.json",
+    "sha256": "810292B366F9D28D56B1EBDE5E323C7C7F5767576F6E7C48C64EE635AFE2977A"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\records\\network-66956.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\records\\network-66956.json",
+    "sha256": "14567C95F624EFF9F70E9404211C85279C94DFC24B7E9C23E1AB01D1151905B3"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\records\\source4dd2-closure-66956-0-20261016.json",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\records\\source4dd2-closure-66956-0-20261016.json",
+    "sha256": "D09DEF794D1FF6C29CF2C7CF97599DD60876D883F9C9D2820F2CE6F94017B832"
+  },
+  {
+    "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\records\\source4dd2-modules-66956-0-20261016.jsonl",
+    "copy": "verification\\latest-upstream-4dd2-20261016\\google146-qualified-source-proof\\root-accb-google146-20261016\\records\\source4dd2-modules-66956-0-20261016.jsonl",
+    "sha256": "51E7F5B521CFA812826C0996394E33F5DCAB7C745F7373369585A9856E1B31E8"
+  }
+]

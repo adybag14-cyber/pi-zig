@@ -1942,6 +1942,18 @@ pub fn build(b: *std.Build) void {
     summary_generation_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-summary-generation", "Compare original summaries and full prepared compaction including split turns and native ownership").dependOn(&b.addRunArtifact(summary_generation_tests).step);
     b.step("build-native-sdk-summary-generation", "Compile full summary generation and prepared compaction independently").dependOn(&summary_generation_tests.step);
+    const latest_summary45_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_latest4dd_summary_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native latest4dd summary45"}, .use_llvm = use_llvm });
+    linkQuickJs(b, latest_summary45_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(latest_summary45_tests.root_module, sqlite_lib_dir, sqlite_library);
+    latest_summary45_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-latest4dd-summary45", "Compile latest Source replay with unchanged original45 callers and comparisons").dependOn(&latest_summary45_tests.step);
+    b.step("test-native-sdk-latest4dd-summary45", "Compare genuine latest Source45 with actual compat providers Models and summary bindings").dependOn(&b.addRunArtifact(latest_summary45_tests).step);
+    const latest_summary30_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_latest4dd_summary_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native latest4dd summary30"}, .use_llvm = use_llvm });
+    linkQuickJs(b, latest_summary30_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(latest_summary30_tests.root_module, sqlite_lib_dir, sqlite_library);
+    latest_summary30_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-latest4dd-summary30", "Compile all latest summary option getter and default-map observations").dependOn(&latest_summary30_tests.step);
+    b.step("test-native-sdk-latest4dd-summary30", "Compare genuine latest Source30 without maximum or getter normalization").dependOn(&b.addRunArtifact(latest_summary30_tests).step);
     const registry_composition_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_registry_composition_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native private registry"}, .use_llvm = use_llvm });
     linkQuickJs(b, registry_composition_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(registry_composition_tests.root_module, sqlite_lib_dir, sqlite_library);

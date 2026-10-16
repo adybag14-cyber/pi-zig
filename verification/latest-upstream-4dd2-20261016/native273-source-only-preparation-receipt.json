@@ -1,0 +1,11 @@
+{
+  "identical_original45_comparator": true,
+  "zig_commands": 0,
+  "native_execution": false,
+  "source_records": 273,
+  "all_verbatim_hashes_match": true,
+  "native_gates_prepared": 4,
+  "expected_copies": 4,
+  "historical_input_sha256": "891FF13852540CADE5ABA7726488CAAE59C9E38BDDF124BE80B948B6BD966B38",
+  "historical_test_blob_unchanged": true
+}
