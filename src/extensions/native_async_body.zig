@@ -15,8 +15,8 @@ fn set(s: *Scope, job: c.JSValue, kind: Kind, value: c.JSValue) !void {
     try s.put(job, "nativeAsyncAction", c.JS_NewInt32(s.engine.context, @intFromEnum(kind)));
     try s.put(job, "nativeAsyncValue", value);
 }
-pub fn wait(s: *Scope, job: c.JSValue, value: c.JSValue, stage: c_int) !void {
-    try s.put(job, "nativeAsyncStage", c.JS_NewInt32(s.engine.context, stage));
+pub fn wait(s: *Scope, job: c.JSValue, value: c.JSValue, next_stage: c_int) !void {
+    try s.put(job, "nativeAsyncStage", c.JS_NewInt32(s.engine.context, next_stage));
     try set(s, job, .awaited, value);
 }
 pub fn resolve(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
@@ -40,6 +40,10 @@ pub fn action(s: *Scope, job: c.JSValue) !native.Action {
         .thrown => .{ .thrown = value },
     };
 }
-pub fn failure(engine: *v.em.Engine, err: anyerror) native.Action {
+pub fn failure(engine: *v.em.Engine, err: anyerror) !native.Action {
+    // Trusted host allocation failure belongs to the primitive's fail path,
+    // which marks its exact native OOM reason uncatchable. A .thrown action
+    // would instead turn it into an ordinary guest rejection.
+    if (err == error.OutOfMemory) return error.OutOfMemory;
     return .{ .thrown = flow.reason(engine, err) };
 }

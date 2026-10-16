@@ -26,7 +26,12 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 }
 fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.OutOfMemory) {
+        _ = engine.throwNativeOutOfMemory();
+        const failure = c.JS_GetException(engine.context);
+        c.JS_SetUncatchableError(engine.context, failure);
+        return c.JS_Throw(engine.context, failure);
+    }
     return c.JS_ThrowTypeError(engine.context, "Native async body: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, raw: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
@@ -41,7 +46,7 @@ fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, 
             if (completion != .start) return c.JS_ThrowInternalError(engine.context, "Simple native async body resumed");
             break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return fail(engine, err) };
         },
-        .body => |body| body(engine, receiver, args, captures.values, &state[0], completion, input) catch |err| return fail(engine, err),
+        .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err),
     };
     return switch (result) {
         .returned => |value| resultValue(action, c.JS_PI_AF_RETURN, value),
