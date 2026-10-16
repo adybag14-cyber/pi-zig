@@ -1,5 +1,17 @@
 # Shared actual TypeBox native qualification preparation
 
+Root released this lane after Async26 qualification, authorizing the original
+proven Body owner B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB
+with fresh16GiB/zero-other-native admission. The retained caller now uses that
+byte-identical owner, not the held12GiB supervisor described in the historical
+preparation below. Compile installs the test artifact; metadata binds the exact
+cached and installed binary hashes; runtime uses the matching Zig test target
+with120s per-test enforcement and always executes the Run step. Actual metadata
+must contain all3 planned named tests, with any remaining entries limited to
+actual anonymous imported tests; the exact full array is frozen before runtime.
+The complete1838-file Node installation is frozen in addition to original1774
+Node pins. This component is based on RootC12; combined RootC33 is separate.
+
 This isolated tree starts at Root2851f6feef4be4ff8636a41208e356f74a6f6b74.
 No native compilation, metadata query or runtime qualification has run.
 No Root worktree file was edited.

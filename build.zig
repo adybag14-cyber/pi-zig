@@ -2244,8 +2244,9 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, typebox_production_module, quickjs, sqlite_lib_dir);
     typebox_production_module.addImport("catalog_tool", catalog_tool);
     const typebox_production_tests = b.addTest(.{ .root_module = typebox_production_module, .use_llvm = use_llvm, .filters = &.{ "actual TypeBox ", "actual provider schemas Partial and Memory " } });
-    b.step("build-native-typebox-production-source", "Compile the shared production TypeBox graph and actual Source80 Source52 Source396 replays").dependOn(&typebox_production_tests.step);
+    b.step("build-native-typebox-production-source", "Compile the shared production TypeBox graph and actual Source80 Source52 Source396 replays").dependOn(&b.addInstallArtifact(typebox_production_tests, .{}).step);
     const typebox_production_run = b.addRunArtifact(typebox_production_tests);
+    typebox_production_run.has_side_effects = true;
     b.step("test-native-typebox-production-source", "Replay actual compiler and provider schemas through the shared native TypeBox graph").dependOn(&typebox_production_run.step);
     const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
