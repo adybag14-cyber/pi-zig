@@ -81,8 +81,8 @@ pub fn useCwd(engine: *em.Engine, cwd: c.JSValue) !c.JSValue {
     if (!c.JS_IsUndefined(state.cwd) and !scope.equal(state.cwd, resolved)) try clearBody(&scope, state);
     replace(&scope, &state.cwd, resolved);
     const token = try scope.object();
-    try scope.put(token, "cwd", resolved);
-    try scope.put(token, "generation", state.generation);
+    try js.define(engine, token, "cwd", c.JS_DupValue(engine.context, resolved));
+    try js.define(engine, token, "generation", c.JS_DupValue(engine.context, state.generation));
     return c.JS_DupValue(engine.context, token);
 }
 fn current(scope: *Scope, state: *State, token: c.JSValue) !bool {
