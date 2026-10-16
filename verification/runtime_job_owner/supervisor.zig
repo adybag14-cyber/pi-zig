@@ -290,6 +290,7 @@ pub const Controller = struct {
                     try self.waitEvents(self.deadline.worker_cutoff_ms);
                     continue;
                 }
+                if (w.GetTickCount64() >= self.deadline.worker_cutoff_ms) return error.WorkerLateCompletion;
                 return;
             }
             if (wait != w.wait_timeout) return error.WorkerWaitFailed;
