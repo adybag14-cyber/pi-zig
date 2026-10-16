@@ -31385,6 +31385,41 @@ static bool js_pi_has_private_module_graph(JSContext *ctx,
     return false;
 }
 
+/* Loader return values are opaque until membership has been established. */
+static bool js_pi_has_module_definition(JSContext *ctx, const JSModuleDef *module)
+{
+    struct list_head *el;
+    list_for_each(el, &ctx->loaded_modules) {
+        if (list_entry(el, JSModuleDef, link) == module)
+            return true;
+    }
+    return false;
+}
+
+static int js_pi_attach_module_origin(JSContext *ctx, JSModuleDef *module,
+                                      JSPiPrivateModuleGraph *graph,
+                                      const char *physical_filename,
+                                      JSValueConst attributes)
+{
+    JSPiModuleOrigin *origin = js_mallocz(ctx, sizeof(*origin));
+    if (!origin)
+        return -1;
+    origin->attributes = JS_UNDEFINED;
+    origin->physical_filename = js_strdup(ctx, physical_filename);
+    if (!origin->physical_filename) {
+        js_free(ctx, origin);
+        return -1;
+    }
+    origin->graph = graph;
+    origin->module = module;
+    origin->attributes = js_dup(attributes);
+    origin->next = graph->origins;
+    graph->origins = origin;
+    module->pi_module_origin = origin;
+    set_value(ctx, &module->attributes, js_dup(attributes));
+    return 0;
+}
+
 JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
     JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
     void *opaque)
@@ -31821,8 +31856,9 @@ fail:
     return JS_EXCEPTION; /* cleanup never replaces the exact pending reason */
 }
 
-static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
-                                          JSValueConst attributes)
+static JSModuleDef *js_pi_find_loaded_module(JSContext *ctx, JSAtom name,
+                                             JSValueConst attributes,
+                                             JSPiPrivateModuleGraph *graph)
 {
     struct list_head *el;
     JSModuleDef *m;
@@ -31831,7 +31867,8 @@ static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
     /* first look at the loaded modules */
     list_for_each(el, &ctx->loaded_modules) {
         m = list_entry(el, JSModuleDef, link);
-        if (m->module_name == name) {
+        if (m->module_name == name &&
+            (m->pi_module_origin ? m->pi_module_origin->graph : NULL) == graph) {
             eq = js_module_attributes_equal(ctx, m->attributes, attributes);
             if (eq < 0)
                 return NULL; /* exception */
@@ -31842,6 +31879,12 @@ static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
     return NULL;
 }
 
+static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
+                                          JSValueConst attributes)
+{
+    return js_pi_find_loaded_module(ctx, name, attributes, NULL);
+}
+
 static JSModuleDef *js_find_loaded_module_by_name(JSContext *ctx, JSAtom name)
 {
     struct list_head *el;
@@ -31849,7 +31892,7 @@ static JSModuleDef *js_find_loaded_module_by_name(JSContext *ctx, JSAtom name)
 
     list_for_each(el, &ctx->loaded_modules) {
         m = list_entry(el, JSModuleDef, link);
-        if (m->module_name == name)
+        if (m->module_name == name && !m->pi_module_origin)
             return m;
     }
     return NULL;
@@ -31857,15 +31900,30 @@ static JSModuleDef *js_find_loaded_module_by_name(JSContext *ctx, JSAtom name)
 
 /* return NULL in case of exception (e.g. module could not be loaded) */
 /* `base_cname` and `cname1` may be pure ASCII or UTF-8 encoded */
-static JSModuleDef *js_host_resolve_imported_module(JSContext *ctx,
-                                                    const char *base_cname,
-                                                    const char *cname1,
-                                                    JSValueConst attributes)
+static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
+    const char *base_cname, const char *cname1, JSValueConst attributes,
+    JSPiModuleOrigin *importer)
 {
     JSRuntime *rt = ctx->rt;
     JSModuleDef *m;
     char *cname;
     JSAtom module_name;
+    JSPiPrivateModuleGraph *graph = NULL;
+    JSValue captured_attributes = JS_UNDEFINED;
+    int selected, equal;
+
+    if (importer) {
+        /* The exact origin comes from admitted bytecode/definition metadata. */
+        if (!js_pi_has_private_module_graph(ctx, importer->graph) ||
+            !importer->module || importer->quarantined) {
+            JS_ThrowTypeError(ctx, "Private module origin is not active in this context");
+            return NULL;
+        }
+        captured_attributes = js_pi_snapshot_module_attributes(ctx, attributes);
+        if (JS_IsException(captured_attributes))
+            return NULL;
+        attributes = captured_attributes;
+    }
 
     if (!rt->normalize_u.module_normalize_func && !rt->normalize_u.module_normalize_func2) {
         cname = js_default_module_normalize_name(ctx, base_cname, cname1);
@@ -31877,29 +31935,94 @@ static JSModuleDef *js_host_resolve_imported_module(JSContext *ctx,
         cname = rt->normalize_u.module_normalize_func(ctx, base_cname, cname1,
                                                       rt->module_loader_opaque);
     }
-    if (!cname)
+    if (!cname) {
+        JS_FreeValue(ctx, captured_attributes);
         return NULL;
+    }
+
+    if (importer) {
+        selected = importer->graph->selector(ctx, importer, cname, attributes,
+                                              importer->graph->opaque);
+        if (selected < 0) {
+            if (!JS_HasException(ctx))
+                JS_ThrowTypeError(ctx, "Private module selector failed without an exception");
+            goto fail_before_atom;
+        }
+        if (JS_HasException(ctx))
+            goto fail_before_atom;
+        if (selected > 1) {
+            JS_ThrowTypeError(ctx, "Invalid private module graph route");
+            goto fail_before_atom;
+        }
+        if (selected == 1)
+            graph = importer->graph;
+    }
 
     module_name = JS_NewAtom(ctx, cname);
     if (module_name == JS_ATOM_NULL) {
         js_free(ctx, cname);
+        JS_FreeValue(ctx, captured_attributes);
         return NULL;
     }
 
     /* first look at the loaded modules */
-    m = js_find_loaded_module(ctx, module_name, attributes);
+    m = graph ? js_pi_find_loaded_module(ctx, module_name, attributes, graph)
+              : js_find_loaded_module(ctx, module_name, attributes);
     if (m) {
+        if (graph && m->pi_module_origin->quarantined) {
+            JS_ThrowTypeError(ctx, "Private module definition is quarantined");
+            js_free(ctx, cname);
+            JS_FreeAtom(ctx, module_name);
+            JS_FreeValue(ctx, captured_attributes);
+            return NULL;
+        }
         js_free(ctx, cname);
         JS_FreeAtom(ctx, module_name);
+        JS_FreeValue(ctx, captured_attributes);
         return m;
     }
     if (JS_HasException(ctx)) {
         js_free(ctx, cname);
         JS_FreeAtom(ctx, module_name);
+        JS_FreeValue(ctx, captured_attributes);
         return NULL;
     }
 
-    JS_FreeAtom(ctx, module_name);
+    if (graph) {
+        m = graph->loader(ctx, graph, cname, attributes, graph->opaque);
+        if (JS_HasException(ctx))
+            goto fail;
+        if (!m) {
+            if (!JS_HasException(ctx))
+                JS_ThrowTypeError(ctx, "Private module loader failed without an exception");
+            goto fail;
+        }
+        /* Never dereference a callback-returned pointer before membership. */
+        if (!js_pi_has_module_definition(ctx, m)) {
+            JS_ThrowTypeError(ctx, "Private module loader returned a foreign definition");
+            goto fail;
+        }
+        if (!m->pi_module_origin || m->pi_module_origin->graph != graph ||
+            m->pi_module_origin->module != m || m->module_name != module_name ||
+            m->pi_module_origin->quarantined) {
+            JS_ThrowTypeError(ctx, "Private module loader returned a mismatched definition");
+            goto fail;
+        }
+        equal = js_module_attributes_equal(ctx, m->attributes, attributes);
+        if (equal < 0)
+            goto fail;
+        if (!equal) {
+            JS_ThrowTypeError(ctx, "Private module loader returned mismatched attributes");
+            goto fail;
+        }
+        goto done;
+    }
+
+    /* Preserve legacy shared/default atom lifetime when the feature is unused. */
+    if (!importer) {
+        JS_FreeAtom(ctx, module_name);
+        module_name = JS_ATOM_NULL;
+    }
 
     /* load the module */
     if (!rt->u.module_loader_func) {
@@ -31908,6 +32031,8 @@ static JSModuleDef *js_host_resolve_imported_module(JSContext *ctx,
         JS_ThrowReferenceError(ctx, "could not load module '%s'",
                                cname);
         js_free(ctx, cname);
+        JS_FreeAtom(ctx, module_name);
+        JS_FreeValue(ctx, captured_attributes);
         return NULL;
     }
 
@@ -31916,19 +32041,52 @@ static JSModuleDef *js_host_resolve_imported_module(JSContext *ctx,
     } else {
         m = rt->u.module_loader_func(ctx, cname, rt->module_loader_opaque);
     }
+    if (importer && JS_HasException(ctx))
+        goto fail;
+    if (importer && !m) {
+        JS_ThrowTypeError(ctx, "Shared module loader failed without an exception");
+        goto fail;
+    }
+    if (importer && m) {
+        if (!js_pi_has_module_definition(ctx, m)) {
+            JS_ThrowTypeError(ctx, "Shared module loader returned a foreign definition");
+            goto fail;
+        }
+        if (m->pi_module_origin || m->module_name != module_name) {
+            JS_ThrowTypeError(ctx, "Shared module loader returned a private or mismatched definition");
+            goto fail;
+        }
+    }
     /* remember the attributes the module was requested with so that
        js_find_loaded_module() can tell apart e.g. a text module and a
        JS module with the same name */
     if (m && JS_IsObject(attributes) && JS_IsUndefined(m->attributes))
         m->attributes = js_dup(attributes);
+done:
     js_free(ctx, cname);
+    JS_FreeAtom(ctx, module_name);
+    JS_FreeValue(ctx, captured_attributes);
     return m;
+fail:
+    JS_FreeAtom(ctx, module_name);
+fail_before_atom:
+    js_free(ctx, cname);
+    JS_FreeValue(ctx, captured_attributes);
+    return NULL;
+}
+
+static JSModuleDef *js_host_resolve_imported_module(JSContext *ctx,
+    const char *base_cname, const char *cname1, JSValueConst attributes)
+{
+    return js_host_resolve_imported_module_origin(ctx, base_cname, cname1,
+                                                  attributes, NULL);
 }
 
 static JSModuleDef *js_host_resolve_imported_module_atom(JSContext *ctx,
                                                          JSAtom base_module_name,
                                                          JSAtom module_name1,
-                                                         JSValueConst attributes)
+                                                         JSValueConst attributes,
+                                                         JSPiModuleOrigin *origin)
 {
     const char *base_cname, *cname;
     JSModuleDef *m;
@@ -31941,7 +32099,8 @@ static JSModuleDef *js_host_resolve_imported_module_atom(JSContext *ctx,
         JS_FreeCString(ctx, base_cname);
         return NULL;
     }
-    m = js_host_resolve_imported_module(ctx, base_cname, cname, attributes);
+    m = js_host_resolve_imported_module_origin(ctx, base_cname, cname, attributes,
+                                               origin);
     JS_FreeCString(ctx, base_cname);
     JS_FreeCString(ctx, cname);
     return m;
@@ -32459,7 +32618,8 @@ static int js_resolve_module(JSContext *ctx, JSModuleDef *m)
         JSReqModuleEntry *rme = &m->req_module_entries[i];
         m1 = js_host_resolve_imported_module_atom(ctx, m->module_name,
                                                   rme->module_name,
-                                                  rme->attributes);
+                                                  rme->attributes,
+                                                  m->pi_module_origin);
         if (!m1)
             return -1;
         rme->module = m1;
@@ -39256,9 +39416,11 @@ JSValue JS_EvalFunction(JSContext *ctx, JSValue fun_obj)
 
 /* 'input' must be zero terminated i.e. input[input_len] = '\0'. */
 /* `export_name` and `input` may be pure ASCII or UTF-8 encoded */
-static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
+static JSValue __JS_EvalInternalGraph(JSContext *ctx, JSValueConst this_obj,
                                  const char *input, size_t input_len,
-                                 const char *filename, int line, int flags, int scope_idx)
+                                 const char *filename, int line, int flags, int scope_idx,
+                                 JSPiPrivateModuleGraph *graph,
+                                 JSValueConst attributes)
 {
     JSParseState s1, *s = &s1;
     int err, eval_type;
@@ -39297,6 +39459,9 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
             m = js_new_module_def(ctx, module_name);
             if (!m)
                 return JS_EXCEPTION;
+            if (graph && js_pi_attach_module_origin(ctx, m, graph, filename,
+                                                     attributes) < 0)
+                goto fail1;
             is_strict_mode = true;
         }
     }
@@ -39305,6 +39470,7 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
         goto fail1;
     s->cur_func = fd;
     fd->eval_type = eval_type;
+    fd->pi_module_origin = m ? m->pi_module_origin : NULL;
     fd->has_this_binding = (eval_type != JS_EVAL_TYPE_DIRECT);
     fd->backtrace_barrier = ((flags & JS_EVAL_FLAG_BACKTRACE_BARRIER) != 0);
     if (eval_type == JS_EVAL_TYPE_DIRECT) {
@@ -39365,12 +39531,80 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
     return ret_val;
  fail1:
     /* XXX: should free all the unresolved dependencies */
-    if (m)
-        js_free_module_def(ctx, m);
+    if (m) {
+        if (m->pi_module_origin) {
+            m->pi_module_origin->failed = true;
+            m->pi_module_origin->quarantined = true;
+        } else {
+            js_free_module_def(ctx, m);
+        }
+    }
     return JS_EXCEPTION;
 }
 
+static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
+                                 const char *input, size_t input_len,
+                                 const char *filename, int line, int flags, int scope_idx)
+{
+    return __JS_EvalInternalGraph(ctx, this_obj, input, input_len, filename, line,
+                                   flags, scope_idx, NULL, JS_UNDEFINED);
+}
+
 #endif // QJS_DISABLE_PARSER
+
+JSValue JS_PiCompilePrivateModule(JSContext *ctx, JSPiPrivateModuleGraph *graph,
+    const char *source, size_t source_length, const char *physical_filename,
+    JSValueConst attributes)
+{
+#ifndef QJS_DISABLE_PARSER
+    JSValue captured_attributes, result;
+    JSPiModuleOrigin *before, *origin;
+    JSModuleDef *existing;
+    JSAtom name;
+    if (!source || !physical_filename ||
+        !js_pi_has_private_module_graph(ctx, graph))
+        return JS_ThrowTypeError(ctx, "Invalid private module graph compilation");
+    if (!ctx->eval_internal)
+        return JS_ThrowTypeError(ctx, "eval is not supported");
+    if (!ctx->rt->current_stack_frame) {
+        JS_FreeValueRT(ctx->rt, ctx->error_back_trace);
+        ctx->error_back_trace = JS_UNDEFINED;
+    }
+    captured_attributes = js_pi_snapshot_module_attributes(ctx, attributes);
+    if (JS_IsException(captured_attributes))
+        return captured_attributes;
+    name = JS_NewAtom(ctx, physical_filename);
+    if (name == JS_ATOM_NULL) {
+        JS_FreeValue(ctx, captured_attributes);
+        return JS_EXCEPTION;
+    }
+    existing = js_pi_find_loaded_module(ctx, name, captured_attributes, graph);
+    JS_FreeAtom(ctx, name);
+    if (existing || JS_HasException(ctx)) {
+        JS_FreeValue(ctx, captured_attributes);
+        if (existing)
+            return JS_ThrowTypeError(ctx, "Private module definition already exists");
+        return JS_EXCEPTION;
+    }
+    before = graph->origins;
+    result = __JS_EvalInternalGraph(ctx, ctx->global_obj, source, source_length,
+        physical_filename, 1, JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY,
+        -1, graph, captured_attributes);
+    JS_FreeValue(ctx, captured_attributes);
+    if (JS_IsException(result)) {
+        /* Only this attempt's new, unevaluated private definitions quarantine.
+           Shared0, earlier graphs and escaped/evaluating closures stay alive. */
+        for (origin = graph->origins; origin != before; origin = origin->next) {
+            if (origin->module &&
+                origin->module->status < JS_MODULE_STATUS_EVALUATING)
+                origin->quarantined = true;
+        }
+    }
+    return result;
+#else
+    return JS_ThrowTypeError(ctx, "Private module graph compilation needs the parser");
+#endif
+}
 
 /* the indirection is needed to make 'eval' optional */
 static JSValue JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
@@ -41102,7 +41336,7 @@ static JSValue JS_ReadModule(BCReaderState *s)
             // to loading the same JS module twice.
             *pm = js_host_resolve_imported_module_atom(s->ctx, m->module_name,
                                                        rme->module_name,
-                                                       rme->attributes);
+                                                       rme->attributes, NULL);
             if (!*pm)
                 goto fail;
         }
