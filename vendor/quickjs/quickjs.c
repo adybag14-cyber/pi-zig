@@ -1109,6 +1109,7 @@ struct JSModuleDef {
 struct JSPiPrivateModuleGraph {
     JSPiPrivateModuleGraph *next;
     JSContext *ctx;
+    JSPiModuleGraphNormalizeFunc *normalizer;
     JSPiModuleGraphSelectFunc *selector;
     JSPiModuleGraphLoadFunc *loader;
     void *opaque;
@@ -31427,6 +31428,14 @@ JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
     JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
     void *opaque)
 {
+    return JS_PiNewPrivateModuleGraph2(ctx, NULL, selector, loader, opaque);
+}
+
+JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph2(JSContext *ctx,
+    JSPiModuleGraphNormalizeFunc *normalizer,
+    JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
+    void *opaque)
+{
     JSPiPrivateModuleGraph *graph;
     if (!selector || !loader) {
         JS_ThrowTypeError(ctx, "Private module graph callbacks are required");
@@ -31436,6 +31445,7 @@ JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
     if (!graph)
         return NULL; /* preserve the allocator's exact pending reason */
     graph->ctx = ctx;
+    graph->normalizer = normalizer;
     graph->selector = selector;
     graph->loader = loader;
     graph->opaque = opaque;
@@ -31990,7 +32000,12 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
         attributes = captured_attributes;
     }
 
-    if (!rt->normalize_u.module_normalize_func && !rt->normalize_u.module_normalize_func2) {
+    if (importer && importer->graph->normalizer) {
+        cname = importer->graph->normalizer(ctx, importer, base_cname, cname1,
+                                              attributes, importer->graph->opaque);
+        if (!cname && !JS_HasException(ctx))
+            JS_ThrowTypeError(ctx, "Private module normalizer failed without an exception");
+    } else if (!rt->normalize_u.module_normalize_func && !rt->normalize_u.module_normalize_func2) {
         cname = js_default_module_normalize_name(ctx, base_cname, cname1);
     } else if (rt->module_normalize_has_attr) {
         cname = rt->normalize_u.module_normalize_func2(ctx, base_cname, cname1,

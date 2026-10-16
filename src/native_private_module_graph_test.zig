@@ -16,7 +16,7 @@ const Fixture = struct {
     dep_override: ?[:0]const u8 = null,
     native_failure: bool = false,
     native_pending_success: bool = false,
-    failure_at: enum { selector, normalizer, private_loader, shared_loader, attribute_checker } = .selector,
+    failure_at: enum { selector, normalizer, private_loader, shared_loader, attribute_checker, graph_normalizer } = .selector,
     native_original: ?c.JSValue = null,
     last_origin: ?*const c.JSPiModuleOrigin = null,
     shared_definition: ?*c.JSModuleDef = null,
@@ -27,11 +27,22 @@ const Fixture = struct {
     shared_loads: usize = 0,
     capture_shared_attributes: bool = false,
     shared_attributes: ?c.JSValue = null,
+    private_name: [:0]const u8 = dep_name,
+    graph_normalizations: usize = 0,
+    runtime_normalizations: usize = 0,
+    expected_graph: ?*c.JSPiPrivateModuleGraph = null,
+    virtual_typebox: bool = false,
+    silent_graph_failure: bool = false,
     fn install(self: *Fixture) void {
         c.JS_SetModuleLoaderFunc(self.engine.runtime, null, sharedLoad, self);
     }
     fn graph(self: *Fixture) !*c.JSPiPrivateModuleGraph {
         return c.JS_PiNewPrivateModuleGraph(self.engine.context, select, privateLoad, self) orelse return js.capture(self.engine);
+    }
+    fn graph2(self: *Fixture) !*c.JSPiPrivateModuleGraph {
+        const result = c.JS_PiNewPrivateModuleGraph2(self.engine.context, graphNormalize, select, privateLoad, self) orelse return js.capture(self.engine);
+        self.expected_graph = result;
+        return result;
     }
     fn from(context_data: ?*anyopaque) *Fixture { return @ptrCast(@alignCast(context_data.?)); }
     fn failNative(self: *Fixture, context: ?*c.JSContext) void {
@@ -42,10 +53,30 @@ const Fixture = struct {
     }
     fn normalize(context: ?*c.JSContext, _: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
         const self = from(context_data);
+        self.runtime_normalizations += 1;
         const physical: [*:0]const u8 = if (std.mem.eql(u8, std.mem.span(name), "./shared.mjs")) shared_name else dep_name;
         const result = c.js_strdup(context, physical);
         if (result == null) return null;
         if (self.native_failure and self.failure_at == .normalizer) {
+            self.failNative(context);
+            if (!self.native_pending_success) { c.js_free(context, result); return null; }
+        }
+        return result;
+    }
+    fn graphNormalize(context: ?*c.JSContext, origin: ?*const c.JSPiModuleOrigin, base: [*c]const u8, name: [*c]const u8, _: c.JSValue, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
+        const self = from(context_data); self.graph_normalizations += 1;
+        if (origin == null or c.JS_PiModuleOriginGraph(origin) != self.expected_graph or
+            !std.mem.eql(u8, std.mem.span(c.JS_PiModuleOriginFilename(origin)), std.mem.span(base))) {
+            _ = c.JS_ThrowTypeError(context, "Controlled graph normalizer received wrong exact origin"); return null;
+        }
+        if (self.silent_graph_failure) return null;
+        const target: [:0]const u8 = if (self.virtual_typebox and std.mem.eql(u8, std.mem.span(name), "typebox")) shared_name
+            else if (std.mem.eql(u8, std.mem.span(name), "./dep.ts")) self.private_name
+            else if (std.mem.eql(u8, std.mem.span(name), "./shared.mjs")) shared_name
+            else { _ = c.JS_ThrowReferenceError(context, "Unknown controlled private specifier: %s", name); return null; };
+        const result = c.js_strdup(context, target.ptr);
+        if (result == null) return null;
+        if (self.native_failure and self.failure_at == .graph_normalizer) {
             self.failNative(context);
             if (!self.native_pending_success) { c.js_free(context, result); return null; }
         }
@@ -64,7 +95,7 @@ const Fixture = struct {
         const self = from(context_data);
         self.private_loads += 1;
         if (self.bad_return) return @ptrFromInt(16); // Must reject before dereference.
-        if (!std.mem.eql(u8, std.mem.span(name), dep_name)) {
+        if (!std.mem.eql(u8, std.mem.span(name), self.private_name)) {
             _ = c.JS_ThrowReferenceError(context, "Unknown controlled module: %s", name); return null;
         }
         const source: [:0]const u8 = self.dep_override orelse if (self.version == 1)
@@ -406,4 +437,90 @@ test "private to shared cache hit preserves original mutable shared attribute ge
         const old_value = try js.get(engine, old, "value"); defer engine.freeValue(old_value);
         try std.testing.expectEqual(@as(i32, 7), try number(engine, old_value));
     }
+}
+
+test "graph normalizer keeps old same physical root resolver policy across late dynamic imports" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var runtime_fixture: Fixture = .{ .engine = engine };
+    c.JS_SetModuleLoaderFunc(engine.runtime, Fixture.normalize, Fixture.sharedLoad, &runtime_fixture);
+    var first: Fixture = .{ .engine = engine, .private_name = "C:/private-module-graph/first-dep.ts" };
+    var second: Fixture = .{ .engine = engine, .version = 2, .private_name = "C:/private-module-graph/second-dep.ts" };
+    const source = "export async function read(){return(await import('./dep.ts')).version}";
+    const old_compiled = try compile(engine, try first.graph2(), source, root_name, c.pi_js_undefined()); defer engine.freeValue(old_compiled);
+    const new_compiled = try compile(engine, try second.graph2(), source, root_name, c.pi_js_undefined()); defer engine.freeValue(new_compiled);
+    const old = try evaluate(engine, old_compiled); defer engine.freeValue(old);
+    const fresh = try evaluate(engine, new_compiled); defer engine.freeValue(fresh);
+    try std.testing.expectEqual(@as(i32, 2), try read(engine, fresh));
+    try std.testing.expectEqual(@as(i32, 1), try read(engine, old));
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expectEqual(@as(i32, 1), try read(engine, old));
+    try std.testing.expectEqual(@as(usize, 2), first.graph_normalizations);
+    try std.testing.expectEqual(@as(usize, 1), second.graph_normalizations);
+    try std.testing.expectEqual(@as(usize, 0), runtime_fixture.runtime_normalizations);
+}
+
+test "private graph virtual name resolves before external runtime policy without changing shared imports" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var fixture: Fixture = .{ .engine = engine, .virtual_typebox = true, .shared_dep = true };
+    c.JS_SetModuleLoaderFunc(engine.runtime, Fixture.normalize, Fixture.sharedLoad, &fixture);
+    const compiled = try compile(engine, try fixture.graph2(), "import {shared} from 'typebox';export const value=shared?1:0;", root_name, c.pi_js_undefined()); defer engine.freeValue(compiled);
+    const ns = try evaluate(engine, compiled); defer engine.freeValue(ns);
+    const value = try js.get(engine, ns, "value"); defer engine.freeValue(value);
+    try std.testing.expectEqual(@as(i32, 1), try number(engine, value));
+    try std.testing.expectEqual(@as(usize, 0), fixture.runtime_normalizations);
+    const ordinary = try engine.evalModule("import {version} from 'typebox';export const value=version;", "C:/private-module-graph/ordinary.mjs"); defer engine.freeValue(ordinary);
+    const external = try js.get(engine, ordinary, "value"); defer engine.freeValue(external);
+    try std.testing.expectEqual(@as(i32, 9), try number(engine, external));
+    try std.testing.expectEqual(@as(usize, 1), fixture.graph_normalizations);
+    try std.testing.expectEqual(@as(usize, 1), fixture.runtime_normalizations);
+    // These are actual compiled fixture modules routing one controlled name;
+    // they neither substitute a TypeBox checker nor qualify its real namespace.
+}
+
+test "private graph normalizer preserves exact pending native reason on null and success returns" {
+    for ([_]bool{ false, true }) |pending_success| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var fixture: Fixture = .{ .engine = engine, .native_failure = true, .native_pending_success = pending_success, .failure_at = .graph_normalizer }; fixture.install();
+        defer if (fixture.native_original) |value| engine.freeValue(value);
+        try std.testing.expectError(error.JavaScriptException, compile(engine, try fixture.graph2(), "import './dep.ts';", root_name, c.pi_js_undefined()));
+        const reason = engine.captured_exception orelse return error.MissingNativeReason;
+        try std.testing.expect(c.pi_js_native_allocation_error_generation(reason) != 0);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, fixture.native_original.?));
+        try std.testing.expectEqual(@as(usize, 1), fixture.graph_normalizations);
+        try std.testing.expectEqual(@as(usize, 0), fixture.selections);
+        try std.testing.expectEqual(@as(usize, 0), fixture.private_loads);
+        try std.testing.expectEqual(@as(usize, 0), fixture.shared_loads);
+    }
+}
+
+test "old constructor null normalizer and unused graph preserve runtime normalizer behavior" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var fixture: Fixture = .{ .engine = engine };
+    c.JS_SetModuleLoaderFunc(engine.runtime, Fixture.normalize, Fixture.sharedLoad, &fixture);
+    const compiled = try compile(engine, try fixture.graph(), "import {version} from './dep.ts';export const value=version;", root_name, c.pi_js_undefined()); defer engine.freeValue(compiled);
+    const ns = try evaluate(engine, compiled); defer engine.freeValue(ns);
+    const value = try js.get(engine, ns, "value"); defer engine.freeValue(value);
+    try std.testing.expectEqual(@as(i32, 1), try number(engine, value));
+    try std.testing.expectEqual(@as(usize, 1), fixture.runtime_normalizations);
+    _ = try fixture.graph2();
+    const before = fixture.selections;
+    const ordinary = try engine.evalModule("import {shared} from './shared.mjs';export const value=shared?1:0;", "C:/private-module-graph/ordinary.mjs"); defer engine.freeValue(ordinary);
+    const shared = try js.get(engine, ordinary, "value"); defer engine.freeValue(shared);
+    try std.testing.expectEqual(@as(i32, 1), try number(engine, shared));
+    try std.testing.expectEqual(@as(usize, 2), fixture.runtime_normalizations);
+    try std.testing.expectEqual(@as(usize, 0), fixture.graph_normalizations);
+    try std.testing.expectEqual(before, fixture.selections);
+}
+
+test "private graph normalizer null without reason rejects before downstream callbacks" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var fixture: Fixture = .{ .engine = engine, .silent_graph_failure = true }; fixture.install();
+    try std.testing.expectError(error.JavaScriptException, compile(engine, try fixture.graph2(), "import './dep.ts';", root_name, c.pi_js_undefined()));
+    const reason = engine.captured_exception orelse return error.MissingControlledReason;
+    const message = try js.get(engine, reason, "message"); defer engine.freeValue(message);
+    const text = c.JS_ToCString(engine.context, message); if (text == null) return js.capture(engine); defer c.JS_FreeCString(engine.context, text);
+    try std.testing.expectEqualStrings("Private module normalizer failed without an exception", std.mem.span(text));
+    try std.testing.expectEqual(@as(usize, 0), fixture.selections);
+    try std.testing.expectEqual(@as(usize, 0), fixture.private_loads);
+    try std.testing.expectEqual(@as(usize, 0), fixture.shared_loads);
 }

@@ -1316,6 +1316,11 @@ typedef struct JSModuleDef JSModuleDef;
    must outlive the context and every old graph; no opaque destructor is owned. */
 typedef struct JSPiPrivateModuleGraph JSPiPrivateModuleGraph;
 typedef struct JSPiModuleOrigin JSPiModuleOrigin;
+/* Return a NUL-terminated js_malloc-owned name, or NULL with an exception.
+   The exact importer chooses this immutable callback before normalization. */
+typedef char *JSPiModuleGraphNormalizeFunc(JSContext *ctx,
+    const JSPiModuleOrigin *importer, const char *physical_base,
+    const char *specifier, JSValueConst captured_attributes, void *opaque);
 /* -1: exception, 0: existing shared domain, 1: importer's private graph. */
 typedef int JSPiModuleGraphSelectFunc(JSContext *ctx,
     const JSPiModuleOrigin *importer, const char *canonical_physical_name,
@@ -1324,6 +1329,12 @@ typedef JSModuleDef *JSPiModuleGraphLoadFunc(JSContext *ctx,
     JSPiPrivateModuleGraph *graph, const char *canonical_physical_name,
     JSValueConst attributes, void *opaque);
 JS_EXTERN JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
+    JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
+    void *opaque);
+/* NULL normalizer uses the existing runtime normalizer. The original
+   constructor is equivalent to this constructor with NULL normalizer. */
+JS_EXTERN JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph2(JSContext *ctx,
+    JSPiModuleGraphNormalizeFunc *normalizer,
     JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
     void *opaque);
 /* As for JS_Eval, source must contain an accessible NUL terminator at

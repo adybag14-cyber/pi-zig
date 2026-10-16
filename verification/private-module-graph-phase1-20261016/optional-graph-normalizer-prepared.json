@@ -1,0 +1,30 @@
+{
+  "status": "optional_private_graph_normalizer_source_only_prepared_unrun",
+  "parent": "24424bbf5c9bb1cb5a5380a01fef50d0bffceb3b",
+  "root_authorized_proposal": "045a0e466ef7eff3806eb37ca58dac4254cf75a7",
+  "new_api": "JS_PiNewPrivateModuleGraph2 with optional immutable JSPiModuleGraphNormalizeFunc",
+  "existing_api": "JS_PiNewPrivateModuleGraph delegates with NULL normalizer",
+  "order": "exact importer selects graph normalizer before runtime normalizer; immutable attrs snapshot precedes callback; selector remains before lookup",
+  "new_allocation_surface": "one borrowed callback field in existing charged graph allocation; callback result uses existing js_malloc-owned NUL-name contract",
+  "pending_reason": "NULL with pending or successful name with pending preserves exact reason before selector; NULL without reason synthesizes explicit TypeError",
+  "graph0": "no origin means original runtime normalizer branch unchanged; no ambient graph",
+  "new_prepared_tests": [
+    "test \"graph normalizer keeps old same physical root resolver policy across late dynamic imports\" {",
+    "test \"private graph virtual name resolves before external runtime policy without changing shared imports\" {",
+    "test \"private graph normalizer preserves exact pending native reason on null and success returns\" {",
+    "test \"old constructor null normalizer and unused graph preserve runtime normalizer behavior\" {",
+    "test \"private graph normalizer null without reason rejects before downstream callbacks\" {"
+  ],
+  "total_prepared_tests": 22,
+  "old17_tests_preserved": true,
+  "c_sha256": "15CB5267575DA7A6EB6DB7A952E81D9C21777C0D0DE5DECAA666C51612F52A50",
+  "header_sha256": "9E734ED5B17A977128888A8BF3192D9987FCCB897829560E9812F8DB04800784",
+  "test_sha256": "12B113FC8E8F64753F6EE340551B1539B7E75293B2A34D1C4FCE4BF6535BFC2D",
+  "callback_storage_context_lifetime": true,
+  "context_pinned_resource_gap": true,
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "engine_authored": false,
+  "default_selected": false
+}
