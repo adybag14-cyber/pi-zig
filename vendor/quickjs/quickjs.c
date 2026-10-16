@@ -22076,6 +22076,8 @@ static bool js_native_async_function_resume(JSAsyncFunctionData *s,
 static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
 {
     bool is_success = true;
+    bool module_fatal = false;
+    JSValue module_error = JS_UNDEFINED;
     JSValue func_ret, ret2;
 
     func_ret = async_func_resume(ctx, &s->func_state);
@@ -22087,10 +22089,20 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JSValue error = JS_GetException(ctx);
             ret2 = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED,
                            1, vc(&error));
+            if (s->module_execution &&
+                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                module_error = JS_GetException(ctx);
+                module_fatal = true;
+            }
             JS_FreeValue(ctx, error);
         resolved:
+            /* Resolving callbacks may return undefined while a public hook
+               or enqueue failure leaves a fatal reason pending. It was held
+               before value cleanup; do not require an exception return. */
+            if (module_fatal)
+                is_success = false;
             if (unlikely(JS_IsException(ret2))) {
-                if (JS_IsUncatchableError(ctx->rt->current_exception)) {
+                if (module_fatal || JS_IsUncatchableError(ctx->rt->current_exception)) {
                     is_success = false;
                 } else {
                     abort(); /* BUG */
@@ -22099,7 +22111,7 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             JS_FreeValue(ctx, ret2);
         }
         if (!is_success && s->module_execution) {
-            JSValue error = JS_GetException(ctx);
+            JSValue error = module_fatal ? module_error : JS_GetException(ctx);
             if (s->module)
                 js_mark_module_fatal_failure(s->module, error);
             js_async_function_terminate(ctx->rt, s);
@@ -22115,6 +22127,11 @@ static bool js_async_function_resume(JSContext *ctx, JSAsyncFunctionData *s)
             /* function returned */
             ret2 = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED,
                            1, vc(&value));
+            if (s->module_execution &&
+                JS_IsUncatchableError(ctx->rt->current_exception)) {
+                module_error = JS_GetException(ctx);
+                module_fatal = true;
+            }
             JS_FreeValue(ctx, value);
             goto resolved;
         } else {

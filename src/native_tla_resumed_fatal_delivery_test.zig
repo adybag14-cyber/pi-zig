@@ -245,3 +245,50 @@ test "native TLA resumed fatal ordinary nonmodule async callbacks retain rejecti
     engine.freeValue(result);
     try std.testing.expectEqual(@as(u64, 0), engine.native_allocation_generation);
 }
+
+fn fatalCompletionHook(context: ?*c.JSContext, kind: c.JSPromiseHookType, _: c.JSValue, _: c.JSValue, opaque: ?*anyopaque) callconv(.c) void {
+    if (kind != c.JS_PROMISE_HOOK_RESOLVE) return;
+    const engine: *em.Engine = @ptrCast(@alignCast(opaque.?));
+    const global = c.JS_GetGlobalObject(context);
+    defer c.JS_FreeValue(context, global);
+    const armed = c.JS_GetPropertyStr(context, global, "armCompletion");
+    defer c.JS_FreeValue(context, armed);
+    if (c.JS_ToBool(context, armed) != 1) return;
+    if (c.JS_SetPropertyStr(context, global, "armCompletion", c.pi_js_bool(context, 0)) < 0) return;
+    // A genuine public host hook reports a native fatal allocation reason.
+    // The intrinsic resolving callback still returns undefined after this.
+    _ = engine.throwNativeOutOfMemory();
+    c.JS_SetUncatchableError(context, engine.native_allocation_exception.?);
+}
+test "native TLA resumed fatal resolving callback pending host hook reason is terminal and exact" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const module = try engine.eval("await Promise.resolve(); globalThis.armCompletion=true;", "tla-resumed-resolving-hook.mjs", c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
+    defer engine.freeValue(module);
+    const boundary = engine.native_allocation_generation;
+    const pending = c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, module));
+    defer engine.freeValue(pending);
+    try std.testing.expect(!c.JS_IsException(pending));
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
+    c.JS_SetPromiseHook(engine.runtime, fatalCompletionHook, engine);
+    defer c.JS_SetPromiseHook(engine.runtime, null, null);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(pending));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, engine.captured_exception.?, engine.native_allocation_exception.?));
+    try std.testing.expect(c.JS_IsUncatchableError(engine.captured_exception.?));
+    try std.testing.expect(engine.nativeAllocationError(error.JavaScriptException, boundary) == error.OutOfMemory);
+    const after_failure = engine.native_allocation_generation;
+    const cached = c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, module));
+    defer engine.freeValue(cached);
+    try std.testing.expect(c.JS_IsException(cached));
+    const reason = c.JS_GetException(engine.context);
+    defer engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.native_allocation_exception.?));
+    try std.testing.expect(!c.JS_IsUncatchableError(reason));
+    // Completion may already have queued the module fulfillment handler.
+    // It must observe the recorded terminal failure and no-op after delivery.
+    try drain(engine);
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    try std.testing.expectEqual(after_failure, engine.native_allocation_generation);
+    const healthy = try engine.evalModule("await 0; export const healthy=true;", "tla-after-resolving-hook.mjs");
+    engine.freeValue(healthy);
+}
