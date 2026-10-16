@@ -2,6 +2,7 @@ const std = @import("std");
 const em = @import("extensions/engine.zig");
 const af = @import("extensions/native_async_function.zig");
 const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
+const AllocationScope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
 
 fn fatalStart(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
@@ -150,7 +151,7 @@ test "native TLA fatal ordinary raw lookalike and historical errors remain exact
 }
 
 fn allocateOwned(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
+    var scope: AllocationScope = .{ .engine = engine };
     defer scope.deinit();
     // The actual failure may occur while Scope.own grows after JS_NewObject.
     // Scope owns/free behavior is exercised, not replaced by a test mock.

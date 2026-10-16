@@ -12,7 +12,7 @@
     },
     {
       "path": "src/native_tla_fatal_delivery_test.zig",
-      "sha256": "E058956E403B07D643D812E724F943807BC583577812EFFE1AB6E02A8A711BE5"
+      "sha256": "3DF545ABD5AD94B36301F5417FE598DB70A01ED4DF65C68CDB364C73CDF0F58C"
     },
     {
       "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DESIGN.md",
