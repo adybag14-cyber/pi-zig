@@ -1,0 +1,13 @@
+{
+  "status": "initializer_allocation_boundary_audit_source_only",
+  "prior": "aaf323f078b496db637a52197ce76adcb9dcf70f",
+  "audit": "discard guest call could return fresh tagged JavaScriptException directly through Bodyerror and become ordinary rejection; outer invocation catch now classifies/propagates with inherited helpers",
+  "current_boundary": "snapshot before each START/resume callback; freshcaptured reason rethrowRecognizedAllocation before failureSince",
+  "await_rejection_boundary": "original private invocation generation retained across Await",
+  "ordinary_semantics": "factory/commit catches call discard; ordinarydiscardthrow overrides originalreason; raw guest reasons preserved",
+  "native_sha256": "D328CF975AD224F24F85EF88390E820F3FFC8914452BF5E3752AA3D637935BE2",
+  "fmt_ast": false,
+  "native_tested": false,
+  "source_expected_changed": false,
+  "default_selected": false
+}
