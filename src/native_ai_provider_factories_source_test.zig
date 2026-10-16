@@ -13,6 +13,7 @@ test "native actual provider factories compare all genuine4954 Source92 observat
     try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"provider-factories-source92"});
     try @import("extensions/node_fs.zig").install(engine, std.testing.io);
     try @import("extensions/node_path.zig").install(engine, std.testing.io);
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
     var s: v.Scope = .{ .engine = engine };
     defer s.deinit();
     const api = try s.object();

@@ -114,7 +114,15 @@ fn publicationBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots
         if (!try current(&scope, owner)) return returned(engine, c.pi_js_bool(engine.context, 0));
     }
     const update = try scope.get(publication, "update");
-    if (!temp.nullish(update)) _ = try scope.call(update, publication, &.{});
+    if (!temp.nullish(update)) {
+        // Source optional call reads this callee once, then rejects a present
+        // non-callable value with the expression's original diagnostic label.
+        if (!c.JS_IsFunction(engine.context, update)) {
+            _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "publication.update is not a function"));
+            unreachable;
+        }
+        _ = try scope.call(update, publication, &.{});
+    }
     return returned(engine, c.pi_js_bool(engine.context, 1));
 }
 pub fn phaseBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
