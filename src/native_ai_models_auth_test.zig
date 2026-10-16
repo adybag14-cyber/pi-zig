@@ -16,8 +16,18 @@ test "native actual Models auth replays genuine Source69 with real defaults and 
             c.JS_RunGC(v.em.Engine.fromContext(context.?).runtime);
             return c.pi_js_undefined();
         }
+        fn progress(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+            if (argc != 2 or !c.JS_IsString(args[0]) or !c.JS_IsString(args[1])) return c.JS_ThrowTypeError(context, "Auth69 diagnostic requires literal case and phase");
+            const id = c.JS_ToCString(context, args[0]) orelse return c.JS_Throw(context, c.JS_GetException(context));
+            defer c.JS_FreeCString(context, id);
+            const phase = c.JS_ToCString(context, args[1]) orelse return c.JS_Throw(context, c.JS_GetException(context));
+            defer c.JS_FreeCString(context, phase);
+            std.debug.print("MODELS_AUTH69_CASE {s} {s}\n", .{ std.mem.span(phase), std.mem.span(id) });
+            return c.pi_js_undefined();
+        }
     };
     try engine.bindFunction("__modelsAuthGC", Fixture.collect, 0);
+    try engine.bindFunction("__modelsAuthCaseProgress", Fixture.progress, 2);
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const models = try s.own(try @import("extensions/native_ai_models_namespace.zig").create(engine));
@@ -46,7 +56,25 @@ test "native actual Models auth replays genuine Source69 with real defaults and 
     const global = try s.own(try engine.checked(c.JS_GetGlobalObject(engine.context)));
     const source = @embedFile("extensions/fixtures/models-auth-4954-source.json");
     try s.put(global, "__modelsAuthExpected", try s.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-models-auth-source69.json"))));
-    const result = engine.evalModule(@embedFile("extensions/fixtures/models-auth-4954-cases.input.txt") ++
+    // Diagnostics are assembled around the unchanged capture body. Its work,
+    // awaits, rows, raw errors, and every comparator below remain byte exact.
+    // The two synchronous host calls add no Promise, tick, or value clone.
+    const fixture_input = @embedFile("extensions/fixtures/models-auth-4954-cases.input.txt");
+    const capture_prefix = "async function capture(id,work){";
+    const capture_at = std.mem.indexOf(u8, fixture_input, capture_prefix) orelse return error.Auth69DiagnosticCaptureMissing;
+    const capture_body = capture_at + capture_prefix.len;
+    if (std.mem.indexOfPos(u8, fixture_input, capture_body, capture_prefix) != null) return error.Auth69DiagnosticCaptureAmbiguous;
+    const capture_end = std.mem.indexOfScalarPos(u8, fixture_input, capture_body, '\n') orelse return error.Auth69DiagnosticCaptureUnterminated;
+    const capture_close = if (capture_end > 0 and fixture_input[capture_end - 1] == '\r') capture_end - 2 else capture_end - 1;
+    if (fixture_input[capture_close] != '}') return error.Auth69DiagnosticCaptureShapeChanged;
+    var program: std.Io.Writer.Allocating = .init(std.testing.allocator);
+    defer program.deinit();
+    try program.writer.writeAll(fixture_input[0..capture_body]);
+    try program.writer.writeAll("__modelsAuthCaseProgress(id,'enter');");
+    try program.writer.writeAll(fixture_input[capture_body..capture_close]);
+    try program.writer.writeAll("__modelsAuthCaseProgress(id,'complete');");
+    try program.writer.writeAll(fixture_input[capture_close..]);
+    try program.writer.writeAll(
         \\import * as actual from 'native:actual-models-auth69';
         \\const rawErrors=[],key='PI_MODELS_AUTH_4954_KEY',prior=process.env[key],had=Object.hasOwn(process.env,key);
         \\try{
@@ -61,7 +89,8 @@ test "native actual Models auth replays genuine Source69 with real defaults and 
         \\ const m=actual.createModels();if(!(m.credentials instanceof actual.InMemoryCredentialStore))throw Error('Default credential constructor diverged');
         \\ globalThis.__retainedModelsAuth={m,store,other,value,actual};
         \\}finally{if(had)process.env[key]=prior;else delete process.env[key];delete globalThis.__modelsAuthExpected}
-    , "native-actual-models-auth-source69.mjs") catch |err| {
+    );
+    const result = engine.evalModule(program.written(), "native-actual-models-auth-source69.mjs") catch |err| {
         std.debug.print("Actual Models auth Source69: {s}\n", .{engine.last_error orelse "no diagnostic"});
         return err;
     };
