@@ -1,0 +1,13 @@
+{
+  "pid": 23952,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-operators-production-20261016\\Run-TypeBoxOperatorsSource-20261016.ps1 -Attempt first -RootLightGrant",
+  "created_utc": "2026-10-15T23:46:15.6493380Z",
+  "candidate": "3ed99011a6f53a7ffb1392fac759ffdf0b0b843b",
+  "seal_sha256": "783427956F4AB6DF1B5E0195671981529B57AF67A2F01730FB90F7D0CDA000B7",
+  "caller_sha256": "8A68FCD861803E0673B6CBECA9892ED25F4FDC8DC8FB1A35B0C9E2CDE4FC9A69",
+  "case_inventory_sha256": "87F06A71A2F58AD45167C3B7FC8CC1452338DB3465450935D61CFE8CCFD05B31",
+  "status": "running",
+  "slot": "LIGHT6",
+  "native_job": false
+}

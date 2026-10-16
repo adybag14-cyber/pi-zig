@@ -1,4 +1,4 @@
-# Actual TypeBox generic operator closure, source checkpoint
+# Actual TypeBox generic operator closure, double Source396 proof checkpoint
 
 This isolated lane starts from Root
 `3b479da0a86a20c5fd1baf15969777733ded95c9`. It adds new operator implementation,
@@ -6,12 +6,34 @@ runtime primitives, comparator input/test and authoring/provenance files. It
 does not modify shared Engine, TypeBox, SDK, C or build files. AEA5 and its
 published proof remain unchanged.
 
-**Status: source-only.** Native code has been authored and passed formatting and
-Zig AST checks. Genuine Source execution, native semantic compilation/execution,
-host GPA and C malloc qualification have not run for this candidate. No expected
-results are fabricated or supplied. The test fails if its genuine golden is
-absent. No availability, integration, whole-TypeBox or activation claim follows
-from this checkpoint.
+**Status: genuine double Source396 captured and saved proof verified; native
+unrun.** Native code has been authored and passed formatting and Zig AST checks.
+Two actual TypeBox executions at candidate
+`3ed99011a6f53a7ffb1392fac759ffdf0b0b843b` each passed all 396 probes with identical
+rows and output bytes. Full Source, dependency, Node/tool, candidate and compiler
+posthash/path checks reported zero drift, including 84 historical absence
+contracts. The genuine expected fixture was copied only after both terminal
+passes and agreement. Its SHA256 is
+`888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C`.
+Native semantic compilation/execution, host GPA and C malloc qualification have
+not run. No availability, integration, whole-TypeBox or activation claim follows
+from this proof checkpoint.
+
+`source396-proof/` preserves the original 34 indexed payloads, five full frozen
+inventories and exact bytes of 371 observed modules. Each capture observed 369
+actual TypeBox modules plus the source observer and capture entrypoint. Original
+Node terminal receipts record PIDs 73412 and 77848, exit code 0. The wrapper
+identity receipts retain their historical launch status `running`; they are
+identity evidence, not terminal evidence. On resume, both actual Node PIDs and
+wrapper PIDs 23952 and 73956 were independently absent.
+
+Run `./verification/typebox-operators-production-20261016/Validate-Source396Proof.ps1`
+with PowerShell 7 to verify every saved payload, every zipped inventory/module
+body, observed module logs, terminal/posthash receipts, the probe inventory and
+both ordered row sets against the genuine expected fixture. This is a read-only
+verification of historical proof; it does not execute TypeBox or native code.
+`static-validation.json` remains the original static checkpoint report and
+predates the Source captures.
 
 ## Authority and implementation
 
@@ -79,7 +101,8 @@ The seven evaluation bindings delegate directly to the actual algebra in
 
 Required other-lane source successors are `3851638b` (new shared files),
 `95f3dd29` (Memory descriptor evaluation order) and `d1041b56` (all seven
-evaluation APIs), or their reviewed later descendants. They have not been
+evaluation APIs), or their reviewed later descendants, including schema
+checkpoint `f144385ac79f4a8d81e82f7bb331f0730c046994`. They have not been
 copied over newer Root files. The supplied comparator requires this dependency
 closure to be intaken before semantic compilation; it does not hide missing
 bindings or provide substitutes.
@@ -113,8 +136,8 @@ order/thrown-value identity, GC rooting and a guest OOM lookalike.
 against actual installed Source exports. It refuses output overwrite. It must
 only run after a Root Source slot grant under a clean seal and the standard full
 candidate/vendor/Source/dependency/compiler/Node/control freezes. A double capture
-must match exact rows and have zero posthash drift. Nothing has been captured in
-this lane yet.
+must match exact rows and have zero posthash drift. The original two captures
+and their complete saved evidence are now retained in `source396-proof/`.
 
 `src/native_typebox_operators_production_test.zig` reads the explicit genuine
 capture path from `PI_TYPEBOX_OPERATORS_GENUINE_JSON`, compares every row and all
