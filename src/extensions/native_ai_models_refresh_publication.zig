@@ -164,17 +164,3 @@ fn knownTypes(scope: *Scope, entry: c.JSValue, imports: c.JSValue) !c.JSValue {
     try scope.put(result, "models", try scope.call(filter, models, &.{predicate}));
     return result;
 }
-pub fn prepareKnownTypes(engine: *em.Engine, imports: c.JSValue) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const known = try scope.get(imports, "knownModelTypes");
-    const predicate = try scope.own(try functions.create(engine, "hasKnownModelType", 1, hasKnownType, &.{ try scope.get(imports, "getModelType"), known }));
-    try scope.put(imports, "hasKnownModelType", predicate);
-}
-fn hasKnownType(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const object = try scope.global("Object");
-    const has = try scope.get(object, "hasOwn");
-    return js.call(engine, has, object, &.{ roots[1], try scope.call(roots[0], c.pi_js_undefined(), &.{arg(args, 0)}) });
-}
