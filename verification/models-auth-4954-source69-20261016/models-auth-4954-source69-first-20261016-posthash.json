@@ -1,0 +1,55 @@
+{
+  "manifests": [
+    {
+      "drift": 0,
+      "changed": [],
+      "name": "source",
+      "files": 1970
+    },
+    {
+      "drift": 0,
+      "changed": [],
+      "name": "dependencies",
+      "files": 31064
+    },
+    {
+      "drift": 0,
+      "changed": [],
+      "name": "node_tools",
+      "files": 1774
+    }
+  ],
+  "extra_control_drift": [],
+  "absent_dependency_drift": [],
+  "driver_sha256": "7A2035E3A60A2B04C360B4330DE74C1B85D5A61F52CA5AD4609B454FB0CC296B",
+  "path_inventories": [
+    {
+      "drift": [],
+      "name": "source",
+      "count": 1970
+    },
+    {
+      "drift": [],
+      "name": "dependencies",
+      "count": 31064
+    },
+    {
+      "drift": [],
+      "name": "node_tools",
+      "count": 1774
+    }
+  ],
+  "candidate_head_drift": false,
+  "completed_utc": "2026-10-16T09:47:10.2577756+00:00",
+  "expected_still_absent": true,
+  "historical_absence_records": 84,
+  "control_manifest_drift": false,
+  "owner_failure": null,
+  "candidate_drift": [],
+  "source_head_drift": false,
+  "compiler_inventory_drift": [],
+  "candidate_inventory_drift": [],
+  "compiler_drift": [],
+  "compiler_files": 19546,
+  "candidate_files": 8303
+}

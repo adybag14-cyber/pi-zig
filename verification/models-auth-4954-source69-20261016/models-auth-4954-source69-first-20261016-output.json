@@ -1,0 +1,1062 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "count": 69,
+  "inputSha256": "663b4f76e1a4be837d9bd43673794fc20fde1f3a0ddd2bb25f8f6ce0d78f8615",
+  "caseIds": [
+    "ordinary-auth-method-surface",
+    "real-provider-store-default-context",
+    "unknown-check-auth",
+    "unknown-get-auth",
+    "unknown-login",
+    "unknown-logout",
+    "api-check-second-credential-read",
+    "api-check-changing-second-read",
+    "api-check-direct-no-second-read",
+    "oauth-check-does-not-refresh",
+    "oauth-without-handler-no-ambient-fallback",
+    "read-credential-unknown-cause",
+    "check-direct-error-cause",
+    "check-fallback-error-cause",
+    "read-credential-borrowed-dynamic-receiver",
+    "check-callee-before-await",
+    "authenticated-parallel-provider-order",
+    "authenticated-undefined-auth-filter",
+    "authenticated-null-auth-kept",
+    "authenticated-empty-id-means-all",
+    "available-real-catalog",
+    "available-filter-nullish-fallback",
+    "all-available-chat-id-filter",
+    "available-of-type-live-delegation",
+    "check-options-getter-synchronous",
+    "auth-options-getter-asynchronous",
+    "check-abort-before-read",
+    "check-abort-pending-read",
+    "all-available-throw-identity",
+    "auth-stored-unknown-fields",
+    "auth-explicit-key-bypasses-store",
+    "auth-env-overlay-live-base",
+    "auth-headers-case-insensitive",
+    "auth-provider-string-preserves-result",
+    "apply-auth-live-receiver",
+    "apply-auth-transform-order-and-rest",
+    "apply-auth-unconfigured-canonical-error",
+    "login-real-api-helper-persists",
+    "login-unknown-type-selects-api",
+    "login-abort-before-mutation",
+    "login-abort-during-mutation-persists",
+    "login-modify-error-cause",
+    "logout-delete-error-cause",
+    "resolve-api-cause-and-source",
+    "resolve-unsupported-stored-no-fallback",
+    "resolve-unknown-read-cause",
+    "resolve-oauth-actual-to-auth",
+    "resolve-oauth-derivation-error",
+    "refresh-not-oauth-preserves-store",
+    "refresh-recheck-skips-provider",
+    "refresh-rotated-token-and-extra-identity",
+    "refresh-oauth-failure-canonical",
+    "refresh-store-failure-canonical",
+    "refresh-existing-models-error-identity",
+    "refresh-lock-wait-abort",
+    "refresh-started-survives-abort",
+    "refresh-concurrent-one-provider-call",
+    "resolve-explicit-minimum-rejects-short-token",
+    "resolve-default-minimum-allows-short-token",
+    "refresh-timeout-argument-and-getter-order",
+    "refresh-cleanup-on-modify-getter-throw",
+    "resolve-helper-promise-order",
+    "resolve-api-argument-getter-order",
+    "resolve-read-argument-outside-wrapper",
+    "resolve-stored-oauth-argument-getter-order",
+    "refresh-finally-overrides-models-error",
+    "refresh-abort-before-modify",
+    "refresh-return-type-getter-after-cleanup",
+    "pending-auth-gc-retention"
+  ],
+  "rows": [
+    {
+      "id": "ordinary-auth-method-surface",
+      "ok": true,
+      "value": [
+        {
+          "name": "readCredential",
+          "length": 2,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "checkProviderAuth",
+          "length": 3,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "checkAuth",
+          "length": 2,
+          "async": "Function",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAuthenticatedProviders",
+          "length": 2,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAvailable",
+          "length": 2,
+          "async": "Function",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAvailableOfType",
+          "length": 3,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAllAvailable",
+          "length": 2,
+          "async": "Function",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "getAuth",
+          "length": 2,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "login",
+          "length": 4,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "logout",
+          "length": 2,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        },
+        {
+          "name": "applyAuth",
+          "length": 2,
+          "async": "AsyncFunction",
+          "ownPrototype": false,
+          "enumerable": false,
+          "writable": true,
+          "configurable": true
+        }
+      ]
+    },
+    {
+      "id": "real-provider-store-default-context",
+      "ok": true,
+      "value": {
+        "store": true,
+        "providerId": "anthropic",
+        "ownFields": [
+          "providers",
+          "credentials",
+          "modelsStore",
+          "authContext",
+          "refreshGenerations",
+          "refreshControllers",
+          "publicationChains"
+        ],
+        "auth": {
+          "auth": {
+            "apiKey": "owned-ambient"
+          },
+          "source": "PI_MODELS_AUTH_4954_KEY"
+        }
+      }
+    },
+    {
+      "id": "unknown-check-auth",
+      "ok": true,
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "unknown-get-auth",
+      "ok": true,
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "unknown-login",
+      "ok": true,
+      "value": {
+        "rejected": true,
+        "name": "ModelsError",
+        "message": "Unknown provider: missing",
+        "code": "provider",
+        "constructor": "ModelsError",
+        "canonical": true
+      }
+    },
+    {
+      "id": "unknown-logout",
+      "ok": true,
+      "value": {
+        "entries": []
+      }
+    },
+    {
+      "id": "api-check-second-credential-read",
+      "ok": true,
+      "value": {
+        "auth": {
+          "source": "stored credential",
+          "type": "api_key"
+        },
+        "reads": [
+          "anthropic",
+          "anthropic"
+        ]
+      }
+    },
+    {
+      "id": "api-check-changing-second-read",
+      "ok": true,
+      "value": {
+        "auth": {
+          "source": "stored credential",
+          "type": "api_key"
+        },
+        "calls": 2
+      }
+    },
+    {
+      "id": "api-check-direct-no-second-read",
+      "ok": true,
+      "value": {
+        "auth": {
+          "source": "direct-check",
+          "type": "api_key"
+        },
+        "reads": 1,
+        "credential": "direct",
+        "contextSame": true,
+        "signal": true
+      }
+    },
+    {
+      "id": "oauth-check-does-not-refresh",
+      "ok": true,
+      "value": {
+        "auth": {
+          "source": "OAuth",
+          "type": "oauth"
+        },
+        "calls": 0
+      }
+    },
+    {
+      "id": "oauth-without-handler-no-ambient-fallback",
+      "ok": true,
+      "value": {
+        "checkUndefined": true,
+        "authUndefined": true
+      }
+    },
+    {
+      "id": "read-credential-unknown-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "Credential store read failed for anthropic: [object Object]",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "check-direct-error-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "API key auth check failed for provider anthropic: Symbol(owned-check)",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "check-fallback-error-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "API key auth failed for provider anthropic: [object Object]",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "read-credential-borrowed-dynamic-receiver",
+      "ok": true,
+      "value": {
+        "key": "other"
+      }
+    },
+    {
+      "id": "check-callee-before-await",
+      "ok": true,
+      "value": {
+        "result": {
+          "source": "captured",
+          "type": "api_key"
+        },
+        "trace": [
+          "callee",
+          "read",
+          "called"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-parallel-provider-order",
+      "ok": true,
+      "value": {
+        "started": [
+          "anthropic",
+          "second"
+        ],
+        "ids": [
+          "anthropic",
+          "second"
+        ]
+      }
+    },
+    {
+      "id": "authenticated-undefined-auth-filter",
+      "ok": true,
+      "value": {
+        "count": 0
+      }
+    },
+    {
+      "id": "authenticated-null-auth-kept",
+      "ok": true,
+      "value": {
+        "count": 1
+      }
+    },
+    {
+      "id": "authenticated-empty-id-means-all",
+      "ok": true,
+      "value": {
+        "count": 1
+      }
+    },
+    {
+      "id": "available-real-catalog",
+      "ok": true,
+      "value": {
+        "count": 17,
+        "sameFirst": true,
+        "firstId": "claude-fable-5"
+      }
+    },
+    {
+      "id": "available-filter-nullish-fallback",
+      "ok": true,
+      "value": {
+        "count": 17,
+        "expected": 17
+      }
+    },
+    {
+      "id": "all-available-chat-id-filter",
+      "ok": true,
+      "value": {
+        "ids": [
+          "owned-image"
+        ]
+      }
+    },
+    {
+      "id": "available-of-type-live-delegation",
+      "ok": true,
+      "value": {
+        "ids": [
+          "image"
+        ],
+        "provider": "anthropic",
+        "optionsSame": true
+      }
+    },
+    {
+      "id": "check-options-getter-synchronous",
+      "ok": true,
+      "value": {
+        "same": true,
+        "synchronous": true
+      }
+    },
+    {
+      "id": "auth-options-getter-asynchronous",
+      "ok": true,
+      "value": {
+        "synchronous": false,
+        "same": true
+      }
+    },
+    {
+      "id": "check-abort-before-read",
+      "ok": true,
+      "value": {
+        "same": true,
+        "calls": 0
+      }
+    },
+    {
+      "id": "check-abort-pending-read",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "all-available-throw-identity",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "auth-stored-unknown-fields",
+      "ok": true,
+      "value": {
+        "result": {
+          "auth": {
+            "apiKey": "owned-stored"
+          },
+          "env": {
+            "owned": "yes"
+          },
+          "source": "stored credential"
+        },
+        "storedSame": true,
+        "unknownSame": true
+      }
+    },
+    {
+      "id": "auth-explicit-key-bypasses-store",
+      "ok": true,
+      "value": {
+        "auth": {
+          "apiKey": "explicit-owned"
+        },
+        "env": {
+          "owned": "override"
+        },
+        "source": "stored credential"
+      }
+    },
+    {
+      "id": "auth-env-overlay-live-base",
+      "ok": true,
+      "value": {
+        "overlay": "overlay-owned",
+        "fallback": "owned-ambient"
+      }
+    },
+    {
+      "id": "auth-headers-case-insensitive",
+      "ok": true,
+      "value": {
+        "auth": {
+          "headers": {
+            "KEEP": "k",
+            "authorization": "new",
+            "Added": "a"
+          }
+        },
+        "source": "PI_MODELS_AUTH_4954_KEY"
+      }
+    },
+    {
+      "id": "auth-provider-string-preserves-result",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "apply-auth-live-receiver",
+      "ok": true,
+      "value": {
+        "trace": [
+          true,
+          true
+        ],
+        "sameModel": true,
+        "options": {
+          "owned": true,
+          "apiKey": "owned-key"
+        }
+      }
+    },
+    {
+      "id": "apply-auth-transform-order-and-rest",
+      "ok": true,
+      "value": {
+        "trace": [
+          "transform:get",
+          "transform:get",
+          "transform:call",
+          "transform:get"
+        ],
+        "baseUrl": "https://owned.invalid",
+        "sameModel": false,
+        "options": {
+          "apiKey": "override",
+          "headers": {
+            "authorization": "new",
+            "last": "yes"
+          },
+          "env": {
+            "base": "yes",
+            "local": "yes"
+          }
+        },
+        "symbol": "symbol-value",
+        "transformAbsent": true
+      }
+    },
+    {
+      "id": "apply-auth-unconfigured-canonical-error",
+      "ok": true,
+      "value": {
+        "rejected": true,
+        "name": "ModelsError",
+        "message": "Provider is not configured: anthropic",
+        "code": "auth",
+        "constructor": "ModelsError",
+        "canonical": true
+      }
+    },
+    {
+      "id": "login-real-api-helper-persists",
+      "ok": true,
+      "value": {
+        "credential": {
+          "type": "api_key",
+          "key": "owned-login"
+        },
+        "sameStored": true,
+        "prompts": [
+          {
+            "type": "secret",
+            "message": "Enter Owned Models auth"
+          }
+        ]
+      }
+    },
+    {
+      "id": "login-unknown-type-selects-api",
+      "ok": true,
+      "value": {
+        "type": "api_key",
+        "key": "owned-future"
+      }
+    },
+    {
+      "id": "login-abort-before-mutation",
+      "ok": true,
+      "value": {
+        "same": true,
+        "modifies": 0
+      }
+    },
+    {
+      "id": "login-abort-during-mutation-persists",
+      "ok": true,
+      "value": {
+        "rejected": true
+      }
+    },
+    {
+      "id": "login-modify-error-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "Credential store modify failed for anthropic: [object Object]",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "logout-delete-error-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "Credential store delete failed for anthropic: Symbol(owned-delete)",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "resolve-api-cause-and-source",
+      "ok": true,
+      "value": {
+        "source": "PI_MODELS_AUTH_4954_KEY",
+        "key": "owned-ambient"
+      }
+    },
+    {
+      "id": "resolve-unsupported-stored-no-fallback",
+      "ok": true,
+      "value": {
+        "undefined": true
+      }
+    },
+    {
+      "id": "resolve-unknown-read-cause",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "Credential store read failed for anthropic: [object Object]",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "resolve-oauth-actual-to-auth",
+      "ok": true,
+      "value": {
+        "auth": {
+          "apiKey": "owned-actual-oauth"
+        },
+        "source": "OAuth"
+      }
+    },
+    {
+      "id": "resolve-oauth-derivation-error",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "OAuth auth derivation failed for anthropic: [object Object]",
+          "code": "oauth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "refresh-not-oauth-preserves-store",
+      "ok": true,
+      "value": {
+        "undefined": true,
+        "sameStored": true
+      }
+    },
+    {
+      "id": "refresh-recheck-skips-provider",
+      "ok": true,
+      "value": {
+        "same": true,
+        "calls": 0
+      }
+    },
+    {
+      "id": "refresh-rotated-token-and-extra-identity",
+      "ok": true,
+      "value": {
+        "same": true,
+        "storedSame": true,
+        "extraSame": true,
+        "access": "rotated"
+      }
+    },
+    {
+      "id": "refresh-oauth-failure-canonical",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "OAuth refresh failed for anthropic: [object Object]",
+          "code": "oauth",
+          "constructor": "ModelsError"
+        },
+        "stored": "old"
+      }
+    },
+    {
+      "id": "refresh-store-failure-canonical",
+      "ok": true,
+      "value": {
+        "canonical": true,
+        "causeSame": true,
+        "error": {
+          "name": "ModelsError",
+          "message": "Credential store modify failed for anthropic: Symbol(owned-store)",
+          "code": "auth",
+          "constructor": "ModelsError"
+        }
+      }
+    },
+    {
+      "id": "refresh-existing-models-error-identity",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "refresh-lock-wait-abort",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "refresh-started-survives-abort",
+      "ok": true,
+      "value": {
+        "same": true,
+        "storedSame": true,
+        "providerAborted": false,
+        "callerAborted": true,
+        "signalDifferent": true
+      }
+    },
+    {
+      "id": "refresh-concurrent-one-provider-call",
+      "ok": true,
+      "value": {
+        "bothSame": true,
+        "calls": 1
+      }
+    },
+    {
+      "id": "resolve-explicit-minimum-rejects-short-token",
+      "ok": true,
+      "value": {
+        "rejected": true,
+        "name": "ModelsError",
+        "message": "OAuth refresh returned a token that expires too soon for anthropic",
+        "code": "oauth",
+        "constructor": "ModelsError",
+        "canonical": true
+      }
+    },
+    {
+      "id": "resolve-default-minimum-allows-short-token",
+      "ok": true,
+      "value": {
+        "auth": {
+          "apiKey": "short"
+        },
+        "source": "OAuth"
+      }
+    },
+    {
+      "id": "refresh-timeout-argument-and-getter-order",
+      "ok": true,
+      "value": [
+        "refresh:get",
+        [
+          "timeout",
+          15000
+        ],
+        "refresh:call"
+      ]
+    },
+    {
+      "id": "refresh-cleanup-on-modify-getter-throw",
+      "ok": true,
+      "value": {
+        "trace": [
+          "abort"
+        ],
+        "canonical": true,
+        "causeSame": true
+      }
+    },
+    {
+      "id": "resolve-helper-promise-order",
+      "ok": true,
+      "value": {
+        "same": true,
+        "trace": [
+          "read",
+          0,
+          "resolve",
+          1,
+          2,
+          3,
+          4,
+          "settled",
+          5,
+          6,
+          7
+        ]
+      }
+    },
+    {
+      "id": "resolve-api-argument-getter-order",
+      "ok": true,
+      "value": [
+        "env",
+        "key",
+        "auth",
+        "apiKey",
+        "auth",
+        "apiKey",
+        "id",
+        "key",
+        "env"
+      ]
+    },
+    {
+      "id": "resolve-read-argument-outside-wrapper",
+      "ok": true,
+      "value": {
+        "same": true,
+        "canonical": false,
+        "trace": [
+          "id"
+        ]
+      }
+    },
+    {
+      "id": "resolve-stored-oauth-argument-getter-order",
+      "ok": true,
+      "value": [
+        "id",
+        "auth",
+        "oauth",
+        "id",
+        "auth",
+        "oauth",
+        "minimum"
+      ]
+    },
+    {
+      "id": "refresh-finally-overrides-models-error",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "id": "refresh-abort-before-modify",
+      "ok": true,
+      "value": {
+        "same": true,
+        "trace": [
+          true,
+          true
+        ]
+      }
+    },
+    {
+      "id": "refresh-return-type-getter-after-cleanup",
+      "ok": true,
+      "value": {
+        "same": true,
+        "trace": [
+          "remove",
+          "post:type"
+        ]
+      }
+    },
+    {
+      "id": "pending-auth-gc-retention",
+      "ok": true,
+      "value": {
+        "same": true
+      }
+    }
+  ],
+  "rawErrors": [
+    {
+      "id": "unknown-login",
+      "name": "ModelsError",
+      "message": "Unknown provider: missing",
+      "code": "provider",
+      "stack": "ModelsError: Unknown provider: missing\n    at ModelsImpl.login (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:777:24)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:32:113\n    at caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:43)\n    at wrapped (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:26:53)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:32:78\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:32:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "read-object",
+      "name": "ModelsError",
+      "message": "Credential store read failed for anthropic: [object Object]",
+      "code": "auth",
+      "stack": "ModelsError: Credential store read failed for anthropic: [object Object]\n    at ModelsImpl.readCredential (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:653:10)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:39:201\n    at caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:43)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:39:169\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:39:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "direct-check",
+      "name": "ModelsError",
+      "message": "API key auth check failed for provider anthropic: Symbol(owned-check)",
+      "code": "auth",
+      "stack": "ModelsError: API key auth check failed for provider anthropic: Symbol(owned-check)\n    at ModelsImpl.checkProviderAuth (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:675:11)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "fallback-check",
+      "name": "ModelsError",
+      "message": "API key auth failed for provider anthropic: [object Object]",
+      "code": "auth",
+      "stack": "ModelsError: API key auth failed for provider anthropic: [object Object]\n    at resolveApiKey (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:203:9)\n    at resolveProviderAuthWithSignal (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:91:5)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "apply-unconfigured",
+      "name": "ModelsError",
+      "message": "Provider is not configured: anthropic",
+      "code": "auth",
+      "stack": "ModelsError: Provider is not configured: anthropic\n    at ModelsImpl.applyAuth (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:866:10)\n    at async caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:37)\n    at async wrapped (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:26:47)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "login-modify",
+      "name": "ModelsError",
+      "message": "Credential store modify failed for anthropic: [object Object]",
+      "code": "auth",
+      "stack": "ModelsError: Credential store modify failed for anthropic: [object Object]\n    at ModelsImpl.login (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:820:10)\n    at async caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:37)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:69:173\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:69:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "logout-delete",
+      "name": "ModelsError",
+      "message": "Credential store delete failed for anthropic: Symbol(owned-delete)",
+      "code": "auth",
+      "stack": "ModelsError: Credential store delete failed for anthropic: Symbol(owned-delete)\n    at ModelsImpl.logout (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\models.ts:832:10)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:70:204\n    at caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:43)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:70:170\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:70:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "resolve-read",
+      "name": "ModelsError",
+      "message": "Credential store read failed for anthropic: [object Object]",
+      "code": "auth",
+      "stack": "ModelsError: Credential store read failed for anthropic: [object Object]\n    at readCredential (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:215:9)\n    at async resolveProviderAuthWithSignal (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:70:17)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "derive",
+      "name": "ModelsError",
+      "message": "OAuth auth derivation failed for anthropic: [object Object]",
+      "code": "oauth",
+      "stack": "ModelsError: OAuth auth derivation failed for anthropic: [object Object]\n    at resolveStoredOAuth (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:189:9)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "refresh-provider",
+      "name": "ModelsError",
+      "message": "OAuth refresh failed for anthropic: [object Object]",
+      "code": "oauth",
+      "stack": "ModelsError: OAuth refresh failed for anthropic: [object Object]\n    at credentials.modify.signal (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:142:12)\n    at async <anonymous> (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\credential-store.ts:49:18)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "refresh-store",
+      "name": "ModelsError",
+      "message": "Credential store modify failed for anthropic: Symbol(owned-store)",
+      "code": "auth",
+      "stack": "ModelsError: Credential store modify failed for anthropic: Symbol(owned-store)\n    at refreshStoredOAuthCredential (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:150:9)\n    at async caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:37)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:80:177\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:80:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "canonical-identity",
+      "name": "ModelsError",
+      "message": "owned-canonical",
+      "code": "oauth",
+      "stack": "ModelsError: owned-canonical\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:81:109\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:81:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "short-explicit",
+      "name": "ModelsError",
+      "message": "OAuth refresh returned a token that expires too soon for anthropic",
+      "code": "oauth",
+      "stack": "ModelsError: OAuth refresh returned a token that expires too soon for anthropic\n    at resolveStoredOAuth (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:182:10)",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "cleanup-modify-getter",
+      "name": "ModelsError",
+      "message": "Credential store modify failed for anthropic: [object Object]",
+      "code": "auth",
+      "stack": "ModelsError: Credential store modify failed for anthropic: [object Object]\n    at refreshStoredOAuthCredential (C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\ai\\src\\auth\\resolve.ts:150:9)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:88:442\n    at caught (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:24:43)\n    at file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:88:407\n    at async capture (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:23:66)\n    at async runModelsAuthCases (file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-cases-20261016.mjs:88:2)\n    at async file:///C:/Users/adyba/pi-zig-update-evidence-20261003/models-auth-4954-capture-20261016.mjs:22:17",
+      "constructor": "ModelsError"
+    },
+    {
+      "id": "read-argument",
+      "constructor": "Object"
+    },
+    {
+      "id": "finally-override",
+      "constructor": "Object"
+    },
+    {
+      "id": "refresh-preabort",
+      "constructor": "Object"
+    }
+  ],
+  "network": false,
+  "full_pi_qualified": false
+}

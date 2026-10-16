@@ -1,0 +1,52 @@
+{
+  "artifacts": [
+    {
+      "sha256": "663B4F76E1A4BE837D9BD43673794FC20FDE1F3A0DDD2BB25F8F6CE0D78F8615",
+      "path": "src/extensions/fixtures/models-auth-4954-cases.input.txt"
+    },
+    {
+      "sha256": "E39FB5C271DC7C96587BB52B054263A29D7031FECC7EED6E91E724D0A0BD48FD",
+      "path": "src/extensions/fixtures/models-auth-4954-source.json"
+    },
+    {
+      "sha256": "6D7FACB9D07DB2A5503BEA67D94EBA43C71F66BBC9A14C46497E4966DD7DC90A",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\models-auth-4954-source69-first-20261016-admission.json"
+    },
+    {
+      "sha256": "623D3038051A5899391D92FCBD5C0A9702AE132320E2C971DDF0833D6FD6D5D3",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\models-auth-4954-source69-first-20261016-output.json"
+    },
+    {
+      "sha256": "009C51CE8A1B54F928563A2762A49DF8F627B45F2F5C72CF5F7BA8CCF81C6612",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\models-auth-4954-source69-first-20261016-posthash.json"
+    },
+    {
+      "sha256": "AC9EBBA27C85CEC02D06CCBA652913826AABE8E41200BFF4241D01D18119A355",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\models-auth-4954-source69-first-20261016-validation.json"
+    },
+    {
+      "sha256": "D2E7579CF3E2B2A66A678607C40068B8D5904E2FC4A851A2642804BF111250C4",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\models-auth-4954-source69-first-20261016.json"
+    },
+    {
+      "sha256": "7AC3D8B4846569655DB838D67A39641D96177ADE84635CC02EA943A782C1CAAD",
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\models-auth-4954-source69-20261016\\source4954-modules-68060-0-20261015.jsonl"
+    }
+  ],
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "sourceExitCode": 0,
+  "sourceCandidateHead": "e15129a15d85468d17475edb5a6a9efcda3f6455",
+  "compilerDrift": 0,
+  "sourcePackageVersion": "1.3.0",
+  "nativeQualified": false,
+  "sourceCases": 69,
+  "nodeDrift": 0,
+  "historicalAbsences": 84,
+  "sourcePid": 68060,
+  "rootGrant": "LIGHT7",
+  "runtimeDrift": 0,
+  "fullPiQualified": false,
+  "sourceIndependentPidAbsent": true,
+  "candidateDrift": 0,
+  "referenceDrift": 0
+}
