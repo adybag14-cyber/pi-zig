@@ -1,0 +1,64 @@
+//! Actual highlight.js10.7.3 Monkey factory; unqualified source.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "monkey", build);
+}
+pub fn build(e: *b.Engine, hljs: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const number = try b.mode(&s, "number");
+    try s.put(number, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const hex = try s.object();
+    try s.put(hex, "begin", try s.text("[$][a-fA-F0-9]+"));
+    try s.put(number, "variants", try b.list(&s, &.{ hex, try s.get(hljs, "NUMBER_MODE") }));
+    const language = try s.object();
+    try s.put(language, "name", try s.text("Monkey"));
+    try s.put(language, "case_insensitive", b.boolean(&s, true));
+    const keywords = try s.object();
+    try s.put(keywords, "keyword", try s.text("public private property continue exit extern new try catch eachin not abstract final select case default const local global field end if then else elseif endif while wend repeat until forever for to step next return module inline throw import"));
+    try s.put(keywords, "built_in", try s.text("DebugLog DebugStop Error Print ACos ACosr ASin ASinr ATan ATan2 ATan2r ATanr Abs Abs Ceil Clamp Clamp Cos Cosr Exp Floor Log Max Max Min Min Pow Sgn Sgn Sin Sinr Sqrt Tan Tanr Seed PI HALFPI TWOPI"));
+    try s.put(keywords, "literal", try s.text("true false null and or shl shr mod"));
+    try s.put(language, "keywords", keywords);
+    try s.put(language, "illegal", try b.rx(&s, "\\/\\*"));
+    const rem_function = try s.get(hljs, "COMMENT");
+    const contains = try b.list(&s, &.{try s.call(rem_function, hljs, &.{ try s.text("#rem"), try s.text("#end") })});
+    const line_function = try s.get(hljs, "COMMENT");
+    const line_opts = try s.object();
+    try s.put(line_opts, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(contains, 1, try s.call(line_function, hljs, &.{ try s.text("'"), try s.text("$"), line_opts }));
+    const function = try b.mode(&s, "function");
+    try s.put(function, "beginKeywords", try s.text("function method"));
+    try s.put(function, "end", try s.text("[(=:]|$"));
+    try s.put(function, "illegal", try b.rx(&s, "\\n"));
+    try s.put(function, "contains", try b.list(&s, &.{try s.get(hljs, "UNDERSCORE_TITLE_MODE")}));
+    try s.index(contains, 2, function);
+    const class = try b.mode(&s, "class");
+    try s.put(class, "beginKeywords", try s.text("class interface"));
+    try s.put(class, "end", try s.text("$"));
+    const extends = try s.object();
+    try s.put(extends, "beginKeywords", try s.text("extends implements"));
+    try s.put(class, "contains", try b.list(&s, &.{ extends, try s.get(hljs, "UNDERSCORE_TITLE_MODE") }));
+    try s.index(contains, 3, class);
+    const self = try b.mode(&s, "built_in");
+    try s.put(self, "begin", try s.text("\\b(self|super)\\b"));
+    try s.index(contains, 4, self);
+    const meta = try b.mode(&s, "meta");
+    try s.put(meta, "begin", try s.text("\\s*#"));
+    try s.put(meta, "end", try s.text("$"));
+    const meta_words = try s.object();
+    try s.put(meta_words, "meta-keyword", try s.text("if else elseif endif end then"));
+    try s.put(meta, "keywords", meta_words);
+    try s.index(contains, 5, meta);
+    const strict = try b.mode(&s, "meta");
+    try s.put(strict, "begin", try s.text("^\\s*strict\\b"));
+    try s.index(contains, 6, strict);
+    const alias = try s.object();
+    try s.put(alias, "beginKeywords", try s.text("alias"));
+    try s.put(alias, "end", try s.text("="));
+    try s.put(alias, "contains", try b.list(&s, &.{try s.get(hljs, "UNDERSCORE_TITLE_MODE")}));
+    try s.index(contains, 7, alias);
+    try s.index(contains, 8, try s.get(hljs, "QUOTE_STRING_MODE"));
+    try s.index(contains, 9, number);
+    try s.put(language, "contains", contains);
+    return b.c.JS_DupValue(e.context, language);
+}

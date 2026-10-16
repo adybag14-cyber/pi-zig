@@ -1,0 +1,30 @@
+{
+  "status": "static_only_no_blocking_finding",
+  "root_base": "10dbf9c069f776c02c4deecf593ff00cf7a536f6",
+  "root_C": "33DFB18C9A930D3967A089DF0B28B65AF88B7665B7ADD725AED30FCB8F046FD2",
+  "root_H": "E3189DA8F918993FB567D07DF32E91CECD12C6666D9E9B1D68A6C65A15CEC37E",
+  "new_C": "E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B",
+  "new_H": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+  "C9h_patch_sha256": "B2A2CE1A7771210FA26B116E92B39AC1244ACD918242A606B5FDFFEA7AA76E75",
+  "hunks": 9,
+  "three_way_only": true,
+  "prior_reviewed_patch": "8B525B55CB088B4491F7C8693CADD8BC3B36276D6504AD564822E0FDDC65F4C4",
+  "root463_patch": "F21C9EC6BD1B79BF729DBE56508E5EC9FBF7C6A145BF889A3077C871B586B03B",
+  "independent_reviewers": [
+    "Root",
+    "Body_validation_resume"
+  ],
+  "preservation": {
+    "one_entry_poll": true,
+    "interpreter_argument_allocation_through_EOF_identical_chars": 1602754,
+    "native_AF_AG_JSON_span_retained": true,
+    "no_Engine_HTTP_Body_upstream_TypeBox_models_replacement": true,
+    "balanced_argument_accessor_roots": true,
+    "no_guest_frame_getters_or_PC_reads": true,
+    "constructor_newtarget_flags_argv_unchanged": true,
+    "legacy_cache_context_init_mark_free": true
+  },
+  "native_execution": false,
+  "Zig_commands": false,
+  "Runtime_qualification": false
+}

@@ -1,0 +1,85 @@
+//! Actual highlight.js 10.7.3 static keyword inputs; native factory follows.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "zephir", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const str = try b.mode(&s, "string");
+    try s.put(str, "contains", try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")}));
+    const variants = try s.array();
+    for ([_][]const u8{ "APOS_STRING_MODE", "QUOTE_STRING_MODE" }, 0..) |p, i| {
+        const f = try s.get(h, "inherit");
+        const mode = try s.get(h, p);
+        const opt = try s.object();
+        try s.put(opt, "illegal", b.c.pi_js_null());
+        try s.index(variants, @intCast(i), try s.call(f, h, &.{ mode, opt }));
+    }
+    try s.put(str, "variants", variants);
+    const title = try s.get(h, "UNDERSCORE_TITLE_MODE");
+    const num = try s.object();
+    try s.put(num, "variants", try b.list(&s, &.{ try s.get(h, "BINARY_NUMBER_MODE"), try s.get(h, "C_NUMBER_MODE") }));
+    const kw = try s.text(source_text);
+    const l = try s.object();
+    try s.put(l, "name", try s.text("Zephir"));
+    try s.put(l, "aliases", try b.list(&s, &.{try s.text("zep")}));
+    try s.put(l, "keywords", kw);
+    const a = try b.list(&s, &.{try s.get(h, "C_LINE_COMMENT_MODE")});
+    const f = try s.get(h, "COMMENT");
+    const cb = try b.rx(&s, "/\\*");
+    const ce = try b.rx(&s, "\\*/");
+    const opt = try s.object();
+    const doctag = try b.mode(&s, "doctag");
+    try s.put(doctag, "begin", try b.rx(&s, "@[A-Za-z]+"));
+    try s.put(opt, "contains", try b.list(&s, &.{doctag}));
+    try s.index(a, 1, try s.call(f, h, &.{ cb, ce, opt }));
+    const heredoc = try b.mode(&s, "string");
+    try s.put(heredoc, "begin", try b.rx(&s, "<<<['\"]?\\w+['\"]?$"));
+    try s.put(heredoc, "end", try b.rx(&s, "^\\w+;"));
+    try s.put(heredoc, "contains", try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")}));
+    try s.index(a, 2, heredoc);
+    const composed = try s.object();
+    try s.put(composed, "begin", try b.rx(&s, "(::|->)+[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*"));
+    try s.index(a, 3, composed);
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("function fn"));
+    try s.put(fun, "end", try b.rx(&s, "[;{]"));
+    try s.put(fun, "excludeEnd", b.boolean(&s, true));
+    try s.put(fun, "illegal", try b.rx(&s, "\\$|\\[|%"));
+    const params = try b.mode(&s, "params");
+    try s.put(params, "begin", try b.rx(&s, "\\("));
+    try s.put(params, "end", try b.rx(&s, "\\)"));
+    try s.put(params, "keywords", kw);
+    try s.put(params, "contains", try b.list(&s, &.{ try s.text("self"), try s.get(h, "C_BLOCK_COMMENT_MODE"), str, num }));
+    try s.put(fun, "contains", try b.list(&s, &.{ title, params }));
+    try s.index(a, 4, fun);
+    const cls = try b.mode(&s, "class");
+    try s.put(cls, "beginKeywords", try s.text("class interface"));
+    try s.put(cls, "end", try b.rx(&s, "\\{"));
+    try s.put(cls, "excludeEnd", b.boolean(&s, true));
+    try s.put(cls, "illegal", try b.rx(&s, "[:($\"]"));
+    const ext = try s.object();
+    try s.put(ext, "beginKeywords", try s.text("extends implements"));
+    try s.put(cls, "contains", try b.list(&s, &.{ ext, title }));
+    try s.index(a, 5, cls);
+    const ns = try s.object();
+    try s.put(ns, "beginKeywords", try s.text("namespace"));
+    try s.put(ns, "end", try b.rx(&s, ";"));
+    try s.put(ns, "illegal", try b.rx(&s, "[.']"));
+    try s.put(ns, "contains", try b.list(&s, &.{title}));
+    try s.index(a, 6, ns);
+    const use = try s.object();
+    try s.put(use, "beginKeywords", try s.text("use"));
+    try s.put(use, "end", try b.rx(&s, ";"));
+    try s.put(use, "contains", try b.list(&s, &.{title}));
+    try s.index(a, 7, use);
+    const booster = try s.object();
+    try s.put(booster, "begin", try b.rx(&s, "=>"));
+    try s.index(a, 8, booster);
+    try s.index(a, 9, str);
+    try s.index(a, 10, num);
+    try s.put(l, "contains", a);
+    return b.c.JS_DupValue(e.context, l);
+}
+const source_text = "namespace class interface use extends function return abstract final public protected private static deprecated throw try catch Exception echo empty isset instanceof unset let var new const self require if else elseif switch case default do while loop for continue break likely unlikely __LINE__ __FILE__ __DIR__ __FUNCTION__ __CLASS__ __TRAIT__ __METHOD__ __NAMESPACE__ array boolean float double integer object resource string char long unsigned bool int uint ulong uchar true false null undefined";

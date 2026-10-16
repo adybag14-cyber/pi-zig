@@ -1,0 +1,57 @@
+const rows=[];
+function record(name,run){try{rows.push({name,value:run()})}catch(error){rows.push({name,error:{name:error.name,message:error.message}})}}
+function graph(root){
+  const seen=new Map();let next=0;
+  function encode(value){
+    if(value===undefined)return{$undefined:true};
+    if(value===null||typeof value==='string'||typeof value==='boolean')return value;
+    if(typeof value==='number')return Number.isFinite(value)?value:{$number:String(value)};
+    if(typeof value==='function')return{$function:{name:value.name,length:value.length,keys:Reflect.ownKeys(value).map(String),prototype:Object.hasOwn(value,'prototype')}};
+    if(typeof value!=='object')return{$other:typeof value,value:String(value)};
+    if(seen.has(value))return{$ref:seen.get(value)};
+    const id=next++;seen.set(value,id);
+    if(value instanceof RegExp)return{$id:id,$regexp:value.source,flags:value.flags,lastIndex:value.lastIndex,frozen:Object.isFrozen(value)};
+    return{$id:id,kind:Array.isArray(value)?'array':'object',frozen:Object.isFrozen(value),properties:Reflect.ownKeys(value).map(key=>{
+      const d=Object.getOwnPropertyDescriptor(value,key);return{key:String(key),enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,value:encode(d.value)}:{get:encode(d.get),set:encode(d.set)})};
+    })};
+  }
+  return encode(root);
+}
+const names=['brainfuck','diff','roboconf','capnproto','smalltalk','q','rsl','inform7','prolog','rib','vala','dos','abnf','pf','ceylon','fsharp','openscad','pony','gcode','cal'];
+record('actual batch4 twenty factory metadata',()=>names.map(name=>{const fn=highlightLazyFactories[name];return{name,metadata:{name:fn.name,length:fn.length,keys:Reflect.ownKeys(fn).map(String),prototype:Object.hasOwn(fn,'prototype')}}}));
+for(const name of names)record(name+' complete raw grammar graph',()=>graph(highlightLazyFactories[name](highlightCoreAPI)));
+for(const name of names)record(name+' actual live helper getter order',()=>{
+  const trace=[];const api=new Proxy(highlightCoreAPI,{get(target,key,receiver){trace.push(String(key));return Reflect.get(target,key,receiver)}});return{graph:graph(highlightLazyFactories[name](api)),trace};
+});
+for(const name of names)record(name+' actual throwing helper or helper-free factory',()=>{
+  const api=new Proxy(highlightCoreAPI,{get(){throw new TypeError('actual batch4 getter rejected '+name)}});return graph(highlightLazyFactories[name](api));
+});
+for(const name of names)highlightCoreAPI.registerLanguage(name,highlightLazyFactories[name]);
+const samples={
+  brainfuck:['++++++++[>++++++++<-]>+.\n','Hello ++[>+++<-]>.,[-] comment\n'],
+  diff:['diff --git a/demo b/demo\nindex 123..456 100644\n--- a/demo\n+++ b/demo\n@@ -1,1 +1,1 @@\n-old\n+new\n','*** 1,2 ****\n--- 1,2 ----\n! changed\n'],
+  roboconf:['facet web {\n  installer: bash;\n  exports: .port;\n}\n','instance of web {\n  name: demo;\n  channels: optional (optional);\n}\n# TODO: graph\n'],
+  capnproto:['@0xdeadbeefdeadbeef;\nstruct Person { name @0 :Text; age @1 :UInt32; }\n','interface API { ping @0 () -> (); }\nconst enabled :Bool = true; # TODO\n'],
+  smalltalk:["Transcript show: 'Hello'; cr.\n",'| value | value := #symbol. value := #(1 2 \'three\'). "TODO: comment"\n'],
+  q:['t:([]name:`a`b;value:1 2); select from t where value > 1\n','show sum til 42; x:1b; y:`timestamp$"2026.10.15"; // TODO\n'],
+  rsl:['surface plastic(float roughness = 0.1) { Ci = color(1,0,0); }\n','#include "demo.h"\nlight pointlight() { illuminate(P) { Cl = 1; } }\n'],
+  inform7:['Chapter One\nThe Hall is a room. "Welcome to [the Hall]."\n','Before taking the door: say "It is closed."\n[TODO: nested [comment]]\n'],
+  prolog:['member(X, [X|_]).\nmember(X, [_|Tail]) :- member(X, Tail).\n','% TODO: logic\nvalue(42, \'text\', "<>&", [a,b]).\n'],
+  rib:['FrameBegin 1\nWorldBegin\nSurface "plastic"\nSphere 1 -1 1 360\nWorldEnd\nFrameEnd\n','# TODO: scene\nTranslate 0 1 2\nColor [1 0 0]\nDisplay "demo.tif" "file" "rgb"\n'],
+  vala:['public class Demo : Object { public string name { get; set; } }\n','using GLib;\nvoid main() { stdout.printf("hello"); var value = 42; } // TODO\n'],
+  dos:['@echo off\nset NAME=demo\nif defined NAME echo %NAME%\n','rem TODO: batch\n:run label\necho !VALUE!\ngoto:eof\n'],
+  abnf:['digit = DIGIT\nvalue = 1*ALPHA / %x30-39 ; TODO: rule\n','binary = %b0101.0011\ndecimal = %d65-90\ntext = %s"case"\n'],
+  pf:['ext_if = "em0"\npass in on $ext_if proto tcp from any to self port 443 keep state\n','table <blocked> persist\nblock quick from <blocked> to any\n# TODO: filter\n'],
+  ceylon:['shared void hello(String name) { print("Hello ``name``!"); }\n','doc "demo"\nvalue flag = true;\nvalue number = #ff; // TODO: module\n'],
+  fsharp:['let square x = x * x\nlet value = square 42\n','type Item<\'T> = { Value: \'T }\n(* TODO: type *)\nlet text = @"<>&"\n'],
+  openscad:['module demo(size=10) { cube([size,size,size]); }\ndemo(20);\n','include <shapes.scad>\n$fn=32; difference() { sphere(10); translate([0,0,5]) cube(8); }\n'],
+  pony:['actor Main\n  new create(env: Env) => env.out.print("hello")\n','use "collections"\nprimitive Demo\n  fun value(): U64 => 0xff\n// TODO: pony\n'],
+  gcode:['%\nO1234\nG01 X1.0 Y2.0 F100\nM30\n%\n','(TODO: toolpath)\nN10 G00 X0 Y0\n#1=ABS[-1.25]\nN20 M03\n'],
+  cal:['OBJECT Codeunit 50000 Demo\nPROCEDURE Run();\nBEGIN\n  EXIT(TRUE);\nEND;\n','VAR Value : Integer;\nBEGIN\nValue := 42;\nMESSAGE(\'hello\'); // TODO\nEND;\n']
+};
+for(const[name,codes]of Object.entries(samples))for(const[index,code]of codes.entries())record(name+' actual scanner '+index,()=>{
+  const result=highlightCoreAPI.highlight(code,{language:name,ignoreIllegals:false});return{language:result.language,relevance:result.relevance,illegal:result.illegal,value:result.value,code:result.code,tree:JSON.parse(result.emitter.toJSON()),errorRaised:result.errorRaised?{name:result.errorRaised.name,message:result.errorRaised.message}:undefined};
+});
+record('actual batch4 canonical registration and aliases',()=>({registry:highlightCoreAPI.listLanguages(),aliases:[['bf','brainfuck'],['patch','diff'],['graph','roboconf'],['instances','roboconf'],['capnp','capnproto'],['st','smalltalk'],['k','q'],['kdb','q'],['i7','inform7'],['bat','dos'],['cmd','dos'],['pf.conf','pf'],['fs','fsharp'],['scad','openscad'],['nc','gcode']].map(([alias,name])=>({alias,name,same:highlightCoreAPI.getLanguage(alias)===highlightCoreAPI.getLanguage(name)}))}));
+if(rows.length!==102)throw Error('Actual lazy batch4 corpus count '+rows.length);
+globalThis.sdkHighlightLazyBatch4Rows=rows;

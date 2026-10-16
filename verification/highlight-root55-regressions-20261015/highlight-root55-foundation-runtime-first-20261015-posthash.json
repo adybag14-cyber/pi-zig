@@ -1,0 +1,62 @@
+{
+  "candidate_drift": [],
+  "controls": 43,
+  "candidate_before": 6979,
+  "absence_drift": [],
+  "control_drift": [],
+  "manifests": [
+    {
+      "count": 1967,
+      "drift": [],
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": [],
+      "name": "dependencies"
+    },
+    {
+      "count": 1774,
+      "drift": [],
+      "name": "node"
+    },
+    {
+      "count": 195,
+      "drift": [],
+      "name": "canonical"
+    },
+    {
+      "count": 19546,
+      "drift": [],
+      "name": "compiler"
+    }
+  ],
+  "head": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+  "phase": "runtime",
+  "inventories": [
+    {
+      "count": 1968,
+      "drift": [],
+      "name": "source"
+    },
+    {
+      "count": 31064,
+      "drift": [],
+      "name": "dependencies"
+    },
+    {
+      "count": 19546,
+      "drift": [],
+      "name": "compiler"
+    },
+    {
+      "count": 1774,
+      "drift": [],
+      "name": "node"
+    }
+  ],
+  "completed_utc": "2026-10-15T22:12:12.7329205+00:00",
+  "candidate_after": 6979,
+  "absences": 84,
+  "target": "foundation"
+}

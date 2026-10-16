@@ -1,0 +1,18 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Series-20261015.ps1",
+    "sha256": "34227047BE2BE9DC3D0476CA66A5E0EE67EEE33AF7D80669293286E0C666074B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Source-20261015.ps1",
+    "sha256": "AD8BA8EF4B33EF10F5AF8048D78E6F62C009835007A147627E8DFBF6BEFF590D"
+  },
+  {
+    "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  }
+]

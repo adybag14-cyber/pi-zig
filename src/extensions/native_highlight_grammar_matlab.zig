@@ -1,0 +1,85 @@
+//! Actual highlight.js 10.7.3 static keyword inputs; native factory follows.
+const b = @import("native_highlight_lazy_batch3_values.zig");
+pub fn create(e: *b.Engine) !b.c.JSValue {
+    return b.factory(e, "matlab", build);
+}
+pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
+    var s: b.Scope = .{ .engine = e };
+    defer s.deinit();
+    const trans = try s.object();
+    try s.put(trans, "relevance", b.c.JS_NewInt32(e.context, 0));
+    const tm = try s.object();
+    try s.put(tm, "begin", try s.text("('|\\.')+"));
+    try s.put(trans, "contains", try b.list(&s, &.{tm}));
+    const l = try s.object();
+    try s.put(l, "name", try s.text("Matlab"));
+    const kw = try s.object();
+    try s.put(kw, "keyword", try s.text(source_keyword));
+    try s.put(kw, "built_in", try s.text(source_built_in));
+    try s.put(l, "keywords", kw);
+    try s.put(l, "illegal", try s.text("(//|\"|#|/\\*|\\s+/\\w+)"));
+    const a = try s.array();
+    const fun = try b.mode(&s, "function");
+    try s.put(fun, "beginKeywords", try s.text("function"));
+    try s.put(fun, "end", try s.text("$"));
+    const fc = try b.list(&s, &.{try s.get(h, "UNDERSCORE_TITLE_MODE")});
+    const params = try b.mode(&s, "params");
+    const p1 = try s.object();
+    try s.put(p1, "begin", try s.text("\\("));
+    try s.put(p1, "end", try s.text("\\)"));
+    const p2 = try s.object();
+    try s.put(p2, "begin", try s.text("\\["));
+    try s.put(p2, "end", try s.text("\\]"));
+    try s.put(params, "variants", try b.list(&s, &.{ p1, p2 }));
+    try s.index(fc, 1, params);
+    try s.put(fun, "contains", fc);
+    try s.index(a, 0, fun);
+    const boolean = try b.mode(&s, "built_in");
+    try s.put(boolean, "begin", try b.rx(&s, "true|false"));
+    try s.put(boolean, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(boolean, "starts", trans);
+    try s.index(a, 1, boolean);
+    const ident = try s.object();
+    try s.put(ident, "begin", try s.text("[a-zA-Z][a-zA-Z_0-9]*('|\\.')+"));
+    try s.put(ident, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.index(a, 2, ident);
+    const num = try b.mode(&s, "number");
+    try s.put(num, "begin", try s.get(h, "C_NUMBER_RE"));
+    try s.put(num, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(num, "starts", trans);
+    try s.index(a, 3, num);
+    const sq = try b.mode(&s, "string");
+    try s.put(sq, "begin", try s.text("'"));
+    try s.put(sq, "end", try s.text("'"));
+    const sc = try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")});
+    const se = try s.object();
+    try s.put(se, "begin", try s.text("''"));
+    try s.index(sc, 1, se);
+    try s.put(sq, "contains", sc);
+    try s.index(a, 4, sq);
+    const closing = try s.object();
+    try s.put(closing, "begin", try b.rx(&s, "\\]|\\}|\\)"));
+    try s.put(closing, "relevance", b.c.JS_NewInt32(e.context, 0));
+    try s.put(closing, "starts", trans);
+    try s.index(a, 5, closing);
+    const dq = try b.mode(&s, "string");
+    try s.put(dq, "begin", try s.text("\""));
+    try s.put(dq, "end", try s.text("\""));
+    const dc = try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")});
+    const de = try s.object();
+    try s.put(de, "begin", try s.text("\"\""));
+    try s.index(dc, 1, de);
+    try s.put(dq, "contains", dc);
+    try s.put(dq, "starts", trans);
+    try s.index(a, 6, dq);
+    for ([_][2][]const u8{ .{ "^\\s*%\\{\\s*$", "^\\s*%\\}\\s*$" }, .{ "%", "$" } }, 7..) |p, i| {
+        const f = try s.get(h, "COMMENT");
+        const cb = try s.text(p[0]);
+        const ce = try s.text(p[1]);
+        try s.index(a, @intCast(i), try s.call(f, h, &.{ cb, ce }));
+    }
+    try s.put(l, "contains", a);
+    return b.c.JS_DupValue(e.context, l);
+}
+const source_keyword = "arguments break case catch classdef continue else elseif end enumeration events for function global if methods otherwise parfor persistent properties return spmd switch try while";
+const source_built_in = "sin sind sinh asin asind asinh cos cosd cosh acos acosd acosh tan tand tanh atan atand atan2 atanh sec secd sech asec asecd asech csc cscd csch acsc acscd acsch cot cotd coth acot acotd acoth hypot exp expm1 log log1p log10 log2 pow2 realpow reallog realsqrt sqrt nthroot nextpow2 abs angle complex conj imag real unwrap isreal cplxpair fix floor ceil round mod rem sign airy besselj bessely besselh besseli besselk beta betainc betaln ellipj ellipke erf erfc erfcx erfinv expint gamma gammainc gammaln psi legendre cross dot factor isprime primes gcd lcm rat rats perms nchoosek factorial cart2sph cart2pol pol2cart sph2cart hsv2rgb rgb2hsv zeros ones eye repmat rand randn linspace logspace freqspace meshgrid accumarray size length ndims numel disp isempty isequal isequalwithequalnans cat reshape diag blkdiag tril triu fliplr flipud flipdim rot90 find sub2ind ind2sub bsxfun ndgrid permute ipermute shiftdim circshift squeeze isscalar isvector ans eps realmax realmin pi i|0 inf nan isnan isinf isfinite j|0 why compan gallery hadamard hankel hilb invhilb magic pascal rosser toeplitz vander wilkinson max min nanmax nanmin mean nanmean type table readtable writetable sortrows sort figure plot plot3 scatter scatter3 cellfun legend intersect ismember procrustes hold num2cell ";

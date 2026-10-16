@@ -1,0 +1,30 @@
+{
+  "count": 19,
+  "tests": [
+    "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+    "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+    "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+    "native_async_generator_test.test.native async generator functional pending owner survives GC",
+    "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+    "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+    "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+    "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+    "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+    "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+    "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+    "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+    "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+    "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+    "extensions.native_stream.test.native pi-ai EventStream exports preserve queue terminal result receiver and iterator cleanup",
+    "extensions.native_stream.test.native AssistantMessageEventStream producer queue overflow rejects its original result and closes after queued values",
+    "extensions.native_stream.test.native provider validation accepts only exact event names numeric indices and JavaScript JSON number equality",
+    "extensions.native_stream.test.native provider cancellation retains supplied reason identity through throwing and hostile iterator cleanup",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "binary_sha256": "6D27FBDD86FB88E9AE71FD3937CB59BE58C2F1DD1B9E6A6A540F5339FF032EC8",
+  "version": "0.16.0",
+  "binary": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\000e5b183ac64bd43d7348feb41fd150\\test.exe",
+  "completed_utc": "2026-10-15T22:13:28.3227378+00:00",
+  "method": "Actual Zig0.16 metadata-only query4 and clean exit0; no run command",
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14"
+}

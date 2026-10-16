@@ -1,0 +1,13 @@
+import { createRequire } from 'node:module';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { pathToFileURL } from 'node:url';
+const require=createRequire(import.meta.url);
+const installed='C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/lib/';
+globalThis.highlightCoreAPI=require(installed+'core.js');
+globalThis.highlightSyntaxAPI=await import(pathToFileURL('C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015/packages/coding-agent/src/utils/syntax-highlight.ts').href);
+globalThis.highlightFactoryFor=name=>require(installed+'languages/'+name+'.js');
+globalThis.highlightIndexNamespace=()=>import(pathToFileURL(installed+'index.js').href);
+globalThis.highlightWholeCase=process.argv[4]??'success';
+await import('data:text/javascript;charset=utf-8,'+encodeURIComponent(readFileSync(process.argv[3],'utf8')));
+if(!Array.isArray(globalThis.sdkHighlightComplete191Rows))throw Error('Genuine full-index rows absent');
+writeFileSync(process.argv[2],JSON.stringify({source:'Actual highlight.js10.7.3 index and unchanged original5ab syntax frontend',mode:highlightWholeCase,input:pathToFileURL(process.argv[3]).href,cases:sdkHighlightComplete191Rows.length,rows:sdkHighlightComplete191Rows},null,2)+'\n');

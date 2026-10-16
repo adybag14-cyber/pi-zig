@@ -1,0 +1,54 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Source-20261015.ps1",
+    "sha256": "AD8BA8EF4B33EF10F5AF8048D78E6F62C009835007A147627E8DFBF6BEFF590D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1",
+    "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-highlight-complete191-20261015.mjs",
+    "sha256": "A5FA59062B75F3F8F6323F4F056C0C88C137535A9965B2329E15B2D613E9732D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.input.txt",
+    "sha256": "DE6884665E832BDC31A541F41691B5E3EFD67DBBAFC69F2BF981C5397CB8CD76"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs",
+    "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch8-source106-absences84-20261015.json",
+    "sha256": "A27946F8379AEF5A1FF9CC77124715DEF9CC5796FBC641B33153FB0CBC47A589"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-native-before.json",
+    "sha256": "7B844EEECDB63E3BD1BD817F0F53A660D9A356ACDDA07CFA6FF938EE5CF74B2E"
+  },
+  {
+    "path": "C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/package.json",
+    "sha256": "4F657BEB931CB9613E5173414855B2A01E698696C0661D21973BFBBD50E184CF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json",
+    "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json",
+    "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-canonical195-20261015.json",
+    "sha256": "1DC95247D464B0303E19A7E60E7C9AA30EFC3582872120C6FCD0CE61AB5A8542"
+  }
+]

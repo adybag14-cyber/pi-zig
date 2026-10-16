@@ -1,0 +1,867 @@
+[
+  {
+    "sha256": "79AAEE22597D70E5AD510C1225688EC257213A23BF810A84AEB14069F3386F7C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_abnf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_abnf.zig"
+  },
+  {
+    "sha256": "EFAE9669F02AA61910AAC1DA80F5330F17CB4C51D6CAB6EA65D20D86BE674035",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_accesslog.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_accesslog.zig"
+  },
+  {
+    "sha256": "AB49D81198DCCCF9EAD3BE88552D8B774ACEFB6439FD010E4E38B6502A3591AB",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_actionscript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_actionscript.zig"
+  },
+  {
+    "sha256": "ED579167B161707F936924B1A7F49BB536FB40C566B98047E19DA7DB0850623C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_angelscript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_angelscript.zig"
+  },
+  {
+    "sha256": "32006D695409FBA7F60041DE0DF37D4A42FD3502F400CF063D548CF9D113500F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_apache.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_apache.zig"
+  },
+  {
+    "sha256": "4BE87C48FDCC0EC9279D7019C88A148F72E32EE14BCB9F0C59121C1105447416",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_applescript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_applescript.zig"
+  },
+  {
+    "sha256": "8863134E68849D1EE11925AC7135A1B3F74ADA9CCAEDA970EAD02A78CDE8E2B5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_arcade.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_arcade.zig"
+  },
+  {
+    "sha256": "28A7F5908B0819E0C9F3D22A05AE38CA3803A39C6FC05E6B367C359B71EC74A8",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_armasm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_armasm.zig"
+  },
+  {
+    "sha256": "641382424A0D3657844DDE3F79BE04A91D6A992807C8A6C2A9820DE9DD4B606A",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_aspectj.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_aspectj.zig"
+  },
+  {
+    "sha256": "AC7E8EC3ACCA4B4CBCE63364A9856BFDD5BE53EE34CBAD47BD95AB00517F5EED",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_autohotkey.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_autohotkey.zig"
+  },
+  {
+    "sha256": "CB98E81CD3B2FDF49C4FE70F394212A98D3E567193F1938175123018449CED10",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_avrasm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_avrasm.zig"
+  },
+  {
+    "sha256": "83010CCA215DC4B41011E4C8204FE3C503DC5A4DAA40E33E80A7104529AF4295",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_awk.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_awk.zig"
+  },
+  {
+    "sha256": "583854231B6DB1AF94553034357EB3B9B67398A349F10A51A24F9E1F286022E1",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_axapta.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_axapta.zig"
+  },
+  {
+    "sha256": "FA63DEE089A6B6D59BA94360F52F809CB5A95AF776525E1598937A43972AAEBB",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_basic.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_basic.zig"
+  },
+  {
+    "sha256": "F89AF7F7495F958F67CBF7FD5392D3E3A9A5C86B73612DD12E5FA351958862B4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_bnf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_bnf.zig"
+  },
+  {
+    "sha256": "FB0C134B6B19D43311DB7DC7A72FCFDBA78959BB983F6D7650B8966F4F54BFFF",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_brainfuck.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_brainfuck.zig"
+  },
+  {
+    "sha256": "0821B597244726E1876D4892E48674DDD4650CBCC3B77313BFD69879FEC2AB13",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_cal.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_cal.zig"
+  },
+  {
+    "sha256": "C0C9F689A20223B999861AF725D8EBAFABF07254E21EEAA99061317FAC0A4B26",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_capnproto.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_capnproto.zig"
+  },
+  {
+    "sha256": "D6B3683DCDF120A713E765847A67AD2991A02996F6E0FB5E93B6B00350254DDE",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ceylon.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ceylon.zig"
+  },
+  {
+    "sha256": "B1CD09AB573F56E39115352E6F6D6219D3F1FE74F8B772FF07F91E3D95EDFA5C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_clean.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_clean.zig"
+  },
+  {
+    "sha256": "8076E67BD0873A8C419017BE5DFC2A1F57E538DACAF1E6C6C5D433433409666C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_clojure_repl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_clojure_repl.zig"
+  },
+  {
+    "sha256": "E6EB3CFE481A3AB6717726EB45D36632F46823C30306BC1A58D4E9EDD2E8ADB9",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_clojure.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_clojure.zig"
+  },
+  {
+    "sha256": "62FC25B36A9E8AAE91CC1E84EC3C58D63B178C9771A8F5A7CAC16A469054EA50",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_cmake.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_cmake.zig"
+  },
+  {
+    "sha256": "F63855EF51689EEBE255E93E5C8530E021F622EBD9545FF51CC6EC2FD1D09037",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_coq.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_coq.zig"
+  },
+  {
+    "sha256": "85D05E11E411470BD1E5FDA872C106A5F6B0FF177E972B9359AEA281F39DB32B",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_cos.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_cos.zig"
+  },
+  {
+    "sha256": "83AF87385B4B1AE439B71C859DDD03102DE3632FDC1352CD5CB14827FFF04ED5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_crmsh.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_crmsh.zig"
+  },
+  {
+    "sha256": "7640520E6894518D31052571A203866C7D3258989ACC16D94C806E7B25C6B369",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_csp.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_csp.zig"
+  },
+  {
+    "sha256": "3E4A5144C8CD4F4565737F7ACD1A71041A53DA14CDA825DB12AECBA14F92F7AD",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_css.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_css.zig"
+  },
+  {
+    "sha256": "7F6DBE10222086FC0FBCCA0DE51C275247FCCE5BDB1F3C7D0DFED820E7FC19C0",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_delphi.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_delphi.zig"
+  },
+  {
+    "sha256": "B6415DCDA19BE2D13D36863BFB4D105A8F22C2BE06AB279732754BF6D105B45A",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_diff.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_diff.zig"
+  },
+  {
+    "sha256": "90145D2A56B5C8C18CEA412D18C0ECD7B41B2BACC8B3687BBE4EB77B4737E890",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_django.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_django.zig"
+  },
+  {
+    "sha256": "69C7566B270F0CA73C01337773825DC3ED7306FC9EA519B95FC6019473A5B120",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dns.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dns.zig"
+  },
+  {
+    "sha256": "F3D12E7832DFF0F3BA30551B17007446B3FAE929EF2B37C64896954F3F7C9F19",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dockerfile.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dockerfile.zig"
+  },
+  {
+    "sha256": "1F65D52BB777B4281B2BED1A5287CB62EF529E94EDE7497BA533F89A6C391813",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dos.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dos.zig"
+  },
+  {
+    "sha256": "FD2BD98B8C1D30217A6516461E638E2EF0D1470AD4C8FCAAA30AA82B629BBAC4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dsconfig.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dsconfig.zig"
+  },
+  {
+    "sha256": "5A8370535EB7120D197A5E4F26DA8BFD07F73C7BB31008BF7D3A3E21FA21B722",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dts.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dts.zig"
+  },
+  {
+    "sha256": "AF82FABAC45334ED5D8B68FBE9664CBBA0D57E7EFF251EDBB10FB6A2DCD39D6F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_dust.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_dust.zig"
+  },
+  {
+    "sha256": "2CA7704A3E7F65D852CD66D2190932A7B5B51CDBF7CB8F8BD07EE92A7A0E4D59",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ebnf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ebnf.zig"
+  },
+  {
+    "sha256": "8CEB65A8BAEE1CA654A7EFDEADE2DB598679A389212F3266835367F639673F10",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_elixir.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_elixir.zig"
+  },
+  {
+    "sha256": "E5D114AB4DB1D71F6212A60F7D1A13C7ECA25116BA78626AB61CF4F5A47BD75C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_elm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_elm.zig"
+  },
+  {
+    "sha256": "49487360047D3FBB10BA3F2EEF95DF61CF7AAECB9A5191063D96B989A4ECBB4D",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_erb.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_erb.zig"
+  },
+  {
+    "sha256": "8EA8333CEBF316F6264A7591681814D0331D07205026175697EDCA33A09F3CAC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_erlang_repl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_erlang_repl.zig"
+  },
+  {
+    "sha256": "924AE55F7D580E3840DD1A044D422A23928089D71770C506CCBE27758B6EF682",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_erlang.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_erlang.zig"
+  },
+  {
+    "sha256": "9172F69C3C1E71D452BBEDF510565F21D1058AD80EEBBD1199DF71B0A10A9283",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_excel.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_excel.zig"
+  },
+  {
+    "sha256": "941D0B856EC46A77E8E7F6DB17C079D8684BC2E56D51A7F126B1061D69D26EB5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_fix.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_fix.zig"
+  },
+  {
+    "sha256": "C8361420BC40B10BCAB1D9156BADA9A3DB19EC6D131A20DBFC97ED07B2B537EA",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_flix.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_flix.zig"
+  },
+  {
+    "sha256": "B62D3AF4BDCCB325F0A28276B5E3BD29B08320EB71E1CC155AE9F37CA6871ADE",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_fsharp.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_fsharp.zig"
+  },
+  {
+    "sha256": "BCB0D29DD4986B4070E7AC03692498112AAE8269E4CCE8CFD872CC6900CF0700",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gams.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_gams.zig"
+  },
+  {
+    "sha256": "8D5A7CD1ECCE944C98A84E58E34A4450D3B3C9945B8F31CBD8FBBDF54301F13F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gcode.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_gcode.zig"
+  },
+  {
+    "sha256": "F2C2F36646BF3F300920ECD1E1E078D537FE6246C8F4ED945CE96CA1B3C39F62",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gherkin.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_gherkin.zig"
+  },
+  {
+    "sha256": "EDE7F75677238C13FAEF67336C48BCE5201D38A85264C22F75F9E7319742E5F2",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_golo.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_golo.zig"
+  },
+  {
+    "sha256": "C63C01F6885AEC3CA95BBA7565AFD62605D81DAFC960D0ADD30A3F76B102A751",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gradle.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_gradle.zig"
+  },
+  {
+    "sha256": "2511C657369D848364305415F12664C9843D1DE07EF54598EC61E5E4C68ABB34",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_haml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_haml.zig"
+  },
+  {
+    "sha256": "0A274A8EC7FBB7043AD054C8FC96DBDA3992D03918FF48A56F1F2AC9FBC68B51",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_haskell.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_haskell.zig"
+  },
+  {
+    "sha256": "CB906E0237D5945874D886C2FC4D27934DC292C4CC698A08920E2767A4BF110D",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_haxe.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_haxe.zig"
+  },
+  {
+    "sha256": "3CFA00D797A1C9A070525E046A2BD174F90589DB0C8379EC71E47B4024D8E660",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_hsp.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_hsp.zig"
+  },
+  {
+    "sha256": "A03F583ECD5E45807F1E406EE38A35C3BF83DF97A8EC9150403791B3686EEECA",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_http.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_http.zig"
+  },
+  {
+    "sha256": "8EDF0A0A9369F856942E02A72A6E019FE2E78E4628A45550BDBEF2441C1B4E7D",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_hy.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_hy.zig"
+  },
+  {
+    "sha256": "B76456B5ECBD9FF2C965427C85260AD3CF6393C3176DE616F9D7F96793EAE285",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_inform7.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_inform7.zig"
+  },
+  {
+    "sha256": "41B026AB507514D6ECD4EF0883FEBA616AC71E88B54654033AAF48A226628638",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ini.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ini.zig"
+  },
+  {
+    "sha256": "FAD8719C5C9272F05ABCDBB1414C4DC74A4A23F70E9D2B0BA64ADCEDEA8046DC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_jboss_cli.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_jboss_cli.zig"
+  },
+  {
+    "sha256": "AAD324DAD17735882377CA3868AEC54221E017897CD8CAE14D90FB1239502EE1",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_julia_repl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_julia_repl.zig"
+  },
+  {
+    "sha256": "A8D903EFA2B4332027AAB5BB2EF8A8F3F51E7D3825FCB35CE9B44C7BCF7CE061",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_lasso.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_lasso.zig"
+  },
+  {
+    "sha256": "7792D1CEF2261C832F82D490E8CB221757AEFA9509EE5C3700BB3CF0350F69E3",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ldif.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ldif.zig"
+  },
+  {
+    "sha256": "F7AD4DCBF6970544807840857BD753C7544E1F7E079F15BD194D8F4E1E8DD2E9",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_leaf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_leaf.zig"
+  },
+  {
+    "sha256": "60A728A986001CE661CF84E149854953F0E483BA88AF5CBA567B418407C98E95",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_lisp.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_lisp.zig"
+  },
+  {
+    "sha256": "17F2468D76B4B575853E368917F05E5B3982B6E363E2B4DFF8A6B2EA696C61A8",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_llvm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_llvm.zig"
+  },
+  {
+    "sha256": "AAA14E9B37F53787BC4EB7A4AE06958FA76BBC76470171AC3529605F6DDD1ECA",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_makefile.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_makefile.zig"
+  },
+  {
+    "sha256": "B8F0AE029238D2A4F48DC9F74529CCD3073D9B5AC3BCBD491DED2ED87D17B97B",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_markdown.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_markdown.zig"
+  },
+  {
+    "sha256": "61EBD47252C08775A93CC177A1ABDB6ACD82DA01A583CFEF2D7BA8CDAB9B5153",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_matlab.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_matlab.zig"
+  },
+  {
+    "sha256": "DBA19A88FAAEB198C489E0C365B97F7AACA76535E0E02BF81A6C3DCA47355EAD",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mercury.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_mercury.zig"
+  },
+  {
+    "sha256": "C19F5561CA25E9F20DEFEA47E735A6C9464D59F435849CFA6CA9974FB7DC3BD6",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mipsasm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_mipsasm.zig"
+  },
+  {
+    "sha256": "2E28F1DDDC62836709B35CA76FFCCF8EC5E5360008BED2317ADEC91B4FB2A997",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mizar.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_mizar.zig"
+  },
+  {
+    "sha256": "137E1FCB1D7A56017CEF3CD6F96DCFC5D9AC8A014108FD3D04710D8ED9C4916F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ml_family.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ml_family.zig"
+  },
+  {
+    "sha256": "17CE30ECF3E88FBAB96180AFBF1A5D7B0DEFC3C54B6899EC46DB855A2630AC59",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mojolicious.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_mojolicious.zig"
+  },
+  {
+    "sha256": "661CE2D299117D0BBC6F936DAF8B2ED7A4AC7C7F757E4D5F56A1934B5A0578A7",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_monkey.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_monkey.zig"
+  },
+  {
+    "sha256": "71112880B75A21CC0E725973F15A817EC3863EC992CF0C4E6C53ADC726BCAD3C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_moonscript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_moonscript.zig"
+  },
+  {
+    "sha256": "7CACCAC2F41E7DF5CA6FF06ABFB5238FC4792D44B56903365605207A4353403E",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_n1ql.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_n1ql.zig"
+  },
+  {
+    "sha256": "B5D837654E94DB733625D64F859DC6B2FBD225A48EB71065468661296E65B10E",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_nginx.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_nginx.zig"
+  },
+  {
+    "sha256": "2A3B3CF2496801139ED588A918DDEF4926C81212C21946FA478B5080BF6C451C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_nim.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_nim.zig"
+  },
+  {
+    "sha256": "06592040D885B47D541F930D9A2B3A36BAAAC44DB9EA6D4D7D6A4EFCC840DAFB",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_node_repl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_node_repl.zig"
+  },
+  {
+    "sha256": "A309D74C17983F946ACF684E151BF5530A0B2075F9B31B7887C6D7D1500F4D68",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_objectivec.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_objectivec.zig"
+  },
+  {
+    "sha256": "3D07149D01A6BE696BB1FD26B2BFB6D21973D8CDDF2C08E991B22E269B314401",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ocaml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ocaml.zig"
+  },
+  {
+    "sha256": "1ED7FE76A26954CBE31FAEB7A7AA83B958AB3EC8B222AD39BCAC1A0E3168DEBA",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_openscad.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_openscad.zig"
+  },
+  {
+    "sha256": "A389F7072D27678C620CD3790619FA1E86343E90A1402F7C593B4D3910C96406",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_oxygene.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_oxygene.zig"
+  },
+  {
+    "sha256": "C2937BE602E59C75BDB98C65A338E8B9280B35207DAE8FF7614975554E70AE88",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_parser3.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_parser3.zig"
+  },
+  {
+    "sha256": "F2486AC9EE7F9B4A5048560B6E66ECAACF37CB5E302E04C1DF279AC3FF67CA24",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_pf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_pf.zig"
+  },
+  {
+    "sha256": "E07E002D01D873052CA570DBFD48D44847771AAB3A8DBD1A70BDE8F56D15CDB8",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_php_template.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_php_template.zig"
+  },
+  {
+    "sha256": "5F6553FB21FDC897685F290909A2C7035EDAA9F7C3394BFF68639AF14A071F90",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_plaintext.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_plaintext.zig"
+  },
+  {
+    "sha256": "97333775AE976D2A512868AD0C7CABF632A3C1942944933B8011BC1EC2438F82",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_pony.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_pony.zig"
+  },
+  {
+    "sha256": "4E203B38F836E47EAA4048B761EFA3D4F9F4C9A00B277BACA14BDB32C7B0E319",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_powershell.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_powershell.zig"
+  },
+  {
+    "sha256": "D7CC6C28FCF4B6C45CCFF0E577C8DADB4EC9F8EBD343150C359F9400E8F095A5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_processing.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_processing.zig"
+  },
+  {
+    "sha256": "85762D3E8D9247471210FB77F02046BB0D988423FDDD162F46B7CB553251770F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_profile.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_profile.zig"
+  },
+  {
+    "sha256": "9EB388102F85F46198F5FC1FE442420CE229A5DE21BF067FC535EAD52C688183",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_prolog.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_prolog.zig"
+  },
+  {
+    "sha256": "FB06A819FFE68B2B03772A3DEAC36C122D658AC1A838D9F8C933B8E787A20BB4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_properties.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_properties.zig"
+  },
+  {
+    "sha256": "AD0BBEC9ADBB4FFF1E48454206B20AF0FF76E9B6057166EBD21819F2A461EE4A",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_protobuf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_protobuf.zig"
+  },
+  {
+    "sha256": "1B303BC56B8D113095624D84A6EC177FA27229DD8F037938B876B3EF4CD9C39E",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_puppet.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_puppet.zig"
+  },
+  {
+    "sha256": "941D7FC1F84B56D41BEF2966C37020B2C810B75A5B88A62DF4A26B01693F3900",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_purebasic.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_purebasic.zig"
+  },
+  {
+    "sha256": "94A3F91B0C248F47400282B9F21A4FD935531E73C88C3413AF813E50B8090778",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_python_repl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_python_repl.zig"
+  },
+  {
+    "sha256": "BBD194985042981AEBF42D85135DB3F6F77980C3ACC7E3B7D2EB47B70CD231C9",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_q.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_q.zig"
+  },
+  {
+    "sha256": "5269F7752920EA4B63068D3C1ECAD6A7A17EAE1AE1AFBBE7E12BDFB295AADBE5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_qml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_qml.zig"
+  },
+  {
+    "sha256": "D908CF470853BBC54A3B0AF2566B21A6FA3E32E8A8868A6CB949E9A1BBD3862D",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_r.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_r.zig"
+  },
+  {
+    "sha256": "F4C0E94367549F560E30DE8EDB33D680128F63217C9088933C1B1DBDDDAD4B47",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_rib.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_rib.zig"
+  },
+  {
+    "sha256": "43697D6186CB35D316F3FA862721442AD6AC42764999C432E4719C777BAC24AC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_roboconf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_roboconf.zig"
+  },
+  {
+    "sha256": "F2D53715C416F35DB7950F6480283546426519799833F118A19E2B33F67349DC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_routeros.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_routeros.zig"
+  },
+  {
+    "sha256": "EBCE4417C1F4D8E4A9DB653A6605D9107226F05623367BC067ECF8012BBF67A3",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_rsl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_rsl.zig"
+  },
+  {
+    "sha256": "BFB6042AF2F6C40B6948A1DE75033B3CEDE72FD022F64287A95CC47EE4F26002",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ruleslanguage.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_ruleslanguage.zig"
+  },
+  {
+    "sha256": "F57D5FDDF808F62A5132DD6C191BBBE70D6A105B16618B11A05A7DFAF1FEB600",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_sas.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_sas.zig"
+  },
+  {
+    "sha256": "CC4C17A5491AC336AC77AE3A0DFFF8CCF3BF60A3A9B11EFB4B6C9379834928EF",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_scheme.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_scheme.zig"
+  },
+  {
+    "sha256": "540FE634A1C130C273E09B7025F419BBAF2250F56D583285EC916051E1FD69B6",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_scilab.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_scilab.zig"
+  },
+  {
+    "sha256": "0A5F0ED65211E48BBF32361AF3677BB24538C7C51FFA0588F7C363FE9F969309",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_shell.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_shell.zig"
+  },
+  {
+    "sha256": "62C59D4D748EDE6CD723BE957539E2A504BAA73E2E137E1556C9DD77CB00D866",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_smali.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_smali.zig"
+  },
+  {
+    "sha256": "A99EF22ED06F2BDB069264B1C702C7C7AC987FD05080E95389656C78EE8BB237",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_smalltalk.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_smalltalk.zig"
+  },
+  {
+    "sha256": "3A334405F9395F0152CFBE0122A393FA54F287BC5B2031FFAAE444E23CE1E868",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_sml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_sml.zig"
+  },
+  {
+    "sha256": "D33AED13848B3D56804422F54111B3BEA90A3E9AE69A10A495695B81938F7017",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_sql.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_sql.zig"
+  },
+  {
+    "sha256": "F50FE229A0C8EEA5518EFD38E8771186073A811D8E1311DEC0B9508E1039D4B5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_step21.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_step21.zig"
+  },
+  {
+    "sha256": "9FC66A114FEFE4A69B734468695D02B4CA888A1DC9DED772DDE757E33EF99CCF",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_subunit.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_subunit.zig"
+  },
+  {
+    "sha256": "3B4D5F5A95813DDDBC855D51B203CFEFD32ECDFB9244E0E0BB430729E2001ED7",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_taggerscript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_taggerscript.zig"
+  },
+  {
+    "sha256": "9C9EDF95E93854FFFE5E9BD62201B2AF56A0C47BC2DFBEB17CD1411B087F567D",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_tap.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_tap.zig"
+  },
+  {
+    "sha256": "594F841552FEB578227E85675624B1F1FE6D0BCC251EB1C89FF5963D1D9C7502",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_tcl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_tcl.zig"
+  },
+  {
+    "sha256": "8FBD306032577DA0F9FEB71D962591D634CFE1EB66428A4B1DBCECCE7B6B4DAC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_thrift.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_thrift.zig"
+  },
+  {
+    "sha256": "88BA0B3D96EFCFF1815A956A320A1A9298C87428341481A5293A00FE8D6214DC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_tp.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_tp.zig"
+  },
+  {
+    "sha256": "3C2A4D03D2C0A786A0AD5C66FD246963D6983A97C98C256F820636AAED0881BC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_twig.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_twig.zig"
+  },
+  {
+    "sha256": "1E77FD0CD7D815122D808884B22F3A533D80D14CEC3AD5A3CBA6B35C41401992",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vala.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_vala.zig"
+  },
+  {
+    "sha256": "11830FE1CC7DB2BA8A3669EDA6F28B484F36B10E9E436EB90E1759893B1AE93E",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vbscript_html.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_vbscript_html.zig"
+  },
+  {
+    "sha256": "B317BDBE8569B8115645125EE8F521898099CCD6FCA38192312F56E441EBC9A2",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vbscript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_vbscript.zig"
+  },
+  {
+    "sha256": "CAE464B4A225A8900C2BA47EF9449CE9E3446B2E9140A63845B1426E80B731B7",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vhdl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_vhdl.zig"
+  },
+  {
+    "sha256": "40F001FB87544ADA98D3FBB458908DB3A549E9A89887A681620BA9851CB95976",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_xl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_xl.zig"
+  },
+  {
+    "sha256": "3D0F7EC7DED395FBC962551C7F40B0C5AAE4737080CEC70C9D9D5B963C01FBFC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_xml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_xml.zig"
+  },
+  {
+    "sha256": "F531284D9B7787253C86141CDD8A0B076D6D4D798AACE47B9BB5C6737BDE3DDA",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_yaml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_yaml.zig"
+  },
+  {
+    "sha256": "1472ED6B251F86EBB937D711101B82BB734A43326EB7F28E45E27E1174CBDD70",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_zephir.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_grammar_zephir.zig"
+  },
+  {
+    "sha256": "353025A64EEEC2207FD027834EE0F8633F31ABBCCCA13CC9589FEC885F0D8721",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_lazy_batch3_values.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015\\src\\extensions\\native_highlight_lazy_batch3_values.zig"
+  },
+  {
+    "sha256": "F2FE35D061764D005250E54C1F8BC79DEFDF5BD4B18C8B25D684D536D2890155",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_1c.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_1c.zig"
+  },
+  {
+    "sha256": "50BB22D3A3C477346A901CBB342ECE00022E7BBEB0003FAF4FB8E068D2807FA2",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_ada.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_ada.zig"
+  },
+  {
+    "sha256": "01A466C94F34C3D081ED62F6CF49ED5E6931AC7E70CA6729E04983B95CA69B47",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_arduino.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_arduino.zig"
+  },
+  {
+    "sha256": "48418EFBC8E828F7B2E4FE490AB67FFF644F0AFDB20F7BC5E62FB71785CFE29F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_asciidoc.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_asciidoc.zig"
+  },
+  {
+    "sha256": "16212CD0177A480862F1256599F3136EDC03D68EDF9E084BA07AC3CA16D5C343",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_autoit.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_autoit.zig"
+  },
+  {
+    "sha256": "5AAFC52CDC2048F9DDFEC57ABA24A00161ECB9E6CF1BD0C018BCB63808B24BA6",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_c_like.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_c_like.zig"
+  },
+  {
+    "sha256": "4C9513D0863AEB2DC49A0B4773AFDFBF72D0BA350A56A0F6949B2DC79BBD9613",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_coffeescript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_coffeescript.zig"
+  },
+  {
+    "sha256": "1C5C814E5670290B5DA3231860A997C1892A652C1A69B3595108FF058AD3B9D4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_crystal.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_crystal.zig"
+  },
+  {
+    "sha256": "5E6D0B18C65FD3EE66CF052F465618B32672A36EBE74D81CF91FE4453D6990B4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_d.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_d.zig"
+  },
+  {
+    "sha256": "A267880A5DF6D766E8C755179E90B4B3281391D2EA794B70C93CBFC779CB57D0",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_fortran.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_fortran.zig"
+  },
+  {
+    "sha256": "DB938E106FA5444EDF215348333D683C105FFF2597702E574283C9DA733C57F2",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gauss.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_gauss.zig"
+  },
+  {
+    "sha256": "ECE09DE8085362D212DD794171E324D8FBADFE26F11FB7BF490551E85F8E38C8",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_glsl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_glsl.zig"
+  },
+  {
+    "sha256": "C4D9994A5E7ABE5492F09CC083B6F3ECA5E21C2EEB38D5476B15402F46D28693",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_gml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_gml.zig"
+  },
+  {
+    "sha256": "DDFA2D90213F65A2BE71870F05BB06FE41E6BA3C0E89D0756A616F57C9B42201",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_handlebars.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_handlebars.zig"
+  },
+  {
+    "sha256": "9B1687A5EF5244E32B27E07B7C219750D79348F1114DE45A761732FE815434D3",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_htmlbars.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_htmlbars.zig"
+  },
+  {
+    "sha256": "492BEBC6AFB783368773A4794681F870EDAC22C140BD90771D3DA4842F9155EE",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_irpf90.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_irpf90.zig"
+  },
+  {
+    "sha256": "A134EA45FC24DF89D6158CB2EF5B25197AF4BB4649A3F2FDEE14F49DF538595F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_isbl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_isbl.zig"
+  },
+  {
+    "sha256": "98C6A36404BE34083E613F5F557B68C388304C327AED22B353022163749015F3",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_julia.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_julia.zig"
+  },
+  {
+    "sha256": "9DB25F7604FCA4CD58C0D0F5DA532F91403BB0404CF363846188018987B4DF0B",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_latex.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_latex.zig"
+  },
+  {
+    "sha256": "CD34DD26D676B8A83F098E4327DB3DFA199B6ED33E97098A3F9D1398B19420B5",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_less.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_grammar_less.zig"
+  },
+  {
+    "sha256": "7D8F4BB9A8C7B390C3CE7F591566C3D79BB19A997B1D441CCDA454EF12E1AF83",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_lazy_batch9_helpers.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015\\src\\extensions\\native_highlight_lazy_batch9_helpers.zig"
+  },
+  {
+    "sha256": "DD59DA6F1747C148F2C2AC57CB54A883DA895876064E540A5ED19A8F84942634",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_livecodeserver.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_livecodeserver.zig"
+  },
+  {
+    "sha256": "3C2BA15667902BBCFBB3648E567D43613EFE66400565AB035ADA073853F945D2",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_livescript.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_livescript.zig"
+  },
+  {
+    "sha256": "1489AC37A9702F75F7B6997615EB529897E735F401756CEC07FB0B97C6FDE22F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_lsl.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_lsl.zig"
+  },
+  {
+    "sha256": "03FBC84786BB0C90435D94A4561577F61FE7F5328E5E80B99C9AB7F4814E0778",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mathematica.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_mathematica.zig"
+  },
+  {
+    "sha256": "B38E952F489B82CECC3794705CD8D5434191E1D3B92F27C67A5424BCA2AAF71A",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_maxima.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_maxima.zig"
+  },
+  {
+    "sha256": "2A679439D57320CABF2EBD2DA533878D049447D464FB6142C9DBF705883EA86C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_mel.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_mel.zig"
+  },
+  {
+    "sha256": "089EB088545207C5469FF71011DF448C1DE512D50E45D77E77B3BB8054056C9F",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_nsis.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_nsis.zig"
+  },
+  {
+    "sha256": "9874906F280E051C8ACF52351CCE9CA0408BCB96C209B2EA5ADB0FFC7DB8EDAF",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_pgsql.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_pgsql.zig"
+  },
+  {
+    "sha256": "CA7DEF968EA5C7FCA6646CFC5B92C76729C0A416DB3F0287F300294C3C1DBC21",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_reasonml.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_reasonml.zig"
+  },
+  {
+    "sha256": "2732C71B1372D94DECA6032DDAD1ADFFFF91541E2076352946A4C652F1C96EB4",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_scss.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_scss.zig"
+  },
+  {
+    "sha256": "8F7B86F625130D17F0E58E71827C036333A6F09595D74D197393A0E98F332A63",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_sqf.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_sqf.zig"
+  },
+  {
+    "sha256": "7685BB3A7DFD89456B937041C243F644157DD7E8FB6375554BA38A6E25CCB5A8",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_sql_more.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_sql_more.zig"
+  },
+  {
+    "sha256": "AAD379B07479290ECBA804A245056441BD179609EEF0A10D3D3A4BFD47F11B07",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_stan.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_stan.zig"
+  },
+  {
+    "sha256": "A68A5508F0D4D66059DF8DD11AB544F08C1108B4023DFBB915D9B88B96A76819",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_stata.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_stata.zig"
+  },
+  {
+    "sha256": "CA87755D3A74AB0473284598E8EEA9C681AFAE53365AF8CA22F5D4BE3FE7C411",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_stylus.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_stylus.zig"
+  },
+  {
+    "sha256": "DACAB0AA6F1A9D2E81C42A12AA9ECEA672A7C9EEDDDE2A3F697E15A10C5B0854",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vbnet.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_vbnet.zig"
+  },
+  {
+    "sha256": "EC21F6796EDA85D7956DF6DC27CFA2063E1C4C83A4D91D85FE572A7B88C23EB3",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_verilog.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_verilog.zig"
+  },
+  {
+    "sha256": "2274E92B8BACA71D6596E59B6970C3EE9F4CAC6D7561608C5B56F8CA93CE711C",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_vim.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_vim.zig"
+  },
+  {
+    "sha256": "91B54EDE1C4E80A55FE46F76A59B433AB550CE4626E88FEE1D4F4F7F69EB90EC",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_x86asm.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_x86asm.zig"
+  },
+  {
+    "sha256": "FEC4ABB4DABDF4C55B7D1F1001CE253B5CCD66FB5B84C7D094C89343C28111DD",
+    "target": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\native_highlight_grammar_xquery.zig",
+    "source": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015\\src\\extensions\\native_highlight_grammar_xquery.zig"
+  }
+]

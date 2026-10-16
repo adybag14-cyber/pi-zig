@@ -1,0 +1,234 @@
+{
+  "candidate": "aea5f178efdd3105d903553c8f5ff82bfbb25ea3",
+  "target_base": "55cfa068bdaa48fda816c866fb652d0dec7b7667",
+  "new_computational_files": [
+    {
+      "path": "src/extensions/native_highlight_classes.zig",
+      "sha256": "AA999BAFBE9966A3C1415143F99C320D7B21AB5BA2E1244FDA0B2778DBBC3500",
+      "source_blob": "1b89d6ae62a7d71c3d4c3837c1c459444957eb80"
+    },
+    {
+      "path": "src/extensions/native_highlight_common_modes.zig",
+      "sha256": "47120EBA191C818589A29A8D869B54C2435BD5E1E940978F74CFCFA968927D7A",
+      "source_blob": "bd6bcfcab7f4a76d70546a44d6a2ab2810f3fa3e"
+    },
+    {
+      "path": "src/extensions/native_highlight_compiler_extensions.zig",
+      "sha256": "C50726698AD1F95087EACE71546F2519480DF71CA1243AC627DAA265D56F2C20",
+      "source_blob": "9711c7fbd85d3b73e89f1c8a62878763c12b156e"
+    },
+    {
+      "path": "src/extensions/native_highlight_core.zig",
+      "sha256": "4B994B9F843FD62B207404C7904F562C81BB05E6EB8E7E21E3C285C67A22A951",
+      "source_blob": "28d9b9fcc9f82ffe47c9abd7f30d1980975871fb"
+    },
+    {
+      "path": "src/extensions/native_highlight_deep_freeze.zig",
+      "sha256": "34B841A85C07BA2946BE8FEBACD182117EC4AC018E280349FBC071D4D29A35DB",
+      "source_blob": "a4225c1e8329bf1575c7721db91d25ac0872e4d3"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_bash.zig",
+      "sha256": "31A141D243AA80CA1ED404D16EA1AD7FDCD0908935F4A801D299A2C17D62A0D7",
+      "source_blob": "f3de23b94e1485c73cae6c86f60bc2d888bf9e0e"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_c_family.zig",
+      "sha256": "02039B7B7B12B8ED3FF81B522A94BAB56A23C908ADE8AB7BF76FA8C074DF5E48",
+      "source_blob": "cd79c80ad569fcd5f88d23ae45a8eb9bad42ab0d"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_csharp.zig",
+      "sha256": "ACEBB4D6F3C98DC7F9771A65E66836089E18CF8E16552E9790EECB5D092E7A1E",
+      "source_blob": "b40aa8b907b1098c14cec00f2fda0faf392514fe"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_dart.zig",
+      "sha256": "3D4C999F7004ECF27C4FF851A1FFC4834BDE0E5E79E5FFDACE50D9DB243EDA24",
+      "source_blob": "73fb8912bf8d7e0966e000cf69fd9831450a77ab"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_go.zig",
+      "sha256": "AC52382FAE84FD1173BA4A77D89D1974F65294E9B9DD70CF5436EE8FDD4B51ED",
+      "source_blob": "249d44f4f2d3d53ed8f8b99c69e6b8d7cc01151c"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_groovy.zig",
+      "sha256": "B1E2D2891BEBFF37016056B8EFECF004753448CCCB84D1E805E1C7A93D11AD25",
+      "source_blob": "bb8ec2c6b9df59493bbdb7c28f21dd8d2d4bfbce"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_java.zig",
+      "sha256": "9012DE5BC17F964C2073B76BBAB046FCA472C6EF3561D0CA2885F31770EA0849",
+      "source_blob": "c91d3c1b209e61a96ada5d4e654b4b98737f975a"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_js_family.zig",
+      "sha256": "B5685F207F6BF85B1EA62354DEE255F29DA61B06F265CE8B6922D3774C5F6FCF",
+      "source_blob": "62970fbd3a228084118bd9d367801b5410857dfe"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_json.zig",
+      "sha256": "D8C62724E14671B6D2CDD9EB92FA79CF604A1D5EBC8A74E3037C39F76D24E9B6",
+      "source_blob": "a6af2fb6fcdeb9f59737ee9640ab3e2d8386ff81"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_kotlin.zig",
+      "sha256": "12E803AF33D50EAE01366D76E44F3AAF8F3EA59130D07D3D2DCF798461859D61",
+      "source_blob": "4da3e26b991a0ed2a9e8639841580e4a2ec4894e"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_lua.zig",
+      "sha256": "859E2A58215E43147E80D7ECFA7AC849F8011EE9213153B76E10467D738C34FE",
+      "source_blob": "18d217d6df61b49a0dfb581509e7961de16dc950"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_nix.zig",
+      "sha256": "5890585D38E5DE3AD6D85EBE1AEDA0335F761D5E46E5247D55D506550399C106",
+      "source_blob": "3db2ec4aaeb4183d73a4bcaa6b5aa434bf9fb01c"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_perl.zig",
+      "sha256": "1F7CE9A4B9F2013CC8CC9C13506D9189842387A81EB78FBB44CB029FF54D4804",
+      "source_blob": "7b6a0cbaf5bda119b1fd29c6c878e7f3e527372c"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_php.zig",
+      "sha256": "3FC66783BA49EB2526E1213267E61DB6A99FC2B3FFBE5DF32770AFEF4634E55E",
+      "source_blob": "27ca2d1dfc35155a801115c64fba80965590d126"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_python.zig",
+      "sha256": "8F2B9D8125ED412050DF0250C8E74AC683423DBFF168018B21707CBC6206B820",
+      "source_blob": "cea7409553a9b5cc7ea918168cb3c7930411b0b1"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_ruby.zig",
+      "sha256": "BFA988461265FD7D848749073731EB5F225FAF2193B55CF8B0BB483E0233C919",
+      "source_blob": "ab07038988fe70625d29ed26ff13f6bd7aa06928"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_rust.zig",
+      "sha256": "B45A93DF6BAEFA09EE59579C7DA9A6D1DDD7FAD992DC8D3E9BB1492128E4D1EF",
+      "source_blob": "dc7faa5b69b322b11af6fc0b403832545822db11"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_scala.zig",
+      "sha256": "8E7C560173899AAA5E8E21CF506B66E709A5BB73C0072279E1A6E66A793B99F0",
+      "source_blob": "162f60f37296d0d2cca18cc0f52239a6a697bfad"
+    },
+    {
+      "path": "src/extensions/native_highlight_grammar_swift.zig",
+      "sha256": "F379183A73B05E15B60F2124DD8FED49BBFAA9CF1D278AF4BA30EA6B4C067961",
+      "source_blob": "91935b0e1521dbdbcaf1dba50bfaaf3e5f444cea"
+    },
+    {
+      "path": "src/extensions/native_highlight_inherit.zig",
+      "sha256": "70B41F8E571BD8F6486FBF1C22F66FF29AF9CD270B18807DC688EEBF8093580C",
+      "source_blob": "912264ea49f85cdaee87ca3488699142f21a3216"
+    },
+    {
+      "path": "src/extensions/native_highlight_keywords.zig",
+      "sha256": "4AD490FB13F411EA93FEC6D0F13C38377F96E99CCA5B085A3E241BF3F122848A",
+      "source_blob": "5ac8df01ab14423c6518d44109c947e3dc70f87c"
+    },
+    {
+      "path": "src/extensions/native_highlight_loggers.zig",
+      "sha256": "4B2152D829AC9FCC9D7A9E3D9F605C7AE7E42D814254BF0BB0B42712B3C3380F",
+      "source_blob": "7dab2957afaf2441c587cfc23c9380e42b54020e"
+    },
+    {
+      "path": "src/extensions/native_highlight_mode_compiler.zig",
+      "sha256": "A29E97F15684DA2D669750ADDB8F5C5544DE043E74736B56CBBF05FC13F9AC31",
+      "source_blob": "2123e179bdc747b5f0beb5ea799510981fafdd4a"
+    },
+    {
+      "path": "src/extensions/native_highlight_multi_regex.zig",
+      "sha256": "CA4F7CA22D76754F4B85BFACB374C1DB30A7C33B9C489EB5455A95D5D02B0B7F",
+      "source_blob": "1f4edc8c8d5b89dd13f9e3d1694a41be14d623ba"
+    },
+    {
+      "path": "src/extensions/native_highlight_regex.zig",
+      "sha256": "E9A7A22FA0F4A28B4421BC5A79C74C41E3F51D8F7CFE6491C370A8947143C67D",
+      "source_blob": "9df473ef6389330b570a3ed891796a639808231b"
+    },
+    {
+      "path": "src/extensions/native_highlight_resumable_regex.zig",
+      "sha256": "7E24065E387D396F633BBADB211CEC306E2AAC38FD58AAFC0F3A1EDC43C20C66",
+      "source_blob": "d38f0c2a091f1400736385457c81fc39e5ee58c2"
+    },
+    {
+      "path": "src/extensions/native_highlight_scanner.zig",
+      "sha256": "D43376D044DACA667A2FA3BB5C9CAAF9B5ECBB66730AC4C102055047085CB8A0",
+      "source_blob": "62df2d4da85e72d14685b917a445cbec801bd756"
+    },
+    {
+      "path": "src/extensions/native_highlight_scope.zig",
+      "sha256": "D6B996FB6559B28F8A87FEF447AC3FBF9517F7AE09445DA2CD96E3DC98F27CB4",
+      "source_blob": "475aeb810e8c84a30373689f67d0c5e1e5c1ab2a"
+    },
+    {
+      "path": "src/extensions/native_highlight_token_tree.zig",
+      "sha256": "851BD43A8AB2260521B75BF3CF36373FBA6B8B5F7153C7014A394FF15C6FED55",
+      "source_blob": "78c2a4772404bf67fd04ff6e706bf5e780796d5d"
+    },
+    {
+      "path": "src/extensions/native_syntax_highlight.zig",
+      "sha256": "A5B3DB796D46D35BE9F68BA2752703EDCC93C33A2103EBF4A745449F3684F35C",
+      "source_blob": "f6c81e174c5f8ab282a31865bee98c5a6b9d5779"
+    },
+    {
+      "path": "src/extensions/native_syntax_highlight_html.zig",
+      "sha256": "DA8983169C512DA805D8F4220414400D4DBEC0D78782FF23A5361AE56CBCE147",
+      "source_blob": "0f5381869a5cc4579920c4a33773ed36c778cff0"
+    },
+    {
+      "path": "src/extensions/native_legacy_function.zig",
+      "sha256": "11349B4632E99C5904084D90A64AEEDA68F293F411BC3DD4B7ABF85B51CF1BED",
+      "source_blob": "16d5f5c602517339d7b24f6db691f64639bd8b05"
+    },
+    {
+      "path": "src/extensions/native_source_for_in.zig",
+      "sha256": "C5111151AEE672690409D0521D0FC34667B0DC3B5D3330E96A8661C1B2C2072A",
+      "source_blob": "1ee2f93eb4e17d428bc751f0a71024fd8143cbf6"
+    }
+  ],
+  "new_file_count": 38,
+  "preserve_root_existing": [
+    "src/extensions/engine.zig",
+    "src/extensions/native_sdk.zig",
+    "src/extensions/native_node_function.zig",
+    "src/extensions/engine_abi.c",
+    "src/extensions/engine_abi.h",
+    "src/extensions/native_js_values.zig",
+    "src/extensions/native_class.zig",
+    "src/extensions/native_sdk_prompt_scope.zig",
+    "src/extensions/native_sdk_transcript_replay.zig"
+  ],
+  "optional_diagnostic_closure": [
+    "src/native_highlight_scope_test.zig",
+    "src/native_highlight_core_profile_test.zig",
+    "src/native_highlight_core_b45_test.zig",
+    "src/native_highlight_legacy32_function_test.zig",
+    "src/extensions/fixtures/sdk-highlight-deep7-b45.input.txt",
+    "src/extensions/fixtures/sdk-highlight-deep7-b45.json",
+    "src/extensions/fixtures/sdk-highlight-core-b45.input.txt",
+    "src/extensions/fixtures/sdk-highlight-core-b45.json",
+    "src/extensions/fixtures/sdk-highlight-legacy32-b45.input.txt",
+    "src/extensions/fixtures/sdk-highlight-legacy32-b45.json"
+  ],
+  "missing_C_ABI": [
+    "JS_PiUnmappedArguments",
+    "JS_PiObserveCallFrame"
+  ],
+  "C_intake": "Root review required: additive final legacy helpers plus realm poison cache lifecycle and reviewed0b277 dispatch split; preserve all newerRootC hooks/opcodes/async APIs",
+  "C_commits_for_reference": [
+    "1a83d7f2",
+    "d8262eef",
+    "934740fa",
+    "0b2770fb"
+  ],
+  "oom_guard_commit": "aea5f178",
+  "full_core_host_GPA": "still active; do not claim complete",
+  "functional_proof": "functional-qualified-aea5-20261015.json"
+}

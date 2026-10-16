@@ -1,0 +1,22 @@
+{
+  "count": 11,
+  "completed_utc": "2026-10-15T22:20:35.2262703+00:00",
+  "tests": [
+    "native_ai_json_parse_test.test.native AI JSON native arrow metadata constructor guards lexical receiver and captures match actual language functions",
+    "native_ai_json_parse_test.test.native AI JSON every host allocation releases ordinary and arrow callable captures",
+    "native_ai_json_parse_test.test.native AI JSON actual OpenAI factory owned HTTP20 matches full intermediate snapshots and callbacks",
+    "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+    "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+    "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+    "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+    "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+    "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+    "native_ai_json_parse_test.test.native AI JSON every host allocation preserves intrinsic parser hook ownership and trusted OOM origin",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "method": "Actual Zig0.16 metadata-only query4 and clean exit0; no run command",
+  "binary": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\.zig-cache\\o\\5ef4d8d9d038e8cbbd2ed6a19a7394c2\\test.exe",
+  "version": "0.16.0",
+  "binary_sha256": "FB42FC5A10DFE251C79E107122640F6C42955E91C87BF282E92BFD2B7DB1DBD2",
+  "candidate": "8685fd09298955e1f2fbae41e7677141b07e7b14"
+}

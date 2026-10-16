@@ -833,6 +833,11 @@ JS_EXTERN JSValue JS_PiBinaryOperator(JSContext *ctx, int operation,
                                     JSValueConst left, JSValueConst right);
 JS_EXTERN JSValue JS_PiIncrement(JSContext *ctx, JSValueConst value);
 JS_EXTERN JSValue JS_PiDecrement(JSContext *ctx, JSValueConst value);
+/* Private native Source legacy-function support. Borrowed argv; fresh owned
+ * Arguments values. Frame identity is opaque and only valid during the call. */
+JS_EXTERN JSValue JS_PiUnmappedArguments(JSContext *ctx, int argc,
+                                        JSValueConst *argv);
+JS_EXTERN JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity);
 /* Original BigInt conversion with Node-host null/undefined diagnostics. */
 JS_EXTERN JSValue JS_PiBigIntNode(JSContext *ctx, JSValueConst value);
 /* Borrowed input, owned actual interpreter ToNumeric result. */

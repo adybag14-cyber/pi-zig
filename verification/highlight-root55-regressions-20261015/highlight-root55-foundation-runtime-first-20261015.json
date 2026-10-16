@@ -1,0 +1,31 @@
+{
+  "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "arguments": [
+    "build",
+    "test-native-highlight-root55-foundation",
+    "-Doptimize=Debug",
+    "-Duse-llvm=true",
+    "-j1",
+    "--test-timeout",
+    "120s",
+    "--summary",
+    "all"
+  ],
+  "working_directory": "C:/Users/adyba/pi-zig-highlight-complete191-root55-20261015",
+  "pid": 49496,
+  "retained_handle": 2472,
+  "created_utc": "2026-10-15T22:11:31.1948300Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 300,
+  "status": "passed",
+  "live_identity": {
+    "command_line_method": "Win32_Process.CommandLine",
+    "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-highlight-root55-foundation -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "created_utc": "2026-10-15T22:11:31.1948300Z",
+    "pid": 49496
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-15T22:11:39.1972578+00:00"
+}
