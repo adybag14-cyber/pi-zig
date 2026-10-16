@@ -21,6 +21,9 @@ fn throwReason(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [
     const reason = nativeReason(context, receiver, argc, args);
     return if (c.JS_IsException(reason)) reason else c.JS_Throw(context, reason);
 }
+fn hasCapturedReason(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.pi_js_bool(context, @intFromBool(em.Engine.fromContext(context.?).captured_exception != null));
+}
 fn install(engine: *em.Engine) !void {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -37,6 +40,7 @@ fn install(engine: *em.Engine) !void {
     inline for (.{ .{ "ownedMakeHookNativeReason", nativeReason }, .{ "ownedThrowHookNativeReason", throwReason } }) |entry| {
         try sdk.put(engine, global, entry[0], try engine.checked(c.JS_NewCFunction(engine.context, entry[1], entry[0], 0)));
     }
+    try sdk.put(engine, global, "ownedHookHasCapturedReason", try engine.checked(c.JS_NewCFunction(engine.context, hasCapturedReason, "ownedHookHasCapturedReason", 0)));
 }
 fn run(program: []const u8) !void {
     const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
@@ -113,5 +117,17 @@ test "native hook helper Source catch and resumed rejection retain exact fatal n
     );
     try fatal(
         \\globalThis.String=ownedThrowHookNativeReason;await ownedHookMethods._beforeToolCall.call({_extensionRunner:{hasHandlers(){return true},emitToolCall(){throw {ordinaryPrimary:true}}}},{toolCall:{name:'tool',id:'call'},args:{}});
+    );
+}
+
+test "native hook helper consumes handled capture before guest catch callbacks" {
+    try run(
+        \\const originalString=globalThis.String,raw={ordinary:true};let calls=0;
+        \\globalThis.String=()=>{calls++;if(ownedHookHasCapturedReason())throw Error('handled reason still rooted at callback');return 'ordinary'};
+        \\const receiver={_extensionRunner:{hasHandlers(){return true},emitToolCall(){throw raw}}};
+        \\const first=ownedHookMethods._beforeToolCall.call(receiver,{toolCall:{},args:{}});if(ownedHookHasCapturedReason())throw Error('wrapped reason retained');
+        \\let wrapped;try{await first}catch(reason){wrapped=reason}if(wrapped?.message!=='Extension failed, blocking execution: ordinary'||calls!==1)throw Error('ordinary wrapper');
+        \\globalThis.String=()=>{if(ownedHookHasCapturedReason())throw Error('stale capture before rethrow');throw raw};
+        \\let same;try{await ownedHookMethods._beforeToolCall.call(receiver,{toolCall:{},args:{}})}catch(reason){same=reason}finally{globalThis.String=originalString}if(same!==raw)throw Error('new capture of same object was erased');
     );
 }

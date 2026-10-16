@@ -72,10 +72,15 @@ fn bodyWithSourceCatch(engine: *em.Engine, kind: Kind, receiver: c.JSValue, args
         if (err != error.JavaScriptException) return err;
         const reason = engine.captured_exception orelse return error.ActualHookExceptionRequired;
         if (c.JS_IsUncatchableError(reason)) return err;
+        // Source has consumed this ordinary catch. Transfer its root before
+        // invoking guest Error/String hooks, which may capture the same value
+        // again. Only this local root is retired after those callbacks.
+        engine.captured_exception = null;
+        defer engine.freeValue(reason);
+        if (engine.last_error) |message| engine.gpa.free(message);
+        engine.last_error = null;
         if (kind != ._beforeToolCall or c.JS_IsUndefined(state.*) or !scope.truthy(try scope.get(state.*, "toolCallTry"))) return thrown(engine, reason);
-        const retained = c.JS_DupValue(engine.context, reason);
-        defer engine.freeValue(retained);
-        return beforeFailure(&scope, retained);
+        return beforeFailure(&scope, reason);
     };
 }
 fn resume(scope: *Scope, kind: Kind, receiver: c.JSValue, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {

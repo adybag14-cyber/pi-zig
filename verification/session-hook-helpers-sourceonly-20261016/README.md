@@ -119,3 +119,11 @@ runtime, or qualification job was run.
 
 `native_qualified=false`, `full_factory_qualified=false`,
 `full_pi_qualified=false`, `public_activation=false`.
+
+Root source review additionally found that the synchronous Source catch kept
+the ordinary raw reason in the Engine capture slot after wrapping it. The local
+correction transfers that owned reason out of the slot before guest Error/String
+callbacks and retires only the local reference afterward. A callback that throws
+the same object anew retains its new capture. Fatal and resumed-input paths are
+unchanged. The added component control inspects the capture boundary and same
+object rethrow identity. This correction and control remain native-unrun.
