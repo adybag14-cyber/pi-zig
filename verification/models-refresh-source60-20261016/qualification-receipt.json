@@ -1,0 +1,96 @@
+{
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_package_version": "1.3.0",
+  "source_cases": 60,
+  "source_process": {
+    "name": "models-refresh-4954-source60-first-20261016",
+    "pid": 69272,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --expose-gc --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-update-evidence-20261003/source4954-observe-20261015.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-models-refresh-source60-capture-20261016.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-source60-first-20261016-output.json C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-fixture-first-20261016",
+    "command_line_source": "live Win32_Process",
+    "created_utc": "2026-10-16T09:44:56.1277262Z",
+    "launched_utc": "2026-10-16T10:44:56.125834+01:00",
+    "identity_captured": true,
+    "identity_source": "retained kernel Process handle PID/starttime and exact native launch; live CIM when available",
+    "working_directory": "C:/Users/adyba/pi-upstream-source-4954d76-20261015",
+    "status": "passed",
+    "exit_code": 0,
+    "completed_utc": "2026-10-16T10:45:20.6030453+01:00"
+  },
+  "native_qualified": false,
+  "genuine_native_async_function_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "expected_sha256": "D77AB7B2C9918C55E2DEAFAC8ABC9C7917095467EFBC7A4382FFD5A811B30331",
+  "expected_accepted_only_after_terminal_and_full_posthash": true,
+  "full_posthash": {
+    "historical_absence_records": 84,
+    "compiler_inventory_drift": [],
+    "manifests": [
+      {
+        "changed": [],
+        "name": "source",
+        "drift": 0,
+        "files": 1970
+      },
+      {
+        "changed": [],
+        "name": "dependencies",
+        "drift": 0,
+        "files": 31064
+      },
+      {
+        "changed": [],
+        "name": "node_tools",
+        "drift": 0,
+        "files": 1774
+      }
+    ],
+    "candidate_drift": [],
+    "compiler_drift": [],
+    "absent_dependency_drift": [],
+    "completed_utc": "2026-10-16T10:45:55.8427659+01:00",
+    "control_manifest_drift": false,
+    "candidate_inventory_drift": [],
+    "extra_control_drift": [],
+    "compiler_files": 19546,
+    "expected_still_absent": true,
+    "candidate_files": 8297
+  },
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-source60-first-20261016.json",
+      "sha256": "7082F664C1A8D1B5F9DE953E38AD67705C690056C2131DABBB442F4E3BA73E73"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-source60-first-20261016-posthash.json",
+      "sha256": "4E3AB6DF6A6482C7A87F1CC8DD6BB740461C2018A3F974684B16A8C78117D3F9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-source60-first-20261016-validation.json",
+      "sha256": "4D765BD5B6EBA2915EDA18FDC03C3F9B74C0D7F7D728A234EFB1D91DCFA87A43"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\models-refresh-4954-source60-first-20261016-output.json",
+      "sha256": "D77AB7B2C9918C55E2DEAFAC8ABC9C7917095467EFBC7A4382FFD5A811B30331"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-models-refresh-source60-capture-20261016.mjs",
+      "sha256": "0DC1E492E5CD23A41CE8EF5D0C6BDCA924CAC4310A3A81EA5AD99DF24EB21A72"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-ModelsRefresh4954Source60-20261016.ps1",
+      "sha256": "CA14A63E5F1F86A2092AA62FCE75BACB0B8117BFB7CDC5CF64912F0BA11C59BD"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+      "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+    }
+  ]
+}
