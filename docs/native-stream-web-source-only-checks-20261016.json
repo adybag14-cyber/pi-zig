@@ -1,0 +1,25 @@
+{
+  "base": "672d259daf1140b5492ae98d53c8b0ae441104fa",
+  "captured_exports_source": "f952f602542547db105960e85da17c1b175c27f4",
+  "reviewed_codec_source": "8ada90fca110d1b9a81b9bdc10b02b6ce478e389",
+  "compiler": "0.16.0",
+  "checks": [
+    "fmt",
+    "AST",
+    "git diff --check",
+    "exact existing codec closure hash equality"
+  ],
+  "native_compile": false,
+  "native_runtime": false,
+  "genuine_queue_text_source_capture": false,
+  "native_qualified": false,
+  "production_registered": false,
+  "public_activation": false,
+  "vendor_files": 20,
+  "implementation_files": [
+    "native_node_stream_web.zig",
+    "native_queuing_strategy.zig",
+    "native_text_stream.zig"
+  ],
+  "checked_utc": "2026-10-16T09:51:28.8385115+00:00"
+}
