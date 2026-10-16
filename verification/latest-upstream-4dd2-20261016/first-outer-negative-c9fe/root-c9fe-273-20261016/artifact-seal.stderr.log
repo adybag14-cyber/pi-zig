@@ -1,0 +1,6 @@
+Get-Content: C:\Users\adyba\pi-zig-latest-4dd2-models-20261016\verification\latest-upstream-4dd2-20261016\Invoke-Latest4ddPhase.ps1:6
+Line |
+   6 |  . taskDrift=@(Get-Content -LiteralPath $taskConfig.captured -Raw|Conver .
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot find path
+     | 'C:\Users\adyba\pi-zig-update-evidence-20261003\latest4dd-source-captures\root-c9fe-273-20261016\captured-artifact-freeze.json' because it does not exist.

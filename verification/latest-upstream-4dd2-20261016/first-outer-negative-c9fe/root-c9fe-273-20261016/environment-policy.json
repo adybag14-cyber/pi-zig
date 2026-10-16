@@ -1,0 +1,30 @@
+{
+  "credential_values_read": false,
+  "allowed_names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PI_CODING_AGENT_DIR",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ],
+  "profile": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\profile",
+  "all_other_names_absent": true,
+  "agent": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\profile\\agent",
+  "runtime_generated_allowed_names": [
+    "PSModulePath"
+  ],
+  "network_policy": "deny capture network entrypoints; Node native permission model disallows child/worker/addon and fs writes outside owned run",
+  "temp": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\temp",
+  "inheritance": "ProcessStartInfo.Environment.Clear"
+}

@@ -2,13 +2,13 @@
   "checks": [
     {
       "path": "verification/latest-upstream-4dd2-20261016/Run-Latest4ddSerialCapture.ps1",
-      "sha256": "672901736CDC24A8B74E2D5FADEF9344726218DEE0070785EC2B956277ED7FC4",
+      "sha256": "6692F143302F3CAA8C9EBB490C265610D7CE13957AC35A7C329FEA670CDC584A",
       "parserErrors": 0,
       "executed": false
     },
     {
       "path": "verification/latest-upstream-4dd2-20261016/Freeze-Latest4ddSource.ps1",
-      "sha256": "FB38D0B83AD193F1FE5D3F69ECCCE7154B696D5B23F5293187F3729AC3199767",
+      "sha256": "A8FB8110326AD265D3506FCA568E105DDACFB56818C6B324F175771D691867AB",
       "parserErrors": 0,
       "executed": false
     },
@@ -25,9 +25,9 @@
       "executed": false
     }
   ],
-  "sourceJobs": 0,
   "nodeJobs": 0,
-  "zigCommands": 0,
-  "nativeJobs": 0,
-  "validation": "PowerShell Parser.ParseFile only; not runtime execution"
+  "sourceCases": 0,
+  "sourceNativeExpectedCreated": false,
+  "actualPriorOuter": "c9fe first negative retained",
+  "validation": "Parser only for successor"
 }

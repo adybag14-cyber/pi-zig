@@ -1,0 +1,15 @@
+{
+  "label": "final",
+  "timed_out": false,
+  "exit_code": 1,
+  "terminal": true,
+  "completed_utc": "2026-10-16T15:09:38.2488579+00:00",
+  "identity": {
+    "pid": 49556,
+    "parent_pid": 78296,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T15:09:35.9962150+00:00",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\final-fallback.json -ConfigSha256 A9D307ED88F2477CE1DFCF8861E0E003E40757838B64CE889AB0DC66C9885233"
+  },
+  "budget_seconds": 600
+}

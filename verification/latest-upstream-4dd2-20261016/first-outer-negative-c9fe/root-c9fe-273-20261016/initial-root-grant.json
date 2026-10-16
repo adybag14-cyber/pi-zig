@@ -1,0 +1,10 @@
+{
+  "grant_id": "ROOT-REVIEWED-LATEST4DD-273-SOURCELITE-C9OVERLAP-20261016",
+  "candidate_head": "c9fe6721ddfd065e98ef41c5e0baed27de8c94a4",
+  "issued_utc": "2026-10-16T15:08:30.7494952+00:00",
+  "authorized": true,
+  "expires_utc": "2026-10-16T15:13:30.7494952+00:00",
+  "manual_fresh_16gib": true,
+  "run_id": "root-c9fe-273-20261016",
+  "launcher_sha256": "672901736CDC24A8B74E2D5FADEF9344726218DEE0070785EC2B956277ED7FC4"
+}

@@ -1,0 +1,76 @@
+{
+  "source_terminal_status": "negative",
+  "expected_files_created": false,
+  "present": 0,
+  "rows": [
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 78296,
+        "parent_pid": 72308,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T16:09:32.243136+01:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Run-Latest4ddSerialCapture.ps1 -CandidateHead c9fe6721ddfd065e98ef41c5e0baed27de8c94a4 -RunId root-c9fe-273-20261016 -RootGrant C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-root-grant-c9fe-20261016.json"
+      }
+    },
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 75028,
+        "parent_pid": 78296,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T16:09:33.754034+01:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\before.json -ConfigSha256 9910722C81C83F92770CA3D2D91B3DEAF79A54E8BF70FE808509562EE7537ED2"
+      }
+    },
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 37860,
+        "parent_pid": 75028,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T16:09:33.756936+01:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      }
+    },
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 49556,
+        "parent_pid": 78296,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T16:09:35.996215+01:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\final-fallback.json -ConfigSha256 A9D307ED88F2477CE1DFCF8861E0E003E40757838B64CE889AB0DC66C9885233"
+      }
+    },
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 27788,
+        "parent_pid": 49556,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T16:09:36.00853+01:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      }
+    },
+    {
+      "pid_reused": false,
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 74188,
+        "parent_pid": 78296,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T16:09:38.649575+01:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\artifact-seal.json -ConfigSha256 576412A41A7EFCE8788A7288FC5245E1EAB446B2368E4640A38A2A7F701BD5E1"
+      }
+    }
+  ],
+  "observed_utc": "2026-10-16T15:10:04.3604506+00:00",
+  "outer_and_observed_descendants_absent": true,
+  "candidate_head": "c9fe6721ddfd065e98ef41c5e0baed27de8c94a4"
+}

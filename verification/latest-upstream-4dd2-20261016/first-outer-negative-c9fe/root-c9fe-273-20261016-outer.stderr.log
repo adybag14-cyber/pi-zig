@@ -1,0 +1,5 @@
+Exception: C:\Users\adyba\pi-zig-latest-4dd2-models-20261016\verification\latest-upstream-4dd2-20261016\Run-Latest4ddSerialCapture.ps1:262
+Line |
+ 262 |  . skAccepted){throw 'Latest Source serial capture negative; retained fu .
+     |                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Latest Source serial capture negative; retained full packet; no acceptance/handoff

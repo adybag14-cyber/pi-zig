@@ -9,6 +9,7 @@ $ErrorActionPreference='Stop'
 $taskCandidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskEvidence='C:\Users\adyba\pi-zig-update-evidence-20261003'
 $taskSource='C:\Users\adyba\pi-upstream-source-4dd2b149-20261016'
+$taskGit='C:\Program Files\Git\cmd\git.exe'
 $taskDependencyLink=Join-Path $taskSource 'node_modules'
 $taskDependencyTarget='C:\Users\adyba\pi-upstream-runtime-19cb534-20261012\node_modules'
 function Check-DependencyLink {
@@ -33,10 +34,10 @@ function Check-Rows($Rows){
 }
 $taskMetadataErrors=[Collections.Generic.List[string]]::new()
 try{
-    $taskActualHead=(& git -C $taskCandidate rev-parse HEAD).Trim()
+    $taskActualHead=(& $taskGit -C $taskCandidate rev-parse HEAD).Trim()
     if($LASTEXITCODE -ne 0 -or $taskActualHead -cne $CandidateHead){$taskMetadataErrors.Add('Exact candidate HEAD mismatch')}
-    if((& git -C $taskCandidate status --porcelain).Count){$taskMetadataErrors.Add('Candidate dirty')}
-    if((& git -C $taskSource rev-parse HEAD).Trim() -cne '4dd2b149d155d7369de16ea4dc77c84e9f5ffb24'){$taskMetadataErrors.Add('Official latest source HEAD mismatch')}
+    if((& $taskGit -C $taskCandidate status --porcelain).Count){$taskMetadataErrors.Add('Candidate dirty')}
+    if((& $taskGit -C $taskSource rev-parse HEAD).Trim() -cne '4dd2b149d155d7369de16ea4dc77c84e9f5ffb24'){$taskMetadataErrors.Add('Official latest source HEAD mismatch')}
 }catch{$taskMetadataErrors.Add('Git identity check failed')}
 $taskActualLink=$null
 try{$taskActualLink=Check-DependencyLink}catch{$taskMetadataErrors.Add('Source dependency junction mismatch')}
@@ -53,7 +54,7 @@ if($Phase -eq 'before'){
         if($taskRows.Count -ne $taskSpec.count){$taskMetadataErrors.Add("Full $($taskSpec.name) inventory mismatch")}
         @{name=$taskSpec.name;rows=$taskRows;manifest_path=$taskSpec.path;manifest_sha256=(Get-FileHash -LiteralPath $taskSpec.path).Hash}
     })
-    $taskCandidateRows=@(& git -C $taskCandidate ls-files|ForEach-Object {
+    $taskCandidateRows=@(& $taskGit -C $taskCandidate ls-files|ForEach-Object {
         $taskPath=Join-Path $taskCandidate $_
         @{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}
     })

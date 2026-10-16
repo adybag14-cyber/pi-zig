@@ -49,7 +49,7 @@ $taskWorker=Join-Path $PSScriptRoot 'Invoke-Latest4ddPhase.ps1'
 $taskManifest=Join-Path $taskRun 'full-before.json'
 $taskExtra=Join-Path $taskRun 'run-controls.json'
 $taskCasesPath=Join-Path $PSScriptRoot 'ordered-case-ids.json'
-function Write-Json([string]$Path,$Value){$Value|ConvertTo-Json -Depth 60|Set-Content -LiteralPath $Path -Encoding utf8NoBOM}
+function Write-Json([string]$Path,$Value){ConvertTo-Json -InputObject $Value -Depth 60|Set-Content -LiteralPath $Path -Encoding utf8NoBOM}
 function Budget([int]$Reserve=0){if(([DateTimeOffset]::UtcNow).AddSeconds($Reserve) -ge $taskDeadline){throw 'Outer bounded capture deadline exhausted'}}
 function Identity($Row){return [ordered]@{pid=[int]$Row.ProcessId;parent_pid=[int]$Row.ParentProcessId;executable=[string]$Row.ExecutablePath;created_utc=([DateTimeOffset]$Row.CreationDate).ToUniversalTime().ToString('o');command_line=[string]$Row.CommandLine}}
 function Same-Process($Expected,$Actual){
