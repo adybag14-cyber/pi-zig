@@ -23,7 +23,7 @@ $taskModules=@(foreach($taskName in @('guarded-language56-start-fence.mjs','capt
     node='C:\Program Files\nodejs\node.exe';node_sha256='63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088';node_version='v24.14.0'
     node_manifest=$taskNodeManifest;node_manifest_sha256=(Get-FileHash -LiteralPath $taskNodeManifest).Hash;node_files=1774
     run=$taskRun;snapshot=$taskSnapshot;modules=$taskModules;cases=56;source_packet='6c7781c2c05d5dcfc80cd36fd9b70a5aa5312fb3'
-    source160_design='7b2762dd16aa92ac4fcc6ea29c321fc8bdfdd5d9';owner_sha256='96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5'
+    source160_guard_provenance='7b2762dd16aa92ac4fcc6ea29c321fc8bdfdd5d9';ownership_successor='ccf38999065b5589023b13d38232868edef239d0';ownership_review_complete=$false;owner_sha256='96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5'
     config_template=[ordered]@{scope='runtime-free-language56-only';container=$taskWorkspace.Container;run=$taskRun;snapshot=$taskSnapshot;source_head='6c7781c2c05d5dcfc80cd36fd9b70a5aa5312fb3';subject=(Join-Path $taskSnapshot 'language-consumer.mjs');forbidden_runtime=$taskWorkspace.runtime;expected_cases=56;expected_case_ids=$taskIds;node_sha256='63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088';module_files=$taskModules;nonce='ROOT-FRESH-OWNED-NONCE-REQUIRED'}
     runtime_manifest_required=$false;runtime_absences_claimed=$false;npm_dependency_imports=0;source160_grant_reused=$false
 }

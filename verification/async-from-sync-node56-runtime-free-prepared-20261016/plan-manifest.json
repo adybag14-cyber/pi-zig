@@ -117,5 +117,8 @@
       "file": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt",
       "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
     }
-  ]
+  ],
+  "ownership_successor_head": "ccf38999065b5589023b13d38232868edef239d0",
+  "ownership_review_complete": false,
+  "source160_7b_ownership_reuse_forbidden": true
 }
