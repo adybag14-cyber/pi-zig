@@ -143,6 +143,13 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     exited.code = exit.exit_code;
     try common.send(&channel, &exited, deadline.worker_cutoff_ms);
     sequence += 1;
+    try ack_receiver.expectNodeExitAcknowledgement(exit.exit_code);
+    const persisted = try common.receive(&channel, @min(deadline.worker_cutoff_ms, w.GetTickCount64() + 10000));
+    if (try ack_receiver.accept(&persisted) != .node_exit_persisted_ack or
+        !std.crypto.timing_safe.eql([32]u8, persisted.input_sha256, node_intent_hash))
+        return error.DurableExitAcknowledgementRequired;
+    // The trusted supervisor only sends this after its exit identity/code
+    // record was written and FlushFileBuffers completed on the private ledger.
     try node.releaseExited();
     try pin.close();
     var released = common.frame(.node_references_released, sequence, args.nonce, exit.pid, actual.pid,

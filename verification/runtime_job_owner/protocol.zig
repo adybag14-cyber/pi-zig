@@ -14,6 +14,7 @@ pub const Kind = enum(u32) {
     abort = 9,
     worker_terminal = 10,
     worker_containment_ack = 11,
+    node_exit_persisted_ack = 12,
 };
 pub const Frame = extern struct {
     marker: u64,
@@ -37,6 +38,7 @@ pub const Receiver = struct {
     worker_pid: u32,
     node_pid: ?u32 = null,
     node_creation: ?u64 = null,
+    expected_exit_code: ?u32 = null,
     state: enum { initial, ready, intended, created, acknowledged, running, exited, released, sealed, terminal, aborted } = .initial,
     pub fn accept(self: *Receiver, frame: *const Frame) !Kind {
         if (frame.marker != magic or frame.schema != 1 or frame.flags != 0 or frame.sequence != self.next_sequence or
@@ -49,12 +51,22 @@ pub const Receiver = struct {
             return kind;
         }
         if (self.direction == .from_supervisor) {
-            // The worker only accepts the one suspension-bound resume ACK.
-            if (kind != .node_resume_ack or self.state != .created or self.node_pid == null or
+            if (self.node_pid == null or
                 frame.pid != self.node_pid.? or frame.parent_pid != self.worker_pid or
                 frame.creation_filetime_utc != self.node_creation.?)
                 return error.UnexpectedSupervisorAcknowledgement;
-            self.state = .acknowledged;
+            switch (kind) {
+                .node_resume_ack => {
+                    if (self.state != .created or frame.code != 0) return error.UnexpectedSupervisorAcknowledgement;
+                    self.state = .acknowledged;
+                },
+                .node_exit_persisted_ack => {
+                    if (self.state != .exited or self.expected_exit_code == null or frame.code != self.expected_exit_code.?)
+                        return error.UnexpectedExitPersistenceAcknowledgement;
+                    self.state = .released;
+                },
+                else => return error.UnexpectedSupervisorAcknowledgement,
+            }
         } else switch (kind) {
             .ready => {
                 if (self.state != .initial or frame.pid != self.worker_pid) return error.InvalidWorkerReady;
@@ -93,7 +105,7 @@ pub const Receiver = struct {
                 if (self.state != .sealed or frame.pid != self.worker_pid) return error.InvalidWorkerTerminal;
                 self.state = .terminal;
             },
-            .node_resume_ack, .worker_containment_ack, .abort => return error.InvalidWorkerMessage,
+            .node_resume_ack, .node_exit_persisted_ack, .worker_containment_ack, .abort => return error.InvalidWorkerMessage,
         }
         self.next_sequence += 1;
         return kind;
@@ -110,6 +122,12 @@ pub const Receiver = struct {
         self.node_pid = pid;
         self.node_creation = creation;
         self.state = .created;
+    }
+    pub fn expectNodeExitAcknowledgement(self: *Receiver, exit_code: u32) !void {
+        if (self.direction != .from_supervisor or self.state != .acknowledged or self.node_pid == null)
+            return error.InvalidLocalExitExpectation;
+        self.expected_exit_code = exit_code;
+        self.state = .exited;
     }
 };
 pub const WorkerBootstrap = struct {

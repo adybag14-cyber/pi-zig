@@ -265,6 +265,14 @@ pub const Controller = struct {
                         if (w.GetTickCount64() >= (self.node_end_ms orelse return error.NodeResumeNotAdmitted))
                             return error.SupervisorNodeLateCompletion;
                         self.node_exit_code = exit_code;
+                        const durable_exit = try self.log(.{ .state = "node_exit_durable", .pid = frame.pid,
+                            .parent_pid = self.worker.info.pid, .creation_filetime_utc = self.node_kernel.?.creation_filetime_utc,
+                            .exit_code = exit_code, .signaled_owned_handle = true });
+                        try self.waitLogged(durable_exit, @min(self.deadline.worker_cutoff_ms, w.GetTickCount64() + 2000));
+                        var persisted = common.frame(.node_exit_persisted_ack, 2, self.nonce, frame.pid,
+                            self.worker.info.pid, self.node_kernel.?.creation_filetime_utc, frame.input_sha256);
+                        persisted.code = exit_code;
+                        try common.send(&self.channel, &persisted, self.deadline.worker_cutoff_ms);
                         if (w.CloseHandle(handle) == 0) return error.NodeDuplicateCloseFailed;
                         self.node_handle = null;
                     },
