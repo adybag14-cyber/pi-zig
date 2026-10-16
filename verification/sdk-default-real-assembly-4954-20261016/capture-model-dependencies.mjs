@@ -18,6 +18,9 @@ const output=process.argv[2];
 if(!output)throw Error('Explicit no-overwrite observation output required');
 const input=resolve(root,'src/extensions/fixtures/sdk-model-dependencies-4954.input.mjs');
 const inputBytes=await readFile(input);
+const packageBytes=await readFile('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/package.json');
+const packageSha256=createHash('sha256').update(packageBytes).digest('hex');
+if(packageSha256!=='c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f'||JSON.parse(packageBytes).version!=='1.3.27')throw Error('Actual TypeBox package drift');
 const stores=await import(pathToFileURL(pinned+'core/models-store.ts').href);
 const config=await import(pathToFileURL(pinned+'core/model-config.ts').href);
 const directory=resolve(output+'.physical-files');
@@ -36,7 +39,7 @@ try{
   await import(pathToFileURL(input).href);
   const rows=globalThis.ActualSdkModelDependencyRows;
   if(!Array.isArray(rows)||rows.length!==53)throw Error('Actual Source53 probe universe incomplete');
-  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',inputSha256:createHash('sha256').update(inputBytes).digest('hex'),modules:expected,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
+  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',version:'1.3.27',packageSha256,inputSha256:createHash('sha256').update(inputBytes).digest('hex'),modules:expected,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
 }finally{
   delete globalThis.ActualSdkModelDependencies;
   delete globalThis.ActualSdkModelFixtureDir;
