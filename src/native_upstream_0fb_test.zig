@@ -26,7 +26,8 @@ fn install(engine: *em.Engine) !void {
     try sdk.put(engine, global, "latestRetry", try engine.checked(c.JS_NewCFunction(engine.context, retryable, "isRetryableAssistantError", 1)));
 }
 fn compare(name: []const u8, input: []const u8, field: [:0]const u8, count: usize) !void {
-    var source = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/upstream-0fb-source.json"));
+    const source_bytes = if (std.mem.eql(u8, name, "overflow")) @embedFile("extensions/fixtures/upstream-0fb-overflow-source.json") else @embedFile("extensions/fixtures/upstream-0fb-source.json");
+    var source = try json.Owned.parse(std.testing.allocator, source_bytes);
     defer source.deinit();
     try std.testing.expectEqualStrings("0fbdbd3f8ab1876ac260c0f08226a400759323b8", try json.asString(try json.required(source.value, "sourceHead")));
     const programs = (try json.required(source.value, "programs")).array.items;
@@ -88,6 +89,9 @@ test "native upstream0fb genuine public threshold overflow summary sizing and fa
 }
 test "native upstream0fb genuine select settings and policy remain fixed across awaits and hooks" {
     try compare("select", @embedFile("extensions/fixtures/upstream-0fb-select.input.txt"), "upstream0fbSelectRows", 4);
+}
+test "native upstream0fb genuine changed-current-model overflow and next-error fresh settings" {
+    try compare("overflow", @embedFile("extensions/fixtures/upstream-0fb-overflow.input.txt"), "upstream0fbOverflowRows", 5);
 }
 test "native upstream0fb policy releases all getter symbol and override roots under allocation failure" {
     const Probe = struct {

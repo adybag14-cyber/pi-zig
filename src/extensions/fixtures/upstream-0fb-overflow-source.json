@@ -1,0 +1,740 @@
+{
+  "sourceHead": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "programs": [
+    {
+      "name": "overflow",
+      "inputSha256": "d455198d0a08ea29e48bacd59a6edc3a45d50b1a38b475e3b5cb27658606b57a",
+      "cases": 5,
+      "rows": [
+        {
+          "scenario": "fresh-a-enabled-after-switch-b",
+          "currentModel": "b",
+          "trace": [
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              1
+            ],
+            [
+              "fetch",
+              1
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-1"
+            ],
+            [
+              "override-enabled",
+              "after-response-1"
+            ],
+            [
+              "override-keep",
+              "after-response-1"
+            ],
+            [
+              "context",
+              3,
+              true,
+              {
+                "at": 2
+              }
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "prompt is too long: 250000 tokens > 200000 maximum"
+                }
+              ]
+            ],
+            [
+              "create-compaction",
+              true,
+              {
+                "reason": "overflow"
+              },
+              {
+                "ownership": {
+                  "kind": "task",
+                  "taskId": 7
+                },
+                "conversationId": 3,
+                "background": false
+              }
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "next",
+              {
+                "status": "waiting",
+                "checkpoint": {
+                  "phase": "prepare",
+                  "attempt": 1,
+                  "compacted": 20,
+                  "overflow": "prompt is too long: 250000 tokens > 200000 maximum"
+                },
+                "on": [
+                  20
+                ],
+                "policy": "allSettled"
+              }
+            ]
+          ],
+          "live": {
+            "run": {
+              "taskId": 7,
+              "inputs": []
+            },
+            "compactions": [
+              {
+                "taskId": 20,
+                "reason": "overflow",
+                "blocking": true,
+                "attempt": 1
+              }
+            ]
+          },
+          "ledger": {
+            "models": {
+              "p/a": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            "tools": {}
+          }
+        },
+        {
+          "scenario": "fresh-a-disabled-after-switch-b",
+          "currentModel": "b",
+          "trace": [
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              1
+            ],
+            [
+              "fetch",
+              1
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-1"
+            ],
+            [
+              "override-enabled",
+              "after-response-1"
+            ],
+            [
+              "override-keep",
+              "after-response-1"
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "prompt is too long: 250000 tokens > 200000 maximum"
+                }
+              ]
+            ],
+            [
+              "next",
+              {
+                "status": "terminal",
+                "outcome": {
+                  "status": "failed",
+                  "error": {
+                    "message": "prompt is too long: 250000 tokens > 200000 maximum",
+                    "detail": {
+                      "reason": "model_error"
+                    }
+                  }
+                }
+              }
+            ]
+          ],
+          "live": {},
+          "ledger": {
+            "models": {
+              "p/a": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            "tools": {}
+          }
+        },
+        {
+          "scenario": "a-policy-pinned-during-context",
+          "currentModel": "b",
+          "trace": [
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              1
+            ],
+            [
+              "fetch",
+              1
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-1"
+            ],
+            [
+              "override-enabled",
+              "after-response-1"
+            ],
+            [
+              "override-keep",
+              "after-response-1"
+            ],
+            [
+              "context",
+              3,
+              true,
+              {
+                "at": 2
+              }
+            ],
+            [
+              "changed-during-context"
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "prompt is too long: 250000 tokens > 200000 maximum"
+                }
+              ]
+            ],
+            [
+              "create-compaction",
+              true,
+              {
+                "reason": "overflow"
+              },
+              {
+                "ownership": {
+                  "kind": "task",
+                  "taskId": 7
+                },
+                "conversationId": 3,
+                "background": false
+              }
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "next",
+              {
+                "status": "waiting",
+                "checkpoint": {
+                  "phase": "prepare",
+                  "attempt": 1,
+                  "compacted": 20,
+                  "overflow": "prompt is too long: 250000 tokens > 200000 maximum"
+                },
+                "on": [
+                  20
+                ],
+                "policy": "allSettled"
+              }
+            ]
+          ],
+          "live": {
+            "run": {
+              "taskId": 7,
+              "inputs": []
+            },
+            "compactions": [
+              {
+                "taskId": 20,
+                "reason": "overflow",
+                "blocking": true,
+                "attempt": 1
+              }
+            ]
+          },
+          "ledger": {
+            "models": {
+              "p/a": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            "tools": {}
+          }
+        },
+        {
+          "scenario": "a-no-cut-resolves-once",
+          "currentModel": "b",
+          "trace": [
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              1
+            ],
+            [
+              "fetch",
+              1
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-1"
+            ],
+            [
+              "override-enabled",
+              "after-response-1"
+            ],
+            [
+              "override-keep",
+              "after-response-1"
+            ],
+            [
+              "context",
+              3,
+              true,
+              {
+                "at": 2
+              }
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "prompt is too long: 250000 tokens > 200000 maximum"
+                }
+              ]
+            ],
+            [
+              "next",
+              {
+                "status": "terminal",
+                "outcome": {
+                  "status": "failed",
+                  "error": {
+                    "message": "prompt is too long: 250000 tokens > 200000 maximum",
+                    "detail": {
+                      "reason": "model_error"
+                    }
+                  }
+                }
+              }
+            ]
+          ],
+          "live": {},
+          "ledger": {
+            "models": {
+              "p/a": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            "tools": {}
+          }
+        },
+        {
+          "scenario": "two-failures-read-fresh-a-policy",
+          "currentModel": "b",
+          "trace": [
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              1
+            ],
+            [
+              "fetch",
+              1
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-1"
+            ],
+            [
+              "override-enabled",
+              "after-response-1"
+            ],
+            [
+              "override-keep",
+              "after-response-1"
+            ],
+            [
+              "now"
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "request to https://example.test/ failed, reason:"
+                }
+              ]
+            ],
+            [
+              "next",
+              {
+                "status": "running",
+                "checkpoint": {
+                  "phase": "retry",
+                  "attempt": 1,
+                  "until": 5
+                }
+              }
+            ],
+            [
+              "get-model",
+              "p",
+              "a"
+            ],
+            [
+              "sleep",
+              2
+            ],
+            [
+              "fetch",
+              2
+            ],
+            [
+              "abort-check"
+            ],
+            [
+              "hooks",
+              "afterResponse"
+            ],
+            [
+              "agent-switched",
+              "b"
+            ],
+            [
+              "settings",
+              "after-response-2"
+            ],
+            [
+              "override-enabled",
+              "after-response-2"
+            ],
+            [
+              "override-keep",
+              "after-response-2"
+            ],
+            [
+              "context",
+              3,
+              true,
+              {
+                "at": 2
+              }
+            ],
+            [
+              "commit",
+              true
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "doc",
+              "usage",
+              3
+            ],
+            [
+              "append",
+              3,
+              [
+                {
+                  "provider": "p",
+                  "model": "a",
+                  "stopReason": "error",
+                  "errorMessage": "prompt is too long: 250000 tokens > 200000 maximum"
+                }
+              ]
+            ],
+            [
+              "create-compaction",
+              true,
+              {
+                "reason": "overflow"
+              },
+              {
+                "ownership": {
+                  "kind": "task",
+                  "taskId": 7
+                },
+                "conversationId": 3,
+                "background": false
+              }
+            ],
+            [
+              "doc",
+              "live",
+              3
+            ],
+            [
+              "next",
+              {
+                "status": "waiting",
+                "checkpoint": {
+                  "phase": "prepare",
+                  "attempt": 2,
+                  "compacted": 20,
+                  "overflow": "prompt is too long: 250000 tokens > 200000 maximum"
+                },
+                "on": [
+                  20
+                ],
+                "policy": "allSettled"
+              }
+            ]
+          ],
+          "live": {
+            "run": {
+              "taskId": 7,
+              "inputs": []
+            },
+            "compactions": [
+              {
+                "taskId": 20,
+                "reason": "overflow",
+                "blocking": true,
+                "attempt": 1
+              }
+            ]
+          },
+          "ledger": {
+            "models": {
+              "p/a": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "totalTokens": 0,
+                "cost": {
+                  "input": 0,
+                  "output": 0,
+                  "cacheRead": 0,
+                  "cacheWrite": 0,
+                  "total": 0
+                }
+              }
+            },
+            "tools": {}
+          }
+        }
+      ]
+    }
+  ]
+}
