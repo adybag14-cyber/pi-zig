@@ -1,0 +1,62 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008\\.zig-cache\\o\\091718035c81abe57b57cf266a13ac14",
+    "object": "sqlite3.obj",
+    "bytes": 16338833,
+    "sha256": "4F33BBF8851B3DC0E4F4C700C9F903A0E11A655A478B0A3CE77DDBE470F7373C",
+    "source_head": "82d3968c7acaf18853a49c22403186389397e579",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008\\.zig-cache\\o\\66abd55a29c732c626856e0646824898",
+    "object": "quickjs.obj",
+    "bytes": 7663682,
+    "sha256": "C0A75780029CCAC16199AB3768D0800043A2EEF59C3676A1F6F12F7AE7FC34F9",
+    "source_head": "82d3968c7acaf18853a49c22403186389397e579",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008\\.zig-cache\\o\\01f9c2ba95a2daae042f8387ad31a81f",
+    "object": "sqlite3.obj",
+    "bytes": 16338781,
+    "sha256": "C385AB52462249A08665C24B91A9DC99E8183F769584046B35C8C85CAEED00F9",
+    "source_head": "39e76ec87904eeca49d1f10f27ab8ff81a1e86b2",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008\\.zig-cache\\o\\8c9bb42d147a09f6bdb0ee4d107e97ca",
+    "object": "quickjs.obj",
+    "bytes": 7663610,
+    "sha256": "336F075EB66000AC9938CD42EB34513C818E4B012D38D50F5FD7A3E9E8AE8EF3",
+    "source_head": "39e76ec87904eeca49d1f10f27ab8ff81a1e86b2",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008\\.zig-cache\\o\\39b4f0d7ec8e4cdf8acf41d0a3019e92",
+    "object": "sqlite3.obj",
+    "bytes": 16339337,
+    "sha256": "02D3E9625026DD2678E89839CCB6AB904D923E741E9CB0F903ACD6503ECF1294",
+    "source_head": "2a0c32f96315da9a92befb1a9738ff7743f43c97",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008\\.zig-cache\\o\\0130ea0ec21230ae636444668941c163",
+    "object": "quickjs.obj",
+    "bytes": 7664074,
+    "sha256": "A3A4ECDF62D5DF90C58362476B6037503695E651D6DA9AE4352D9997FAF90A07",
+    "source_head": "2a0c32f96315da9a92befb1a9738ff7743f43c97",
+    "published_descendant": "cc92c877006ae65381229877c98070cba7b6afc6",
+    "action": "eligible for Recycle Bin only",
+    "executables_and_proofs_retained": true
+  }
+]

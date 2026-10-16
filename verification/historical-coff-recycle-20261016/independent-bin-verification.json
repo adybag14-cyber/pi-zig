@@ -1,0 +1,45 @@
+{
+  "targets": 6,
+  "bytes": 72008317.0,
+  "all_payloads_preserved": true,
+  "all_sources_absent": true,
+  "observations": [
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008\\.zig-cache\\o\\8c9bb42d147a09f6bdb0ee4d107e97ca",
+      "metadata_sha256": "D7745A2428E740F447083E42DF58E307B2372C0719E4D1349127CB1A2DD32DB2",
+      "payload_present": true,
+      "source_absent": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008\\.zig-cache\\o\\091718035c81abe57b57cf266a13ac14",
+      "metadata_sha256": "23AE2B6AEFB69DA4545B463CAA77BE380D774E8F236C157FE67E254ECEB30AE6",
+      "payload_present": true,
+      "source_absent": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008\\.zig-cache\\o\\01f9c2ba95a2daae042f8387ad31a81f",
+      "metadata_sha256": "AB4B07AB693B48E2643DD86AF9A64D1636BF6EEA9C602A066803DD9D269C4372",
+      "payload_present": true,
+      "source_absent": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008\\.zig-cache\\o\\66abd55a29c732c626856e0646824898",
+      "metadata_sha256": "BDC915081ACD0DB8D604A86A62C71E61C8A06D389AE2E89892C8FAF82A197BA5",
+      "payload_present": true,
+      "source_absent": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008\\.zig-cache\\o\\39b4f0d7ec8e4cdf8acf41d0a3019e92",
+      "metadata_sha256": "1BF8D1897F9F7FD6873B09193E8BC446A7C8FE5298CD84AECA5DF79A4A15F285",
+      "payload_present": true,
+      "source_absent": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008\\.zig-cache\\o\\0130ea0ec21230ae636444668941c163",
+      "metadata_sha256": "DFA18AC125246952E7EE4D95C19766BC1597F97F7400027A26B9263717F1F2A9",
+      "payload_present": true,
+      "source_absent": true
+    }
+  ],
+  "verified_utc": "2026-10-16T20:04:22.7832673+00:00"
+}
