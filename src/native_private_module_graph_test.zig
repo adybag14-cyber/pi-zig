@@ -16,8 +16,13 @@ const Fixture = struct {
     dep_override: ?[:0]const u8 = null,
     native_failure: bool = false,
     native_pending_success: bool = false,
+    failure_at: enum { selector, normalizer, private_loader, shared_loader } = .selector,
     native_original: ?c.JSValue = null,
     last_origin: ?*const c.JSPiModuleOrigin = null,
+    shared_definition: ?*c.JSModuleDef = null,
+    reuse_shared_definition: bool = false,
+    shared_override: ?[:0]const u8 = null,
+    shared_dep: bool = false,
     fn install(self: *Fixture) void {
         c.JS_SetModuleLoaderFunc(self.engine.runtime, null, sharedLoad, self);
     }
@@ -25,13 +30,27 @@ const Fixture = struct {
         return c.JS_PiNewPrivateModuleGraph(self.engine.context, select, privateLoad, self) orelse return js.capture(self.engine);
     }
     fn from(context_data: ?*anyopaque) *Fixture { return @ptrCast(@alignCast(context_data.?)); }
+    fn failNative(self: *Fixture, context: ?*c.JSContext) void {
+        _ = self.engine.throwNativeOutOfMemory();
+        const reason = c.JS_GetException(context);
+        self.native_original = c.JS_DupValue(context, reason);
+        _ = c.JS_Throw(context, reason);
+    }
+    fn normalize(context: ?*c.JSContext, _: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
+        const self = from(context_data);
+        const physical: [*:0]const u8 = if (std.mem.eql(u8, std.mem.span(name), "./shared.mjs")) shared_name else dep_name;
+        const result = c.js_strdup(context, physical);
+        if (result == null) return null;
+        if (self.native_failure and self.failure_at == .normalizer) {
+            self.failNative(context);
+            if (!self.native_pending_success) { c.js_free(context, result); return null; }
+        }
+        return result;
+    }
     fn select(context: ?*c.JSContext, origin: ?*const c.JSPiModuleOrigin, name: [*c]const u8, _: c.JSValue, context_data: ?*anyopaque) callconv(.c) c_int {
         const self = from(context_data); self.selections += 1; self.last_origin = origin;
-        if (self.native_failure) {
-            _ = self.engine.throwNativeOutOfMemory();
-            const reason = c.JS_GetException(context);
-            self.native_original = c.JS_DupValue(context, reason);
-            _ = c.JS_Throw(context, reason);
+        if (self.native_failure and self.failure_at == .selector) {
+            self.failNative(context);
             return if (self.native_pending_success) 0 else -1;
         }
         if (std.mem.eql(u8, std.mem.span(name), shared_name)) return 0;
@@ -49,19 +68,30 @@ const Fixture = struct {
         const compiled = c.JS_PiCompilePrivateModule(context, graph, source.ptr, source.len, name, attrs);
         if (c.JS_IsException(compiled)) return null;
         defer c.JS_FreeValue(context, compiled);
+        if (self.native_failure and self.failure_at == .private_loader) {
+            self.failNative(context);
+            if (!self.native_pending_success) return null;
+        }
         return c.pi_js_module(compiled);
     }
     fn sharedLoad(context: ?*c.JSContext, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) ?*c.JSModuleDef {
         const self = from(context_data);
-        if (!std.mem.eql(u8, std.mem.span(name), shared_name)) {
+        const is_dep = self.shared_dep and std.mem.eql(u8, std.mem.span(name), dep_name);
+        if (!is_dep and !std.mem.eql(u8, std.mem.span(name), shared_name)) {
             _ = c.JS_ThrowReferenceError(context, "Unknown shared controlled module: %s", name); return null;
         }
-        const source = "globalThis.sharedLoads=(globalThis.sharedLoads??0)+1;export const shared=true;";
-        const compiled = self.engine.eval(source, shared_name, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY) catch {
+        if (self.reuse_shared_definition) return self.shared_definition;
+        const source: [:0]const u8 = if (is_dep) "export const version=9;" else self.shared_override orelse "globalThis.sharedLoads=(globalThis.sharedLoads??0)+1;export const shared=true;";
+        const compiled = self.engine.eval(source, if (is_dep) dep_name else shared_name, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY) catch {
             _ = self.engine.throwCaptured(); return null;
         };
         defer self.engine.freeValue(compiled);
-        return c.pi_js_module(compiled);
+        self.shared_definition = c.pi_js_module(compiled);
+        if (self.native_failure and self.failure_at == .shared_loader) {
+            self.failNative(context);
+            if (!self.native_pending_success) return null;
+        }
+        return self.shared_definition;
     }
 };
 fn compile(engine: *em.Engine, graph: *c.JSPiPrivateModuleGraph, source: [:0]const u8, name: [:0]const u8, attrs: c.JSValue) !c.JSValue {
@@ -116,6 +146,10 @@ test "private exact nested import meta and attribute snapshot survive same physi
     const first = try compile(engine, graph, source, root_name, attrs1); defer engine.freeValue(first);
     const origin = fixture.last_origin orelse return error.MissingExactOrigin;
     const snapshot = c.JS_PiModuleOriginAttributes(origin); if (snapshot == null) return error.MissingSnapshot;
+    const forbidden = try engine.checked(c.JS_NewString(engine.context, "forbidden"));
+    try std.testing.expect(c.JS_DefinePropertyValueStr(engine.context, snapshot[0], "flavor", forbidden, c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0);
+    const immutable_reason = c.JS_GetException(engine.context); defer engine.freeValue(immutable_reason);
+    try std.testing.expect(c.JS_IsError(immutable_reason));
     const changed = try engine.checked(c.JS_NewString(engine.context, "mutated"));
     if (c.JS_SetPropertyStr(engine.context, attrs1, "flavor", changed) < 0) return js.capture(engine);
     const second = try compile(engine, graph, source, root_name, attrs2); defer engine.freeValue(second);
@@ -256,4 +290,48 @@ test "private foreign context capability rejects before dereferencing graph fiel
     var stats: c.JSPiModuleGraphStats = undefined;
     try std.testing.expect(c.JS_PiGetPrivateModuleGraphStats(first.context, graph, &stats) == 0);
     try std.testing.expectEqual(@as(u64, 0), stats.created);
+}
+test "private to shared callback cannot return same physical definition with wrong attributes" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var fixture: Fixture = .{ .engine = engine }; fixture.install();
+    const first = try compile(engine, try fixture.graph(), "import './shared.mjs' with {flavor:'one'};export const value=1;", root_name, c.pi_js_undefined()); defer engine.freeValue(first);
+    try std.testing.expect(fixture.shared_definition != null);
+    fixture.reuse_shared_definition = true;
+    try std.testing.expectError(error.JavaScriptException, compile(engine, try fixture.graph(), "import './shared.mjs' with {flavor:'two'};export const value=2;", root_name, c.pi_js_undefined()));
+    const message = try js.get(engine, engine.captured_exception.?, "message"); defer engine.freeValue(message);
+    const text = c.JS_ToCString(engine.context, message); if (text == null) return js.capture(engine); defer c.JS_FreeCString(engine.context, text);
+    try std.testing.expectEqualStrings("Shared module loader returned mismatched attributes", std.mem.span(text));
+    const ns = try evaluate(engine, first); defer engine.freeValue(ns);
+    const value = try js.get(engine, ns, "value"); defer engine.freeValue(value);
+    try std.testing.expectEqual(@as(i32, 1), try number(engine, value));
+}
+
+test "private callback normalizer and loaders preserve exact pending native reason on null and successful returns" {
+    const FailureAt = @FieldType(Fixture, "failure_at");
+    for ([_]FailureAt{ .normalizer, .private_loader, .shared_loader }) |failure_at| {
+        for ([_]bool{ false, true }) |pending_success| {
+            const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+            var fixture: Fixture = .{ .engine = engine, .native_failure = true, .native_pending_success = pending_success, .failure_at = failure_at }; fixture.install();
+            defer if (fixture.native_original) |value| engine.freeValue(value);
+            if (failure_at == .normalizer) c.JS_SetModuleLoaderFunc(engine.runtime, Fixture.normalize, Fixture.sharedLoad, &fixture);
+            const source: [:0]const u8 = if (failure_at == .shared_loader) "import './shared.mjs';" else "import './dep.ts';";
+            try std.testing.expectError(error.JavaScriptException, compile(engine, try fixture.graph(), source, root_name, c.pi_js_undefined()));
+            const reason = engine.captured_exception orelse return error.MissingNativeReason;
+            try std.testing.expect(c.pi_js_native_allocation_error_generation(reason) != 0);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, fixture.native_original.?));
+            if (failure_at == .normalizer) try std.testing.expectEqual(@as(usize, 0), fixture.selections);
+        }
+    }
+}
+
+test "closest shared bytecode called by private module retains shared import domain" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var fixture: Fixture = .{ .engine = engine, .shared_dep = true, .shared_override = "export async function read(){return(await import('./dep.ts')).version}" }; fixture.install();
+    const compiled = try compile(engine, try fixture.graph(), "import {read as sharedRead} from './shared.mjs';export function read(){return sharedRead()}", root_name, c.pi_js_undefined()); defer engine.freeValue(compiled);
+    const ns = try evaluate(engine, compiled); defer engine.freeValue(ns);
+    const before = fixture.selections;
+    try std.testing.expectEqual(@as(i32, 9), try read(engine, ns));
+    try std.testing.expectEqual(before, fixture.selections);
+    // This tests the explicit VM routing boundary. Native-JS-to-TS production
+    // classification remains unobserved and is not inferred from this fixture.
 }

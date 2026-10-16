@@ -72,6 +72,11 @@ int JS_PiGetPrivateModuleGraphStats(JSContext *ctx,
 
 This list is exhaustive for the planned new header surface. Existing public
 evaluation/loader signatures and JSEvalOptions version are unchanged. A caller
+must supply an accessible NUL terminator at source[source_length], matching
+JS_Eval's parser input contract; physical_filename must be NUL terminated too.
+The source length excludes that terminator. This is a trusted host contract,
+not an attempted out-of-bounds probe by the VM.
+A caller
 must duplicate an attribute value if retaining it outside the borrowed access;
 no accessor supplies an independent ModuleDef reference or graph ID. Stats
 access validates context membership before reading a capability. Normalization

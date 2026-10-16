@@ -31960,6 +31960,10 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
     }
 
     if (importer) {
+        /* A normalizer may return storage while leaving an exact exception.
+           Do not re-enter the selector and allow it to replace that reason. */
+        if (JS_HasException(ctx))
+            goto fail_before_atom;
         selected = importer->graph->selector(ctx, importer, cname, attributes,
                                               importer->graph->opaque);
         if (selected < 0) {
@@ -32082,6 +32086,15 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
        JS module with the same name */
     if (m && JS_IsObject(attributes) && JS_IsUndefined(m->attributes))
         m->attributes = js_dup(attributes);
+    if (importer && m) {
+        equal = js_module_attributes_equal(ctx, m->attributes, attributes);
+        if (equal < 0)
+            goto fail; /* preserve an exact getter/allocation exception */
+        if (!equal) {
+            JS_ThrowTypeError(ctx, "Shared module loader returned mismatched attributes");
+            goto fail;
+        }
+    }
 done:
     js_free(ctx, cname);
     JS_FreeAtom(ctx, module_name);

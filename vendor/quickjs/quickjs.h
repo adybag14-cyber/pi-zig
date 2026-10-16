@@ -1326,6 +1326,8 @@ typedef JSModuleDef *JSPiModuleGraphLoadFunc(JSContext *ctx,
 JS_EXTERN JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
     JSPiModuleGraphSelectFunc *selector, JSPiModuleGraphLoadFunc *loader,
     void *opaque);
+/* As for JS_Eval, source must contain an accessible NUL terminator at
+   source[source_length]; physical_filename must also be NUL terminated. */
 JS_EXTERN JSValue JS_PiCompilePrivateModule(JSContext *ctx,
     JSPiPrivateModuleGraph *graph, const char *source, size_t source_length,
     const char *physical_filename, JSValueConst attributes);
