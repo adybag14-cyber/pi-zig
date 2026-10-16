@@ -55,8 +55,8 @@ pub const Options = struct {
     retry_enabled: bool = true,
     retry_max_retries: usize = 3,
     retry_base_delay_ms: u64 = 2_000,
-    /// Request-local provider output cap. Branch summaries use the original
-    /// independent 2,048-token ceiling; zero preserves the model default.
+    /// Explicit request-local provider output override. Pi's ordinary summary
+    /// callers leave this zero so the provider uses its normal model limit.
     max_output_tokens: u64 = 0,
     abort_flag: ?*bool = null,
     retry_abort_flag: ?*bool = null,

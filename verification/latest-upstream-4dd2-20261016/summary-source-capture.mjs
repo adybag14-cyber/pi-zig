@@ -1,0 +1,12 @@
+import {readFileSync,writeFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+const base='file:///C:/Users/adyba/pi-upstream-source-4dd2b149-20261016/packages/coding-agent/src/core/';
+const compaction=await import(base+'compaction/compaction.ts');
+const {generateBranchSummary}=await import(base+'compaction/branch-summarization.ts');
+const {createFileOps}=await import(base+'compaction/utils.ts');
+const {defaultModelPerProvider}=await import(base+'model-resolver.ts');
+globalThis.latestSummaryAPI={generateSummary:compaction.generateSummary,generateSummaryWithUsage:compaction.generateSummaryWithUsage,compact:compaction.compact,generateBranchSummary,createFileOps,defaultModelPerProvider};
+const input=readFileSync(process.argv[3]);
+await import('data:text/javascript,'+encodeURIComponent(input.toString('utf8')));
+if(latestSummaryRows.length!==30)throw Error('All30 latest summary/default controls are required');
+writeFileSync(process.argv[2],JSON.stringify({sourceHead:'4dd2b149d155d7369de16ea4dc77c84e9f5ffb24',inputSha256:createHash('sha256').update(input).digest('hex'),cases:30,scope:'Unmodified official latest summary/default exports; caller-owned stream only. No expected values before terminal capture and full post validation.',rows:latestSummaryRows},null,2));

@@ -130,7 +130,7 @@ test "native branch summaries bound output and omit normal session affinity and 
     defer summary.deinit();
     if (summary.value.object.get("stream")) |stream| try std.testing.expectEqual(std.json.Value{ .bool = false }, stream);
     const cap = summary.value.object.get("max_completion_tokens") orelse summary.value.object.get("max_tokens") orelse return error.SummaryOutputCapMissing;
-    try std.testing.expectEqual(std.json.Value{ .integer = 2048 }, cap);
+    try std.testing.expectEqual(std.json.Value{ .integer = 4096 }, cap);
     for (affinity) |name| try std.testing.expect(requests[3].header(name) == null);
     try std.testing.expect(!summary.value.object.contains("prompt_cache_key"));
     try std.testing.expect(!summary.value.object.contains("prompt_cache_retention"));

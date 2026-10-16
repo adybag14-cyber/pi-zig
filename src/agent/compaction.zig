@@ -648,12 +648,6 @@ test "compaction latest89 serializer maps actual raw messages and omits thinking
     try @import("summary_transcript.zig").testSourceCases(serializeEntries);
 }
 
-fn summarizationMaxOutputTokens(reserve_tokens: u64, turn_prefix: bool) u64 {
-    if (turn_prefix) return reserve_tokens / 2;
-    // floor(0.8 * reserve_tokens) without overflowing u64.
-    return (reserve_tokens / 5) * 4 + ((reserve_tokens % 5) * 4) / 5;
-}
-
 fn generatedSummary(
     gpa: std.mem.Allocator,
     material: []const u8,
@@ -696,7 +690,6 @@ fn generatedSummary(
         .retry_enabled = opts.retry_enabled,
         .retry_max_retries = opts.retry_max_retries,
         .retry_base_delay_ms = opts.retry_base_delay_ms,
-        .max_output_tokens = summarizationMaxOutputTokens(opts.settings.reserve_tokens, turn_prefix),
         .abort_flag = opts.abort_flag,
         .retry_abort_flag = opts.retry_abort_flag,
         .on_event = opts.on_retry_event,

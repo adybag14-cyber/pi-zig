@@ -1,9 +1,10 @@
 //! Factory initial-model subset of the original findInitialModel algorithm.
-//! Provider defaults are copied from model-resolver.ts SHA D9C26FAA20B3173B5E567B00C5635E2BA5F8501C54CB3AC126610EEA4FF6D5A8.
+//! Provider defaults follow actual model-resolver.ts at upstream4dd2b149.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const c = em.c;
+const default_map_key = "\x00actual-sdk-default-model-per-provider";
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
 const defaults = .{
     .{ "amazon-bedrock", "us.anthropic.claude-opus-4-6-v1" },
@@ -43,11 +44,28 @@ const defaults = .{
     .{ "qwen-token-plan", "qwen3.7-max" },
     .{ "qwen-token-plan-cn", "qwen3.7-max" },
     .{ "qwen-token-plan-individual", "qwen3.8-max" },
-    .{ "xiaomi", "mimo-v2.5-pro" },
-    .{ "xiaomi-token-plan-cn", "mimo-v2.5-pro" },
-    .{ "xiaomi-token-plan-ams", "mimo-v2.5-pro" },
-    .{ "xiaomi-token-plan-sgp", "mimo-v2.5-pro" },
+    .{ "xiaomi", "mimo-v2.6-pro" },
+    .{ "xiaomi-token-plan-cn", "mimo-v2.6-pro" },
+    .{ "xiaomi-token-plan-ams", "mimo-v2.6-pro" },
+    .{ "xiaomi-token-plan-sgp", "mimo-v2.6-pro" },
 };
+/// The exported mutable module binding is shared by every factory namespace.
+pub fn defaultModelPerProvider(engine: *em.Engine) !c.JSValue {
+    if (engine.native_module_values.get(default_map_key)) |cached| return c.JS_DupValue(engine.context, cached);
+    const result = try js.object(engine);
+    errdefer engine.freeValue(result);
+    inline for (defaults) |entry| {
+        const value = try sdk.text(engine, entry[1]);
+        defer engine.freeValue(value);
+        try js.define(engine, result, entry[0], c.JS_DupValue(engine.context, value));
+    }
+    const retained = c.JS_DupValue(engine.context, result);
+    engine.native_module_values.put(engine.gpa, default_map_key, retained) catch |err| {
+        engine.freeValue(retained);
+        return err;
+    };
+    return result;
+}
 pub fn select(engine: *em.Engine, runtime: c.JSValue, settings: c.JSValue) !c.JSValue {
     const provider = try js.invoke(engine, settings, "getDefaultProvider", &.{});
     defer engine.freeValue(provider);

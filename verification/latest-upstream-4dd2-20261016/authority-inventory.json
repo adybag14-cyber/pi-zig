@@ -1,0 +1,13 @@
+{
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_tree": "8daed06c8b2ac6787789642952fb3129f00e3d8d",
+  "source_tracked": 1927,
+  "generated_data": 43,
+  "source_full_files": 1970,
+  "package_generated_module_delta": [],
+  "manifest_sha256": "27729534F0272264238EAA3DCDC5FAA289DD82877034CF9DB2C2D72DE7A156F6",
+  "native_candidate_base": "9df0a241973968a109d81a1848f6a460c4dc98bf",
+  "native_candidate_tree": "fcfc70e1ef974216ecb1d5ed53bf62a522987139",
+  "source_execution": false,
+  "native_execution": false
+}

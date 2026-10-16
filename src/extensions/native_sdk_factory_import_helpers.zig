@@ -1,5 +1,5 @@
 //! Full Source factory selection/import helpers. Provider defaults are derived
-//! unchanged from latest4954 model-resolver.ts; no available-model subset or
+//! from latest4dd2 model-resolver.ts; no available-model subset or
 //! empty Models substitute is used. Config paths remain actual imports.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
@@ -15,8 +15,7 @@ pub fn create(engine: *em.Engine, get_docs_path: c.JSValue, join: c.JSValue) !c.
     if (!c.JS_IsFunction(engine.context, get_docs_path) or !c.JS_IsFunction(engine.context, join)) return error.RequiredActualSdkFactoryConfigPaths;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const bytes = @embedFile("fixtures/sdk-factory-default-models-4954.json");
-    const defaults = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, bytes, bytes.len, "source4954-default-models.json")));
+    const defaults = try scope.own(try @import("native_sdk_factory_model.zig").defaultModelPerProvider(engine));
     const exports = try scope.object();
     const predicate_roots = [_]c.JSValue{ defaults, get_docs_path, join, c.pi_js_undefined(), c.JS_NewInt32(engine.context, @intFromEnum(Body.isToolModifier)) };
     const modifier_function = try scope.own(try functions.create(engine, "isToolModifier", 1, exported, &predicate_roots));
