@@ -12,7 +12,7 @@
     },
     {
       "path": "src/native_tla_fatal_delivery_test.zig",
-      "sha256": "3DF545ABD5AD94B36301F5417FE598DB70A01ED4DF65C68CDB364C73CDF0F58C"
+      "sha256": "B5195B545E83CC55AA7C7FCD306D1DEBC2E45A02F4D2129D05A9FD3CF0B7F5B9"
     },
     {
       "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DESIGN.md",
@@ -25,6 +25,10 @@
     {
       "path": "src/native_tla_resumed_fatal_known_gap_test.zig",
       "sha256": "293AC4DEBFDB57914ECBA85B6BDEDF6EF74F45905ADCEFA9FFDB3AF98EC624FC"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/RESUMED-DESIGN.md",
+      "sha256": "0E67505A87D445A94F9F58E119EBA0CB898A06C0B4A320F359AE898875C876BB"
     }
   ],
   "checks": [

@@ -21,6 +21,7 @@ fn evaluate(engine: *em.Engine, module: c.JSValue) c.JSValue {
     return c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, module));
 }
 fn captureFatal(engine: *em.Engine, result: c.JSValue, boundary: u64) !void {
+    defer engine.freeValue(result);
     try std.testing.expect(c.JS_IsException(result));
     try std.testing.expectError(error.JavaScriptException, engine.checked(result));
     const reason = engine.captured_exception orelse return error.MissingFatalReason;
@@ -34,6 +35,7 @@ fn cachedFatal(engine: *em.Engine, module: c.JSValue) !void {
     const expected = c.JS_DupValue(engine.context, engine.native_allocation_exception.?);
     defer engine.freeValue(expected);
     const result = evaluate(engine, module);
+    defer engine.freeValue(result);
     try std.testing.expect(c.JS_IsException(result));
     const reason = c.JS_GetException(engine.context);
     defer engine.freeValue(reason);
@@ -98,6 +100,7 @@ fn deferredFatal(source: []const u8, filename: [:0]const u8) !void {
     defer engine.freeValue(importer);
     const cached_boundary = engine.native_allocation_generation;
     const imported = evaluate(engine, importer);
+    defer engine.freeValue(imported);
     try std.testing.expect(c.JS_IsException(imported));
     const imported_reason = c.JS_GetException(engine.context);
     defer engine.freeValue(imported_reason);
