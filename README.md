@@ -1,7 +1,7 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch. The current source target
-is `698a2d23b86a5045dd54554354a5e0cb7e466795` (package version 1.3.0), newer
+is `8efd314fa3d3232ce197d8d7a6a5660530b9d83e` (package version 1.3.0), newer
 than [the v1.3.0 release](https://github.com/earendil-works/pi/releases/tag/v1.3.0).
 Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
 linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
@@ -12,8 +12,12 @@ The checked-in official FFA3 catalog contains 1,705 models across 42 providers:
 the independently qualified ae7 catalog input. The reviewed 4954 and 0fb changes
 leave the catalog pin unchanged; 0fb adds retry classification and per-model
 compaction behavior whose native qualification is in progress. The 698a retry
-additions are intaken with a passing ten-test standalone Debug check; the actual
-latest-upstream reference capture and combined native replay remain pending.
+additions passed the ten-test standalone Debug check and the actual Source160
+VM replay plus typed36 replay at exact component head `d72194c6`. That retry
+source remains unchanged at 8efd. The newer captured model/settings suppliers,
+live runtime/tool getters and NVIDIA default are now intaken as reviewed source;
+their native execution and schema introspection updates remain pending. See
+[the 8efd source record](verification/upstream-8efd-compat-sourceonly-20261016/README.md).
 The checked-in
 CLI and extension API identity remain 1.1.0 pending the complete migration.
 Full Pi 1.x parity and release
