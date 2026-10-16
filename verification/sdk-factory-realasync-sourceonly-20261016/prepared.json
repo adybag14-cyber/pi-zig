@@ -1,0 +1,67 @@
+{
+  "status": "four_actual_factory_genuine_async_source_only_prepared_unrun",
+  "base": "d252b8e9227d95f8ca754634922d2957e327c2a0",
+  "source_authorities": [
+    {
+      "path": "packages/coding-agent/src/core/sdk.ts",
+      "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28"
+    },
+    {
+      "path": "packages/coding-agent/src/core/agent-session-services.ts",
+      "sha256": "C69826F519AA21B2DC04768EB63B0D10E88BE071195BEAF43BB1292DEC187D01"
+    },
+    {
+      "path": "packages/coding-agent/src/core/agent-session-runtime.ts",
+      "sha256": "B163CE35D2B6E3BA1FC080C0674044A3F1CD9FAEC93CC2ED015E31B69780BF4A"
+    }
+  ],
+  "source4954_0fb_4dd_byte_identical": true,
+  "exports": [
+    "createAgentSession",
+    "createAgentSessionServices",
+    "createAgentSessionFromServices",
+    "createAgentSessionRuntime"
+  ],
+  "lengths": [
+    0,
+    1,
+    1,
+    2
+  ],
+  "await_stages": 7,
+  "from_services_returns_adopts_original_function": true,
+  "outer_promises": "one_genuine_native_AF_per_call",
+  "private_null_prototype_owned_state": true,
+  "ordinary_reason_slot_transferred_immediately": true,
+  "pending_reason_normalized_after_preexisting_fatal_guard": true,
+  "local_checked_definitions": true,
+  "leaf_sha256": "FF20539DC5E420798313C1F37A147AC52DDFCC87CA9EFA6DB0FD6237F02141D4",
+  "controls_sha256": "BF48D66F5EA2C98F0CA39F5B001ADEF1F43D4EC0BAC658CB113CB6B7C1022C15",
+  "prepared_programs": 9,
+  "actual_compiled_count": null,
+  "protected_files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/engine.zig",
+    "src/extensions/native_async_function.zig",
+    "src/extensions/native_async_body.zig",
+    "src/extensions/native_sdk_prompt_scope.zig",
+    "src/extensions/native_sdk_default_real_assembly.zig",
+    "src/extensions/native_sdk_factory_provider_callbacks.zig",
+    "src/extensions/native_sdk_factory_flags.zig",
+    "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+    "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+    "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+    "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+    "src/extensions/fixtures/sdk-module-policy-4954.expected.json"
+  ],
+  "protected_drift": 0,
+  "lazy_namespace_cycle_selected": false,
+  "runtime_status": "recovery_pending",
+  "fmt_ast": false,
+  "node_reference": false,
+  "source_generator": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "default_selected": false
+}
