@@ -35,7 +35,8 @@ try{
     # The untouched96BE owner inherits only this cleared allowlisted environment.
     $nodeArguments=@('--max-old-space-size=256','--permission')
     foreach($path in @($task.source,$task.capture_control_root,$task.capture_caller_root,$task.workspace_metadata,$task.run)){$nodeArguments+=('--allow-fs-read='+$path)}
-    $nodeArguments+=@(('--allow-fs-write='+$task.run),'--import',$task.guard,$task.driver,$task.source,$task.output)
+    if($task.guard_url -cne (Convert-S160FileUrl $task.guard)){throw 'Exact canonical preload file URL required'}
+    $nodeArguments+=@(('--allow-fs-write='+$task.run),'--import',$task.guard_url,$task.driver,$task.source,$task.output)
     $nodeCommand=@{Name='source160';Executable=$task.node;WorkingDirectory=$task.run;Arguments=$nodeArguments;TimeoutSeconds=300;SettleSeconds=10}
     Write-S160Json (Join-Path $task.run 'node-command.json') $nodeCommand
     # A tiny owned invocation script avoids shell quoting and preserves string[] argv.
@@ -50,7 +51,7 @@ try{
     $ready=Read-S160SettledJson $readyPath $fenceDeadline;$retained=Read-S160SettledJson $ownerPath $fenceDeadline
     $intendedReadyArgv=@($task.node,$task.driver,$task.source,$task.output)
     $intendedExecArgv=@($nodeArguments[0..($nodeArguments.Count-4)])
-    if((@($ready.argv) -join [char]0) -cne ($intendedReadyArgv -join [char]0) -or (@($ready.execArgv) -join [char]0) -cne ($intendedExecArgv -join [char]0)){throw 'Ready argv/execArgv differs from intended Node PSI arguments; fence remains closed'}
+    if($ready.preload_file_url -cne $task.guard_url -or (@($ready.argv) -join [char]0) -cne ($intendedReadyArgv -join [char]0) -or (@($ready.execArgv) -join [char]0) -cne ($intendedExecArgv -join [char]0)){throw 'Ready preload URL/argv/execArgv differs from intended Node PSI arguments; fence remains closed'}
     $live=Get-S160Live ([int]$ready.pid);$identity=Convert-S160Identity $live
     if(!$identity -or $retained.command_line_source -cne 'live Win32_Process' -or [int]$ready.pid -ne [int]$retained.pid -or $ready.execPath -cne $task.node -or $ready.version -cne 'v24.14.0' -or $ready.sourceImported -ne $false -or $ready.nonce -cne $task.fence_nonce -or $identity.executable -cne $task.node -or $identity.command_line -cne $retained.command_line -or !(Test-S160Argv $identity.command_line $task.node ([string[]]$nodeArguments)) -or [Math]::Abs((([DateTimeOffset]$identity.created_utc).UtcDateTime-([DateTimeOffset]$retained.created_utc).UtcDateTime).TotalMilliseconds) -gt 1 -or $retained.executable_sha256 -cne $task.node_sha256 -or (Get-S160Sha $task.node) -cne $task.node_sha256 -or [int]$identity.parent_pid -ne [int]$nodeChild.process.Id){throw 'Node start-fence live/kernel/executable/parent/intended argv reconciliation failed'}
     Add-S160Identity $context $identity
@@ -63,7 +64,7 @@ try{
     $ids=Read-S160Json $task.case_ids
     if($original.status -cne 'passed' -or $original.exit_code -ne 0 -or !$original.terminal_kernel_handle -or !$original.independent_pid_absent -or $raw.cases -ne 160 -or @($raw.rows).Count -ne 160 -or (@($raw.rows.id) -join "`n") -cne (@($ids.ids) -join "`n") -or $raw.sourceHead -cne $task.source_head -or $raw.sourceTree -cne $task.source_tree -or $raw.actualNode.pid -ne $ready.pid -or $raw.actualNode.version -cne 'v24.14.0' -or $raw.actualNode.execPath -cne $task.node -or $raw.moduleSha256 -cne $task.classifier_sha256 -or $raw.callerSha256 -cne $task.caller_sha256){throw 'Actual Source160 original owner/ordered IDs/provenance negative'}
     $observed=@($closure.observed|Sort-Object);$required=@($task.module_files.path|Sort-Object)
-    if($closure.pid -ne $ready.pid -or $closure.sourceHead -cne $task.source_head -or $closure.startFenceNonce -cne $task.fence_nonce -or !$closure.allRequiredModulesObserved -or !$closure.environmentAllowlistMatched -or $closure.credentialValuesRecorded -ne $false -or @($closure.attempts).Count -ne 0 -or $closure.runtimeDependenciesLoaded -ne 0 -or $closure.npmImports -ne 0 -or $closure.networkRequests -ne 0 -or (@($observed) -join "`n") -cne (@($required) -join "`n")){throw 'Required runtime-free resolver/network/env transcript negative'}
+    if($closure.pid -ne $ready.pid -or $closure.preload_file_url -cne $task.guard_url -or $closure.sourceHead -cne $task.source_head -or $closure.startFenceNonce -cne $task.fence_nonce -or !$closure.allRequiredModulesObserved -or !$closure.environmentAllowlistMatched -or $closure.credentialValuesRecorded -ne $false -or @($closure.attempts).Count -ne 0 -or $closure.runtimeDependenciesLoaded -ne 0 -or $closure.npmImports -ne 0 -or $closure.networkRequests -ne 0 -or (@($observed) -join "`n") -cne (@($required) -join "`n")){throw 'Required runtime-free resolver/network/env transcript negative'}
     $rawValidated=$true
     Write-S160Json (Join-Path $task.run 'source160-validation.json') @{cases=160;ordered_ids_exact=$true;original_owner_terminal_zero=$true;raw_sha256=Get-S160Sha $task.output;closure_sha256=Get-S160Sha (Join-Path $task.run 'runtime-free-closure.json');expected_created=$false;root_acceptance_pending=$true}
 }catch{$failures.Add($_.Exception.Message)}finally{

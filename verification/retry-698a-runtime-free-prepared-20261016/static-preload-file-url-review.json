@@ -1,0 +1,61 @@
+{
+  "mode": "PURE_URI_AND_ACTUAL_CONTROLLER_ARGV_STATEMENTS_ONLY",
+  "previous_negative_run": "root-source160-c072-20261016-210504",
+  "previous_node_pid": 45940,
+  "previous_error": "ERR_UNSUPPORTED_ESM_URL_SCHEME:c:",
+  "file_url_cases": [
+    {
+      "roundtrip": true,
+      "file_url": "file:///C:/owned/guard.mjs",
+      "passed": true,
+      "path": "C:\\owned\\guard.mjs"
+    },
+    {
+      "roundtrip": true,
+      "file_url": "file:///C:/owned%20space/guard.mjs",
+      "passed": true,
+      "path": "C:\\owned space\\guard.mjs"
+    },
+    {
+      "roundtrip": true,
+      "file_url": "file:///C:/owned/hash%23name.mjs",
+      "passed": true,
+      "path": "C:\\owned\\hash#name.mjs"
+    },
+    {
+      "roundtrip": true,
+      "file_url": "file:///C:/owned/Unicode-%CE%BB-%F0%9F%98%80.mjs",
+      "passed": true,
+      "path": "C:\\owned\\Unicode-λ-😀.mjs"
+    },
+    {
+      "roundtrip": true,
+      "file_url": "file:///C:/owned/literal%2520-%2523.mjs",
+      "passed": true,
+      "path": "C:\\owned\\literal%20-%23.mjs"
+    }
+  ],
+  "preload_index": 9,
+  "cli_entry_index": 10,
+  "actual_argv_count": 13,
+  "cli_entry_stays_plain": true,
+  "intended_execArgv_uses_exact_new_url": true,
+  "ready_closure_preload_url_bound": true,
+  "four_observed_file_modules_unchanged": true,
+  "parser_errors": 0,
+  "node_capture_jobs_started": 0,
+  "expected160_authored": false,
+  "recorded_utc": "2026-10-16T22:15:10.4015699+01:00",
+  "tool_hashes": {
+    "Start-RuntimeFreeSource160.ps1": "4B5162AD482D6CBE75106C45B7F90DC66CF007FB206252214A703D01B3A6B4A9",
+    "Run-RuntimeFreeSource160.ps1": "C9DF9D2333F84D9702A41B5C6B839990CEA38BE9B99F3045B7D640ED8BEDAC37",
+    "Invoke-RuntimeFreeSource160Controller.ps1": "0B6F39DB37A80DDAC28B3C128405DC7AAA86B042766B5725EC5385EDFE8A53BB",
+    "Invoke-RuntimeFreeSource160Seal.ps1": "0D03BB69ED7DC1A3561C525463B7B885ECC29E8EE0763832481AC1BBC9BBC754",
+    "Invoke-RuntimeFreeSource160OriginalOwner.ps1": "C47ACFD443C13823BB1C72CD1378012841E8A4AA2EC4EE9DCBEF2ADCAD18CF02",
+    "RuntimeFreeSource160.Common.ps1": "E64BE9AF0B9276674E68A65E097299705F917EBFBE443B80811F054E379474DC",
+    "Confirm-RuntimeFreeSource160Absent.ps1": "22A908D4FA85DE0BB80AF80DFC714C135A86D876865CD80A2804F42CA0EEC4AC",
+    "Resolve-RuntimeFreeSource160Controls.ps1": "ACEA70E25AE9714CFBCA344CA6B14B7C1663217D2917097A3B9E0C6BF3EB1A02",
+    "guarded-start-fence.mjs": "C7420CF25640DFFB96B29B91AF30D09DD84CE7851E715DAED71574DBC64EE8D9",
+    "ordered-source160-case-ids.json": "9543A0E058D23177FBB52739B7BB4185AAAC9FC7C830468DB6BE58E303621040"
+  }
+}

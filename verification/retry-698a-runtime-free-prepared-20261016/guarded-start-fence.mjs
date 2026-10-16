@@ -13,6 +13,9 @@ import {fileURLToPath} from 'node:url';
 const configPath=process.env.PI_RETRY698_CAPTURE_CONFIG;
 if(!configPath)throw Error('Exact owned Source160 config required');
 const config=JSON.parse(fs.readFileSync(configPath));
+const preloadURL=new URL(config.guard_url);
+const preloadIndex=process.execArgv.indexOf('--import');
+if(preloadURL.protocol!=='file:'||preloadURL.host||preloadURL.hash||preloadURL.search||preloadIndex<0||process.execArgv[preloadIndex+1]!==config.guard_url||fs.realpathSync(fileURLToPath(preloadURL))!==fs.realpathSync(fileURLToPath(import.meta.url)))throw Error('Exact sealed preload file URL required');
 const run=fs.realpathSync(config.run);
 // Avoid granting recursive read permission to the container merely to realpath it.
 // The controller already rejects project reparse paths before the child starts.
@@ -59,7 +62,7 @@ registerHooks({resolve(specifier,context,next){
 }});
 observe(import.meta.url);
 const ready=join(run,'start-fence-ready.json'),release=join(run,'start-fence-release.json');
-fs.writeFileSync(ready,JSON.stringify({pid:process.pid,execPath:process.execPath,version:process.version,argv:process.argv,execArgv:process.execArgv,nonce:config.nonce,sourceImported:false},null,2),{flag:'wx'});
+fs.writeFileSync(ready,JSON.stringify({pid:process.pid,execPath:process.execPath,version:process.version,argv:process.argv,execArgv:process.execArgv,preload_file_url:config.guard_url,nonce:config.nonce,sourceImported:false},null,2),{flag:'wx'});
 const deadline=Date.now()+10000;
 while(!fs.existsSync(release)){if(Date.now()>=deadline)throw Error('Owned start-fence release deadline10s');await new Promise(resolve=>setTimeout(resolve,25));}
 const permit=JSON.parse(fs.readFileSync(release));
@@ -68,6 +71,6 @@ process.once('beforeExit',()=>{
  const classifier=fs.realpathSync(config.classifier);
  const required=config.module_files.map(row=>fs.realpathSync(row.path));
  const success=observed.includes(classifier)&&required.every(path=>observed.includes(path))&&attempts.length===0;
- fs.writeFileSync(join(run,'runtime-free-closure.json'),JSON.stringify({pid:process.pid,sourceHead:config.source_head,observed,resolutions,attempts,runtimeDependenciesLoaded:0,npmImports:0,networkRequests:0,environmentNames:environmentNames.sort(),environmentAllowlistMatched:true,credentialValuesRecorded:false,allRequiredModulesObserved:success,startFenceNonce:config.nonce},null,2),{flag:'wx'});
+ fs.writeFileSync(join(run,'runtime-free-closure.json'),JSON.stringify({pid:process.pid,sourceHead:config.source_head,observed,resolutions,attempts,preload_file_url:config.guard_url,runtimeDependenciesLoaded:0,npmImports:0,networkRequests:0,environmentNames:environmentNames.sort(),environmentAllowlistMatched:true,credentialValuesRecorded:false,allRequiredModulesObserved:success,startFenceNonce:config.nonce},null,2),{flag:'wx'});
  if(!success)process.exitCode=1;
 });

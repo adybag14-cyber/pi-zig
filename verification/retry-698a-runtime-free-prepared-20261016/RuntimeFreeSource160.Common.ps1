@@ -18,6 +18,16 @@ function Read-S160SettledJson([string]$Path,[DateTimeOffset]$Until){
     }while($true)
 }
 function Get-S160Sha([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash}
+function Convert-S160FileUrl([string]$Path){
+    $full=[IO.Path]::GetFullPath($Path)
+    if($full -cnotmatch '^[A-Za-z]:\\'){throw 'Exact absolute Windows drive preload path required'}
+    $segments=[Collections.Generic.List[string]]::new()
+    foreach($segment in $full.Substring(3).Split('\')){$segments.Add([Uri]::EscapeDataString($segment))}
+    # Escape literal percent signs as data too; Uri(path) alone decodes %20.
+    $uri=[Uri]::new(('file:///'+$full.Substring(0,2)+'/'+($segments -join '/')),[UriKind]::Absolute)
+    if(!$uri.IsFile -or $uri.Host -or $uri.Fragment -or $uri.Query -or $uri.LocalPath -cne $full){throw 'Preload file URL failed exact path round trip'}
+    return $uri.AbsoluteUri
+}
 function Get-S160StartupPolicy {
     @{directories=@('profile','temp','profile\AppData','profile\AppData\Local','profile\AppData\Local\Microsoft','profile\AppData\Local\Microsoft\PowerShell');file='profile\AppData\Local\Microsoft\PowerShell\StartupProfileData-NonInteractive';max_file_bytes=1MB}
 }

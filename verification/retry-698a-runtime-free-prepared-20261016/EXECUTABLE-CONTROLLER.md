@@ -19,6 +19,9 @@ The1f3 inventory/artifact negative is preserved. Read
 `FULL-NODE-ARTIFACT-SUCCESSOR.md` for originalNode1838 authority alongside the
 unchanged1774 group, phase-local physical-path caching, controller outcome ordering
 and exact own-console deferral with mandatory final external absence.
+The c072 pre-fence ESM c: protocol negative is preserved. Read
+`PRELOAD-FILE-URL-SUCCESSOR.md`: only --import uses a canonical escaped file URL;
+the CLI entrypoint and filesystem paths stay plain, with matching fence validation.
 
 ## Entry points and bounded ownership
 
