@@ -1,0 +1,86 @@
+{
+  "executed": false,
+  "files": [
+    {
+      "path": "LICENSE",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "dist/babel.cjs",
+      "bytes": 1526691,
+      "sha256": "B3BC89A8DC40860FB6A7A78512BDFE5976C6253E6DED74B7D96ECE803CAC8701"
+    },
+    {
+      "path": "dist/jiti.cjs",
+      "bytes": 190082,
+      "sha256": "A0B3B8D5E06A0519C66B62179E29200533057920F6F11370546E979DACD24C49"
+    },
+    {
+      "path": "lib/jiti.cjs",
+      "bytes": 646,
+      "sha256": "A80E7F04D21D4EF5C540287E41D6AB36DBFF73132620E1894CD83425BB1E62A7"
+    },
+    {
+      "path": "lib/jiti.d.cts",
+      "bytes": 266,
+      "sha256": "0FF093EB02EE92FA46DDEEF99C3BF58518BF7DD7AE502C118701908AB5BDCA9D"
+    },
+    {
+      "path": "package.json",
+      "bytes": 4784,
+      "sha256": "AAB8AAFC42D9AEEC14A6E2FE0E15EA1514C0C205A624055A7E776F2EC456283C"
+    },
+    {
+      "path": "README.md",
+      "bytes": 8558,
+      "sha256": "5C548C17B8EAA50BA090DAB41BAEEA23CCE50EAC41E70BEC34037727B7E0E881"
+    },
+    {
+      "path": "lib/jiti-cli.mjs",
+      "bytes": 794,
+      "sha256": "8829AAD7E953F97EF9E25782C99EAFA013EFA0C36DB7C2FFEBCC140BD8EEAF54"
+    },
+    {
+      "path": "lib/jiti-hooks.mjs",
+      "bytes": 3563,
+      "sha256": "77AE6F21746A3FE3AB7897F3C6EBF38D1B880720CF588A66AA8FC85C5AFA7FB7"
+    },
+    {
+      "path": "lib/jiti-native.mjs",
+      "bytes": 3103,
+      "sha256": "041DBE425C05AFB43CBC4D3058DC1D74E420660D1B33D415A190E7480EF11587"
+    },
+    {
+      "path": "lib/jiti-register.mjs",
+      "bytes": 172,
+      "sha256": "11E95E8927697942853BC80599C990C000BE9A0000156043D5FE920E1F9DABFC"
+    },
+    {
+      "path": "lib/jiti-static.mjs",
+      "bytes": 562,
+      "sha256": "0D873B8BE0C9E08E1136EA428175DE8CF8A200C67B6B83283A009B3F46FF4A3A"
+    },
+    {
+      "path": "lib/jiti.mjs",
+      "bytes": 624,
+      "sha256": "48A7909DF16A2A93E814D2C7A6F105EEA7B291AE6BCB968FB2CA21A37CB61B1E"
+    },
+    {
+      "path": "lib/jiti-register.d.mts",
+      "bytes": 50,
+      "sha256": "A7FFB8AE0C0DF2C451719EF5F2F2458075DAB8625AB80C74C53A02187AB7264F"
+    },
+    {
+      "path": "lib/jiti.d.mts",
+      "bytes": 168,
+      "sha256": "C6C2F7CA8E09B0020387E38962DCAFBA007738506197C0098C58DB9F365EEB84"
+    },
+    {
+      "path": "lib/types.d.ts",
+      "bytes": 10152,
+      "sha256": "90D87E4D7F5AF338FCB1004AE9DE9D54D08C04E93DF1C2FD655D426EE1238429"
+    }
+  ],
+  "archive_sha256": "8DD0D365FB49C0E7CC42D6A00DF6FB2DA9056FC24492094346FC34ECDBCF28CA"
+}

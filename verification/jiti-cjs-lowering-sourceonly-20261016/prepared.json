@@ -1,0 +1,159 @@
+{
+  "status": "actual_two_leaf_source_unit_prepared_uncompiled_unrun",
+  "base": "ae0bf0f1ef51a7510f0df03ff6a9cf28f542be29",
+  "root_read_head": "e6478ec3ca4ec247b56e2f9dd4f1a710274f7691",
+  "primary_jiti": "2.7.0",
+  "primary_jiti_commit": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+  "babel_module_helper": "7.28.6",
+  "babel_traverse_split_export": "7.29.0",
+  "products": [
+    {
+      "file": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35118,
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
+      "root_before_exists": false
+    },
+    {
+      "file": "src/extensions/native_jiti_cjs_eval.zig",
+      "bytes": 3627,
+      "sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA",
+      "root_before_exists": false
+    }
+  ],
+  "protected_own_files": [
+    {
+      "file": "src/extensions/typescript.zig",
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/engine.zig",
+      "sha256": "176BFB110355712EB616FB5E2F19201C2E416DA92F41B5313AC4CEE41DD4507F",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/commonjs.zig",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/native_async_body.zig",
+      "sha256": "38C8A1F723C311FA9B1FD099E53A7152E50E8F45D9B9A0ECEC5E03545D7DAB5A",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.c",
+      "sha256": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.h",
+      "sha256": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "verification/openai-root476-composition-sourceonly-20261016/product.patch",
+      "sha256": "B1D4AE64980C4DFC6E4369A48712CABF0485EEA5D926B6AC0B32548C2C4182F7",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "verification/openai-root476-composition-sourceonly-20261016/composition-manifest.json",
+      "sha256": "BA9487F570B5BABAE44CE4F474170AFF568F74A2F4F633B6C9CCDD9B6EB7F983",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "verification/openai-root476-composition-sourceonly-20261016/independent-review.json",
+      "sha256": "F2E785482D8A540F7E243D5A19C2EB68138E80057465992699B6EEB770200DE1",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "retained": "own exact baseline ae0bf0f1"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650",
+      "retained": "own exact baseline ae0bf0f1"
+    }
+  ],
+  "retained_root_files": [
+    {
+      "file": "src/extensions/typescript.zig",
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/commonjs.zig",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.c",
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "retained": "Root, never copied from older lane"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-tool-output4dd.expected.json",
+      "sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674",
+      "retained": "Root, never copied from older lane"
+    }
+  ],
+  "causal_accepted_user_inputs": 19,
+  "unsupported_prepare_inputs": 39,
+  "expected_source_output_exists": false,
+  "node_or_zig_or_native_or_ast_or_formatter_or_generator_executed": false,
+  "dependency_code_executed": false,
+  "root_main_or_engine_or_c_or_commonjs_changed": false,
+  "full_createJiti_available": false,
+  "actual_Module_and_nested_jiti_required": true,
+  "module_owner": "typebox_operators_resume",
+  "async_return": "raw exact VM wrapper completion, no adoption wrapper",
+  "cyclic_publication": "delegated to actual Module/cache owner before compile",
+  "shared_default_loader_registered": false,
+  "native_allocator_gc_failure_cancellation_qualified": false,
+  "packet_files": [
+    {
+      "sha256": "5B349D7F3C602780ACEF286204DB3E6024967C346E4316D9E2D903D87588439B",
+      "file": "README.md"
+    },
+    {
+      "sha256": "DE2856F16E151A2AAD67AFC977873DA1B8243538471E4E9FC59BEAAC1C83146A",
+      "file": "causal-inputs.json"
+    },
+    {
+      "sha256": "F60C1A0C914B6EC7A871C3E53582C4AE546343B90C519F1C66782448B9AF7234",
+      "file": "authority/pipeline-authority.json"
+    }
+  ]
+}

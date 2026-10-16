@@ -1,0 +1,61 @@
+{
+  "node_version": "24.14.0",
+  "primary_tag": "v24.14.0",
+  "annotated_tag": "a3d5b4bca68d85dcb67d527b05409795f69c66e7",
+  "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "executable_product_version": "24.14.0",
+  "files": [
+    {
+      "source_path": "lib/internal/modules/cjs/loader.js",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/modules/cjs/loader.js",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    {
+      "source_path": "lib/internal/modules/helpers.js",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/modules/helpers.js",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__helpers.js.txt",
+      "bytes": 15131,
+      "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+    },
+    {
+      "source_path": "lib/internal/util.js",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/internal/util.js",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "source_path": "src/env_properties.h",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/env_properties.h",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env_properties.h.txt",
+      "bytes": 40709,
+      "sha256": "AB193F60F8D05B576964DA783A8FCB7F8A074EA20176B9419EE2BA61B02C3C91"
+    },
+    {
+      "source_path": "src/env.cc",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/env.cc",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "source_path": "src/node_util.cc",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_util.cc",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    {
+      "source_path": "LICENSE",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/LICENSE",
+      "local_path": "verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ],
+  "executed": false
+}
