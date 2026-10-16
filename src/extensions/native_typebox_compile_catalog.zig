@@ -1214,6 +1214,7 @@ pub fn prepare(e: *Engine, graph: c.JSValue) !void {
     try s.put(try s.get(modules, "value/value.mjs"), "Convert", try s.get(try s.get(modules, "value/convert/index.mjs"), "Convert"));
     try s.put(try s.get(modules, "value/value.mjs"), "Create", try s.get(try s.get(modules, "value/create/index.mjs"), "Create"));
     try s.put(try s.get(modules, "value/value.mjs"), "Decode", try s.get(try s.get(modules, "value/codec/index.mjs"), "Decode"));
+    try s.put(try s.get(modules, "value/default/index.mjs"), "Default", try s.get(try s.get(modules, "value/default/default.mjs"), "Default"));
     try s.put(try s.get(modules, "value/value.mjs"), "Default", try s.get(try s.get(modules, "value/default/index.mjs"), "Default"));
     try s.put(try s.get(modules, "value/value.mjs"), "Encode", try s.get(try s.get(modules, "value/codec/index.mjs"), "Encode"));
     try s.put(try s.get(modules, "value/value.mjs"), "Errors", try s.get(try s.get(modules, "value/errors/index.mjs"), "Errors"));
@@ -1226,6 +1227,7 @@ pub fn prepare(e: *Engine, graph: c.JSValue) !void {
     try s.put(try s.get(modules, "value/index.mjs"), "Clean", try s.get(try s.get(modules, "value/clean/clean.mjs"), "Clean"));
     try s.put(try s.get(modules, "value/index.mjs"), "Clone", try s.get(try s.get(modules, "value/clone/clone.mjs"), "Clone"));
     try s.put(try s.get(modules, "value/index.mjs"), "Convert", try s.get(try s.get(modules, "value/convert/convert.mjs"), "Convert"));
+    try s.put(try s.get(modules, "value/index.mjs"), "Default", try s.get(try s.get(modules, "value/default/default.mjs"), "Default"));
     try s.put(try s.get(modules, "value/index.mjs"), "Create", try s.get(try s.get(modules, "value/create/create.mjs"), "Create"));
     try s.put(try s.get(modules, "value/index.mjs"), "CreateError", try s.get(try s.get(modules, "value/create/error.mjs"), "CreateError"));
     try s.put(try s.get(modules, "value/index.mjs"), "Decode", try s.get(try s.get(modules, "value/codec/decode.mjs"), "Decode"));
@@ -1959,6 +1961,7 @@ pub fn refresh(e: *Engine, graph: c.JSValue) !void {
     try s.put(try s.get(modules, "value/value.mjs"), "Convert", try s.get(try s.get(modules, "value/convert/index.mjs"), "Convert"));
     try s.put(try s.get(modules, "value/value.mjs"), "Create", try s.get(try s.get(modules, "value/create/index.mjs"), "Create"));
     try s.put(try s.get(modules, "value/value.mjs"), "Decode", try s.get(try s.get(modules, "value/codec/index.mjs"), "Decode"));
+    try s.put(try s.get(modules, "value/default/index.mjs"), "Default", try s.get(try s.get(modules, "value/default/default.mjs"), "Default"));
     try s.put(try s.get(modules, "value/value.mjs"), "Default", try s.get(try s.get(modules, "value/default/index.mjs"), "Default"));
     try s.put(try s.get(modules, "value/value.mjs"), "Encode", try s.get(try s.get(modules, "value/codec/index.mjs"), "Encode"));
     try s.put(try s.get(modules, "value/value.mjs"), "Errors", try s.get(try s.get(modules, "value/errors/index.mjs"), "Errors"));
@@ -1970,6 +1973,7 @@ pub fn refresh(e: *Engine, graph: c.JSValue) !void {
     try s.put(try s.get(modules, "value/index.mjs"), "Clean", try s.get(try s.get(modules, "value/clean/clean.mjs"), "Clean"));
     try s.put(try s.get(modules, "value/index.mjs"), "Clone", try s.get(try s.get(modules, "value/clone/clone.mjs"), "Clone"));
     try s.put(try s.get(modules, "value/index.mjs"), "Convert", try s.get(try s.get(modules, "value/convert/convert.mjs"), "Convert"));
+    try s.put(try s.get(modules, "value/index.mjs"), "Default", try s.get(try s.get(modules, "value/default/default.mjs"), "Default"));
     try s.put(try s.get(modules, "value/index.mjs"), "Create", try s.get(try s.get(modules, "value/create/create.mjs"), "Create"));
     try s.put(try s.get(modules, "value/index.mjs"), "CreateError", try s.get(try s.get(modules, "value/create/error.mjs"), "CreateError"));
     try s.put(try s.get(modules, "value/index.mjs"), "Decode", try s.get(try s.get(modules, "value/codec/decode.mjs"), "Decode"));
