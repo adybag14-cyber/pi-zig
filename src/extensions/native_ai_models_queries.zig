@@ -72,10 +72,14 @@ fn catalogs(s: *Scope, receiver: c.JSValue, provider_id: c.JSValue, all: bool) !
 fn appendProvider(s: *Scope, result: c.JSValue, provider: c.JSValue, all: bool) !void {
     const push = try s.get(result, "push");
     const values = try providerModels(s, provider, all);
-    const arguments = try s.own(try v.js.collect(s.engine, values, try s.own(try s.engine.checked(c.JS_GetIteratorSymbol(s.engine.context)))));
+    // Argument spread builds an internal list. Calling Array.prototype.push
+    // while collecting it adds a guest-visible getter absent from Source.
+    var iterator = try v.iterator(s, values);
+    defer iterator.deinit();
+    errdefer iterator.closePreserving();
     var supplied: @import("std").ArrayList(c.JSValue) = .empty;
     defer supplied.deinit(s.engine.gpa);
-    for (0..try v.length(s, arguments)) |index| try supplied.append(s.engine.gpa, try v.at(s, arguments, @intCast(index)));
+    while (try iterator.next()) |item| try supplied.append(s.engine.gpa, try s.own(item));
     _ = try s.call(push, result, supplied.items);
 }
 pub fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args: []const c.JSValue, models_error: c.JSValue, operations: c.JSValue) !c.JSValue {
