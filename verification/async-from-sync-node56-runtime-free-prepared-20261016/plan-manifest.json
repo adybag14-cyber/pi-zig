@@ -1,0 +1,121 @@
+{
+  "status": "source_only_capture_plan_not_admitted",
+  "base": "6c7781c2c05d5dcfc80cd36fd9b70a5aa5312fb3",
+  "scope": "runtime-free-language56-only",
+  "expected_cases": 56,
+  "ordered_ids_sha256": "7A188A6663F3E5C527BADE293C4D48B9521B8D8FEF7744E3F790F3EDA4BC9DB0",
+  "source160_design_head": "7b2762dd16aa92ac4fcc6ea29c321fc8bdfdd5d9",
+  "source160_scope_or_grant_reused": false,
+  "source160_original_guard_sha256": "1624207CB6A393969235F60C87A516B0CA280AF948F3BA4E11508B1ACD2BF470",
+  "unchanged_owner_sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5",
+  "node_executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "node_pe_version_readonly": "24.14.0",
+  "node_manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+  "node_manifest_rows": 1774,
+  "node_fresh_inventory_or_execution_performed": false,
+  "resources": {
+    "fresh_free_gib_before_every_child": 16,
+    "heap_mib": 256,
+    "reservation_gib": 2,
+    "jobobject_cap_claimed": false,
+    "node_seconds": 300,
+    "settle_seconds": 10,
+    "controller_seconds": 960,
+    "supervisor_seconds": 1260,
+    "external_launcher_seconds": 1340
+  },
+  "runtime31064_dependency_or_seal": false,
+  "runtime84_absence_claim": false,
+  "official_pi_source1970_dependency_or_seal": false,
+  "controller_specialization_reviewed": false,
+  "root_grant_present": false,
+  "static_checks": [
+    "PowerShell parser passed",
+    "Read-only resolver returned unauthorized four-module56 profile",
+    "56 unique ordered IDs",
+    "Node1774 manifest row count",
+    "Two pure module hashes match original proposal"
+  ],
+  "not_checks": [
+    "No Node syntax/runtime test",
+    "No capture",
+    "No native/Zig/AST/generator job",
+    "No full currentNode1774 hash pass",
+    "No process/fence/network permission qualification"
+  ],
+  "module_files": [
+    {
+      "file": "guarded-language56-start-fence.mjs",
+      "sha256": "0BE29595C35ED757385F443EF172F46B79D90912D5B83ABC9B8BCA1D271EC77D",
+      "bytes": 8438,
+      "literal_imports": [
+        "node:fs",
+        "node:http",
+        "node:https",
+        "node:net",
+        "node:tls",
+        "node:dgram",
+        "node:dns",
+        "node:module",
+        "node:crypto",
+        "node:path",
+        "node:url"
+      ]
+    },
+    {
+      "file": "capture-language56.mjs",
+      "sha256": "533850D570AA1FC7FC865D58500E5B6113EA2B156A7EBCBC0D014DE7E28BBA3A",
+      "bytes": 2618,
+      "literal_imports": [
+        "node:fs",
+        "node:path",
+        "node:crypto",
+        "node:url",
+        "./language-consumer.mjs",
+        "./for-await-callers.mjs"
+      ]
+    },
+    {
+      "file": "language-consumer.mjs",
+      "sha256": "4FF3E1E46F581554663EEA169C8D65F17F2C3F09110785B89EBD90828D0B92D8",
+      "bytes": 389,
+      "literal_imports": []
+    },
+    {
+      "file": "for-await-callers.mjs",
+      "sha256": "36EA5D987B13607157C91318E72865D56B806E66B8443854BA040BCDD4D7A83A",
+      "bytes": 6818,
+      "literal_imports": []
+    }
+  ],
+  "retained_pins": [
+    {
+      "file": "vendor/quickjs/quickjs.c",
+      "sha256": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D"
+    },
+    {
+      "file": "vendor/quickjs/quickjs.h",
+      "sha256": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062"
+    },
+    {
+      "file": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "556E5A34CDDC7B69F184A2DB73E6813C7D800BF5042912B5C0689EF9B9275CEC"
+    },
+    {
+      "file": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650"
+    },
+    {
+      "file": "src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt",
+      "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"
+    }
+  ]
+}

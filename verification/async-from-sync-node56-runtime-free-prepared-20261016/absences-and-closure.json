@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "status": "prepared_not_observed",
+  "snapshot_exact_file_count": 4,
+  "snapshot_exact_files": ["guarded-language56-start-fence.mjs", "capture-language56.mjs", "language-consumer.mjs", "for-await-callers.mjs"],
+  "snapshot_required_absences": ["node_modules", "package.json", "package-lock.json", "npm-shrinkwrap.json", "pnpm-lock.yaml", "yarn.lock", "tsconfig.json", ".env", ".env.local"],
+  "run_required_absent_before_launch": ["source56-raw.json", "start-fence-ready.json", "start-fence-release.json", "runtime-free-closure.json", "source56.json", "source56.stdout.log", "source56.stderr.log", "external-absence.json", "handoff.json"],
+  "closure_requirements": {"all_four_file_modules_exact_hash_and_observed": true, "all56_ordered_case_ids": true, "source_phase_denial_attempts": 0, "npm_imports": 0, "runtime_dependency_file_modules": 0, "network_entrypoint_attempts": 0, "unexpected_module_files": 0},
+  "subject_builtins_allowlist": ["node:fs", "node:path", "node:url", "node:crypto"],
+  "guard_bootstrap_builtins_declared": ["node:fs", "node:http", "node:https", "node:net", "node:tls", "node:dgram", "node:dns", "node:module", "node:crypto", "node:path", "node:url"],
+  "runtime31064_read_or_seal": false,
+  "historical_runtime84_absence_read_or_claim": false,
+  "sdk_or_npm_module_needed": false,
+  "no_os_network_sandbox_claim": true
+}
