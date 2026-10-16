@@ -5,8 +5,8 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const flow = @import("native_sdk_async_actions.zig");
 const class = @import("native_class.zig");
 const c = em.c;
 const builtin = @import("builtin");
@@ -61,7 +61,7 @@ fn copyImportFile(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: 
 }
 const Getter = enum(c_int) { services, session, cwd, diagnostics, modelFallbackMessage };
 const Method = enum(c_int) { setRebindSession, setBeforeSessionInvalidate, emitBeforeSwitch, emitBeforeFork, teardownCurrent, apply, finishSessionReplacement, switchSession, newSession, fork, importFromJsonl, dispose };
-const Stage = enum(c_int) { before_switch, before_fork, aborted, shutdown, rebound, context_done, switch_ready, replacement_created, replacement_finished, new_ready, new_setup, fork_ready, fork_torn, import_ready, disposed };
+const Stage = enum(c_int) { before_switch, before_fork, aborted, shutdown, rebound, context_done, switch_ready, replacement_created, replacement_finished, new_ready, new_setup, fork_ready, fork_torn, import_ready, disposed, replacement_done };
 const Helper = enum(c_int) { getMissingSessionCwdIssue, formatMissingSessionCwdError, formatMissingSessionCwdPrompt, assertSessionCwdExists, emitSessionShutdownEvent };
 
 /// All filesystem/path/manager dependencies must be the application's actual
@@ -84,8 +84,7 @@ pub fn create(engine: *em.Engine, imports: c.JSValue) !c.JSValue {
     }
     inline for (std.meta.fields(Helper)) |field| {
         var roots = [_]c.JSValue{bindings};
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, helper, field.name, if (field.value == 1 or field.value == 2) 1 else 2, field.value, roots.len, &roots)));
-        if (field.value == 4) try asyncPrototype(&scope, function);
+        const function = try scope.own(if (field.value == 4) try flow.native.createResumable(engine, field.name, 2, shutdownBody, &roots) else try engine.checked(c.JS_NewCFunctionData2(engine.context, helper, field.name, if (field.value == 1 or field.value == 2) 1 else 2, field.value, roots.len, &roots)));
         try scope.put(output, field.name, function);
         // Helpers are lexical imports, not ordinary runtime instance fields.
         if (field.value == 3 or field.value == 4) try scope.put(bindings, field.name, function);
@@ -99,23 +98,18 @@ pub fn create(engine: *em.Engine, imports: c.JSValue) !c.JSValue {
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, function), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
     inline for (std.meta.fields(Method)) |field| {
-        var roots = [_]c.JSValue{bindings};
+        var roots = [_]c.JSValue{ bindings, c.JS_NewInt32(engine.context, field.value) };
         const method: Method = @enumFromInt(field.value);
         const arity: c_int = switch (method) {
             .dispose => 0,
             .setRebindSession, .setBeforeSessionInvalidate, .apply, .finishSessionReplacement, .newSession => 1,
             else => 2,
         };
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, arity, field.value, roots.len, &roots)));
-        if (method != .setRebindSession and method != .setBeforeSessionInvalidate and method != .apply) try asyncPrototype(&scope, function);
+        const function = try scope.own(if (method != .setRebindSession and method != .setBeforeSessionInvalidate and method != .apply) try flow.native.createResumable(engine, field.name, arity, methodBody, &roots) else try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, arity, field.value, roots.len, &roots)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
     try scope.put(output, "AgentSessionRuntime", constructor);
     return c.JS_DupValue(engine.context, output);
-}
-fn asyncPrototype(scope: *Scope, function: c.JSValue) !void {
-    const prototype = try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)));
-    if (c.JS_SetPrototype(scope.engine.context, function, prototype) < 0) return js.capture(scope.engine);
 }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
@@ -174,14 +168,22 @@ fn invoke(engine: *em.Engine, receiver: c.JSValue, method: Method, args: []const
         inline for (.{ "session", "services", "diagnostics", "modelFallbackMessage" }, .{ "_session", "_services", "_diagnostics", "_modelFallbackMessage" }) |source, destination| try scope.set(receiver, destination, try scope.get(arg(args, 0), source));
         return c.pi_js_undefined();
     }
-    const pending = try flow.create(engine, receiver);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    try scope.put(pending.owner, "bindings", bindings);
-    try scope.put(pending.owner, "first", arg(args, 0));
-    try scope.put(pending.owner, "second", arg(args, 1));
-    start(engine, pending.owner, method) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    _ = bindings;
+    return error.InvalidSynchronousAgentSessionRuntimeMethod;
+}
+fn methodBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state);
+        try scope.put(owner, "agent", receiver);
+        try scope.put(owner, "bindings", roots[0]);
+        try scope.put(owner, "first", arg(args, 0));
+        try scope.put(owner, "second", arg(args, 1));
+        var method_id: i32 = undefined; if (c.JS_ToInt32(engine.context, &method_id, roots[1]) < 0) return js.capture(engine);
+        start(engine, owner, @enumFromInt(method_id)) catch |err| try flow.rejectError(engine, owner, err);
+    } else advance(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn wait(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     try flow.wait(advance, engine, owner, value, @intFromEnum(stage));
@@ -337,6 +339,7 @@ fn resumeBody(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Sta
             return finishReplacement(engine, owner);
         },
         .import_ready => return importAfterBefore(engine, owner, value),
+        .replacement_done => return replacementDone(engine, owner, value, false, 0),
     }
 }
 fn finishWithSession(engine: *em.Engine, owner: c.JSValue) !void {
@@ -388,7 +391,7 @@ fn finishReplacement(engine: *em.Engine, owner: c.JSValue) !void {
     const options = if (scope.equal(kind, try scope.text("new"))) try scope.get(owner, "first") else try scope.get(owner, "second");
     const with_session = if (scope.equal(kind, try scope.text("import"))) c.pi_js_undefined() else try optional(&scope, options, "withSession");
     const result = try scope.call(finish, runtime, if (scope.equal(kind, try scope.text("import"))) &.{} else &.{with_session});
-    try flow.wait(replacementDone, engine, owner, result, 0);
+    try wait(engine, owner, result, .replacement_done);
 }
 fn teardownCall(scope: *Scope, runtime: c.JSValue, reason: []const u8, manager: c.JSValue) !c.JSValue {
     const function = try scope.get(runtime, "teardownCurrent");
@@ -579,13 +582,7 @@ fn helperValue(engine: *em.Engine, bindings: c.JSValue, method: Helper, args: []
             }
             return c.pi_js_undefined();
         },
-        .emitSessionShutdownEvent => {
-            const pending = try flow.create(engine, arg(args, 0));
-            defer engine.freeValue(pending.owner);
-            errdefer engine.freeValue(pending.promise);
-            shutdownStart(engine, pending.owner, arg(args, 1)) catch |err| try flow.rejectError(engine, pending.owner, err);
-            return pending.promise;
-        },
+        .emitSessionShutdownEvent => return error.GenuineShutdownAsyncBodyRequired,
     }
 }
 fn missingCwd(engine: *em.Engine, bindings: c.JSValue, manager: c.JSValue, fallback: c.JSValue) !c.JSValue {
@@ -614,4 +611,13 @@ fn shutdownStart(engine: *em.Engine, owner: c.JSValue, shutdown_event: c.JSValue
 }
 fn shutdownFinished(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
     try flow.settle(engine, owner, rejected, if (rejected) value else c.pi_js_bool(engine.context, 1));
+}
+fn shutdownBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state); try scope.put(owner, "agent", arg(args, 0));
+        shutdownStart(engine, owner, arg(args, 1)) catch |err| try flow.rejectError(engine, owner, err);
+    } else shutdownFinished(engine, state.*, input, completion == .rejected, 0) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }

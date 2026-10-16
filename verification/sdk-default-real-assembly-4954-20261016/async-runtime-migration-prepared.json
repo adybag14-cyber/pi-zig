@@ -1,0 +1,50 @@
+{
+  "status": "actual_sdk_async_migration_source_only",
+  "base": "f4f6c410eeff32b87a92eec90fcb6b9eca9fae37",
+  "primitive": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+  "primitive_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+  "shared_failure_fix": "aa7ea2d3f3604af71c6c67bba0b3e71146549226",
+  "modules": [
+    {
+      "path": "src/extensions/native_sdk_async_actions.zig",
+      "sha256": "EE375720CE4B18F4EFB48F135579823C3F870A781DBDF1B9A3C7F7C74D9B8BBC"
+    },
+    {
+      "path": "src/extensions/native_sdk_agent_session_runtime_production.zig",
+      "sha256": "CE6A31FBA74D2A8F4A12A25391F2626C711F2ABA80A1CB9622179B2E0DA914FA"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_runtime_production.zig",
+      "sha256": "367F4FC101AFDCA589C6422501743E8808A81681B30C6D834408D8B15CE7AD0F"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_runtime_create_production.zig",
+      "sha256": "DE8C592F394898BCF7BB5A03A3B229F84561872A0C9470D0D5F621FDBD5F6C22"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_config_production.zig",
+      "sha256": "EEC8C50DFEE1B6CC697C8C621CC4C9362D712F79DE23879FD5B7DD99F2BDDD49"
+    },
+    {
+      "path": "src/extensions/native_sdk_models_store_production.zig",
+      "sha256": "5ECD7D1562E1EE23E8490D37C9B821D5F478CF0A3267B52DA014EB0230AEB2FD"
+    }
+  ],
+  "scope": [
+    "ordinary ModelRuntime asyncmethods",
+    "ModelRuntime availability/refresh/lazy/credential/IIFE asynccallbacks",
+    "ModelRuntime.create",
+    "ModelConfig.load",
+    "coding-agent File/InMemoryModelsStore asyncmethods/callbacks",
+    "ordinary AgentSessionRuntime asyncmethods and shutdownhelper"
+  ],
+  "source_await_return": "Each actual await records one primitive suspension; plain promise/stream returns record adoption; Source explicitPromise constructors remain synchronous helpers",
+  "host_oom": "private64-bit invocationboundary; fresh classifiedhostOOM propagates Bodyerror; historic/native-lookalike remains guestreason",
+  "remaining_explicit_promise": "synchronous abort helper raceWithAbortSignal only; noflow.create for asyncouter",
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_qualified": false,
+  "source53_sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C",
+  "source44_sha256": "94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3",
+  "default_selected": false
+}

@@ -5,8 +5,8 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const flow = @import("native_sdk_async_actions.zig");
 const c = em.c;
 const Stage = enum(c_int) { config, refreshed };
 pub const required_functions = .{ "RuntimeCredentials", "DefaultAuthStorage", "ModelConfig", "FileModelsStore", "InMemoryCodingAgentModelsStore", "withPersonalizedCatalog", "personalizeOpenRouterCatalog", "withRemoteCatalog", "join", "dirname", "getAgentDir" };
@@ -28,9 +28,7 @@ pub fn install(engine: *em.Engine, runtime_class: c.JSValue, imports: c.JSValue)
     try scope.put(bindings, "builtinProviderCatalog", catalog);
     try scope.put(bindings, "process", try scope.get(imports, "process"));
     try scope.put(bindings, "ModelRuntime", runtime_class);
-    var roots = [_]c.JSValue{bindings};
-    const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "create", 0, 0, roots.len, &roots)));
-    if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
+    const function = try scope.own(try flow.native.createResumable(engine, "create", 0, createBody, &.{bindings}));
     if (c.JS_DefinePropertyValueStr(engine.context, runtime_class, "create", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
 }
 fn imported(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
@@ -39,18 +37,17 @@ fn imported(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []con
 fn construct(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.get(bindings, name), @intCast(args.len), @constCast(args.ptr))));
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return begin(engine, roots[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
-}
-fn begin(engine: *em.Engine, bindings: c.JSValue, supplied: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    start(engine, pending.owner, bindings, supplied) catch |err| try fail(engine, pending.owner, err);
-    return pending.promise;
+fn createBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) {
+        finish(engine, state.*, true, input) catch {};
+        return error.OutOfMemory;
+    }
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state);
+        start(engine, owner, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| try fail(engine, owner, err);
+    } else continueCreate(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, supplied: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -175,7 +172,9 @@ fn finish(engine: *em.Engine, owner: c.JSValue, rejected: bool, value: c.JSValue
     try flow.settle(engine, owner, rejected, value);
 }
 fn fail(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
+    const native_failure = try flow.nativeFailure(engine, owner, err);
     const reason = flow.reason(engine, err);
     defer engine.freeValue(reason);
     finish(engine, owner, true, reason) catch |failure| try flow.rejectError(engine, owner, failure);
+    if (native_failure) return error.OutOfMemory;
 }

@@ -154,12 +154,12 @@ fn reloadBody(engine: *em.Engine, content: c.JSValue, roots: []const c.JSValue) 
 }
 fn fileBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
-    if (completion == .rejected and c.pi_js_native_allocation_error_generation(input) != 0) {
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) {
         if (try flow.body.stage(&scope, state.*) == @intFromEnum(Stage.raced)) finishReader(&scope, state.*) catch {};
         return error.OutOfMemory;
     }
     if (completion == .start) {
-        const owner = try flow.body.init(&scope, state);
+        const owner = try flow.init(&scope, state);
         var method_id: i32 = undefined; if (c.JS_ToInt32(engine.context, &method_id, roots[1]) < 0) return js.capture(engine);
         fileStart(engine, owner, receiver, roots[0], @enumFromInt(method_id), args) catch |err| try flow.rejectError(engine, owner, err);
     } else continueFile(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);

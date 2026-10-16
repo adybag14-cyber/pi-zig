@@ -147,9 +147,9 @@ fn emptyConfig(scope: *Scope, bindings: c.JSValue, failure: c.JSValue) !c.JSValu
 }
 fn loadBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
-    if (completion == .rejected and c.pi_js_native_allocation_error_generation(input) != 0) return error.OutOfMemory;
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
     if (completion == .start) {
-        const owner = try flow.body.init(&scope, state);
+        const owner = try flow.init(&scope, state);
         start(engine, owner, roots[0], arg(args, 0)) catch |err| try flow.rejectError(engine, owner, err);
     } else loaded(engine, state.*, input, completion == .rejected, 0) catch |err| try flow.rejectError(engine, state.*, err);
     return flow.body.action(&scope, state.*);

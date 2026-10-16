@@ -7,8 +7,9 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const flow = @import("native_sdk_async_actions.zig");
+const promise_flow = @import("native_agent_async.zig");
 const c = em.c;
 
 pub const source_head = "4954d760504c11df9b2cbdc040346107b6a8153d";
@@ -278,21 +279,16 @@ fn providerPairCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args:
     const output = pair(&scope, scope.get(provider, "id") catch |err| return sdk.fail(engine, err), provider) catch |err| return sdk.fail(engine, err);
     return c.JS_DupValue(engine.context, output);
 }
-fn authPairCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return authPair(engine, roots[0], roots[1], roots[2], if (argc > 0) args[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
-}
-fn authPair(engine: *em.Engine, runtime: c.JSValue, bindings: c.JSValue, input_signal: c.JSValue, provider: c.JSValue) !c.JSValue {
+fn authPairBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const pending = try flow.create(engine, runtime);
-    defer engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    try scope.put(pending.owner, "bindings", bindings);
-    authPairStart(&scope, pending.owner, runtime, input_signal, provider) catch |err| {
-        try failJob(&scope, pending.owner, try scope.own(flow.reason(engine, err)));
-    };
-    return c.JS_DupValue(engine.context, pending.promise);
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state);
+        try scope.put(owner, "agent", roots[0]); try scope.put(owner, "bindings", roots[1]);
+        authPairStart(&scope, owner, roots[0], roots[2], arg(args, 0)) catch |err| try flow.rejectError(engine, owner, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn authPairStart(scope: *Scope, job: c.JSValue, runtime: c.JSValue, input_signal: c.JSValue, provider: c.JSValue) !void {
     try scope.put(job, "providerId", try scope.get(provider, "id"));
@@ -302,28 +298,18 @@ fn routeDefinition(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]
     const engine = em.Engine.fromContext(context.?);
     return js.invoke(engine, roots[0], "route", &.{if (argc > 0) args[0] else c.pi_js_undefined()}) catch |err| sdk.fail(engine, err);
 }
-fn adopt(scope: *Scope, value: c.JSValue) !c.JSValue {
-    const pending = try flow.create(scope.engine, c.pi_js_undefined());
-    defer scope.engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    try flow.settle(scope.engine, pending.owner, false, value);
-    return pending.promise;
-}
-
-fn begin(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(scope.engine, runtime);
-    defer scope.engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    const job = pending.owner;
-    try scope.put(job, "bindings", bindings);
-    try scope.put(job, "method", c.JS_NewInt32(scope.engine.context, @intFromEnum(method)));
-    const input = try scope.array();
-    for (args) |value| try append(scope, input, value);
-    try scope.put(job, "args", input);
-    start(scope, job, runtime, bindings, method, args) catch |err| {
-        try failJob(scope, job, try scope.own(flow.reason(scope.engine, err)));
-    };
-    return pending.promise;
+fn methodBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const job = try flow.init(&scope, state);
+        try scope.put(job, "agent", receiver); try scope.put(job, "bindings", roots[0]);
+        var method_id: i32 = undefined; if (c.JS_ToInt32(engine.context, &method_id, roots[1]) < 0) return js.capture(engine);
+        try scope.put(job, "method", roots[1]);
+        const values = try scope.array(); for (args) |value| try append(&scope, values, value); try scope.put(job, "args", values);
+        start(&scope, job, receiver, roots[0], @enumFromInt(method_id), args) catch |err| try failError(&scope, job, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn wait(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void {
     try flow.wait(continuation, scope.engine, job, value, @intFromEnum(stage));
@@ -340,10 +326,15 @@ fn continuation(engine: *em.Engine, job: c.JSValue, value: c.JSValue, rejected: 
         return;
     }
     advance(&scope, job, value, stage) catch |err| {
-        try failJob(&scope, job, try scope.own(flow.reason(engine, err)));
+        try failError(&scope, job, err);
     };
 }
+fn failError(scope: *Scope, job: c.JSValue, err: anyerror) !void {
+    if (try flow.nativeFailure(scope.engine, job, err)) return error.OutOfMemory;
+    try failJob(scope, job, try scope.own(flow.reason(scope.engine, err)));
+}
 fn failJob(scope: *Scope, job: c.JSValue, reason: c.JSValue) !void {
+    if (try flow.nativeAllocationReason(scope.engine, job, reason)) return error.OutOfMemory;
     const runtime = try scope.get(job, "agent");
     const bindings = try scope.get(job, "bindings");
     const mode = try scope.get(job, "failureMode");
@@ -434,8 +425,7 @@ fn start(scope: *Scope, job: c.JSValue, runtime: c.JSValue, bindings: c.JSValue,
             const providers = try scope.invoke(try scope.get(runtime, "models"), "getProviders", &.{});
             const values = try scope.array();
             try append(scope, values, try scope.invoke(try scope.get(runtime, "models"), "getAvailable", &.{ c.pi_js_undefined(), try signalOptions(scope, arg(args, 2)) }));
-            const mapper = try callback(scope, authPairCallback, 0, &.{ runtime, bindings, arg(args, 2) }, 1);
-            if (c.JS_SetPrototype(scope.engine.context, mapper, try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)))) < 0) return js.capture(scope.engine);
+            const mapper = try scope.own(try flow.native.createResumableArrow(scope.engine, "", 1, authPairBody, &.{ runtime, bindings, arg(args, 2) }, runtime));
             const checks = try scope.invoke(providers, "map", &.{mapper});
             try append(scope, values, try promiseAll(scope, checks));
             try append(scope, values, try scope.invoke(try scope.get(runtime, "credentials"), "list", &.{try signalOptions(scope, arg(args, 2))}));
@@ -574,7 +564,8 @@ fn advance(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void 
         .refresh_available => try refreshResult(scope, job),
         .credential_start => {
             _ = try scope.invoke(try scope.get(job, "signal"), "throwIfAborted", &.{});
-            _ = try scope.call(try scope.get(job, "markStarted"), c.pi_js_undefined(), &.{});
+            const mark = try scope.get(try scope.get(job, "startCell"), "markStarted");
+            if (!temp.nullish(mark)) _ = try scope.call(mark, c.pi_js_undefined(), &.{});
             try finish(scope, job, try scope.call(try scope.get(job, "task"), c.pi_js_undefined(), &.{}));
         },
         .credential_committed => {
@@ -882,30 +873,8 @@ fn refreshModels(scope: *Scope, job: c.JSValue, value: c.JSValue) !void {
     _ = try scope.invoke(runtime, "updateModelSnapshot", &.{});
     if (scope.truthy(try scope.get(options, "providers"))) {
         const ids = try arrayFrom(scope, try builtin(scope, "Set", &.{try scope.get(options, "providers")}));
-        const pending = try scope.array();
-        for (0..try sdk.length(scope.engine, ids)) |index| {
-            const id = try item(scope, ids, index);
-            const task = try flow.create(scope.engine, runtime);
-            defer scope.engine.freeValue(task.owner);
-            _ = try scope.own(task.promise);
-            try scope.put(task.owner, "bindings", try scope.get(job, "bindings"));
-            try scope.put(task.owner, "failureMode", try scope.text("refreshProvider"));
-            try scope.put(task.owner, "errors", errors);
-            try scope.put(task.owner, "providerId", id);
-            try scope.put(task.owner, "options", options);
-            const effective = imported(scope, try scope.get(job, "bindings"), "operationSignal", &.{try signal(scope, options)}) catch |err| {
-                try failJob(scope, task.owner, try scope.own(flow.reason(scope.engine, err)));
-                try append(scope, pending, task.promise);
-                continue;
-            };
-            const refresh = scope.invoke(runtime, "refreshProviderAvailability", &.{ id, effective }) catch |err| {
-                try failJob(scope, task.owner, try scope.own(flow.reason(scope.engine, err)));
-                try append(scope, pending, task.promise);
-                continue;
-            };
-            try wait(scope, task.owner, refresh, .delegate);
-            try append(scope, pending, task.promise);
-        }
+        const mapper = try scope.own(try flow.native.createResumableArrow(scope.engine, "", 1, refreshProviderBody, &.{ runtime, try scope.get(job, "bindings"), errors, options }, runtime));
+        const pending = try scope.invoke(ids, "map", &.{mapper});
         try wait(scope, job, try promiseAll(scope, pending), .refresh_available);
     } else {
         try scope.put(job, "failureMode", try scope.text("refreshAll"));
@@ -915,6 +884,22 @@ fn refreshModels(scope: *Scope, job: c.JSValue, value: c.JSValue) !void {
         };
         try wait(scope, job, pending, .refresh_available);
     }
+}
+fn refreshProviderBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state); try scope.put(owner, "agent", roots[0]); try scope.put(owner, "bindings", roots[1]);
+        try scope.put(owner, "failureMode", try scope.text("refreshProvider")); try scope.put(owner, "discardResult", c.pi_js_bool(engine.context, 1));
+        try scope.put(owner, "errors", roots[2]); try scope.put(owner, "options", roots[3]); try scope.put(owner, "providerId", arg(args, 0));
+        refreshProviderStart(&scope, owner) catch |err| try failError(&scope, owner, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
+}
+fn refreshProviderStart(scope: *Scope, owner: c.JSValue) !void {
+    const effective = try imported(scope, try scope.get(owner, "bindings"), "operationSignal", &.{try signal(scope, try scope.get(owner, "options"))});
+    const pending = try scope.invoke(try scope.get(owner, "agent"), "refreshProviderAvailability", &.{ try scope.get(owner, "providerId"), effective });
+    try wait(scope, owner, pending, .delegate);
 }
 fn refreshResult(scope: *Scope, job: c.JSValue) !void {
     const output = try scope.object();
@@ -944,27 +929,18 @@ fn stream(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, method: Method
     try scope.put(data, "dispatch", try scope.text(if (method == .stream) "stream" else if (method == .streamSimple) "streamSimple" else "fetchDeferred"));
     const virtual = method == .streamSimple and scope.truthy(try imported(scope, bindings, "isVirtualModel", &.{arg(args, 0)}));
     try scope.put(data, "virtual", c.pi_js_bool(scope.engine.context, @intFromBool(virtual)));
-    const setup = try callback(scope, lazySetup, 0, &.{data}, 0);
-    if (c.JS_SetPrototype(scope.engine.context, setup, try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)))) < 0) return js.capture(scope.engine);
+    const setup = try scope.own(try flow.native.createResumableArrow(scope.engine, "", 0, lazyBody, &.{data}, runtime));
     return imported(scope, bindings, "lazyStream", &.{ arg(args, 0), setup });
 }
-fn lazySetup(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return lazyBegin(engine, roots[0]) catch |err| sdk.fail(engine, err);
-}
-fn lazyBegin(engine: *em.Engine, data: c.JSValue) !c.JSValue {
+fn lazyBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const runtime = try scope.get(data, "agent");
-    const bindings = try scope.get(data, "bindings");
-    const pending = try flow.create(engine, runtime);
-    defer engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    try spread(&scope, pending.owner, data);
-    lazyStart(&scope, pending.owner, runtime, bindings) catch |err| {
-        try failJob(&scope, pending.owner, try scope.own(flow.reason(engine, err)));
-    };
-    return c.JS_DupValue(engine.context, pending.promise);
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state); try spread(&scope, owner, roots[0]);
+        lazyStart(&scope, owner, try scope.get(owner, "agent"), try scope.get(owner, "bindings")) catch |err| try failError(&scope, owner, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn lazyStart(scope: *Scope, job: c.JSValue, runtime: c.JSValue, bindings: c.JSValue) !void {
     const model = try scope.get(job, "model");
@@ -998,7 +974,7 @@ fn dispatchPrepared(scope: *Scope, job: c.JSValue, prepared: c.JSValue) !void {
     const implementation = if (suffix != null) try scope.get(try scope.get(prepared, "provider"), zname) else supports;
     const value = try scope.call(implementation, provider, &.{ try scope.get(prepared, "model"), try scope.get(job, "context"), try scope.get(prepared, "options") });
     if (std.mem.eql(u8, name, "cancelDeferred")) try scope.put(job, "discardResult", c.pi_js_bool(scope.engine.context, 1));
-    try wait(scope, job, value, .delegate);
+    if (suffix == null or std.mem.eql(u8, name, "fetchDeferred")) try finish(scope, job, value) else try wait(scope, job, value, .delegate);
 }
 fn simpleRouted(scope: *Scope, job: c.JSValue, route: c.JSValue) !void {
     const options = try scope.get(job, "options");
@@ -1035,26 +1011,18 @@ fn credentialOperation(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, m
     try scope.put(data, "type", arg(args, 1));
     try scope.put(data, "interaction", arg(args, 2));
     try scope.put(data, "apiKey", arg(args, 1));
-    const task = try callback(scope, credentialTask, 0, &.{data}, 0);
-    if (c.JS_SetPrototype(scope.engine.context, task, try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)))) < 0) return js.capture(scope.engine);
+    const task = try scope.own(try flow.native.createResumableArrow(scope.engine, "", 0, credentialBody, &.{data}, runtime));
     return scope.invoke(runtime, "enqueueCredentialOperation", &.{ arg(args, 0), effective, task });
 }
-fn credentialTask(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return credentialBegin(engine, roots[0]) catch |err| sdk.fail(engine, err);
-}
-fn credentialBegin(engine: *em.Engine, data: c.JSValue) !c.JSValue {
+fn credentialBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const runtime = try scope.get(data, "agent");
-    const pending = try flow.create(engine, runtime);
-    defer engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    try spread(&scope, pending.owner, data);
-    credentialStart(&scope, pending.owner, runtime) catch |err| {
-        try failJob(&scope, pending.owner, try scope.own(flow.reason(engine, err)));
-    };
-    return c.JS_DupValue(engine.context, pending.promise);
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state); try spread(&scope, owner, roots[0]);
+        credentialStart(&scope, owner, try scope.get(owner, "agent")) catch |err| try failError(&scope, owner, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn credentialStart(scope: *Scope, job: c.JSValue, runtime: c.JSValue) !void {
     const id = try scope.get(job, "providerId");
@@ -1090,24 +1058,33 @@ fn enqueue(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, args: []const
     const id = arg(args, 0);
     const input_signal = arg(args, 1);
     const previous = try mapGet(scope, runtime, "credentialOperations", id);
-    const predecessor = if (temp.nullish(previous)) try scope.own(try scope.engine.checked(c.JS_PiPromiseResolve(scope.engine.context, c.pi_js_undefined()))) else previous;
-    var started_functions: [2]c.JSValue = undefined;
-    const started = try scope.own(try scope.engine.checked(c.JS_NewPromiseCapability(scope.engine.context, &started_functions)));
-    defer for (started_functions) |value| scope.engine.freeValue(value);
-    const pending = try flow.create(scope.engine, runtime);
-    defer scope.engine.freeValue(pending.owner);
-    _ = try scope.own(pending.promise);
-    try scope.put(pending.owner, "bindings", bindings);
-    try scope.put(pending.owner, "signal", input_signal);
-    try scope.put(pending.owner, "task", arg(args, 2));
-    try scope.put(pending.owner, "markStarted", started_functions[0]);
+    const predecessor = if (temp.nullish(previous)) try scope.invoke(try scope.global("Promise"), "resolve", &.{}) else previous;
+    const cell = try scope.object(); try scope.put(cell, "markStarted", c.pi_js_undefined());
+    const executor = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, setStarted, &.{cell}));
+    const promise_args = [_]c.JSValue{executor};
+    const started = try scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.global("Promise"), promise_args.len, @constCast(&promise_args))));
+    const data = try scope.object(); try scope.put(data, "agent", runtime); try scope.put(data, "bindings", bindings);
+    try scope.put(data, "signal", input_signal); try scope.put(data, "task", arg(args, 2)); try scope.put(data, "startCell", cell); try scope.put(data, "predecessor", predecessor);
+    const immediate = try scope.own(try flow.native.createResumableArrow(scope.engine, "", 0, enqueueBody, &.{data}, runtime));
+    const operation = try scope.call(immediate, c.pi_js_undefined(), &.{});
     const ignore = try callback(scope, noop, 0, &.{}, 0);
-    const ready = scope.invoke(predecessor, "catch", &.{ignore}) catch |err| {
-        try failJob(scope, pending.owner, try scope.own(flow.reason(scope.engine, err)));
-        return enqueueTail(scope, runtime, bindings, id, input_signal, started, pending.promise, ignore);
-    };
-    try wait(scope, pending.owner, ready, .credential_start);
-    return enqueueTail(scope, runtime, bindings, id, input_signal, started, pending.promise, ignore);
+    return enqueueTail(scope, runtime, bindings, id, input_signal, started, operation, ignore);
+}
+fn setStarted(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); try scope.set(roots[0], "markStarted", arg(args, 0)); return c.pi_js_undefined();
+}
+fn enqueueBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and try flow.nativeAllocationReason(engine, state.*, input)) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.init(&scope, state); try spread(&scope, owner, roots[0]);
+        enqueueStart(&scope, owner) catch |err| try failError(&scope, owner, err);
+    } else continuation(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
+}
+fn enqueueStart(scope: *Scope, owner: c.JSValue) !void {
+    const ready = try scope.invoke(try scope.get(owner, "predecessor"), "catch", &.{try callback(scope, noop, 0, &.{}, 0)});
+    try wait(scope, owner, ready, .credential_start);
 }
 fn enqueueTail(scope: *Scope, runtime: c.JSValue, bindings: c.JSValue, id: c.JSValue, input_signal: c.JSValue, started: c.JSValue, operation: c.JSValue, ignore: c.JSValue) !c.JSValue {
     const tail = try scope.invoke(operation, "catch", &.{ignore});
@@ -1219,7 +1196,9 @@ fn raceAbort(scope: *Scope, operation: c.JSValue, input: c.JSValue) !c.JSValue {
         _ = try scope.invoke(operation, "catch", &.{try callback(scope, noop, 0, &.{}, 0)});
         return scope.invoke(try scope.global("Promise"), "reject", &.{try abortReason(scope, input)});
     }
-    const pending = try flow.create(scope.engine, operation);
+    // Source explicitly constructs a Promise in this synchronous abort helper.
+    // This capability is unrelated to the genuine AsyncFunction outer promise.
+    const pending = try promise_flow.create(scope.engine, operation);
     defer scope.engine.freeValue(pending.owner);
     _ = try scope.own(pending.promise);
     const job = pending.owner;
@@ -1228,7 +1207,7 @@ fn raceAbort(scope: *Scope, operation: c.JSValue, input: c.JSValue) !c.JSValue {
     const on_abort = try callback(scope, abortContinuation, 2, &.{job}, 0);
     try scope.put(job, "onAbort", on_abort);
     raceStart(scope, job, operation, input, on_abort) catch |err| {
-        try flow.settle(scope.engine, job, true, try scope.own(flow.reason(scope.engine, err)));
+        try promise_flow.settle(scope.engine, job, true, try scope.own(promise_flow.reason(scope.engine, err)));
     };
     return pending.promise;
 }
@@ -1253,7 +1232,7 @@ fn abortComplete(scope: *Scope, job: c.JSValue, value: c.JSValue, magic: c_int) 
     try scope.set(job, "settled", c.pi_js_bool(scope.engine.context, 1));
     const input = try scope.get(job, "signal");
     _ = try scope.invoke(input, "removeEventListener", &.{ try scope.text("abort"), try scope.get(job, "onAbort") });
-    try flow.settle(scope.engine, job, magic != 0, if (magic == 2) try abortReason(scope, input) else value);
+    try promise_flow.settle(scope.engine, job, magic != 0, if (magic == 2) try abortReason(scope, input) else value);
 }
 
 pub fn validateInputs(engine: *em.Engine, imports: c.JSValue) !void {
@@ -1278,8 +1257,8 @@ pub fn exports(engine: *em.Engine, imports: c.JSValue) !c.JSValue {
     const ctor = try scope.own(try @import("native_class.zig").constructor(engine, "ModelRuntime", 6, prototype, construct, &.{bindings}));
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const method: Method = @enumFromInt(field.value);
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, arity(method), field.value, 1, @constCast((&[_]c.JSValue{bindings}).ptr))));
-        if (asynchronous(method)) if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
+        const captures = [_]c.JSValue{ bindings, c.JS_NewInt32(engine.context, field.value) };
+        const function = try scope.own(if (asynchronous(method)) try flow.native.createResumable(engine, field.name, arity(method), methodBody, &captures) else try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, arity(method), field.value, captures.len, @constCast(&captures))));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
     const result = try scope.object();
@@ -1417,7 +1396,7 @@ fn invoke(engine: *em.Engine, runtime: c.JSValue, bindings: c.JSValue, method: M
         .login, .logout, .setRuntimeApiKey, .removeRuntimeApiKey => try credentialOperation(&scope, runtime, bindings, method, args),
         .enqueueCredentialOperation => try enqueue(&scope, runtime, bindings, args),
         .queueAvailabilityRefresh => try queueAvailability(&scope, runtime, bindings, id),
-        else => try begin(&scope, runtime, bindings, method, args),
+        else => return error.GenuineModelRuntimeAsyncBodyRequired,
     };
     return c.JS_DupValue(engine.context, result);
 }
