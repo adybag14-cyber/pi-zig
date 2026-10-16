@@ -58,7 +58,7 @@ take their existing null-owner path; native-body resume code is unchanged.
 
 The seven existing START/attachment controls remain unchanged. The historical
 prepared known-gap control remains unchanged. A new separate
-`src/native_tla_resumed_fatal_delivery_test.zig` has five declarations:
+`src/native_tla_resumed_fatal_delivery_test.zig` has six declarations:
 
 1. Resumed direct body fatal with a waiting parent; exact reason survives host
    classification, cached child/parent entry and a fresh importer.
@@ -74,6 +74,18 @@ prepared known-gap control remains unchanged. A new separate
    failing definition becomes terminal; the other remains pending, then
    completes when its real gate resolves, including a GC checkpoint.
 5. Ordinary nested nonmodule async return/rejection identity remains unchanged.
+6. A genuine public Promise hook leaves a fresh native uncatchable reason
+   while a resumed module's intrinsic resolving callback returns undefined.
+   The module must deliver that exact reason terminally, retain cached failure
+   after classification, and safely ignore any already queued fulfillment.
+
+Independent review of the first resumed candidate found the sixth path:
+resolving callbacks can return undefined despite a pending fatal exception.
+Module-only checks now retain that reason immediately after both resolving
+calls, before returned/thrown value cleanup, and mark fatal state at the common
+termination point. This is confined to uncatchable reasons; catchable enqueue
+pressure at the resolving-call boundary remains a separate explicit scope and
+does not acquire fatal classification. The ordinary null-owner path is unchanged.
 
 The sibling new build snippet prepares a separate resumed gate. Shared
 build.zig is unchanged. No test has been syntax-checked or executed. These
