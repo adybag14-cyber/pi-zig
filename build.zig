@@ -1565,6 +1565,7 @@ pub fn build(b: *std.Build) void {
     linkSqlite(node_crypto_hash_tests.root_module, sqlite_lib_dir, sqlite_library);
     node_crypto_hash_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-node-crypto-sha256", "Compile real SHA256 createHash dependency independently").dependOn(&node_crypto_hash_tests.step);
+    b.step("build-native-node-crypto-sha256-artifact", "Install the compiled SHA256 test artifact for metadata-only verification").dependOn(&b.addInstallArtifact(node_crypto_hash_tests, .{}).step);
     b.step("test-native-node-crypto-sha256", "Compare actual Node SHA256 package observations and native state ownership").dependOn(&b.addRunArtifact(node_crypto_hash_tests).step);
     const idle_settlement_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_idle_settlement_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native idle settlement"}, .use_llvm = use_llvm });
     linkQuickJs(b, idle_settlement_identity_tests.root_module, quickjs, sqlite_lib_dir);
@@ -1806,6 +1807,7 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) classic_stream_run.stdio = .inherit;
     b.step("test-native-node-stream-classic", "Exercise actual classic streams against original consumers and fail closed until complete genuine Node Source20 capture").dependOn(&classic_stream_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-node-stream-classic", &.{"test-native-node-stream-classic"});
+    b.step("build-native-node-stream-classic-artifact", "Install the compiled classic stream test artifact for metadata-only verification").dependOn(&b.addInstallArtifact(classic_stream_tests, .{}).step);
     const classic_iterator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_iterator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native classic iterator"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkQuickJs(b, classic_iterator_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(classic_iterator_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -1814,7 +1816,8 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) classic_iterator_run.stdio = .inherit;
     b.step("test-native-node-stream-classic-iterator", "Exercise genuine Readable AsyncGenerator consumption and required Node pipeline acknowledgement with complete original Source14 controls").dependOn(&classic_iterator_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-node-stream-classic-iterator", &.{"test-native-node-stream-classic-iterator"});
-    const classic_writer_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_write_stream_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native classic writer"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+    b.step("build-native-node-stream-classic-iterator-artifact", "Install the compiled classic iterator test artifact for metadata-only verification").dependOn(&b.addInstallArtifact(classic_iterator_tests, .{}).step);
+    const classic_writer_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_write_stream_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native classic writer", "native classic construct ordinary", "native writer retry SystemError", "native filesystem operation captures" }, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkQuickJs(b, classic_writer_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(classic_writer_tests.root_module, sqlite_lib_dir, sqlite_library);
     classic_writer_tests.root_module.addImport("catalog_tool", catalog_tool);
@@ -1823,6 +1826,7 @@ pub fn build(b: *std.Build) void {
     if (diagnostic_tests) classic_writer_run.stdio = .inherit;
     b.step("test-native-node-fs-write-stream", "Exercise real file pipeline IO and exact completion exception/task shutdown ownership; Windows CRT selection remains guarded").dependOn(&classic_writer_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-node-fs-write-stream", &.{"test-native-node-fs-write-stream"});
+    b.step("build-native-node-fs-write-stream-artifact", "Install all reviewed writer controls for metadata-only verification").dependOn(&b.addInstallArtifact(classic_writer_tests, .{}).step);
     const ai_provider_helpers_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_helpers_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI provider helpers"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_provider_helpers_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_provider_helpers_tests.root_module, sqlite_lib_dir, sqlite_library);
