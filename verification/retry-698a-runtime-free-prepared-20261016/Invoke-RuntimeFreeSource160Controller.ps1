@@ -39,6 +39,7 @@ try{
     Write-S160Json (Join-Path $task.run 'node-command.json') $nodeCommand
     # A tiny owned invocation script avoids shell quoting and preserves string[] argv.
     $nodeChild=Start-S160Process $context 'original96BE-owner' $s160Pwsh @('-NoLogo','-NoProfile','-NonInteractive','-File',$task.owner_invocation,'-Config',$Config,'-ConfigSha256',$ConfigSha256)
+    if($nodeChild.validation_error -or !$nodeChild.identity){throw 'Original96BE invocation parent/intended argv not verified; fence remains closed'}
     $readyPath=Join-Path $task.run 'start-fence-ready.json';$ownerPath=Join-Path $task.run 'source160.json'
     $fenceDeadline=[DateTimeOffset]::UtcNow.AddSeconds(10)
     while(!(Test-Path -LiteralPath $readyPath) -or !(Test-Path -LiteralPath $ownerPath)){
@@ -46,8 +47,11 @@ try{
         Start-Sleep -Milliseconds 25
     }
     $ready=Read-S160SettledJson $readyPath $fenceDeadline;$retained=Read-S160SettledJson $ownerPath $fenceDeadline
+    $intendedReadyArgv=@($task.node,$task.driver,$task.source,$task.output)
+    $intendedExecArgv=@($nodeArguments[0..($nodeArguments.Count-4)])
+    if((@($ready.argv) -join [char]0) -cne ($intendedReadyArgv -join [char]0) -or (@($ready.execArgv) -join [char]0) -cne ($intendedExecArgv -join [char]0)){throw 'Ready argv/execArgv differs from intended Node PSI arguments; fence remains closed'}
     $live=Get-S160Live ([int]$ready.pid);$identity=Convert-S160Identity $live
-    if(!$identity -or $retained.command_line_source -cne 'live Win32_Process' -or [int]$ready.pid -ne [int]$retained.pid -or $ready.execPath -cne $task.node -or $ready.version -cne 'v24.14.0' -or $ready.sourceImported -ne $false -or $ready.nonce -cne $task.fence_nonce -or $identity.executable -cne $task.node -or $identity.command_line -cne $retained.command_line -or [Math]::Abs((([DateTimeOffset]$identity.created_utc).UtcDateTime-([DateTimeOffset]$retained.created_utc).UtcDateTime).TotalMilliseconds) -gt 1 -or $retained.executable_sha256 -cne $task.node_sha256 -or (Get-S160Sha $task.node) -cne $task.node_sha256 -or [int]$identity.parent_pid -ne [int]$nodeChild.process.Id){throw 'Node start-fence live/kernel/executable/parent reconciliation failed'}
+    if(!$identity -or $retained.command_line_source -cne 'live Win32_Process' -or [int]$ready.pid -ne [int]$retained.pid -or $ready.execPath -cne $task.node -or $ready.version -cne 'v24.14.0' -or $ready.sourceImported -ne $false -or $ready.nonce -cne $task.fence_nonce -or $identity.executable -cne $task.node -or $identity.command_line -cne $retained.command_line -or !(Test-S160Argv $identity.command_line $task.node ([string[]]$nodeArguments)) -or [Math]::Abs((([DateTimeOffset]$identity.created_utc).UtcDateTime-([DateTimeOffset]$retained.created_utc).UtcDateTime).TotalMilliseconds) -gt 1 -or $retained.executable_sha256 -cne $task.node_sha256 -or (Get-S160Sha $task.node) -cne $task.node_sha256 -or [int]$identity.parent_pid -ne [int]$nodeChild.process.Id){throw 'Node start-fence live/kernel/executable/parent/intended argv reconciliation failed'}
     Add-S160Identity $context $identity
     $free=(Get-CimInstance Win32_OperatingSystem -OperationTimeoutSec 3).FreePhysicalMemory
     Write-S160Json (Join-Path $task.run 'start-fence-identity.json') @{ready=$ready;retained=$retained;live=$identity;exe_sha256=Get-S160Sha $task.node;free_kib=$free;required_free_kib=16MB;admitted=($free -ge 16MB);observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}

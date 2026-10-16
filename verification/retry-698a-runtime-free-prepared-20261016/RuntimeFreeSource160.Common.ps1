@@ -56,15 +56,45 @@ function Get-S160Live([int]$ProcessId){
     Get-CimInstance Win32_Process -Filter "ProcessId=$ProcessId" -OperationTimeoutSec 3 -ErrorAction Stop
 }
 function Convert-S160Identity($Row){
-    if(!$Row -or !$Row.ExecutablePath -or !$Row.CommandLine -or !$Row.CreationDate){return $null}
+    if(!$Row -or !$Row.ProcessId -or $null -eq $Row.ParentProcessId -or !$Row.ExecutablePath -or !$Row.CommandLine -or !$Row.CreationDate){return $null}
     [ordered]@{pid=[int]$Row.ProcessId;parent_pid=[int]$Row.ParentProcessId;executable=[string]$Row.ExecutablePath;command_line=[string]$Row.CommandLine;created_utc=([DateTimeOffset]$Row.CreationDate).UtcDateTime.ToString('o')}
 }
+function Split-S160WindowsArgv([string]$CommandLine){
+    # Pure Windows CRT quote/backslash parsing; no host process or native helper.
+    $result=[Collections.Generic.List[string]]::new();$index=0
+    while($index -lt $CommandLine.Length){
+        while($index -lt $CommandLine.Length -and $CommandLine[$index] -in @([char]32,[char]9)){$index++}
+        if($index -ge $CommandLine.Length){break}
+        $argument=[Text.StringBuilder]::new();$quoted=$false
+        while($index -lt $CommandLine.Length){
+            if(!$quoted -and $CommandLine[$index] -in @([char]32,[char]9)){break}
+            $slashes=0
+            while($index -lt $CommandLine.Length -and $CommandLine[$index] -eq [char]92){$slashes++;$index++}
+            if($index -lt $CommandLine.Length -and $CommandLine[$index] -eq [char]34){
+                [void]$argument.Append([char]92,[int][Math]::Floor($slashes/2))
+                if($slashes%2){[void]$argument.Append([char]34);$index++}elseif($quoted -and $index+1 -lt $CommandLine.Length -and $CommandLine[$index+1] -eq [char]34){[void]$argument.Append([char]34);$index+=2}else{$quoted=!$quoted;$index++}
+            }else{
+                [void]$argument.Append([char]92,$slashes)
+                if($index -ge $CommandLine.Length){break}
+                if(!$quoted -and $CommandLine[$index] -in @([char]32,[char]9)){break}
+                [void]$argument.Append($CommandLine[$index]);$index++
+            }
+        }
+        if($quoted){throw 'Unclosed Windows command-line quote'}
+        $result.Add($argument.ToString())
+    }
+    $result.ToArray()
+}
+function Test-S160Argv([string]$CommandLine,[string]$Executable,[string[]]$Arguments){
+    $actual=@(Split-S160WindowsArgv $CommandLine);$intended=@($Executable)+@($Arguments)
+    ($actual.Count -eq $intended.Count) -and (($actual -join [char]0) -ceq ($intended -join [char]0))
+}
 function Test-S160Same($Expected,$Row){
-    $Row -and $Row.CreationDate -and [int]$Row.ProcessId -eq [int]$Expected.pid -and [string]$Row.ExecutablePath -ceq $Expected.executable -and [string]$Row.CommandLine -ceq $Expected.command_line -and [Math]::Abs((([DateTimeOffset]$Row.CreationDate).UtcDateTime-([DateTimeOffset]$Expected.created_utc).UtcDateTime).TotalMilliseconds) -le 1
+    $Row -and $Row.CreationDate -and [int]$Row.ProcessId -eq [int]$Expected.pid -and [int]$Row.ParentProcessId -eq [int]$Expected.parent_pid -and [string]$Row.ExecutablePath -ceq $Expected.executable -and [string]$Row.CommandLine -ceq $Expected.command_line -and [Math]::Abs((([DateTimeOffset]$Row.CreationDate).UtcDateTime-([DateTimeOffset]$Expected.created_utc).UtcDateTime).TotalMilliseconds) -le 1
 }
 function Add-S160Identity($Context,$Identity){
     if($Identity -and !@($Context.known|Where-Object {$_.pid -eq $Identity.pid -and $_.created_utc -ceq $Identity.created_utc}).Count){
-        $Context.known.Add($Identity);Write-S160Json (Join-Path $Context.run ($Context.label+'-identities.json')) $Context.known.ToArray()
+        $Context.known.Add($Identity);Write-S160Json (Join-Path $Context.ledger_root ($Context.label+'-identities.json')) $Context.known.ToArray()
     }
 }
 function Observe-S160Descendants($Context){
@@ -88,43 +118,73 @@ function Observe-S160Descendants($Context){
                     if($identity -and $partial.created_utc -and [int]$identity.parent_pid -eq [int]$partial.parent_pid){$partial.status='full_identity_recovered';break}
                     $identity=$null
                 }
-                Write-S160Json (Join-Path $Context.run ($Context.label+'-partial-identities.json')) $Context.partial.ToArray()
+                Write-S160Json (Join-Path $Context.ledger_root ($Context.label+'-partial-identities.json')) $Context.partial.ToArray()
             }
             if($identity){Add-S160Identity $Context $identity}
         }
     }
 }
-function New-S160Context([string]$Run,[string]$Label){
-    @{run=$Run;label=$Label;known=[Collections.Generic.List[object]]::new();partial=[Collections.Generic.List[object]]::new()}
+function New-S160Context([string]$Run,[string]$Label,[string]$LedgerRoot=$Run){
+    @{run=$Run;ledger_root=$LedgerRoot;label=$Label;known=[Collections.Generic.List[object]]::new();partial=[Collections.Generic.List[object]]::new();children=[Collections.Generic.List[object]]::new();git_sequence=0}
 }
-function Start-S160Process($Context,[string]$Name,[string]$Executable,[string[]]$Arguments){
+function Start-S160Process($Context,[string]$Name,[string]$Executable,[string[]]$Arguments,[bool]$AllowTerminalReadOnlyGit=$false){
     Assert-S160Contained $Context.run (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
+    Assert-S160Contained $Context.ledger_root (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
     $free=(Get-CimInstance Win32_OperatingSystem -OperationTimeoutSec 3).FreePhysicalMemory
-    Write-S160Json (Join-Path $Context.run ($Name+'-reservation.json')) @{free_kib=$free;required_free_kib=16MB;source_reserved_kib=2MB;admitted=($free -ge 16MB);observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    Write-S160Json (Join-Path $Context.ledger_root ($Name+'-reservation.json')) @{free_kib=$free;required_free_kib=16MB;source_reserved_kib=2MB;admitted=($free -ge 16MB);observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
     if($free -lt 16MB){throw 'Automatic fresh16GiB child admission denied'}
-    $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=$Executable;$info.WorkingDirectory=$Context.run
+    $executableSha=Get-S160Sha $Executable
+    if($AllowTerminalReadOnlyGit -and $Executable -cne $s160Git){throw 'Terminal-only exception is exclusively pinned read-only Git'}
+    $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=$Executable;$info.WorkingDirectory=$Context.ledger_root
     $info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.RedirectStandardOutput=$true;$info.RedirectStandardError=$true
     $info.Environment.Clear();$safe=Get-S160Environment $Context.run
     foreach($key in $safe.Keys){$info.Environment[$key]=[string]$safe[$key]}
     foreach($argument in $Arguments){$info.ArgumentList.Add($argument)}
     $process=[Diagnostics.Process]::new();$process.StartInfo=$info
     if(!$process.Start()){throw 'Owned process did not start'}
-    $created=$process.StartTime.ToUniversalTime();$out=$process.StandardOutput.ReadToEndAsync();$err=$process.StandardError.ReadToEndAsync()
-    $identity=$null
-    for($attempt=0;$attempt -lt 2;$attempt++){
-        try{$live=Get-S160Live $process.Id;$identity=Convert-S160Identity $live}catch{$identity=$null}
-        if($identity){break}
+    # Register the actual handle before StartTime/CIM/hash/argv probes or writes.
+    $child=@{name=$Name;process=$process;out=$null;err=$null;identity=$null;retained=$null;validation_error=$null;terminal_git_only=$false;started=[DateTimeOffset]::UtcNow;launch_path=(Join-Path $Context.ledger_root ($Name+'-launch.json'))}
+    $Context.children.Add($child)
+    $partial=[ordered]@{pid=$process.Id;parent_pid=$PID;created_utc=$null;expected_executable=$Executable;executable_sha256=$executableSha;intended_arguments=$Arguments;origin='retained_direct_launch';kill_authority=$false;status='kernel_registered_before_probes'}
+    $Context.partial.Add($partial)
+    $child.retained=$partial
+    try{
+        Write-S160Json $child.launch_path @{retained=$partial;identity=$null;status='kernel_registered_before_probes'}
+        Write-S160Json (Join-Path $Context.ledger_root ($Context.label+'-partial-identities.json')) $Context.partial.ToArray()
+        $partial.created_utc=$process.StartTime.ToUniversalTime().ToString('o')
+        Write-S160Json $child.launch_path @{retained=$partial;identity=$null;status='kernel_creation_registered_before_cim'}
+        $child.out=$process.StandardOutput.ReadToEndAsync();$child.err=$process.StandardError.ReadToEndAsync()
+        for($attempt=0;$attempt -lt 2;$attempt++){
+            try{$identity=Convert-S160Identity (Get-S160Live $process.Id)}catch{$identity=$null}
+            if($identity){break}
+        }
+        if(!$identity){
+            if($AllowTerminalReadOnlyGit -and $process.HasExited -and $process.ExitCode -eq 0){
+                $child.terminal_git_only=$true;$partial.status='read_only_git_kernel_terminal_live_cim_unavailable'
+            }else{throw 'Direct launch full CIM identity missing'}
+        }else{
+            $child.observed_identity=$identity
+            if($identity.executable -cne $Executable -or [int]$identity.parent_pid -ne $PID -or [Math]::Abs((([DateTimeOffset]$identity.created_utc).UtcDateTime-([DateTimeOffset]$partial.created_utc).UtcDateTime).TotalMilliseconds) -gt 1 -or !(Test-S160Argv $identity.command_line $Executable $Arguments)){throw 'Direct launch kernel/parent/intended argv identity conflict'}
+            $child.identity=$identity;$partial.status='full_parent_argv_kernel_verified'
+            Add-S160Identity $Context $identity
+        }
+    }catch{
+        $child.validation_error=$_.Exception.Message;$partial.status='launch_validation_negative'
+        # A ledger/probe failure must not leave an undrained child blocked on pipes.
+        try{if(!$child.out){$child.out=$process.StandardOutput.ReadToEndAsync()};if(!$child.err){$child.err=$process.StandardError.ReadToEndAsync()}}catch{$child.validation_error+='; pipe setup negative: '+$_.Exception.Message}
+        # Reconcile only the registered original handle; the original negative stays.
+        try{
+            if(!$partial.created_utc){$partial.created_utc=$process.StartTime.ToUniversalTime().ToString('o')}
+            $again=Convert-S160Identity (Get-S160Live $process.Id)
+            if($again -and $again.executable -ceq $Executable -and [int]$again.parent_pid -eq $PID -and [Math]::Abs((([DateTimeOffset]$again.created_utc).UtcDateTime-([DateTimeOffset]$partial.created_utc).UtcDateTime).TotalMilliseconds) -le 1 -and (Test-S160Argv $again.command_line $Executable $Arguments)){$child.identity=$again;Add-S160Identity $Context $again}
+        }catch{$child.validation_error+='; registered handle reconciliation negative: '+$_.Exception.Message}
     }
-    $retained=[ordered]@{pid=$process.Id;executable=$Executable;created_utc=$created.ToString('o');arguments=$Arguments;full_live_identity=$identity;retained_kernel_handle=$true;stdout_pipe_bounded_by_parent=$true}
-    Write-S160Json (Join-Path $Context.run ($Name+'-launch.json')) $retained
-    if($identity){
-        if($identity.executable -cne $Executable -or [Math]::Abs((([DateTimeOffset]$identity.created_utc).UtcDateTime-$created).TotalMilliseconds) -gt 1){throw 'Retained kernel/live identity disagreement'}
-        Add-S160Identity $Context $identity
-    }else{
-        $Context.partial.Add(@{pid=$process.Id;parent_pid=$PID;created_utc=$created.ToString('o');kill_authority=$false;status='launched_full_cim_identity_missing'})
-        Write-S160Json (Join-Path $Context.run ($Context.label+'-partial-identities.json')) $Context.partial.ToArray()
-    }
-    @{name=$Name;process=$process;out=$out;err=$err;identity=$identity;retained=$retained;started=[DateTimeOffset]::UtcNow}
+    # Never throw away a successfully started handle, including ledger I/O errors.
+    try{
+        Write-S160Json $child.launch_path @{retained=$partial;identity=$child.identity;observed_identity=$child.observed_identity;validation_error=$child.validation_error;status=$partial.status}
+        Write-S160Json (Join-Path $Context.ledger_root ($Context.label+'-partial-identities.json')) $Context.partial.ToArray()
+    }catch{$child.validation_error+='; launch ledger write failed: '+$_.Exception.Message}
+    return $child
 }
 function Stop-S160Verified($Identity){
     if(!$Identity){return $false}
@@ -142,27 +202,33 @@ function Stop-S160Verified($Identity){
 }
 function Finish-S160Process($Context,$Child,[bool]$TimedOut){
     if(!$Child.process.HasExited){throw 'Owned child has no terminal kernel state'}
-    $pipes=$Child.out.Wait(2000) -and $Child.err.Wait(2000)
+    $pipes=$false
+    try{$pipes=$Child.out -and $Child.err -and $Child.out.Wait(2000) -and $Child.err.Wait(2000)}catch{$Child.validation_error='Bounded pipe completion failed: '+$_.Exception.Message}
     if($pipes){
-        [IO.File]::WriteAllText((Join-Path $Context.run ($Child.name+'.stdout.log')),$Child.out.Result)
-        [IO.File]::WriteAllText((Join-Path $Context.run ($Child.name+'.stderr.log')),$Child.err.Result)
+        [IO.File]::WriteAllText((Join-Path $Context.ledger_root ($Child.name+'.stdout.log')),$Child.out.Result)
+        [IO.File]::WriteAllText((Join-Path $Context.ledger_root ($Child.name+'.stderr.log')),$Child.err.Result)
     }
-    $record=@{name=$Child.name;identity=$Child.identity;retained=$Child.retained;terminal_kernel_handle=$Child.process.HasExited;exit_code=$Child.process.ExitCode;timed_out=$TimedOut;pipes_settled=$pipes;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
-    Write-S160Json (Join-Path $Context.run ($Child.name+'-terminal.json')) $record
+    $terminalGitAbsence=$null
+    if($Child.terminal_git_only){
+        $terminalGitAbsence=Get-S160Absence @() @($Child.retained)
+        if($terminalGitAbsence.present_or_unknown -or (Get-S160Sha $Child.retained.expected_executable) -cne $Child.retained.executable_sha256){$Child.validation_error='Terminal read-only Git independent absence/executable seal failed'}
+    }
+    $record=@{name=$Child.name;identity=$Child.identity;retained=$Child.retained;validation_error=$Child.validation_error;terminal_kernel_handle=$Child.process.HasExited;exit_code=$Child.process.ExitCode;timed_out=$TimedOut;pipes_settled=[bool]$pipes;terminal_read_only_git_exception=[bool]$Child.terminal_git_only;live_cim_argv_available=[bool]$Child.identity;terminal_git_independent_absence=$terminalGitAbsence;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    Write-S160Json (Join-Path $Context.ledger_root ($Child.name+'-terminal.json')) $record
     # Keep the retained kernel handle available to the outer negative path until
     # that owner exits. There are only a bounded number of children in this scope.
-    if(!$Child.identity -or !$pipes -or $TimedOut -or $record.exit_code -ne 0){throw ('Owned child negative: '+$Child.name)}
+    if($Child.validation_error -or (!$Child.identity -and !$Child.terminal_git_only) -or !$pipes -or $TimedOut -or $record.exit_code -ne 0){throw ('Owned child negative: '+$Child.name+' '+$Child.validation_error)}
     return $record
 }
 function Wait-S160Process($Context,$Child,[int]$Seconds){
     $until=$Child.started.AddSeconds($Seconds)
     while(!$Child.process.WaitForExit(500)){
-        Observe-S160Descendants $Context
+        try{Observe-S160Descendants $Context}catch{$Child.validation_error+='; during-wait identity observation negative: '+$_.Exception.Message}
         if([DateTimeOffset]::UtcNow -ge $until){
             $settleUntil=[DateTimeOffset]::UtcNow.AddSeconds(20)
             foreach($identity in @($Context.known.ToArray()|Sort-Object created_utc -Descending)){
                 if([DateTimeOffset]::UtcNow -ge $settleUntil){break}
-                if($identity.pid -ne $PID){Stop-S160Verified $identity|Out-Null}
+                if($identity.pid -ne $PID){try{Stop-S160Verified $identity|Out-Null}catch{$Child.validation_error='Verified settlement failed: '+$_.Exception.Message}}
             }
             if(!$Child.process.WaitForExit(1000)){throw 'Owned child timeout could not be reconciled; preserve/no handoff'}
             return Finish-S160Process $Context $Child $true
@@ -178,7 +244,8 @@ function Get-S160Absence($Identities,$Partial){
         # An incomplete live CIM row is unknown, never absence or kill authority.
         $unknown=$live -and !(Convert-S160Identity $live)
         $same=Test-S160Same $expected $live
-        @{identity=$expected;original_identity_absent=(!$same -and !$unknown);identity_unknown=[bool]$unknown;pid_reused=([bool]$live -and !$same -and !$unknown)}
+        $different=$live -and $live.CreationDate -and $expected.created_utc -and [Math]::Abs((([DateTimeOffset]$live.CreationDate).UtcDateTime-([DateTimeOffset]$expected.created_utc).UtcDateTime).TotalMilliseconds) -gt 1
+        @{identity=$expected;original_identity_absent=(!$live -or $different);identity_unknown=[bool]$unknown;identity_conflict=([bool]$live -and !$different -and !$same);pid_reused=[bool]$different}
     })
     $partials=@(foreach($expected in @($Partial)){
         $live=$snapshot|Where-Object ProcessId -eq ([int]$expected.pid)|Select-Object -First 1
@@ -187,16 +254,45 @@ function Get-S160Absence($Identities,$Partial){
     })
     @{rows=$rows;partial_rows=$partials;present_or_unknown=@($rows|Where-Object {!$_.original_identity_absent}).Count+@($partials|Where-Object {!$_.original_identity_absent}).Count;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
 }
-function Invoke-S160Git([string]$Directory,[string[]]$Arguments){
-    $info=[Diagnostics.ProcessStartInfo]::new();$info.FileName=$s160Git;$info.UseShellExecute=$false;$info.CreateNoWindow=$true;$info.RedirectStandardOutput=$true;$info.RedirectStandardError=$true
-    foreach($arg in @('-C',$Directory)+$Arguments){$info.ArgumentList.Add($arg)}
-    # The bounded phase already has an explicitly cleared environment.
-    $process=[Diagnostics.Process]::new();$process.StartInfo=$info
-    if(!$process.Start()){throw 'Pinned Git failed to start'}
-    try{
-        $out=$process.StandardOutput.ReadToEndAsync();$err=$process.StandardError.ReadToEndAsync()
-        if(!$process.WaitForExit(20000) -or !$out.Wait(1000) -or !$err.Wait(1000)){throw 'Git20s bound failed; enclosing phase retains descendant ownership'}
-        if($process.ExitCode -ne 0){throw 'Pinned Git identity/inventory check failed'}
-        return $out.Result.TrimEnd("`r","`n")
-    }finally{$process.Dispose()}
+function Invoke-S160Git([string]$Directory,[string[]]$Arguments,$Context){
+    if(!$Context){throw 'Git requires an established retained ownership context'}
+    $allowed=($Arguments.Count -eq 2 -and $Arguments[0] -ceq 'rev-parse' -and $Arguments[1] -cin @('HEAD','HEAD^{tree}')) -or ($Arguments.Count -eq 1 -and $Arguments[0] -ceq 'ls-files') -or (($Arguments.Count -eq 2 -or $Arguments.Count -eq 3) -and $Arguments[0] -ceq 'status' -and $Arguments[1] -ceq '--porcelain' -and ($Arguments.Count -eq 2 -or $Arguments[2] -ceq '--untracked-files=no'))
+    if(!$allowed){throw 'Only exact whitelisted read-only Git commands may use terminal-only proof'}
+    $workspace=Get-S160Workspace
+    $allowedDirectories=@([IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..')),(Join-Path $workspace.upstream 'snapshots/698a2d23-20261016'))
+    if([IO.Path]::GetFullPath($Directory) -cnotin $allowedDirectories){throw 'Git may read only the exact assigned candidate or Source698 snapshot'}
+    $hooks=Join-Path $Context.run 'disabled-git-hooks'
+    Assert-S160Contained $hooks $Context.run|Out-Null
+    [void][IO.Directory]::CreateDirectory($hooks)
+    if(@(Get-ChildItem -LiteralPath $hooks -Force).Count){throw 'Owned disabled hooks directory must remain empty'}
+    $Context.git_sequence++
+    $child=Start-S160Process $Context ($Context.label+'-git'+$Context.git_sequence) $s160Git (@('--no-pager','--no-optional-locks','-c','core.fsmonitor=false','-c',('core.hooksPath='+$hooks),'-C',$Directory)+$Arguments) $true
+    Wait-S160Process $Context $child 20|Out-Null
+    return $child.out.Result.TrimEnd("`r","`n")
+}
+function Get-S160LaunchUnion([string]$Run){
+    $known=[Collections.Generic.List[object]]::new();$partial=[Collections.Generic.List[object]]::new();$paths=[Collections.Generic.List[string]]::new()
+    $files=@()
+    foreach($root in @($Run,($Run+'.launcher'))){
+        Assert-S160Contained $root (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
+        if(Test-Path -LiteralPath $root){$files+=@(Get-ChildItem -LiteralPath $root -File -Filter '*.json')}
+    }
+    foreach($file in $files){
+        if($file.Name -like '*-identities.json' -and $file.Name -notlike '*-partial-identities.json'){foreach($row in @(Read-S160Json $file.FullName)){$known.Add($row)};$paths.Add($file.FullName)}
+        elseif($file.Name -like '*-partial-identities.json'){foreach($row in @(Read-S160Json $file.FullName)){$partial.Add($row)};$paths.Add($file.FullName)}
+        elseif($file.Name -like '*-launch.json'){
+            $record=Read-S160Json $file.FullName
+            if($record.identity){$known.Add($record.identity)}
+            if($record.retained){$partial.Add($record.retained)}elseif($record.pid){$partial.Add(@{pid=$record.pid;created_utc=$record.retained_created_utc;parent_pid=$record.expected_parent_pid;origin='external_launch_record'})}
+            $paths.Add($file.FullName)
+        }
+        elseif($file.Name -ceq 'source160.json'){$record=Read-S160Json $file.FullName;$partial.Add(@{pid=$record.pid;created_utc=$record.created_utc;origin='original96BE_node_kernel_record';kill_authority=$false});$paths.Add($file.FullName)}
+        elseif($file.Name -ceq 'start-fence-ready.json'){
+            $record=Read-S160Json $file.FullName;$created=$null;$originalPath=Join-Path $Run 'source160.json'
+            if(Test-Path -LiteralPath $originalPath){$original=Read-S160Json $originalPath;if($original.pid -eq $record.pid){$created=$original.created_utc}}
+            $partial.Add(@{pid=$record.pid;created_utc=$created;origin='node_ready_pid_linked_to_optional_original96BE_record';kill_authority=$false});$paths.Add($file.FullName)
+        }
+        elseif($file.Name -like '*-self.json'){$record=Read-S160Json $file.FullName;if($record.identity){$known.Add($record.identity)}elseif($record.pid){$known.Add($record)};$paths.Add($file.FullName)}
+    }
+    @{known=$known.ToArray();partial=$partial.ToArray();launch_ledger_paths=$paths.ToArray()}
 }

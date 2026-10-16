@@ -2,6 +2,10 @@ param([Parameter(Mandatory)][string]$Config,[Parameter(Mandatory)][string]$Confi
 . (Join-Path $PSScriptRoot 'RuntimeFreeSource160.Common.ps1')
 if((Get-S160Sha $Config) -cne $ConfigSha256){throw 'Immutable run config changed'}
 $task=Read-S160Json $Config
+$context=New-S160Context $task.run ('seal-'+$Phase)
+$self=Convert-S160Identity (Get-S160Live $PID)
+if(!$self){throw 'Seal worker self identity required; direct launch remains registered by parent'}
+Write-S160Json (Join-Path $task.run ('seal-'+$Phase+'-self.json')) $self
 Assert-S160Environment $task.run|Out-Null
 Assert-S160Contained $task.run (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
 $receipt=Join-Path $task.run ($Phase+'-full-seal.json')
@@ -44,11 +48,11 @@ try{
     foreach($root in @($task.source,$task.candidate,$task.run)){Assert-S160Contained $root $task.container|Out-Null}
     if(Test-Path -LiteralPath (Join-Path $task.source 'node_modules')){$failures.Add('Source node_modules unexpectedly present')}
     try{
-        if((Invoke-S160Git $task.source @('rev-parse','HEAD')) -cne $task.source_head -or (Invoke-S160Git $task.source @('rev-parse','HEAD^{tree}')) -cne $task.source_tree){$failures.Add('Source698 HEAD/tree changed')}
-        if(Invoke-S160Git $task.source @('status','--porcelain','--untracked-files=no')){$failures.Add('Official tracked Source dirty')}
-        if((Invoke-S160Git $task.candidate @('rev-parse','HEAD')) -cne $task.candidate_head -or (Invoke-S160Git $task.candidate @('status','--porcelain'))){$failures.Add('Exact clean candidate changed')}
+        if((Invoke-S160Git $task.source @('rev-parse','HEAD') $context) -cne $task.source_head -or (Invoke-S160Git $task.source @('rev-parse','HEAD^{tree}') $context) -cne $task.source_tree){$failures.Add('Source698 HEAD/tree changed')}
+        if(Invoke-S160Git $task.source @('status','--porcelain','--untracked-files=no') $context){$failures.Add('Official tracked Source dirty')}
+        if((Invoke-S160Git $task.candidate @('rev-parse','HEAD') $context) -cne $task.candidate_head -or (Invoke-S160Git $task.candidate @('status','--porcelain') $context)){$failures.Add('Exact clean candidate changed')}
     }catch{$failures.Add('Git metadata negative: '+$_.Exception.Message)}
-    try{$candidateRelative=@((Invoke-S160Git $task.candidate @('ls-files')).Split("`n")|ForEach-Object{$_.TrimEnd("`r")})}catch{
+    try{$candidateRelative=@((Invoke-S160Git $task.candidate @('ls-files') $context).Split("`n")|ForEach-Object{$_.TrimEnd("`r")})}catch{
         $failures.Add('Git candidate inventory negative: '+$_.Exception.Message)
         $candidateRelative=if(Test-Path -LiteralPath $baselinePath){@((Read-S160Json $baselinePath).candidate_relative)}else{@()}
     }

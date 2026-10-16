@@ -14,7 +14,6 @@ $now=[DateTimeOffset]::UtcNow
 if($grant.schema -ne 1 -or $grant.authorized -isnot [bool] -or !$grant.authorized -or $grant.manual_fresh_16gib -isnot [bool] -or !$grant.manual_fresh_16gib -or $grant.scope -cne 'runtime-free-source160-only' -or $grant.run_id -cne $RunId -or $grant.candidate_head -cne $CandidateHead -or $grant.source_head -cne '698a2d23b86a5045dd54554354a5e0cb7e466795' -or $grant.node_sha256 -cne '63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088' -or $grant.owner_sha256 -cne $s160OwnerSha -or ([DateTimeOffset]$grant.issued_utc) -gt $now -or ($now-([DateTimeOffset]$grant.issued_utc)).TotalSeconds -gt 300 -or ([DateTimeOffset]$grant.expires_utc) -le $now -or (([DateTimeOffset]$grant.expires_utc)-([DateTimeOffset]$grant.issued_utc)).TotalSeconds -gt 300){throw 'Fresh exact Root runtime-free exception grant required; no child started'}
 if(@($grant.tool_sha256.PSObject.Properties).Count -ne $toolNames.Count){throw 'All exact tooling hashes must be granted'}
 foreach($name in $toolNames){if($grant.tool_sha256.$name -cne $tools[$name]){throw 'Granted tooling hash mismatch'}}
-if((Invoke-S160Git $candidate @('rev-parse','HEAD')) -cne $CandidateHead -or (Invoke-S160Git $candidate @('status','--porcelain'))){throw 'Exact clean assigned candidate required'}
 $resolved=& (Join-Path $PSScriptRoot 'Resolve-RuntimeFreeSource160Controls.ps1') -RunId $RunId
 if((Get-S160Sha $resolved.owner) -cne $s160OwnerSha -or (Get-S160Sha $s160Node) -cne $resolved.node_sha256){throw 'Owner/Node authority changed'}
 $run=Assert-S160Contained $resolved.config_template.run (Join-Path $workspace.evidence 'retry698a-runtime-free-captures')
@@ -54,6 +53,7 @@ if(!$self){throw 'External supervisor live identity required before child'}
 Write-S160Json (Join-Path $run 'supervisor-self.json') @{identity=$self;tool_sha256=$tools;hard_seconds=1260;started_utc=[DateTimeOffset]::UtcNow.ToString('o')}
 $start=[DateTimeOffset]::UtcNow;$hard=$start.AddSeconds(1260);$failures=[Collections.Generic.List[string]]::new();$controller=$null;$recoveryNeeded=$false
 try{
+    if((Invoke-S160Git $candidate @('rev-parse','HEAD') $context) -cne $CandidateHead -or (Invoke-S160Git $candidate @('status','--porcelain') $context)){throw 'Exact clean assigned candidate required'}
     $controller=Start-S160Process $context 'controller' $s160Pwsh @('-NoLogo','-NoProfile','-NonInteractive','-File',(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160Controller.ps1'),'-Config',$configPath,'-ConfigSha256',$configSha)
     # Controller960s leaves300s to settle/final-seal/artifact on a negative.
     Wait-S160Process $context $controller 960|Out-Null
@@ -79,13 +79,15 @@ try{
         # Merge controller records: its fast descendants may have exited between our samples.
         foreach($path in @((Join-Path $run 'controller-identities.json'))){if(Test-Path -LiteralPath $path){foreach($identity in @(Read-S160Json $path)){Add-S160Identity $context $identity}}}
         if(Test-Path -LiteralPath (Join-Path $run 'controller-partial-identities.json')){foreach($row in @(Read-S160Json (Join-Path $run 'controller-partial-identities.json'))){$context.partial.Add($row)}}
-        $absence=Get-S160Absence $context.known.ToArray() $context.partial.ToArray()
+        $union=Get-S160LaunchUnion $run
+        $exclude=@($PID,[int]$self.parent_pid)
+        $absence=Get-S160Absence @($union.known|Where-Object {$_.pid -notin $exclude}) @($union.partial|Where-Object {$_.pid -notin $exclude})
         Write-S160Json (Join-Path $run 'supervisor-descendants-absence.json') $absence
         if($absence.present_or_unknown){$failures.Add('Supervisor owned/observed descendants still present or unknown')}
     }catch{$failures.Add($_.Exception.Message)}
     $terminal=if(Test-Path -LiteralPath (Join-Path $run 'controller-terminal.json')){Read-S160Json (Join-Path $run 'controller-terminal.json')}else{$null}
     if(!$terminal -or $terminal.status -cne 'captured_pending_root_review'){$failures.Add('Controller capture is not terminal positive')}
-    Write-S160Json (Join-Path $run 'supervisor-terminal.json') @{status=if(!$failures.Count){'captured_pending_external_absence_and_root_review'}else{'negative'};failures=$failures.ToArray();candidate_head=$CandidateHead;source_head=$config.source_head;known_owned_identities=$context.known.ToArray();partial_observations=$context.partial.ToArray();config_sha256=$configSha;expected_created=$false;global_hold_lifted=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    Write-S160Json (Join-Path $run 'supervisor-terminal.json') @{status=if(!$failures.Count){'captured_pending_external_absence_and_root_review'}else{'negative'};failures=$failures.ToArray();candidate_head=$CandidateHead;source_head=$config.source_head;known_owned_identities=$context.known.ToArray();partial_observations=$context.partial.ToArray();all_launch_ledger_paths=@($union.launch_ledger_paths);config_sha256=$configSha;expected_created=$false;global_hold_lifted=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
     # No unbounded GetResult call exists in this supervisor. Its own pipes are guarded2s.
 }
 if($failures.Count){exit 1}

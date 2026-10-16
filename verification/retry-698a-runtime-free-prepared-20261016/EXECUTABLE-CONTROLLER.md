@@ -5,6 +5,10 @@ this exact clean candidate and the complete ten-file tooling hash map. This gran
 does not recover the deleted runtime, change accepted4dd authority, release native
 jobs or alter any accepted273 caller/expected/proof bytes.
 
+The original7b2762 preparation was held after independent ownership review. Read
+`OWNERSHIP-SUCCESSOR.md` for the corrected launch registration, strict identity
+conflicts, full launch-record union and Root's narrow already-terminal Git policy.
+
 ## Entry points and bounded ownership
 
 Invoke `Start-RuntimeFreeSource160.ps1 -CandidateHead <clean40hex> -RunId <fresh-id>
@@ -54,7 +58,7 @@ file with exactly these fields: schema1, authorized=true,
 manual_fresh_16gib=true, scope=`runtime-free-source160-only`, run_id,
 candidate_head, source_head, node_sha256, owner_sha256, issued_utc, expires_utc,
 grant_id and tool_sha256. Grant lifetime and initial age must be at most300s.
-The tool map must contain exactly all ten named entries from the template.
+The tool map must contain exactly all ten named entries from the current template.
 
 After a positive before seal, the controller writes
 `<run>/admission/source160.request.json`. Root independently measures fresh RAM
@@ -102,9 +106,9 @@ and explicitly reports missing-before-proof; it cannot claim a positive capture.
 After launcher and supervisor are terminal, run the read-only bounded observer
 `Confirm-RuntimeFreeSource160Absent.ps1 -RunDirectory <exact-run>`. It verifies
 the original launch/kernel record against the supervisor identity and checks
-supervisor plus all recorded full/partial descendants independently. It checks
+supervisor, launcher and all recorded full/partial descendants independently. It checks
 the intermediate artifact manifest and freezes every terminal run file plus
-external launch/stdout/stderr into a final manifest. It writes external absence
+the exact sibling `<run>.launcher` journal/stdout/stderr into a final manifest. It writes external absence
 and handoff receipts. No Source expected is copied automatically. Root must
 independently review raw160, all seals, closure/fence/owner/external absence and
 artifact hashes before accepting a new expected fixture.
