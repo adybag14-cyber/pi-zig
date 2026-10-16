@@ -2,6 +2,8 @@
 //! Static authoring only; no Source evaluation or runtime AST interpreter.
 const rt = @import("native_typebox_operators_runtime.zig");
 const c = rt.c;
+const BranchResult = union(enum) { value: c.JSValue, jump: usize };
+const BranchHelper = *const fn (*rt.Scope, c.JSValue, c.JSValue, []c.JSValue) anyerror!BranchResult;
 fn f_0(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
     var scope: rt.Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -36,7 +38,7 @@ fn f_1(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     try rt.bind(s, env, "state", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "type", native_values[2]);
-    native_values[27] = try branch_0(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 0);
     try rt.bind(s, env, "result", native_values[27]);
     native_values[28] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[28]);
@@ -67,7 +69,7 @@ fn f_3(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     try rt.bind(s, env, "value", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "kind", native_values[1]);
-    native_values[17] = try branch_1(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 1);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_4(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -79,7 +81,7 @@ fn f_4(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[10] = try branch_3(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 3);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_5(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -123,7 +125,7 @@ fn f_7(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     try rt.bind(s, env, "value", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "key", native_values[1]);
-    native_values[21] = try branch_4(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 4);
     return c.JS_DupValue(engine.context, native_values[21]);
 }
 fn f_8(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -135,7 +137,7 @@ fn f_8(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "key", native_values[0]);
-    native_values[14] = try branch_5(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 5);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_9(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -155,7 +157,7 @@ fn f_9(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: 
     try rt.bind(s, env, "parameters", native_values[3]);
     native_values[4] = rt.argument(args, 4);
     try rt.bind(s, env, "options", native_values[4]);
-    native_values[435] = try branch_7(s, env, receiver, native_values);
+    native_values[435] = try runBranch(s, env, receiver, native_values, 7);
     return c.JS_DupValue(engine.context, native_values[435]);
 }
 fn f_10(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -634,7 +636,7 @@ fn f_29(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[21] = try branch_39(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 39);
     try rt.bind(s, env, "result", native_values[21]);
     native_values[22] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[22]);
@@ -667,7 +669,7 @@ fn f_31(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []cons
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "right", native_values[1]);
-    native_values[8] = try branch_40(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 40);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_32(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -690,7 +692,7 @@ fn f_33(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "true_", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "false_", native_values[2]);
-    native_values[21] = try branch_41(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 41);
     return c.JS_DupValue(engine.context, native_values[21]);
 }
 fn f_34(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -719,7 +721,7 @@ fn f_35(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "mapping", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "type", native_values[1]);
-    native_values[33] = try branch_42(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 42);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_36(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -748,7 +750,7 @@ fn f_37(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "mapping", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[14] = try branch_45(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 45);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_38(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -811,7 +813,7 @@ fn f_40(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[19] = try branch_46(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 46);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_41(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1149,7 +1151,7 @@ fn f_55(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "false_", native_values[5]);
     native_values[6] = rt.argument(args, 6);
     try rt.bind(s, env, "options", native_values[6]);
-    native_values[34] = try branch_50(s, env, receiver, native_values);
+    native_values[34] = try runBranch(s, env, receiver, native_values, 50);
     try rt.bind(s, env, "result", native_values[34]);
     native_values[35] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[35]);
@@ -1179,7 +1181,7 @@ fn f_56(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     native_values[9] = try rt.get(s, env, "right");
     native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9] });
     try rt.bind(s, env, "extendsResult", native_values[10]);
-    native_values[46] = try branch_51(s, env, receiver, native_values);
+    native_values[46] = try runBranch(s, env, receiver, native_values, 51);
     return c.JS_DupValue(engine.context, native_values[46]);
 }
 fn f_57(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1219,7 +1221,7 @@ fn f_58(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[13] = try branch_53(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 53);
     return c.JS_DupValue(engine.context, native_values[13]);
 }
 fn f_59(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1269,7 +1271,7 @@ fn f_61(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "defs", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "ref", native_values[1]);
-    native_values[13] = try branch_55(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 55);
     return c.JS_DupValue(engine.context, native_values[13]);
 }
 fn f_62(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1281,7 +1283,7 @@ fn f_62(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[116] = try branch_56(s, env, receiver, native_values);
+    native_values[116] = try runBranch(s, env, receiver, native_values, 56);
     return c.JS_DupValue(engine.context, native_values[116]);
 }
 fn f_63(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1632,7 +1634,7 @@ fn f_77(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     native_values[4] = try rt.get(s, env, "properties");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
     try rt.bind(s, env, "requiredKeys", native_values[5]);
-    native_values[16] = try branch_65(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 65);
     try rt.bind(s, env, "required", native_values[16]);
     native_values[17] = try rt.get(s, env, "external_memory_Memory");
     native_values[18] = try s.text("Create");
@@ -1721,7 +1723,7 @@ fn f_81(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[8] = try branch_66(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 66);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_82(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1836,7 +1838,7 @@ fn f_87(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "value", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[23] = try branch_67(s, env, receiver, native_values);
+    native_values[23] = try runBranch(s, env, receiver, native_values, 67);
     try rt.bind(s, env, "result", native_values[23]);
     native_values[24] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[24]);
@@ -1852,7 +1854,7 @@ fn f_88(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "key", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[88] = try branch_68(s, env, receiver, native_values);
+    native_values[88] = try runBranch(s, env, receiver, native_values, 68);
     try rt.bind(s, env, "result", native_values[88]);
     native_values[89] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[89]);
@@ -2070,7 +2072,7 @@ fn f_99(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots:
     try rt.bind(s, env, "key", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[36] = try branch_78(s, env, receiver, native_values);
+    native_values[36] = try runBranch(s, env, receiver, native_values, 78);
     return c.JS_DupValue(engine.context, native_values[36]);
 }
 fn f_100(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2127,7 +2129,7 @@ fn f_102(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[7] = try rt.get(s, env, "value");
     native_values[8] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7] });
     try rt.bind(s, env, "record", native_values[8]);
-    native_values[17] = try branch_82(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 82);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_103(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2195,7 +2197,7 @@ fn f_106(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[12] = try branch_83(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 83);
     try rt.bind(s, env, "result", native_values[12]);
     native_values[13] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[13]);
@@ -2211,7 +2213,7 @@ fn f_107(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "types", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[11] = try branch_84(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 84);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_108(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2241,7 +2243,7 @@ fn f_109(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[11] = try branch_85(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 85);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_110(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2314,7 +2316,7 @@ fn f_113(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[27] = try branch_87(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 87);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_114(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2328,7 +2330,7 @@ fn f_114(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "key", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[34] = try branch_90(s, env, receiver, native_values);
+    native_values[34] = try runBranch(s, env, receiver, native_values, 90);
     return c.JS_DupValue(engine.context, native_values[34]);
 }
 fn f_115(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2350,7 +2352,7 @@ fn f_115(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "types");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
     try rt.bind(s, env, "finite", native_values[7]);
-    native_values[19] = try branch_93(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 93);
     try rt.bind(s, env, "result", native_values[19]);
     native_values[20] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[20]);
@@ -2368,7 +2370,7 @@ fn f_116(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "pattern");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "parsed", native_values[3]);
-    native_values[14] = try branch_94(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 94);
     try rt.bind(s, env, "result", native_values[14]);
     native_values[15] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[15]);
@@ -2384,7 +2386,7 @@ fn f_117(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "const_", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "input", native_values[1]);
-    native_values[37] = try branch_95(s, env, receiver, native_values);
+    native_values[37] = try runBranch(s, env, receiver, native_values, 95);
     return c.JS_DupValue(engine.context, native_values[37]);
 }
 fn f_118(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2461,7 +2463,7 @@ fn f_120(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "variant", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "input", native_values[1]);
-    native_values[22] = try branch_98(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 98);
     return c.JS_DupValue(engine.context, native_values[22]);
 }
 fn f_121(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2494,7 +2496,7 @@ fn f_122(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "input");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "trimmed", native_values[3]);
-    native_values[35] = try branch_99(s, env, receiver, native_values);
+    native_values[35] = try runBranch(s, env, receiver, native_values, 99);
     return c.JS_DupValue(engine.context, native_values[35]);
 }
 fn f_123(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2531,7 +2533,7 @@ fn f_124(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[5] = try rt.get(s, env, "m74_CloseComment");
     native_values[6] = try rt.invoke(s, native_values[4], native_values[1], &.{native_values[5]});
     try rt.bind(s, env, "index", native_values[6]);
-    native_values[18] = try branch_101(s, env, receiver, native_values);
+    native_values[18] = try runBranch(s, env, receiver, native_values, 101);
     try rt.bind(s, env, "result", native_values[18]);
     native_values[19] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[19]);
@@ -2552,7 +2554,7 @@ fn f_125(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[5] = try rt.get(s, env, "m71_NewLine");
     native_values[6] = try rt.invoke(s, native_values[4], native_values[1], &.{native_values[5]});
     try rt.bind(s, env, "index", native_values[6]);
-    native_values[17] = try branch_102(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 102);
     try rt.bind(s, env, "result", native_values[17]);
     native_values[18] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[18]);
@@ -2572,7 +2574,7 @@ fn f_126(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[4] = try rt.key(s, native_values[1], native_values[3]);
     native_values[5] = try rt.invoke(s, native_values[4], native_values[1], &.{});
     try rt.bind(s, env, "trimmed", native_values[5]);
-    native_values[37] = try branch_103(s, env, receiver, native_values);
+    native_values[37] = try runBranch(s, env, receiver, native_values, 103);
     return c.JS_DupValue(engine.context, native_values[37]);
 }
 fn f_127(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2824,7 +2826,7 @@ fn f_139(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "Until", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "UntilRest", native_values[1]);
-    native_values[10] = try branch_105(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 105);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_140(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2850,7 +2852,7 @@ fn f_141(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "ok", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "fail", native_values[2]);
-    native_values[16] = try branch_106(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 106);
     return c.JS_DupValue(engine.context, native_values[16]);
 }
 fn f_142(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2892,7 +2894,7 @@ fn f_143(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "One", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "Rest", native_values[1]);
-    native_values[24] = try branch_107(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 107);
     return c.JS_DupValue(engine.context, native_values[24]);
 }
 fn f_144(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -2914,7 +2916,7 @@ fn f_145(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[17] = try branch_108(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 108);
     try rt.bind(s, env, "result", native_values[17]);
     native_values[18] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[18]);
@@ -2949,7 +2951,7 @@ fn f_147(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "right", native_values[1]);
-    native_values[12] = try branch_109(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 109);
     return c.JS_DupValue(engine.context, native_values[12]);
 }
 fn f_148(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3014,7 +3016,7 @@ fn f_152(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[23] = try branch_110(s, env, receiver, native_values);
+    native_values[23] = try runBranch(s, env, receiver, native_values, 110);
     return c.JS_DupValue(engine.context, native_values[23]);
 }
 fn f_153(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3068,7 +3070,7 @@ fn f_156(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "types", native_values[0]);
-    native_values[10] = try branch_112(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 112);
     try rt.bind(s, env, "result", native_values[10]);
     native_values[11] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[11]);
@@ -3101,7 +3103,7 @@ fn f_158(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "right", native_values[1]);
-    native_values[8] = try branch_113(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 113);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_159(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3120,7 +3122,7 @@ fn f_160(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[19] = try branch_114(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 114);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_161(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3211,7 +3213,7 @@ fn f_165(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "pattern", native_values[0]);
-    native_values[22] = try branch_116(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 116);
     try rt.bind(s, env, "result", native_values[22]);
     native_values[23] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[23]);
@@ -3229,7 +3231,7 @@ fn f_166(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "pattern");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "types", native_values[3]);
-    native_values[21] = try branch_119(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 119);
     try rt.bind(s, env, "result", native_values[21]);
     native_values[22] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[22]);
@@ -3243,7 +3245,7 @@ fn f_167(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "types", native_values[0]);
-    native_values[27] = try branch_121(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 121);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_168(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3342,7 +3344,7 @@ fn f_173(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "variants", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "type", native_values[1]);
-    native_values[24] = try branch_124(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 124);
     try rt.bind(s, env, "result", native_values[24]);
     native_values[25] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[25]);
@@ -3418,7 +3420,7 @@ fn f_177(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "variants", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "value", native_values[1]);
-    native_values[19] = try branch_126(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 126);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_178(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3684,7 +3686,7 @@ fn f_188(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[15] = try branch_127(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 127);
     return c.JS_DupValue(engine.context, native_values[15]);
 }
 fn f_189(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3696,7 +3698,7 @@ fn f_189(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[8] = try branch_129(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 129);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_190(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3729,7 +3731,7 @@ fn f_191(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[249] = try branch_130(s, env, receiver, native_values);
+    native_values[249] = try runBranch(s, env, receiver, native_values, 130);
     return c.JS_DupValue(engine.context, native_values[249]);
 }
 fn f_192(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3745,7 +3747,7 @@ fn f_192(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[26] = try branch_154(s, env, receiver, native_values);
+    native_values[26] = try runBranch(s, env, receiver, native_values, 154);
     return c.JS_DupValue(engine.context, native_values[26]);
 }
 fn f_193(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3776,7 +3778,7 @@ fn f_194(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[96] = try branch_157(s, env, receiver, native_values);
+    native_values[96] = try runBranch(s, env, receiver, native_values, 157);
     return c.JS_DupValue(engine.context, native_values[96]);
 }
 fn f_195(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3967,7 +3969,7 @@ fn f_205(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "true_", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "false_", native_values[2]);
-    native_values[14] = try branch_165(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 165);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_206(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3979,7 +3981,7 @@ fn f_206(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[7] = try branch_166(s, env, receiver, native_values);
+    native_values[7] = try runBranch(s, env, receiver, native_values, 166);
     return c.JS_DupValue(engine.context, native_values[7]);
 }
 fn f_207(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -3991,7 +3993,7 @@ fn f_207(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[28] = try branch_167(s, env, receiver, native_values);
+    native_values[28] = try runBranch(s, env, receiver, native_values, 167);
     return c.JS_DupValue(engine.context, native_values[28]);
 }
 fn f_208(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4003,7 +4005,7 @@ fn f_208(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[28] = try branch_171(s, env, receiver, native_values);
+    native_values[28] = try runBranch(s, env, receiver, native_values, 171);
     return c.JS_DupValue(engine.context, native_values[28]);
 }
 fn f_209(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4361,7 +4363,7 @@ fn f_227(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "right", native_values[3]);
-    native_values[26] = try branch_175(s, env, receiver, native_values);
+    native_values[26] = try runBranch(s, env, receiver, native_values, 175);
     return c.JS_DupValue(engine.context, native_values[26]);
 }
 fn f_228(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4383,7 +4385,7 @@ fn f_228(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
     try rt.bind(s, env, "isImmutableRight", native_values[7]);
-    native_values[19] = try branch_177(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 177);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_229(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4395,7 +4397,7 @@ fn f_229(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[8] = try branch_183(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 183);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_230(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4426,7 +4428,7 @@ fn f_231(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_184(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 184);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_232(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4442,7 +4444,7 @@ fn f_232(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_185(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 185);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_233(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4460,7 +4462,7 @@ fn f_233(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "returnType", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "right", native_values[3]);
-    native_values[33] = try branch_186(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 186);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_234(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4614,7 +4616,7 @@ fn f_242(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const 
     const receiver = roots[1];
     const native_values = try engine.gpa.alloc(c.JSValue, 9);
     defer engine.gpa.free(native_values);
-    native_values[8] = try branch_189(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 189);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_243(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4634,9 +4636,9 @@ fn f_243(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "right", native_values[3]);
     native_values[4] = rt.argument(args, 4);
     try rt.bind(s, env, "rightRest", native_values[4]);
-    native_values[10] = try branch_190(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 190);
     try rt.bind(s, env, "checkLeft", native_values[10]);
-    native_values[16] = try branch_191(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 191);
     try rt.bind(s, env, "checkRight", native_values[16]);
     native_values[17] = try rt.get(s, env, "m44_IsOptional");
     native_values[18] = try rt.get(s, env, "left");
@@ -4646,7 +4648,7 @@ fn f_243(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[21] = try rt.get(s, env, "right");
     native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
     try rt.bind(s, env, "isRightOptional", native_values[22]);
-    native_values[38] = try branch_192(s, env, receiver, native_values);
+    native_values[38] = try runBranch(s, env, receiver, native_values, 192);
     return c.JS_DupValue(engine.context, native_values[38]);
 }
 fn f_244(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4689,7 +4691,7 @@ fn f_246(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_194(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 194);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_247(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4802,7 +4804,7 @@ fn f_252(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "returnType", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "right", native_values[3]);
-    native_values[33] = try branch_195(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 195);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_253(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4848,7 +4850,7 @@ fn f_255(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[20] = try branch_198(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 198);
     return c.JS_DupValue(engine.context, native_values[20]);
 }
 fn f_256(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4888,7 +4890,7 @@ fn f_257(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[61] = try branch_200(s, env, receiver, native_values);
+    native_values[61] = try runBranch(s, env, receiver, native_values, 200);
     return c.JS_DupValue(engine.context, native_values[61]);
 }
 fn f_258(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4904,7 +4906,7 @@ fn f_258(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[27] = try branch_204(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 204);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_259(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4920,7 +4922,7 @@ fn f_259(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[11] = try branch_206(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 206);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_260(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4936,7 +4938,7 @@ fn f_260(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[27] = try branch_207(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 207);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_261(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4952,7 +4954,7 @@ fn f_261(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[27] = try branch_209(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 209);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_262(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4968,7 +4970,7 @@ fn f_262(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[27] = try branch_211(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 211);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_263(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -4999,7 +5001,7 @@ fn f_264(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_213(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 213);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_265(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5030,7 +5032,7 @@ fn f_266(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_214(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 214);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_267(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5046,7 +5048,7 @@ fn f_267(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_215(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 215);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_268(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5062,7 +5064,7 @@ fn f_268(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[34] = try branch_216(s, env, receiver, native_values);
+    native_values[34] = try runBranch(s, env, receiver, native_values, 216);
     return c.JS_DupValue(engine.context, native_values[34]);
 }
 fn f_269(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5224,7 +5226,7 @@ fn f_276(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.spreadObject(s, native_values[2], native_values[3]);
     native_values[4] = try rt.get(s, env, "key");
     native_values[5] = try rt.propertyKey(s, native_values[4]);
-    native_values[45] = try branch_218(s, env, receiver, native_values);
+    native_values[45] = try runBranch(s, env, receiver, native_values, 218);
     try rt.property(s, native_values[2], native_values[5], native_values[45]);
     return c.JS_DupValue(engine.context, native_values[2]);
 }
@@ -5267,7 +5269,7 @@ fn f_278(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{ native_values[4], native_values[5], native_values[6] });
     try rt.bind(s, env, "compared", native_values[7]);
-    native_values[25] = try branch_220(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 220);
     return c.JS_DupValue(engine.context, native_values[25]);
 }
 fn f_279(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5298,7 +5300,7 @@ fn f_279(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
             native_values[7] = try rt.get(s, env, "properties");
             native_values[8] = try rt.get(s, env, "rightKey");
             native_values[9] = try rt.propertyKey(s, native_values[8]);
-            native_values[65] = try branch_221(s, env, receiver, native_values);
+            native_values[65] = try runBranch(s, env, receiver, native_values, 221);
             try rt.set(s, native_values[7], native_values[9], native_values[65]);
         }
     }
@@ -5311,9 +5313,9 @@ fn f_279(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[72] = try rt.function(s, "", 1, f_280, env, receiver, true);
     native_values[73] = try rt.invoke(s, native_values[71], native_values[68], &.{native_values[72]});
     try rt.bind(s, env, "checked", native_values[73]);
-    native_values[82] = try branch_224(s, env, receiver, native_values);
+    native_values[82] = try runBranch(s, env, receiver, native_values, 224);
     try rt.bind(s, env, "extracted", native_values[82]);
-    native_values[89] = try branch_225(s, env, receiver, native_values);
+    native_values[89] = try runBranch(s, env, receiver, native_values, 225);
     return c.JS_DupValue(engine.context, native_values[89]);
 }
 fn f_280(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5343,7 +5345,7 @@ fn f_281(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[24] = try branch_226(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 226);
     return c.JS_DupValue(engine.context, native_values[24]);
 }
 fn f_282(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5386,7 +5388,7 @@ fn f_284(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[17] = try branch_228(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 228);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_285(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5438,7 +5440,7 @@ fn f_287(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "key", native_values[1]);
-    native_values[24] = try branch_230(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 230);
     return c.JS_DupValue(engine.context, native_values[24]);
 }
 fn f_288(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5456,7 +5458,7 @@ fn f_288(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "leftValue", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "right", native_values[3]);
-    native_values[46] = try branch_232(s, env, receiver, native_values);
+    native_values[46] = try runBranch(s, env, receiver, native_values, 232);
     return c.JS_DupValue(engine.context, native_values[46]);
 }
 fn f_289(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5494,7 +5496,7 @@ fn f_290(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "inferred", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "properties", native_values[1]);
-    native_values[15] = try branch_236(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 236);
     return c.JS_DupValue(engine.context, native_values[15]);
 }
 fn f_291(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5510,7 +5512,7 @@ fn f_291(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_237(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 237);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_292(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5541,7 +5543,7 @@ fn f_293(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_238(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 238);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_294(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5590,7 +5592,7 @@ fn f_295(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[9] = try rt.get(s, env, "left");
     native_values[10] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{ native_values[4], native_values[8], native_values[9] });
     try rt.bind(s, env, "instantiatedLeft", native_values[10]);
-    native_values[40] = try branch_239(s, env, receiver, native_values);
+    native_values[40] = try runBranch(s, env, receiver, native_values, 239);
     return c.JS_DupValue(engine.context, native_values[40]);
 }
 fn f_296(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5705,7 +5707,7 @@ fn f_301(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[40] = try branch_241(s, env, receiver, native_values);
+    native_values[40] = try runBranch(s, env, receiver, native_values, 241);
     try rt.bind(s, env, "result", native_values[40]);
     native_values[41] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[41]);
@@ -5796,9 +5798,9 @@ fn f_305(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "types", native_values[0]);
-    native_values[9] = try branch_245(s, env, receiver, native_values);
+    native_values[9] = try runBranch(s, env, receiver, native_values, 245);
     try rt.bind(s, env, "first", native_values[9]);
-    native_values[16] = try branch_246(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 246);
     try rt.bind(s, env, "inferrable", native_values[16]);
     native_values[17] = try rt.get(s, env, "m2_IsSchema");
     native_values[18] = try rt.get(s, env, "inferrable");
@@ -5814,7 +5816,7 @@ fn f_306(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[65] = try branch_247(s, env, receiver, native_values);
+    native_values[65] = try runBranch(s, env, receiver, native_values, 247);
     return c.JS_DupValue(engine.context, native_values[65]);
 }
 fn f_307(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5923,7 +5925,7 @@ fn f_311(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const 
     const receiver = roots[1];
     const native_values = try engine.gpa.alloc(c.JSValue, 12);
     defer engine.gpa.free(native_values);
-    native_values[11] = try branch_251(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 251);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_312(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5947,7 +5949,7 @@ fn f_312(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
     try rt.bind(s, env, "inferable", native_values[7]);
-    native_values[31] = try branch_252(s, env, receiver, native_values);
+    native_values[31] = try runBranch(s, env, receiver, native_values, 252);
     return c.JS_DupValue(engine.context, native_values[31]);
 }
 fn f_313(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -5991,7 +5993,7 @@ fn f_315(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[40] = try branch_253(s, env, receiver, native_values);
+    native_values[40] = try runBranch(s, env, receiver, native_values, 253);
     return c.JS_DupValue(engine.context, native_values[40]);
 }
 fn f_316(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6014,7 +6016,7 @@ fn f_316(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
     try rt.bind(s, env, "results", native_values[7]);
-    native_values[27] = try branch_259(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 259);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_317(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6111,7 +6113,7 @@ fn f_322(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "types", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "reversed", native_values[1]);
-    native_values[7] = try branch_260(s, env, receiver, native_values);
+    native_values[7] = try runBranch(s, env, receiver, native_values, 260);
     return c.JS_DupValue(engine.context, native_values[7]);
 }
 fn f_323(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6207,7 +6209,7 @@ fn f_327(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
     try rt.bind(s, env, "inferrable", native_values[5]);
-    native_values[26] = try branch_261(s, env, receiver, native_values);
+    native_values[26] = try runBranch(s, env, receiver, native_values, 261);
     return c.JS_DupValue(engine.context, native_values[26]);
 }
 fn f_328(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6281,7 +6283,7 @@ fn f_332(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[14] = try branch_262(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 262);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_333(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6304,7 +6306,7 @@ fn f_333(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
     try rt.bind(s, env, "results", native_values[7]);
-    native_values[27] = try branch_263(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 263);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_334(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6335,7 +6337,7 @@ fn f_335(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[20] = try branch_264(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 264);
     return c.JS_DupValue(engine.context, native_values[20]);
 }
 fn f_336(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6355,7 +6357,7 @@ fn f_336(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
     try rt.bind(s, env, "inferrable", native_values[5]);
-    native_values[38] = try branch_266(s, env, receiver, native_values);
+    native_values[38] = try runBranch(s, env, receiver, native_values, 266);
     return c.JS_DupValue(engine.context, native_values[38]);
 }
 fn f_337(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6535,7 +6537,7 @@ fn f_347(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[25] = try branch_268(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 268);
     return c.JS_DupValue(engine.context, native_values[25]);
 }
 fn f_348(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6551,7 +6553,7 @@ fn f_348(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "right", native_values[2]);
-    native_values[14] = try branch_271(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 271);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_349(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6629,7 +6631,7 @@ fn f_351(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_272(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 272);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -6643,7 +6645,7 @@ fn f_352(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[9] = try branch_273(s, env, receiver, native_values);
+    native_values[9] = try runBranch(s, env, receiver, native_values, 273);
     try rt.bind(s, env, "parameters", native_values[9]);
     native_values[10] = try rt.get(s, env, "m0_InstantiateElements");
     native_values[11] = try s.object();
@@ -6787,7 +6789,7 @@ fn f_357(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "right", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[24] = try branch_274(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 274);
     try rt.bind(s, env, "result", native_values[24]);
     native_values[25] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[25]);
@@ -6807,7 +6809,7 @@ fn f_358(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
     try rt.bind(s, env, "evaluated", native_values[4]);
-    native_values[14] = try branch_275(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 275);
     try rt.bind(s, env, "canonical", native_values[14]);
     native_values[15] = try rt.get(s, env, "m151_ExcludeUnion");
     native_values[16] = try rt.get(s, env, "canonical");
@@ -6898,7 +6900,7 @@ fn f_362(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4], native_values[5] });
     try rt.bind(s, env, "check", native_values[6]);
-    native_values[13] = try branch_276(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 276);
     try rt.bind(s, env, "result", native_values[13]);
     native_values[14] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[14]);
@@ -6981,7 +6983,7 @@ fn f_365(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "right", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[24] = try branch_277(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 277);
     try rt.bind(s, env, "result", native_values[24]);
     native_values[25] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[25]);
@@ -7001,7 +7003,7 @@ fn f_366(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
     try rt.bind(s, env, "evaluated", native_values[4]);
-    native_values[14] = try branch_278(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 278);
     try rt.bind(s, env, "canonical", native_values[14]);
     native_values[15] = try rt.get(s, env, "m154_ExtractUnion");
     native_values[16] = try rt.get(s, env, "canonical");
@@ -7092,7 +7094,7 @@ fn f_370(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4], native_values[5] });
     try rt.bind(s, env, "check", native_values[6]);
-    native_values[13] = try branch_279(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 279);
     try rt.bind(s, env, "result", native_values[13]);
     native_values[14] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[14]);
@@ -7175,7 +7177,7 @@ fn f_373(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "indexer", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[26] = try branch_280(s, env, receiver, native_values);
+    native_values[26] = try runBranch(s, env, receiver, native_values, 280);
     try rt.bind(s, env, "result", native_values[26]);
     native_values[27] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[27]);
@@ -7191,7 +7193,7 @@ fn f_374(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "indexer", native_values[1]);
-    native_values[34] = try branch_281(s, env, receiver, native_values);
+    native_values[34] = try runBranch(s, env, receiver, native_values, 281);
     return c.JS_DupValue(engine.context, native_values[34]);
 }
 fn f_375(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7216,7 +7218,7 @@ fn f_375(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[9] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{});
     native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7], native_values[9] });
     try rt.bind(s, env, "check", native_values[10]);
-    native_values[30] = try branch_284(s, env, receiver, native_values);
+    native_values[30] = try runBranch(s, env, receiver, native_values, 284);
     try rt.bind(s, env, "result", native_values[30]);
     native_values[31] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[31]);
@@ -7230,7 +7232,7 @@ fn f_376(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[33] = try branch_287(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 287);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_377(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7296,7 +7298,7 @@ fn f_380(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[5] = try s.text("");
     native_values[6] = try s.concat(native_values[4], native_values[5]);
     try rt.bind(s, env, "normal", native_values[6]);
-    native_values[17] = try branch_290(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 290);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_381(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7310,7 +7312,7 @@ fn f_381(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "properties", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "indexer", native_values[1]);
-    native_values[12] = try branch_291(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 291);
     try rt.bind(s, env, "result", native_values[12]);
     native_values[13] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[13]);
@@ -7446,7 +7448,7 @@ fn f_388(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "properties", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "key", native_values[1]);
-    native_values[11] = try branch_292(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 292);
     try rt.bind(s, env, "selectedType", native_values[11]);
     native_values[12] = try rt.get(s, env, "m161_ExpandThis");
     native_values[13] = try rt.get(s, env, "properties");
@@ -7486,7 +7488,7 @@ fn f_390(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "properties", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "type", native_values[1]);
-    native_values[95] = try branch_293(s, env, receiver, native_values);
+    native_values[95] = try runBranch(s, env, receiver, native_values, 293);
     return c.JS_DupValue(engine.context, native_values[95]);
 }
 fn f_391(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7590,7 +7592,7 @@ fn f_396(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[77] = try branch_300(s, env, receiver, native_values);
+    native_values[77] = try runBranch(s, env, receiver, native_values, 300);
     return c.JS_DupValue(engine.context, native_values[77]);
 }
 fn f_397(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7646,7 +7648,7 @@ fn f_399(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "defs", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "ref", native_values[1]);
-    native_values[27] = try branch_307(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 307);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_400(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7805,7 +7807,7 @@ fn f_407(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "types", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "indexer", native_values[1]);
-    native_values[33] = try branch_309(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 309);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_408(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7856,7 +7858,7 @@ fn f_410(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[33] = try branch_313(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 313);
     return c.JS_DupValue(engine.context, native_values[33]);
 }
 fn f_411(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7948,7 +7950,7 @@ fn f_415(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     native_values[8] = try rt.get(s, env, "indexer");
     native_values[9] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{ native_values[4], native_values[7], native_values[8] });
     try rt.bind(s, env, "check", native_values[9]);
-    native_values[17] = try branch_316(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 316);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_416(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -7960,7 +7962,7 @@ fn f_416(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[20] = try branch_317(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 317);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -7994,7 +7996,7 @@ fn f_418(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[68] = try branch_321(s, env, receiver, native_values);
+    native_values[68] = try runBranch(s, env, receiver, native_values, 321);
     return c.JS_DupValue(engine.context, native_values[68]);
 }
 fn f_419(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -8633,7 +8635,7 @@ fn f_446(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_327(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 327);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -8647,7 +8649,7 @@ fn f_447(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[10] = try branch_328(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 328);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_448(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -8775,7 +8777,7 @@ fn f_452(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "properties", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[22] = try branch_329(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 329);
     try rt.bind(s, env, "result", native_values[22]);
     native_values[23] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[23]);
@@ -8871,7 +8873,7 @@ fn f_456(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[22] = try branch_330(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 330);
     return c.JS_DupValue(engine.context, native_values[22]);
 }
 fn f_457(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -8883,7 +8885,7 @@ fn f_457(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[41] = try branch_331(s, env, receiver, native_values);
+    native_values[41] = try runBranch(s, env, receiver, native_values, 331);
     return c.JS_DupValue(engine.context, native_values[41]);
 }
 fn f_458(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9003,7 +9005,7 @@ fn f_463(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[14] = try branch_336(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 336);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_464(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9015,7 +9017,7 @@ fn f_464(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[15] = try branch_337(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 337);
     return c.JS_DupValue(engine.context, native_values[15]);
 }
 fn f_465(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9078,7 +9080,7 @@ fn f_468(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[20] = try branch_340(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 340);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -9146,7 +9148,7 @@ fn f_471(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[21] = try branch_344(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 344);
     try rt.bind(s, env, "result", native_values[21]);
     native_values[22] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[22]);
@@ -9235,7 +9237,7 @@ fn f_474(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "property", native_values[5]);
     native_values[6] = rt.argument(args, 6);
     try rt.bind(s, env, "options", native_values[6]);
-    native_values[33] = try branch_345(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 345);
     try rt.bind(s, env, "result", native_values[33]);
     native_values[34] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[34]);
@@ -9308,7 +9310,7 @@ fn f_477(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[39] = try branch_346(s, env, receiver, native_values);
+    native_values[39] = try runBranch(s, env, receiver, native_values, 346);
     try rt.bind(s, env, "result", native_values[39]);
     native_values[40] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[40]);
@@ -9342,7 +9344,7 @@ fn f_479(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[17] = try branch_350(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 350);
     try rt.bind(s, env, "result", native_values[17]);
     native_values[18] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[18]);
@@ -9508,7 +9510,7 @@ fn f_485(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[30] = try rt.get(s, env, "property");
     native_values[31] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[28], native_values[29], native_values[30] });
     try rt.bind(s, env, "instantiatedProperty", native_values[31]);
-    native_values[47] = try branch_351(s, env, receiver, native_values);
+    native_values[47] = try runBranch(s, env, receiver, native_values, 351);
     return c.JS_DupValue(engine.context, native_values[47]);
 }
 fn f_486(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9520,7 +9522,7 @@ fn f_486(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "instantiatedAs", native_values[0]);
-    native_values[11] = try branch_353(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 353);
     try rt.bind(s, env, "result", native_values[11]);
     native_values[12] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[12]);
@@ -9534,7 +9536,7 @@ fn f_487(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[10] = try branch_354(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 354);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_488(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9546,7 +9548,7 @@ fn f_488(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[10] = try branch_355(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 355);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_489(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9746,7 +9748,7 @@ fn f_496(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[15] = try branch_356(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 356);
     return c.JS_DupValue(engine.context, native_values[15]);
 }
 fn f_497(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9784,7 +9786,7 @@ fn f_498(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "context", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "type", native_values[2]);
-    native_values[124] = try branch_357(s, env, receiver, native_values);
+    native_values[124] = try runBranch(s, env, receiver, native_values, 357);
     return c.JS_DupValue(engine.context, native_values[124]);
 }
 fn f_499(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9800,7 +9802,7 @@ fn f_499(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "context", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "ref", native_values[2]);
-    native_values[19] = try branch_367(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 367);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_500(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9835,7 +9837,7 @@ fn f_501(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "right", native_values[1]);
-    native_values[12] = try branch_368(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 368);
     return c.JS_DupValue(engine.context, native_values[12]);
 }
 fn f_502(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9854,7 +9856,7 @@ fn f_503(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[16] = try branch_369(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 369);
     return c.JS_DupValue(engine.context, native_values[16]);
 }
 fn f_504(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -10047,7 +10049,7 @@ fn f_511(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "result", native_values[2]);
-    native_values[125] = try branch_371(s, env, receiver, native_values);
+    native_values[125] = try runBranch(s, env, receiver, native_values, 371);
     return c.JS_DupValue(engine.context, native_values[125]);
 }
 fn f_512(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -10063,7 +10065,7 @@ fn f_512(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "ref", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "result", native_values[2]);
-    native_values[25] = try branch_381(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 381);
     return c.JS_DupValue(engine.context, native_values[25]);
 }
 fn f_513(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -10193,7 +10195,7 @@ fn f_518(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     native_values[4] = try rt.propertyKey(s, native_values[3]);
     native_values[5] = try rt.key(s, native_values[2], native_values[4]);
     try rt.bind(s, env, "type", native_values[5]);
-    native_values[25] = try branch_383(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 383);
     try rt.bind(s, env, "instantiatedType", native_values[25]);
     native_values[26] = try s.object();
     native_values[27] = try rt.get(s, env, "result");
@@ -10452,7 +10454,7 @@ fn f_526(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_384(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 384);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -10611,7 +10613,7 @@ fn f_532(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "indexer", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[24] = try branch_385(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 385);
     try rt.bind(s, env, "result", native_values[24]);
     native_values[25] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[25]);
@@ -10660,7 +10662,7 @@ fn f_534(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "collapsed", native_values[3]);
-    native_values[13] = try branch_386(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 386);
     try rt.bind(s, env, "result", native_values[13]);
     native_values[14] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[14]);
@@ -10701,7 +10703,7 @@ fn f_536(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "key", native_values[1]);
-    native_values[22] = try branch_387(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 387);
     return c.JS_DupValue(engine.context, native_values[22]);
 }
 fn f_537(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -10771,7 +10773,7 @@ fn f_539(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_388(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 388);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -10785,7 +10787,7 @@ fn f_540(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[9] = try branch_389(s, env, receiver, native_values);
+    native_values[9] = try runBranch(s, env, receiver, native_values, 389);
     try rt.bind(s, env, "parameters", native_values[9]);
     native_values[10] = try rt.get(s, env, "m0_InstantiateElements");
     native_values[11] = try s.object();
@@ -10866,7 +10868,7 @@ fn f_543(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_390(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 390);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -10880,7 +10882,7 @@ fn f_544(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[61] = try branch_391(s, env, receiver, native_values);
+    native_values[61] = try runBranch(s, env, receiver, native_values, 391);
     return c.JS_DupValue(engine.context, native_values[61]);
 }
 fn f_545(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -11149,7 +11151,7 @@ fn f_555(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "indexer", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "options", native_values[2]);
-    native_values[24] = try branch_396(s, env, receiver, native_values);
+    native_values[24] = try runBranch(s, env, receiver, native_values, 396);
     try rt.bind(s, env, "result", native_values[24]);
     native_values[25] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[25]);
@@ -11221,7 +11223,7 @@ fn f_558(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "key", native_values[1]);
-    native_values[17] = try branch_397(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 397);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_559(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -11291,7 +11293,7 @@ fn f_561(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[19] = try branch_398(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 398);
     try rt.bind(s, env, "result", native_values[19]);
     native_values[20] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[20]);
@@ -11305,7 +11307,7 @@ fn f_562(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[77] = try branch_399(s, env, receiver, native_values);
+    native_values[77] = try runBranch(s, env, receiver, native_values, 399);
     return c.JS_DupValue(engine.context, native_values[77]);
 }
 fn f_563(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -11657,7 +11659,7 @@ fn f_577(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_406(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 406);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -11671,7 +11673,7 @@ fn f_578(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[61] = try branch_407(s, env, receiver, native_values);
+    native_values[61] = try runBranch(s, env, receiver, native_values, 407);
     return c.JS_DupValue(engine.context, native_values[61]);
 }
 fn f_579(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -11934,7 +11936,7 @@ fn f_589(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[20] = try branch_412(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 412);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -11948,7 +11950,7 @@ fn f_590(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[10] = try branch_413(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 413);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_591(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -12014,7 +12016,7 @@ fn f_593(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "types", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[19] = try branch_414(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 414);
     try rt.bind(s, env, "result", native_values[19]);
     native_values[20] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[20]);
@@ -12122,7 +12124,7 @@ fn f_599(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "right", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "pattern", native_values[2]);
-    native_values[96] = try branch_415(s, env, receiver, native_values);
+    native_values[96] = try runBranch(s, env, receiver, native_values, 415);
     return c.JS_DupValue(engine.context, native_values[96]);
 }
 fn f_600(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -12375,7 +12377,7 @@ fn f_609(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[16] = try branch_425(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 425);
     return c.JS_DupValue(engine.context, native_values[16]);
 }
 fn f_610(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -12564,7 +12566,7 @@ fn f_617(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[21] = try branch_427(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 427);
     try rt.bind(s, env, "result", native_values[21]);
     native_values[22] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[22]);
@@ -12632,7 +12634,7 @@ fn f_620(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[21] = try branch_428(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 428);
     try rt.bind(s, env, "result", native_values[21]);
     native_values[22] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[22]);
@@ -12700,7 +12702,7 @@ fn f_623(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "options", native_values[1]);
-    native_values[18] = try branch_429(s, env, receiver, native_values);
+    native_values[18] = try runBranch(s, env, receiver, native_values, 429);
     try rt.bind(s, env, "result", native_values[18]);
     native_values[19] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[19]);
@@ -12740,7 +12742,7 @@ fn f_625(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "state", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "type", native_values[2]);
-    native_values[219] = try branch_430(s, env, receiver, native_values);
+    native_values[219] = try runBranch(s, env, receiver, native_values, 430);
     try rt.bind(s, env, "instantiatedType", native_values[219]);
     native_values[220] = try rt.get(s, env, "m0_WithModifiers");
     native_values[221] = try rt.get(s, env, "type");
@@ -12765,7 +12767,7 @@ fn f_626(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "ref", native_values[3]);
-    native_values[37] = try branch_442(s, env, receiver, native_values);
+    native_values[37] = try runBranch(s, env, receiver, native_values, 442);
     return c.JS_DupValue(engine.context, native_values[37]);
 }
 fn f_627(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -12818,7 +12820,7 @@ fn f_628(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[18] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
     native_values[19] = try rt.key(s, native_values[17], native_values[18]);
     try rt.bind(s, env, "type", native_values[19]);
-    native_values[53] = try branch_444(s, env, receiver, native_values);
+    native_values[53] = try runBranch(s, env, receiver, native_values, 444);
     try rt.bind(s, env, "result", native_values[53]);
     native_values[54] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[54]);
@@ -12859,7 +12861,7 @@ fn f_630(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "target", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "arguments_", native_values[3]);
-    native_values[31] = try branch_446(s, env, receiver, native_values);
+    native_values[31] = try runBranch(s, env, receiver, native_values, 446);
     return c.JS_DupValue(engine.context, native_values[31]);
 }
 fn f_631(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -12949,7 +12951,7 @@ fn f_634(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "ref", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "arguments_", native_values[2]);
-    native_values[17] = try branch_448(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 448);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_635(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13012,7 +13014,7 @@ fn f_638(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "state", native_values[0]);
-    native_values[25] = try branch_449(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 449);
     try rt.bind(s, env, "result", native_values[25]);
     native_values[26] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[26]);
@@ -13133,7 +13135,7 @@ fn f_642(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[17] = try rt.get(s, env, "distributedArguments");
     native_values[18] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[13], native_values[14], native_values[15], native_values[16], native_values[17] });
     try rt.bind(s, env, "returnTypes", native_values[18]);
-    native_values[31] = try branch_450(s, env, receiver, native_values);
+    native_values[31] = try runBranch(s, env, receiver, native_values, 450);
     try rt.bind(s, env, "result", native_values[31]);
     native_values[32] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[32]);
@@ -13165,7 +13167,7 @@ fn f_643(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[12] = try rt.get(s, env, "distributionArray");
     native_values[13] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{ native_values[11], native_values[12] });
     try rt.bind(s, env, "zippedArguments", native_values[13]);
-    native_values[44] = try branch_451(s, env, receiver, native_values);
+    native_values[44] = try runBranch(s, env, receiver, native_values, 451);
     return c.JS_DupValue(engine.context, native_values[44]);
 }
 fn f_644(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13184,7 +13186,7 @@ fn f_644(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         default_47 = native_values[2];
     }
     try rt.bind(s, env, "result", default_47);
-    native_values[130] = try branch_455(s, env, receiver, native_values);
+    native_values[130] = try runBranch(s, env, receiver, native_values, 455);
     return c.JS_DupValue(engine.context, native_values[130]);
 }
 fn f_645(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13355,7 +13357,7 @@ fn f_653(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[22] = try branch_463(s, env, receiver, native_values);
+    native_values[22] = try runBranch(s, env, receiver, native_values, 463);
     return c.JS_DupValue(engine.context, native_values[22]);
 }
 fn f_654(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13454,7 +13456,7 @@ fn f_658(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "canonicalArgument", native_values[3]);
-    native_values[14] = try branch_464(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 464);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_659(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13466,7 +13468,7 @@ fn f_659(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "type", native_values[0]);
-    native_values[20] = try branch_465(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 465);
     return c.JS_DupValue(engine.context, native_values[20]);
 }
 fn f_660(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -13833,7 +13835,7 @@ fn f_674(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[1]);
     native_values[2] = rt.argument(args, 2);
     try rt.bind(s, env, "extends_", native_values[2]);
-    native_values[17] = try branch_467(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 467);
     if (s.truthy(native_values[17])) {
         return c.JS_DupValue(engine.context, c.pi_js_undefined());
     }
@@ -14165,11 +14167,11 @@ fn f_686(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "instantiatedType", native_values[1]);
-    native_values[10] = try branch_469(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 469);
     try rt.bind(s, env, "withOptional", native_values[10]);
-    native_values[19] = try branch_470(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 470);
     try rt.bind(s, env, "withReadonly", native_values[19]);
-    native_values[28] = try branch_471(s, env, receiver, native_values);
+    native_values[28] = try runBranch(s, env, receiver, native_values, 471);
     try rt.bind(s, env, "withImmutable", native_values[28]);
     native_values[29] = try rt.get(s, env, "withImmutable");
     return c.JS_DupValue(engine.context, native_values[29]);
@@ -14183,7 +14185,7 @@ fn f_687(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[8] = try branch_472(s, env, receiver, native_values);
+    native_values[8] = try runBranch(s, env, receiver, native_values, 472);
     return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_688(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14292,7 +14294,7 @@ fn f_693(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "right", native_values[1]);
-    native_values[19] = try branch_473(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 473);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_694(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14325,7 +14327,7 @@ fn f_695(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4] });
     try rt.bind(s, env, "compareResult", native_values[5]);
-    native_values[14] = try branch_474(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 474);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_696(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14353,7 +14355,7 @@ fn f_696(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[12] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[10], native_values[11] });
     try rt.append(s, native_values[2], native_values[12]);
     try rt.bind(s, env, "extendsCheck", native_values[2]);
-    native_values[50] = try branch_476(s, env, receiver, native_values);
+    native_values[50] = try runBranch(s, env, receiver, native_values, 476);
     return c.JS_DupValue(engine.context, native_values[50]);
 }
 fn f_697(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14365,7 +14367,7 @@ fn f_697(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[16] = try branch_482(s, env, receiver, native_values);
+    native_values[16] = try runBranch(s, env, receiver, native_values, 482);
     return c.JS_DupValue(engine.context, native_values[16]);
 }
 fn f_698(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14420,7 +14422,7 @@ fn f_700(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[2] = try rt.get(s, env, "pattern");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     try rt.bind(s, env, "decoded", native_values[3]);
-    native_values[10] = try branch_484(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 484);
     try rt.bind(s, env, "result", native_values[10]);
     native_values[11] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[11]);
@@ -14582,7 +14584,7 @@ fn f_706(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "args", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "match", native_values[1]);
-    native_values[13] = try branch_485(s, env, receiver, native_values);
+    native_values[13] = try runBranch(s, env, receiver, native_values, 485);
     return c.JS_DupValue(engine.context, native_values[13]);
 }
 fn f_707(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14637,7 +14639,7 @@ fn f_709(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         default_56 = native_values[2];
     }
     try rt.bind(s, env, "options", default_56);
-    native_values[12] = try branch_486(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 486);
     try rt.bind(s, env, "type", native_values[12]);
     native_values[13] = try rt.get(s, env, "external_memory_Memory");
     native_values[14] = try s.text("Update");
@@ -14685,7 +14687,7 @@ fn f_711(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[7] = try s.concat(native_values[5], native_values[6]);
     native_values[8] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[7]});
     try rt.bind(s, env, "parsed", native_values[8]);
-    native_values[20] = try branch_487(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 487);
     try rt.bind(s, env, "result", native_values[20]);
     native_values[21] = try rt.get(s, env, "result");
     return c.JS_DupValue(engine.context, native_values[21]);
@@ -15678,7 +15680,7 @@ fn f_769(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "Char", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "Rest", native_values[1]);
-    native_values[28] = try branch_488(s, env, receiver, native_values);
+    native_values[28] = try runBranch(s, env, receiver, native_values, 488);
     return c.JS_DupValue(engine.context, native_values[28]);
 }
 fn f_770(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -15890,7 +15892,7 @@ fn f_782(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[10] = try branch_489(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 489);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_783(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16036,7 +16038,7 @@ fn f_790(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "Digits", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "DigitsRest", native_values[1]);
-    native_values[10] = try branch_490(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 490);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_791(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16336,7 +16338,7 @@ fn f_806(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "multiLine", native_values[2]);
     native_values[3] = rt.argument(args, 3);
     try rt.bind(s, env, "input", native_values[3]);
-    native_values[19] = try branch_491(s, env, receiver, native_values);
+    native_values[19] = try runBranch(s, env, receiver, native_values, 491);
     return c.JS_DupValue(engine.context, native_values[19]);
 }
 fn f_807(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16630,7 +16632,7 @@ fn f_823(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[28] = try branch_492(s, env, receiver, native_values);
+    native_values[28] = try runBranch(s, env, receiver, native_values, 492);
     return c.JS_DupValue(engine.context, native_values[28]);
 }
 fn f_824(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16699,7 +16701,7 @@ fn f_828(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[27] = try branch_493(s, env, receiver, native_values);
+    native_values[27] = try runBranch(s, env, receiver, native_values, 493);
     return c.JS_DupValue(engine.context, native_values[27]);
 }
 fn f_829(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16771,7 +16773,7 @@ fn f_832(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     native_values[7] = try s.object();
     native_values[8] = try rt.get(s, env, "key");
     native_values[9] = try rt.propertyKey(s, native_values[8]);
-    native_values[33] = try branch_497(s, env, receiver, native_values);
+    native_values[33] = try runBranch(s, env, receiver, native_values, 497);
     try rt.property(s, native_values[7], native_values[9], native_values[33]);
     return c.JS_DupValue(engine.context, native_values[7]);
 }
@@ -16860,7 +16862,7 @@ fn f_837(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[17] = try branch_503(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 503);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_838(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16969,9 +16971,9 @@ fn f_843(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[15] = try branch_504(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 504);
     try rt.bind(s, env, "isPatternProperties", native_values[15]);
-    native_values[43] = try branch_506(s, env, receiver, native_values);
+    native_values[43] = try runBranch(s, env, receiver, native_values, 506);
     return c.JS_DupValue(engine.context, native_values[43]);
 }
 fn f_844(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -16994,7 +16996,7 @@ fn f_844(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         try rt.bind(s, env, "patternProperties", native_values[3]);
         try iterator_63.close();
     }
-    native_values[17] = try branch_507(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 507);
     try rt.bind(s, env, "options", native_values[17]);
     native_values[18] = try rt.get(s, env, "m42__Object_");
     native_values[19] = try rt.get(s, env, "properties");
@@ -17011,7 +17013,7 @@ fn f_845(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[47] = try branch_508(s, env, receiver, native_values);
+    native_values[47] = try runBranch(s, env, receiver, native_values, 508);
     return c.JS_DupValue(engine.context, native_values[47]);
 }
 fn f_846(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17023,7 +17025,7 @@ fn f_846(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[12] = try branch_512(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 512);
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "input");
         return c.JS_DupValue(engine.context, native_values[13]);
@@ -17041,7 +17043,7 @@ fn f_846(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         try rt.bind(s, env, "isOptional", native_values[17]);
         try iterator_64.close();
     }
-    native_values[41] = try branch_513(s, env, receiver, native_values);
+    native_values[41] = try runBranch(s, env, receiver, native_values, 513);
     return c.JS_DupValue(engine.context, native_values[41]);
 }
 fn f_847(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17053,7 +17055,7 @@ fn f_847(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[23] = try branch_519(s, env, receiver, native_values);
+    native_values[23] = try runBranch(s, env, receiver, native_values, 519);
     return c.JS_DupValue(engine.context, native_values[23]);
 }
 fn f_848(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17171,7 +17173,7 @@ fn f_855(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[23] = try branch_521(s, env, receiver, native_values);
+    native_values[23] = try runBranch(s, env, receiver, native_values, 521);
     return c.JS_DupValue(engine.context, native_values[23]);
 }
 fn f_856(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17235,7 +17237,7 @@ fn f_859(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[37] = try branch_523(s, env, receiver, native_values);
+    native_values[37] = try runBranch(s, env, receiver, native_values, 523);
     return c.JS_DupValue(engine.context, native_values[37]);
 }
 fn f_860(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17247,7 +17249,7 @@ fn f_860(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[12] = try branch_528(s, env, receiver, native_values);
+    native_values[12] = try runBranch(s, env, receiver, native_values, 528);
     return c.JS_DupValue(engine.context, native_values[12]);
 }
 fn f_861(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17259,7 +17261,7 @@ fn f_861(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[37] = try branch_529(s, env, receiver, native_values);
+    native_values[37] = try runBranch(s, env, receiver, native_values, 529);
     return c.JS_DupValue(engine.context, native_values[37]);
 }
 fn f_862(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17282,7 +17284,7 @@ fn f_863(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[71] = try branch_534(s, env, receiver, native_values);
+    native_values[71] = try runBranch(s, env, receiver, native_values, 534);
     return c.JS_DupValue(engine.context, native_values[71]);
 }
 fn f_864(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17322,7 +17324,7 @@ fn f_865(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "state", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "type", native_values[1]);
-    native_values[17] = try branch_536(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 536);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_866(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17361,7 +17363,7 @@ fn f_867(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "state", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "type", native_values[1]);
-    native_values[17] = try branch_538(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 538);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_868(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17447,7 +17449,7 @@ fn f_872(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "ref", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "parameters", native_values[1]);
-    native_values[215] = try branch_540(s, env, receiver, native_values);
+    native_values[215] = try runBranch(s, env, receiver, native_values, 540);
     return c.JS_DupValue(engine.context, native_values[215]);
 }
 fn f_873(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17498,7 +17500,7 @@ fn f_875(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[15] = try branch_561(s, env, receiver, native_values);
+    native_values[15] = try runBranch(s, env, receiver, native_values, 561);
     return c.JS_DupValue(engine.context, native_values[15]);
 }
 fn f_876(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17531,7 +17533,7 @@ fn f_877(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "current", native_values[1]);
-    native_values[17] = try branch_563(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 563);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_878(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17543,7 +17545,7 @@ fn f_878(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[18] = try branch_564(s, env, receiver, native_values);
+    native_values[18] = try runBranch(s, env, receiver, native_values, 564);
     return c.JS_DupValue(engine.context, native_values[18]);
 }
 fn f_879(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17760,7 +17762,7 @@ fn f_893(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[11] = try branch_565(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 565);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_894(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17790,7 +17792,7 @@ fn f_894(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         try iterator_68.close();
     }
     native_values[7] = try rt.get(s, env, "m75_FactorWith");
-    native_values[25] = try branch_566(s, env, receiver, native_values);
+    native_values[25] = try runBranch(s, env, receiver, native_values, 566);
     native_values[26] = try rt.get(s, env, "withClause");
     native_values[27] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[25], native_values[26] });
     return c.JS_DupValue(engine.context, native_values[27]);
@@ -17806,7 +17808,7 @@ fn f_895(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "withClause", native_values[1]);
-    native_values[17] = try branch_567(s, env, receiver, native_values);
+    native_values[17] = try runBranch(s, env, receiver, native_values, 567);
     return c.JS_DupValue(engine.context, native_values[17]);
 }
 fn f_896(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17820,7 +17822,7 @@ fn f_896(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "type", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "extend", native_values[1]);
-    native_values[21] = try branch_569(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 569);
     return c.JS_DupValue(engine.context, native_values[21]);
 }
 fn f_897(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17857,7 +17859,7 @@ fn f_898(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "left", native_values[1]);
     native_values[2] = try rt.get(s, env, "left");
     try rt.bind(s, env, "_left", native_values[2]);
-    native_values[26] = try branch_570(s, env, receiver, native_values);
+    native_values[26] = try runBranch(s, env, receiver, native_values, 570);
     return c.JS_DupValue(engine.context, native_values[26]);
 }
 fn f_899(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17909,7 +17911,7 @@ fn f_901(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try rt.bind(s, env, "left", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "rest", native_values[1]);
-    native_values[11] = try branch_572(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 572);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_902(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -17943,7 +17945,7 @@ fn f_902(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const 
     native_values[10] = try s.text("&");
     native_values[11] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[10] });
     if (s.truthy(native_values[11])) {
-        native_values[28] = try branch_573(s, env, receiver, native_values);
+        native_values[28] = try runBranch(s, env, receiver, native_values, 573);
         return c.JS_DupValue(engine.context, native_values[28]);
     }
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
@@ -17951,7 +17953,7 @@ fn f_902(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const 
     native_values[31] = try s.text("|");
     native_values[32] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[30], native_values[31] });
     if (s.truthy(native_values[32])) {
-        native_values[49] = try branch_574(s, env, receiver, native_values);
+        native_values[49] = try runBranch(s, env, receiver, native_values, 574);
         return c.JS_DupValue(engine.context, native_values[49]);
     }
     native_values[50] = try rt.get(s, env, "m75_Unreachable");
@@ -18005,7 +18007,7 @@ fn f_905(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[30] = try branch_575(s, env, receiver, native_values);
+    native_values[30] = try runBranch(s, env, receiver, native_values, 575);
     return c.JS_DupValue(engine.context, native_values[30]);
 }
 fn f_906(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -18098,7 +18100,7 @@ fn f_911(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "input", native_values[0]);
-    native_values[21] = try branch_577(s, env, receiver, native_values);
+    native_values[21] = try runBranch(s, env, receiver, native_values, 577);
     return c.JS_DupValue(engine.context, native_values[21]);
 }
 fn f_912(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -18358,7 +18360,7 @@ fn f_924(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[10] = try branch_578(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 578);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_925(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -18370,7 +18372,7 @@ fn f_925(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     defer engine.gpa.free(native_values);
     native_values[0] = rt.argument(args, 0);
     try rt.bind(s, env, "value", native_values[0]);
-    native_values[10] = try branch_579(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 579);
     return c.JS_DupValue(engine.context, native_values[10]);
 }
 fn f_926(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -18521,7 +18523,7 @@ fn f_931(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         default_79 = native_values[3];
     }
     try rt.bind(s, env, "options", default_79);
-    native_values[11] = try branch_580(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 580);
     try rt.bind(s, env, "indexer", native_values[11]);
     native_values[12] = try rt.get(s, env, "m156_IndexAction");
     native_values[13] = try rt.get(s, env, "type");
@@ -18580,7 +18582,7 @@ fn f_934(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     try rt.bind(s, env, "result", native_values[0]);
     native_values[1] = rt.argument(args, 1);
     try rt.bind(s, env, "left", native_values[1]);
-    native_values[11] = try branch_581(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 581);
     return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_935(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -18802,7 +18804,7 @@ fn f_943(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         default_88 = native_values[3];
     }
     try rt.bind(s, env, "options", default_88);
-    native_values[11] = try branch_582(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 582);
     try rt.bind(s, env, "indexer", native_values[11]);
     native_values[12] = try rt.get(s, env, "m228_OmitAction");
     native_values[13] = try rt.get(s, env, "type");
@@ -18851,7 +18853,7 @@ fn f_945(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
         default_90 = native_values[3];
     }
     try rt.bind(s, env, "options", default_90);
-    native_values[11] = try branch_583(s, env, receiver, native_values);
+    native_values[11] = try runBranch(s, env, receiver, native_values, 583);
     try rt.bind(s, env, "indexer", native_values[11]);
     native_values[12] = try rt.get(s, env, "m214_PickAction");
     native_values[13] = try rt.get(s, env, "type");
@@ -19138,7 +19140,7 @@ fn f_958(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
         default_99 = native_values[3];
     }
     try rt.bind(s, env, "right", default_99);
-    native_values[14] = try branch_584(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 584);
     return c.JS_DupValue(engine.context, native_values[14]);
 }
 fn f_959(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -36376,7 +36378,7 @@ fn try_block_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JS
     native_values[40] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[34], native_values[38], native_values[39] });
     return c.JS_DupValue(engine.context, native_values[40]);
 }
-fn branch_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m1_IsDeferred");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -36397,18 +36399,18 @@ fn branch_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVal
         native_values[19] = try rt.propertyKey(s, native_values[18]);
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12], native_values[16], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
         native_values[22] = try rt.get(s, env, "m0_InstantiateImmediate");
         native_values[23] = try rt.get(s, env, "context");
         native_values[24] = try rt.get(s, env, "state");
         native_values[25] = try rt.get(s, env, "type");
         native_values[26] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{ native_values[23], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_1(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[9] = try branch_2(s, env, receiver, native_values);
+fn branch_1(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[9] = try runBranch(s, env, receiver, native_values, 2);
     if (s.truthy(native_values[9])) {
         native_values[10] = try rt.get(s, env, "m4_IsEqual");
         native_values[11] = try rt.get(s, env, "value");
@@ -36417,12 +36419,12 @@ fn branch_1(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []
         native_values[14] = try rt.key(s, native_values[11], native_values[13]);
         native_values[15] = try rt.get(s, env, "kind");
         native_values[16] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{ native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_2(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_2(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsObject");
     native_values[3] = try rt.get(s, env, "value");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -36431,12 +36433,12 @@ fn branch_2(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVal
         native_values[6] = try rt.get(s, env, "value");
         native_values[7] = try s.text("~kind");
         native_values[8] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7] });
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_3(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_3(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.unary(s, "typeof", native_values[2]);
@@ -36447,12 +36449,12 @@ fn branch_3(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVal
         native_values[7] = try rt.get(s, env, "value");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
         native_values[9] = try rt.unary(s, "!", native_values[8]);
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_4(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_4(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsUnsafePropertyKey");
     native_values[3] = try rt.get(s, env, "key");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -36470,27 +36472,27 @@ fn branch_4(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVal
         native_values[15] = try rt.get(s, env, "value");
         native_values[16] = try rt.get(s, env, "key");
         native_values[17] = try rt.invoke(s, native_values[14], native_values[11], &.{ native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "key");
         native_values[19] = try rt.get(s, env, "value");
         native_values[20] = try rt.binary(s, "in", native_values[18], native_values[19]);
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_5(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[9] = try branch_6(s, env, receiver, native_values);
+fn branch_5(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[9] = try runBranch(s, env, receiver, native_values, 6);
     if (!s.truthy(native_values[9])) {
         native_values[10] = try rt.get(s, env, "m4_IsEqual");
         native_values[11] = try rt.get(s, env, "key");
         native_values[12] = try s.text("prototype");
         native_values[13] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{ native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_6(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_6(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "key");
     native_values[3] = try s.text("__proto__");
@@ -36500,12 +36502,12 @@ fn branch_6(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVal
         native_values[6] = try rt.get(s, env, "key");
         native_values[7] = try s.text("constructor");
         native_values[8] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7] });
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_7(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_7(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[5] = try rt.get(s, env, "m4_IsEqual");
     native_values[6] = try rt.get(s, env, "action");
@@ -36520,12 +36522,12 @@ fn branch_7(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []
         native_values[14] = try rt.key(s, native_values[12], native_values[13]);
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return @call(.always_tail, branch_8, .{ s, env, receiver, native_values });
+        return .{ .jump = 8 };
     }
 }
-fn branch_8(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_8(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[17] = try rt.get(s, env, "m4_IsEqual");
     native_values[18] = try rt.get(s, env, "action");
@@ -36540,12 +36542,12 @@ fn branch_8(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []
         native_values[26] = try rt.key(s, native_values[24], native_values[25]);
         native_values[27] = try rt.get(s, env, "options");
         native_values[28] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[22], native_values[23], native_values[26], native_values[27] });
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return @call(.always_tail, branch_9, .{ s, env, receiver, native_values });
+        return .{ .jump = 9 };
     }
 }
-fn branch_9(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_9(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
     native_values[30] = try rt.get(s, env, "action");
@@ -36560,12 +36562,12 @@ fn branch_9(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []
         native_values[38] = try rt.key(s, native_values[36], native_values[37]);
         native_values[39] = try rt.get(s, env, "options");
         native_values[40] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[34], native_values[35], native_values[38], native_values[39] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
-        return @call(.always_tail, branch_10, .{ s, env, receiver, native_values });
+        return .{ .jump = 10 };
     }
 }
-fn branch_10(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_10(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[41] = try rt.get(s, env, "m4_IsEqual");
     native_values[42] = try rt.get(s, env, "action");
@@ -36580,12 +36582,12 @@ fn branch_10(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[50] = try rt.key(s, native_values[48], native_values[49]);
         native_values[51] = try rt.get(s, env, "options");
         native_values[52] = try rt.invoke(s, native_values[45], c.pi_js_undefined(), &.{ native_values[46], native_values[47], native_values[50], native_values[51] });
-        return native_values[52];
+        return .{ .value = native_values[52] };
     } else {
-        return @call(.always_tail, branch_11, .{ s, env, receiver, native_values });
+        return .{ .jump = 11 };
     }
 }
-fn branch_11(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_11(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[53] = try rt.get(s, env, "m4_IsEqual");
     native_values[54] = try rt.get(s, env, "action");
@@ -36600,12 +36602,12 @@ fn branch_11(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[62] = try rt.key(s, native_values[60], native_values[61]);
         native_values[63] = try rt.get(s, env, "options");
         native_values[64] = try rt.invoke(s, native_values[57], c.pi_js_undefined(), &.{ native_values[58], native_values[59], native_values[62], native_values[63] });
-        return native_values[64];
+        return .{ .value = native_values[64] };
     } else {
-        return @call(.always_tail, branch_12, .{ s, env, receiver, native_values });
+        return .{ .jump = 12 };
     }
 }
-fn branch_12(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_12(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[65] = try rt.get(s, env, "m4_IsEqual");
     native_values[66] = try rt.get(s, env, "action");
@@ -36620,12 +36622,12 @@ fn branch_12(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[74] = try rt.key(s, native_values[72], native_values[73]);
         native_values[75] = try rt.get(s, env, "options");
         native_values[76] = try rt.invoke(s, native_values[69], c.pi_js_undefined(), &.{ native_values[70], native_values[71], native_values[74], native_values[75] });
-        return native_values[76];
+        return .{ .value = native_values[76] };
     } else {
-        return @call(.always_tail, branch_13, .{ s, env, receiver, native_values });
+        return .{ .jump = 13 };
     }
 }
-fn branch_13(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_13(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[77] = try rt.get(s, env, "m4_IsEqual");
     native_values[78] = try rt.get(s, env, "action");
@@ -36640,12 +36642,12 @@ fn branch_13(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[86] = try rt.key(s, native_values[84], native_values[85]);
         native_values[87] = try rt.get(s, env, "options");
         native_values[88] = try rt.invoke(s, native_values[81], c.pi_js_undefined(), &.{ native_values[82], native_values[83], native_values[86], native_values[87] });
-        return native_values[88];
+        return .{ .value = native_values[88] };
     } else {
-        return @call(.always_tail, branch_14, .{ s, env, receiver, native_values });
+        return .{ .jump = 14 };
     }
 }
-fn branch_14(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_14(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[89] = try rt.get(s, env, "m4_IsEqual");
     native_values[90] = try rt.get(s, env, "action");
@@ -36669,12 +36671,12 @@ fn branch_14(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[107] = try rt.key(s, native_values[105], native_values[106]);
         native_values[108] = try rt.get(s, env, "options");
         native_values[109] = try rt.invoke(s, native_values[93], c.pi_js_undefined(), &.{ native_values[94], native_values[95], native_values[98], native_values[101], native_values[104], native_values[107], native_values[108] });
-        return native_values[109];
+        return .{ .value = native_values[109] };
     } else {
-        return @call(.always_tail, branch_15, .{ s, env, receiver, native_values });
+        return .{ .jump = 15 };
     }
 }
-fn branch_15(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_15(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[110] = try rt.get(s, env, "m4_IsEqual");
     native_values[111] = try rt.get(s, env, "action");
@@ -36689,12 +36691,12 @@ fn branch_15(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[119] = try rt.key(s, native_values[117], native_values[118]);
         native_values[120] = try rt.get(s, env, "options");
         native_values[121] = try rt.invoke(s, native_values[114], c.pi_js_undefined(), &.{ native_values[115], native_values[116], native_values[119], native_values[120] });
-        return native_values[121];
+        return .{ .value = native_values[121] };
     } else {
-        return @call(.always_tail, branch_16, .{ s, env, receiver, native_values });
+        return .{ .jump = 16 };
     }
 }
-fn branch_16(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_16(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[122] = try rt.get(s, env, "m4_IsEqual");
     native_values[123] = try rt.get(s, env, "action");
@@ -36709,12 +36711,12 @@ fn branch_16(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[131] = try rt.key(s, native_values[129], native_values[130]);
         native_values[132] = try rt.get(s, env, "options");
         native_values[133] = try rt.invoke(s, native_values[126], c.pi_js_undefined(), &.{ native_values[127], native_values[128], native_values[131], native_values[132] });
-        return native_values[133];
+        return .{ .value = native_values[133] };
     } else {
-        return @call(.always_tail, branch_17, .{ s, env, receiver, native_values });
+        return .{ .jump = 17 };
     }
 }
-fn branch_17(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_17(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[134] = try rt.get(s, env, "m4_IsEqual");
     native_values[135] = try rt.get(s, env, "action");
@@ -36732,12 +36734,12 @@ fn branch_17(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[146] = try rt.key(s, native_values[144], native_values[145]);
         native_values[147] = try rt.get(s, env, "options");
         native_values[148] = try rt.invoke(s, native_values[138], c.pi_js_undefined(), &.{ native_values[139], native_values[140], native_values[143], native_values[146], native_values[147] });
-        return native_values[148];
+        return .{ .value = native_values[148] };
     } else {
-        return @call(.always_tail, branch_18, .{ s, env, receiver, native_values });
+        return .{ .jump = 18 };
     }
 }
-fn branch_18(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_18(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[149] = try rt.get(s, env, "m4_IsEqual");
     native_values[150] = try rt.get(s, env, "action");
@@ -36755,12 +36757,12 @@ fn branch_18(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[161] = try rt.key(s, native_values[159], native_values[160]);
         native_values[162] = try rt.get(s, env, "options");
         native_values[163] = try rt.invoke(s, native_values[153], c.pi_js_undefined(), &.{ native_values[154], native_values[155], native_values[158], native_values[161], native_values[162] });
-        return native_values[163];
+        return .{ .value = native_values[163] };
     } else {
-        return @call(.always_tail, branch_19, .{ s, env, receiver, native_values });
+        return .{ .jump = 19 };
     }
 }
-fn branch_19(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_19(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[164] = try rt.get(s, env, "m4_IsEqual");
     native_values[165] = try rt.get(s, env, "action");
@@ -36778,12 +36780,12 @@ fn branch_19(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[176] = try rt.key(s, native_values[174], native_values[175]);
         native_values[177] = try rt.get(s, env, "options");
         native_values[178] = try rt.invoke(s, native_values[168], c.pi_js_undefined(), &.{ native_values[169], native_values[170], native_values[173], native_values[176], native_values[177] });
-        return native_values[178];
+        return .{ .value = native_values[178] };
     } else {
-        return @call(.always_tail, branch_20, .{ s, env, receiver, native_values });
+        return .{ .jump = 20 };
     }
 }
-fn branch_20(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_20(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[179] = try rt.get(s, env, "m4_IsEqual");
     native_values[180] = try rt.get(s, env, "action");
@@ -36798,12 +36800,12 @@ fn branch_20(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[188] = try rt.key(s, native_values[186], native_values[187]);
         native_values[189] = try rt.get(s, env, "options");
         native_values[190] = try rt.invoke(s, native_values[183], c.pi_js_undefined(), &.{ native_values[184], native_values[185], native_values[188], native_values[189] });
-        return native_values[190];
+        return .{ .value = native_values[190] };
     } else {
-        return @call(.always_tail, branch_21, .{ s, env, receiver, native_values });
+        return .{ .jump = 21 };
     }
 }
-fn branch_21(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_21(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[191] = try rt.get(s, env, "m4_IsEqual");
     native_values[192] = try rt.get(s, env, "action");
@@ -36821,12 +36823,12 @@ fn branch_21(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[203] = try rt.key(s, native_values[201], native_values[202]);
         native_values[204] = try rt.get(s, env, "options");
         native_values[205] = try rt.invoke(s, native_values[195], c.pi_js_undefined(), &.{ native_values[196], native_values[197], native_values[200], native_values[203], native_values[204] });
-        return native_values[205];
+        return .{ .value = native_values[205] };
     } else {
-        return @call(.always_tail, branch_22, .{ s, env, receiver, native_values });
+        return .{ .jump = 22 };
     }
 }
-fn branch_22(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_22(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[206] = try rt.get(s, env, "m4_IsEqual");
     native_values[207] = try rt.get(s, env, "action");
@@ -36841,12 +36843,12 @@ fn branch_22(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[215] = try rt.key(s, native_values[213], native_values[214]);
         native_values[216] = try rt.get(s, env, "options");
         native_values[217] = try rt.invoke(s, native_values[210], c.pi_js_undefined(), &.{ native_values[211], native_values[212], native_values[215], native_values[216] });
-        return native_values[217];
+        return .{ .value = native_values[217] };
     } else {
-        return @call(.always_tail, branch_23, .{ s, env, receiver, native_values });
+        return .{ .jump = 23 };
     }
 }
-fn branch_23(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_23(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[218] = try rt.get(s, env, "m4_IsEqual");
     native_values[219] = try rt.get(s, env, "action");
@@ -36861,12 +36863,12 @@ fn branch_23(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[227] = try rt.key(s, native_values[225], native_values[226]);
         native_values[228] = try rt.get(s, env, "options");
         native_values[229] = try rt.invoke(s, native_values[222], c.pi_js_undefined(), &.{ native_values[223], native_values[224], native_values[227], native_values[228] });
-        return native_values[229];
+        return .{ .value = native_values[229] };
     } else {
-        return @call(.always_tail, branch_24, .{ s, env, receiver, native_values });
+        return .{ .jump = 24 };
     }
 }
-fn branch_24(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_24(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[230] = try rt.get(s, env, "m4_IsEqual");
     native_values[231] = try rt.get(s, env, "action");
@@ -36890,12 +36892,12 @@ fn branch_24(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[248] = try rt.key(s, native_values[246], native_values[247]);
         native_values[249] = try rt.get(s, env, "options");
         native_values[250] = try rt.invoke(s, native_values[234], c.pi_js_undefined(), &.{ native_values[235], native_values[236], native_values[239], native_values[242], native_values[245], native_values[248], native_values[249] });
-        return native_values[250];
+        return .{ .value = native_values[250] };
     } else {
-        return @call(.always_tail, branch_25, .{ s, env, receiver, native_values });
+        return .{ .jump = 25 };
     }
 }
-fn branch_25(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_25(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[251] = try rt.get(s, env, "m4_IsEqual");
     native_values[252] = try rt.get(s, env, "action");
@@ -36910,12 +36912,12 @@ fn branch_25(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[260] = try rt.key(s, native_values[258], native_values[259]);
         native_values[261] = try rt.get(s, env, "options");
         native_values[262] = try rt.invoke(s, native_values[255], c.pi_js_undefined(), &.{ native_values[256], native_values[257], native_values[260], native_values[261] });
-        return native_values[262];
+        return .{ .value = native_values[262] };
     } else {
-        return @call(.always_tail, branch_26, .{ s, env, receiver, native_values });
+        return .{ .jump = 26 };
     }
 }
-fn branch_26(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_26(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[263] = try rt.get(s, env, "m4_IsEqual");
     native_values[264] = try rt.get(s, env, "action");
@@ -36930,12 +36932,12 @@ fn branch_26(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[272] = try rt.key(s, native_values[270], native_values[271]);
         native_values[273] = try rt.get(s, env, "options");
         native_values[274] = try rt.invoke(s, native_values[267], c.pi_js_undefined(), &.{ native_values[268], native_values[269], native_values[272], native_values[273] });
-        return native_values[274];
+        return .{ .value = native_values[274] };
     } else {
-        return @call(.always_tail, branch_27, .{ s, env, receiver, native_values });
+        return .{ .jump = 27 };
     }
 }
-fn branch_27(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_27(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[275] = try rt.get(s, env, "m4_IsEqual");
     native_values[276] = try rt.get(s, env, "action");
@@ -36953,12 +36955,12 @@ fn branch_27(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[287] = try rt.key(s, native_values[285], native_values[286]);
         native_values[288] = try rt.get(s, env, "options");
         native_values[289] = try rt.invoke(s, native_values[279], c.pi_js_undefined(), &.{ native_values[280], native_values[281], native_values[284], native_values[287], native_values[288] });
-        return native_values[289];
+        return .{ .value = native_values[289] };
     } else {
-        return @call(.always_tail, branch_28, .{ s, env, receiver, native_values });
+        return .{ .jump = 28 };
     }
 }
-fn branch_28(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_28(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[290] = try rt.get(s, env, "m4_IsEqual");
     native_values[291] = try rt.get(s, env, "action");
@@ -36973,12 +36975,12 @@ fn branch_28(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[299] = try rt.key(s, native_values[297], native_values[298]);
         native_values[300] = try rt.get(s, env, "options");
         native_values[301] = try rt.invoke(s, native_values[294], c.pi_js_undefined(), &.{ native_values[295], native_values[296], native_values[299], native_values[300] });
-        return native_values[301];
+        return .{ .value = native_values[301] };
     } else {
-        return @call(.always_tail, branch_29, .{ s, env, receiver, native_values });
+        return .{ .jump = 29 };
     }
 }
-fn branch_29(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_29(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[302] = try rt.get(s, env, "m4_IsEqual");
     native_values[303] = try rt.get(s, env, "action");
@@ -36993,12 +36995,12 @@ fn branch_29(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[311] = try rt.key(s, native_values[309], native_values[310]);
         native_values[312] = try rt.get(s, env, "options");
         native_values[313] = try rt.invoke(s, native_values[306], c.pi_js_undefined(), &.{ native_values[307], native_values[308], native_values[311], native_values[312] });
-        return native_values[313];
+        return .{ .value = native_values[313] };
     } else {
-        return @call(.always_tail, branch_30, .{ s, env, receiver, native_values });
+        return .{ .jump = 30 };
     }
 }
-fn branch_30(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_30(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[314] = try rt.get(s, env, "m4_IsEqual");
     native_values[315] = try rt.get(s, env, "action");
@@ -37016,12 +37018,12 @@ fn branch_30(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[326] = try rt.key(s, native_values[324], native_values[325]);
         native_values[327] = try rt.get(s, env, "options");
         native_values[328] = try rt.invoke(s, native_values[318], c.pi_js_undefined(), &.{ native_values[319], native_values[320], native_values[323], native_values[326], native_values[327] });
-        return native_values[328];
+        return .{ .value = native_values[328] };
     } else {
-        return @call(.always_tail, branch_31, .{ s, env, receiver, native_values });
+        return .{ .jump = 31 };
     }
 }
-fn branch_31(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_31(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[329] = try rt.get(s, env, "m4_IsEqual");
     native_values[330] = try rt.get(s, env, "action");
@@ -37036,12 +37038,12 @@ fn branch_31(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[338] = try rt.key(s, native_values[336], native_values[337]);
         native_values[339] = try rt.get(s, env, "options");
         native_values[340] = try rt.invoke(s, native_values[333], c.pi_js_undefined(), &.{ native_values[334], native_values[335], native_values[338], native_values[339] });
-        return native_values[340];
+        return .{ .value = native_values[340] };
     } else {
-        return @call(.always_tail, branch_32, .{ s, env, receiver, native_values });
+        return .{ .jump = 32 };
     }
 }
-fn branch_32(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_32(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[341] = try rt.get(s, env, "m4_IsEqual");
     native_values[342] = try rt.get(s, env, "action");
@@ -37059,12 +37061,12 @@ fn branch_32(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[353] = try rt.key(s, native_values[351], native_values[352]);
         native_values[354] = try rt.get(s, env, "options");
         native_values[355] = try rt.invoke(s, native_values[345], c.pi_js_undefined(), &.{ native_values[346], native_values[347], native_values[350], native_values[353], native_values[354] });
-        return native_values[355];
+        return .{ .value = native_values[355] };
     } else {
-        return @call(.always_tail, branch_33, .{ s, env, receiver, native_values });
+        return .{ .jump = 33 };
     }
 }
-fn branch_33(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_33(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[356] = try rt.get(s, env, "m4_IsEqual");
     native_values[357] = try rt.get(s, env, "action");
@@ -37079,12 +37081,12 @@ fn branch_33(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[365] = try rt.key(s, native_values[363], native_values[364]);
         native_values[366] = try rt.get(s, env, "options");
         native_values[367] = try rt.invoke(s, native_values[360], c.pi_js_undefined(), &.{ native_values[361], native_values[362], native_values[365], native_values[366] });
-        return native_values[367];
+        return .{ .value = native_values[367] };
     } else {
-        return @call(.always_tail, branch_34, .{ s, env, receiver, native_values });
+        return .{ .jump = 34 };
     }
 }
-fn branch_34(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_34(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[368] = try rt.get(s, env, "m4_IsEqual");
     native_values[369] = try rt.get(s, env, "action");
@@ -37099,12 +37101,12 @@ fn branch_34(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[377] = try rt.key(s, native_values[375], native_values[376]);
         native_values[378] = try rt.get(s, env, "options");
         native_values[379] = try rt.invoke(s, native_values[372], c.pi_js_undefined(), &.{ native_values[373], native_values[374], native_values[377], native_values[378] });
-        return native_values[379];
+        return .{ .value = native_values[379] };
     } else {
-        return @call(.always_tail, branch_35, .{ s, env, receiver, native_values });
+        return .{ .jump = 35 };
     }
 }
-fn branch_35(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_35(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[380] = try rt.get(s, env, "m4_IsEqual");
     native_values[381] = try rt.get(s, env, "action");
@@ -37119,12 +37121,12 @@ fn branch_35(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[389] = try rt.key(s, native_values[387], native_values[388]);
         native_values[390] = try rt.get(s, env, "options");
         native_values[391] = try rt.invoke(s, native_values[384], c.pi_js_undefined(), &.{ native_values[385], native_values[386], native_values[389], native_values[390] });
-        return native_values[391];
+        return .{ .value = native_values[391] };
     } else {
-        return @call(.always_tail, branch_36, .{ s, env, receiver, native_values });
+        return .{ .jump = 36 };
     }
 }
-fn branch_36(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_36(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[392] = try rt.get(s, env, "m4_IsEqual");
     native_values[393] = try rt.get(s, env, "action");
@@ -37139,12 +37141,12 @@ fn branch_36(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[401] = try rt.key(s, native_values[399], native_values[400]);
         native_values[402] = try rt.get(s, env, "options");
         native_values[403] = try rt.invoke(s, native_values[396], c.pi_js_undefined(), &.{ native_values[397], native_values[398], native_values[401], native_values[402] });
-        return native_values[403];
+        return .{ .value = native_values[403] };
     } else {
-        return @call(.always_tail, branch_37, .{ s, env, receiver, native_values });
+        return .{ .jump = 37 };
     }
 }
-fn branch_37(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_37(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[404] = try rt.get(s, env, "m4_IsEqual");
     native_values[405] = try rt.get(s, env, "action");
@@ -37159,12 +37161,12 @@ fn branch_37(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[413] = try rt.key(s, native_values[411], native_values[412]);
         native_values[414] = try rt.get(s, env, "options");
         native_values[415] = try rt.invoke(s, native_values[408], c.pi_js_undefined(), &.{ native_values[409], native_values[410], native_values[413], native_values[414] });
-        return native_values[415];
+        return .{ .value = native_values[415] };
     } else {
-        return @call(.always_tail, branch_38, .{ s, env, receiver, native_values });
+        return .{ .jump = 38 };
     }
 }
-fn branch_38(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_38(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[416] = try rt.get(s, env, "m4_IsEqual");
     native_values[417] = try rt.get(s, env, "action");
@@ -37181,17 +37183,17 @@ fn branch_38(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[427] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[428] = try rt.key(s, native_values[426], native_values[427]);
         native_values[429] = try rt.invoke(s, native_values[420], c.pi_js_undefined(), &.{ native_values[421], native_values[422], native_values[425], native_values[428] });
-        return native_values[429];
+        return .{ .value = native_values[429] };
     } else {
         native_values[430] = try rt.get(s, env, "m1_Deferred");
         native_values[431] = try rt.get(s, env, "action");
         native_values[432] = try rt.get(s, env, "parameters");
         native_values[433] = try rt.get(s, env, "options");
         native_values[434] = try rt.invoke(s, native_values[430], c.pi_js_undefined(), &.{ native_values[431], native_values[432], native_values[433] });
-        return native_values[434];
+        return .{ .value = native_values[434] };
     }
 }
-fn branch_39(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_39(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -37209,30 +37211,30 @@ fn branch_39(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[14] = try s.object();
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[13], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.get(s, env, "m26_CapitalizeDeferred");
         native_values[18] = try rt.get(s, env, "type");
         native_values[19] = try rt.get(s, env, "options");
         native_values[20] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_40(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_40(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m12_IsRef");
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
     if (s.truthy(native_values[4])) {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     } else {
         native_values[5] = try rt.get(s, env, "m0_CanInstantiate");
         native_values[6] = try rt.get(s, env, "right");
         native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_41(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_41(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[3] = try rt.get(s, env, "m4_IsEqual");
     native_values[4] = try rt.get(s, env, "array");
@@ -37243,7 +37245,7 @@ fn branch_41(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "false_");
         native_values[10] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "true_");
         native_values[12] = try rt.get(s, env, "array");
@@ -37255,10 +37257,10 @@ fn branch_41(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[18] = try rt.key(s, native_values[15], native_values[17]);
         native_values[19] = try rt.invoke(s, native_values[18], native_values[15], &.{c.JS_NewFloat64(engine.context, 1)});
         native_values[20] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[14], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_42(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_42(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m14_IsLiteral");
     native_values[3] = try rt.get(s, env, "type");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -37270,12 +37272,12 @@ fn branch_42(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[9] = try rt.propertyKey(s, native_values[8]);
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_43, .{ s, env, receiver, native_values });
+        return .{ .jump = 43 };
     }
 }
-fn branch_43(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_43(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[13] = try rt.get(s, env, "type");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -37287,12 +37289,12 @@ fn branch_43(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[19] = try rt.propertyKey(s, native_values[18]);
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
-        return @call(.always_tail, branch_44, .{ s, env, receiver, native_values });
+        return .{ .jump = 44 };
     }
 }
-fn branch_44(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_44(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[22] = try rt.get(s, env, "m24_IsUnion");
     native_values[23] = try rt.get(s, env, "type");
     native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
@@ -37304,13 +37306,13 @@ fn branch_44(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[29] = try rt.propertyKey(s, native_values[28]);
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{ native_values[26], native_values[30] });
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "type");
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_45(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_45(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsString");
     native_values[3] = try rt.get(s, env, "value");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -37321,61 +37323,61 @@ fn branch_45(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[8] = try rt.get(s, env, "value");
         native_values[9] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8] });
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "m14_Literal");
         native_values[12] = try rt.get(s, env, "value");
         native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_46(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_46(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsBigInt");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     if (s.truthy(native_values[3])) {
         native_values[4] = try s.text("bigint");
-        return native_values[4];
+        return .{ .value = native_values[4] };
     } else {
-        return @call(.always_tail, branch_47, .{ s, env, receiver, native_values });
+        return .{ .jump = 47 };
     }
 }
-fn branch_47(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_47(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m4_IsBoolean");
     native_values[6] = try rt.get(s, env, "value");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
     if (s.truthy(native_values[7])) {
         native_values[8] = try s.text("boolean");
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_48, .{ s, env, receiver, native_values });
+        return .{ .jump = 48 };
     }
 }
-fn branch_48(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_48(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m4_IsNumber");
     native_values[10] = try rt.get(s, env, "value");
     native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
     if (s.truthy(native_values[11])) {
         native_values[12] = try s.text("number");
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return @call(.always_tail, branch_49, .{ s, env, receiver, native_values });
+        return .{ .jump = 49 };
     }
 }
-fn branch_49(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_49(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[13] = try rt.get(s, env, "m4_IsString");
     native_values[14] = try rt.get(s, env, "value");
     native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
     if (s.truthy(native_values[15])) {
         native_values[16] = try s.text("string");
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.function(s, "", 0, f_41, env, receiver, true);
         native_values[18] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_50(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_50(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[8] = try s.array();
     native_values[9] = try rt.get(s, env, "left");
@@ -37399,7 +37401,7 @@ fn branch_50(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[24] = try s.object();
         native_values[25] = try rt.get(s, env, "options");
         native_values[26] = try rt.invoke(s, native_values[15], native_values[12], &.{ native_values[23], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     } else {
         native_values[27] = try rt.get(s, env, "m146_ConditionalDeferred");
         native_values[28] = try rt.get(s, env, "left");
@@ -37408,10 +37410,10 @@ fn branch_50(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[31] = try rt.get(s, env, "false_");
         native_values[32] = try rt.get(s, env, "options");
         native_values[33] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[28], native_values[29], native_values[30], native_values[31], native_values[32] });
-        return native_values[33];
+        return .{ .value = native_values[33] };
     }
 }
-fn branch_51(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_51(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m116_IsExtendsUnion");
     native_values[12] = try rt.get(s, env, "extendsResult");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -37434,12 +37436,12 @@ fn branch_51(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[28] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{ native_values[25], native_values[26], native_values[27] });
         try rt.append(s, native_values[15], native_values[28]);
         native_values[29] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[29];
+        return .{ .value = native_values[29] };
     } else {
-        return @call(.always_tail, branch_52, .{ s, env, receiver, native_values });
+        return .{ .jump = 52 };
     }
 }
-fn branch_52(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_52(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[30] = try rt.get(s, env, "m116_IsExtendsTrue");
     native_values[31] = try rt.get(s, env, "extendsResult");
     native_values[32] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{native_values[31]});
@@ -37452,17 +37454,17 @@ fn branch_52(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[38] = try rt.get(s, env, "state");
         native_values[39] = try rt.get(s, env, "true_");
         native_values[40] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[37], native_values[38], native_values[39] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
         native_values[41] = try rt.get(s, env, "m0_InstantiateType");
         native_values[42] = try rt.get(s, env, "context");
         native_values[43] = try rt.get(s, env, "state");
         native_values[44] = try rt.get(s, env, "false_");
         native_values[45] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{ native_values[42], native_values[43], native_values[44] });
-        return native_values[45];
+        return .{ .value = native_values[45] };
     }
 }
-fn branch_53(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_53(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -37470,25 +37472,25 @@ fn branch_53(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[4] = try rt.get(s, env, "m36_CyclicExtends");
         native_values[5] = try rt.get(s, env, "type");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return @call(.always_tail, branch_54, .{ s, env, receiver, native_values });
+        return .{ .jump = 54 };
     }
 }
-fn branch_54(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_54(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m112_IsUnsafe");
     native_values[8] = try rt.get(s, env, "type");
     native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
     if (s.truthy(native_values[9])) {
         native_values[10] = try rt.get(s, env, "m89_Unknown");
         native_values[11] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "type");
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_55(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_55(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "ref");
     native_values[3] = try rt.get(s, env, "defs");
     native_values[4] = try rt.binary(s, "in", native_values[2], native_values[3]);
@@ -37499,14 +37501,14 @@ fn branch_55(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[8] = try rt.propertyKey(s, native_values[7]);
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "m89_Unknown");
         native_values[12] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{});
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_56(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_56(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m12_IsRef");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -37517,12 +37519,12 @@ fn branch_56(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_57, .{ s, env, receiver, native_values });
+        return .{ .jump = 57 };
     }
 }
-fn branch_57(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_57(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m38_IsArray");
     native_values[11] = try rt.get(s, env, "type");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -37538,12 +37540,12 @@ fn branch_57(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[21] = try rt.get(s, env, "type");
         native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
         native_values[23] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[19], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return @call(.always_tail, branch_58, .{ s, env, receiver, native_values });
+        return .{ .jump = 58 };
     }
 }
-fn branch_58(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_58(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[24] = try rt.get(s, env, "m39_IsConstructor");
     native_values[25] = try rt.get(s, env, "type");
     native_values[26] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[25]});
@@ -37562,12 +37564,12 @@ fn branch_58(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
         native_values[40] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[33], native_values[39] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
-        return @call(.always_tail, branch_59, .{ s, env, receiver, native_values });
+        return .{ .jump = 59 };
     }
 }
-fn branch_59(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_59(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[41] = try rt.get(s, env, "m40_IsFunction");
     native_values[42] = try rt.get(s, env, "type");
     native_values[43] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{native_values[42]});
@@ -37586,12 +37588,12 @@ fn branch_59(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[55] = try rt.key(s, native_values[52], native_values[54]);
         native_values[56] = try rt.invoke(s, native_values[51], c.pi_js_undefined(), &.{native_values[55]});
         native_values[57] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{ native_values[50], native_values[56] });
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
-        return @call(.always_tail, branch_60, .{ s, env, receiver, native_values });
+        return .{ .jump = 60 };
     }
 }
-fn branch_60(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_60(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[58] = try rt.get(s, env, "m41_IsIntersect");
     native_values[59] = try rt.get(s, env, "type");
     native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
@@ -37604,12 +37606,12 @@ fn branch_60(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[66] = try rt.key(s, native_values[63], native_values[65]);
         native_values[67] = try rt.invoke(s, native_values[62], c.pi_js_undefined(), &.{native_values[66]});
         native_values[68] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{native_values[67]});
-        return native_values[68];
+        return .{ .value = native_values[68] };
     } else {
-        return @call(.always_tail, branch_61, .{ s, env, receiver, native_values });
+        return .{ .jump = 61 };
     }
 }
-fn branch_61(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_61(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[69] = try rt.get(s, env, "m42_IsObject");
     native_values[70] = try rt.get(s, env, "type");
     native_values[71] = try rt.invoke(s, native_values[69], c.pi_js_undefined(), &.{native_values[70]});
@@ -37622,12 +37624,12 @@ fn branch_61(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[77] = try rt.key(s, native_values[74], native_values[76]);
         native_values[78] = try rt.invoke(s, native_values[73], c.pi_js_undefined(), &.{native_values[77]});
         native_values[79] = try rt.invoke(s, native_values[72], c.pi_js_undefined(), &.{native_values[78]});
-        return native_values[79];
+        return .{ .value = native_values[79] };
     } else {
-        return @call(.always_tail, branch_62, .{ s, env, receiver, native_values });
+        return .{ .jump = 62 };
     }
 }
-fn branch_62(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_62(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[80] = try rt.get(s, env, "m45_IsRecord");
     native_values[81] = try rt.get(s, env, "type");
     native_values[82] = try rt.invoke(s, native_values[80], c.pi_js_undefined(), &.{native_values[81]});
@@ -37642,12 +37644,12 @@ fn branch_62(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[90] = try rt.invoke(s, native_values[88], c.pi_js_undefined(), &.{native_values[89]});
         native_values[91] = try rt.invoke(s, native_values[87], c.pi_js_undefined(), &.{native_values[90]});
         native_values[92] = try rt.invoke(s, native_values[83], c.pi_js_undefined(), &.{ native_values[86], native_values[91] });
-        return native_values[92];
+        return .{ .value = native_values[92] };
     } else {
-        return @call(.always_tail, branch_63, .{ s, env, receiver, native_values });
+        return .{ .jump = 63 };
     }
 }
-fn branch_63(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_63(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[93] = try rt.get(s, env, "m24_IsUnion");
     native_values[94] = try rt.get(s, env, "type");
     native_values[95] = try rt.invoke(s, native_values[93], c.pi_js_undefined(), &.{native_values[94]});
@@ -37660,12 +37662,12 @@ fn branch_63(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[101] = try rt.key(s, native_values[98], native_values[100]);
         native_values[102] = try rt.invoke(s, native_values[97], c.pi_js_undefined(), &.{native_values[101]});
         native_values[103] = try rt.invoke(s, native_values[96], c.pi_js_undefined(), &.{native_values[102]});
-        return native_values[103];
+        return .{ .value = native_values[103] };
     } else {
-        return @call(.always_tail, branch_64, .{ s, env, receiver, native_values });
+        return .{ .jump = 64 };
     }
 }
-fn branch_64(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_64(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[104] = try rt.get(s, env, "m95_IsTuple");
     native_values[105] = try rt.get(s, env, "type");
     native_values[106] = try rt.invoke(s, native_values[104], c.pi_js_undefined(), &.{native_values[105]});
@@ -37678,13 +37680,13 @@ fn branch_64(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[112] = try rt.key(s, native_values[109], native_values[111]);
         native_values[113] = try rt.invoke(s, native_values[108], c.pi_js_undefined(), &.{native_values[112]});
         native_values[114] = try rt.invoke(s, native_values[107], c.pi_js_undefined(), &.{native_values[113]});
-        return native_values[114];
+        return .{ .value = native_values[114] };
     } else {
         native_values[115] = try rt.get(s, env, "type");
-        return native_values[115];
+        return .{ .value = native_values[115] };
     }
 }
-fn branch_65(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_65(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[6] = try rt.get(s, env, "requiredKeys");
     native_values[7] = try s.text("length");
@@ -37697,13 +37699,13 @@ fn branch_65(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[13] = try rt.propertyKey(s, native_values[12]);
         native_values[14] = try rt.get(s, env, "requiredKeys");
         try rt.property(s, native_values[11], native_values[13], native_values[14]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[15] = try s.object();
-        return native_values[15];
+        return .{ .value = native_values[15] };
     }
 }
-fn branch_66(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_66(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m2_IsSchema");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -37712,12 +37714,12 @@ fn branch_66(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~optional");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_67(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_67(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "key");
@@ -37735,17 +37737,17 @@ fn branch_67(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[15] = try s.object();
         native_values[16] = try rt.get(s, env, "options");
         native_values[17] = try rt.invoke(s, native_values[10], native_values[7], &.{ native_values[14], native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m45_RecordDeferred");
         native_values[19] = try rt.get(s, env, "key");
         native_values[20] = try rt.get(s, env, "value");
         native_values[21] = try rt.get(s, env, "options");
         native_values[22] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[19], native_values[20], native_values[21] });
-        return native_values[22];
+        return .{ .value = native_values[22] };
     }
 }
-fn branch_68(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_68(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m37_IsAny");
     native_values[3] = try rt.get(s, env, "key");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -37753,12 +37755,12 @@ fn branch_68(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[5] = try rt.get(s, env, "m48_FromAnyKey");
         native_values[6] = try rt.get(s, env, "value");
         native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return @call(.always_tail, branch_69, .{ s, env, receiver, native_values });
+        return .{ .jump = 69 };
     }
 }
-fn branch_69(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_69(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "m51_IsBoolean");
     native_values[9] = try rt.get(s, env, "key");
     native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
@@ -37766,12 +37768,12 @@ fn branch_69(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[11] = try rt.get(s, env, "m52_FromBooleanKey");
         native_values[12] = try rt.get(s, env, "value");
         native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_70, .{ s, env, receiver, native_values });
+        return .{ .jump = 70 };
     }
 }
-fn branch_70(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_70(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m53_IsEnum");
     native_values[15] = try rt.get(s, env, "key");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -37783,12 +37785,12 @@ fn branch_70(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[21] = try rt.key(s, native_values[18], native_values[20]);
         native_values[22] = try rt.get(s, env, "value");
         native_values[23] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return @call(.always_tail, branch_71, .{ s, env, receiver, native_values });
+        return .{ .jump = 71 };
     }
 }
-fn branch_71(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_71(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[24] = try rt.get(s, env, "m55_IsInteger");
     native_values[25] = try rt.get(s, env, "key");
     native_values[26] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[25]});
@@ -37797,12 +37799,12 @@ fn branch_71(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[28] = try rt.get(s, env, "key");
         native_values[29] = try rt.get(s, env, "value");
         native_values[30] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_72, .{ s, env, receiver, native_values });
+        return .{ .jump = 72 };
     }
 }
-fn branch_72(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_72(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m41_IsIntersect");
     native_values[32] = try rt.get(s, env, "key");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -37814,12 +37816,12 @@ fn branch_72(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.get(s, env, "value");
         native_values[40] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{ native_values[38], native_values[39] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
-        return @call(.always_tail, branch_73, .{ s, env, receiver, native_values });
+        return .{ .jump = 73 };
     }
 }
-fn branch_73(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_73(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[41] = try rt.get(s, env, "m14_IsLiteral");
     native_values[42] = try rt.get(s, env, "key");
     native_values[43] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{native_values[42]});
@@ -37831,12 +37833,12 @@ fn branch_73(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[48] = try rt.key(s, native_values[45], native_values[47]);
         native_values[49] = try rt.get(s, env, "value");
         native_values[50] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{ native_values[48], native_values[49] });
-        return native_values[50];
+        return .{ .value = native_values[50] };
     } else {
-        return @call(.always_tail, branch_74, .{ s, env, receiver, native_values });
+        return .{ .jump = 74 };
     }
 }
-fn branch_74(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_74(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[51] = try rt.get(s, env, "m59_IsNumber");
     native_values[52] = try rt.get(s, env, "key");
     native_values[53] = try rt.invoke(s, native_values[51], c.pi_js_undefined(), &.{native_values[52]});
@@ -37845,12 +37847,12 @@ fn branch_74(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[55] = try rt.get(s, env, "key");
         native_values[56] = try rt.get(s, env, "value");
         native_values[57] = try rt.invoke(s, native_values[54], c.pi_js_undefined(), &.{ native_values[55], native_values[56] });
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
-        return @call(.always_tail, branch_75, .{ s, env, receiver, native_values });
+        return .{ .jump = 75 };
     }
 }
-fn branch_75(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_75(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[58] = try rt.get(s, env, "m24_IsUnion");
     native_values[59] = try rt.get(s, env, "key");
     native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
@@ -37862,12 +37864,12 @@ fn branch_75(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[65] = try rt.key(s, native_values[62], native_values[64]);
         native_values[66] = try rt.get(s, env, "value");
         native_values[67] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{ native_values[65], native_values[66] });
-        return native_values[67];
+        return .{ .value = native_values[67] };
     } else {
-        return @call(.always_tail, branch_76, .{ s, env, receiver, native_values });
+        return .{ .jump = 76 };
     }
 }
-fn branch_76(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_76(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[68] = try rt.get(s, env, "m50_IsString");
     native_values[69] = try rt.get(s, env, "key");
     native_values[70] = try rt.invoke(s, native_values[68], c.pi_js_undefined(), &.{native_values[69]});
@@ -37876,12 +37878,12 @@ fn branch_76(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[72] = try rt.get(s, env, "key");
         native_values[73] = try rt.get(s, env, "value");
         native_values[74] = try rt.invoke(s, native_values[71], c.pi_js_undefined(), &.{ native_values[72], native_values[73] });
-        return native_values[74];
+        return .{ .value = native_values[74] };
     } else {
-        return @call(.always_tail, branch_77, .{ s, env, receiver, native_values });
+        return .{ .jump = 77 };
     }
 }
-fn branch_77(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_77(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[75] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[76] = try rt.get(s, env, "key");
     native_values[77] = try rt.invoke(s, native_values[75], c.pi_js_undefined(), &.{native_values[76]});
@@ -37893,16 +37895,16 @@ fn branch_77(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[82] = try rt.key(s, native_values[79], native_values[81]);
         native_values[83] = try rt.get(s, env, "value");
         native_values[84] = try rt.invoke(s, native_values[78], c.pi_js_undefined(), &.{ native_values[82], native_values[83] });
-        return native_values[84];
+        return .{ .value = native_values[84] };
     } else {
         native_values[85] = try rt.get(s, env, "m42__Object_");
         native_values[86] = try s.object();
         native_values[87] = try rt.invoke(s, native_values[85], c.pi_js_undefined(), &.{native_values[86]});
-        return native_values[87];
+        return .{ .value = native_values[87] };
     }
 }
-fn branch_78(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_79(s, env, receiver, native_values);
+fn branch_78(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 79);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m42__Object_");
         native_values[10] = try s.object();
@@ -37911,12 +37913,12 @@ fn branch_78(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[13] = try rt.get(s, env, "value");
         try rt.property(s, native_values[10], native_values[12], native_values[13]);
         native_values[14] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_80, .{ s, env, receiver, native_values });
+        return .{ .jump = 80 };
     }
 }
-fn branch_79(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_79(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsString");
     native_values[3] = try rt.get(s, env, "key");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -37924,12 +37926,12 @@ fn branch_79(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[5] = try rt.get(s, env, "m4_IsNumber");
         native_values[6] = try rt.get(s, env, "key");
         native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_80(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_80(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[15] = try rt.get(s, env, "m4_IsEqual");
     native_values[16] = try rt.get(s, env, "key");
@@ -37942,12 +37944,12 @@ fn branch_80(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[22] = try rt.get(s, env, "value");
         try rt.property(s, native_values[19], native_values[21], native_values[22]);
         native_values[23] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[19]});
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return @call(.always_tail, branch_81, .{ s, env, receiver, native_values });
+        return .{ .jump = 81 };
     }
 }
-fn branch_81(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_81(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[24] = try rt.get(s, env, "m4_IsEqual");
     native_values[25] = try rt.get(s, env, "key");
@@ -37960,30 +37962,30 @@ fn branch_81(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[31] = try rt.get(s, env, "value");
         try rt.property(s, native_values[28], native_values[30], native_values[31]);
         native_values[32] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{native_values[28]});
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
         native_values[33] = try rt.get(s, env, "m42__Object_");
         native_values[34] = try s.object();
         native_values[35] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[34]});
-        return native_values[35];
+        return .{ .value = native_values[35] };
     }
 }
-fn branch_82(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_82(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m2_IsSchema");
     native_values[10] = try rt.get(s, env, "record");
     native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
     if (s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "record");
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
         native_values[13] = try rt.get(s, env, "m61_CreateObject");
         native_values[14] = try rt.get(s, env, "flattened");
         native_values[15] = try rt.get(s, env, "value");
         native_values[16] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_83(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_83(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m24_IsUnion");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -37994,15 +37996,15 @@ fn branch_83(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try s.array();
         native_values[11] = try rt.get(s, env, "type");
         try rt.append(s, native_values[10], native_values[11]);
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_84(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_84(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "m61_StringOrNumberCheck");
@@ -38014,23 +38016,23 @@ fn branch_84(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[8] = try rt.get(s, env, "m45_StringKey");
         native_values[9] = try rt.get(s, env, "value");
         native_values[10] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], native_values[9] });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_85(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[7] = try branch_86(s, env, receiver, native_values);
+fn branch_85(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[7] = try runBranch(s, env, receiver, native_values, 86);
     if (!s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "m55_IsInteger");
         native_values[9] = try rt.get(s, env, "type");
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_86(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_86(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m50_IsString");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -38038,13 +38040,13 @@ fn branch_86(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[4] = try rt.get(s, env, "m59_IsNumber");
         native_values[5] = try rt.get(s, env, "type");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_87(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[17] = try branch_88(s, env, receiver, native_values);
+fn branch_87(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[17] = try runBranch(s, env, receiver, native_values, 88);
     if (s.truthy(native_values[17])) {
         native_values[18] = try s.object();
         native_values[19] = try rt.get(s, env, "result");
@@ -38056,23 +38058,23 @@ fn branch_87(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[24] = try rt.propertyKey(s, native_values[23]);
         native_values[25] = try rt.get(s, env, "value");
         try rt.property(s, native_values[18], native_values[24], native_values[25]);
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[26] = try rt.get(s, env, "result");
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_88(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_88(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m14_IsLiteral");
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
     if (s.truthy(native_values[4])) {
-        return @call(.always_tail, branch_89, .{ s, env, receiver, native_values });
+        return .{ .jump = 89 };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_89(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_89(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m4_IsString");
     native_values[6] = try rt.get(s, env, "left");
     native_values[7] = try s.text("const");
@@ -38086,13 +38088,13 @@ fn branch_89(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[14] = try rt.propertyKey(s, native_values[13]);
         native_values[15] = try rt.key(s, native_values[12], native_values[14]);
         native_values[16] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_90(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[18] = try branch_91(s, env, receiver, native_values);
+fn branch_90(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[18] = try runBranch(s, env, receiver, native_values, 91);
     if (s.truthy(native_values[18])) {
         native_values[19] = try rt.get(s, env, "m49_CreateRecord");
         native_values[20] = try rt.get(s, env, "key");
@@ -38105,27 +38107,27 @@ fn branch_90(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[27] = try rt.invoke(s, native_values[26], native_values[23], &.{});
         native_values[28] = try rt.get(s, env, "value");
         native_values[29] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[27], native_values[28] });
-        return native_values[29];
+        return .{ .value = native_values[29] };
     } else {
         native_values[30] = try rt.get(s, env, "m49_CreateRecord");
         native_values[31] = try rt.get(s, env, "m45_StringKey");
         native_values[32] = try rt.get(s, env, "value");
         native_values[33] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{ native_values[31], native_values[32] });
-        return native_values[33];
+        return .{ .value = native_values[33] };
     }
 }
-fn branch_91(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_91(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_HasPropertyKey");
     native_values[3] = try rt.get(s, env, "key");
     native_values[4] = try s.text("pattern");
     native_values[5] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4] });
     if (s.truthy(native_values[5])) {
-        return @call(.always_tail, branch_92, .{ s, env, receiver, native_values });
+        return .{ .jump = 92 };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_92(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_92(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m4_IsString");
     native_values[7] = try rt.get(s, env, "key");
     native_values[8] = try s.text("pattern");
@@ -38139,12 +38141,12 @@ fn branch_92(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[15] = try rt.key(s, native_values[12], native_values[14]);
         native_values[16] = try rt.get(s, env, "RegExp");
         native_values[17] = try rt.binary(s, "instanceof", native_values[15], native_values[16]);
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_93(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_93(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "finite");
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m47_FromKey");
@@ -38153,16 +38155,16 @@ fn branch_93(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
         native_values[13] = try rt.get(s, env, "value");
         native_values[14] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[12], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m49_CreateRecord");
         native_values[16] = try rt.get(s, env, "pattern");
         native_values[17] = try rt.get(s, env, "value");
         native_values[18] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_94(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_94(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[4] = try rt.get(s, env, "m4_IsEqual");
     native_values[5] = try rt.get(s, env, "parsed");
@@ -38174,13 +38176,13 @@ fn branch_94(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[10] = try rt.get(s, env, "parsed");
         native_values[11] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[12] = try rt.key(s, native_values[10], native_values[11]);
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
         native_values[13] = try s.array();
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_95(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_95(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "const_");
     native_values[4] = try s.text("");
@@ -38191,12 +38193,12 @@ fn branch_95(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         try rt.append(s, native_values[6], native_values[7]);
         native_values[8] = try rt.get(s, env, "input");
         try rt.append(s, native_values[6], native_values[8]);
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return @call(.always_tail, branch_96, .{ s, env, receiver, native_values });
+        return .{ .jump = 96 };
     }
 }
-fn branch_96(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_96(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "const_");
     native_values[10] = try s.text("startsWith");
     native_values[11] = try rt.propertyKey(s, native_values[10]);
@@ -38210,12 +38212,12 @@ fn branch_96(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[18] = try rt.get(s, env, "input");
         native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
         native_values[20] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return @call(.always_tail, branch_97, .{ s, env, receiver, native_values });
+        return .{ .jump = 97 };
     }
 }
-fn branch_97(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_97(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[21] = try rt.get(s, env, "const_");
     native_values[22] = try s.text("startsWith");
     native_values[23] = try rt.propertyKey(s, native_values[22]);
@@ -38227,7 +38229,7 @@ fn branch_97(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[28] = try rt.get(s, env, "const_");
         native_values[29] = try rt.get(s, env, "input");
         native_values[30] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
         native_values[31] = try rt.get(s, env, "m69_TakeConst");
         native_values[32] = try rt.get(s, env, "const_");
@@ -38235,10 +38237,10 @@ fn branch_97(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[34] = try rt.get(s, env, "input");
         native_values[35] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[34]});
         native_values[36] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{ native_values[32], native_values[35] });
-        return native_values[36];
+        return .{ .value = native_values[36] };
     }
 }
-fn branch_98(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_98(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "input");
@@ -38262,13 +38264,13 @@ fn branch_98(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSVa
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         native_values[20] = try rt.invoke(s, native_values[15], native_values[12], &.{native_values[19]});
         try rt.append(s, native_values[10], native_values[20]);
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[21] = try s.array();
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_99(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_99(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[4] = try rt.get(s, env, "trimmed");
     native_values[5] = try s.text("startsWith");
@@ -38286,12 +38288,12 @@ fn branch_99(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: [
         native_values[16] = try rt.invoke(s, native_values[15], native_values[12], &.{c.JS_NewFloat64(engine.context, 2)});
         native_values[17] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[16]});
         native_values[18] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return @call(.always_tail, branch_100, .{ s, env, receiver, native_values });
+        return .{ .jump = 100 };
     }
 }
-fn branch_100(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_100(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[19] = try rt.get(s, env, "trimmed");
     native_values[20] = try s.text("startsWith");
@@ -38309,20 +38311,20 @@ fn branch_100(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[31] = try rt.invoke(s, native_values[30], native_values[27], &.{c.JS_NewFloat64(engine.context, 2)});
         native_values[32] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{native_values[31]});
         native_values[33] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{native_values[32]});
-        return native_values[33];
+        return .{ .value = native_values[33] };
     } else {
         native_values[34] = try rt.get(s, env, "trimmed");
-        return native_values[34];
+        return .{ .value = native_values[34] };
     }
 }
-fn branch_101(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_101(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[7] = try rt.get(s, env, "m4_IsEqual");
     native_values[8] = try rt.get(s, env, "index");
     native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], c.JS_NewFloat64(engine.context, -1) });
     if (s.truthy(native_values[9])) {
         native_values[10] = try s.text("");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "input");
         native_values[12] = try s.text("slice");
@@ -38331,17 +38333,17 @@ fn branch_101(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.get(s, env, "index");
         native_values[16] = try rt.binary(s, "+", native_values[15], c.JS_NewFloat64(engine.context, 2));
         native_values[17] = try rt.invoke(s, native_values[14], native_values[11], &.{native_values[16]});
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_102(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_102(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[7] = try rt.get(s, env, "m4_IsEqual");
     native_values[8] = try rt.get(s, env, "index");
     native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], c.JS_NewFloat64(engine.context, -1) });
     if (s.truthy(native_values[9])) {
         native_values[10] = try s.text("");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "input");
         native_values[12] = try s.text("slice");
@@ -38349,10 +38351,10 @@ fn branch_102(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try rt.key(s, native_values[11], native_values[13]);
         native_values[15] = try rt.get(s, env, "index");
         native_values[16] = try rt.invoke(s, native_values[14], native_values[11], &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_103(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_103(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[6] = try rt.get(s, env, "trimmed");
     native_values[7] = try s.text("startsWith");
@@ -38370,12 +38372,12 @@ fn branch_103(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.invoke(s, native_values[17], native_values[14], &.{c.JS_NewFloat64(engine.context, 2)});
         native_values[19] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[18]});
         native_values[20] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[19]});
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return @call(.always_tail, branch_104, .{ s, env, receiver, native_values });
+        return .{ .jump = 104 };
     }
 }
-fn branch_104(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_104(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[21] = try rt.get(s, env, "trimmed");
     native_values[22] = try s.text("startsWith");
@@ -38393,30 +38395,30 @@ fn branch_104(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[33] = try rt.invoke(s, native_values[32], native_values[29], &.{c.JS_NewFloat64(engine.context, 2)});
         native_values[34] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{native_values[33]});
         native_values[35] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{native_values[34]});
-        return native_values[35];
+        return .{ .value = native_values[35] };
     } else {
         native_values[36] = try rt.get(s, env, "trimmed");
-        return native_values[36];
+        return .{ .value = native_values[36] };
     }
 }
-fn branch_105(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_105(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "Until");
     native_values[4] = try s.text("");
     native_values[5] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4] });
     if (s.truthy(native_values[5])) {
         native_values[6] = try s.array();
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
         native_values[7] = try s.array();
         native_values[8] = try rt.get(s, env, "Until");
         try rt.append(s, native_values[7], native_values[8]);
         native_values[9] = try rt.get(s, env, "UntilRest");
         try rt.append(s, native_values[7], native_values[9]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_106(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_106(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[3] = try rt.get(s, env, "m73_IsMatch");
     native_values[4] = try rt.get(s, env, "input");
@@ -38430,14 +38432,14 @@ fn branch_106(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[11] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[12] = try rt.key(s, native_values[10], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[9], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
         native_values[14] = try rt.get(s, env, "fail");
         native_values[15] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     }
 }
-fn branch_107(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_107(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m106_IsInputMatchSentinal");
     native_values[3] = try rt.get(s, env, "end");
     native_values[4] = try rt.get(s, env, "input");
@@ -38448,7 +38450,7 @@ fn branch_107(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.append(s, native_values[6], native_values[7]);
         native_values[8] = try rt.get(s, env, "input");
         try rt.append(s, native_values[6], native_values[8]);
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
         native_values[9] = try rt.get(s, env, "m106_Until");
         native_values[10] = try rt.get(s, env, "end");
@@ -38465,10 +38467,10 @@ fn branch_107(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try s.text("");
         native_values[22] = try s.concat(native_values[20], native_values[21]);
         native_values[23] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_108(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_108(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -38476,7 +38478,7 @@ fn branch_108(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[4] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{ native_values[2], native_values[3] });
     if (s.truthy(native_values[4])) {
         native_values[5] = try s.array();
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
         native_values[6] = try s.array();
         native_values[7] = try rt.get(s, env, "input");
@@ -38491,10 +38493,10 @@ fn branch_108(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.key(s, native_values[12], native_values[14]);
         native_values[16] = try rt.invoke(s, native_values[15], native_values[12], &.{c.JS_NewFloat64(engine.context, 1)});
         try rt.append(s, native_values[6], native_values[16]);
-        return native_values[6];
+        return .{ .value = native_values[6] };
     }
 }
-fn branch_109(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_109(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "input");
     native_values[3] = try s.text("startsWith");
@@ -38503,16 +38505,16 @@ fn branch_109(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[6] = try rt.get(s, env, "left");
     native_values[7] = try rt.invoke(s, native_values[5], native_values[2], &.{native_values[6]});
     if (s.truthy(native_values[7])) {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     } else {
         native_values[8] = try rt.get(s, env, "m106_IsInputMatchSentinal");
         native_values[9] = try rt.get(s, env, "right");
         native_values[10] = try rt.get(s, env, "input");
         native_values[11] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_110(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_110(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "input");
     native_values[2] = try s.text("length");
@@ -38529,12 +38531,12 @@ fn branch_110(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
         native_values[12] = try rt.key(s, native_values[10], native_values[11]);
         try rt.spreadArray(s, native_values[6], native_values[12]);
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return @call(.always_tail, branch_111, .{ s, env, receiver, native_values });
+        return .{ .jump = 111 };
     }
 }
-fn branch_111(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_111(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[13] = try rt.get(s, env, "input");
     native_values[14] = try s.text("length");
@@ -38547,13 +38549,13 @@ fn branch_111(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[21] = try rt.key(s, native_values[19], native_values[20]);
         try rt.spreadArray(s, native_values[18], native_values[21]);
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[22] = try s.array();
-        return native_values[22];
+        return .{ .value = native_values[22] };
     }
 }
-fn branch_112(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_112(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "types");
@@ -38562,15 +38564,15 @@ fn branch_112(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[5] = try rt.key(s, native_values[2], native_values[4]);
     native_values[6] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{ native_values[5], c.JS_NewFloat64(engine.context, 0) });
     if (s.truthy(native_values[6])) {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     } else {
         native_values[7] = try rt.get(s, env, "m107_FromTypesReduce");
         native_values[8] = try rt.get(s, env, "types");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_113(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_113(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m107_FromType");
     native_values[3] = try rt.get(s, env, "left");
@@ -38579,12 +38581,12 @@ fn branch_113(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "m107_FromTypesReduce");
         native_values[6] = try rt.get(s, env, "right");
         native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     }
 }
-fn branch_114(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_114(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m24_IsUnion");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -38595,12 +38597,12 @@ fn branch_114(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_115, .{ s, env, receiver, native_values });
+        return .{ .jump = 115 };
     }
 }
-fn branch_115(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_115(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[10] = try rt.get(s, env, "m14_IsLiteral");
     native_values[11] = try rt.get(s, env, "type");
@@ -38612,12 +38614,12 @@ fn branch_115(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     }
 }
-fn branch_116(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_116(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "pattern");
     native_values[3] = try rt.get(s, env, "m45_StringKey");
@@ -38625,12 +38627,12 @@ fn branch_116(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (s.truthy(native_values[4])) {
         native_values[5] = try rt.get(s, env, "m50_String");
         native_values[6] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return @call(.always_tail, branch_117, .{ s, env, receiver, native_values });
+        return .{ .jump = 117 };
     }
 }
-fn branch_117(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_117(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m4_IsEqual");
     native_values[8] = try rt.get(s, env, "pattern");
     native_values[9] = try rt.get(s, env, "m45_IntegerKey");
@@ -38638,12 +38640,12 @@ fn branch_117(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (s.truthy(native_values[10])) {
         native_values[11] = try rt.get(s, env, "m55_Integer");
         native_values[12] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{});
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return @call(.always_tail, branch_118, .{ s, env, receiver, native_values });
+        return .{ .jump = 118 };
     }
 }
-fn branch_118(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_118(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[13] = try rt.get(s, env, "m4_IsEqual");
     native_values[14] = try rt.get(s, env, "pattern");
     native_values[15] = try rt.get(s, env, "m45_NumberKey");
@@ -38651,15 +38653,15 @@ fn branch_118(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     if (s.truthy(native_values[16])) {
         native_values[17] = try rt.get(s, env, "m59_Number");
         native_values[18] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m108_TemplateLiteralDecodeUnsafe");
         native_values[20] = try rt.get(s, env, "pattern");
         native_values[21] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{native_values[20]});
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_119(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_119(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[4] = try rt.get(s, env, "m4_IsEqual");
     native_values[5] = try rt.get(s, env, "types");
@@ -38670,12 +38672,12 @@ fn branch_119(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (s.truthy(native_values[9])) {
         native_values[10] = try rt.get(s, env, "m50_String");
         native_values[11] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_120, .{ s, env, receiver, native_values });
+        return .{ .jump = 120 };
     }
 }
-fn branch_120(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_120(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m107_IsTemplateLiteralFinite");
     native_values[13] = try rt.get(s, env, "types");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -38683,15 +38685,15 @@ fn branch_120(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.get(s, env, "m108_DecodeTypes");
         native_values[16] = try rt.get(s, env, "types");
         native_values[17] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m111_TemplateLiteralCreate");
         native_values[19] = try rt.get(s, env, "pattern");
         native_values[20] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[19]});
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_121(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_121(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "types");
@@ -38702,27 +38704,27 @@ fn branch_121(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (s.truthy(native_values[6])) {
         native_values[7] = try rt.get(s, env, "m110_Unreachable");
         native_values[8] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_122, .{ s, env, receiver, native_values });
+        return .{ .jump = 122 };
     }
 }
-fn branch_122(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_122(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[20] = try branch_123(s, env, receiver, native_values);
+    native_values[20] = try runBranch(s, env, receiver, native_values, 123);
     if (s.truthy(native_values[20])) {
         native_values[21] = try rt.get(s, env, "types");
         native_values[22] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[23] = try rt.key(s, native_values[21], native_values[22]);
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
         native_values[24] = try rt.get(s, env, "m108_DecodeTypesAsUnion");
         native_values[25] = try rt.get(s, env, "types");
         native_values[26] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[25]});
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_123(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_123(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[9] = try rt.get(s, env, "m4_IsEqual");
     native_values[10] = try rt.get(s, env, "types");
@@ -38736,12 +38738,12 @@ fn branch_123(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[18] = try rt.key(s, native_values[16], native_values[17]);
         native_values[19] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
-        return native_values[14];
+        return .{ .value = native_values[14] };
     }
 }
-fn branch_124(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_124(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m24_IsUnion");
     native_values[3] = try rt.get(s, env, "type");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -38753,12 +38755,12 @@ fn branch_124(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.propertyKey(s, native_values[8]);
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_125, .{ s, env, receiver, native_values });
+        return .{ .jump = 125 };
     }
 }
-fn branch_125(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_125(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m14_IsLiteral");
     native_values[13] = try rt.get(s, env, "type");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -38770,14 +38772,14 @@ fn branch_125(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[19] = try rt.propertyKey(s, native_values[18]);
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
         native_values[22] = try rt.get(s, env, "m110_Unreachable");
         native_values[23] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{});
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_126(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_126(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "variants");
@@ -38794,17 +38796,17 @@ fn branch_126(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.text("");
         native_values[14] = try s.concat(native_values[12], native_values[13]);
         try rt.append(s, native_values[8], native_values[14]);
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[15] = try rt.get(s, env, "m108_FromLiteralPush");
         native_values[16] = try rt.get(s, env, "variants");
         native_values[17] = try rt.get(s, env, "value");
         native_values[18] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_127(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_128(s, env, receiver, native_values);
+fn branch_127(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 128);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_IsNull");
         native_values[10] = try rt.get(s, env, "value");
@@ -38812,12 +38814,12 @@ fn branch_127(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[12] = try rt.propertyKey(s, native_values[11]);
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_128(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_128(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObjectNotArray");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -38826,12 +38828,12 @@ fn branch_128(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~unsafe");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_129(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_129(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObject");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -38840,12 +38842,12 @@ fn branch_129(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
         native_values[7] = try rt.unary(s, "!", native_values[6]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_130(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_130(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m37_IsAny");
     native_values[4] = try rt.get(s, env, "left");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -38855,12 +38857,12 @@ fn branch_130(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.get(s, env, "right");
         native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9] });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return @call(.always_tail, branch_131, .{ s, env, receiver, native_values });
+        return .{ .jump = 131 };
     }
 }
-fn branch_131(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_131(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m38_IsArray");
     native_values[12] = try rt.get(s, env, "left");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -38874,12 +38876,12 @@ fn branch_131(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.get(s, env, "right");
         native_values[22] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[15], native_values[16], native_values[20], native_values[21] });
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return @call(.always_tail, branch_132, .{ s, env, receiver, native_values });
+        return .{ .jump = 132 };
     }
 }
-fn branch_132(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_132(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "m81_IsBigInt");
     native_values[24] = try rt.get(s, env, "left");
     native_values[25] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
@@ -38889,12 +38891,12 @@ fn branch_132(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.get(s, env, "left");
         native_values[29] = try rt.get(s, env, "right");
         native_values[30] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{ native_values[27], native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_133, .{ s, env, receiver, native_values });
+        return .{ .jump = 133 };
     }
 }
-fn branch_133(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_133(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m51_IsBoolean");
     native_values[32] = try rt.get(s, env, "left");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -38904,12 +38906,12 @@ fn branch_133(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[36] = try rt.get(s, env, "left");
         native_values[37] = try rt.get(s, env, "right");
         native_values[38] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{ native_values[35], native_values[36], native_values[37] });
-        return native_values[38];
+        return .{ .value = native_values[38] };
     } else {
-        return @call(.always_tail, branch_134, .{ s, env, receiver, native_values });
+        return .{ .jump = 134 };
     }
 }
-fn branch_134(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_134(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[39] = try rt.get(s, env, "m39_IsConstructor");
     native_values[40] = try rt.get(s, env, "left");
     native_values[41] = try rt.invoke(s, native_values[39], c.pi_js_undefined(), &.{native_values[40]});
@@ -38926,12 +38928,12 @@ fn branch_134(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[51] = try rt.key(s, native_values[48], native_values[50]);
         native_values[52] = try rt.get(s, env, "right");
         native_values[53] = try rt.invoke(s, native_values[42], c.pi_js_undefined(), &.{ native_values[43], native_values[47], native_values[51], native_values[52] });
-        return native_values[53];
+        return .{ .value = native_values[53] };
     } else {
-        return @call(.always_tail, branch_135, .{ s, env, receiver, native_values });
+        return .{ .jump = 135 };
     }
 }
-fn branch_135(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_135(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[54] = try rt.get(s, env, "m85_IsDependent");
     native_values[55] = try rt.get(s, env, "left");
     native_values[56] = try rt.invoke(s, native_values[54], c.pi_js_undefined(), &.{native_values[55]});
@@ -38952,12 +38954,12 @@ fn branch_135(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[70] = try rt.key(s, native_values[67], native_values[69]);
         native_values[71] = try rt.get(s, env, "right");
         native_values[72] = try rt.invoke(s, native_values[57], c.pi_js_undefined(), &.{ native_values[58], native_values[62], native_values[66], native_values[70], native_values[71] });
-        return native_values[72];
+        return .{ .value = native_values[72] };
     } else {
-        return @call(.always_tail, branch_136, .{ s, env, receiver, native_values });
+        return .{ .jump = 136 };
     }
 }
-fn branch_136(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_136(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[73] = try rt.get(s, env, "m53_IsEnum");
     native_values[74] = try rt.get(s, env, "left");
     native_values[75] = try rt.invoke(s, native_values[73], c.pi_js_undefined(), &.{native_values[74]});
@@ -38970,12 +38972,12 @@ fn branch_136(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[81] = try rt.key(s, native_values[78], native_values[80]);
         native_values[82] = try rt.get(s, env, "right");
         native_values[83] = try rt.invoke(s, native_values[76], c.pi_js_undefined(), &.{ native_values[77], native_values[81], native_values[82] });
-        return native_values[83];
+        return .{ .value = native_values[83] };
     } else {
-        return @call(.always_tail, branch_137, .{ s, env, receiver, native_values });
+        return .{ .jump = 137 };
     }
 }
-fn branch_137(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_137(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[84] = try rt.get(s, env, "m40_IsFunction");
     native_values[85] = try rt.get(s, env, "left");
     native_values[86] = try rt.invoke(s, native_values[84], c.pi_js_undefined(), &.{native_values[85]});
@@ -38992,12 +38994,12 @@ fn branch_137(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[96] = try rt.key(s, native_values[93], native_values[95]);
         native_values[97] = try rt.get(s, env, "right");
         native_values[98] = try rt.invoke(s, native_values[87], c.pi_js_undefined(), &.{ native_values[88], native_values[92], native_values[96], native_values[97] });
-        return native_values[98];
+        return .{ .value = native_values[98] };
     } else {
-        return @call(.always_tail, branch_138, .{ s, env, receiver, native_values });
+        return .{ .jump = 138 };
     }
 }
-fn branch_138(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_138(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[99] = try rt.get(s, env, "m55_IsInteger");
     native_values[100] = try rt.get(s, env, "left");
     native_values[101] = try rt.invoke(s, native_values[99], c.pi_js_undefined(), &.{native_values[100]});
@@ -39007,12 +39009,12 @@ fn branch_138(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[104] = try rt.get(s, env, "left");
         native_values[105] = try rt.get(s, env, "right");
         native_values[106] = try rt.invoke(s, native_values[102], c.pi_js_undefined(), &.{ native_values[103], native_values[104], native_values[105] });
-        return native_values[106];
+        return .{ .value = native_values[106] };
     } else {
-        return @call(.always_tail, branch_139, .{ s, env, receiver, native_values });
+        return .{ .jump = 139 };
     }
 }
-fn branch_139(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_139(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[107] = try rt.get(s, env, "m41_IsIntersect");
     native_values[108] = try rt.get(s, env, "left");
     native_values[109] = try rt.invoke(s, native_values[107], c.pi_js_undefined(), &.{native_values[108]});
@@ -39025,12 +39027,12 @@ fn branch_139(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[115] = try rt.key(s, native_values[112], native_values[114]);
         native_values[116] = try rt.get(s, env, "right");
         native_values[117] = try rt.invoke(s, native_values[110], c.pi_js_undefined(), &.{ native_values[111], native_values[115], native_values[116] });
-        return native_values[117];
+        return .{ .value = native_values[117] };
     } else {
-        return @call(.always_tail, branch_140, .{ s, env, receiver, native_values });
+        return .{ .jump = 140 };
     }
 }
-fn branch_140(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_140(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[118] = try rt.get(s, env, "m14_IsLiteral");
     native_values[119] = try rt.get(s, env, "left");
     native_values[120] = try rt.invoke(s, native_values[118], c.pi_js_undefined(), &.{native_values[119]});
@@ -39040,12 +39042,12 @@ fn branch_140(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[123] = try rt.get(s, env, "left");
         native_values[124] = try rt.get(s, env, "right");
         native_values[125] = try rt.invoke(s, native_values[121], c.pi_js_undefined(), &.{ native_values[122], native_values[123], native_values[124] });
-        return native_values[125];
+        return .{ .value = native_values[125] };
     } else {
-        return @call(.always_tail, branch_141, .{ s, env, receiver, native_values });
+        return .{ .jump = 141 };
     }
 }
-fn branch_141(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_141(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[126] = try rt.get(s, env, "m87_IsNever");
     native_values[127] = try rt.get(s, env, "left");
     native_values[128] = try rt.invoke(s, native_values[126], c.pi_js_undefined(), &.{native_values[127]});
@@ -39055,12 +39057,12 @@ fn branch_141(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[131] = try rt.get(s, env, "left");
         native_values[132] = try rt.get(s, env, "right");
         native_values[133] = try rt.invoke(s, native_values[129], c.pi_js_undefined(), &.{ native_values[130], native_values[131], native_values[132] });
-        return native_values[133];
+        return .{ .value = native_values[133] };
     } else {
-        return @call(.always_tail, branch_142, .{ s, env, receiver, native_values });
+        return .{ .jump = 142 };
     }
 }
-fn branch_142(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_142(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[134] = try rt.get(s, env, "m88_IsNull");
     native_values[135] = try rt.get(s, env, "left");
     native_values[136] = try rt.invoke(s, native_values[134], c.pi_js_undefined(), &.{native_values[135]});
@@ -39070,12 +39072,12 @@ fn branch_142(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[139] = try rt.get(s, env, "left");
         native_values[140] = try rt.get(s, env, "right");
         native_values[141] = try rt.invoke(s, native_values[137], c.pi_js_undefined(), &.{ native_values[138], native_values[139], native_values[140] });
-        return native_values[141];
+        return .{ .value = native_values[141] };
     } else {
-        return @call(.always_tail, branch_143, .{ s, env, receiver, native_values });
+        return .{ .jump = 143 };
     }
 }
-fn branch_143(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_143(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[142] = try rt.get(s, env, "m59_IsNumber");
     native_values[143] = try rt.get(s, env, "left");
     native_values[144] = try rt.invoke(s, native_values[142], c.pi_js_undefined(), &.{native_values[143]});
@@ -39085,12 +39087,12 @@ fn branch_143(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[147] = try rt.get(s, env, "left");
         native_values[148] = try rt.get(s, env, "right");
         native_values[149] = try rt.invoke(s, native_values[145], c.pi_js_undefined(), &.{ native_values[146], native_values[147], native_values[148] });
-        return native_values[149];
+        return .{ .value = native_values[149] };
     } else {
-        return @call(.always_tail, branch_144, .{ s, env, receiver, native_values });
+        return .{ .jump = 144 };
     }
 }
-fn branch_144(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_144(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[150] = try rt.get(s, env, "m42_IsObject");
     native_values[151] = try rt.get(s, env, "left");
     native_values[152] = try rt.invoke(s, native_values[150], c.pi_js_undefined(), &.{native_values[151]});
@@ -39103,12 +39105,12 @@ fn branch_144(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[158] = try rt.key(s, native_values[155], native_values[157]);
         native_values[159] = try rt.get(s, env, "right");
         native_values[160] = try rt.invoke(s, native_values[153], c.pi_js_undefined(), &.{ native_values[154], native_values[158], native_values[159] });
-        return native_values[160];
+        return .{ .value = native_values[160] };
     } else {
-        return @call(.always_tail, branch_145, .{ s, env, receiver, native_values });
+        return .{ .jump = 145 };
     }
 }
-fn branch_145(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_145(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[161] = try rt.get(s, env, "m45_IsRecord");
     native_values[162] = try rt.get(s, env, "left");
     native_values[163] = try rt.invoke(s, native_values[161], c.pi_js_undefined(), &.{native_values[162]});
@@ -39123,12 +39125,12 @@ fn branch_145(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[171] = try rt.invoke(s, native_values[169], c.pi_js_undefined(), &.{native_values[170]});
         native_values[172] = try rt.get(s, env, "right");
         native_values[173] = try rt.invoke(s, native_values[164], c.pi_js_undefined(), &.{ native_values[165], native_values[168], native_values[171], native_values[172] });
-        return native_values[173];
+        return .{ .value = native_values[173] };
     } else {
-        return @call(.always_tail, branch_146, .{ s, env, receiver, native_values });
+        return .{ .jump = 146 };
     }
 }
-fn branch_146(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_146(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[174] = try rt.get(s, env, "m50_IsString");
     native_values[175] = try rt.get(s, env, "left");
     native_values[176] = try rt.invoke(s, native_values[174], c.pi_js_undefined(), &.{native_values[175]});
@@ -39138,12 +39140,12 @@ fn branch_146(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[179] = try rt.get(s, env, "left");
         native_values[180] = try rt.get(s, env, "right");
         native_values[181] = try rt.invoke(s, native_values[177], c.pi_js_undefined(), &.{ native_values[178], native_values[179], native_values[180] });
-        return native_values[181];
+        return .{ .value = native_values[181] };
     } else {
-        return @call(.always_tail, branch_147, .{ s, env, receiver, native_values });
+        return .{ .jump = 147 };
     }
 }
-fn branch_147(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_147(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[182] = try rt.get(s, env, "m90_IsSymbol");
     native_values[183] = try rt.get(s, env, "left");
     native_values[184] = try rt.invoke(s, native_values[182], c.pi_js_undefined(), &.{native_values[183]});
@@ -39153,12 +39155,12 @@ fn branch_147(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[187] = try rt.get(s, env, "left");
         native_values[188] = try rt.get(s, env, "right");
         native_values[189] = try rt.invoke(s, native_values[185], c.pi_js_undefined(), &.{ native_values[186], native_values[187], native_values[188] });
-        return native_values[189];
+        return .{ .value = native_values[189] };
     } else {
-        return @call(.always_tail, branch_148, .{ s, env, receiver, native_values });
+        return .{ .jump = 148 };
     }
 }
-fn branch_148(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_148(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[190] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[191] = try rt.get(s, env, "left");
     native_values[192] = try rt.invoke(s, native_values[190], c.pi_js_undefined(), &.{native_values[191]});
@@ -39171,12 +39173,12 @@ fn branch_148(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[198] = try rt.key(s, native_values[195], native_values[197]);
         native_values[199] = try rt.get(s, env, "right");
         native_values[200] = try rt.invoke(s, native_values[193], c.pi_js_undefined(), &.{ native_values[194], native_values[198], native_values[199] });
-        return native_values[200];
+        return .{ .value = native_values[200] };
     } else {
-        return @call(.always_tail, branch_149, .{ s, env, receiver, native_values });
+        return .{ .jump = 149 };
     }
 }
-fn branch_149(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_149(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[201] = try rt.get(s, env, "m95_IsTuple");
     native_values[202] = try rt.get(s, env, "left");
     native_values[203] = try rt.invoke(s, native_values[201], c.pi_js_undefined(), &.{native_values[202]});
@@ -39189,12 +39191,12 @@ fn branch_149(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[209] = try rt.key(s, native_values[206], native_values[208]);
         native_values[210] = try rt.get(s, env, "right");
         native_values[211] = try rt.invoke(s, native_values[204], c.pi_js_undefined(), &.{ native_values[205], native_values[209], native_values[210] });
-        return native_values[211];
+        return .{ .value = native_values[211] };
     } else {
-        return @call(.always_tail, branch_150, .{ s, env, receiver, native_values });
+        return .{ .jump = 150 };
     }
 }
-fn branch_150(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_150(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[212] = try rt.get(s, env, "m96_IsUndefined");
     native_values[213] = try rt.get(s, env, "left");
     native_values[214] = try rt.invoke(s, native_values[212], c.pi_js_undefined(), &.{native_values[213]});
@@ -39204,12 +39206,12 @@ fn branch_150(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[217] = try rt.get(s, env, "left");
         native_values[218] = try rt.get(s, env, "right");
         native_values[219] = try rt.invoke(s, native_values[215], c.pi_js_undefined(), &.{ native_values[216], native_values[217], native_values[218] });
-        return native_values[219];
+        return .{ .value = native_values[219] };
     } else {
-        return @call(.always_tail, branch_151, .{ s, env, receiver, native_values });
+        return .{ .jump = 151 };
     }
 }
-fn branch_151(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_151(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[220] = try rt.get(s, env, "m24_IsUnion");
     native_values[221] = try rt.get(s, env, "left");
     native_values[222] = try rt.invoke(s, native_values[220], c.pi_js_undefined(), &.{native_values[221]});
@@ -39222,12 +39224,12 @@ fn branch_151(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[228] = try rt.key(s, native_values[225], native_values[227]);
         native_values[229] = try rt.get(s, env, "right");
         native_values[230] = try rt.invoke(s, native_values[223], c.pi_js_undefined(), &.{ native_values[224], native_values[228], native_values[229] });
-        return native_values[230];
+        return .{ .value = native_values[230] };
     } else {
-        return @call(.always_tail, branch_152, .{ s, env, receiver, native_values });
+        return .{ .jump = 152 };
     }
 }
-fn branch_152(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_152(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[231] = try rt.get(s, env, "m89_IsUnknown");
     native_values[232] = try rt.get(s, env, "left");
     native_values[233] = try rt.invoke(s, native_values[231], c.pi_js_undefined(), &.{native_values[232]});
@@ -39237,12 +39239,12 @@ fn branch_152(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[236] = try rt.get(s, env, "left");
         native_values[237] = try rt.get(s, env, "right");
         native_values[238] = try rt.invoke(s, native_values[234], c.pi_js_undefined(), &.{ native_values[235], native_values[236], native_values[237] });
-        return native_values[238];
+        return .{ .value = native_values[238] };
     } else {
-        return @call(.always_tail, branch_153, .{ s, env, receiver, native_values });
+        return .{ .jump = 153 };
     }
 }
-fn branch_153(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_153(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[239] = try rt.get(s, env, "m123_IsVoid");
     native_values[240] = try rt.get(s, env, "left");
     native_values[241] = try rt.invoke(s, native_values[239], c.pi_js_undefined(), &.{native_values[240]});
@@ -39252,14 +39254,14 @@ fn branch_153(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[244] = try rt.get(s, env, "left");
         native_values[245] = try rt.get(s, env, "right");
         native_values[246] = try rt.invoke(s, native_values[242], c.pi_js_undefined(), &.{ native_values[243], native_values[244], native_values[245] });
-        return native_values[246];
+        return .{ .value = native_values[246] };
     } else {
         native_values[247] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[248] = try rt.invoke(s, native_values[247], c.pi_js_undefined(), &.{});
-        return native_values[248];
+        return .{ .value = native_values[248] };
     }
 }
-fn branch_154(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_154(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m86_IsInfer");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39269,12 +39271,12 @@ fn branch_154(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.get(s, env, "right");
         native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9] });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return @call(.always_tail, branch_155, .{ s, env, receiver, native_values });
+        return .{ .jump = 155 };
     }
 }
-fn branch_155(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_155(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m37_IsAny");
     native_values[12] = try rt.get(s, env, "right");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -39282,12 +39284,12 @@ fn branch_155(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[14] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[15] = try rt.get(s, env, "inferred");
         native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return @call(.always_tail, branch_156, .{ s, env, receiver, native_values });
+        return .{ .jump = 156 };
     }
 }
-fn branch_156(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_156(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[17] = try rt.get(s, env, "m89_IsUnknown");
     native_values[18] = try rt.get(s, env, "right");
     native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
@@ -39295,15 +39297,15 @@ fn branch_156(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[21] = try rt.get(s, env, "inferred");
         native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
         native_values[23] = try rt.get(s, env, "m116_ExtendsUnion");
         native_values[24] = try rt.get(s, env, "inferred");
         native_values[25] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
-        return native_values[25];
+        return .{ .value = native_values[25] };
     }
 }
-fn branch_157(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_157(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m37_IsAny");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39312,12 +39314,12 @@ fn branch_157(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8] });
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_158, .{ s, env, receiver, native_values });
+        return .{ .jump = 158 };
     }
 }
-fn branch_158(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_158(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m85_IsDependent");
     native_values[11] = try rt.get(s, env, "right");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -39338,12 +39340,12 @@ fn branch_158(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[26] = try rt.propertyKey(s, native_values[25]);
         native_values[27] = try rt.key(s, native_values[24], native_values[26]);
         native_values[28] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[14], native_values[15], native_values[19], native_values[23], native_values[27] });
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return @call(.always_tail, branch_159, .{ s, env, receiver, native_values });
+        return .{ .jump = 159 };
     }
 }
-fn branch_159(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_159(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[29] = try rt.get(s, env, "m53_IsEnum");
     native_values[30] = try rt.get(s, env, "right");
     native_values[31] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{native_values[30]});
@@ -39356,12 +39358,12 @@ fn branch_159(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{ native_values[33], native_values[34], native_values[38] });
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_160, .{ s, env, receiver, native_values });
+        return .{ .jump = 160 };
     }
 }
-fn branch_160(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_160(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m86_IsInfer");
     native_values[41] = try rt.get(s, env, "right");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -39378,12 +39380,12 @@ fn branch_160(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[52] = try rt.propertyKey(s, native_values[51]);
         native_values[53] = try rt.key(s, native_values[50], native_values[52]);
         native_values[54] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{ native_values[44], native_values[48], native_values[49], native_values[53] });
-        return native_values[54];
+        return .{ .value = native_values[54] };
     } else {
-        return @call(.always_tail, branch_161, .{ s, env, receiver, native_values });
+        return .{ .jump = 161 };
     }
 }
-fn branch_161(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_161(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[55] = try rt.get(s, env, "m41_IsIntersect");
     native_values[56] = try rt.get(s, env, "right");
     native_values[57] = try rt.invoke(s, native_values[55], c.pi_js_undefined(), &.{native_values[56]});
@@ -39396,12 +39398,12 @@ fn branch_161(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[63] = try rt.propertyKey(s, native_values[62]);
         native_values[64] = try rt.key(s, native_values[61], native_values[63]);
         native_values[65] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{ native_values[59], native_values[60], native_values[64] });
-        return native_values[65];
+        return .{ .value = native_values[65] };
     } else {
-        return @call(.always_tail, branch_162, .{ s, env, receiver, native_values });
+        return .{ .jump = 162 };
     }
 }
-fn branch_162(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_162(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[66] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[67] = try rt.get(s, env, "right");
     native_values[68] = try rt.invoke(s, native_values[66], c.pi_js_undefined(), &.{native_values[67]});
@@ -39414,12 +39416,12 @@ fn branch_162(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[74] = try rt.propertyKey(s, native_values[73]);
         native_values[75] = try rt.key(s, native_values[72], native_values[74]);
         native_values[76] = try rt.invoke(s, native_values[69], c.pi_js_undefined(), &.{ native_values[70], native_values[71], native_values[75] });
-        return native_values[76];
+        return .{ .value = native_values[76] };
     } else {
-        return @call(.always_tail, branch_163, .{ s, env, receiver, native_values });
+        return .{ .jump = 163 };
     }
 }
-fn branch_163(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_163(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[77] = try rt.get(s, env, "m24_IsUnion");
     native_values[78] = try rt.get(s, env, "right");
     native_values[79] = try rt.invoke(s, native_values[77], c.pi_js_undefined(), &.{native_values[78]});
@@ -39432,12 +39434,12 @@ fn branch_163(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[85] = try rt.propertyKey(s, native_values[84]);
         native_values[86] = try rt.key(s, native_values[83], native_values[85]);
         native_values[87] = try rt.invoke(s, native_values[80], c.pi_js_undefined(), &.{ native_values[81], native_values[82], native_values[86] });
-        return native_values[87];
+        return .{ .value = native_values[87] };
     } else {
-        return @call(.always_tail, branch_164, .{ s, env, receiver, native_values });
+        return .{ .jump = 164 };
     }
 }
-fn branch_164(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_164(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[88] = try rt.get(s, env, "m89_IsUnknown");
     native_values[89] = try rt.get(s, env, "right");
     native_values[90] = try rt.invoke(s, native_values[88], c.pi_js_undefined(), &.{native_values[89]});
@@ -39445,14 +39447,14 @@ fn branch_164(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[91] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[92] = try rt.get(s, env, "inferred");
         native_values[93] = try rt.invoke(s, native_values[91], c.pi_js_undefined(), &.{native_values[92]});
-        return native_values[93];
+        return .{ .value = native_values[93] };
     } else {
         native_values[94] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[95] = try rt.invoke(s, native_values[94], c.pi_js_undefined(), &.{});
-        return native_values[95];
+        return .{ .value = native_values[95] };
     }
 }
-fn branch_165(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_165(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[4] = try rt.get(s, env, "result");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39463,14 +39465,14 @@ fn branch_165(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.propertyKey(s, native_values[8]);
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "false_");
         native_values[13] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_166(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_166(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m116_IsExtendsUnion");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -39478,13 +39480,13 @@ fn branch_166(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[4] = try rt.get(s, env, "m116_IsExtendsTrue");
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_167(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[21] = try branch_168(s, env, receiver, native_values);
+fn branch_167(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[21] = try runBranch(s, env, receiver, native_values, 168);
     if (s.truthy(native_values[21])) {
         native_values[22] = try rt.get(s, env, "m4_IsObject");
         native_values[23] = try rt.get(s, env, "value");
@@ -39492,13 +39494,13 @@ fn branch_167(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[25] = try rt.propertyKey(s, native_values[24]);
         native_values[26] = try rt.key(s, native_values[23], native_values[25]);
         native_values[27] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[26]});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_168(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_169(s, env, receiver, native_values);
+fn branch_168(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 169);
     if (s.truthy(native_values[13])) {
         native_values[14] = try rt.get(s, env, "m4_IsEqual");
         native_values[15] = try rt.get(s, env, "value");
@@ -39507,24 +39509,24 @@ fn branch_168(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.key(s, native_values[15], native_values[17]);
         native_values[19] = try s.text("ExtendsUnion");
         native_values[20] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_169(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_170(s, env, receiver, native_values);
+fn branch_169(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 170);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_HasPropertyKey");
         native_values[10] = try rt.get(s, env, "value");
         native_values[11] = try s.text("inferred");
         native_values[12] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_170(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_170(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObject");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -39533,13 +39535,13 @@ fn branch_170(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~kind");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_171(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[21] = try branch_172(s, env, receiver, native_values);
+fn branch_171(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[21] = try runBranch(s, env, receiver, native_values, 172);
     if (s.truthy(native_values[21])) {
         native_values[22] = try rt.get(s, env, "m4_IsObject");
         native_values[23] = try rt.get(s, env, "value");
@@ -39547,13 +39549,13 @@ fn branch_171(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[25] = try rt.propertyKey(s, native_values[24]);
         native_values[26] = try rt.key(s, native_values[23], native_values[25]);
         native_values[27] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[26]});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_172(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_173(s, env, receiver, native_values);
+fn branch_172(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 173);
     if (s.truthy(native_values[13])) {
         native_values[14] = try rt.get(s, env, "m4_IsEqual");
         native_values[15] = try rt.get(s, env, "value");
@@ -39562,24 +39564,24 @@ fn branch_172(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.key(s, native_values[15], native_values[17]);
         native_values[19] = try s.text("ExtendsTrue");
         native_values[20] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_173(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_174(s, env, receiver, native_values);
+fn branch_173(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 174);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_HasPropertyKey");
         native_values[10] = try rt.get(s, env, "value");
         native_values[11] = try s.text("inferred");
         native_values[12] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_174(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_174(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObject");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -39588,27 +39590,27 @@ fn branch_174(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~kind");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_175(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_175(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m38_IsArray");
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
     if (s.truthy(native_values[6])) {
-        return @call(.always_tail, branch_176, .{ s, env, receiver, native_values });
+        return .{ .jump = 176 };
     } else {
         native_values[21] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[22] = try rt.get(s, env, "inferred");
         native_values[23] = try rt.get(s, env, "arrayLeft");
         native_values[24] = try rt.get(s, env, "right");
         native_values[25] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[22], native_values[23], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     }
 }
-fn branch_176(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_176(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m117_ExtendsImmutable");
     native_values[8] = try rt.get(s, env, "arrayLeft");
     native_values[9] = try rt.get(s, env, "right");
@@ -39622,70 +39624,70 @@ fn branch_176(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[13], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[20] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{});
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_177(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_177(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[10] = try branch_178(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 178);
     if (s.truthy(native_values[10])) {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     } else {
-        return @call(.always_tail, branch_179, .{ s, env, receiver, native_values });
+        return .{ .jump = 179 };
     }
 }
-fn branch_178(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_178(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "isImmutableLeft");
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "isImmutableRight");
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_179(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_179(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[14] = try branch_180(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 180);
     if (s.truthy(native_values[14])) {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     } else {
-        return @call(.always_tail, branch_181, .{ s, env, receiver, native_values });
+        return .{ .jump = 181 };
     }
 }
-fn branch_180(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_180(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "isImmutableLeft");
     native_values[12] = try rt.unary(s, "!", native_values[11]);
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "isImmutableRight");
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_181(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_181(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[18] = try branch_182(s, env, receiver, native_values);
+    native_values[18] = try runBranch(s, env, receiver, native_values, 182);
     if (s.truthy(native_values[18])) {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     } else {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     }
 }
-fn branch_182(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_182(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[15] = try rt.get(s, env, "isImmutableLeft");
     if (s.truthy(native_values[15])) {
         native_values[16] = try rt.get(s, env, "isImmutableRight");
         native_values[17] = try rt.unary(s, "!", native_values[16]);
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
-        return native_values[15];
+        return .{ .value = native_values[15] };
     }
 }
-fn branch_183(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_183(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m2_IsSchema");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -39694,12 +39696,12 @@ fn branch_183(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~immutable");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_184(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_184(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m81_IsBigInt");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39707,17 +39709,17 @@ fn branch_184(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_185(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_185(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m51_IsBoolean");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39725,17 +39727,17 @@ fn branch_185(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_186(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_186(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m37_IsAny");
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -39743,12 +39745,12 @@ fn branch_186(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[8] = try rt.get(s, env, "inferred");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_187, .{ s, env, receiver, native_values });
+        return .{ .jump = 187 };
     }
 }
-fn branch_187(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_187(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m89_IsUnknown");
     native_values[11] = try rt.get(s, env, "right");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -39756,12 +39758,12 @@ fn branch_187(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[14] = try rt.get(s, env, "inferred");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return @call(.always_tail, branch_188, .{ s, env, receiver, native_values });
+        return .{ .jump = 188 };
     }
 }
-fn branch_188(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_188(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[16] = try rt.get(s, env, "m39_IsConstructor");
     native_values[17] = try rt.get(s, env, "right");
     native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
@@ -39778,14 +39780,14 @@ fn branch_188(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.function(s, "", 1, f_234, env, receiver, true);
         native_values[29] = try rt.function(s, "", 0, f_235, env, receiver, true);
         native_values[30] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[27], native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
         native_values[31] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[32] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{});
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_189(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_189(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[0] = try rt.get(s, env, "m44_IsOptional");
     native_values[1] = try rt.get(s, env, "left");
     native_values[2] = try rt.invoke(s, native_values[0], c.pi_js_undefined(), &.{native_values[1]});
@@ -39793,43 +39795,43 @@ fn branch_189(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[3] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[4] = try rt.get(s, env, "inferred");
         native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
         native_values[6] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[7] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_190(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_190(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m86_IsInfer");
     native_values[6] = try rt.get(s, env, "right");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
     if (s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "left");
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "right");
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_191(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_191(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m86_IsInfer");
     native_values[12] = try rt.get(s, env, "right");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
     if (s.truthy(native_values[13])) {
         native_values[14] = try rt.get(s, env, "right");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "left");
-        return native_values[15];
+        return .{ .value = native_values[15] };
     }
 }
-fn branch_192(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[26] = try branch_193(s, env, receiver, native_values);
+fn branch_192(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[26] = try runBranch(s, env, receiver, native_values, 193);
     if (s.truthy(native_values[26])) {
         native_values[27] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[28] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{});
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
         native_values[29] = try rt.get(s, env, "m116_Match");
         native_values[30] = try rt.get(s, env, "m113_ExtendsLeft");
@@ -39840,20 +39842,20 @@ fn branch_192(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[35] = try rt.function(s, "", 1, f_244, env, receiver, true);
         native_values[36] = try rt.function(s, "", 0, f_245, env, receiver, true);
         native_values[37] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[34], native_values[35], native_values[36] });
-        return native_values[37];
+        return .{ .value = native_values[37] };
     }
 }
-fn branch_193(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_193(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "isLeftOptional");
     native_values[24] = try rt.unary(s, "!", native_values[23]);
     if (s.truthy(native_values[24])) {
         native_values[25] = try rt.get(s, env, "isRightOptional");
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_194(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_194(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m123_IsVoid");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39861,17 +39863,17 @@ fn branch_194(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m113_ExtendsLeft");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_195(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_195(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m37_IsAny");
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -39879,12 +39881,12 @@ fn branch_195(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[8] = try rt.get(s, env, "inferred");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_196, .{ s, env, receiver, native_values });
+        return .{ .jump = 196 };
     }
 }
-fn branch_196(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_196(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m89_IsUnknown");
     native_values[11] = try rt.get(s, env, "right");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -39892,12 +39894,12 @@ fn branch_196(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[14] = try rt.get(s, env, "inferred");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return @call(.always_tail, branch_197, .{ s, env, receiver, native_values });
+        return .{ .jump = 197 };
     }
 }
-fn branch_197(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_197(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[16] = try rt.get(s, env, "m40_IsFunction");
     native_values[17] = try rt.get(s, env, "right");
     native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
@@ -39914,14 +39916,14 @@ fn branch_197(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.function(s, "", 1, f_253, env, receiver, true);
         native_values[29] = try rt.function(s, "", 0, f_254, env, receiver, true);
         native_values[30] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[27], native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
         native_values[31] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[32] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{});
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_198(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_198(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m55_IsInteger");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -39929,12 +39931,12 @@ fn branch_198(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_199, .{ s, env, receiver, native_values });
+        return .{ .jump = 199 };
     }
 }
-fn branch_199(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_199(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m59_IsNumber");
     native_values[10] = try rt.get(s, env, "right");
     native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
@@ -39942,17 +39944,17 @@ fn branch_199(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[12] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[13] = try rt.get(s, env, "inferred");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[16] = try rt.get(s, env, "inferred");
         native_values[17] = try rt.get(s, env, "left");
         native_values[18] = try rt.get(s, env, "right");
         native_values[19] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_200(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_200(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m4_IsBigInt");
     native_values[4] = try rt.get(s, env, "left");
     native_values[5] = try s.text("const");
@@ -39968,12 +39970,12 @@ fn branch_200(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[14] = try rt.key(s, native_values[11], native_values[13]);
         native_values[15] = try rt.get(s, env, "right");
         native_values[16] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return @call(.always_tail, branch_201, .{ s, env, receiver, native_values });
+        return .{ .jump = 201 };
     }
 }
-fn branch_201(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_201(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[17] = try rt.get(s, env, "m4_IsBoolean");
     native_values[18] = try rt.get(s, env, "left");
     native_values[19] = try s.text("const");
@@ -39989,12 +39991,12 @@ fn branch_201(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.key(s, native_values[25], native_values[27]);
         native_values[29] = try rt.get(s, env, "right");
         native_values[30] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{ native_values[24], native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_202, .{ s, env, receiver, native_values });
+        return .{ .jump = 202 };
     }
 }
-fn branch_202(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_202(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m4_IsNumber");
     native_values[32] = try rt.get(s, env, "left");
     native_values[33] = try s.text("const");
@@ -40010,12 +40012,12 @@ fn branch_202(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[42] = try rt.key(s, native_values[39], native_values[41]);
         native_values[43] = try rt.get(s, env, "right");
         native_values[44] = try rt.invoke(s, native_values[37], c.pi_js_undefined(), &.{ native_values[38], native_values[42], native_values[43] });
-        return native_values[44];
+        return .{ .value = native_values[44] };
     } else {
-        return @call(.always_tail, branch_203, .{ s, env, receiver, native_values });
+        return .{ .jump = 203 };
     }
 }
-fn branch_203(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_203(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[45] = try rt.get(s, env, "m4_IsString");
     native_values[46] = try rt.get(s, env, "left");
     native_values[47] = try s.text("const");
@@ -40031,14 +40033,14 @@ fn branch_203(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.get(s, env, "right");
         native_values[58] = try rt.invoke(s, native_values[51], c.pi_js_undefined(), &.{ native_values[52], native_values[56], native_values[57] });
-        return native_values[58];
+        return .{ .value = native_values[58] };
     } else {
         native_values[59] = try rt.get(s, env, "m110_Unreachable");
         native_values[60] = try rt.invoke(s, native_values[59], c.pi_js_undefined(), &.{});
-        return native_values[60];
+        return .{ .value = native_values[60] };
     }
 }
-fn branch_204(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_204(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m14_IsLiteral");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40051,12 +40053,12 @@ fn branch_204(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_205, .{ s, env, receiver, native_values });
+        return .{ .jump = 205 };
     }
 }
-fn branch_205(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_205(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m81_IsBigInt");
     native_values[15] = try rt.get(s, env, "right");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -40064,7 +40066,7 @@ fn branch_205(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[18] = try rt.get(s, env, "inferred");
         native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
         native_values[20] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[21] = try rt.get(s, env, "inferred");
@@ -40073,10 +40075,10 @@ fn branch_205(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
         native_values[25] = try rt.get(s, env, "right");
         native_values[26] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{ native_values[21], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_206(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_206(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.binary(s, "===", native_values[3], native_values[4]);
@@ -40084,14 +40086,14 @@ fn branch_206(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[10] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_207(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_207(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m14_IsLiteral");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40104,12 +40106,12 @@ fn branch_207(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_208, .{ s, env, receiver, native_values });
+        return .{ .jump = 208 };
     }
 }
-fn branch_208(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_208(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m51_IsBoolean");
     native_values[15] = try rt.get(s, env, "right");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -40117,7 +40119,7 @@ fn branch_208(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[18] = try rt.get(s, env, "inferred");
         native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
         native_values[20] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[21] = try rt.get(s, env, "inferred");
@@ -40126,10 +40128,10 @@ fn branch_208(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
         native_values[25] = try rt.get(s, env, "right");
         native_values[26] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{ native_values[21], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_209(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_209(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m14_IsLiteral");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40142,12 +40144,12 @@ fn branch_209(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_210, .{ s, env, receiver, native_values });
+        return .{ .jump = 210 };
     }
 }
-fn branch_210(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_210(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m59_IsNumber");
     native_values[15] = try rt.get(s, env, "right");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -40155,7 +40157,7 @@ fn branch_210(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[18] = try rt.get(s, env, "inferred");
         native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
         native_values[20] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[21] = try rt.get(s, env, "inferred");
@@ -40164,10 +40166,10 @@ fn branch_210(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
         native_values[25] = try rt.get(s, env, "right");
         native_values[26] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{ native_values[21], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_211(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_211(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m14_IsLiteral");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40180,12 +40182,12 @@ fn branch_211(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_212, .{ s, env, receiver, native_values });
+        return .{ .jump = 212 };
     }
 }
-fn branch_212(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_212(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m50_IsString");
     native_values[15] = try rt.get(s, env, "right");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -40193,7 +40195,7 @@ fn branch_212(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[18] = try rt.get(s, env, "inferred");
         native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
         native_values[20] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[21] = try rt.get(s, env, "inferred");
@@ -40202,10 +40204,10 @@ fn branch_212(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
         native_values[25] = try rt.get(s, env, "right");
         native_values[26] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{ native_values[21], native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_213(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_213(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m86_IsInfer");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40215,15 +40217,15 @@ fn branch_213(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.get(s, env, "right");
         native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9] });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[12] = try rt.get(s, env, "inferred");
         native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_214(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_214(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m88_IsNull");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40231,17 +40233,17 @@ fn branch_214(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_215(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_215(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m59_IsNumber");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40249,17 +40251,17 @@ fn branch_215(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_216(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_216(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m45_IsRecord");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40274,12 +40276,12 @@ fn branch_216(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.get(s, env, "right");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
         native_values[15] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[11], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return @call(.always_tail, branch_217, .{ s, env, receiver, native_values });
+        return .{ .jump = 217 };
     }
 }
-fn branch_217(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_217(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[16] = try rt.get(s, env, "m42_IsObject");
     native_values[17] = try rt.get(s, env, "right");
     native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
@@ -40292,7 +40294,7 @@ fn branch_217(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.propertyKey(s, native_values[23]);
         native_values[25] = try rt.key(s, native_values[22], native_values[24]);
         native_values[26] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     } else {
         native_values[27] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[28] = try rt.get(s, env, "inferred");
@@ -40301,25 +40303,25 @@ fn branch_217(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[31] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{native_values[30]});
         native_values[32] = try rt.get(s, env, "right");
         native_values[33] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[28], native_values[31], native_values[32] });
-        return native_values[33];
+        return .{ .value = native_values[33] };
     }
 }
-fn branch_218(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_218(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m4_HasPropertyKey");
     native_values[7] = try rt.get(s, env, "left");
     native_values[8] = try rt.get(s, env, "key");
     native_values[9] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8] });
     if (s.truthy(native_values[9])) {
-        return @call(.always_tail, branch_219, .{ s, env, receiver, native_values });
+        return .{ .jump = 219 };
     } else {
         native_values[41] = try rt.get(s, env, "right");
         native_values[42] = try rt.get(s, env, "key");
         native_values[43] = try rt.propertyKey(s, native_values[42]);
         native_values[44] = try rt.key(s, native_values[41], native_values[43]);
-        return native_values[44];
+        return .{ .value = native_values[44] };
     }
 }
-fn branch_219(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_219(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m24_IsUnion");
     native_values[11] = try rt.get(s, env, "result");
     native_values[12] = try rt.get(s, env, "key");
@@ -40343,7 +40345,7 @@ fn branch_219(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[28] = try rt.key(s, native_values[25], native_values[27]);
         try rt.append(s, native_values[17], native_values[28]);
         native_values[29] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[29];
+        return .{ .value = native_values[29] };
     } else {
         native_values[30] = try rt.get(s, env, "m24_Union");
         native_values[31] = try s.array();
@@ -40358,10 +40360,10 @@ fn branch_219(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[39] = try rt.key(s, native_values[36], native_values[38]);
         try rt.append(s, native_values[31], native_values[39]);
         native_values[40] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{native_values[31]});
-        return native_values[40];
+        return .{ .value = native_values[40] };
     }
 }
-fn branch_220(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_220(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[9] = try rt.get(s, env, "compared");
     native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
@@ -40378,14 +40380,14 @@ fn branch_220(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[15], native_values[12], &.{ native_values[16], native_values[20] });
         native_values[22] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
         native_values[23] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[24] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_221(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_221(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "rightKey");
     native_values[11] = try rt.get(s, env, "left");
     native_values[12] = try rt.binary(s, "in", native_values[10], native_values[11]);
@@ -40401,12 +40403,12 @@ fn branch_221(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[21] = try rt.propertyKey(s, native_values[20]);
         native_values[22] = try rt.key(s, native_values[19], native_values[21]);
         native_values[23] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[14], native_values[18], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return @call(.always_tail, branch_222, .{ s, env, receiver, native_values });
+        return .{ .jump = 222 };
     }
 }
-fn branch_222(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_222(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[24] = try rt.get(s, env, "m44_IsOptional");
     native_values[25] = try rt.get(s, env, "right");
     native_values[26] = try rt.get(s, env, "rightKey");
@@ -40414,14 +40416,14 @@ fn branch_222(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[28] = try rt.key(s, native_values[25], native_values[27]);
     native_values[29] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[28]});
     if (s.truthy(native_values[29])) {
-        return @call(.always_tail, branch_223, .{ s, env, receiver, native_values });
+        return .{ .jump = 223 };
     } else {
         native_values[63] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[64] = try rt.invoke(s, native_values[63], c.pi_js_undefined(), &.{});
-        return native_values[64];
+        return .{ .value = native_values[64] };
     }
 }
-fn branch_223(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_223(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[30] = try rt.get(s, env, "m86_IsInfer");
     native_values[31] = try rt.get(s, env, "right");
     native_values[32] = try rt.get(s, env, "rightKey");
@@ -40454,15 +40456,15 @@ fn branch_223(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.property(s, native_values[42], native_values[50], native_values[57]);
         native_values[58] = try rt.invoke(s, native_values[40], native_values[37], &.{ native_values[41], native_values[42] });
         native_values[59] = try rt.invoke(s, native_values[36], c.pi_js_undefined(), &.{native_values[58]});
-        return native_values[59];
+        return .{ .value = native_values[59] };
     } else {
         native_values[60] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[61] = try rt.get(s, env, "inferred");
         native_values[62] = try rt.invoke(s, native_values[60], c.pi_js_undefined(), &.{native_values[61]});
-        return native_values[62];
+        return .{ .value = native_values[62] };
     }
 }
-fn branch_224(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_224(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[74] = try rt.get(s, env, "checked");
     if (s.truthy(native_values[74])) {
         native_values[75] = try rt.get(s, env, "m133_ExtractInferredProperties");
@@ -40471,31 +40473,31 @@ fn branch_224(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[78] = try rt.invoke(s, native_values[76], c.pi_js_undefined(), &.{native_values[77]});
         native_values[79] = try rt.get(s, env, "properties");
         native_values[80] = try rt.invoke(s, native_values[75], c.pi_js_undefined(), &.{ native_values[78], native_values[79] });
-        return native_values[80];
+        return .{ .value = native_values[80] };
     } else {
         native_values[81] = try s.object();
-        return native_values[81];
+        return .{ .value = native_values[81] };
     }
 }
-fn branch_225(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_225(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[83] = try rt.get(s, env, "checked");
     if (s.truthy(native_values[83])) {
         native_values[84] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[85] = try rt.get(s, env, "extracted");
         native_values[86] = try rt.invoke(s, native_values[84], c.pi_js_undefined(), &.{native_values[85]});
-        return native_values[86];
+        return .{ .value = native_values[86] };
     } else {
         native_values[87] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[88] = try rt.invoke(s, native_values[87], c.pi_js_undefined(), &.{});
-        return native_values[88];
+        return .{ .value = native_values[88] };
     }
 }
-fn branch_226(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[12] = try branch_227(s, env, receiver, native_values);
+fn branch_226(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[12] = try runBranch(s, env, receiver, native_values, 227);
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[14] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m116_Match");
         native_values[16] = try rt.get(s, env, "m113_ExtendsLeft");
@@ -40506,10 +40508,10 @@ fn branch_226(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[21] = try rt.function(s, "", 1, f_282, env, receiver, true);
         native_values[22] = try rt.function(s, "", 0, f_283, env, receiver, true);
         native_values[23] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_227(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_227(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m86_IsInfer");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40520,25 +40522,25 @@ fn branch_227(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.propertyKey(s, native_values[8]);
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_228(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_228(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m44_IsOptional");
     native_values[4] = try rt.get(s, env, "left");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
     if (s.truthy(native_values[5])) {
-        return @call(.always_tail, branch_229, .{ s, env, receiver, native_values });
+        return .{ .jump = 229 };
     } else {
         native_values[14] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[15] = try rt.get(s, env, "inferred");
         native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_229(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_229(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m44_IsOptional");
     native_values[7] = try rt.get(s, env, "right");
     native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
@@ -40546,26 +40548,26 @@ fn branch_229(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[13] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_230(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_230(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "key");
     native_values[3] = try rt.get(s, env, "properties");
     native_values[4] = try rt.binary(s, "in", native_values[2], native_values[3]);
     if (s.truthy(native_values[4])) {
-        return @call(.always_tail, branch_231, .{ s, env, receiver, native_values });
+        return .{ .jump = 231 };
     } else {
         native_values[22] = try rt.get(s, env, "m110_Unreachable");
         native_values[23] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{});
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_231(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_231(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[6] = try rt.get(s, env, "properties");
     native_values[7] = try rt.get(s, env, "key");
@@ -40584,14 +40586,14 @@ fn branch_231(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[18] = try rt.propertyKey(s, native_values[17]);
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         try rt.spreadObject(s, native_values[11], native_values[19]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[20] = try rt.get(s, env, "m110_Unreachable");
         native_values[21] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{});
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_232(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_232(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m45_IsRecord");
     native_values[5] = try rt.get(s, env, "right");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -40611,12 +40613,12 @@ fn branch_232(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[19] = try rt.get(s, env, "right");
         native_values[20] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[19]});
         native_values[21] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], native_values[11], native_values[12], native_values[17], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
-        return @call(.always_tail, branch_233, .{ s, env, receiver, native_values });
+        return .{ .jump = 233 };
     }
 }
-fn branch_233(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_233(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[22] = try rt.get(s, env, "m42_IsObject");
     native_values[23] = try rt.get(s, env, "right");
     native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
@@ -40628,12 +40630,12 @@ fn branch_233(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[29] = try rt.propertyKey(s, native_values[28]);
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{ native_values[26], native_values[30] });
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
-        return @call(.always_tail, branch_234, .{ s, env, receiver, native_values });
+        return .{ .jump = 234 };
     }
 }
-fn branch_234(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_234(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[32] = try rt.get(s, env, "m37_IsAny");
     native_values[33] = try rt.get(s, env, "right");
     native_values[34] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{native_values[33]});
@@ -40641,12 +40643,12 @@ fn branch_234(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[35] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[36] = try rt.get(s, env, "inferred");
         native_values[37] = try rt.invoke(s, native_values[35], c.pi_js_undefined(), &.{native_values[36]});
-        return native_values[37];
+        return .{ .value = native_values[37] };
     } else {
-        return @call(.always_tail, branch_235, .{ s, env, receiver, native_values });
+        return .{ .jump = 235 };
     }
 }
-fn branch_235(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_235(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[38] = try rt.get(s, env, "m89_IsUnknown");
     native_values[39] = try rt.get(s, env, "right");
     native_values[40] = try rt.invoke(s, native_values[38], c.pi_js_undefined(), &.{native_values[39]});
@@ -40654,14 +40656,14 @@ fn branch_235(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[41] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[42] = try rt.get(s, env, "inferred");
         native_values[43] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{native_values[42]});
-        return native_values[43];
+        return .{ .value = native_values[43] };
     } else {
         native_values[44] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[45] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{});
-        return native_values[45];
+        return .{ .value = native_values[45] };
     }
 }
-fn branch_236(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_236(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "m4_Keys");
@@ -40675,14 +40677,14 @@ fn branch_236(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[11] = try rt.get(s, env, "inferred");
         native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
         native_values[13] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[14] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     }
 }
-fn branch_237(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_237(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m50_IsString");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40690,17 +40692,17 @@ fn branch_237(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_238(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_238(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m90_IsSymbol");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -40708,17 +40710,17 @@ fn branch_238(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_239(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_239(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m95_IsTuple");
     native_values[12] = try rt.get(s, env, "right");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -40731,12 +40733,12 @@ fn branch_239(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[19] = try rt.propertyKey(s, native_values[18]);
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[15], native_values[16], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
-        return @call(.always_tail, branch_240, .{ s, env, receiver, native_values });
+        return .{ .jump = 240 };
     }
 }
-fn branch_240(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_240(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[22] = try rt.get(s, env, "m38_IsArray");
     native_values[23] = try rt.get(s, env, "right");
     native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
@@ -40749,7 +40751,7 @@ fn branch_240(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[30] = try rt.propertyKey(s, native_values[29]);
         native_values[31] = try rt.key(s, native_values[28], native_values[30]);
         native_values[32] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{ native_values[26], native_values[27], native_values[31] });
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
         native_values[33] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[34] = try rt.get(s, env, "inferred");
@@ -40758,23 +40760,23 @@ fn branch_240(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[37] = try rt.invoke(s, native_values[35], c.pi_js_undefined(), &.{native_values[36]});
         native_values[38] = try rt.get(s, env, "right");
         native_values[39] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[34], native_values[37], native_values[38] });
-        return native_values[39];
+        return .{ .value = native_values[39] };
     }
 }
-fn branch_241(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_241(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m92_IsRest");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     if (s.truthy(native_values[3])) {
-        return @call(.always_tail, branch_242, .{ s, env, receiver, native_values });
+        return .{ .jump = 242 };
     } else {
         native_values[38] = try s.array();
         native_values[39] = try rt.get(s, env, "type");
         try rt.append(s, native_values[38], native_values[39]);
-        return native_values[38];
+        return .{ .value = native_values[38] };
     }
 }
-fn branch_242(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_242(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m95_IsTuple");
     native_values[5] = try rt.get(s, env, "type");
     native_values[6] = try s.text("items");
@@ -40791,12 +40793,12 @@ fn branch_242(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return @call(.always_tail, branch_243, .{ s, env, receiver, native_values });
+        return .{ .jump = 243 };
     }
 }
-fn branch_243(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_243(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[19] = try rt.get(s, env, "m86_IsInfer");
     native_values[20] = try rt.get(s, env, "type");
     native_values[21] = try s.text("items");
@@ -40807,12 +40809,12 @@ fn branch_243(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[25] = try s.array();
         native_values[26] = try rt.get(s, env, "type");
         try rt.append(s, native_values[25], native_values[26]);
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
-        return @call(.always_tail, branch_244, .{ s, env, receiver, native_values });
+        return .{ .jump = 244 };
     }
 }
-fn branch_244(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_244(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[27] = try rt.get(s, env, "m12_IsRef");
     native_values[28] = try rt.get(s, env, "type");
     native_values[29] = try s.text("items");
@@ -40823,16 +40825,16 @@ fn branch_244(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[33] = try s.array();
         native_values[34] = try rt.get(s, env, "type");
         try rt.append(s, native_values[33], native_values[34]);
-        return native_values[33];
+        return .{ .value = native_values[33] };
     } else {
         native_values[35] = try s.array();
         native_values[36] = try rt.get(s, env, "m87_Never");
         native_values[37] = try rt.invoke(s, native_values[36], c.pi_js_undefined(), &.{});
         try rt.append(s, native_values[35], native_values[37]);
-        return native_values[35];
+        return .{ .value = native_values[35] };
     }
 }
-fn branch_245(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_245(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "types");
     native_values[2] = try s.text("length");
@@ -40843,12 +40845,12 @@ fn branch_245(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "types");
         native_values[7] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[8] = try rt.key(s, native_values[6], native_values[7]);
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_246(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_246(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m2_IsSchema");
     native_values[11] = try rt.get(s, env, "first");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -40856,22 +40858,22 @@ fn branch_246(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.get(s, env, "m141_TryRestInferable");
         native_values[14] = try rt.get(s, env, "first");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_247(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_247(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m92_IsRest");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     if (s.truthy(native_values[3])) {
-        return @call(.always_tail, branch_248, .{ s, env, receiver, native_values });
+        return .{ .jump = 248 };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_248(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_248(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m86_IsInfer");
     native_values[5] = try rt.get(s, env, "type");
     native_values[6] = try s.text("items");
@@ -40879,14 +40881,14 @@ fn branch_248(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[8] = try rt.key(s, native_values[5], native_values[7]);
     native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
     if (s.truthy(native_values[9])) {
-        return @call(.always_tail, branch_249, .{ s, env, receiver, native_values });
+        return .{ .jump = 249 };
     } else {
         native_values[63] = try rt.get(s, env, "m110_Unreachable");
         native_values[64] = try rt.invoke(s, native_values[63], c.pi_js_undefined(), &.{});
-        return native_values[64];
+        return .{ .value = native_values[64] };
     }
 }
-fn branch_249(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_249(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m38_IsArray");
     native_values[11] = try rt.get(s, env, "type");
     native_values[12] = try s.text("items");
@@ -40916,12 +40918,12 @@ fn branch_249(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[35] = try rt.propertyKey(s, native_values[34]);
         native_values[36] = try rt.key(s, native_values[33], native_values[35]);
         native_values[37] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[26], native_values[36] });
-        return native_values[37];
+        return .{ .value = native_values[37] };
     } else {
-        return @call(.always_tail, branch_250, .{ s, env, receiver, native_values });
+        return .{ .jump = 250 };
     }
 }
-fn branch_250(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_250(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[38] = try rt.get(s, env, "m89_IsUnknown");
     native_values[39] = try rt.get(s, env, "type");
     native_values[40] = try s.text("items");
@@ -40948,12 +40950,12 @@ fn branch_250(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[60] = try rt.propertyKey(s, native_values[59]);
         native_values[61] = try rt.key(s, native_values[58], native_values[60]);
         native_values[62] = try rt.invoke(s, native_values[47], c.pi_js_undefined(), &.{ native_values[54], native_values[61] });
-        return native_values[62];
+        return .{ .value = native_values[62] };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_251(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_251(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[0] = try rt.get(s, env, "m4_IsEqual");
     native_values[1] = try rt.get(s, env, "leftRest");
@@ -40965,14 +40967,14 @@ fn branch_251(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[10] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_252(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_252(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "m141_IsInferable");
     native_values[9] = try rt.get(s, env, "inferable");
     native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
@@ -40992,18 +40994,18 @@ fn branch_252(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[23] = try rt.propertyKey(s, native_values[22]);
         native_values[24] = try rt.key(s, native_values[21], native_values[23]);
         native_values[25] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[16], native_values[20], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
         native_values[26] = try rt.get(s, env, "m4_ShiftLeft");
         native_values[27] = try rt.get(s, env, "leftRest");
         native_values[28] = try rt.function(s, "", 2, f_313, env, receiver, true);
         native_values[29] = try rt.function(s, "", 0, f_314, env, receiver, true);
         native_values[30] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{ native_values[27], native_values[28], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     }
 }
-fn branch_253(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[33] = try branch_254(s, env, receiver, native_values);
+fn branch_253(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[33] = try runBranch(s, env, receiver, native_values, 254);
     if (s.truthy(native_values[33])) {
         native_values[34] = try rt.get(s, env, "m4_IsObject");
         native_values[35] = try rt.get(s, env, "value");
@@ -41011,13 +41013,13 @@ fn branch_253(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return native_values[33];
+        return .{ .value = native_values[33] };
     }
 }
-fn branch_254(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[26] = try branch_255(s, env, receiver, native_values);
+fn branch_254(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[26] = try runBranch(s, env, receiver, native_values, 255);
     if (s.truthy(native_values[26])) {
         native_values[27] = try rt.get(s, env, "m4_IsString");
         native_values[28] = try rt.get(s, env, "value");
@@ -41025,13 +41027,13 @@ fn branch_254(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[30] = try rt.propertyKey(s, native_values[29]);
         native_values[31] = try rt.key(s, native_values[28], native_values[30]);
         native_values[32] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{native_values[31]});
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_255(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[18] = try branch_256(s, env, receiver, native_values);
+fn branch_255(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[18] = try runBranch(s, env, receiver, native_values, 256);
     if (s.truthy(native_values[18])) {
         native_values[19] = try rt.get(s, env, "m4_IsEqual");
         native_values[20] = try rt.get(s, env, "value");
@@ -41040,36 +41042,36 @@ fn branch_255(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[23] = try rt.key(s, native_values[20], native_values[22]);
         native_values[24] = try s.text("Inferrable");
         native_values[25] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[23], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_256(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_257(s, env, receiver, native_values);
+fn branch_256(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 257);
     if (s.truthy(native_values[13])) {
         native_values[14] = try rt.get(s, env, "m4_HasPropertyKey");
         native_values[15] = try rt.get(s, env, "value");
         native_values[16] = try s.text("type");
         native_values[17] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_257(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_258(s, env, receiver, native_values);
+fn branch_257(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 258);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_HasPropertyKey");
         native_values[10] = try rt.get(s, env, "value");
         native_values[11] = try s.text("name");
         native_values[12] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_258(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_258(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObject");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -41078,12 +41080,12 @@ fn branch_258(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~kind");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_259(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_259(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "m4_IsArray");
     native_values[9] = try rt.get(s, env, "results");
     native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
@@ -41103,26 +41105,26 @@ fn branch_259(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.property(s, native_values[17], native_values[19], native_values[22]);
         native_values[23] = try rt.invoke(s, native_values[15], native_values[12], &.{ native_values[16], native_values[17] });
         native_values[24] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[23]});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
         native_values[25] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_260(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_260(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "reversed");
     if (s.truthy(native_values[2])) {
         native_values[3] = try rt.get(s, env, "m138_Reverse");
         native_values[4] = try rt.get(s, env, "types");
         native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
         native_values[6] = try rt.get(s, env, "types");
-        return native_values[6];
+        return .{ .value = native_values[6] };
     }
 }
-fn branch_261(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_261(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m141_IsInferable");
     native_values[7] = try rt.get(s, env, "inferrable");
     native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
@@ -41139,17 +41141,17 @@ fn branch_261(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.propertyKey(s, native_values[17]);
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         native_values[20] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[14], native_values[15], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "m4_ShiftLeft");
         native_values[22] = try rt.get(s, env, "left");
         native_values[23] = try rt.function(s, "", 2, f_328, env, receiver, true);
         native_values[24] = try rt.function(s, "", 0, f_331, env, receiver, true);
         native_values[25] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[22], native_values[23], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     }
 }
-fn branch_262(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_262(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m86_IsInfer");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -41164,12 +41166,12 @@ fn branch_262(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return c.pi_js_undefined();
+        return .{ .value = c.pi_js_undefined() };
     }
 }
-fn branch_263(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_263(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "m4_IsArray");
     native_values[9] = try rt.get(s, env, "results");
     native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
@@ -41189,14 +41191,14 @@ fn branch_263(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.property(s, native_values[17], native_values[19], native_values[22]);
         native_values[23] = try rt.invoke(s, native_values[15], native_values[12], &.{ native_values[16], native_values[17] });
         native_values[24] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[23]});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
         native_values[25] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_264(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_264(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m123_IsVoid");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -41204,12 +41206,12 @@ fn branch_264(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_265, .{ s, env, receiver, native_values });
+        return .{ .jump = 265 };
     }
 }
-fn branch_265(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_265(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m96_IsUndefined");
     native_values[10] = try rt.get(s, env, "right");
     native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
@@ -41217,17 +41219,17 @@ fn branch_265(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[12] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[13] = try rt.get(s, env, "inferred");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[16] = try rt.get(s, env, "inferred");
         native_values[17] = try rt.get(s, env, "left");
         native_values[18] = try rt.get(s, env, "right");
         native_values[19] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_266(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_266(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m141_IsInferable");
     native_values[7] = try rt.get(s, env, "inferrable");
     native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
@@ -41244,12 +41246,12 @@ fn branch_266(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.propertyKey(s, native_values[17]);
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         native_values[20] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[14], native_values[15], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return @call(.always_tail, branch_267, .{ s, env, receiver, native_values });
+        return .{ .jump = 267 };
     }
 }
-fn branch_267(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_267(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[21] = try rt.get(s, env, "m24_IsUnion");
     native_values[22] = try rt.get(s, env, "right");
     native_values[23] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{native_values[22]});
@@ -41262,7 +41264,7 @@ fn branch_267(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[29] = try rt.propertyKey(s, native_values[28]);
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{ native_values[25], native_values[26], native_values[30] });
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "m143_ExtendsUnionLeft");
         native_values[33] = try rt.get(s, env, "inferred");
@@ -41271,10 +41273,10 @@ fn branch_267(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[36] = try rt.get(s, env, "right");
         try rt.append(s, native_values[35], native_values[36]);
         native_values[37] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{ native_values[33], native_values[34], native_values[35] });
-        return native_values[37];
+        return .{ .value = native_values[37] };
     }
 }
-fn branch_268(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_268(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m86_IsInfer");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -41284,12 +41286,12 @@ fn branch_268(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.get(s, env, "right");
         native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9] });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return @call(.always_tail, branch_269, .{ s, env, receiver, native_values });
+        return .{ .jump = 269 };
     }
 }
-fn branch_269(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_269(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m37_IsAny");
     native_values[12] = try rt.get(s, env, "right");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -41297,12 +41299,12 @@ fn branch_269(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[14] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[15] = try rt.get(s, env, "inferred");
         native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return @call(.always_tail, branch_270, .{ s, env, receiver, native_values });
+        return .{ .jump = 270 };
     }
 }
-fn branch_270(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_270(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[17] = try rt.get(s, env, "m89_IsUnknown");
     native_values[18] = try rt.get(s, env, "right");
     native_values[19] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{native_values[18]});
@@ -41310,14 +41312,14 @@ fn branch_270(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[21] = try rt.get(s, env, "inferred");
         native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
         native_values[23] = try rt.get(s, env, "m116_ExtendsFalse");
         native_values[24] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_271(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_271(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m123_IsVoid");
     native_values[4] = try rt.get(s, env, "right");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -41325,17 +41327,17 @@ fn branch_271(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m116_ExtendsTrue");
         native_values[7] = try rt.get(s, env, "inferred");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m115_ExtendsRight");
         native_values[10] = try rt.get(s, env, "inferred");
         native_values[11] = try rt.get(s, env, "left");
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_272(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_272(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -41352,16 +41354,16 @@ fn branch_272(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m148_ConstructorParametersDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_273(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_273(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m39_IsConstructor");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -41370,13 +41372,13 @@ fn branch_273(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try s.text("parameters");
         native_values[6] = try rt.propertyKey(s, native_values[5]);
         native_values[7] = try rt.key(s, native_values[4], native_values[6]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[8] = try s.array();
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_274(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_274(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "left");
@@ -41396,17 +41398,17 @@ fn branch_274(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try s.object();
         native_values[17] = try rt.get(s, env, "options");
         native_values[18] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[15], native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m152_ExcludeDeferred");
         native_values[20] = try rt.get(s, env, "left");
         native_values[21] = try rt.get(s, env, "right");
         native_values[22] = try rt.get(s, env, "options");
         native_values[23] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_275(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_275(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m24_IsUnion");
     native_values[6] = try rt.get(s, env, "evaluated");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
@@ -41415,29 +41417,29 @@ fn branch_275(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try s.text("anyOf");
         native_values[10] = try rt.propertyKey(s, native_values[9]);
         native_values[11] = try rt.key(s, native_values[8], native_values[10]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try s.array();
         native_values[13] = try rt.get(s, env, "evaluated");
         try rt.append(s, native_values[12], native_values[13]);
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_276(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_276(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[8] = try rt.get(s, env, "check");
     native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
     if (s.truthy(native_values[9])) {
         native_values[10] = try s.array();
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try s.array();
         native_values[12] = try rt.get(s, env, "left");
         try rt.append(s, native_values[11], native_values[12]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_277(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_277(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "left");
@@ -41457,17 +41459,17 @@ fn branch_277(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try s.object();
         native_values[17] = try rt.get(s, env, "options");
         native_values[18] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[15], native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m155_ExtractDeferred");
         native_values[20] = try rt.get(s, env, "left");
         native_values[21] = try rt.get(s, env, "right");
         native_values[22] = try rt.get(s, env, "options");
         native_values[23] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_278(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_278(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m24_IsUnion");
     native_values[6] = try rt.get(s, env, "evaluated");
     native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
@@ -41476,15 +41478,15 @@ fn branch_278(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try s.text("anyOf");
         native_values[10] = try rt.propertyKey(s, native_values[9]);
         native_values[11] = try rt.key(s, native_values[8], native_values[10]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try s.array();
         native_values[13] = try rt.get(s, env, "evaluated");
         try rt.append(s, native_values[12], native_values[13]);
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_279(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_279(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[8] = try rt.get(s, env, "check");
     native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
@@ -41492,13 +41494,13 @@ fn branch_279(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try s.array();
         native_values[11] = try rt.get(s, env, "left");
         try rt.append(s, native_values[10], native_values[11]);
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[12] = try s.array();
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_280(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_280(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "type");
@@ -41520,17 +41522,17 @@ fn branch_280(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[18] = try s.object();
         native_values[19] = try rt.get(s, env, "options");
         native_values[20] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[17], native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "m184_IndexDeferred");
         native_values[22] = try rt.get(s, env, "type");
         native_values[23] = try rt.get(s, env, "indexer");
         native_values[24] = try rt.get(s, env, "options");
         native_values[25] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[22], native_values[23], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     }
 }
-fn branch_281(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_281(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m38_IsArray");
     native_values[3] = try rt.get(s, env, "type");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -41542,12 +41544,12 @@ fn branch_281(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.get(s, env, "indexer");
         native_values[11] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_282, .{ s, env, receiver, native_values });
+        return .{ .jump = 282 };
     }
 }
-fn branch_282(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_282(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m42_IsObject");
     native_values[13] = try rt.get(s, env, "type");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -41559,12 +41561,12 @@ fn branch_282(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         native_values[20] = try rt.get(s, env, "indexer");
         native_values[21] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[19], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     } else {
-        return @call(.always_tail, branch_283, .{ s, env, receiver, native_values });
+        return .{ .jump = 283 };
     }
 }
-fn branch_283(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_283(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[22] = try rt.get(s, env, "m95_IsTuple");
     native_values[23] = try rt.get(s, env, "type");
     native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
@@ -41576,37 +41578,37 @@ fn branch_283(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[29] = try rt.key(s, native_values[26], native_values[28]);
         native_values[30] = try rt.get(s, env, "indexer");
         native_values[31] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{ native_values[29], native_values[30] });
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "m87_Never");
         native_values[33] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{});
-        return native_values[33];
+        return .{ .value = native_values[33] };
     }
 }
-fn branch_284(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_284(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[12] = try rt.get(s, env, "check");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
     if (s.truthy(native_values[13])) {
         native_values[14] = try rt.get(s, env, "type");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_285, .{ s, env, receiver, native_values });
+        return .{ .jump = 285 };
     }
 }
-fn branch_285(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[25] = try branch_286(s, env, receiver, native_values);
+fn branch_285(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[25] = try runBranch(s, env, receiver, native_values, 286);
     if (s.truthy(native_values[25])) {
         native_values[26] = try rt.get(s, env, "m59_Number");
         native_values[27] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
         native_values[28] = try rt.get(s, env, "m87_Never");
         native_values[29] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{});
-        return native_values[29];
+        return .{ .value = native_values[29] };
     }
 }
-fn branch_286(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_286(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[15] = try rt.get(s, env, "m14_IsLiteral");
     native_values[16] = try rt.get(s, env, "indexer");
     native_values[17] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
@@ -41618,12 +41620,12 @@ fn branch_286(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[22] = try rt.key(s, native_values[19], native_values[21]);
         native_values[23] = try s.text("length");
         native_values[24] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[22], native_values[23] });
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_287(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_287(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m41_IsIntersect");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -41636,12 +41638,12 @@ fn branch_287(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[9]});
         native_values[11] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_288, .{ s, env, receiver, native_values });
+        return .{ .jump = 288 };
     }
 }
-fn branch_288(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_288(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m24_IsUnion");
     native_values[13] = try rt.get(s, env, "type");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -41654,12 +41656,12 @@ fn branch_288(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[20]});
         native_values[22] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return @call(.always_tail, branch_289, .{ s, env, receiver, native_values });
+        return .{ .jump = 289 };
     }
 }
-fn branch_289(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_289(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "m14_IsLiteral");
     native_values[24] = try rt.get(s, env, "type");
     native_values[25] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
@@ -41670,13 +41672,13 @@ fn branch_289(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[29] = try rt.propertyKey(s, native_values[28]);
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{native_values[30]});
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "type");
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_290(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_290(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m159_integerKeyPattern");
     native_values[8] = try s.text("test");
     native_values[9] = try rt.propertyKey(s, native_values[8]);
@@ -41687,13 +41689,13 @@ fn branch_290(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.get(s, env, "parseInt");
         native_values[14] = try rt.get(s, env, "normal");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "value");
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_291(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_291(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m59_IsNumber");
     native_values[3] = try rt.get(s, env, "indexer");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -41701,16 +41703,16 @@ fn branch_291(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "m160_FromIndexerNumber");
         native_values[6] = try rt.get(s, env, "properties");
         native_values[7] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[6]});
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[8] = try rt.get(s, env, "m160_FromIndexer");
         native_values[9] = try rt.get(s, env, "properties");
         native_values[10] = try rt.get(s, env, "indexer");
         native_values[11] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_292(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_292(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "key");
     native_values[3] = try rt.get(s, env, "properties");
     native_values[4] = try rt.binary(s, "in", native_values[2], native_values[3]);
@@ -41719,14 +41721,14 @@ fn branch_292(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "key");
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m87_Never");
         native_values[10] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_293(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_293(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m38_IsArray");
     native_values[3] = try rt.get(s, env, "type");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -41740,12 +41742,12 @@ fn branch_293(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.key(s, native_values[8], native_values[10]);
         native_values[12] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[11] });
         native_values[13] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[12]});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_294, .{ s, env, receiver, native_values });
+        return .{ .jump = 294 };
     }
 }
-fn branch_294(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_294(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m39_IsConstructor");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -41766,12 +41768,12 @@ fn branch_294(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{ native_values[26], native_values[30] });
         native_values[32] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[24], native_values[31] });
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
-        return @call(.always_tail, branch_295, .{ s, env, receiver, native_values });
+        return .{ .jump = 295 };
     }
 }
-fn branch_295(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_295(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[33] = try rt.get(s, env, "m40_IsFunction");
     native_values[34] = try rt.get(s, env, "type");
     native_values[35] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[34]});
@@ -41792,12 +41794,12 @@ fn branch_295(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[49] = try rt.key(s, native_values[46], native_values[48]);
         native_values[50] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{ native_values[45], native_values[49] });
         native_values[51] = try rt.invoke(s, native_values[36], c.pi_js_undefined(), &.{ native_values[43], native_values[50] });
-        return native_values[51];
+        return .{ .value = native_values[51] };
     } else {
-        return @call(.always_tail, branch_296, .{ s, env, receiver, native_values });
+        return .{ .jump = 296 };
     }
 }
-fn branch_296(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_296(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[52] = try rt.get(s, env, "m95_IsTuple");
     native_values[53] = try rt.get(s, env, "type");
     native_values[54] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[53]});
@@ -41811,12 +41813,12 @@ fn branch_296(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[61] = try rt.key(s, native_values[58], native_values[60]);
         native_values[62] = try rt.invoke(s, native_values[56], c.pi_js_undefined(), &.{ native_values[57], native_values[61] });
         native_values[63] = try rt.invoke(s, native_values[55], c.pi_js_undefined(), &.{native_values[62]});
-        return native_values[63];
+        return .{ .value = native_values[63] };
     } else {
-        return @call(.always_tail, branch_297, .{ s, env, receiver, native_values });
+        return .{ .jump = 297 };
     }
 }
-fn branch_297(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_297(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[64] = try rt.get(s, env, "m24_IsUnion");
     native_values[65] = try rt.get(s, env, "type");
     native_values[66] = try rt.invoke(s, native_values[64], c.pi_js_undefined(), &.{native_values[65]});
@@ -41830,12 +41832,12 @@ fn branch_297(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[73] = try rt.key(s, native_values[70], native_values[72]);
         native_values[74] = try rt.invoke(s, native_values[68], c.pi_js_undefined(), &.{ native_values[69], native_values[73] });
         native_values[75] = try rt.invoke(s, native_values[67], c.pi_js_undefined(), &.{native_values[74]});
-        return native_values[75];
+        return .{ .value = native_values[75] };
     } else {
-        return @call(.always_tail, branch_298, .{ s, env, receiver, native_values });
+        return .{ .jump = 298 };
     }
 }
-fn branch_298(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_298(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[76] = try rt.get(s, env, "m41_IsIntersect");
     native_values[77] = try rt.get(s, env, "type");
     native_values[78] = try rt.invoke(s, native_values[76], c.pi_js_undefined(), &.{native_values[77]});
@@ -41849,12 +41851,12 @@ fn branch_298(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[85] = try rt.key(s, native_values[82], native_values[84]);
         native_values[86] = try rt.invoke(s, native_values[80], c.pi_js_undefined(), &.{ native_values[81], native_values[85] });
         native_values[87] = try rt.invoke(s, native_values[79], c.pi_js_undefined(), &.{native_values[86]});
-        return native_values[87];
+        return .{ .value = native_values[87] };
     } else {
-        return @call(.always_tail, branch_299, .{ s, env, receiver, native_values });
+        return .{ .jump = 299 };
     }
 }
-fn branch_299(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_299(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[88] = try rt.get(s, env, "m94_IsThis");
     native_values[89] = try rt.get(s, env, "type");
     native_values[90] = try rt.invoke(s, native_values[88], c.pi_js_undefined(), &.{native_values[89]});
@@ -41862,13 +41864,13 @@ fn branch_299(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[91] = try rt.get(s, env, "m42__Object_");
         native_values[92] = try rt.get(s, env, "properties");
         native_values[93] = try rt.invoke(s, native_values[91], c.pi_js_undefined(), &.{native_values[92]});
-        return native_values[93];
+        return .{ .value = native_values[93] };
     } else {
         native_values[94] = try rt.get(s, env, "type");
-        return native_values[94];
+        return .{ .value = native_values[94] };
     }
 }
-fn branch_300(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_300(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -41883,12 +41885,12 @@ fn branch_300(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_301, .{ s, env, receiver, native_values });
+        return .{ .jump = 301 };
     }
 }
-fn branch_301(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_301(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m85_IsDependent");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -41907,12 +41909,12 @@ fn branch_301(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.propertyKey(s, native_values[27]);
         native_values[29] = try rt.key(s, native_values[26], native_values[28]);
         native_values[30] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[25], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_302, .{ s, env, receiver, native_values });
+        return .{ .jump = 302 };
     }
 }
-fn branch_302(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_302(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m53_IsEnum");
     native_values[32] = try rt.get(s, env, "type");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -41923,12 +41925,12 @@ fn branch_302(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_303, .{ s, env, receiver, native_values });
+        return .{ .jump = 303 };
     }
 }
-fn branch_303(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_303(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m41_IsIntersect");
     native_values[41] = try rt.get(s, env, "type");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -41939,12 +41941,12 @@ fn branch_303(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[46] = try rt.propertyKey(s, native_values[45]);
         native_values[47] = try rt.key(s, native_values[44], native_values[46]);
         native_values[48] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{native_values[47]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
-        return @call(.always_tail, branch_304, .{ s, env, receiver, native_values });
+        return .{ .jump = 304 };
     }
 }
-fn branch_304(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_304(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[49] = try rt.get(s, env, "m14_IsLiteral");
     native_values[50] = try rt.get(s, env, "type");
     native_values[51] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{native_values[50]});
@@ -41955,12 +41957,12 @@ fn branch_304(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[55] = try rt.propertyKey(s, native_values[54]);
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[56]});
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
-        return @call(.always_tail, branch_305, .{ s, env, receiver, native_values });
+        return .{ .jump = 305 };
     }
 }
-fn branch_305(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_305(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[58] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[59] = try rt.get(s, env, "type");
     native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
@@ -41971,12 +41973,12 @@ fn branch_305(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[64] = try rt.propertyKey(s, native_values[63]);
         native_values[65] = try rt.key(s, native_values[62], native_values[64]);
         native_values[66] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{native_values[65]});
-        return native_values[66];
+        return .{ .value = native_values[66] };
     } else {
-        return @call(.always_tail, branch_306, .{ s, env, receiver, native_values });
+        return .{ .jump = 306 };
     }
 }
-fn branch_306(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_306(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[67] = try rt.get(s, env, "m24_IsUnion");
     native_values[68] = try rt.get(s, env, "type");
     native_values[69] = try rt.invoke(s, native_values[67], c.pi_js_undefined(), &.{native_values[68]});
@@ -41987,25 +41989,25 @@ fn branch_306(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[73] = try rt.propertyKey(s, native_values[72]);
         native_values[74] = try rt.key(s, native_values[71], native_values[73]);
         native_values[75] = try rt.invoke(s, native_values[70], c.pi_js_undefined(), &.{native_values[74]});
-        return native_values[75];
+        return .{ .value = native_values[75] };
     } else {
         native_values[76] = try s.array();
-        return native_values[76];
+        return .{ .value = native_values[76] };
     }
 }
-fn branch_307(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_307(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "ref");
     native_values[3] = try rt.get(s, env, "defs");
     native_values[4] = try rt.binary(s, "in", native_values[2], native_values[3]);
     if (s.truthy(native_values[4])) {
-        return @call(.always_tail, branch_308, .{ s, env, receiver, native_values });
+        return .{ .jump = 308 };
     } else {
         native_values[25] = try rt.get(s, env, "m87_Never");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_308(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_308(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[5] = try rt.get(s, env, "m12_IsRef");
     native_values[6] = try rt.get(s, env, "defs");
     native_values[7] = try rt.get(s, env, "ref");
@@ -42023,17 +42025,17 @@ fn branch_308(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[18] = try rt.propertyKey(s, native_values[17]);
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         native_values[20] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "defs");
         native_values[22] = try rt.get(s, env, "ref");
         native_values[23] = try rt.propertyKey(s, native_values[22]);
         native_values[24] = try rt.key(s, native_values[21], native_values[23]);
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_309(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[12] = try branch_310(s, env, receiver, native_values);
+fn branch_309(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[12] = try runBranch(s, env, receiver, native_values, 310);
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "m14_Literal");
         native_values[14] = try rt.get(s, env, "types");
@@ -42041,12 +42043,12 @@ fn branch_309(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return @call(.always_tail, branch_311, .{ s, env, receiver, native_values });
+        return .{ .jump = 311 };
     }
 }
-fn branch_310(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_310(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m14_IsLiteral");
     native_values[3] = try rt.get(s, env, "indexer");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -42058,27 +42060,27 @@ fn branch_310(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try s.text("length");
         native_values[11] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_311(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[25] = try branch_312(s, env, receiver, native_values);
+fn branch_311(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[25] = try runBranch(s, env, receiver, native_values, 312);
     if (s.truthy(native_values[25])) {
         native_values[26] = try rt.get(s, env, "m172_FromTupleWithoutIndexer");
         native_values[27] = try rt.get(s, env, "types");
         native_values[28] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{native_values[27]});
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
         native_values[29] = try rt.get(s, env, "m172_FromTupleWithIndexer");
         native_values[30] = try rt.get(s, env, "types");
         native_values[31] = try rt.get(s, env, "indexer");
         native_values[32] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[30], native_values[31] });
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_312(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_312(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[19] = try rt.get(s, env, "m59_IsNumber");
     native_values[20] = try rt.get(s, env, "indexer");
     native_values[21] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{native_values[20]});
@@ -42086,12 +42088,12 @@ fn branch_312(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[22] = try rt.get(s, env, "m55_IsInteger");
         native_values[23] = try rt.get(s, env, "indexer");
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_313(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_313(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m41_IsIntersect");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42104,12 +42106,12 @@ fn branch_313(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[9]});
         native_values[11] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_314, .{ s, env, receiver, native_values });
+        return .{ .jump = 314 };
     }
 }
-fn branch_314(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_314(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m24_IsUnion");
     native_values[13] = try rt.get(s, env, "type");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -42122,12 +42124,12 @@ fn branch_314(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[20] = try rt.key(s, native_values[17], native_values[19]);
         native_values[21] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[20]});
         native_values[22] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return @call(.always_tail, branch_315, .{ s, env, receiver, native_values });
+        return .{ .jump = 315 };
     }
 }
-fn branch_315(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_315(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "m14_IsLiteral");
     native_values[24] = try rt.get(s, env, "type");
     native_values[25] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
@@ -42138,13 +42140,13 @@ fn branch_315(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[29] = try rt.propertyKey(s, native_values[28]);
         native_values[30] = try rt.key(s, native_values[27], native_values[29]);
         native_values[31] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{native_values[30]});
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "type");
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_316(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_316(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[11] = try rt.get(s, env, "check");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -42154,47 +42156,47 @@ fn branch_316(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.append(s, native_values[13], native_values[14]);
         native_values[15] = try rt.get(s, env, "result");
         try rt.spreadArray(s, native_values[13], native_values[15]);
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
         native_values[16] = try rt.get(s, env, "result");
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_317(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[15] = try branch_318(s, env, receiver, native_values);
+fn branch_317(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[15] = try runBranch(s, env, receiver, native_values, 318);
     if (s.truthy(native_values[15])) {
         native_values[16] = try rt.get(s, env, "m175_CollapseToObject");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "type");
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_318(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[11] = try branch_319(s, env, receiver, native_values);
+fn branch_318(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[11] = try runBranch(s, env, receiver, native_values, 319);
     if (!s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "m24_IsUnion");
         native_values[13] = try rt.get(s, env, "type");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_319(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[7] = try branch_320(s, env, receiver, native_values);
+fn branch_319(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[7] = try runBranch(s, env, receiver, native_values, 320);
     if (!s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "m41_IsIntersect");
         native_values[9] = try rt.get(s, env, "type");
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_320(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_320(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42202,12 +42204,12 @@ fn branch_320(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[4] = try rt.get(s, env, "m85_IsDependent");
         native_values[5] = try rt.get(s, env, "type");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_321(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_321(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42222,12 +42224,12 @@ fn branch_321(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_322, .{ s, env, receiver, native_values });
+        return .{ .jump = 322 };
     }
 }
-fn branch_322(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_322(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m85_IsDependent");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -42246,12 +42248,12 @@ fn branch_322(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.propertyKey(s, native_values[27]);
         native_values[29] = try rt.key(s, native_values[26], native_values[28]);
         native_values[30] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[25], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_323, .{ s, env, receiver, native_values });
+        return .{ .jump = 323 };
     }
 }
-fn branch_323(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_323(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m41_IsIntersect");
     native_values[32] = try rt.get(s, env, "type");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -42262,12 +42264,12 @@ fn branch_323(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_324, .{ s, env, receiver, native_values });
+        return .{ .jump = 324 };
     }
 }
-fn branch_324(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_324(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m24_IsUnion");
     native_values[41] = try rt.get(s, env, "type");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -42278,12 +42280,12 @@ fn branch_324(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[46] = try rt.propertyKey(s, native_values[45]);
         native_values[47] = try rt.key(s, native_values[44], native_values[46]);
         native_values[48] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{native_values[47]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
-        return @call(.always_tail, branch_325, .{ s, env, receiver, native_values });
+        return .{ .jump = 325 };
     }
 }
-fn branch_325(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_325(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[49] = try rt.get(s, env, "m95_IsTuple");
     native_values[50] = try rt.get(s, env, "type");
     native_values[51] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{native_values[50]});
@@ -42294,12 +42296,12 @@ fn branch_325(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[55] = try rt.propertyKey(s, native_values[54]);
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[56]});
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
-        return @call(.always_tail, branch_326, .{ s, env, receiver, native_values });
+        return .{ .jump = 326 };
     }
 }
-fn branch_326(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_326(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[58] = try rt.get(s, env, "m42_IsObject");
     native_values[59] = try rt.get(s, env, "type");
     native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
@@ -42310,13 +42312,13 @@ fn branch_326(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[64] = try rt.propertyKey(s, native_values[63]);
         native_values[65] = try rt.key(s, native_values[62], native_values[64]);
         native_values[66] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{native_values[65]});
-        return native_values[66];
+        return .{ .value = native_values[66] };
     } else {
         native_values[67] = try s.object();
-        return native_values[67];
+        return .{ .value = native_values[67] };
     }
 }
-fn branch_327(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_327(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -42333,16 +42335,16 @@ fn branch_327(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m186_InstanceTypeDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_328(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_328(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m39_IsConstructor");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42351,14 +42353,14 @@ fn branch_328(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try s.text("instanceType");
         native_values[6] = try rt.propertyKey(s, native_values[5]);
         native_values[7] = try rt.key(s, native_values[4], native_values[6]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[8] = try rt.get(s, env, "m87_Never");
         native_values[9] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_329(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_329(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try rt.get(s, env, "heritage");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -42374,17 +42376,17 @@ fn branch_329(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try s.object();
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[13], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.get(s, env, "m196_InterfaceDeferred");
         native_values[18] = try rt.get(s, env, "heritage");
         native_values[19] = try rt.get(s, env, "properties");
         native_values[20] = try rt.get(s, env, "options");
         native_values[21] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_330(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_330(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -42403,28 +42405,28 @@ fn branch_330(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try s.object();
         native_values[16] = try rt.get(s, env, "options");
         native_values[17] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[14], native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m204_KeyOfDeferred");
         native_values[19] = try rt.get(s, env, "type");
         native_values[20] = try rt.get(s, env, "options");
         native_values[21] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[19], native_values[20] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_331(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_331(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m37_IsAny");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
     if (s.truthy(native_values[3])) {
         native_values[4] = try rt.get(s, env, "m199_FromAny");
         native_values[5] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{});
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
-        return @call(.always_tail, branch_332, .{ s, env, receiver, native_values });
+        return .{ .jump = 332 };
     }
 }
-fn branch_332(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_332(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[6] = try rt.get(s, env, "m38_IsArray");
     native_values[7] = try rt.get(s, env, "type");
     native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
@@ -42435,12 +42437,12 @@ fn branch_332(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[12] = try rt.propertyKey(s, native_values[11]);
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_333, .{ s, env, receiver, native_values });
+        return .{ .jump = 333 };
     }
 }
-fn branch_333(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_333(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[15] = try rt.get(s, env, "m42_IsObject");
     native_values[16] = try rt.get(s, env, "type");
     native_values[17] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
@@ -42451,12 +42453,12 @@ fn branch_333(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[21] = try rt.propertyKey(s, native_values[20]);
         native_values[22] = try rt.key(s, native_values[19], native_values[21]);
         native_values[23] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[22]});
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return @call(.always_tail, branch_334, .{ s, env, receiver, native_values });
+        return .{ .jump = 334 };
     }
 }
-fn branch_334(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_334(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[24] = try rt.get(s, env, "m45_IsRecord");
     native_values[25] = try rt.get(s, env, "type");
     native_values[26] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[25]});
@@ -42464,12 +42466,12 @@ fn branch_334(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[27] = try rt.get(s, env, "m202_FromRecord");
         native_values[28] = try rt.get(s, env, "type");
         native_values[29] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{native_values[28]});
-        return native_values[29];
+        return .{ .value = native_values[29] };
     } else {
-        return @call(.always_tail, branch_335, .{ s, env, receiver, native_values });
+        return .{ .jump = 335 };
     }
 }
-fn branch_335(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_335(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[30] = try rt.get(s, env, "m95_IsTuple");
     native_values[31] = try rt.get(s, env, "type");
     native_values[32] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{native_values[31]});
@@ -42480,14 +42482,14 @@ fn branch_335(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[36] = try rt.propertyKey(s, native_values[35]);
         native_values[37] = try rt.key(s, native_values[34], native_values[36]);
         native_values[38] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[37]});
-        return native_values[38];
+        return .{ .value = native_values[38] };
     } else {
         native_values[39] = try rt.get(s, env, "m87_Never");
         native_values[40] = try rt.invoke(s, native_values[39], c.pi_js_undefined(), &.{});
-        return native_values[40];
+        return .{ .value = native_values[40] };
     }
 }
-fn branch_336(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_336(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m14_IsLiteralValue");
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -42501,36 +42503,36 @@ fn branch_336(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
         native_values[11] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[10]});
         try rt.append(s, native_values[5], native_values[11]);
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
         native_values[12] = try rt.get(s, env, "m110_Unreachable");
         native_values[13] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_337(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[11] = try branch_338(s, env, receiver, native_values);
+fn branch_337(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[11] = try runBranch(s, env, receiver, native_values, 338);
     if (!s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "m4_IsString");
         native_values[13] = try rt.get(s, env, "value");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_338(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[7] = try branch_339(s, env, receiver, native_values);
+fn branch_338(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[7] = try runBranch(s, env, receiver, native_values, 339);
     if (!s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "m4_IsNumber");
         native_values[9] = try rt.get(s, env, "value");
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_339(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_339(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsBigInt");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42538,46 +42540,46 @@ fn branch_339(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[4] = try rt.get(s, env, "m4_IsBoolean");
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_340(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[15] = try branch_341(s, env, receiver, native_values);
+fn branch_340(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[15] = try runBranch(s, env, receiver, native_values, 341);
     if (s.truthy(native_values[15])) {
         native_values[16] = try rt.get(s, env, "m175_CollapseToObject");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "type");
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_341(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[11] = try branch_342(s, env, receiver, native_values);
+fn branch_341(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[11] = try runBranch(s, env, receiver, native_values, 342);
     if (!s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "m24_IsUnion");
         native_values[13] = try rt.get(s, env, "type");
         native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_342(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[7] = try branch_343(s, env, receiver, native_values);
+fn branch_342(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[7] = try runBranch(s, env, receiver, native_values, 343);
     if (!s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "m41_IsIntersect");
         native_values[9] = try rt.get(s, env, "type");
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_343(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_343(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42585,12 +42587,12 @@ fn branch_343(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[4] = try rt.get(s, env, "m85_IsDependent");
         native_values[5] = try rt.get(s, env, "type");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_344(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_344(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -42608,16 +42610,16 @@ fn branch_344(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try s.object();
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[13], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.get(s, env, "m205_LowercaseDeferred");
         native_values[18] = try rt.get(s, env, "type");
         native_values[19] = try rt.get(s, env, "options");
         native_values[20] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_345(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_345(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[7] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[8] = try s.array();
     native_values[9] = try rt.get(s, env, "type");
@@ -42639,7 +42641,7 @@ fn branch_345(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[23] = try s.object();
         native_values[24] = try rt.get(s, env, "options");
         native_values[25] = try rt.invoke(s, native_values[14], native_values[11], &.{ native_values[22], native_values[23], native_values[24] });
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
         native_values[26] = try rt.get(s, env, "m209_MappedDeferred");
         native_values[27] = try rt.get(s, env, "identifier");
@@ -42648,10 +42650,10 @@ fn branch_345(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[30] = try rt.get(s, env, "property");
         native_values[31] = try rt.get(s, env, "options");
         native_values[32] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{ native_values[27], native_values[28], native_values[29], native_values[30], native_values[31] });
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_346(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_346(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m53_IsEnum");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42662,12 +42664,12 @@ fn branch_346(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_347, .{ s, env, receiver, native_values });
+        return .{ .jump = 347 };
     }
 }
-fn branch_347(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_347(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m14_IsLiteral");
     native_values[11] = try rt.get(s, env, "type");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -42678,12 +42680,12 @@ fn branch_347(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return @call(.always_tail, branch_348, .{ s, env, receiver, native_values });
+        return .{ .jump = 348 };
     }
 }
-fn branch_348(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_348(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[19] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[20] = try rt.get(s, env, "type");
     native_values[21] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{native_values[20]});
@@ -42694,12 +42696,12 @@ fn branch_348(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[25] = try rt.propertyKey(s, native_values[24]);
         native_values[26] = try rt.key(s, native_values[23], native_values[25]);
         native_values[27] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[26]});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
-        return @call(.always_tail, branch_349, .{ s, env, receiver, native_values });
+        return .{ .jump = 349 };
     }
 }
-fn branch_349(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_349(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[28] = try rt.get(s, env, "m24_IsUnion");
     native_values[29] = try rt.get(s, env, "type");
     native_values[30] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{native_values[29]});
@@ -42710,15 +42712,15 @@ fn branch_349(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[34] = try rt.propertyKey(s, native_values[33]);
         native_values[35] = try rt.key(s, native_values[32], native_values[34]);
         native_values[36] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[35]});
-        return native_values[36];
+        return .{ .value = native_values[36] };
     } else {
         native_values[37] = try s.array();
         native_values[38] = try rt.get(s, env, "type");
         try rt.append(s, native_values[37], native_values[38]);
-        return native_values[37];
+        return .{ .value = native_values[37] };
     }
 }
-fn branch_350(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_350(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsNumber");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42733,18 +42735,18 @@ fn branch_350(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[11] = try s.concat(native_values[9], native_values[10]);
         native_values[12] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{native_values[11]});
         try rt.append(s, native_values[4], native_values[12]);
-        return native_values[4];
+        return .{ .value = native_values[4] };
     } else {
         native_values[13] = try s.array();
         native_values[14] = try rt.get(s, env, "m14_Literal");
         native_values[15] = try rt.get(s, env, "value");
         native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
         try rt.append(s, native_values[13], native_values[16]);
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_351(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[38] = try branch_352(s, env, receiver, native_values);
+fn branch_351(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[38] = try runBranch(s, env, receiver, native_values, 352);
     if (s.truthy(native_values[38])) {
         native_values[39] = try s.object();
         native_values[40] = try rt.get(s, env, "canonicalAs");
@@ -42754,13 +42756,13 @@ fn branch_351(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[44] = try rt.propertyKey(s, native_values[43]);
         native_values[45] = try rt.get(s, env, "instantiatedProperty");
         try rt.property(s, native_values[39], native_values[44], native_values[45]);
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
         native_values[46] = try s.object();
-        return native_values[46];
+        return .{ .value = native_values[46] };
     }
 }
-fn branch_352(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_352(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[32] = try rt.get(s, env, "m14_IsLiteralNumber");
     native_values[33] = try rt.get(s, env, "canonicalAs");
     native_values[34] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{native_values[33]});
@@ -42768,12 +42770,12 @@ fn branch_352(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[35] = try rt.get(s, env, "m14_IsLiteralString");
         native_values[36] = try rt.get(s, env, "canonicalAs");
         native_values[37] = try rt.invoke(s, native_values[35], c.pi_js_undefined(), &.{native_values[36]});
-        return native_values[37];
+        return .{ .value = native_values[37] };
     } else {
-        return native_values[34];
+        return .{ .value = native_values[34] };
     }
 }
-fn branch_353(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_353(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[2] = try rt.get(s, env, "instantiatedAs");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42784,13 +42786,13 @@ fn branch_353(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try rt.get(s, env, "instantiatedAs");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_354(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_354(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m14_IsLiteral");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42801,12 +42803,12 @@ fn branch_354(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_355(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_355(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m14_IsLiteral");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -42817,12 +42819,12 @@ fn branch_355(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_356(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_356(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m34_CyclicCheck");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "left");
@@ -42839,13 +42841,13 @@ fn branch_356(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.spreadArray(s, native_values[11], native_values[12]);
         native_values[13] = try rt.get(s, env, "left");
         try rt.append(s, native_values[11], native_values[13]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[14] = try rt.get(s, env, "result");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     }
 }
-fn branch_357(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_357(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m12_IsRef");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -42858,12 +42860,12 @@ fn branch_357(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_358, .{ s, env, receiver, native_values });
+        return .{ .jump = 358 };
     }
 }
-fn branch_358(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_358(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m38_IsArray");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -42876,12 +42878,12 @@ fn branch_358(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[22] = try rt.propertyKey(s, native_values[21]);
         native_values[23] = try rt.key(s, native_values[20], native_values[22]);
         native_values[24] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19], native_values[23] });
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return @call(.always_tail, branch_359, .{ s, env, receiver, native_values });
+        return .{ .jump = 359 };
     }
 }
-fn branch_359(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_359(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[25] = try rt.get(s, env, "m39_IsConstructor");
     native_values[26] = try rt.get(s, env, "type");
     native_values[27] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{native_values[26]});
@@ -42901,12 +42903,12 @@ fn branch_359(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[39] = try rt.key(s, native_values[36], native_values[38]);
         try rt.append(s, native_values[31], native_values[39]);
         native_values[40] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{ native_values[29], native_values[30], native_values[31] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
-        return @call(.always_tail, branch_360, .{ s, env, receiver, native_values });
+        return .{ .jump = 360 };
     }
 }
-fn branch_360(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_360(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[41] = try rt.get(s, env, "m40_IsFunction");
     native_values[42] = try rt.get(s, env, "type");
     native_values[43] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{native_values[42]});
@@ -42926,12 +42928,12 @@ fn branch_360(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[55] = try rt.key(s, native_values[52], native_values[54]);
         try rt.append(s, native_values[47], native_values[55]);
         native_values[56] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{ native_values[45], native_values[46], native_values[47] });
-        return native_values[56];
+        return .{ .value = native_values[56] };
     } else {
-        return @call(.always_tail, branch_361, .{ s, env, receiver, native_values });
+        return .{ .jump = 361 };
     }
 }
-fn branch_361(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_361(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[57] = try rt.get(s, env, "m196_IsInterfaceDeferred");
     native_values[58] = try rt.get(s, env, "type");
@@ -42947,12 +42949,12 @@ fn branch_361(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[67] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[68] = try rt.key(s, native_values[66], native_values[67]);
         native_values[69] = try rt.invoke(s, native_values[60], c.pi_js_undefined(), &.{ native_values[61], native_values[62], native_values[68] });
-        return native_values[69];
+        return .{ .value = native_values[69] };
     } else {
-        return @call(.always_tail, branch_362, .{ s, env, receiver, native_values });
+        return .{ .jump = 362 };
     }
 }
-fn branch_362(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_362(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[70] = try rt.get(s, env, "m41_IsIntersect");
     native_values[71] = try rt.get(s, env, "type");
     native_values[72] = try rt.invoke(s, native_values[70], c.pi_js_undefined(), &.{native_values[71]});
@@ -42965,12 +42967,12 @@ fn branch_362(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[78] = try rt.propertyKey(s, native_values[77]);
         native_values[79] = try rt.key(s, native_values[76], native_values[78]);
         native_values[80] = try rt.invoke(s, native_values[73], c.pi_js_undefined(), &.{ native_values[74], native_values[75], native_values[79] });
-        return native_values[80];
+        return .{ .value = native_values[80] };
     } else {
-        return @call(.always_tail, branch_363, .{ s, env, receiver, native_values });
+        return .{ .jump = 363 };
     }
 }
-fn branch_363(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_363(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[81] = try rt.get(s, env, "m42_IsObject");
     native_values[82] = try rt.get(s, env, "type");
     native_values[83] = try rt.invoke(s, native_values[81], c.pi_js_undefined(), &.{native_values[82]});
@@ -42983,12 +42985,12 @@ fn branch_363(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[89] = try rt.propertyKey(s, native_values[88]);
         native_values[90] = try rt.key(s, native_values[87], native_values[89]);
         native_values[91] = try rt.invoke(s, native_values[84], c.pi_js_undefined(), &.{ native_values[85], native_values[86], native_values[90] });
-        return native_values[91];
+        return .{ .value = native_values[91] };
     } else {
-        return @call(.always_tail, branch_364, .{ s, env, receiver, native_values });
+        return .{ .jump = 364 };
     }
 }
-fn branch_364(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_364(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[92] = try rt.get(s, env, "m24_IsUnion");
     native_values[93] = try rt.get(s, env, "type");
     native_values[94] = try rt.invoke(s, native_values[92], c.pi_js_undefined(), &.{native_values[93]});
@@ -43001,12 +43003,12 @@ fn branch_364(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[100] = try rt.propertyKey(s, native_values[99]);
         native_values[101] = try rt.key(s, native_values[98], native_values[100]);
         native_values[102] = try rt.invoke(s, native_values[95], c.pi_js_undefined(), &.{ native_values[96], native_values[97], native_values[101] });
-        return native_values[102];
+        return .{ .value = native_values[102] };
     } else {
-        return @call(.always_tail, branch_365, .{ s, env, receiver, native_values });
+        return .{ .jump = 365 };
     }
 }
-fn branch_365(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_365(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[103] = try rt.get(s, env, "m95_IsTuple");
     native_values[104] = try rt.get(s, env, "type");
     native_values[105] = try rt.invoke(s, native_values[103], c.pi_js_undefined(), &.{native_values[104]});
@@ -43019,12 +43021,12 @@ fn branch_365(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[111] = try rt.propertyKey(s, native_values[110]);
         native_values[112] = try rt.key(s, native_values[109], native_values[111]);
         native_values[113] = try rt.invoke(s, native_values[106], c.pi_js_undefined(), &.{ native_values[107], native_values[108], native_values[112] });
-        return native_values[113];
+        return .{ .value = native_values[113] };
     } else {
-        return @call(.always_tail, branch_366, .{ s, env, receiver, native_values });
+        return .{ .jump = 366 };
     }
 }
-fn branch_366(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_366(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[114] = try rt.get(s, env, "m45_IsRecord");
     native_values[115] = try rt.get(s, env, "type");
@@ -43037,12 +43039,12 @@ fn branch_366(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[121] = try rt.get(s, env, "type");
         native_values[122] = try rt.invoke(s, native_values[120], c.pi_js_undefined(), &.{native_values[121]});
         native_values[123] = try rt.invoke(s, native_values[117], c.pi_js_undefined(), &.{ native_values[118], native_values[119], native_values[122] });
-        return native_values[123];
+        return .{ .value = native_values[123] };
     } else {
-        return c.pi_js_bool(engine.context, 0);
+        return .{ .value = c.pi_js_bool(engine.context, 0) };
     }
 }
-fn branch_367(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_367(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[3] = try rt.get(s, env, "stack");
     native_values[4] = try s.text("includes");
@@ -43051,7 +43053,7 @@ fn branch_367(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[7] = try rt.get(s, env, "ref");
     native_values[8] = try rt.invoke(s, native_values[6], native_values[3], &.{native_values[7]});
     if (s.truthy(native_values[8])) {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     } else {
         native_values[9] = try rt.get(s, env, "m34_FromType");
         native_values[10] = try s.array();
@@ -43065,10 +43067,10 @@ fn branch_367(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[13], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_368(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_368(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m34_FromType");
     native_values[3] = try rt.get(s, env, "stack");
@@ -43076,18 +43078,18 @@ fn branch_368(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[5] = try rt.get(s, env, "left");
     native_values[6] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4], native_values[5] });
     if (s.truthy(native_values[6])) {
-        return c.pi_js_bool(engine.context, 1);
+        return .{ .value = c.pi_js_bool(engine.context, 1) };
     } else {
         native_values[7] = try rt.get(s, env, "m34_FromTypes");
         native_values[8] = try rt.get(s, env, "stack");
         native_values[9] = try rt.get(s, env, "context");
         native_values[10] = try rt.get(s, env, "right");
         native_values[11] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_369(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_370(s, env, receiver, native_values);
+fn branch_369(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 370);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_IsEqual");
         native_values[10] = try rt.get(s, env, "value");
@@ -43096,12 +43098,12 @@ fn branch_369(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try s.text("Interface");
         native_values[15] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_370(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_370(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m2_IsSchema");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43110,12 +43112,12 @@ fn branch_370(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("action");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_371(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_371(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m12_IsRef");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -43128,12 +43130,12 @@ fn branch_371(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.key(s, native_values[8], native_values[10]);
         native_values[12] = try rt.get(s, env, "result");
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_372, .{ s, env, receiver, native_values });
+        return .{ .jump = 372 };
     }
 }
-fn branch_372(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_372(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m38_IsArray");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -43146,12 +43148,12 @@ fn branch_372(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[22] = try rt.key(s, native_values[19], native_values[21]);
         native_values[23] = try rt.get(s, env, "result");
         native_values[24] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[22], native_values[23] });
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return @call(.always_tail, branch_373, .{ s, env, receiver, native_values });
+        return .{ .jump = 373 };
     }
 }
-fn branch_373(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_373(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[25] = try rt.get(s, env, "m39_IsConstructor");
     native_values[26] = try rt.get(s, env, "type");
     native_values[27] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{native_values[26]});
@@ -43171,12 +43173,12 @@ fn branch_373(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         try rt.append(s, native_values[30], native_values[38]);
         native_values[39] = try rt.get(s, env, "result");
         native_values[40] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{ native_values[29], native_values[30], native_values[39] });
-        return native_values[40];
+        return .{ .value = native_values[40] };
     } else {
-        return @call(.always_tail, branch_374, .{ s, env, receiver, native_values });
+        return .{ .jump = 374 };
     }
 }
-fn branch_374(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_374(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[41] = try rt.get(s, env, "m40_IsFunction");
     native_values[42] = try rt.get(s, env, "type");
     native_values[43] = try rt.invoke(s, native_values[41], c.pi_js_undefined(), &.{native_values[42]});
@@ -43196,12 +43198,12 @@ fn branch_374(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         try rt.append(s, native_values[46], native_values[54]);
         native_values[55] = try rt.get(s, env, "result");
         native_values[56] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{ native_values[45], native_values[46], native_values[55] });
-        return native_values[56];
+        return .{ .value = native_values[56] };
     } else {
-        return @call(.always_tail, branch_375, .{ s, env, receiver, native_values });
+        return .{ .jump = 375 };
     }
 }
-fn branch_375(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_375(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[57] = try rt.get(s, env, "m196_IsInterfaceDeferred");
     native_values[58] = try rt.get(s, env, "type");
@@ -43217,12 +43219,12 @@ fn branch_375(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[67] = try rt.key(s, native_values[65], native_values[66]);
         native_values[68] = try rt.get(s, env, "result");
         native_values[69] = try rt.invoke(s, native_values[60], c.pi_js_undefined(), &.{ native_values[61], native_values[67], native_values[68] });
-        return native_values[69];
+        return .{ .value = native_values[69] };
     } else {
-        return @call(.always_tail, branch_376, .{ s, env, receiver, native_values });
+        return .{ .jump = 376 };
     }
 }
-fn branch_376(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_376(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[70] = try rt.get(s, env, "m41_IsIntersect");
     native_values[71] = try rt.get(s, env, "type");
     native_values[72] = try rt.invoke(s, native_values[70], c.pi_js_undefined(), &.{native_values[71]});
@@ -43235,12 +43237,12 @@ fn branch_376(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[78] = try rt.key(s, native_values[75], native_values[77]);
         native_values[79] = try rt.get(s, env, "result");
         native_values[80] = try rt.invoke(s, native_values[73], c.pi_js_undefined(), &.{ native_values[74], native_values[78], native_values[79] });
-        return native_values[80];
+        return .{ .value = native_values[80] };
     } else {
-        return @call(.always_tail, branch_377, .{ s, env, receiver, native_values });
+        return .{ .jump = 377 };
     }
 }
-fn branch_377(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_377(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[81] = try rt.get(s, env, "m42_IsObject");
     native_values[82] = try rt.get(s, env, "type");
     native_values[83] = try rt.invoke(s, native_values[81], c.pi_js_undefined(), &.{native_values[82]});
@@ -43253,12 +43255,12 @@ fn branch_377(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[89] = try rt.key(s, native_values[86], native_values[88]);
         native_values[90] = try rt.get(s, env, "result");
         native_values[91] = try rt.invoke(s, native_values[84], c.pi_js_undefined(), &.{ native_values[85], native_values[89], native_values[90] });
-        return native_values[91];
+        return .{ .value = native_values[91] };
     } else {
-        return @call(.always_tail, branch_378, .{ s, env, receiver, native_values });
+        return .{ .jump = 378 };
     }
 }
-fn branch_378(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_378(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[92] = try rt.get(s, env, "m24_IsUnion");
     native_values[93] = try rt.get(s, env, "type");
     native_values[94] = try rt.invoke(s, native_values[92], c.pi_js_undefined(), &.{native_values[93]});
@@ -43271,12 +43273,12 @@ fn branch_378(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[100] = try rt.key(s, native_values[97], native_values[99]);
         native_values[101] = try rt.get(s, env, "result");
         native_values[102] = try rt.invoke(s, native_values[95], c.pi_js_undefined(), &.{ native_values[96], native_values[100], native_values[101] });
-        return native_values[102];
+        return .{ .value = native_values[102] };
     } else {
-        return @call(.always_tail, branch_379, .{ s, env, receiver, native_values });
+        return .{ .jump = 379 };
     }
 }
-fn branch_379(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_379(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[103] = try rt.get(s, env, "m95_IsTuple");
     native_values[104] = try rt.get(s, env, "type");
     native_values[105] = try rt.invoke(s, native_values[103], c.pi_js_undefined(), &.{native_values[104]});
@@ -43289,12 +43291,12 @@ fn branch_379(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[111] = try rt.key(s, native_values[108], native_values[110]);
         native_values[112] = try rt.get(s, env, "result");
         native_values[113] = try rt.invoke(s, native_values[106], c.pi_js_undefined(), &.{ native_values[107], native_values[111], native_values[112] });
-        return native_values[113];
+        return .{ .value = native_values[113] };
     } else {
-        return @call(.always_tail, branch_380, .{ s, env, receiver, native_values });
+        return .{ .jump = 380 };
     }
 }
-fn branch_380(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_380(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[114] = try rt.get(s, env, "m45_IsRecord");
     native_values[115] = try rt.get(s, env, "type");
     native_values[116] = try rt.invoke(s, native_values[114], c.pi_js_undefined(), &.{native_values[115]});
@@ -43306,13 +43308,13 @@ fn branch_380(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[121] = try rt.invoke(s, native_values[119], c.pi_js_undefined(), &.{native_values[120]});
         native_values[122] = try rt.get(s, env, "result");
         native_values[123] = try rt.invoke(s, native_values[117], c.pi_js_undefined(), &.{ native_values[118], native_values[121], native_values[122] });
-        return native_values[123];
+        return .{ .value = native_values[123] };
     } else {
         native_values[124] = try rt.get(s, env, "result");
-        return native_values[124];
+        return .{ .value = native_values[124] };
     }
 }
-fn branch_381(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_381(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "result");
     native_values[4] = try s.text("includes");
     native_values[5] = try rt.propertyKey(s, native_values[4]);
@@ -43321,12 +43323,12 @@ fn branch_381(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[8] = try rt.invoke(s, native_values[6], native_values[3], &.{native_values[7]});
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "result");
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_382, .{ s, env, receiver, native_values });
+        return .{ .jump = 382 };
     }
 }
-fn branch_382(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_382(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "ref");
     native_values[11] = try rt.get(s, env, "context");
     native_values[12] = try rt.binary(s, "in", native_values[10], native_values[11]);
@@ -43343,14 +43345,14 @@ fn branch_382(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.get(s, env, "ref");
         try rt.append(s, native_values[19], native_values[21]);
         native_values[22] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[14], native_values[18], native_values[19] });
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
         native_values[23] = try rt.get(s, env, "m110_Unreachable");
         native_values[24] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_383(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_383(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[6] = try rt.get(s, env, "m196_IsInterfaceDeferred");
     native_values[7] = try rt.get(s, env, "type");
@@ -43371,13 +43373,13 @@ fn branch_383(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[22] = try rt.key(s, native_values[20], native_values[21]);
         native_values[23] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[16], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
         native_values[24] = try rt.get(s, env, "type");
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_384(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_384(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43394,16 +43396,16 @@ fn branch_384(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m213_NonNullableDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_385(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_385(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "type");
@@ -43423,17 +43425,17 @@ fn branch_385(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try s.object();
         native_values[17] = try rt.get(s, env, "options");
         native_values[18] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[15], native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m217_PickDeferred");
         native_values[20] = try rt.get(s, env, "type");
         native_values[21] = try rt.get(s, env, "indexer");
         native_values[22] = try rt.get(s, env, "options");
         native_values[23] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_386(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_386(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m42_IsObject");
     native_values[5] = try rt.get(s, env, "collapsed");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -43442,14 +43444,14 @@ fn branch_386(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[8] = try s.text("properties");
         native_values[9] = try rt.propertyKey(s, native_values[8]);
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
         native_values[11] = try rt.get(s, env, "m110_Unreachable");
         native_values[12] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{});
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_387(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_387(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "keys");
     native_values[3] = try s.text("includes");
     native_values[4] = try rt.propertyKey(s, native_values[3]);
@@ -43471,13 +43473,13 @@ fn branch_387(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[19] = try rt.key(s, native_values[16], native_values[18]);
         try rt.property(s, native_values[13], native_values[15], native_values[19]);
         native_values[20] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[12], native_values[13] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "result");
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_388(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_388(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43494,16 +43496,16 @@ fn branch_388(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m219_ParametersDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_389(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_389(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m40_IsFunction");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43512,13 +43514,13 @@ fn branch_389(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try s.text("parameters");
         native_values[6] = try rt.propertyKey(s, native_values[5]);
         native_values[7] = try rt.key(s, native_values[4], native_values[6]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[8] = try s.array();
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_390(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_390(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43535,16 +43537,16 @@ fn branch_390(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m227_PartialDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_391(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_391(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43559,12 +43561,12 @@ fn branch_391(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_392, .{ s, env, receiver, native_values });
+        return .{ .jump = 392 };
     }
 }
-fn branch_392(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_392(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m85_IsDependent");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -43583,12 +43585,12 @@ fn branch_392(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.propertyKey(s, native_values[27]);
         native_values[29] = try rt.key(s, native_values[26], native_values[28]);
         native_values[30] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[25], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_393, .{ s, env, receiver, native_values });
+        return .{ .jump = 393 };
     }
 }
-fn branch_393(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_393(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m41_IsIntersect");
     native_values[32] = try rt.get(s, env, "type");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -43599,12 +43601,12 @@ fn branch_393(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_394, .{ s, env, receiver, native_values });
+        return .{ .jump = 394 };
     }
 }
-fn branch_394(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_394(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m24_IsUnion");
     native_values[41] = try rt.get(s, env, "type");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -43615,12 +43617,12 @@ fn branch_394(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[46] = try rt.propertyKey(s, native_values[45]);
         native_values[47] = try rt.key(s, native_values[44], native_values[46]);
         native_values[48] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{native_values[47]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
-        return @call(.always_tail, branch_395, .{ s, env, receiver, native_values });
+        return .{ .jump = 395 };
     }
 }
-fn branch_395(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_395(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[49] = try rt.get(s, env, "m42_IsObject");
     native_values[50] = try rt.get(s, env, "type");
     native_values[51] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{native_values[50]});
@@ -43631,15 +43633,15 @@ fn branch_395(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[55] = try rt.propertyKey(s, native_values[54]);
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[56]});
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
         native_values[58] = try rt.get(s, env, "m42__Object_");
         native_values[59] = try s.object();
         native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
-        return native_values[60];
+        return .{ .value = native_values[60] };
     }
 }
-fn branch_396(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_396(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[4] = try s.array();
     native_values[5] = try rt.get(s, env, "type");
@@ -43659,17 +43661,17 @@ fn branch_396(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try s.object();
         native_values[17] = try rt.get(s, env, "options");
         native_values[18] = try rt.invoke(s, native_values[11], native_values[8], &.{ native_values[15], native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "m230_OmitDeferred");
         native_values[20] = try rt.get(s, env, "type");
         native_values[21] = try rt.get(s, env, "indexer");
         native_values[22] = try rt.get(s, env, "options");
         native_values[23] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     }
 }
-fn branch_397(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_397(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "keys");
     native_values[3] = try s.text("includes");
     native_values[4] = try rt.propertyKey(s, native_values[3]);
@@ -43678,7 +43680,7 @@ fn branch_397(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[7] = try rt.invoke(s, native_values[5], native_values[2], &.{native_values[6]});
     if (s.truthy(native_values[7])) {
         native_values[8] = try rt.get(s, env, "result");
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try s.object();
         native_values[10] = try rt.get(s, env, "result");
@@ -43690,10 +43692,10 @@ fn branch_397(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.propertyKey(s, native_values[14]);
         native_values[16] = try rt.key(s, native_values[13], native_values[15]);
         try rt.property(s, native_values[9], native_values[12], native_values[16]);
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_398(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_398(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43710,15 +43712,15 @@ fn branch_398(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m240_ReadonlyObjectDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_399(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_399(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m38_IsArray");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43729,12 +43731,12 @@ fn branch_399(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_400, .{ s, env, receiver, native_values });
+        return .{ .jump = 400 };
     }
 }
-fn branch_400(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_400(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m31_IsCyclic");
     native_values[11] = try rt.get(s, env, "type");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -43749,12 +43751,12 @@ fn branch_400(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[20] = try rt.propertyKey(s, native_values[19]);
         native_values[21] = try rt.key(s, native_values[18], native_values[20]);
         native_values[22] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[17], native_values[21] });
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return @call(.always_tail, branch_401, .{ s, env, receiver, native_values });
+        return .{ .jump = 401 };
     }
 }
-fn branch_401(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_401(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "m85_IsDependent");
     native_values[24] = try rt.get(s, env, "type");
     native_values[25] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
@@ -43773,12 +43775,12 @@ fn branch_401(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[26], c.pi_js_undefined(), &.{ native_values[30], native_values[34], native_values[38] });
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_402, .{ s, env, receiver, native_values });
+        return .{ .jump = 402 };
     }
 }
-fn branch_402(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_402(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m41_IsIntersect");
     native_values[41] = try rt.get(s, env, "type");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -43789,12 +43791,12 @@ fn branch_402(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[46] = try rt.propertyKey(s, native_values[45]);
         native_values[47] = try rt.key(s, native_values[44], native_values[46]);
         native_values[48] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{native_values[47]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
-        return @call(.always_tail, branch_403, .{ s, env, receiver, native_values });
+        return .{ .jump = 403 };
     }
 }
-fn branch_403(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_403(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[49] = try rt.get(s, env, "m42_IsObject");
     native_values[50] = try rt.get(s, env, "type");
     native_values[51] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{native_values[50]});
@@ -43805,12 +43807,12 @@ fn branch_403(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[55] = try rt.propertyKey(s, native_values[54]);
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[56]});
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
-        return @call(.always_tail, branch_404, .{ s, env, receiver, native_values });
+        return .{ .jump = 404 };
     }
 }
-fn branch_404(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_404(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[58] = try rt.get(s, env, "m95_IsTuple");
     native_values[59] = try rt.get(s, env, "type");
     native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
@@ -43821,12 +43823,12 @@ fn branch_404(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[64] = try rt.propertyKey(s, native_values[63]);
         native_values[65] = try rt.key(s, native_values[62], native_values[64]);
         native_values[66] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{native_values[65]});
-        return native_values[66];
+        return .{ .value = native_values[66] };
     } else {
-        return @call(.always_tail, branch_405, .{ s, env, receiver, native_values });
+        return .{ .jump = 405 };
     }
 }
-fn branch_405(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_405(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[67] = try rt.get(s, env, "m24_IsUnion");
     native_values[68] = try rt.get(s, env, "type");
     native_values[69] = try rt.invoke(s, native_values[67], c.pi_js_undefined(), &.{native_values[68]});
@@ -43837,13 +43839,13 @@ fn branch_405(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[73] = try rt.propertyKey(s, native_values[72]);
         native_values[74] = try rt.key(s, native_values[71], native_values[73]);
         native_values[75] = try rt.invoke(s, native_values[70], c.pi_js_undefined(), &.{native_values[74]});
-        return native_values[75];
+        return .{ .value = native_values[75] };
     } else {
         native_values[76] = try rt.get(s, env, "type");
-        return native_values[76];
+        return .{ .value = native_values[76] };
     }
 }
-fn branch_406(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_406(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43860,16 +43862,16 @@ fn branch_406(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m248_RequiredDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_407(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_407(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m31_IsCyclic");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43884,12 +43886,12 @@ fn branch_407(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_408, .{ s, env, receiver, native_values });
+        return .{ .jump = 408 };
     }
 }
-fn branch_408(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_408(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m85_IsDependent");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -43908,12 +43910,12 @@ fn branch_408(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.propertyKey(s, native_values[27]);
         native_values[29] = try rt.key(s, native_values[26], native_values[28]);
         native_values[30] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[25], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_409, .{ s, env, receiver, native_values });
+        return .{ .jump = 409 };
     }
 }
-fn branch_409(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_409(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m41_IsIntersect");
     native_values[32] = try rt.get(s, env, "type");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -43924,12 +43926,12 @@ fn branch_409(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[37] = try rt.propertyKey(s, native_values[36]);
         native_values[38] = try rt.key(s, native_values[35], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
-        return @call(.always_tail, branch_410, .{ s, env, receiver, native_values });
+        return .{ .jump = 410 };
     }
 }
-fn branch_410(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_410(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[40] = try rt.get(s, env, "m24_IsUnion");
     native_values[41] = try rt.get(s, env, "type");
     native_values[42] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[41]});
@@ -43940,12 +43942,12 @@ fn branch_410(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[46] = try rt.propertyKey(s, native_values[45]);
         native_values[47] = try rt.key(s, native_values[44], native_values[46]);
         native_values[48] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{native_values[47]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
-        return @call(.always_tail, branch_411, .{ s, env, receiver, native_values });
+        return .{ .jump = 411 };
     }
 }
-fn branch_411(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_411(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[49] = try rt.get(s, env, "m42_IsObject");
     native_values[50] = try rt.get(s, env, "type");
     native_values[51] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{native_values[50]});
@@ -43956,15 +43958,15 @@ fn branch_411(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[55] = try rt.propertyKey(s, native_values[54]);
         native_values[56] = try rt.key(s, native_values[53], native_values[55]);
         native_values[57] = try rt.invoke(s, native_values[52], c.pi_js_undefined(), &.{native_values[56]});
-        return native_values[57];
+        return .{ .value = native_values[57] };
     } else {
         native_values[58] = try rt.get(s, env, "m42__Object_");
         native_values[59] = try s.object();
         native_values[60] = try rt.invoke(s, native_values[58], c.pi_js_undefined(), &.{native_values[59]});
-        return native_values[60];
+        return .{ .value = native_values[60] };
     }
 }
-fn branch_412(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_412(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -43981,16 +43983,16 @@ fn branch_412(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try s.object();
         native_values[14] = try rt.get(s, env, "options");
         native_values[15] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[12], native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "m250_ReturnTypeDeferred");
         native_values[17] = try rt.get(s, env, "type");
         native_values[18] = try rt.get(s, env, "options");
         native_values[19] = try rt.invoke(s, native_values[16], c.pi_js_undefined(), &.{ native_values[17], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_413(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_413(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m40_IsFunction");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -43999,14 +44001,14 @@ fn branch_413(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try s.text("returnType");
         native_values[6] = try rt.propertyKey(s, native_values[5]);
         native_values[7] = try rt.key(s, native_values[4], native_values[6]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[8] = try rt.get(s, env, "m87_Never");
         native_values[9] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_414(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_414(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try rt.get(s, env, "types");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -44021,16 +44023,16 @@ fn branch_414(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[12] = try s.object();
         native_values[13] = try rt.get(s, env, "options");
         native_values[14] = try rt.invoke(s, native_values[8], native_values[5], &.{ native_values[11], native_values[12], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m17_TemplateLiteralDeferred");
         native_values[16] = try rt.get(s, env, "types");
         native_values[17] = try rt.get(s, env, "options");
         native_values[18] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_415(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_415(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m53_IsEnum");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -44043,12 +44045,12 @@ fn branch_415(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.get(s, env, "right");
         native_values[12] = try rt.get(s, env, "pattern");
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_416, .{ s, env, receiver, native_values });
+        return .{ .jump = 416 };
     }
 }
-fn branch_416(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_416(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m55_IsInteger");
     native_values[15] = try rt.get(s, env, "type");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -44057,12 +44059,12 @@ fn branch_416(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[18] = try rt.get(s, env, "right");
         native_values[19] = try rt.get(s, env, "pattern");
         native_values[20] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return @call(.always_tail, branch_417, .{ s, env, receiver, native_values });
+        return .{ .jump = 417 };
     }
 }
-fn branch_417(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_417(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[21] = try rt.get(s, env, "m14_IsLiteral");
     native_values[22] = try rt.get(s, env, "type");
     native_values[23] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{native_values[22]});
@@ -44075,12 +44077,12 @@ fn branch_417(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[29] = try rt.get(s, env, "right");
         native_values[30] = try rt.get(s, env, "pattern");
         native_values[31] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{ native_values[28], native_values[29], native_values[30] });
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
-        return @call(.always_tail, branch_418, .{ s, env, receiver, native_values });
+        return .{ .jump = 418 };
     }
 }
-fn branch_418(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_418(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[32] = try rt.get(s, env, "m81_IsBigInt");
     native_values[33] = try rt.get(s, env, "type");
     native_values[34] = try rt.invoke(s, native_values[32], c.pi_js_undefined(), &.{native_values[33]});
@@ -44089,12 +44091,12 @@ fn branch_418(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[36] = try rt.get(s, env, "right");
         native_values[37] = try rt.get(s, env, "pattern");
         native_values[38] = try rt.invoke(s, native_values[35], c.pi_js_undefined(), &.{ native_values[36], native_values[37] });
-        return native_values[38];
+        return .{ .value = native_values[38] };
     } else {
-        return @call(.always_tail, branch_419, .{ s, env, receiver, native_values });
+        return .{ .jump = 419 };
     }
 }
-fn branch_419(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_419(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[39] = try rt.get(s, env, "m51_IsBoolean");
     native_values[40] = try rt.get(s, env, "type");
     native_values[41] = try rt.invoke(s, native_values[39], c.pi_js_undefined(), &.{native_values[40]});
@@ -44103,12 +44105,12 @@ fn branch_419(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[43] = try rt.get(s, env, "right");
         native_values[44] = try rt.get(s, env, "pattern");
         native_values[45] = try rt.invoke(s, native_values[42], c.pi_js_undefined(), &.{ native_values[43], native_values[44] });
-        return native_values[45];
+        return .{ .value = native_values[45] };
     } else {
-        return @call(.always_tail, branch_420, .{ s, env, receiver, native_values });
+        return .{ .jump = 420 };
     }
 }
-fn branch_420(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_420(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[46] = try rt.get(s, env, "m59_IsNumber");
     native_values[47] = try rt.get(s, env, "type");
     native_values[48] = try rt.invoke(s, native_values[46], c.pi_js_undefined(), &.{native_values[47]});
@@ -44117,12 +44119,12 @@ fn branch_420(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[50] = try rt.get(s, env, "right");
         native_values[51] = try rt.get(s, env, "pattern");
         native_values[52] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{ native_values[50], native_values[51] });
-        return native_values[52];
+        return .{ .value = native_values[52] };
     } else {
-        return @call(.always_tail, branch_421, .{ s, env, receiver, native_values });
+        return .{ .jump = 421 };
     }
 }
-fn branch_421(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_421(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[53] = try rt.get(s, env, "m50_IsString");
     native_values[54] = try rt.get(s, env, "type");
     native_values[55] = try rt.invoke(s, native_values[53], c.pi_js_undefined(), &.{native_values[54]});
@@ -44131,12 +44133,12 @@ fn branch_421(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[57] = try rt.get(s, env, "right");
         native_values[58] = try rt.get(s, env, "pattern");
         native_values[59] = try rt.invoke(s, native_values[56], c.pi_js_undefined(), &.{ native_values[57], native_values[58] });
-        return native_values[59];
+        return .{ .value = native_values[59] };
     } else {
-        return @call(.always_tail, branch_422, .{ s, env, receiver, native_values });
+        return .{ .jump = 422 };
     }
 }
-fn branch_422(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_422(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[60] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[61] = try rt.get(s, env, "type");
     native_values[62] = try rt.invoke(s, native_values[60], c.pi_js_undefined(), &.{native_values[61]});
@@ -44149,12 +44151,12 @@ fn branch_422(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[68] = try rt.get(s, env, "right");
         native_values[69] = try rt.get(s, env, "pattern");
         native_values[70] = try rt.invoke(s, native_values[63], c.pi_js_undefined(), &.{ native_values[67], native_values[68], native_values[69] });
-        return native_values[70];
+        return .{ .value = native_values[70] };
     } else {
-        return @call(.always_tail, branch_423, .{ s, env, receiver, native_values });
+        return .{ .jump = 423 };
     }
 }
-fn branch_423(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_423(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[71] = try rt.get(s, env, "m17_IsTemplateLiteralDeferred");
     native_values[72] = try rt.get(s, env, "type");
@@ -44170,12 +44172,12 @@ fn branch_423(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[81] = try rt.get(s, env, "right");
         native_values[82] = try rt.get(s, env, "pattern");
         native_values[83] = try rt.invoke(s, native_values[74], c.pi_js_undefined(), &.{ native_values[80], native_values[81], native_values[82] });
-        return native_values[83];
+        return .{ .value = native_values[83] };
     } else {
-        return @call(.always_tail, branch_424, .{ s, env, receiver, native_values });
+        return .{ .jump = 424 };
     }
 }
-fn branch_424(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_424(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[84] = try rt.get(s, env, "m24_IsUnion");
     native_values[85] = try rt.get(s, env, "type");
     native_values[86] = try rt.invoke(s, native_values[84], c.pi_js_undefined(), &.{native_values[85]});
@@ -44188,14 +44190,14 @@ fn branch_424(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[92] = try rt.get(s, env, "right");
         native_values[93] = try rt.get(s, env, "pattern");
         native_values[94] = try rt.invoke(s, native_values[87], c.pi_js_undefined(), &.{ native_values[91], native_values[92], native_values[93] });
-        return native_values[94];
+        return .{ .value = native_values[94] };
     } else {
         native_values[95] = try rt.get(s, env, "m87_NeverPattern");
-        return native_values[95];
+        return .{ .value = native_values[95] };
     }
 }
-fn branch_425(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_426(s, env, receiver, native_values);
+fn branch_425(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 426);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_IsEqual");
         native_values[10] = try rt.get(s, env, "value");
@@ -44204,12 +44206,12 @@ fn branch_425(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try s.text("TemplateLiteral");
         native_values[15] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_426(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_426(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m2_IsSchema");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -44218,12 +44220,12 @@ fn branch_426(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("action");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_427(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_427(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -44241,16 +44243,16 @@ fn branch_427(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try s.object();
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[13], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.get(s, env, "m253_UncapitalizeDeferred");
         native_values[18] = try rt.get(s, env, "type");
         native_values[19] = try rt.get(s, env, "options");
         native_values[20] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_428(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_428(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -44268,16 +44270,16 @@ fn branch_428(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try s.object();
         native_values[15] = try rt.get(s, env, "options");
         native_values[16] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[13], native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
         native_values[17] = try rt.get(s, env, "m254_UppercaseDeferred");
         native_values[18] = try rt.get(s, env, "type");
         native_values[19] = try rt.get(s, env, "options");
         native_values[20] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[19] });
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_429(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_429(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m0_CanInstantiate");
     native_values[3] = try s.array();
     native_values[4] = try rt.get(s, env, "type");
@@ -44292,16 +44294,16 @@ fn branch_429(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[11] = try s.object();
         native_values[12] = try rt.get(s, env, "options");
         native_values[13] = try rt.invoke(s, native_values[9], native_values[6], &.{ native_values[10], native_values[11], native_values[12] });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
         native_values[14] = try rt.get(s, env, "m256_WithDeferred");
         native_values[15] = try rt.get(s, env, "type");
         native_values[16] = try rt.get(s, env, "options");
         native_values[17] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_430(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_430(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m12_IsRef");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -44315,12 +44317,12 @@ fn branch_430(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[12] = try rt.propertyKey(s, native_values[11]);
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_431, .{ s, env, receiver, native_values });
+        return .{ .jump = 431 };
     }
 }
-fn branch_431(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_431(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[15] = try rt.get(s, env, "m38_IsArray");
     native_values[16] = try rt.get(s, env, "type");
     native_values[17] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
@@ -44338,12 +44340,12 @@ fn branch_431(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[28] = try rt.get(s, env, "type");
         native_values[29] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{native_values[28]});
         native_values[30] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[26], native_values[29] });
-        return native_values[30];
+        return .{ .value = native_values[30] };
     } else {
-        return @call(.always_tail, branch_432, .{ s, env, receiver, native_values });
+        return .{ .jump = 432 };
     }
 }
-fn branch_432(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_432(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[31] = try rt.get(s, env, "m82_IsCall");
     native_values[32] = try rt.get(s, env, "type");
     native_values[33] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{native_values[32]});
@@ -44360,12 +44362,12 @@ fn branch_432(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[43] = try rt.propertyKey(s, native_values[42]);
         native_values[44] = try rt.key(s, native_values[41], native_values[43]);
         native_values[45] = try rt.invoke(s, native_values[34], c.pi_js_undefined(), &.{ native_values[35], native_values[36], native_values[40], native_values[44] });
-        return native_values[45];
+        return .{ .value = native_values[45] };
     } else {
-        return @call(.always_tail, branch_433, .{ s, env, receiver, native_values });
+        return .{ .jump = 433 };
     }
 }
-fn branch_433(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_433(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[46] = try rt.get(s, env, "m39_IsConstructor");
     native_values[47] = try rt.get(s, env, "type");
     native_values[48] = try rt.invoke(s, native_values[46], c.pi_js_undefined(), &.{native_values[47]});
@@ -44391,12 +44393,12 @@ fn branch_433(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[67] = try rt.get(s, env, "type");
         native_values[68] = try rt.invoke(s, native_values[66], c.pi_js_undefined(), &.{native_values[67]});
         native_values[69] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{ native_values[57], native_values[65], native_values[68] });
-        return native_values[69];
+        return .{ .value = native_values[69] };
     } else {
-        return @call(.always_tail, branch_434, .{ s, env, receiver, native_values });
+        return .{ .jump = 434 };
     }
 }
-fn branch_434(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_434(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[70] = try rt.get(s, env, "m40_IsFunction");
     native_values[71] = try rt.get(s, env, "type");
     native_values[72] = try rt.invoke(s, native_values[70], c.pi_js_undefined(), &.{native_values[71]});
@@ -44422,12 +44424,12 @@ fn branch_434(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[91] = try rt.get(s, env, "type");
         native_values[92] = try rt.invoke(s, native_values[90], c.pi_js_undefined(), &.{native_values[91]});
         native_values[93] = try rt.invoke(s, native_values[73], c.pi_js_undefined(), &.{ native_values[81], native_values[89], native_values[92] });
-        return native_values[93];
+        return .{ .value = native_values[93] };
     } else {
-        return @call(.always_tail, branch_435, .{ s, env, receiver, native_values });
+        return .{ .jump = 435 };
     }
 }
-fn branch_435(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_435(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[94] = try rt.get(s, env, "m85_IsDependent");
     native_values[95] = try rt.get(s, env, "type");
     native_values[96] = try rt.invoke(s, native_values[94], c.pi_js_undefined(), &.{native_values[95]});
@@ -44461,12 +44463,12 @@ fn branch_435(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[123] = try rt.get(s, env, "type");
         native_values[124] = try rt.invoke(s, native_values[122], c.pi_js_undefined(), &.{native_values[123]});
         native_values[125] = try rt.invoke(s, native_values[97], c.pi_js_undefined(), &.{ native_values[105], native_values[113], native_values[121], native_values[124] });
-        return native_values[125];
+        return .{ .value = native_values[125] };
     } else {
-        return @call(.always_tail, branch_436, .{ s, env, receiver, native_values });
+        return .{ .jump = 436 };
     }
 }
-fn branch_436(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_436(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[126] = try rt.get(s, env, "m41_IsIntersect");
     native_values[127] = try rt.get(s, env, "type");
     native_values[128] = try rt.invoke(s, native_values[126], c.pi_js_undefined(), &.{native_values[127]});
@@ -44484,12 +44486,12 @@ fn branch_436(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[139] = try rt.get(s, env, "type");
         native_values[140] = try rt.invoke(s, native_values[138], c.pi_js_undefined(), &.{native_values[139]});
         native_values[141] = try rt.invoke(s, native_values[129], c.pi_js_undefined(), &.{ native_values[137], native_values[140] });
-        return native_values[141];
+        return .{ .value = native_values[141] };
     } else {
-        return @call(.always_tail, branch_437, .{ s, env, receiver, native_values });
+        return .{ .jump = 437 };
     }
 }
-fn branch_437(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_437(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[142] = try rt.get(s, env, "m42_IsObject");
     native_values[143] = try rt.get(s, env, "type");
     native_values[144] = try rt.invoke(s, native_values[142], c.pi_js_undefined(), &.{native_values[143]});
@@ -44507,12 +44509,12 @@ fn branch_437(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[155] = try rt.get(s, env, "type");
         native_values[156] = try rt.invoke(s, native_values[154], c.pi_js_undefined(), &.{native_values[155]});
         native_values[157] = try rt.invoke(s, native_values[145], c.pi_js_undefined(), &.{ native_values[153], native_values[156] });
-        return native_values[157];
+        return .{ .value = native_values[157] };
     } else {
-        return @call(.always_tail, branch_438, .{ s, env, receiver, native_values });
+        return .{ .jump = 438 };
     }
 }
-fn branch_438(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_438(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[158] = try rt.get(s, env, "m45_IsRecord");
     native_values[159] = try rt.get(s, env, "type");
     native_values[160] = try rt.invoke(s, native_values[158], c.pi_js_undefined(), &.{native_values[159]});
@@ -44529,12 +44531,12 @@ fn branch_438(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[170] = try rt.invoke(s, native_values[168], c.pi_js_undefined(), &.{native_values[169]});
         native_values[171] = try rt.invoke(s, native_values[165], c.pi_js_undefined(), &.{ native_values[166], native_values[167], native_values[170] });
         native_values[172] = try rt.invoke(s, native_values[161], c.pi_js_undefined(), &.{ native_values[164], native_values[171] });
-        return native_values[172];
+        return .{ .value = native_values[172] };
     } else {
-        return @call(.always_tail, branch_439, .{ s, env, receiver, native_values });
+        return .{ .jump = 439 };
     }
 }
-fn branch_439(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_439(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[173] = try rt.get(s, env, "m92_IsRest");
     native_values[174] = try rt.get(s, env, "type");
     native_values[175] = try rt.invoke(s, native_values[173], c.pi_js_undefined(), &.{native_values[174]});
@@ -44549,12 +44551,12 @@ fn branch_439(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[183] = try rt.key(s, native_values[180], native_values[182]);
         native_values[184] = try rt.invoke(s, native_values[177], c.pi_js_undefined(), &.{ native_values[178], native_values[179], native_values[183] });
         native_values[185] = try rt.invoke(s, native_values[176], c.pi_js_undefined(), &.{native_values[184]});
-        return native_values[185];
+        return .{ .value = native_values[185] };
     } else {
-        return @call(.always_tail, branch_440, .{ s, env, receiver, native_values });
+        return .{ .jump = 440 };
     }
 }
-fn branch_440(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_440(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[186] = try rt.get(s, env, "m95_IsTuple");
     native_values[187] = try rt.get(s, env, "type");
     native_values[188] = try rt.invoke(s, native_values[186], c.pi_js_undefined(), &.{native_values[187]});
@@ -44572,12 +44574,12 @@ fn branch_440(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[199] = try rt.get(s, env, "type");
         native_values[200] = try rt.invoke(s, native_values[198], c.pi_js_undefined(), &.{native_values[199]});
         native_values[201] = try rt.invoke(s, native_values[189], c.pi_js_undefined(), &.{ native_values[197], native_values[200] });
-        return native_values[201];
+        return .{ .value = native_values[201] };
     } else {
-        return @call(.always_tail, branch_441, .{ s, env, receiver, native_values });
+        return .{ .jump = 441 };
     }
 }
-fn branch_441(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_441(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[202] = try rt.get(s, env, "m24_IsUnion");
     native_values[203] = try rt.get(s, env, "type");
     native_values[204] = try rt.invoke(s, native_values[202], c.pi_js_undefined(), &.{native_values[203]});
@@ -44595,13 +44597,13 @@ fn branch_441(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[215] = try rt.get(s, env, "type");
         native_values[216] = try rt.invoke(s, native_values[214], c.pi_js_undefined(), &.{native_values[215]});
         native_values[217] = try rt.invoke(s, native_values[205], c.pi_js_undefined(), &.{ native_values[213], native_values[216] });
-        return native_values[217];
+        return .{ .value = native_values[217] };
     } else {
         native_values[218] = try rt.get(s, env, "type");
-        return native_values[218];
+        return .{ .value = native_values[218] };
     }
 }
-fn branch_442(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_442(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "state");
     native_values[5] = try s.text("visited");
     native_values[6] = try rt.propertyKey(s, native_values[5]);
@@ -44613,12 +44615,12 @@ fn branch_442(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[12] = try rt.invoke(s, native_values[10], native_values[7], &.{native_values[11]});
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "type");
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_443, .{ s, env, receiver, native_values });
+        return .{ .jump = 443 };
     }
 }
-fn branch_443(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_443(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "ref");
     native_values[15] = try rt.get(s, env, "context");
     native_values[16] = try rt.binary(s, "in", native_values[14], native_values[15]);
@@ -44644,27 +44646,27 @@ fn branch_443(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[33] = try rt.propertyKey(s, native_values[32]);
         native_values[34] = try rt.key(s, native_values[31], native_values[33]);
         native_values[35] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[18], native_values[30], native_values[34] });
-        return native_values[35];
+        return .{ .value = native_values[35] };
     } else {
         native_values[36] = try rt.get(s, env, "type");
-        return native_values[36];
+        return .{ .value = native_values[36] };
     }
 }
-fn branch_444(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_444(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[20] = try rt.get(s, env, "m83_IsGeneric");
     native_values[21] = try rt.get(s, env, "type");
     native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
     if (s.truthy(native_values[22])) {
-        return @call(.always_tail, branch_445, .{ s, env, receiver, native_values });
+        return .{ .jump = 445 };
     } else {
         native_values[49] = try rt.get(s, env, "m82_CallConstruct");
         native_values[50] = try rt.get(s, env, "target");
         native_values[51] = try rt.get(s, env, "instantiatedArguments");
         native_values[52] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{ native_values[50], native_values[51] });
-        return native_values[52];
+        return .{ .value = native_values[52] };
     }
 }
-fn branch_445(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_445(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[23] = try rt.get(s, env, "m258_IsTailCall");
     native_values[24] = try rt.get(s, env, "state");
     native_values[25] = try rt.get(s, env, "name");
@@ -44676,7 +44678,7 @@ fn branch_445(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[30] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{native_values[29]});
         native_values[31] = try rt.get(s, env, "instantiatedArguments");
         native_values[32] = try rt.invoke(s, native_values[27], c.pi_js_undefined(), &.{ native_values[30], native_values[31] });
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
         native_values[33] = try rt.get(s, env, "m258_CallImmediate");
         native_values[34] = try rt.get(s, env, "context");
@@ -44694,10 +44696,10 @@ fn branch_445(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[46] = try rt.key(s, native_values[43], native_values[45]);
         native_values[47] = try rt.get(s, env, "instantiatedArguments");
         native_values[48] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[34], native_values[35], native_values[38], native_values[42], native_values[46], native_values[47] });
-        return native_values[48];
+        return .{ .value = native_values[48] };
     }
 }
-fn branch_446(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_446(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m83_IsGeneric");
     native_values[5] = try rt.get(s, env, "target");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -44713,12 +44715,12 @@ fn branch_446(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[15] = try rt.propertyKey(s, native_values[14]);
         native_values[16] = try rt.key(s, native_values[13], native_values[15]);
         native_values[17] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], native_values[12], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
-        return @call(.always_tail, branch_447, .{ s, env, receiver, native_values });
+        return .{ .jump = 447 };
     }
 }
-fn branch_447(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_447(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[18] = try rt.get(s, env, "m12_IsRef");
     native_values[19] = try rt.get(s, env, "target");
     native_values[20] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[19]});
@@ -44731,14 +44733,14 @@ fn branch_447(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[26] = try rt.key(s, native_values[23], native_values[25]);
         native_values[27] = try rt.get(s, env, "arguments_");
         native_values[28] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[22], native_values[26], native_values[27] });
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
         native_values[29] = try rt.get(s, env, "m259_FromNotGeneric");
         native_values[30] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{});
-        return native_values[30];
+        return .{ .value = native_values[30] };
     }
 }
-fn branch_448(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_448(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "ref");
     native_values[4] = try rt.get(s, env, "context");
     native_values[5] = try rt.binary(s, "in", native_values[3], native_values[4]);
@@ -44752,14 +44754,14 @@ fn branch_448(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.get(s, env, "arguments_");
         native_values[14] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[12], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m259_FromNotResolvable");
         native_values[16] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_449(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_449(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsGreaterThan");
     native_values[2] = try rt.get(s, env, "state");
@@ -44785,13 +44787,13 @@ fn branch_449(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.binary(s, "-", native_values[20], c.JS_NewFloat64(engine.context, 1));
         native_values[22] = try rt.propertyKey(s, native_values[21]);
         native_values[23] = try rt.key(s, native_values[13], native_values[22]);
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
         native_values[24] = try s.text("");
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_450(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_450(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[19] = try rt.get(s, env, "m4_IsEqual");
     native_values[20] = try rt.get(s, env, "returnTypes");
@@ -44803,26 +44805,26 @@ fn branch_450(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[25] = try rt.get(s, env, "returnTypes");
         native_values[26] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[27] = try rt.key(s, native_values[25], native_values[26]);
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
         native_values[28] = try rt.get(s, env, "external_evaluation_EvaluateUnion");
         native_values[29] = try rt.get(s, env, "returnTypes");
         native_values[30] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{native_values[29]});
-        return native_values[30];
+        return .{ .value = native_values[30] };
     }
 }
-fn branch_451(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[24] = try branch_452(s, env, receiver, native_values);
+fn branch_451(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[24] = try runBranch(s, env, receiver, native_values, 452);
     if (s.truthy(native_values[24])) {
         native_values[25] = try rt.get(s, env, "m260_Distribute");
         native_values[26] = try rt.get(s, env, "zippedArguments");
         native_values[27] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{native_values[26]});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
-        return @call(.always_tail, branch_453, .{ s, env, receiver, native_values });
+        return .{ .jump = 453 };
     }
 }
-fn branch_452(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_452(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[14] = try rt.get(s, env, "m1_IsDeferred");
     native_values[15] = try rt.get(s, env, "expression");
     native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
@@ -44834,26 +44836,26 @@ fn branch_452(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.key(s, native_values[18], native_values[20]);
         native_values[22] = try s.text("Conditional");
         native_values[23] = try rt.invoke(s, native_values[17], c.pi_js_undefined(), &.{ native_values[21], native_values[22] });
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_453(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[38] = try branch_454(s, env, receiver, native_values);
+fn branch_453(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[38] = try runBranch(s, env, receiver, native_values, 454);
     if (s.truthy(native_values[38])) {
         native_values[39] = try rt.get(s, env, "m260_Distribute");
         native_values[40] = try rt.get(s, env, "zippedArguments");
         native_values[41] = try rt.invoke(s, native_values[39], c.pi_js_undefined(), &.{native_values[40]});
-        return native_values[41];
+        return .{ .value = native_values[41] };
     } else {
         native_values[42] = try s.array();
         native_values[43] = try rt.get(s, env, "arguments_");
         try rt.append(s, native_values[42], native_values[43]);
-        return native_values[42];
+        return .{ .value = native_values[42] };
     }
 }
-fn branch_454(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_454(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[28] = try rt.get(s, env, "m1_IsDeferred");
     native_values[29] = try rt.get(s, env, "expression");
     native_values[30] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{native_values[29]});
@@ -44865,20 +44867,20 @@ fn branch_454(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[35] = try rt.key(s, native_values[32], native_values[34]);
         native_values[36] = try s.text("Mapped");
         native_values[37] = try rt.invoke(s, native_values[31], c.pi_js_undefined(), &.{ native_values[35], native_values[36] });
-        return native_values[37];
+        return .{ .value = native_values[37] };
     } else {
-        return native_values[30];
+        return .{ .value = native_values[30] };
     }
 }
-fn branch_455(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_456(s, env, receiver, native_values);
+fn branch_455(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 456);
     if (s.truthy(native_values[13])) {
-        return @call(.always_tail, branch_457, .{ s, env, receiver, native_values });
+        return .{ .jump = 457 };
     } else {
-        return @call(.always_tail, branch_458, .{ s, env, receiver, native_values });
+        return .{ .jump = 458 };
     }
 }
-fn branch_456(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_456(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m1_IsDeferred");
     native_values[4] = try rt.get(s, env, "expression");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -44890,12 +44892,12 @@ fn branch_456(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.key(s, native_values[7], native_values[9]);
         native_values[11] = try s.text("Conditional");
         native_values[12] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_457(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_457(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[14] = try rt.get(s, env, "m12_IsRef");
     native_values[15] = try rt.get(s, env, "expression");
@@ -44935,7 +44937,7 @@ fn branch_457(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.append(s, native_values[36], native_values[46]);
         native_values[47] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[35], native_values[36] });
         native_values[48] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{ native_values[28], native_values[47] });
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
         native_values[49] = try rt.get(s, env, "m260_CollectDistributionNames");
         native_values[50] = try rt.get(s, env, "expression");
@@ -44954,19 +44956,19 @@ fn branch_457(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[63] = try rt.get(s, env, "result");
         native_values[64] = try rt.invoke(s, native_values[56], c.pi_js_undefined(), &.{ native_values[62], native_values[63] });
         native_values[65] = try rt.invoke(s, native_values[49], c.pi_js_undefined(), &.{ native_values[55], native_values[64] });
-        return native_values[65];
+        return .{ .value = native_values[65] };
     }
 }
-fn branch_458(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[76] = try branch_459(s, env, receiver, native_values);
+fn branch_458(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[76] = try runBranch(s, env, receiver, native_values, 459);
     if (s.truthy(native_values[76])) {
-        return @call(.always_tail, branch_460, .{ s, env, receiver, native_values });
+        return .{ .jump = 460 };
     } else {
         native_values[129] = try rt.get(s, env, "result");
-        return native_values[129];
+        return .{ .value = native_values[129] };
     }
 }
-fn branch_459(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_459(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[66] = try rt.get(s, env, "m1_IsDeferred");
     native_values[67] = try rt.get(s, env, "expression");
     native_values[68] = try rt.invoke(s, native_values[66], c.pi_js_undefined(), &.{native_values[67]});
@@ -44978,14 +44980,14 @@ fn branch_459(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[73] = try rt.key(s, native_values[70], native_values[72]);
         native_values[74] = try s.text("Mapped");
         native_values[75] = try rt.invoke(s, native_values[69], c.pi_js_undefined(), &.{ native_values[73], native_values[74] });
-        return native_values[75];
+        return .{ .value = native_values[75] };
     } else {
-        return native_values[68];
+        return .{ .value = native_values[68] };
     }
 }
-fn branch_460(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_460(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[111] = try branch_461(s, env, receiver, native_values);
+    native_values[111] = try runBranch(s, env, receiver, native_values, 461);
     if (s.truthy(native_values[111])) {
         native_values[112] = try s.array();
         native_values[113] = try rt.get(s, env, "result");
@@ -45005,15 +45007,15 @@ fn branch_460(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[126] = try rt.propertyKey(s, native_values[125]);
         native_values[127] = try rt.key(s, native_values[124], native_values[126]);
         try rt.append(s, native_values[112], native_values[127]);
-        return native_values[112];
+        return .{ .value = native_values[112] };
     } else {
         native_values[128] = try rt.get(s, env, "result");
-        return native_values[128];
+        return .{ .value = native_values[128] };
     }
 }
-fn branch_461(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_461(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[97] = try branch_462(s, env, receiver, native_values);
+    native_values[97] = try runBranch(s, env, receiver, native_values, 462);
     if (s.truthy(native_values[97])) {
         native_values[98] = try rt.get(s, env, "m12_IsRef");
         native_values[99] = try rt.get(s, env, "expression");
@@ -45028,12 +45030,12 @@ fn branch_461(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[108] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[109] = try rt.key(s, native_values[107], native_values[108]);
         native_values[110] = try rt.invoke(s, native_values[98], c.pi_js_undefined(), &.{native_values[109]});
-        return native_values[110];
+        return .{ .value = native_values[110] };
     } else {
-        return native_values[97];
+        return .{ .value = native_values[97] };
     }
 }
-fn branch_462(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_462(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[77] = try rt.get(s, env, "m1_IsDeferred");
     native_values[78] = try rt.get(s, env, "expression");
@@ -45056,12 +45058,12 @@ fn branch_462(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[94] = try rt.key(s, native_values[91], native_values[93]);
         native_values[95] = try s.text("KeyOf");
         native_values[96] = try rt.invoke(s, native_values[85], c.pi_js_undefined(), &.{ native_values[94], native_values[95] });
-        return native_values[96];
+        return .{ .value = native_values[96] };
     } else {
-        return native_values[84];
+        return .{ .value = native_values[84] };
     }
 }
-fn branch_463(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_463(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "left");
@@ -45077,7 +45079,7 @@ fn branch_463(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[12] = try rt.key(s, native_values[10], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[12]});
         native_values[14] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[8], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try rt.get(s, env, "m260_Cross");
         native_values[16] = try rt.get(s, env, "result");
@@ -45087,10 +45089,10 @@ fn branch_463(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.key(s, native_values[18], native_values[19]);
         try rt.append(s, native_values[17], native_values[20]);
         native_values[21] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[16], native_values[17] });
-        return native_values[21];
+        return .{ .value = native_values[21] };
     }
 }
-fn branch_464(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_464(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m24_IsUnion");
     native_values[5] = try rt.get(s, env, "canonicalArgument");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -45101,15 +45103,15 @@ fn branch_464(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.propertyKey(s, native_values[9]);
         native_values[11] = try rt.key(s, native_values[8], native_values[10]);
         try rt.spreadArray(s, native_values[7], native_values[11]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[12] = try s.array();
         native_values[13] = try rt.get(s, env, "canonicalArgument");
         try rt.append(s, native_values[12], native_values[13]);
-        return native_values[12];
+        return .{ .value = native_values[12] };
     }
 }
-fn branch_465(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_465(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[2] = try rt.get(s, env, "type");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -45120,12 +45122,12 @@ fn branch_465(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return @call(.always_tail, branch_466, .{ s, env, receiver, native_values });
+        return .{ .jump = 466 };
     }
 }
-fn branch_466(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_466(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "m53_IsEnum");
     native_values[11] = try rt.get(s, env, "type");
     native_values[12] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[11]});
@@ -45136,14 +45138,14 @@ fn branch_466(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try rt.propertyKey(s, native_values[15]);
         native_values[17] = try rt.key(s, native_values[14], native_values[16]);
         native_values[18] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[17]});
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
         native_values[19] = try rt.get(s, env, "type");
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_467(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[9] = try branch_468(s, env, receiver, native_values);
+fn branch_467(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[9] = try runBranch(s, env, receiver, native_values, 468);
     if (!s.truthy(native_values[9])) {
         native_values[10] = try rt.get(s, env, "m116_IsExtendsTrueLike");
         native_values[11] = try rt.get(s, env, "m30_Extends");
@@ -45152,12 +45154,12 @@ fn branch_467(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[14] = try rt.get(s, env, "extends_");
         native_values[15] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[13], native_values[14] });
         native_values[16] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[15]});
-        return native_values[16];
+        return .{ .value = native_values[16] };
     } else {
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_468(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_468(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m86_IsInfer");
     native_values[4] = try rt.get(s, env, "type");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -45165,12 +45167,12 @@ fn branch_468(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m82_IsCall");
         native_values[7] = try rt.get(s, env, "type");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_469(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_469(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m44_IsOptional");
     native_values[3] = try rt.get(s, env, "type");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -45179,13 +45181,13 @@ fn branch_469(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "instantiatedType");
         native_values[7] = try s.object();
         native_values[8] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7] });
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "instantiatedType");
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_470(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_470(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[11] = try rt.get(s, env, "m79_IsReadonly");
     native_values[12] = try rt.get(s, env, "type");
     native_values[13] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[12]});
@@ -45194,13 +45196,13 @@ fn branch_470(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.get(s, env, "withOptional");
         native_values[16] = try s.object();
         native_values[17] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{ native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "withOptional");
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_471(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_471(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[20] = try rt.get(s, env, "m78_IsImmutable");
     native_values[21] = try rt.get(s, env, "type");
     native_values[22] = try rt.invoke(s, native_values[20], c.pi_js_undefined(), &.{native_values[21]});
@@ -45209,13 +45211,13 @@ fn branch_471(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.get(s, env, "withReadonly");
         native_values[25] = try s.object();
         native_values[26] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{ native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     } else {
         native_values[27] = try rt.get(s, env, "withReadonly");
-        return native_values[27];
+        return .{ .value = native_values[27] };
     }
 }
-fn branch_472(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_472(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m2_IsSchema");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -45224,12 +45226,12 @@ fn branch_472(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~readonly");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_473(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_473(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "m262_Comparer");
@@ -45247,7 +45249,7 @@ fn branch_473(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.get(s, env, "left");
         try rt.append(s, native_values[11], native_values[13]);
         native_values[14] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[10], native_values[11] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
         native_values[15] = try s.array();
         native_values[16] = try rt.get(s, env, "result");
@@ -45256,43 +45258,43 @@ fn branch_473(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         try rt.append(s, native_values[15], native_values[17]);
         native_values[18] = try rt.get(s, env, "types");
         try rt.spreadArray(s, native_values[15], native_values[18]);
-        return native_values[15];
+        return .{ .value = native_values[15] };
     }
 }
-fn branch_474(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_474(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[6] = try rt.get(s, env, "m4_IsEqual");
     native_values[7] = try rt.get(s, env, "compareResult");
     native_values[8] = try rt.get(s, env, "m21_CompareResultRightInside");
     native_values[9] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8] });
     if (s.truthy(native_values[9])) {
-        return c.JS_NewFloat64(engine.context, 1);
+        return .{ .value = c.JS_NewFloat64(engine.context, 1) };
     } else {
-        return @call(.always_tail, branch_475, .{ s, env, receiver, native_values });
+        return .{ .jump = 475 };
     }
 }
-fn branch_475(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_475(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[10] = try rt.get(s, env, "m4_IsEqual");
     native_values[11] = try rt.get(s, env, "compareResult");
     native_values[12] = try rt.get(s, env, "m21_CompareResultDisjoint");
     native_values[13] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{ native_values[11], native_values[12] });
     if (s.truthy(native_values[13])) {
-        return c.JS_NewFloat64(engine.context, 1);
+        return .{ .value = c.JS_NewFloat64(engine.context, 1) };
     } else {
-        return c.JS_NewFloat64(engine.context, 0);
+        return .{ .value = c.JS_NewFloat64(engine.context, 0) };
     }
 }
-fn branch_476(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[23] = try branch_477(s, env, receiver, native_values);
+fn branch_476(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[23] = try runBranch(s, env, receiver, native_values, 477);
     if (s.truthy(native_values[23])) {
         native_values[24] = try rt.get(s, env, "m21_CompareResultEqual");
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return @call(.always_tail, branch_478, .{ s, env, receiver, native_values });
+        return .{ .jump = 478 };
     }
 }
-fn branch_477(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_477(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[13] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[14] = try rt.get(s, env, "extendsCheck");
@@ -45305,21 +45307,21 @@ fn branch_477(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[20] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[21] = try rt.key(s, native_values[19], native_values[20]);
         native_values[22] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{native_values[21]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_478(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[35] = try branch_479(s, env, receiver, native_values);
+fn branch_478(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[35] = try runBranch(s, env, receiver, native_values, 479);
     if (s.truthy(native_values[35])) {
         native_values[36] = try rt.get(s, env, "m21_CompareResultLeftInside");
-        return native_values[36];
+        return .{ .value = native_values[36] };
     } else {
-        return @call(.always_tail, branch_480, .{ s, env, receiver, native_values });
+        return .{ .jump = 480 };
     }
 }
-fn branch_479(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_479(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[25] = try rt.get(s, env, "m116_IsExtendsTrueLike");
     native_values[26] = try rt.get(s, env, "extendsCheck");
@@ -45332,22 +45334,22 @@ fn branch_479(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[32] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[33] = try rt.key(s, native_values[31], native_values[32]);
         native_values[34] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{native_values[33]});
-        return native_values[34];
+        return .{ .value = native_values[34] };
     } else {
-        return native_values[29];
+        return .{ .value = native_values[29] };
     }
 }
-fn branch_480(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[47] = try branch_481(s, env, receiver, native_values);
+fn branch_480(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[47] = try runBranch(s, env, receiver, native_values, 481);
     if (s.truthy(native_values[47])) {
         native_values[48] = try rt.get(s, env, "m21_CompareResultRightInside");
-        return native_values[48];
+        return .{ .value = native_values[48] };
     } else {
         native_values[49] = try rt.get(s, env, "m21_CompareResultDisjoint");
-        return native_values[49];
+        return .{ .value = native_values[49] };
     }
 }
-fn branch_481(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_481(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[37] = try rt.get(s, env, "m116_IsExtendsFalse");
     native_values[38] = try rt.get(s, env, "extendsCheck");
@@ -45360,13 +45362,13 @@ fn branch_481(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[44] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[45] = try rt.key(s, native_values[43], native_values[44]);
         native_values[46] = try rt.invoke(s, native_values[42], c.pi_js_undefined(), &.{native_values[45]});
-        return native_values[46];
+        return .{ .value = native_values[46] };
     } else {
-        return native_values[41];
+        return .{ .value = native_values[41] };
     }
 }
-fn branch_482(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[8] = try branch_483(s, env, receiver, native_values);
+fn branch_482(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[8] = try runBranch(s, env, receiver, native_values, 483);
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m4_IsEqual");
         native_values[10] = try rt.get(s, env, "value");
@@ -45375,12 +45377,12 @@ fn branch_482(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[13] = try rt.key(s, native_values[10], native_values[12]);
         native_values[14] = try s.text("ExtendsFalse");
         native_values[15] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[13], native_values[14] });
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
-        return native_values[8];
+        return .{ .value = native_values[8] };
     }
 }
-fn branch_483(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_483(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m4_IsObject");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -45389,25 +45391,25 @@ fn branch_483(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[5] = try rt.get(s, env, "value");
         native_values[6] = try s.text("~kind");
         native_values[7] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[5], native_values[6] });
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_484(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_484(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m17_IsTemplateLiteral");
     native_values[5] = try rt.get(s, env, "decoded");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
     if (s.truthy(native_values[6])) {
         native_values[7] = try rt.get(s, env, "m50_String");
         native_values[8] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "decoded");
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_485(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_485(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "match");
     native_values[3] = try rt.get(s, env, "args");
     native_values[4] = try s.text("length");
@@ -45425,12 +45427,12 @@ fn branch_485(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (rt.nullish(optional_55)) {
         native_values[11] = try rt.function(s, "", 0, f_707, env, receiver, true);
         native_values[12] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{});
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return optional_55;
+        return .{ .value = optional_55 };
     }
 }
-fn branch_486(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_486(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[3] = try rt.get(s, env, "m4_IsString");
     native_values[4] = try rt.get(s, env, "input");
     native_values[5] = try rt.invoke(s, native_values[3], c.pi_js_undefined(), &.{native_values[4]});
@@ -45438,15 +45440,15 @@ fn branch_486(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[6] = try rt.get(s, env, "m17_TemplateLiteralFromString");
         native_values[7] = try rt.get(s, env, "input");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[9] = try rt.get(s, env, "m17_TemplateLiteralFromTypes");
         native_values[10] = try rt.get(s, env, "input");
         native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_487(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_487(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[9] = try rt.get(s, env, "m4_IsEqual");
     native_values[10] = try rt.get(s, env, "parsed");
@@ -45458,14 +45460,14 @@ fn branch_487(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.get(s, env, "parsed");
         native_values[16] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[17] = try rt.key(s, native_values[15], native_values[16]);
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m110_Unreachable");
         native_values[19] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     }
 }
-fn branch_488(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_488(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m267_IsDiscard");
     native_values[3] = try rt.get(s, env, "discard");
     native_values[4] = try rt.get(s, env, "Char");
@@ -45477,7 +45479,7 @@ fn branch_488(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.get(s, env, "Rest");
         native_values[10] = try rt.get(s, env, "result");
         native_values[11] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8], native_values[9], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "m267_Many");
         native_values[13] = try rt.get(s, env, "allowed");
@@ -45495,10 +45497,10 @@ fn branch_488(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[25] = try s.text("");
         native_values[26] = try s.concat(native_values[24], native_values[25]);
         native_values[27] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{ native_values[13], native_values[14], native_values[15], native_values[26] });
-        return native_values[27];
+        return .{ .value = native_values[27] };
     }
 }
-fn branch_489(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_489(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m104_IsLeadingDot");
     native_values[2] = try rt.get(s, env, "input");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -45506,32 +45508,32 @@ fn branch_489(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[4] = try rt.get(s, env, "m104_LeadingDot");
         native_values[5] = try rt.get(s, env, "input");
         native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
         native_values[7] = try rt.get(s, env, "m104_LeadingInteger");
         native_values[8] = try rt.get(s, env, "input");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     }
 }
-fn branch_490(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_490(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "Digits");
     native_values[4] = try s.text("");
     native_values[5] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{ native_values[3], native_values[4] });
     if (s.truthy(native_values[5])) {
         native_values[6] = try s.array();
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
         native_values[7] = try s.array();
         native_values[8] = try rt.get(s, env, "Digits");
         try rt.append(s, native_values[7], native_values[8]);
         native_values[9] = try rt.get(s, env, "DigitsRest");
         try rt.append(s, native_values[7], native_values[9]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     }
 }
-fn branch_491(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_491(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "multiLine");
     if (s.truthy(native_values[4])) {
         native_values[5] = try rt.get(s, env, "m101_MultiLine");
@@ -45541,7 +45543,7 @@ fn branch_491(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.get(s, env, "input");
         native_values[10] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[9]});
         native_values[11] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[6], native_values[7], native_values[10] });
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "m101_SingleLine");
         native_values[13] = try rt.get(s, env, "start");
@@ -45550,10 +45552,10 @@ fn branch_491(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[16] = try rt.get(s, env, "input");
         native_values[17] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
         native_values[18] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{ native_values[13], native_values[14], native_values[17] });
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_492(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_492(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -45573,7 +45575,7 @@ fn branch_492(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 5));
         native_values[16] = try rt.key(s, native_values[14], native_values[15]);
         native_values[17] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[10], native_values[13], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m85_Dependent");
         native_values[19] = try rt.get(s, env, "input");
@@ -45585,10 +45587,10 @@ fn branch_492(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[25] = try rt.get(s, env, "m89_Unknown");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
         native_values[27] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[21], native_values[24], native_values[26] });
-        return native_values[27];
+        return .{ .value = native_values[27] };
     }
 }
-fn branch_493(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_493(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m55_IsInteger");
     native_values[2] = try rt.get(s, env, "input");
@@ -45597,12 +45599,12 @@ fn branch_493(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[5] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[4]});
     if (s.truthy(native_values[5])) {
         native_values[6] = try rt.get(s, env, "m45_IntegerKey");
-        return native_values[6];
+        return .{ .value = native_values[6] };
     } else {
-        return @call(.always_tail, branch_494, .{ s, env, receiver, native_values });
+        return .{ .jump = 494 };
     }
 }
-fn branch_494(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_494(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[7] = try rt.get(s, env, "m59_IsNumber");
     native_values[8] = try rt.get(s, env, "input");
@@ -45611,12 +45613,12 @@ fn branch_494(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[11] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[10]});
     if (s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "m45_NumberKey");
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return @call(.always_tail, branch_495, .{ s, env, receiver, native_values });
+        return .{ .jump = 495 };
     }
 }
-fn branch_495(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_495(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[13] = try rt.get(s, env, "m90_IsSymbol");
     native_values[14] = try rt.get(s, env, "input");
@@ -45625,12 +45627,12 @@ fn branch_495(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[17] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[16]});
     if (s.truthy(native_values[17])) {
         native_values[18] = try rt.get(s, env, "m45_StringKey");
-        return native_values[18];
+        return .{ .value = native_values[18] };
     } else {
-        return @call(.always_tail, branch_496, .{ s, env, receiver, native_values });
+        return .{ .jump = 496 };
     }
 }
-fn branch_496(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_496(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[19] = try rt.get(s, env, "m50_IsString");
     native_values[20] = try rt.get(s, env, "input");
@@ -45639,79 +45641,79 @@ fn branch_496(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[23] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{native_values[22]});
     if (s.truthy(native_values[23])) {
         native_values[24] = try rt.get(s, env, "m45_StringKey");
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
         native_values[25] = try rt.get(s, env, "m75_Unreachable");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_497(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[12] = try branch_498(s, env, receiver, native_values);
+fn branch_497(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[12] = try runBranch(s, env, receiver, native_values, 498);
     if (s.truthy(native_values[12])) {
         native_values[13] = try rt.get(s, env, "m190_AddReadonlyDeferred");
         native_values[14] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[15] = try rt.get(s, env, "type");
         native_values[16] = try rt.invoke(s, native_values[14], c.pi_js_undefined(), &.{native_values[15]});
         native_values[17] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[16]});
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
-        return @call(.always_tail, branch_499, .{ s, env, receiver, native_values });
+        return .{ .jump = 499 };
     }
 }
-fn branch_498(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_498(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[10] = try rt.get(s, env, "isReadonly");
     if (s.truthy(native_values[10])) {
         native_values[11] = try rt.get(s, env, "isOptional");
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_499(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[21] = try branch_500(s, env, receiver, native_values);
+fn branch_499(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[21] = try runBranch(s, env, receiver, native_values, 500);
     if (s.truthy(native_values[21])) {
         native_values[22] = try rt.get(s, env, "m190_AddReadonlyDeferred");
         native_values[23] = try rt.get(s, env, "type");
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
-        return native_values[24];
+        return .{ .value = native_values[24] };
     } else {
-        return @call(.always_tail, branch_501, .{ s, env, receiver, native_values });
+        return .{ .jump = 501 };
     }
 }
-fn branch_500(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_500(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[18] = try rt.get(s, env, "isReadonly");
     if (s.truthy(native_values[18])) {
         native_values[19] = try rt.get(s, env, "isOptional");
         native_values[20] = try rt.unary(s, "!", native_values[19]);
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_501(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[28] = try branch_502(s, env, receiver, native_values);
+fn branch_501(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[28] = try runBranch(s, env, receiver, native_values, 502);
     if (s.truthy(native_values[28])) {
         native_values[29] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[30] = try rt.get(s, env, "type");
         native_values[31] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{native_values[30]});
-        return native_values[31];
+        return .{ .value = native_values[31] };
     } else {
         native_values[32] = try rt.get(s, env, "type");
-        return native_values[32];
+        return .{ .value = native_values[32] };
     }
 }
-fn branch_502(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_502(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[25] = try rt.get(s, env, "isReadonly");
     native_values[26] = try rt.unary(s, "!", native_values[25]);
     if (s.truthy(native_values[26])) {
         native_values[27] = try rt.get(s, env, "isOptional");
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_503(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_503(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -45731,25 +45733,25 @@ fn branch_503(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[14] = try rt.key(s, native_values[12], native_values[13]);
         native_values[15] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{native_values[14]});
         try rt.spreadArray(s, native_values[7], native_values[15]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[16] = try s.array();
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_504(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[10] = try branch_505(s, env, receiver, native_values);
+fn branch_504(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[10] = try runBranch(s, env, receiver, native_values, 505);
     if (!s.truthy(native_values[10])) {
         native_values[11] = try rt.get(s, env, "m4_HasPropertyKey");
         native_values[12] = try rt.get(s, env, "left");
         native_values[13] = try rt.get(s, env, "m45_StringKey");
         native_values[14] = try rt.invoke(s, native_values[11], c.pi_js_undefined(), &.{ native_values[12], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_505(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_505(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_HasPropertyKey");
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.get(s, env, "m45_IntegerKey");
@@ -45759,12 +45761,12 @@ fn branch_505(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.get(s, env, "left");
         native_values[8] = try rt.get(s, env, "m45_NumberKey");
         native_values[9] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[7], native_values[8] });
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_506(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_506(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[16] = try rt.get(s, env, "isPatternProperties");
     if (s.truthy(native_values[16])) {
@@ -45783,7 +45785,7 @@ fn branch_506(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[28] = try rt.get(s, env, "left");
         native_values[29] = try rt.invoke(s, native_values[24], native_values[21], &.{ native_values[27], native_values[28] });
         try rt.append(s, native_values[17], native_values[29]);
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[30] = try s.array();
         native_values[31] = try rt.get(s, env, "external_memory_Memory");
@@ -45800,10 +45802,10 @@ fn branch_506(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[41] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[42] = try rt.key(s, native_values[40], native_values[41]);
         try rt.append(s, native_values[30], native_values[42]);
-        return native_values[30];
+        return .{ .value = native_values[30] };
     }
 }
-fn branch_507(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_507(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[4] = try rt.get(s, env, "m4_IsEqual");
     native_values[5] = try rt.get(s, env, "m4_Keys");
@@ -45815,17 +45817,17 @@ fn branch_507(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[11] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[10], c.JS_NewFloat64(engine.context, 0) });
     if (s.truthy(native_values[11])) {
         native_values[12] = try s.object();
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
         native_values[13] = try s.object();
         native_values[14] = try s.text("patternProperties");
         native_values[15] = try rt.propertyKey(s, native_values[14]);
         native_values[16] = try rt.get(s, env, "patternProperties");
         try rt.property(s, native_values[13], native_values[15], native_values[16]);
-        return native_values[13];
+        return .{ .value = native_values[13] };
     }
 }
-fn branch_508(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_508(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -45841,12 +45843,12 @@ fn branch_508(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[11] = try rt.key(s, native_values[9], native_values[10]);
         native_values[12] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{native_values[11]});
         native_values[13] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[12]});
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return @call(.always_tail, branch_509, .{ s, env, receiver, native_values });
+        return .{ .jump = 509 };
     }
 }
-fn branch_509(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_509(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[14] = try rt.get(s, env, "m4_IsEqual");
     native_values[15] = try rt.get(s, env, "input");
@@ -45858,12 +45860,12 @@ fn branch_509(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[20] = try rt.get(s, env, "input");
         native_values[21] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
         native_values[22] = try rt.key(s, native_values[20], native_values[21]);
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
-        return @call(.always_tail, branch_510, .{ s, env, receiver, native_values });
+        return .{ .jump = 510 };
     }
 }
-fn branch_510(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_510(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[23] = try rt.get(s, env, "m4_IsEqual");
     native_values[24] = try rt.get(s, env, "input");
@@ -45872,14 +45874,14 @@ fn branch_510(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     native_values[27] = try rt.key(s, native_values[24], native_values[26]);
     native_values[28] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{ native_values[27], c.JS_NewFloat64(engine.context, 4) });
     if (s.truthy(native_values[28])) {
-        return @call(.always_tail, branch_511, .{ s, env, receiver, native_values });
+        return .{ .jump = 511 };
     } else {
         native_values[45] = try rt.get(s, env, "m75_Unreachable");
         native_values[46] = try rt.invoke(s, native_values[45], c.pi_js_undefined(), &.{});
-        return native_values[46];
+        return .{ .value = native_values[46] };
     }
 }
-fn branch_511(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_511(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
     native_values[30] = try rt.get(s, env, "input");
@@ -45893,17 +45895,17 @@ fn branch_511(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[37] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 3));
         native_values[38] = try rt.key(s, native_values[36], native_values[37]);
         native_values[39] = try rt.invoke(s, native_values[35], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
         native_values[40] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[41] = try rt.get(s, env, "input");
         native_values[42] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 3));
         native_values[43] = try rt.key(s, native_values[41], native_values[42]);
         native_values[44] = try rt.invoke(s, native_values[40], c.pi_js_undefined(), &.{native_values[43]});
-        return native_values[44];
+        return .{ .value = native_values[44] };
     }
 }
-fn branch_512(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_512(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsArray");
     native_values[2] = try rt.get(s, env, "input");
@@ -45917,77 +45919,77 @@ fn branch_512(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[9], c.JS_NewFloat64(engine.context, 3) });
         native_values[11] = try rt.unary(s, "!", native_values[10]);
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_513(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[20] = try branch_514(s, env, receiver, native_values);
+fn branch_513(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[20] = try runBranch(s, env, receiver, native_values, 514);
     if (s.truthy(native_values[20])) {
         native_values[21] = try rt.get(s, env, "m190_AddReadonlyDeferred");
         native_values[22] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[23] = try rt.get(s, env, "type");
         native_values[24] = try rt.invoke(s, native_values[22], c.pi_js_undefined(), &.{native_values[23]});
         native_values[25] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{native_values[24]});
-        return native_values[25];
+        return .{ .value = native_values[25] };
     } else {
-        return @call(.always_tail, branch_515, .{ s, env, receiver, native_values });
+        return .{ .jump = 515 };
     }
 }
-fn branch_514(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_514(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[18] = try rt.get(s, env, "isReadonly");
     if (s.truthy(native_values[18])) {
         native_values[19] = try rt.get(s, env, "isOptional");
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
-        return native_values[18];
+        return .{ .value = native_values[18] };
     }
 }
-fn branch_515(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[29] = try branch_516(s, env, receiver, native_values);
+fn branch_515(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[29] = try runBranch(s, env, receiver, native_values, 516);
     if (s.truthy(native_values[29])) {
         native_values[30] = try rt.get(s, env, "m190_AddReadonlyDeferred");
         native_values[31] = try rt.get(s, env, "type");
         native_values[32] = try rt.invoke(s, native_values[30], c.pi_js_undefined(), &.{native_values[31]});
-        return native_values[32];
+        return .{ .value = native_values[32] };
     } else {
-        return @call(.always_tail, branch_517, .{ s, env, receiver, native_values });
+        return .{ .jump = 517 };
     }
 }
-fn branch_516(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_516(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[26] = try rt.get(s, env, "isReadonly");
     if (s.truthy(native_values[26])) {
         native_values[27] = try rt.get(s, env, "isOptional");
         native_values[28] = try rt.unary(s, "!", native_values[27]);
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return native_values[26];
+        return .{ .value = native_values[26] };
     }
 }
-fn branch_517(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[36] = try branch_518(s, env, receiver, native_values);
+fn branch_517(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[36] = try runBranch(s, env, receiver, native_values, 518);
     if (s.truthy(native_values[36])) {
         native_values[37] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[38] = try rt.get(s, env, "type");
         native_values[39] = try rt.invoke(s, native_values[37], c.pi_js_undefined(), &.{native_values[38]});
-        return native_values[39];
+        return .{ .value = native_values[39] };
     } else {
         native_values[40] = try rt.get(s, env, "type");
-        return native_values[40];
+        return .{ .value = native_values[40] };
     }
 }
-fn branch_518(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_518(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[33] = try rt.get(s, env, "isReadonly");
     native_values[34] = try rt.unary(s, "!", native_values[33]);
     if (s.truthy(native_values[34])) {
         native_values[35] = try rt.get(s, env, "isOptional");
-        return native_values[35];
+        return .{ .value = native_values[35] };
     } else {
-        return native_values[34];
+        return .{ .value = native_values[34] };
     }
 }
-fn branch_519(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_519(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46001,12 +46003,12 @@ fn branch_519(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[10] = try rt.key(s, native_values[8], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_520, .{ s, env, receiver, native_values });
+        return .{ .jump = 520 };
     }
 }
-fn branch_520(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_520(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[12] = try rt.get(s, env, "m4_IsEqual");
     native_values[13] = try rt.get(s, env, "input");
@@ -46018,14 +46020,14 @@ fn branch_520(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[18] = try rt.get(s, env, "input");
         native_values[19] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[20] = try rt.key(s, native_values[18], native_values[19]);
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "m75_Unreachable");
         native_values[22] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     }
 }
-fn branch_521(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_521(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46039,12 +46041,12 @@ fn branch_521(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[9] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[10] = try rt.key(s, native_values[8], native_values[9]);
         native_values[11] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
-        return @call(.always_tail, branch_522, .{ s, env, receiver, native_values });
+        return .{ .jump = 522 };
     }
 }
-fn branch_522(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_522(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[12] = try rt.get(s, env, "m4_IsEqual");
     native_values[13] = try rt.get(s, env, "input");
@@ -46056,23 +46058,23 @@ fn branch_522(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[18] = try rt.get(s, env, "input");
         native_values[19] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[20] = try rt.key(s, native_values[18], native_values[19]);
-        return native_values[20];
+        return .{ .value = native_values[20] };
     } else {
         native_values[21] = try rt.get(s, env, "m75_Unreachable");
         native_values[22] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     }
 }
-fn branch_523(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_524(s, env, receiver, native_values);
+fn branch_523(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 524);
     if (s.truthy(native_values[13])) {
         native_values[14] = try s.text("remove");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_525, .{ s, env, receiver, native_values });
+        return .{ .jump = 525 };
     }
 }
-fn branch_524(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_524(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46087,21 +46089,21 @@ fn branch_524(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.key(s, native_values[8], native_values[9]);
         native_values[11] = try s.text("-");
         native_values[12] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[6];
+        return .{ .value = native_values[6] };
     }
 }
-fn branch_525(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[27] = try branch_526(s, env, receiver, native_values);
+fn branch_525(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[27] = try runBranch(s, env, receiver, native_values, 526);
     if (s.truthy(native_values[27])) {
         native_values[28] = try s.text("add");
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return @call(.always_tail, branch_527, .{ s, env, receiver, native_values });
+        return .{ .jump = 527 };
     }
 }
-fn branch_526(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_526(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[15] = try rt.get(s, env, "m4_IsEqual");
     native_values[16] = try rt.get(s, env, "input");
@@ -46116,12 +46118,12 @@ fn branch_526(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.key(s, native_values[22], native_values[23]);
         native_values[25] = try s.text("+");
         native_values[26] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     } else {
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_527(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_527(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
     native_values[30] = try rt.get(s, env, "input");
@@ -46131,13 +46133,13 @@ fn branch_527(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[34] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[33], c.JS_NewFloat64(engine.context, 1) });
     if (s.truthy(native_values[34])) {
         native_values[35] = try s.text("add");
-        return native_values[35];
+        return .{ .value = native_values[35] };
     } else {
         native_values[36] = try s.text("none");
-        return native_values[36];
+        return .{ .value = native_values[36] };
     }
 }
-fn branch_528(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_528(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46151,22 +46153,22 @@ fn branch_528(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[10] = try rt.key(s, native_values[8], native_values[9]);
         try rt.append(s, native_values[7], native_values[10]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[11] = try s.array();
-        return native_values[11];
+        return .{ .value = native_values[11] };
     }
 }
-fn branch_529(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[13] = try branch_530(s, env, receiver, native_values);
+fn branch_529(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[13] = try runBranch(s, env, receiver, native_values, 530);
     if (s.truthy(native_values[13])) {
         native_values[14] = try s.text("remove");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_531, .{ s, env, receiver, native_values });
+        return .{ .jump = 531 };
     }
 }
-fn branch_530(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_530(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46181,21 +46183,21 @@ fn branch_530(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[10] = try rt.key(s, native_values[8], native_values[9]);
         native_values[11] = try s.text("-");
         native_values[12] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[10], native_values[11] });
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
-        return native_values[6];
+        return .{ .value = native_values[6] };
     }
 }
-fn branch_531(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[27] = try branch_532(s, env, receiver, native_values);
+fn branch_531(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[27] = try runBranch(s, env, receiver, native_values, 532);
     if (s.truthy(native_values[27])) {
         native_values[28] = try s.text("add");
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return @call(.always_tail, branch_533, .{ s, env, receiver, native_values });
+        return .{ .jump = 533 };
     }
 }
-fn branch_532(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_532(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[15] = try rt.get(s, env, "m4_IsEqual");
     native_values[16] = try rt.get(s, env, "input");
@@ -46210,12 +46212,12 @@ fn branch_532(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[24] = try rt.key(s, native_values[22], native_values[23]);
         native_values[25] = try s.text("+");
         native_values[26] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[24], native_values[25] });
-        return native_values[26];
+        return .{ .value = native_values[26] };
     } else {
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_533(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_533(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
     native_values[30] = try rt.get(s, env, "input");
@@ -46225,15 +46227,15 @@ fn branch_533(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
     native_values[34] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[33], c.JS_NewFloat64(engine.context, 1) });
     if (s.truthy(native_values[34])) {
         native_values[35] = try s.text("add");
-        return native_values[35];
+        return .{ .value = native_values[35] };
     } else {
         native_values[36] = try s.text("none");
-        return native_values[36];
+        return .{ .value = native_values[36] };
     }
 }
-fn branch_534(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_534(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[14] = try branch_535(s, env, receiver, native_values);
+    native_values[14] = try runBranch(s, env, receiver, native_values, 535);
     if (s.truthy(native_values[14])) {
         native_values[15] = try rt.get(s, env, "m209_MappedDeferred");
         native_values[16] = try rt.get(s, env, "m84_Identifier");
@@ -46263,7 +46265,7 @@ fn branch_534(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[40] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{ native_values[36], native_values[39] });
         native_values[41] = try rt.invoke(s, native_values[29], c.pi_js_undefined(), &.{ native_values[32], native_values[40] });
         native_values[42] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{ native_values[20], native_values[23], native_values[28], native_values[41] });
-        return native_values[42];
+        return .{ .value = native_values[42] };
     } else {
         native_values[43] = try rt.get(s, env, "m209_MappedDeferred");
         native_values[44] = try rt.get(s, env, "m84_Identifier");
@@ -46293,10 +46295,10 @@ fn branch_534(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[68] = try rt.invoke(s, native_values[61], c.pi_js_undefined(), &.{ native_values[64], native_values[67] });
         native_values[69] = try rt.invoke(s, native_values[57], c.pi_js_undefined(), &.{ native_values[60], native_values[68] });
         native_values[70] = try rt.invoke(s, native_values[43], c.pi_js_undefined(), &.{ native_values[48], native_values[51], native_values[56], native_values[69] });
-        return native_values[70];
+        return .{ .value = native_values[70] };
     }
 }
-fn branch_535(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_535(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsArray");
     native_values[2] = try rt.get(s, env, "input");
@@ -46312,12 +46314,12 @@ fn branch_535(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[11] = try rt.propertyKey(s, native_values[10]);
         native_values[12] = try rt.key(s, native_values[9], native_values[11]);
         native_values[13] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{ native_values[12], c.JS_NewFloat64(engine.context, 1) });
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
-        return native_values[5];
+        return .{ .value = native_values[5] };
     }
 }
-fn branch_536(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_536(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "state");
     native_values[4] = try s.text("remove");
@@ -46326,12 +46328,12 @@ fn branch_536(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[6] = try rt.get(s, env, "m193_RemoveReadonlyDeferred");
         native_values[7] = try rt.get(s, env, "type");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_537, .{ s, env, receiver, native_values });
+        return .{ .jump = 537 };
     }
 }
-fn branch_537(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_537(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m4_IsEqual");
     native_values[10] = try rt.get(s, env, "state");
     native_values[11] = try s.text("add");
@@ -46340,13 +46342,13 @@ fn branch_537(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.get(s, env, "m190_AddReadonlyDeferred");
         native_values[14] = try rt.get(s, env, "type");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "type");
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_538(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_538(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "state");
     native_values[4] = try s.text("remove");
@@ -46355,12 +46357,12 @@ fn branch_538(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[6] = try rt.get(s, env, "m194_RemoveOptionalDeferred");
         native_values[7] = try rt.get(s, env, "type");
         native_values[8] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[7]});
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
-        return @call(.always_tail, branch_539, .{ s, env, receiver, native_values });
+        return .{ .jump = 539 };
     }
 }
-fn branch_539(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_539(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[9] = try rt.get(s, env, "m4_IsEqual");
     native_values[10] = try rt.get(s, env, "state");
     native_values[11] = try s.text("add");
@@ -46369,13 +46371,13 @@ fn branch_539(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.get(s, env, "m191_AddOptionalDeferred");
         native_values[14] = try rt.get(s, env, "type");
         native_values[15] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{native_values[14]});
-        return native_values[15];
+        return .{ .value = native_values[15] };
     } else {
         native_values[16] = try rt.get(s, env, "type");
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_540(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_540(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "ref");
@@ -46387,12 +46389,12 @@ fn branch_540(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[8] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[9] = try rt.key(s, native_values[7], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[6], c.pi_js_undefined(), &.{native_values[9]});
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return @call(.always_tail, branch_541, .{ s, env, receiver, native_values });
+        return .{ .jump = 541 };
     }
 }
-fn branch_541(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_541(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[11] = try rt.get(s, env, "m4_IsEqual");
     native_values[12] = try rt.get(s, env, "ref");
@@ -46404,12 +46406,12 @@ fn branch_541(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[17] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[18] = try rt.key(s, native_values[16], native_values[17]);
         native_values[19] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[18]});
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
-        return @call(.always_tail, branch_542, .{ s, env, receiver, native_values });
+        return .{ .jump = 542 };
     }
 }
-fn branch_542(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_542(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[20] = try rt.get(s, env, "m4_IsEqual");
     native_values[21] = try rt.get(s, env, "ref");
@@ -46421,12 +46423,12 @@ fn branch_542(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[26] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[27] = try rt.key(s, native_values[25], native_values[26]);
         native_values[28] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{native_values[27]});
-        return native_values[28];
+        return .{ .value = native_values[28] };
     } else {
-        return @call(.always_tail, branch_543, .{ s, env, receiver, native_values });
+        return .{ .jump = 543 };
     }
 }
-fn branch_543(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_543(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[29] = try rt.get(s, env, "m4_IsEqual");
     native_values[30] = try rt.get(s, env, "ref");
@@ -46438,12 +46440,12 @@ fn branch_543(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[35] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[36] = try rt.key(s, native_values[34], native_values[35]);
         native_values[37] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[36]});
-        return native_values[37];
+        return .{ .value = native_values[37] };
     } else {
-        return @call(.always_tail, branch_544, .{ s, env, receiver, native_values });
+        return .{ .jump = 544 };
     }
 }
-fn branch_544(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_544(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[38] = try rt.get(s, env, "m4_IsEqual");
     native_values[39] = try rt.get(s, env, "ref");
@@ -46458,12 +46460,12 @@ fn branch_544(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[47] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[48] = try rt.key(s, native_values[46], native_values[47]);
         native_values[49] = try rt.invoke(s, native_values[42], c.pi_js_undefined(), &.{ native_values[45], native_values[48] });
-        return native_values[49];
+        return .{ .value = native_values[49] };
     } else {
-        return @call(.always_tail, branch_545, .{ s, env, receiver, native_values });
+        return .{ .jump = 545 };
     }
 }
-fn branch_545(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_545(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[50] = try rt.get(s, env, "m4_IsEqual");
     native_values[51] = try rt.get(s, env, "ref");
@@ -46478,12 +46480,12 @@ fn branch_545(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[59] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[60] = try rt.key(s, native_values[58], native_values[59]);
         native_values[61] = try rt.invoke(s, native_values[54], c.pi_js_undefined(), &.{ native_values[57], native_values[60] });
-        return native_values[61];
+        return .{ .value = native_values[61] };
     } else {
-        return @call(.always_tail, branch_546, .{ s, env, receiver, native_values });
+        return .{ .jump = 546 };
     }
 }
-fn branch_546(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_546(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[62] = try rt.get(s, env, "m4_IsEqual");
     native_values[63] = try rt.get(s, env, "ref");
@@ -46498,12 +46500,12 @@ fn branch_546(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[71] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[72] = try rt.key(s, native_values[70], native_values[71]);
         native_values[73] = try rt.invoke(s, native_values[66], c.pi_js_undefined(), &.{ native_values[69], native_values[72] });
-        return native_values[73];
+        return .{ .value = native_values[73] };
     } else {
-        return @call(.always_tail, branch_547, .{ s, env, receiver, native_values });
+        return .{ .jump = 547 };
     }
 }
-fn branch_547(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_547(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[74] = try rt.get(s, env, "m4_IsEqual");
     native_values[75] = try rt.get(s, env, "ref");
@@ -46515,12 +46517,12 @@ fn branch_547(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[80] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[81] = try rt.key(s, native_values[79], native_values[80]);
         native_values[82] = try rt.invoke(s, native_values[78], c.pi_js_undefined(), &.{native_values[81]});
-        return native_values[82];
+        return .{ .value = native_values[82] };
     } else {
-        return @call(.always_tail, branch_548, .{ s, env, receiver, native_values });
+        return .{ .jump = 548 };
     }
 }
-fn branch_548(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_548(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[83] = try rt.get(s, env, "m4_IsEqual");
     native_values[84] = try rt.get(s, env, "ref");
@@ -46532,12 +46534,12 @@ fn branch_548(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[89] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[90] = try rt.key(s, native_values[88], native_values[89]);
         native_values[91] = try rt.invoke(s, native_values[87], c.pi_js_undefined(), &.{native_values[90]});
-        return native_values[91];
+        return .{ .value = native_values[91] };
     } else {
-        return @call(.always_tail, branch_549, .{ s, env, receiver, native_values });
+        return .{ .jump = 549 };
     }
 }
-fn branch_549(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_549(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[92] = try rt.get(s, env, "m4_IsEqual");
     native_values[93] = try rt.get(s, env, "ref");
@@ -46549,12 +46551,12 @@ fn branch_549(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[98] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[99] = try rt.key(s, native_values[97], native_values[98]);
         native_values[100] = try rt.invoke(s, native_values[96], c.pi_js_undefined(), &.{native_values[99]});
-        return native_values[100];
+        return .{ .value = native_values[100] };
     } else {
-        return @call(.always_tail, branch_550, .{ s, env, receiver, native_values });
+        return .{ .jump = 550 };
     }
 }
-fn branch_550(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_550(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[101] = try rt.get(s, env, "m4_IsEqual");
     native_values[102] = try rt.get(s, env, "ref");
@@ -46569,12 +46571,12 @@ fn branch_550(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[110] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[111] = try rt.key(s, native_values[109], native_values[110]);
         native_values[112] = try rt.invoke(s, native_values[105], c.pi_js_undefined(), &.{ native_values[108], native_values[111] });
-        return native_values[112];
+        return .{ .value = native_values[112] };
     } else {
-        return @call(.always_tail, branch_551, .{ s, env, receiver, native_values });
+        return .{ .jump = 551 };
     }
 }
-fn branch_551(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_551(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[113] = try rt.get(s, env, "m4_IsEqual");
     native_values[114] = try rt.get(s, env, "ref");
@@ -46586,12 +46588,12 @@ fn branch_551(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[119] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[120] = try rt.key(s, native_values[118], native_values[119]);
         native_values[121] = try rt.invoke(s, native_values[117], c.pi_js_undefined(), &.{native_values[120]});
-        return native_values[121];
+        return .{ .value = native_values[121] };
     } else {
-        return @call(.always_tail, branch_552, .{ s, env, receiver, native_values });
+        return .{ .jump = 552 };
     }
 }
-fn branch_552(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_552(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[122] = try rt.get(s, env, "m4_IsEqual");
     native_values[123] = try rt.get(s, env, "ref");
@@ -46603,12 +46605,12 @@ fn branch_552(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[128] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[129] = try rt.key(s, native_values[127], native_values[128]);
         native_values[130] = try rt.invoke(s, native_values[126], c.pi_js_undefined(), &.{native_values[129]});
-        return native_values[130];
+        return .{ .value = native_values[130] };
     } else {
-        return @call(.always_tail, branch_553, .{ s, env, receiver, native_values });
+        return .{ .jump = 553 };
     }
 }
-fn branch_553(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_553(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[131] = try rt.get(s, env, "m4_IsEqual");
     native_values[132] = try rt.get(s, env, "ref");
@@ -46623,12 +46625,12 @@ fn branch_553(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[140] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[141] = try rt.key(s, native_values[139], native_values[140]);
         native_values[142] = try rt.invoke(s, native_values[135], c.pi_js_undefined(), &.{ native_values[138], native_values[141] });
-        return native_values[142];
+        return .{ .value = native_values[142] };
     } else {
-        return @call(.always_tail, branch_554, .{ s, env, receiver, native_values });
+        return .{ .jump = 554 };
     }
 }
-fn branch_554(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_554(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[143] = try rt.get(s, env, "m4_IsEqual");
     native_values[144] = try rt.get(s, env, "ref");
@@ -46640,12 +46642,12 @@ fn branch_554(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[149] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[150] = try rt.key(s, native_values[148], native_values[149]);
         native_values[151] = try rt.invoke(s, native_values[147], c.pi_js_undefined(), &.{native_values[150]});
-        return native_values[151];
+        return .{ .value = native_values[151] };
     } else {
-        return @call(.always_tail, branch_555, .{ s, env, receiver, native_values });
+        return .{ .jump = 555 };
     }
 }
-fn branch_555(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_555(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[152] = try rt.get(s, env, "m4_IsEqual");
     native_values[153] = try rt.get(s, env, "ref");
@@ -46657,12 +46659,12 @@ fn branch_555(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[158] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[159] = try rt.key(s, native_values[157], native_values[158]);
         native_values[160] = try rt.invoke(s, native_values[156], c.pi_js_undefined(), &.{native_values[159]});
-        return native_values[160];
+        return .{ .value = native_values[160] };
     } else {
-        return @call(.always_tail, branch_556, .{ s, env, receiver, native_values });
+        return .{ .jump = 556 };
     }
 }
-fn branch_556(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_556(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[161] = try rt.get(s, env, "m4_IsEqual");
     native_values[162] = try rt.get(s, env, "ref");
@@ -46677,12 +46679,12 @@ fn branch_556(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[170] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[171] = try rt.key(s, native_values[169], native_values[170]);
         native_values[172] = try rt.invoke(s, native_values[165], c.pi_js_undefined(), &.{ native_values[168], native_values[171] });
-        return native_values[172];
+        return .{ .value = native_values[172] };
     } else {
-        return @call(.always_tail, branch_557, .{ s, env, receiver, native_values });
+        return .{ .jump = 557 };
     }
 }
-fn branch_557(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_557(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[173] = try rt.get(s, env, "m4_IsEqual");
     native_values[174] = try rt.get(s, env, "ref");
@@ -46694,12 +46696,12 @@ fn branch_557(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[179] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[180] = try rt.key(s, native_values[178], native_values[179]);
         native_values[181] = try rt.invoke(s, native_values[177], c.pi_js_undefined(), &.{native_values[180]});
-        return native_values[181];
+        return .{ .value = native_values[181] };
     } else {
-        return @call(.always_tail, branch_558, .{ s, env, receiver, native_values });
+        return .{ .jump = 558 };
     }
 }
-fn branch_558(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_558(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[182] = try rt.get(s, env, "m4_IsEqual");
     native_values[183] = try rt.get(s, env, "ref");
@@ -46711,12 +46713,12 @@ fn branch_558(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[188] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[189] = try rt.key(s, native_values[187], native_values[188]);
         native_values[190] = try rt.invoke(s, native_values[186], c.pi_js_undefined(), &.{native_values[189]});
-        return native_values[190];
+        return .{ .value = native_values[190] };
     } else {
-        return @call(.always_tail, branch_559, .{ s, env, receiver, native_values });
+        return .{ .jump = 559 };
     }
 }
-fn branch_559(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_559(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[191] = try rt.get(s, env, "m4_IsEqual");
     native_values[192] = try rt.get(s, env, "ref");
@@ -46728,12 +46730,12 @@ fn branch_559(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[197] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[198] = try rt.key(s, native_values[196], native_values[197]);
         native_values[199] = try rt.invoke(s, native_values[195], c.pi_js_undefined(), &.{native_values[198]});
-        return native_values[199];
+        return .{ .value = native_values[199] };
     } else {
-        return @call(.always_tail, branch_560, .{ s, env, receiver, native_values });
+        return .{ .jump = 560 };
     }
 }
-fn branch_560(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_560(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[200] = try rt.get(s, env, "m4_IsEqual");
     native_values[201] = try rt.get(s, env, "ref");
@@ -46745,7 +46747,7 @@ fn branch_560(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[206] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[207] = try rt.key(s, native_values[205], native_values[206]);
         native_values[208] = try rt.invoke(s, native_values[204], c.pi_js_undefined(), &.{native_values[207]});
-        return native_values[208];
+        return .{ .value = native_values[208] };
     } else {
         native_values[209] = try rt.get(s, env, "m82_CallConstruct");
         native_values[210] = try rt.get(s, env, "m12_Ref");
@@ -46753,23 +46755,23 @@ fn branch_560(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[212] = try rt.invoke(s, native_values[210], c.pi_js_undefined(), &.{native_values[211]});
         native_values[213] = try rt.get(s, env, "parameters");
         native_values[214] = try rt.invoke(s, native_values[209], c.pi_js_undefined(), &.{ native_values[212], native_values[213] });
-        return native_values[214];
+        return .{ .value = native_values[214] };
     }
 }
-fn branch_561(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_561(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
-    native_values[10] = try branch_562(s, env, receiver, native_values);
+    native_values[10] = try runBranch(s, env, receiver, native_values, 562);
     if (s.truthy(native_values[10])) {
         native_values[11] = try rt.get(s, env, "input");
         native_values[12] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[13] = try rt.key(s, native_values[11], native_values[12]);
-        return native_values[13];
+        return .{ .value = native_values[13] };
     } else {
         native_values[14] = try rt.get(s, env, "input");
-        return native_values[14];
+        return .{ .value = native_values[14] };
     }
 }
-fn branch_562(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_562(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsArray");
     native_values[2] = try rt.get(s, env, "input");
@@ -46781,12 +46783,12 @@ fn branch_562(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{ native_values[8], c.JS_NewFloat64(engine.context, 3) });
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_563(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_563(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "current");
@@ -46804,17 +46806,17 @@ fn branch_563(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[13] = try rt.key(s, native_values[11], native_values[12]);
         try rt.append(s, native_values[10], native_values[13]);
         try rt.append(s, native_values[8], native_values[10]);
-        return native_values[8];
+        return .{ .value = native_values[8] };
     } else {
         native_values[14] = try s.array();
         native_values[15] = try rt.get(s, env, "result");
         try rt.spreadArray(s, native_values[14], native_values[15]);
         native_values[16] = try s.array();
         try rt.append(s, native_values[14], native_values[16]);
-        return native_values[14];
+        return .{ .value = native_values[14] };
     }
 }
-fn branch_564(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_564(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46836,13 +46838,13 @@ fn branch_564(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 5));
         native_values[16] = try rt.key(s, native_values[14], native_values[15]);
         try rt.append(s, native_values[7], native_values[16]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[17] = try s.array();
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_565(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_565(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -46854,13 +46856,13 @@ fn branch_565(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.get(s, env, "input");
         native_values[8] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
         native_values[9] = try rt.key(s, native_values[7], native_values[8]);
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try s.array();
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_566(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_566(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[8] = try rt.get(s, env, "keyOf");
     if (s.truthy(native_values[8])) {
         native_values[9] = try rt.get(s, env, "m75_FactorExtends");
@@ -46872,7 +46874,7 @@ fn branch_566(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.invoke(s, native_values[10], c.pi_js_undefined(), &.{native_values[14]});
         native_values[16] = try rt.get(s, env, "extend");
         native_values[17] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[15], native_values[16] });
-        return native_values[17];
+        return .{ .value = native_values[17] };
     } else {
         native_values[18] = try rt.get(s, env, "m75_FactorExtends");
         native_values[19] = try rt.get(s, env, "m75_FactorIndexArray");
@@ -46881,23 +46883,23 @@ fn branch_566(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[22] = try rt.invoke(s, native_values[19], c.pi_js_undefined(), &.{ native_values[20], native_values[21] });
         native_values[23] = try rt.get(s, env, "extend");
         native_values[24] = try rt.invoke(s, native_values[18], c.pi_js_undefined(), &.{ native_values[22], native_values[23] });
-        return native_values[24];
+        return .{ .value = native_values[24] };
     }
 }
-fn branch_567(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
-    native_values[11] = try branch_568(s, env, receiver, native_values);
+fn branch_567(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
+    native_values[11] = try runBranch(s, env, receiver, native_values, 568);
     if (s.truthy(native_values[11])) {
         native_values[12] = try rt.get(s, env, "type");
-        return native_values[12];
+        return .{ .value = native_values[12] };
     } else {
         native_values[13] = try rt.get(s, env, "m256_WithDeferred");
         native_values[14] = try rt.get(s, env, "type");
         native_values[15] = try rt.get(s, env, "withClause");
         native_values[16] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), &.{ native_values[14], native_values[15] });
-        return native_values[16];
+        return .{ .value = native_values[16] };
     }
 }
-fn branch_568(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_568(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsArray");
     native_values[3] = try rt.get(s, env, "withClause");
@@ -46909,12 +46911,12 @@ fn branch_568(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[8] = try rt.propertyKey(s, native_values[7]);
         native_values[9] = try rt.key(s, native_values[6], native_values[8]);
         native_values[10] = try rt.invoke(s, native_values[5], c.pi_js_undefined(), &.{ native_values[9], c.JS_NewFloat64(engine.context, 0) });
-        return native_values[10];
+        return .{ .value = native_values[10] };
     } else {
-        return native_values[4];
+        return .{ .value = native_values[4] };
     }
 }
-fn branch_569(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_569(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "extend");
@@ -46935,13 +46937,13 @@ fn branch_569(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[17] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
         native_values[18] = try rt.key(s, native_values[16], native_values[17]);
         native_values[19] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{ native_values[9], native_values[12], native_values[15], native_values[18] });
-        return native_values[19];
+        return .{ .value = native_values[19] };
     } else {
         native_values[20] = try rt.get(s, env, "type");
-        return native_values[20];
+        return .{ .value = native_values[20] };
     }
 }
-fn branch_570(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_570(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[3] = try rt.get(s, env, "m4_IsEqual");
     native_values[4] = try rt.get(s, env, "_left");
@@ -46956,12 +46958,12 @@ fn branch_570(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[12] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[13] = try rt.key(s, native_values[11], native_values[12]);
         native_values[14] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{ native_values[10], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_571, .{ s, env, receiver, native_values });
+        return .{ .jump = 571 };
     }
 }
-fn branch_571(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_571(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[15] = try rt.get(s, env, "m4_IsEqual");
     native_values[16] = try rt.get(s, env, "_left");
@@ -46973,14 +46975,14 @@ fn branch_571(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.get(s, env, "m38__Array_");
         native_values[22] = try rt.get(s, env, "result");
         native_values[23] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{native_values[22]});
-        return native_values[23];
+        return .{ .value = native_values[23] };
     } else {
         native_values[24] = try rt.get(s, env, "m75_Unreachable");
         native_values[25] = try rt.invoke(s, native_values[24], c.pi_js_undefined(), &.{});
-        return native_values[25];
+        return .{ .value = native_values[25] };
     }
 }
-fn branch_572(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_572(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[2] = try rt.get(s, env, "m4_IsEqual");
     native_values[3] = try rt.get(s, env, "rest");
@@ -46991,13 +46993,13 @@ fn branch_572(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
     if (s.truthy(native_values[7])) {
         native_values[8] = try rt.function(s, "", 0, f_902, env, receiver, true);
         native_values[9] = try rt.invoke(s, native_values[8], c.pi_js_undefined(), &.{});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try rt.get(s, env, "left");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_573(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_573(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[12] = try rt.get(s, env, "m41_IsIntersect");
     native_values[13] = try rt.get(s, env, "Schema");
     native_values[14] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{native_values[13]});
@@ -47012,7 +47014,7 @@ fn branch_573(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[21] = try rt.key(s, native_values[18], native_values[20]);
         try rt.spreadArray(s, native_values[16], native_values[21]);
         native_values[22] = try rt.invoke(s, native_values[15], c.pi_js_undefined(), &.{native_values[16]});
-        return native_values[22];
+        return .{ .value = native_values[22] };
     } else {
         native_values[23] = try rt.get(s, env, "m41_Intersect");
         native_values[24] = try s.array();
@@ -47021,10 +47023,10 @@ fn branch_573(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[26] = try rt.get(s, env, "Schema");
         try rt.append(s, native_values[24], native_values[26]);
         native_values[27] = try rt.invoke(s, native_values[23], c.pi_js_undefined(), &.{native_values[24]});
-        return native_values[27];
+        return .{ .value = native_values[27] };
     }
 }
-fn branch_574(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_574(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[33] = try rt.get(s, env, "m24_IsUnion");
     native_values[34] = try rt.get(s, env, "Schema");
     native_values[35] = try rt.invoke(s, native_values[33], c.pi_js_undefined(), &.{native_values[34]});
@@ -47039,7 +47041,7 @@ fn branch_574(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[42] = try rt.key(s, native_values[39], native_values[41]);
         try rt.spreadArray(s, native_values[37], native_values[42]);
         native_values[43] = try rt.invoke(s, native_values[36], c.pi_js_undefined(), &.{native_values[37]});
-        return native_values[43];
+        return .{ .value = native_values[43] };
     } else {
         native_values[44] = try rt.get(s, env, "m24_Union");
         native_values[45] = try s.array();
@@ -47048,10 +47050,10 @@ fn branch_574(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[47] = try rt.get(s, env, "Schema");
         try rt.append(s, native_values[45], native_values[47]);
         native_values[48] = try rt.invoke(s, native_values[44], c.pi_js_undefined(), &.{native_values[45]});
-        return native_values[48];
+        return .{ .value = native_values[48] };
     }
 }
-fn branch_575(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_575(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -47068,12 +47070,12 @@ fn branch_575(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: 
         native_values[12] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 3));
         native_values[13] = try rt.key(s, native_values[11], native_values[12]);
         native_values[14] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{ native_values[10], native_values[13] });
-        return native_values[14];
+        return .{ .value = native_values[14] };
     } else {
-        return @call(.always_tail, branch_576, .{ s, env, receiver, native_values });
+        return .{ .jump = 576 };
     }
 }
-fn branch_576(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_576(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[15] = try rt.get(s, env, "m4_IsEqual");
     native_values[16] = try rt.get(s, env, "input");
@@ -47089,14 +47091,14 @@ fn branch_576(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[25] = try rt.get(s, env, "m89_Unknown");
         native_values[26] = try rt.invoke(s, native_values[25], c.pi_js_undefined(), &.{});
         native_values[27] = try rt.invoke(s, native_values[21], c.pi_js_undefined(), &.{ native_values[24], native_values[26] });
-        return native_values[27];
+        return .{ .value = native_values[27] };
     } else {
         native_values[28] = try rt.get(s, env, "m75_Unreachable");
         native_values[29] = try rt.invoke(s, native_values[28], c.pi_js_undefined(), &.{});
-        return native_values[29];
+        return .{ .value = native_values[29] };
     }
 }
-fn branch_577(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_577(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[1] = try rt.get(s, env, "m4_IsEqual");
     native_values[2] = try rt.get(s, env, "input");
@@ -47118,17 +47120,17 @@ fn branch_577(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[15] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
         native_values[16] = try rt.key(s, native_values[14], native_values[15]);
         try rt.spreadArray(s, native_values[7], native_values[16]);
-        return native_values[7];
+        return .{ .value = native_values[7] };
     } else {
         native_values[17] = try s.array();
         native_values[18] = try rt.get(s, env, "input");
         native_values[19] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
         native_values[20] = try rt.key(s, native_values[18], native_values[19]);
         try rt.append(s, native_values[17], native_values[20]);
-        return native_values[17];
+        return .{ .value = native_values[17] };
     }
 }
-fn branch_578(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_578(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m14_IsLiteral");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -47139,12 +47141,12 @@ fn branch_578(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_579(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_579(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[1] = try rt.get(s, env, "m14_IsLiteral");
     native_values[2] = try rt.get(s, env, "value");
     native_values[3] = try rt.invoke(s, native_values[1], c.pi_js_undefined(), &.{native_values[2]});
@@ -47155,12 +47157,12 @@ fn branch_579(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.propertyKey(s, native_values[6]);
         native_values[8] = try rt.key(s, native_values[5], native_values[7]);
         native_values[9] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
-        return native_values[3];
+        return .{ .value = native_values[3] };
     }
 }
-fn branch_580(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_580(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m4_IsArray");
     native_values[5] = try rt.get(s, env, "indexer_or_keys");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -47168,13 +47170,13 @@ fn branch_580(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.get(s, env, "m273_KeysToIndexer");
         native_values[8] = try rt.get(s, env, "indexer_or_keys");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try rt.get(s, env, "indexer_or_keys");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_581(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_581(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[2] = try rt.get(s, env, "m14_IsLiteralValue");
     native_values[3] = try rt.get(s, env, "left");
     native_values[4] = try rt.invoke(s, native_values[2], c.pi_js_undefined(), &.{native_values[3]});
@@ -47186,13 +47188,13 @@ fn branch_581(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[8] = try rt.get(s, env, "left");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
         try rt.append(s, native_values[5], native_values[9]);
-        return native_values[5];
+        return .{ .value = native_values[5] };
     } else {
         native_values[10] = try rt.get(s, env, "result");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_582(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_582(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m4_IsArray");
     native_values[5] = try rt.get(s, env, "indexer_or_keys");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -47200,13 +47202,13 @@ fn branch_582(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.get(s, env, "m273_KeysToIndexer");
         native_values[8] = try rt.get(s, env, "indexer_or_keys");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try rt.get(s, env, "indexer_or_keys");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_583(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_583(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     native_values[4] = try rt.get(s, env, "m4_IsArray");
     native_values[5] = try rt.get(s, env, "indexer_or_keys");
     native_values[6] = try rt.invoke(s, native_values[4], c.pi_js_undefined(), &.{native_values[5]});
@@ -47214,13 +47216,13 @@ fn branch_583(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[7] = try rt.get(s, env, "m273_KeysToIndexer");
         native_values[8] = try rt.get(s, env, "indexer_or_keys");
         native_values[9] = try rt.invoke(s, native_values[7], c.pi_js_undefined(), &.{native_values[8]});
-        return native_values[9];
+        return .{ .value = native_values[9] };
     } else {
         native_values[10] = try rt.get(s, env, "indexer_or_keys");
-        return native_values[10];
+        return .{ .value = native_values[10] };
     }
 }
-fn branch_584(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
+fn branch_584(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
     const engine = s.engine;
     native_values[4] = try rt.get(s, env, "result");
     native_values[5] = try s.text("length");
@@ -47231,11 +47233,22 @@ fn branch_584(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSV
         native_values[9] = try rt.get(s, env, "left");
         native_values[10] = try rt.get(s, env, "result");
         native_values[11] = try rt.invoke(s, native_values[9], c.pi_js_undefined(), &.{native_values[10]});
-        return native_values[11];
+        return .{ .value = native_values[11] };
     } else {
         native_values[12] = try rt.get(s, env, "right");
         native_values[13] = try rt.invoke(s, native_values[12], c.pi_js_undefined(), &.{});
-        return native_values[13];
+        return .{ .value = native_values[13] };
+    }
+}
+const branch_helpers = [_]BranchHelper{ branch_0, branch_1, branch_2, branch_3, branch_4, branch_5, branch_6, branch_7, branch_8, branch_9, branch_10, branch_11, branch_12, branch_13, branch_14, branch_15, branch_16, branch_17, branch_18, branch_19, branch_20, branch_21, branch_22, branch_23, branch_24, branch_25, branch_26, branch_27, branch_28, branch_29, branch_30, branch_31, branch_32, branch_33, branch_34, branch_35, branch_36, branch_37, branch_38, branch_39, branch_40, branch_41, branch_42, branch_43, branch_44, branch_45, branch_46, branch_47, branch_48, branch_49, branch_50, branch_51, branch_52, branch_53, branch_54, branch_55, branch_56, branch_57, branch_58, branch_59, branch_60, branch_61, branch_62, branch_63, branch_64, branch_65, branch_66, branch_67, branch_68, branch_69, branch_70, branch_71, branch_72, branch_73, branch_74, branch_75, branch_76, branch_77, branch_78, branch_79, branch_80, branch_81, branch_82, branch_83, branch_84, branch_85, branch_86, branch_87, branch_88, branch_89, branch_90, branch_91, branch_92, branch_93, branch_94, branch_95, branch_96, branch_97, branch_98, branch_99, branch_100, branch_101, branch_102, branch_103, branch_104, branch_105, branch_106, branch_107, branch_108, branch_109, branch_110, branch_111, branch_112, branch_113, branch_114, branch_115, branch_116, branch_117, branch_118, branch_119, branch_120, branch_121, branch_122, branch_123, branch_124, branch_125, branch_126, branch_127, branch_128, branch_129, branch_130, branch_131, branch_132, branch_133, branch_134, branch_135, branch_136, branch_137, branch_138, branch_139, branch_140, branch_141, branch_142, branch_143, branch_144, branch_145, branch_146, branch_147, branch_148, branch_149, branch_150, branch_151, branch_152, branch_153, branch_154, branch_155, branch_156, branch_157, branch_158, branch_159, branch_160, branch_161, branch_162, branch_163, branch_164, branch_165, branch_166, branch_167, branch_168, branch_169, branch_170, branch_171, branch_172, branch_173, branch_174, branch_175, branch_176, branch_177, branch_178, branch_179, branch_180, branch_181, branch_182, branch_183, branch_184, branch_185, branch_186, branch_187, branch_188, branch_189, branch_190, branch_191, branch_192, branch_193, branch_194, branch_195, branch_196, branch_197, branch_198, branch_199, branch_200, branch_201, branch_202, branch_203, branch_204, branch_205, branch_206, branch_207, branch_208, branch_209, branch_210, branch_211, branch_212, branch_213, branch_214, branch_215, branch_216, branch_217, branch_218, branch_219, branch_220, branch_221, branch_222, branch_223, branch_224, branch_225, branch_226, branch_227, branch_228, branch_229, branch_230, branch_231, branch_232, branch_233, branch_234, branch_235, branch_236, branch_237, branch_238, branch_239, branch_240, branch_241, branch_242, branch_243, branch_244, branch_245, branch_246, branch_247, branch_248, branch_249, branch_250, branch_251, branch_252, branch_253, branch_254, branch_255, branch_256, branch_257, branch_258, branch_259, branch_260, branch_261, branch_262, branch_263, branch_264, branch_265, branch_266, branch_267, branch_268, branch_269, branch_270, branch_271, branch_272, branch_273, branch_274, branch_275, branch_276, branch_277, branch_278, branch_279, branch_280, branch_281, branch_282, branch_283, branch_284, branch_285, branch_286, branch_287, branch_288, branch_289, branch_290, branch_291, branch_292, branch_293, branch_294, branch_295, branch_296, branch_297, branch_298, branch_299, branch_300, branch_301, branch_302, branch_303, branch_304, branch_305, branch_306, branch_307, branch_308, branch_309, branch_310, branch_311, branch_312, branch_313, branch_314, branch_315, branch_316, branch_317, branch_318, branch_319, branch_320, branch_321, branch_322, branch_323, branch_324, branch_325, branch_326, branch_327, branch_328, branch_329, branch_330, branch_331, branch_332, branch_333, branch_334, branch_335, branch_336, branch_337, branch_338, branch_339, branch_340, branch_341, branch_342, branch_343, branch_344, branch_345, branch_346, branch_347, branch_348, branch_349, branch_350, branch_351, branch_352, branch_353, branch_354, branch_355, branch_356, branch_357, branch_358, branch_359, branch_360, branch_361, branch_362, branch_363, branch_364, branch_365, branch_366, branch_367, branch_368, branch_369, branch_370, branch_371, branch_372, branch_373, branch_374, branch_375, branch_376, branch_377, branch_378, branch_379, branch_380, branch_381, branch_382, branch_383, branch_384, branch_385, branch_386, branch_387, branch_388, branch_389, branch_390, branch_391, branch_392, branch_393, branch_394, branch_395, branch_396, branch_397, branch_398, branch_399, branch_400, branch_401, branch_402, branch_403, branch_404, branch_405, branch_406, branch_407, branch_408, branch_409, branch_410, branch_411, branch_412, branch_413, branch_414, branch_415, branch_416, branch_417, branch_418, branch_419, branch_420, branch_421, branch_422, branch_423, branch_424, branch_425, branch_426, branch_427, branch_428, branch_429, branch_430, branch_431, branch_432, branch_433, branch_434, branch_435, branch_436, branch_437, branch_438, branch_439, branch_440, branch_441, branch_442, branch_443, branch_444, branch_445, branch_446, branch_447, branch_448, branch_449, branch_450, branch_451, branch_452, branch_453, branch_454, branch_455, branch_456, branch_457, branch_458, branch_459, branch_460, branch_461, branch_462, branch_463, branch_464, branch_465, branch_466, branch_467, branch_468, branch_469, branch_470, branch_471, branch_472, branch_473, branch_474, branch_475, branch_476, branch_477, branch_478, branch_479, branch_480, branch_481, branch_482, branch_483, branch_484, branch_485, branch_486, branch_487, branch_488, branch_489, branch_490, branch_491, branch_492, branch_493, branch_494, branch_495, branch_496, branch_497, branch_498, branch_499, branch_500, branch_501, branch_502, branch_503, branch_504, branch_505, branch_506, branch_507, branch_508, branch_509, branch_510, branch_511, branch_512, branch_513, branch_514, branch_515, branch_516, branch_517, branch_518, branch_519, branch_520, branch_521, branch_522, branch_523, branch_524, branch_525, branch_526, branch_527, branch_528, branch_529, branch_530, branch_531, branch_532, branch_533, branch_534, branch_535, branch_536, branch_537, branch_538, branch_539, branch_540, branch_541, branch_542, branch_543, branch_544, branch_545, branch_546, branch_547, branch_548, branch_549, branch_550, branch_551, branch_552, branch_553, branch_554, branch_555, branch_556, branch_557, branch_558, branch_559, branch_560, branch_561, branch_562, branch_563, branch_564, branch_565, branch_566, branch_567, branch_568, branch_569, branch_570, branch_571, branch_572, branch_573, branch_574, branch_575, branch_576, branch_577, branch_578, branch_579, branch_580, branch_581, branch_582, branch_583, branch_584 };
+fn runBranch(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue, initial: usize) anyerror!c.JSValue {
+    var next = initial;
+    while (true) {
+        const result = try branch_helpers[next](s, env, receiver, native_values);
+        switch (result) {
+            .jump => |child| next = child,
+            .value => |value| return value,
+        }
     }
 }
 pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {

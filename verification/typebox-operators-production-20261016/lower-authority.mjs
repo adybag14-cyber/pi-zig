@@ -122,11 +122,11 @@ function branchFunction(ctx,node){
  const condition=conditional?`s.truthy(${left})`:node.operator==='&&'?`s.truthy(${left})`:node.operator==='||'?`!s.truthy(${left})`:`rt.nullish(${left})`;
  function complete(next){
   if(next.type==='ConditionalExpression'||next.type==='LogicalExpression'){
-   const child=branchFunction(helper,next);line(helper,`return @call(.always_tail, branch_${child}, .{ s, env, receiver, native_values });`);
-  }else{const output=expr(helper,next);line(helper,`return ${output};`)}
+   const child=branchFunction(helper,next);line(helper,`return .{ .jump = ${child} };`);
+  }else{const output=expr(helper,next);line(helper,`return .{ .value = ${output} };`)}
  }
  line(helper,`if (${condition}) {`);complete(conditional?node.consequent:node.right);line(helper,'} else {');
- if(conditional)complete(node.alternate);else line(helper,`return ${left};`);
+ if(conditional)complete(node.alternate);else line(helper,`return .{ .value = ${left} };`);
  line(helper,'}');branchHelpers[id]={body:helper.lines.join('\n'),source:ctx.module.file,start:node.start,end:node.end};return id;
 }
 function functionValue(ctx,node,inferred=''){
@@ -178,7 +178,7 @@ function expr(ctx,node,inferred=''){
    }}return object;
   }
   case 'ConditionalExpression':case 'LogicalExpression':{
-   const id=branchFunction(ctx,node);return value(ctx,`try branch_${id}(s, env, ${ctx.receiver}, native_values)`);
+   const id=branchFunction(ctx,node);return value(ctx,`try runBranch(s, env, ${ctx.receiver}, native_values, ${id})`);
   }
   case 'BinaryExpression':{if(!['+','-','*','/','<','<=','>','>=','%','**','&','|','<<','>>','===','!==','in','instanceof'].includes(node.operator))throw Error('Unlowered binary '+node.operator);const left=expr(ctx,node.left),right=expr(ctx,node.right);return value(ctx,`try rt.binary(s, ${q(node.operator)}, ${left}, ${right})`)}
   case 'UnaryExpression':{if(node.operator==='-'&&node.argument.type==='Literal'&&typeof node.argument.value==='number')return expr(ctx,{type:'Literal',value:-node.argument.value});if(!['!','typeof'].includes(node.operator))throw Error('Unlowered unary '+node.operator);const input=expr(ctx,node.argument);return value(ctx,`try rt.unary(s, ${q(node.operator)}, ${input})`)}
@@ -243,21 +243,23 @@ function initializeModule(file){if(initialized.has(file)||external.has(file)||!m
  }
 }
 for(const b of chosen.values())if(!b.external)initializeModule(b.module.file);
-const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\n';
+const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\nconst BranchResult = union(enum) { value: c.JSValue, jump: usize };\nconst BranchHelper = *const fn (*rt.Scope, c.JSValue, c.JSValue, []c.JSValue) anyerror!BranchResult;\n';
 let native=prelude;
 for(const f of functions){
  native+=`fn f_${f.id}(engine: *rt.Engine, ${f.usesReceiver&&!f.arrow?'receiver':'_'}: c.JSValue, ${f.usesArgs?'args':'_'}: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\n${/\benv\b/.test(f.body)?'const env':'_'} = try rt.environment(s, roots[0]);\n`;
  if(f.arrow&&f.usesReceiver)native+='const receiver = roots[1];\n';if(f.slots)native+=`const native_values = try engine.gpa.alloc(c.JSValue, ${f.slots});\ndefer engine.gpa.free(native_values);\n`;native+=f.body+'\n}\n';
 }
 for(let i=0;i<tryHelpers.length;i++){const h=tryHelpers[i];native+=`fn try_block_${i}(s: *rt.Scope, env: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {\nconst engine = s.engine;\n${h.body}\n}\n`}
-for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i];native+=`fn branch_${i}(s: *rt.Scope, ${/\benv\b/.test(h.body)?'env':'_'}: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, ${/\bnative_values\b/.test(h.body)?'native_values':'_'}: []c.JSValue) anyerror!c.JSValue {\n${/\bengine\b/.test(h.body)?'const engine = s.engine;\n':''}${h.body}\n}\n`}
+for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i];native+=`fn branch_${i}(s: *rt.Scope, ${/\benv\b/.test(h.body)?'env':'_'}: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, ${/\bnative_values\b/.test(h.body)?'native_values':'_'}: []c.JSValue) anyerror!BranchResult {\n${/\bengine\b/.test(h.body)?'const engine = s.engine;\n':''}${h.body}\n}\n`}
+native+='const branch_helpers = [_]BranchHelper { '+branchHelpers.map((_,i)=>`branch_${i}`).join(', ')+' };\n';
+native+='fn runBranch(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue, initial: usize) anyerror!c.JSValue {\nvar next = initial;\nwhile (true) {\nconst result = try branch_helpers[next](s, env, receiver, native_values);\nswitch (result) { .jump => |child| next = child, .value => |value| return value }\n}\n}\n';
 native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\nconst env = try rt.environment(s, c.pi_js_null());\n'+`const native_values = try engine.gpa.alloc(c.JSValue, ${initialize.slots.count});\ndefer engine.gpa.free(native_values);\n`+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
 for(const [name,b] of publicRoots)native+=`try s.put(namespace, ${q(name)}, try rt.get(s, env, ${q(b.id)}));\n`;
 native+='return c.JS_DupValue(engine.context, namespace);\n}\n';
 native+='pub fn install(engine: *rt.Engine, type_builder: c.JSValue, graph: c.JSValue) !void {\nconst namespace = try create(engine, graph);\ndefer engine.freeValue(namespace);\ntry @import("native_js_values.zig").spreadInto(engine, type_builder, namespace);\n}\n';
 const nativePath=new URL('../../src/extensions/native_typebox_operators_production.zig',import.meta.url);
 fs.writeFileSync(nativePath,native);
-fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,heapOperandSlots:f.slots})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,tailChained:true}))},null,2)+'\n');
+fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,heapOperandSlots:f.slots})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,iterativeJumpChained:true}))},null,2)+'\n');
 for(const file of new Set(initializationOrder.map(row=>row.module))){const selected=initializationOrder.filter(row=>row.module===file);for(let index=1;index<selected.length;index++)if(selected[index-1].start>=selected[index].start)throw Error('Original declaration order regression '+file)}
 fs.writeFileSync(new URL('./initialization-order.json',import.meta.url),JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
 console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));

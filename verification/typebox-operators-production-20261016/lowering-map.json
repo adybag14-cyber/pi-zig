@@ -18361,7 +18361,7 @@
       "heapOperandSlots": 8
     }
   ],
-  "nativeRawSha256": "40aecc28f7cdcd226c3a219f1605d2807ba5d45e64929e6afe48c485e99d88ca",
+  "nativeRawSha256": "d9c7ac8369191c4bde85ae387dacd34b8ab17831e1008175ab226b8d80c55586",
   "tryHelpers": 1,
   "operandStorage": "GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells",
   "branches": [
@@ -18370,4095 +18370,4095 @@
       "source": "type/engine/instantiate.mjs",
       "start": 13184,
       "end": 13343,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_1",
       "source": "type/types/schema.mjs",
       "start": 293,
       "end": 393,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_2",
       "source": "type/types/schema.mjs",
       "start": 293,
       "end": 354,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_3",
       "source": "guard/guard.mjs",
       "start": 1675,
       "end": 1726,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_4",
       "source": "guard/guard.mjs",
       "start": 7011,
       "end": 7101,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_5",
       "source": "guard/guard.mjs",
       "start": 6810,
       "end": 6895,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_6",
       "source": "guard/guard.mjs",
       "start": 6810,
       "end": 6866,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_7",
       "source": "type/engine/instantiate.mjs",
       "start": 5500,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_8",
       "source": "type/engine/instantiate.mjs",
       "start": 5614,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_9",
       "source": "type/engine/instantiate.mjs",
       "start": 5738,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_10",
       "source": "type/engine/instantiate.mjs",
       "start": 5858,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_11",
       "source": "type/engine/instantiate.mjs",
       "start": 5988,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_12",
       "source": "type/engine/instantiate.mjs",
       "start": 6116,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_13",
       "source": "type/engine/instantiate.mjs",
       "start": 6293,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_14",
       "source": "type/engine/instantiate.mjs",
       "start": 6427,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_15",
       "source": "type/engine/instantiate.mjs",
       "start": 6612,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_16",
       "source": "type/engine/instantiate.mjs",
       "start": 6776,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_17",
       "source": "type/engine/instantiate.mjs",
       "start": 6918,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_18",
       "source": "type/engine/instantiate.mjs",
       "start": 7077,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_19",
       "source": "type/engine/instantiate.mjs",
       "start": 7240,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_20",
       "source": "type/engine/instantiate.mjs",
       "start": 7403,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_21",
       "source": "type/engine/instantiate.mjs",
       "start": 7569,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_22",
       "source": "type/engine/instantiate.mjs",
       "start": 7748,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_23",
       "source": "type/engine/instantiate.mjs",
       "start": 7908,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_24",
       "source": "type/engine/instantiate.mjs",
       "start": 8080,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_25",
       "source": "type/engine/instantiate.mjs",
       "start": 8295,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_26",
       "source": "type/engine/instantiate.mjs",
       "start": 8469,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_27",
       "source": "type/engine/instantiate.mjs",
       "start": 8657,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_28",
       "source": "type/engine/instantiate.mjs",
       "start": 8850,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_29",
       "source": "type/engine/instantiate.mjs",
       "start": 9044,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_30",
       "source": "type/engine/instantiate.mjs",
       "start": 9236,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_31",
       "source": "type/engine/instantiate.mjs",
       "start": 9441,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_32",
       "source": "type/engine/instantiate.mjs",
       "start": 9655,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_33",
       "source": "type/engine/instantiate.mjs",
       "start": 9872,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_34",
       "source": "type/engine/instantiate.mjs",
       "start": 10082,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_35",
       "source": "type/engine/instantiate.mjs",
       "start": 10300,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_36",
       "source": "type/engine/instantiate.mjs",
       "start": 10532,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_37",
       "source": "type/engine/instantiate.mjs",
       "start": 10762,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_38",
       "source": "type/engine/instantiate.mjs",
       "start": 10990,
       "end": 11255,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_39",
       "source": "type/engine/intrinsics/instantiate.mjs",
       "start": 802,
       "end": 940,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_40",
       "source": "type/engine/instantiate.mjs",
       "start": 4395,
       "end": 4454,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_41",
       "source": "guard/guard.mjs",
       "start": 6439,
       "end": 6508,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_42",
       "source": "type/engine/intrinsics/from_type.mjs",
       "start": 413,
       "end": 626,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_43",
       "source": "type/engine/intrinsics/from_type.mjs",
       "start": 474,
       "end": 626,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_44",
       "source": "type/engine/intrinsics/from_type.mjs",
       "start": 557,
       "end": 626,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_45",
       "source": "type/engine/intrinsics/from_literal.mjs",
       "start": 229,
       "end": 323,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_46",
       "source": "type/types/literal.mjs",
       "start": 685,
       "end": 934,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_47",
       "source": "type/types/literal.mjs",
       "start": 728,
       "end": 934,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_48",
       "source": "type/types/literal.mjs",
       "start": 777,
       "end": 934,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_49",
       "source": "type/types/literal.mjs",
       "start": 828,
       "end": 934,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_50",
       "source": "type/engine/conditional/instantiate.mjs",
       "start": 904,
       "end": 1103,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_51",
       "source": "type/engine/conditional/instantiate.mjs",
       "start": 479,
       "end": 791,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_52",
       "source": "type/engine/conditional/instantiate.mjs",
       "start": 639,
       "end": 791,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_53",
       "source": "type/extends/extends.mjs",
       "start": 317,
       "end": 409,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_54",
       "source": "type/extends/extends.mjs",
       "start": 364,
       "end": 409,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_55",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 2004,
       "end": 2065,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_56",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1158,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_57",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1201,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_58",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1281,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_59",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1390,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_60",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1497,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_61",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1576,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_62",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1663,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_63",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1767,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_64",
       "source": "type/engine/cyclic/extends.mjs",
       "start": 1850,
       "end": 1941,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_65",
       "source": "type/types/object.mjs",
       "start": 477,
       "end": 534,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_66",
       "source": "type/types/_optional.mjs",
       "start": 690,
       "end": 749,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_67",
       "source": "type/engine/record/instantiate.mjs",
       "start": 348,
       "end": 473,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_68",
       "source": "type/engine/record/from_key.mjs",
       "start": 1408,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_69",
       "source": "type/engine/record/from_key.mjs",
       "start": 1449,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_70",
       "source": "type/engine/record/from_key.mjs",
       "start": 1502,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_71",
       "source": "type/engine/record/from_key.mjs",
       "start": 1563,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_72",
       "source": "type/engine/record/from_key.mjs",
       "start": 1629,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_73",
       "source": "type/engine/record/from_key.mjs",
       "start": 1709,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_74",
       "source": "type/engine/record/from_key.mjs",
       "start": 1789,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_75",
       "source": "type/engine/record/from_key.mjs",
       "start": 1865,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_76",
       "source": "type/engine/record/from_key.mjs",
       "start": 1949,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_77",
       "source": "type/engine/record/from_key.mjs",
       "start": 2033,
       "end": 2150,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_78",
       "source": "type/engine/record/from_key_literal.mjs",
       "start": 205,
       "end": 431,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_79",
       "source": "type/engine/record/from_key_literal.mjs",
       "start": 205,
       "end": 247,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_80",
       "source": "type/engine/record/from_key_literal.mjs",
       "start": 285,
       "end": 431,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_81",
       "source": "type/engine/record/from_key_literal.mjs",
       "start": 352,
       "end": 431,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_82",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 1416,
       "end": 1509,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_83",
       "source": "type/engine/evaluate/flatten.mjs",
       "start": 171,
       "end": 215,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_84",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 738,
       "end": 846,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_85",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 630,
       "end": 681,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_86",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 630,
       "end": 662,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_87",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 952,
       "end": 1099,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_88",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 952,
       "end": 1029,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_89",
       "source": "type/engine/record/from_key_union.mjs",
       "start": 972,
       "end": 1028,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_90",
       "source": "type/engine/record/from_key_string.mjs",
       "start": 512,
       "end": 709,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_91",
       "source": "type/engine/record/from_key_string.mjs",
       "start": 512,
       "end": 614,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_92",
       "source": "type/engine/record/from_key_string.mjs",
       "start": 553,
       "end": 613,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_93",
       "source": "type/engine/record/from_key_template_literal.mjs",
       "start": 498,
       "end": 586,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_94",
       "source": "type/engine/patterns/pattern.mjs",
       "start": 339,
       "end": 403,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_95",
       "source": "type/script/token/const.mjs",
       "start": 530,
       "end": 749,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_96",
       "source": "type/script/token/const.mjs",
       "start": 567,
       "end": 748,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_97",
       "source": "type/script/token/const.mjs",
       "start": 647,
       "end": 748,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_98",
       "source": "type/script/token/internal/take.mjs",
       "start": 201,
       "end": 297,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_99",
       "source": "type/script/token/internal/trim.mjs",
       "start": 773,
       "end": 983,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_100",
       "source": "type/script/token/internal/trim.mjs",
       "start": 875,
       "end": 983,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_101",
       "source": "type/script/token/internal/trim.mjs",
       "start": 334,
       "end": 382,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_102",
       "source": "type/script/token/internal/trim.mjs",
       "start": 508,
       "end": 552,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_103",
       "source": "type/script/token/internal/trim.mjs",
       "start": 1069,
       "end": 1259,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_104",
       "source": "type/script/token/internal/trim.mjs",
       "start": 1161,
       "end": 1259,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_105",
       "source": "type/script/token/until_1.mjs",
       "start": 398,
       "end": 491,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_106",
       "source": "type/script/token/internal/match.mjs",
       "start": 339,
       "end": 387,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_107",
       "source": "type/script/token/until.mjs",
       "start": 665,
       "end": 789,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_108",
       "source": "type/script/token/until.mjs",
       "start": 222,
       "end": 283,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_109",
       "source": "type/script/token/until.mjs",
       "start": 393,
       "end": 475,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_110",
       "source": "type/script/mapping.mjs",
       "start": 17355,
       "end": 17464,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_111",
       "source": "type/script/mapping.mjs",
       "start": 17413,
       "end": 17464,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_112",
       "source": "type/engine/template_literal/is_finite.mjs",
       "start": 438,
       "end": 501,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_113",
       "source": "type/engine/template_literal/is_finite.mjs",
       "start": 311,
       "end": 374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_114",
       "source": "type/engine/template_literal/is_finite.mjs",
       "start": 562,
       "end": 671,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_115",
       "source": "type/engine/template_literal/is_finite.mjs",
       "start": 610,
       "end": 671,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_116",
       "source": "type/types/record.mjs",
       "start": 1607,
       "end": 1822,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_117",
       "source": "type/types/record.mjs",
       "start": 1662,
       "end": 1822,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_118",
       "source": "type/types/record.mjs",
       "start": 1723,
       "end": 1822,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_119",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 3287,
       "end": 3544,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_120",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 3436,
       "end": 3544,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_121",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 2611,
       "end": 2789,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_122",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 2685,
       "end": 2789,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_123",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 2685,
       "end": 2738,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_124",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 1505,
       "end": 1642,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_125",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 1563,
       "end": 1642,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_126",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 801,
       "end": 884,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_127",
       "source": "type/types/unsafe.mjs",
       "start": 675,
       "end": 796,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_128",
       "source": "type/types/unsafe.mjs",
       "start": 675,
       "end": 754,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_129",
       "source": "guard/guard.mjs",
       "start": 1545,
       "end": 1579,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_130",
       "source": "type/extends/extends_left.mjs",
       "start": 2648,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_131",
       "source": "type/extends/extends_left.mjs",
       "start": 2706,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_132",
       "source": "type/extends/extends_left.mjs",
       "start": 2784,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_133",
       "source": "type/extends/extends_left.mjs",
       "start": 2856,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_134",
       "source": "type/extends/extends_left.mjs",
       "start": 2934,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_135",
       "source": "type/extends/extends_left.mjs",
       "start": 3054,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_136",
       "source": "type/extends/extends_left.mjs",
       "start": 3169,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_137",
       "source": "type/extends/extends_left.mjs",
       "start": 3258,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_138",
       "source": "type/extends/extends_left.mjs",
       "start": 3382,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_139",
       "source": "type/extends/extends_left.mjs",
       "start": 3480,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_140",
       "source": "type/extends/extends_left.mjs",
       "start": 3592,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_141",
       "source": "type/extends/extends_left.mjs",
       "start": 3698,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_142",
       "source": "type/extends/extends_left.mjs",
       "start": 3804,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_143",
       "source": "type/extends/extends_left.mjs",
       "start": 3912,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_144",
       "source": "type/extends/extends_left.mjs",
       "start": 4028,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_145",
       "source": "type/extends/extends_left.mjs",
       "start": 4159,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_146",
       "source": "type/extends/extends_left.mjs",
       "start": 4317,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_147",
       "source": "type/extends/extends_left.mjs",
       "start": 4445,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_148",
       "source": "type/extends/extends_left.mjs",
       "start": 4577,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_149",
       "source": "type/extends/extends_left.mjs",
       "start": 4739,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_150",
       "source": "type/extends/extends_left.mjs",
       "start": 4883,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_151",
       "source": "type/extends/extends_left.mjs",
       "start": 5033,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_152",
       "source": "type/extends/extends_left.mjs",
       "start": 5185,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_153",
       "source": "type/extends/extends_left.mjs",
       "start": 5339,
       "end": 5512,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_154",
       "source": "type/extends/any.mjs",
       "start": 318,
       "end": 534,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_155",
       "source": "type/extends/any.mjs",
       "start": 381,
       "end": 534,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_156",
       "source": "type/extends/any.mjs",
       "start": 439,
       "end": 534,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_157",
       "source": "type/extends/extends_right.mjs",
       "start": 2429,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_158",
       "source": "type/extends/extends_right.mjs",
       "start": 2486,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_159",
       "source": "type/extends/extends_right.mjs",
       "start": 2593,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_160",
       "source": "type/extends/extends_right.mjs",
       "start": 2672,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_161",
       "source": "type/extends/extends_right.mjs",
       "start": 2772,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_162",
       "source": "type/extends/extends_right.mjs",
       "start": 2870,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_163",
       "source": "type/extends/extends_right.mjs",
       "start": 2986,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_164",
       "source": "type/extends/extends_right.mjs",
       "start": 3084,
       "end": 3191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_165",
       "source": "type/extends/result.mjs",
       "start": 1313,
       "end": 1374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_166",
       "source": "type/extends/result.mjs",
       "start": 1206,
       "end": 1251,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_167",
       "source": "type/extends/result.mjs",
       "start": 268,
       "end": 487,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_168",
       "source": "type/extends/result.mjs",
       "start": 268,
       "end": 445,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_169",
       "source": "type/extends/result.mjs",
       "start": 268,
       "end": 388,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_170",
       "source": "type/extends/result.mjs",
       "start": 268,
       "end": 337,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_171",
       "source": "type/extends/result.mjs",
       "start": 653,
       "end": 871,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_172",
       "source": "type/extends/result.mjs",
       "start": 653,
       "end": 829,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_173",
       "source": "type/extends/result.mjs",
       "start": 653,
       "end": 773,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_174",
       "source": "type/extends/result.mjs",
       "start": 653,
       "end": 722,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_175",
       "source": "type/extends/array.mjs",
       "start": 676,
       "end": 877,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_176",
       "source": "type/extends/array.mjs",
       "start": 701,
       "end": 826,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_177",
       "source": "type/extends/array.mjs",
       "start": 416,
       "end": 594,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_178",
       "source": "type/extends/array.mjs",
       "start": 416,
       "end": 451,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_179",
       "source": "type/extends/array.mjs",
       "start": 469,
       "end": 594,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_180",
       "source": "type/extends/array.mjs",
       "start": 469,
       "end": 505,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_181",
       "source": "type/extends/array.mjs",
       "start": 527,
       "end": 594,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_182",
       "source": "type/extends/array.mjs",
       "start": 527,
       "end": 563,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_183",
       "source": "type/types/_immutable.mjs",
       "start": 699,
       "end": 759,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_184",
       "source": "type/extends/bigint.mjs",
       "start": 231,
       "end": 331,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_185",
       "source": "type/extends/boolean.mjs",
       "start": 234,
       "end": 335,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_186",
       "source": "type/extends/constructor.mjs",
       "start": 581,
       "end": 966,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_187",
       "source": "type/extends/constructor.mjs",
       "start": 635,
       "end": 966,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_188",
       "source": "type/extends/constructor.mjs",
       "start": 697,
       "end": 966,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_189",
       "source": "type/extends/parameters.mjs",
       "start": 1113,
       "end": 1267,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_190",
       "source": "type/extends/parameters.mjs",
       "start": 420,
       "end": 449,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_191",
       "source": "type/extends/parameters.mjs",
       "start": 474,
       "end": 503,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_192",
       "source": "type/extends/parameters.mjs",
       "start": 609,
       "end": 884,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_193",
       "source": "type/extends/parameters.mjs",
       "start": 610,
       "end": 644,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_194",
       "source": "type/extends/return_type.mjs",
       "start": 229,
       "end": 326,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_195",
       "source": "type/extends/function.mjs",
       "start": 572,
       "end": 952,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_196",
       "source": "type/extends/function.mjs",
       "start": 626,
       "end": 952,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_197",
       "source": "type/extends/function.mjs",
       "start": 688,
       "end": 952,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_198",
       "source": "type/extends/integer.mjs",
       "start": 282,
       "end": 436,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_199",
       "source": "type/extends/integer.mjs",
       "start": 340,
       "end": 436,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_200",
       "source": "type/extends/literal.mjs",
       "start": 1734,
       "end": 2129,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_201",
       "source": "type/extends/literal.mjs",
       "start": 1823,
       "end": 2129,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_202",
       "source": "type/extends/literal.mjs",
       "start": 1918,
       "end": 2129,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_203",
       "source": "type/extends/literal.mjs",
       "start": 2015,
       "end": 2129,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_204",
       "source": "type/extends/literal.mjs",
       "start": 711,
       "end": 894,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_205",
       "source": "type/extends/literal.mjs",
       "start": 789,
       "end": 894,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_206",
       "source": "type/extends/literal.mjs",
       "start": 554,
       "end": 639,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_207",
       "source": "type/extends/literal.mjs",
       "start": 967,
       "end": 1151,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_208",
       "source": "type/extends/literal.mjs",
       "start": 1045,
       "end": 1151,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_209",
       "source": "type/extends/literal.mjs",
       "start": 1223,
       "end": 1406,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_210",
       "source": "type/extends/literal.mjs",
       "start": 1301,
       "end": 1406,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_211",
       "source": "type/extends/literal.mjs",
       "start": 1478,
       "end": 1661,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_212",
       "source": "type/extends/literal.mjs",
       "start": 1556,
       "end": 1661,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_213",
       "source": "type/extends/never.mjs",
       "start": 228,
       "end": 327,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_214",
       "source": "type/extends/null.mjs",
       "start": 225,
       "end": 323,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_215",
       "source": "type/extends/number.mjs",
       "start": 231,
       "end": 331,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_216",
       "source": "type/extends/object.mjs",
       "start": 5202,
       "end": 5441,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_217",
       "source": "type/extends/object.mjs",
       "start": 5310,
       "end": 5441,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_218",
       "source": "type/extends/object.mjs",
       "start": 4285,
       "end": 4561,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_219",
       "source": "type/extends/object.mjs",
       "start": 4335,
       "end": 4532,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_220",
       "source": "type/extends/object.mjs",
       "start": 3884,
       "end": 4023,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_221",
       "source": "type/extends/object.mjs",
       "start": 1844,
       "end": 3317,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_222",
       "source": "type/extends/object.mjs",
       "start": 2946,
       "end": 3317,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_223",
       "source": "type/extends/object.mjs",
       "start": 2992,
       "end": 3277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_224",
       "source": "type/extends/object.mjs",
       "start": 3575,
       "end": 3651,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_225",
       "source": "type/extends/object.mjs",
       "start": 3665,
       "end": 3744,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_226",
       "source": "type/extends/object.mjs",
       "start": 1049,
       "end": 1271,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_227",
       "source": "type/extends/object.mjs",
       "start": 1050,
       "end": 1090,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_228",
       "source": "type/extends/object.mjs",
       "start": 770,
       "end": 932,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_229",
       "source": "type/extends/object.mjs",
       "start": 797,
       "end": 893,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_230",
       "source": "type/extends/object.mjs",
       "start": 1388,
       "end": 1651,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_231",
       "source": "type/extends/object.mjs",
       "start": 1420,
       "end": 1613,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_232",
       "source": "type/extends/record.mjs",
       "start": 797,
       "end": 1178,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_233",
       "source": "type/extends/record.mjs",
       "start": 954,
       "end": 1178,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_234",
       "source": "type/extends/record.mjs",
       "start": 1025,
       "end": 1178,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_235",
       "source": "type/extends/record.mjs",
       "start": 1087,
       "end": 1178,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_236",
       "source": "type/extends/record.mjs",
       "start": 454,
       "end": 572,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_237",
       "source": "type/extends/string.mjs",
       "start": 231,
       "end": 331,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_238",
       "source": "type/extends/symbol.mjs",
       "start": 231,
       "end": 331,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_239",
       "source": "type/extends/tuple.mjs",
       "start": 3292,
       "end": 3526,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_240",
       "source": "type/extends/tuple.mjs",
       "start": 3380,
       "end": 3526,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_241",
       "source": "type/engine/rest/spread.mjs",
       "start": 312,
       "end": 496,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_242",
       "source": "type/engine/rest/spread.mjs",
       "start": 328,
       "end": 486,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_243",
       "source": "type/engine/rest/spread.mjs",
       "start": 389,
       "end": 486,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_244",
       "source": "type/engine/rest/spread.mjs",
       "start": 432,
       "end": 486,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_245",
       "source": "type/extends/tuple.mjs",
       "start": 961,
       "end": 1000,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_246",
       "source": "type/extends/tuple.mjs",
       "start": 1025,
       "end": 1078,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_247",
       "source": "type/extends/inference.mjs",
       "start": 1619,
       "end": 1950,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_248",
       "source": "type/extends/inference.mjs",
       "start": 1642,
       "end": 1917,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_249",
       "source": "type/extends/inference.mjs",
       "start": 1676,
       "end": 1889,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_250",
       "source": "type/extends/inference.mjs",
       "start": 1778,
       "end": 1889,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_251",
       "source": "type/extends/tuple.mjs",
       "start": 2085,
       "end": 2225,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_252",
       "source": "type/extends/tuple.mjs",
       "start": 1619,
       "end": 1898,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_253",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1562,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_254",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1524,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_255",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1486,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_256",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1431,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_257",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1384,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_258",
       "source": "type/extends/inference.mjs",
       "start": 1268,
       "end": 1337,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_259",
       "source": "type/extends/inference.mjs",
       "start": 2441,
       "end": 2577,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_260",
       "source": "type/extends/tuple.mjs",
       "start": 878,
       "end": 911,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_261",
       "source": "type/extends/tuple.mjs",
       "start": 2815,
       "end": 3140,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_262",
       "source": "type/extends/inference.mjs",
       "start": 2004,
       "end": 2075,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_263",
       "source": "type/extends/inference.mjs",
       "start": 2708,
       "end": 2844,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_264",
       "source": "type/extends/undefined.mjs",
       "start": 284,
       "end": 438,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_265",
       "source": "type/extends/undefined.mjs",
       "start": 339,
       "end": 438,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_266",
       "source": "type/extends/union.mjs",
       "start": 1125,
       "end": 1437,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_267",
       "source": "type/extends/union.mjs",
       "start": 1307,
       "end": 1437,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_268",
       "source": "type/extends/unknown.mjs",
       "start": 322,
       "end": 530,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_269",
       "source": "type/extends/unknown.mjs",
       "start": 385,
       "end": 530,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_270",
       "source": "type/extends/unknown.mjs",
       "start": 443,
       "end": 530,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_271",
       "source": "type/extends/void.mjs",
       "start": 225,
       "end": 323,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_272",
       "source": "type/engine/constructor_parameters/instantiate.mjs",
       "start": 843,
       "end": 995,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_273",
       "source": "type/engine/constructor_parameters/instantiate.mjs",
       "start": 558,
       "end": 603,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_274",
       "source": "type/engine/exclude/instantiate.mjs",
       "start": 338,
       "end": 483,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_275",
       "source": "type/engine/exclude/operation.mjs",
       "start": 810,
       "end": 860,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_276",
       "source": "type/engine/exclude/operation.mjs",
       "start": 438,
       "end": 490,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_277",
       "source": "type/engine/extract/instantiate.mjs",
       "start": 338,
       "end": 483,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_278",
       "source": "type/engine/extract/operation.mjs",
       "start": 810,
       "end": 860,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_279",
       "source": "type/engine/extract/operation.mjs",
       "start": 438,
       "end": 490,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_280",
       "source": "type/engine/indexed/instantiate.mjs",
       "start": 802,
       "end": 958,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_281",
       "source": "type/engine/indexed/from_type.mjs",
       "start": 414,
       "end": 611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_282",
       "source": "type/engine/indexed/from_type.mjs",
       "start": 471,
       "end": 611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_283",
       "source": "type/engine/indexed/from_type.mjs",
       "start": 539,
       "end": 611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_284",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 1170,
       "end": 1369,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_285",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 1264,
       "end": 1369,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_286",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 1264,
       "end": 1324,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_287",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 750,
       "end": 965,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_288",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 825,
       "end": 965,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_289",
       "source": "type/engine/indexed/from_array.mjs",
       "start": 896,
       "end": 965,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_290",
       "source": "type/engine/helpers/keys.mjs",
       "start": 173,
       "end": 246,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_291",
       "source": "type/engine/indexed/from_object.mjs",
       "start": 1471,
       "end": 1555,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_292",
       "source": "type/engine/indexed/from_object.mjs",
       "start": 483,
       "end": 528,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_293",
       "source": "type/engine/this/expand_this.mjs",
       "start": 658,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_294",
       "source": "type/engine/this/expand_this.mjs",
       "start": 726,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_295",
       "source": "type/engine/this/expand_this.mjs",
       "start": 855,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_296",
       "source": "type/engine/this/expand_this.mjs",
       "start": 982,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_297",
       "source": "type/engine/this/expand_this.mjs",
       "start": 1061,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_298",
       "source": "type/engine/this/expand_this.mjs",
       "start": 1144,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_299",
       "source": "type/engine/this/expand_this.mjs",
       "start": 1239,
       "end": 1313,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_300",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 816,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_301",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 877,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_302",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 956,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_303",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 1009,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_304",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 1077,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_305",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 1145,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_306",
       "source": "type/engine/indexable/from_type.mjs",
       "start": 1235,
       "end": 1309,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_307",
       "source": "type/engine/cyclic/target.mjs",
       "start": 158,
       "end": 334,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_308",
       "source": "type/engine/cyclic/target.mjs",
       "start": 180,
       "end": 316,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_309",
       "source": "type/engine/indexed/from_tuple.mjs",
       "start": 1151,
       "end": 1408,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_310",
       "source": "type/engine/indexed/from_tuple.mjs",
       "start": 1151,
       "end": 1211,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_311",
       "source": "type/engine/indexed/from_tuple.mjs",
       "start": 1273,
       "end": 1408,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_312",
       "source": "type/engine/indexed/from_tuple.mjs",
       "start": 1273,
       "end": 1312,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_313",
       "source": "type/engine/indexed/array_indexer.mjs",
       "start": 626,
       "end": 831,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_314",
       "source": "type/engine/indexed/array_indexer.mjs",
       "start": 697,
       "end": 831,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_315",
       "source": "type/engine/indexed/array_indexer.mjs",
       "start": 764,
       "end": 831,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_316",
       "source": "type/engine/indexed/from_tuple.mjs",
       "start": 645,
       "end": 737,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_317",
       "source": "type/engine/indexed/instantiate.mjs",
       "start": 575,
       "end": 706,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_318",
       "source": "type/engine/indexed/instantiate.mjs",
       "start": 576,
       "end": 673,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_319",
       "source": "type/engine/indexed/instantiate.mjs",
       "start": 576,
       "end": 648,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_320",
       "source": "type/engine/indexed/instantiate.mjs",
       "start": 576,
       "end": 619,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_321",
       "source": "type/engine/object/from_type.mjs",
       "start": 714,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_322",
       "source": "type/engine/object/from_type.mjs",
       "start": 775,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_323",
       "source": "type/engine/object/from_type.mjs",
       "start": 854,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_324",
       "source": "type/engine/object/from_type.mjs",
       "start": 918,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_325",
       "source": "type/engine/object/from_type.mjs",
       "start": 978,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_326",
       "source": "type/engine/object/from_type.mjs",
       "start": 1042,
       "end": 1119,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_327",
       "source": "type/engine/instance_type/instantiate.mjs",
       "start": 527,
       "end": 661,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_328",
       "source": "type/engine/instance_type/instantiate.mjs",
       "start": 383,
       "end": 451,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_329",
       "source": "type/engine/interface/instantiate.mjs",
       "start": 652,
       "end": 814,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_330",
       "source": "type/engine/keyof/instantiate.mjs",
       "start": 936,
       "end": 1065,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_331",
       "source": "type/engine/keyof/from_type.mjs",
       "start": 743,
       "end": 1019,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_332",
       "source": "type/engine/keyof/from_type.mjs",
       "start": 777,
       "end": 1019,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_333",
       "source": "type/engine/keyof/from_type.mjs",
       "start": 829,
       "end": 1019,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_334",
       "source": "type/engine/keyof/from_type.mjs",
       "start": 892,
       "end": 1019,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_335",
       "source": "type/engine/keyof/from_type.mjs",
       "start": 948,
       "end": 1019,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_336",
       "source": "type/engine/keyof/from_object.mjs",
       "start": 431,
       "end": 541,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_337",
       "source": "type/types/literal.mjs",
       "start": 1532,
       "end": 1653,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_338",
       "source": "type/types/literal.mjs",
       "start": 1532,
       "end": 1620,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_339",
       "source": "type/types/literal.mjs",
       "start": 1532,
       "end": 1587,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_340",
       "source": "type/engine/keyof/instantiate.mjs",
       "start": 725,
       "end": 856,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_341",
       "source": "type/engine/keyof/instantiate.mjs",
       "start": 726,
       "end": 823,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_342",
       "source": "type/engine/keyof/instantiate.mjs",
       "start": 726,
       "end": 798,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_343",
       "source": "type/engine/keyof/instantiate.mjs",
       "start": 726,
       "end": 769,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_344",
       "source": "type/engine/intrinsics/instantiate.mjs",
       "start": 1031,
       "end": 1167,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_345",
       "source": "type/engine/mapped/instantiate.mjs",
       "start": 376,
       "end": 566,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_346",
       "source": "type/engine/mapped/mapped_variants.mjs",
       "start": 1032,
       "end": 1277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_347",
       "source": "type/engine/mapped/mapped_variants.mjs",
       "start": 1077,
       "end": 1277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_348",
       "source": "type/engine/mapped/mapped_variants.mjs",
       "start": 1133,
       "end": 1277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_349",
       "source": "type/engine/mapped/mapped_variants.mjs",
       "start": 1211,
       "end": 1277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_350",
       "source": "type/engine/mapped/mapped_variants.mjs",
       "start": 899,
       "end": 963,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_351",
       "source": "type/engine/mapped/mapped_operation.mjs",
       "start": 1131,
       "end": 1260,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_352",
       "source": "type/engine/mapped/mapped_operation.mjs",
       "start": 1131,
       "end": 1191,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_353",
       "source": "type/engine/mapped/mapped_operation.mjs",
       "start": 611,
       "end": 727,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_354",
       "source": "type/types/literal.mjs",
       "start": 2098,
       "end": 2145,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_355",
       "source": "type/types/literal.mjs",
       "start": 2261,
       "end": 2308,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_356",
       "source": "type/engine/cyclic/candidates.mjs",
       "start": 231,
       "end": 327,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_357",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1233,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_358",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1292,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_359",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1359,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_360",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1466,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_361",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1572,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_362",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1677,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_363",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1765,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_364",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1864,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_365",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1956,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_366",
       "source": "type/engine/cyclic/check.mjs",
       "start": 2052,
       "end": 2164,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_367",
       "source": "type/engine/cyclic/check.mjs",
       "start": 733,
       "end": 826,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_368",
       "source": "type/engine/cyclic/check.mjs",
       "start": 1073,
       "end": 1161,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_369",
       "source": "type/action/interface.mjs",
       "start": 696,
       "end": 812,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_370",
       "source": "type/action/interface.mjs",
       "start": 696,
       "end": 760,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_371",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1271,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_372",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1331,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_373",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1399,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_374",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1507,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_375",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1614,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_376",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1720,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_377",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1809,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_378",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 1909,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_379",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 2002,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_380",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 2099,
       "end": 2213,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_381",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 753,
       "end": 907,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_382",
       "source": "type/engine/cyclic/dependencies.mjs",
       "start": 801,
       "end": 907,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_383",
       "source": "type/engine/cyclic/instantiate.mjs",
       "start": 1171,
       "end": 1270,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_384",
       "source": "type/engine/non_nullable/instantiate.mjs",
       "start": 636,
       "end": 768,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_385",
       "source": "type/engine/pick/instantiate.mjs",
       "start": 323,
       "end": 463,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_386",
       "source": "type/engine/indexable/to_indexable.mjs",
       "start": 428,
       "end": 502,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_387",
       "source": "type/engine/pick/from_type.mjs",
       "start": 469,
       "end": 548,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_388",
       "source": "type/engine/parameters/instantiate.mjs",
       "start": 789,
       "end": 919,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_389",
       "source": "type/engine/parameters/instantiate.mjs",
       "start": 518,
       "end": 560,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_390",
       "source": "type/engine/partial/instantiate.mjs",
       "start": 323,
       "end": 439,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_391",
       "source": "type/engine/partial/from_type.mjs",
       "start": 627,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_392",
       "source": "type/engine/partial/from_type.mjs",
       "start": 688,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_393",
       "source": "type/engine/partial/from_type.mjs",
       "start": 767,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_394",
       "source": "type/engine/partial/from_type.mjs",
       "start": 831,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_395",
       "source": "type/engine/partial/from_type.mjs",
       "start": 891,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_396",
       "source": "type/engine/omit/instantiate.mjs",
       "start": 323,
       "end": 463,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_397",
       "source": "type/engine/omit/from_type.mjs",
       "start": 375,
       "end": 442,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_398",
       "source": "type/engine/readonly_object/instantiate.mjs",
       "start": 345,
       "end": 459,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_399",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 774,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_400",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 822,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_401",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 887,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_402",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 970,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_403",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 1038,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_404",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 1109,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_405",
       "source": "type/engine/readonly_object/from_type.mjs",
       "start": 1177,
       "end": 1253,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_406",
       "source": "type/engine/required/instantiate.mjs",
       "start": 326,
       "end": 443,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_407",
       "source": "type/engine/required/from_type.mjs",
       "start": 627,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_408",
       "source": "type/engine/required/from_type.mjs",
       "start": 688,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_409",
       "source": "type/engine/required/from_type.mjs",
       "start": 767,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_410",
       "source": "type/engine/required/from_type.mjs",
       "start": 831,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_411",
       "source": "type/engine/required/from_type.mjs",
       "start": 891,
       "end": 972,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_412",
       "source": "type/engine/return_type/instantiate.mjs",
       "start": 508,
       "end": 638,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_413",
       "source": "type/engine/return_type/instantiate.mjs",
       "start": 371,
       "end": 434,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_414",
       "source": "type/engine/template_literal/instantiate.mjs",
       "start": 359,
       "end": 497,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_415",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2501,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_416",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2564,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_417",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2626,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_418",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2704,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_419",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2772,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_420",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2846,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_421",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 2922,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_422",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 3002,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_423",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 3118,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_424",
       "source": "type/engine/template_literal/encode.mjs",
       "start": 3260,
       "end": 3374,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_425",
       "source": "type/types/template_literal.mjs",
       "start": 697,
       "end": 819,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_426",
       "source": "type/types/template_literal.mjs",
       "start": 697,
       "end": 761,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_427",
       "source": "type/engine/intrinsics/instantiate.mjs",
       "start": 1261,
       "end": 1403,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_428",
       "source": "type/engine/intrinsics/instantiate.mjs",
       "start": 1494,
       "end": 1630,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_429",
       "source": "type/engine/with/instantiate.mjs",
       "start": 270,
       "end": 373,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_430",
       "source": "type/engine/instantiate.mjs",
       "start": 11344,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_431",
       "source": "type/engine/instantiate.mjs",
       "start": 11416,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_432",
       "source": "type/engine/instantiate.mjs",
       "start": 11519,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_433",
       "source": "type/engine/instantiate.mjs",
       "start": 11613,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_434",
       "source": "type/engine/instantiate.mjs",
       "start": 11798,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_435",
       "source": "type/engine/instantiate.mjs",
       "start": 11978,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_436",
       "source": "type/engine/instantiate.mjs",
       "start": 12192,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_437",
       "source": "type/engine/instantiate.mjs",
       "start": 12326,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_438",
       "source": "type/engine/instantiate.mjs",
       "start": 12465,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_439",
       "source": "type/engine/instantiate.mjs",
       "start": 12615,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_440",
       "source": "type/engine/instantiate.mjs",
       "start": 12726,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_441",
       "source": "type/engine/instantiate.mjs",
       "start": 12867,
       "end": 13013,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_442",
       "source": "type/engine/ref/instantiate.mjs",
       "start": 194,
       "end": 388,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_443",
       "source": "type/engine/ref/instantiate.mjs",
       "start": 247,
       "end": 388,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_444",
       "source": "type/engine/call/instantiate.mjs",
       "start": 3327,
       "end": 3605,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_445",
       "source": "type/engine/call/instantiate.mjs",
       "start": 3353,
       "end": 3550,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_446",
       "source": "type/engine/call/resolve_target.mjs",
       "start": 661,
       "end": 835,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_447",
       "source": "type/engine/call/resolve_target.mjs",
       "start": 747,
       "end": 835,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_448",
       "source": "type/engine/call/resolve_target.mjs",
       "start": 486,
       "end": 589,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_449",
       "source": "type/engine/call/instantiate.mjs",
       "start": 1575,
       "end": 1672,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_450",
       "source": "type/engine/call/instantiate.mjs",
       "start": 2927,
       "end": 3009,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_451",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 3166,
       "end": 3425,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_452",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 3166,
       "end": 3239,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_453",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 3288,
       "end": 3425,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_454",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 3288,
       "end": 3356,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_455",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 720,
       "end": 1478,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_456",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 720,
       "end": 793,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_457",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 804,
       "end": 1124,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_458",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 1153,
       "end": 1478,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_459",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 1153,
       "end": 1221,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_460",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 1237,
       "end": 1468,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_461",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 1237,
       "end": 1381,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_462",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 1237,
       "end": 1332,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_463",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 2698,
       "end": 2810,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_464",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 2243,
       "end": 2338,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_465",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 2016,
       "end": 2147,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_466",
       "source": "type/engine/call/distribute_arguments.mjs",
       "start": 2090,
       "end": 2147,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_467",
       "source": "type/engine/call/resolve_arguments.mjs",
       "start": 570,
       "end": 663,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_468",
       "source": "type/engine/call/resolve_arguments.mjs",
       "start": 570,
       "end": 599,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_469",
       "source": "type/engine/instantiate.mjs",
       "start": 5088,
       "end": 5165,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_470",
       "source": "type/engine/instantiate.mjs",
       "start": 5192,
       "end": 5261,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_471",
       "source": "type/engine/instantiate.mjs",
       "start": 5289,
       "end": 5360,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_472",
       "source": "type/types/_readonly.mjs",
       "start": 701,
       "end": 760,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_473",
       "source": "type/engine/priority/priority.mjs",
       "start": 507,
       "end": 632,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_474",
       "source": "type/engine/priority/priority.mjs",
       "start": 267,
       "end": 407,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_475",
       "source": "type/engine/priority/priority.mjs",
       "start": 336,
       "end": 407,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_476",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 705,
       "end": 1139,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_477",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 705,
       "end": 805,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_478",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 837,
       "end": 1139,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_479",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 837,
       "end": 934,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_480",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 975,
       "end": 1139,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_481",
       "source": "type/engine/evaluate/compare.mjs",
       "start": 975,
       "end": 1072,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_482",
       "source": "type/extends/result.mjs",
       "start": 1022,
       "end": 1148,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_483",
       "source": "type/extends/result.mjs",
       "start": 1022,
       "end": 1091,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_484",
       "source": "type/engine/template_literal/decode.mjs",
       "start": 3784,
       "end": 3831,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_485",
       "source": "system/arguments/arguments.mjs",
       "start": 196,
       "end": 288,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_486",
       "source": "type/types/template_literal.mjs",
       "start": 1183,
       "end": 1273,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_487",
       "source": "type/engine/patterns/template.mjs",
       "start": 697,
       "end": 772,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_488",
       "source": "type/script/token/internal/many.mjs",
       "start": 448,
       "end": 578,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_489",
       "source": "type/script/token/unsigned_number.mjs",
       "start": 1625,
       "end": 1704,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_490",
       "source": "type/script/token/unsigned_number.mjs",
       "start": 700,
       "end": 782,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_491",
       "source": "type/script/token/span.mjs",
       "start": 1124,
       "end": 1224,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_492",
       "source": "type/script/mapping.mjs",
       "start": 6477,
       "end": 6606,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_493",
       "source": "type/script/mapping.mjs",
       "start": 10171,
       "end": 10390,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_494",
       "source": "type/script/mapping.mjs",
       "start": 10218,
       "end": 10390,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_495",
       "source": "type/script/mapping.mjs",
       "start": 10267,
       "end": 10390,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_496",
       "source": "type/script/mapping.mjs",
       "start": 10320,
       "end": 10390,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_497",
       "source": "type/script/mapping.mjs",
       "start": 10736,
       "end": 10984,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_498",
       "source": "type/script/mapping.mjs",
       "start": 10736,
       "end": 10760,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_499",
       "source": "type/script/mapping.mjs",
       "start": 10828,
       "end": 10984,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_500",
       "source": "type/script/mapping.mjs",
       "start": 10828,
       "end": 10853,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_501",
       "source": "type/script/mapping.mjs",
       "start": 10902,
       "end": 10984,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_502",
       "source": "type/script/mapping.mjs",
       "start": 10902,
       "end": 10927,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_503",
       "source": "type/script/mapping.mjs",
       "start": 3492,
       "end": 3586,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_504",
       "source": "type/script/mapping.mjs",
       "start": 11271,
       "end": 11397,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_505",
       "source": "type/script/mapping.mjs",
       "start": 11271,
       "end": 11354,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_506",
       "source": "type/script/mapping.mjs",
       "start": 11485,
       "end": 11620,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_507",
       "source": "type/script/mapping.mjs",
       "start": 11839,
       "end": 11922,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_508",
       "source": "type/script/mapping.mjs",
       "start": 12055,
       "end": 12379,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_509",
       "source": "type/script/mapping.mjs",
       "start": 12153,
       "end": 12379,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_510",
       "source": "type/script/mapping.mjs",
       "start": 12209,
       "end": 12379,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_511",
       "source": "type/script/mapping.mjs",
       "start": 12243,
       "end": 12346,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_512",
       "source": "type/script/mapping.mjs",
       "start": 12436,
       "end": 12492,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_513",
       "source": "type/script/mapping.mjs",
       "start": 12578,
       "end": 12814,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_514",
       "source": "type/script/mapping.mjs",
       "start": 12578,
       "end": 12602,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_515",
       "source": "type/script/mapping.mjs",
       "start": 12666,
       "end": 12814,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_516",
       "source": "type/script/mapping.mjs",
       "start": 12666,
       "end": 12691,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_517",
       "source": "type/script/mapping.mjs",
       "start": 12736,
       "end": 12814,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_518",
       "source": "type/script/mapping.mjs",
       "start": 12736,
       "end": 12761,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_519",
       "source": "type/script/mapping.mjs",
       "start": 12901,
       "end": 13030,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_520",
       "source": "type/script/mapping.mjs",
       "start": 12961,
       "end": 13030,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_521",
       "source": "type/script/mapping.mjs",
       "start": 13720,
       "end": 13849,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_522",
       "source": "type/script/mapping.mjs",
       "start": 13780,
       "end": 13849,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_523",
       "source": "type/script/mapping.mjs",
       "start": 14379,
       "end": 14611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_524",
       "source": "type/script/mapping.mjs",
       "start": 14379,
       "end": 14441,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_525",
       "source": "type/script/mapping.mjs",
       "start": 14463,
       "end": 14611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_526",
       "source": "type/script/mapping.mjs",
       "start": 14463,
       "end": 14525,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_527",
       "source": "type/script/mapping.mjs",
       "start": 14548,
       "end": 14611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_528",
       "source": "type/script/mapping.mjs",
       "start": 15169,
       "end": 15217,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_529",
       "source": "type/script/mapping.mjs",
       "start": 14880,
       "end": 15112,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_530",
       "source": "type/script/mapping.mjs",
       "start": 14880,
       "end": 14942,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_531",
       "source": "type/script/mapping.mjs",
       "start": 14964,
       "end": 15112,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_532",
       "source": "type/script/mapping.mjs",
       "start": 14964,
       "end": 15026,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_533",
       "source": "type/script/mapping.mjs",
       "start": 15049,
       "end": 15112,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_534",
       "source": "type/script/mapping.mjs",
       "start": 15274,
       "end": 15608,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_535",
       "source": "type/script/mapping.mjs",
       "start": 15274,
       "end": 15334,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_536",
       "source": "type/script/mapping.mjs",
       "start": 14165,
       "end": 14315,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_537",
       "source": "type/script/mapping.mjs",
       "start": 14239,
       "end": 14315,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_538",
       "source": "type/script/mapping.mjs",
       "start": 14666,
       "end": 14816,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_539",
       "source": "type/script/mapping.mjs",
       "start": 14740,
       "end": 14816,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_540",
       "source": "type/script/mapping.mjs",
       "start": 406,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_541",
       "source": "type/script/mapping.mjs",
       "start": 469,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_542",
       "source": "type/script/mapping.mjs",
       "start": 554,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_543",
       "source": "type/script/mapping.mjs",
       "start": 665,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_544",
       "source": "type/script/mapping.mjs",
       "start": 754,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_545",
       "source": "type/script/mapping.mjs",
       "start": 860,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_546",
       "source": "type/script/mapping.mjs",
       "start": 970,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_547",
       "source": "type/script/mapping.mjs",
       "start": 1080,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_548",
       "source": "type/script/mapping.mjs",
       "start": 1193,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_549",
       "source": "type/script/mapping.mjs",
       "start": 1304,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_550",
       "source": "type/script/mapping.mjs",
       "start": 1423,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_551",
       "source": "type/script/mapping.mjs",
       "start": 1547,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_552",
       "source": "type/script/mapping.mjs",
       "start": 1672,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_553",
       "source": "type/script/mapping.mjs",
       "start": 1795,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_554",
       "source": "type/script/mapping.mjs",
       "start": 1931,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_555",
       "source": "type/script/mapping.mjs",
       "start": 2070,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_556",
       "source": "type/script/mapping.mjs",
       "start": 2201,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_557",
       "source": "type/script/mapping.mjs",
       "start": 2353,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_558",
       "source": "type/script/mapping.mjs",
       "start": 2498,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_559",
       "source": "type/script/mapping.mjs",
       "start": 2651,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_560",
       "source": "type/script/mapping.mjs",
       "start": 2812,
       "end": 3010,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_561",
       "source": "type/script/mapping.mjs",
       "start": 7090,
       "end": 7179,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_562",
       "source": "type/script/mapping.mjs",
       "start": 7090,
       "end": 7144,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_563",
       "source": "type/script/mapping.mjs",
       "start": 6785,
       "end": 6887,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_564",
       "source": "type/script/mapping.mjs",
       "start": 6954,
       "end": 7038,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_565",
       "source": "type/script/mapping.mjs",
       "start": 7231,
       "end": 7277,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_566",
       "source": "type/script/mapping.mjs",
       "start": 8133,
       "end": 8291,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_567",
       "source": "type/script/mapping.mjs",
       "start": 7881,
       "end": 8003,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_568",
       "source": "type/script/mapping.mjs",
       "start": 7881,
       "end": 7945,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_569",
       "source": "type/script/mapping.mjs",
       "start": 7709,
       "end": 7826,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_570",
       "source": "type/script/mapping.mjs",
       "start": 7450,
       "end": 7611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_571",
       "source": "type/script/mapping.mjs",
       "start": 7531,
       "end": 7611,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_572",
       "source": "type/script/mapping.mjs",
       "start": 8391,
       "end": 8953,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_573",
       "source": "type/script/mapping.mjs",
       "start": 8596,
       "end": 8718,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_574",
       "source": "type/script/mapping.mjs",
       "start": 8793,
       "end": 8903,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_575",
       "source": "type/script/mapping.mjs",
       "start": 9642,
       "end": 9804,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_576",
       "source": "type/script/mapping.mjs",
       "start": 9713,
       "end": 9804,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_577",
       "source": "type/script/mapping.mjs",
       "start": 6152,
       "end": 6247,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_578",
       "source": "type/types/literal.mjs",
       "start": 1769,
       "end": 1816,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_579",
       "source": "type/types/literal.mjs",
       "start": 1934,
       "end": 1982,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_580",
       "source": "type/action/indexed.mjs",
       "start": 550,
       "end": 631,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_581",
       "source": "type/engine/helpers/keys_to_indexer.mjs",
       "start": 228,
       "end": 310,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_582",
       "source": "type/action/omit.mjs",
       "start": 541,
       "end": 622,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_583",
       "source": "type/action/pick.mjs",
       "start": 541,
       "end": 622,
-      "tailChained": true
+      "iterativeJumpChained": true
     },
     {
       "nativeHelper": "branch_584",
       "source": "type/script/parser.mjs",
       "start": 489,
       "end": 533,
-      "tailChained": true
+      "iterativeJumpChained": true
     }
   ]
 }
