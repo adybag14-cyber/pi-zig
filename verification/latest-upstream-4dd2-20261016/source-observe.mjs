@@ -15,9 +15,8 @@ const frozen = new Map();
 for (const manifest of ['source4dd-full-manifest-before.json', '../ai-model-operations-4954-20261015/reference-controls/source4954-runtime-manifest-20261015.json']) {
   for (const row of JSON.parse(readFileSync(join(evidence, manifest)))) frozen.set(realpathSync(row.path), row.sha256.toLowerCase());
 }
-if (process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST) {
-  for (const row of JSON.parse(readFileSync(process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST))) frozen.set(realpathSync(row.path), row.sha256.toLowerCase());
-}
+if (!process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST) throw Error('Exact latest4dd control manifest is required');
+for (const row of JSON.parse(readFileSync(process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST))) frozen.set(realpathSync(row.path), row.sha256.toLowerCase());
 const seen = new Set();
 function record(row) {
   appendFileSync(join(evidence, `source4dd2-modules-${process.pid}-${threadId}-20261016.jsonl`), JSON.stringify(row) + '\n');
@@ -61,7 +60,7 @@ function observe(url) {
   const path = realpathSync(fileURLToPath(url));
   if (path.startsWith(old + sep) && !path.includes(sep + 'node_modules' + sep)) throw new Error('Old Source class escaped latest reference ' + path);
   const externalControl = path.startsWith(evidenceRoot + sep);
-  if (!frozen.has(path) && !externalControl) throw new Error('Unmanifested Source dependency ' + path);
+  if (!frozen.has(path)) throw new Error('Unmanifested Source dependency or caller control ' + path);
   if (seen.has(path)) return;
   const sha256 = createHash('sha256').update(readFileSync(path)).digest('hex');
   if (frozen.has(path) && frozen.get(path) !== sha256) throw new Error('Observed module changed since full freeze ' + path);
