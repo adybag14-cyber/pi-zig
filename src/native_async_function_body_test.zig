@@ -149,6 +149,7 @@ test "native async body proposal raw host OOM remains uncatchable rather than re
     const function = try af.create(engine, "hostOOM", 0, hostOOM, &.{});
     defer engine.freeValue(function);
     const result = c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null);
+    defer engine.freeValue(result);
     try std.testing.expect(c.JS_IsException(result));
     const failure = c.JS_GetException(engine.context);
     defer engine.freeValue(failure);
