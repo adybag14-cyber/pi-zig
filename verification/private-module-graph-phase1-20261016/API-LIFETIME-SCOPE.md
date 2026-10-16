@@ -53,7 +53,7 @@ JSPiPrivateModuleGraph *JS_PiNewPrivateModuleGraph(JSContext *ctx,
 JSValue JS_PiCompilePrivateModule(JSContext *ctx,
     JSPiPrivateModuleGraph *graph, const char *source, size_t source_length,
     const char *physical_filename, JSValueConst attributes);
-/* Borrowed until owner context teardown; attributes NULL when tombstoned. */
+/* Borrowed until owner context teardown; NULL origin returns NULL. */
 const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin);
 const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin);
 JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin);
@@ -101,12 +101,28 @@ return an arbitrary capability, and the graph loader never handles shared0.
 Graph-aware lookup is by canonical physical name, original attribute equality
 and graph capability. Graph0 through existing APIs remains the old path. A
 private ModuleOrigin additionally points to the exact ModuleDef and records its
-physical filename and capability; that exact descriptor, rather than a fresh
+   physical filename and capability; that exact descriptor, rather than a fresh
 by-name search or scalar ID, follows all nested bytecodes. An origin is created
 once per definition and is immutable after the definition is admitted. A
 descriptor can be tombstoned when its unevaluated definition is freed on an
 existing compile-failure path, without changing its retained physical diagnostic
 name. It must never contain a dangling ModuleDef pointer.
+
+The immutable attribute snapshot is an owned JSValue in the context-owned
+Origin itself, separately marked from JS_MarkContext and freed with the late
+origin record. ModuleDef holds a duplicate of that same immutable snapshot.
+It is not a pointer into ModuleDef storage. An earlier borrowed attribute
+pointer therefore remains valid even if the definition is tombstoned before
+context teardown. Normalization copies own enumerable string keys, reads each
+value once, requires strings and preserves existing absent/empty attribute
+equality; private callbacks cannot mutate the retained cache key. This corrects
+the first metadata draft's ModuleDef-storage accessor lifetime hazard.
+
+Legacy shared-domain lookup and legacy by-name import.meta fallback must skip
+private definitions that retain the same physical name. Otherwise merely
+loading a private graph could poison a later default/shared lookup. Private
+lookup uses exact origin plus its capability/attribute identity. These filters
+remain a no-op in contexts where the new capability has never been used.
 
 Physical filename, parser line information and bytecode debug filename remain
 unchanged. There is no private generation suffix in module names, URLs, stack

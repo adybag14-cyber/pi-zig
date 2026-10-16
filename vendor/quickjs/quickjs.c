@@ -1120,6 +1120,7 @@ struct JSPiModuleOrigin {
     JSPiPrivateModuleGraph *graph;
     JSModuleDef *module; /* tombstoned before definition destruction */
     char *physical_filename;
+    JSValue attributes; /* context-owned immutable snapshot, not module storage */
     bool linked, evaluated, failed, quarantined;
 };
 
@@ -3145,6 +3146,12 @@ static void JS_MarkContext(JSRuntime *rt, JSContext *ctx,
         JSModuleDef *m = list_entry(el, JSModuleDef, link);
         js_mark_module_def(rt, m, mark_func);
     }
+    for (JSPiPrivateModuleGraph *graph = ctx->pi_private_module_graphs;
+         graph; graph = graph->next) {
+        for (JSPiModuleOrigin *origin = graph->origins;
+             origin; origin = origin->next)
+            JS_MarkValue(rt, origin->attributes, mark_func);
+    }
 
     JS_MarkValue(rt, ctx->global_obj, mark_func);
     JS_MarkValue(rt, ctx->global_var_obj, mark_func);
@@ -3275,6 +3282,7 @@ void JS_FreeContext(JSContext *ctx)
         while (graph->origins) {
             JSPiModuleOrigin *origin = graph->origins;
             graph->origins = origin->next;
+            JS_FreeValue(ctx, origin->attributes);
             js_free(ctx, origin->physical_filename);
             js_free(ctx, origin);
         }
@@ -4860,6 +4868,50 @@ static int string_buffer_concat_value_free(StringBuffer *s, JSValue v)
     res = string_buffer_concat(s, p, 0, p->len);
     JS_FreeValue(s->ctx, v);
     return res;
+}
+
+/* Same own enumerable string-key/string-value rules as dynamic import's
+   options.with snapshot. The private copy cannot be mutated by a retained
+   host object after it becomes a module cache key. Undefined/empty equality
+   continues to use js_module_attributes_equal unchanged. */
+static JSValue js_pi_snapshot_module_attributes(JSContext *ctx,
+                                                 JSValueConst attributes)
+{
+    JSPropertyEnum *atoms = NULL;
+    uint32_t count = 0, i;
+    JSValue result, value;
+    if (JS_IsUndefined(attributes))
+        return JS_UNDEFINED;
+    if (!JS_IsObject(attributes))
+        return JS_ThrowTypeError(ctx, "module attributes must be an object");
+    result = JS_NewObjectProto(ctx, JS_NULL);
+    if (JS_IsException(result))
+        return result;
+    if (JS_GetOwnPropertyNames(ctx, &atoms, &count, attributes,
+                              JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) < 0)
+        goto fail;
+    for (i = 0; i < count; i++) {
+        value = JS_GetProperty(ctx, attributes, atoms[i].atom);
+        if (JS_IsException(value))
+            goto fail;
+        if (!JS_IsString(value)) {
+            JS_FreeValue(ctx, value);
+            JS_ThrowTypeError(ctx, "module attribute values must be strings");
+            goto fail;
+        }
+        /* DefinePropertyValue consumes value on success and failure. */
+        if (JS_DefinePropertyValue(ctx, result, atoms[i].atom, value,
+                                   JS_PROP_ENUMERABLE) < 0)
+            goto fail;
+    }
+    if (JS_PreventExtensions(ctx, result) < 0)
+        goto fail;
+    JS_FreePropertyEnum(ctx, atoms, count);
+    return result;
+fail:
+    JS_FreePropertyEnum(ctx, atoms, count);
+    JS_FreeValue(ctx, result);
+    return JS_EXCEPTION; /* cleanup never replaces the exact pending reason */
 }
 
 static int string_buffer_fill(StringBuffer *s, int c, int count)
@@ -31405,7 +31457,7 @@ const char *JS_PiModuleOriginFilename(const JSPiModuleOrigin *origin)
 
 const JSValue *JS_PiModuleOriginAttributes(const JSPiModuleOrigin *origin)
 {
-    return origin && origin->module ? &origin->module->attributes : NULL;
+    return origin ? &origin->attributes : NULL;
 }
 
 JSPiPrivateModuleGraph *JS_PiModuleOriginGraph(const JSPiModuleOrigin *origin)
