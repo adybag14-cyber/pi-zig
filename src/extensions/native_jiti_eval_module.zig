@@ -177,9 +177,12 @@ fn finish(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []con
             const formatted = try s.concat(try s.concat(try s.concat(try s.concat(try s.stringify(code), try s.text(": ")), try s.stringify(message)), try s.text(" \n ")), location);
             var arguments = [_]c.JSValue{formatted};
             const reason = try s.own(try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, &arguments)));
-            const capture = try s.get(error_constructor, "captureStackTrace");
+            // Error is looked up again after construction in Source. The
+            // constructor/template effects can replace the global binding.
+            const capture_owner = try s.global("Error");
+            const capture = try s.get(capture_owner, "captureStackTrace");
             if (c.JS_IsUndefined(capture)) return error.RequiredActualErrorCaptureStackTrace;
-            _ = try s.call(capture, error_constructor, &.{ reason, try s.get(roots[0], "jitiRequire") });
+            _ = try s.call(capture, capture_owner, &.{ reason, try s.get(roots[0], "jitiRequire") });
             _ = try s.invoke(context, "onError", &.{reason});
         }
     }

@@ -4,8 +4,8 @@
   "products": [
     {
       "path": "src/extensions/native_jiti_eval_module.zig",
-      "sha256": "2BF036D3BC1EBAF806EB485497E58A1DF11FB604F399697B64DC20C64045D660",
-      "bytes": 11905
+      "sha256": "4057A772615E78CFF2052E94A47BE68F5C837104ED6936ECE2AAFCC92618CB17",
+      "bytes": 12104
     },
     {
       "path": "src/native_jiti_eval_module_controls.zig",
@@ -34,13 +34,13 @@
   "controls": [
     {
       "path": "verification/jiti-transformed-eval-sourceonly-20261017/README.md",
-      "sha256": "A3107E37D04DCC2C3886E8437A88C2D1118EC04BF49963BF05103F5B0A9DBB86",
-      "bytes": 4963
+      "sha256": "34BB1EF0F117CC12253479DCB4D0F74200479B604395EBD9B75D4EF8F5A772B6",
+      "bytes": 4999
     },
     {
       "path": "verification/jiti-transformed-eval-sourceonly-20261017/causal-inputs.json",
-      "sha256": "6C91AE149501110CE7BDCE0F1EE089C7A3B5A626493B46DF454D43D299CD29E1",
-      "bytes": 4746
+      "sha256": "768D4BF7BDA43357A2BC699047F9B3676C059D48839F363E72177B7B47709C27",
+      "bytes": 4819
     },
     {
       "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__eval.ts.txt",

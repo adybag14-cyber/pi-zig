@@ -45,7 +45,8 @@ extra synchronous catch cleanup. The next function remains ordinary.
 
 The real parse-marker branch preserves three mod.exports and two marker reads
 when truthy, destructuring and template conversion order, actual Error creation,
-Error.captureStackTrace with actual jitiRequire, returning onError, then
+then a second live Error binding read for captureStackTrace with actual
+jitiRequire, returning onError, then
 loaded=true and interop. Missing captureStackTrace fails explicitly; no dummy
 stack helper is installed. The compile SyntaxError/async/nativeImport branch
 performs actual fallback debug then fails `RequiredActualJitiEsmEval`; data URL,
