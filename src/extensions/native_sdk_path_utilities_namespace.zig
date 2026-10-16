@@ -31,6 +31,17 @@ pub fn create(engine: *em.Engine, actual_filesystem: c.JSValue) !c.JSValue {
     }
     return c.JS_DupValue(engine.context, result);
 }
+/// Complete the actual paths namespace for PackageManager using its captured
+/// process and utils/child-process.ts binding. The application supplies these
+/// real inputs once; namespace assembly neither launches nor simulates a child.
+pub fn createWithPlatform(engine: *em.Engine, actual_filesystem: c.JSValue, actual_process: c.JSValue, spawn_process_sync: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const result = try scope.own(try create(engine, actual_filesystem));
+    const mark = try scope.own(try @import("native_sdk_path_cloud_sync.zig").create(engine, actual_process, spawn_process_sync));
+    try @import("native_sdk_package_data.zig").put(engine, result, "markPathIgnoredByCloudSync", mark);
+    return c.JS_DupValue(engine.context, result);
+}
 fn canonicalize(engine: *em.Engine, function: c.JSValue, input: c.JSValue) !c.JSValue {
     const generation = engine.native_allocation_generation;
     const previous = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
