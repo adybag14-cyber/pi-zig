@@ -206,11 +206,19 @@ pub const Set = struct {
         try grant.sameHash(inputs.hidden_sha, try files.hash(allocator, hidden));
     }
     fn linksAbsences(self: *Set, allocator: std.mem.Allocator) !void {
-        const root = if (self.granted.phase == .npm_ci_offline) self.cfg.metadata else self.cfg.reproduction;
         if (!self.final and self.granted.phase == .npm_ci_offline) return; // actual source tree0links asserted separately
+        var first: ?anyerror = null;
+        self.linksAbsencesRoot(allocator, self.cfg.metadata, "metadata") catch |err| { first = err; };
+        if (self.granted.phase == .build_offline)
+            self.linksAbsencesRoot(allocator, self.cfg.reproduction, "reproduction") catch |err| { first = first orelse err; };
+        if (first) |err| return err;
+    }
+    fn linksAbsencesRoot(self: *Set, allocator: std.mem.Allocator, root: []const u8, label: []const u8) !void {
         const rows = try inputs.links(allocator, self.cfg, root);
         defer inputs.releaseLinks(allocator, rows);
-        var writer = try self.newWriter(allocator, "links", "jsonl");
+        const links_label = try std.fmt.allocPrint(allocator, "links-{s}", .{label});
+        defer allocator.free(links_label);
+        var writer = try self.newWriter(allocator, links_label, "jsonl");
         defer writer.closePartial() catch {};
         var failed: bool = false;
         for (rows) |row| {
@@ -221,7 +229,9 @@ pub const Set = struct {
             if (result) |_| {} else |_| { failed = true; }
         }
         _ = try writer.finish();
-        var absent = try self.newWriter(allocator, "absence84", "jsonl");
+        const absent_label = try std.fmt.allocPrint(allocator, "absence84-{s}", .{label});
+        defer allocator.free(absent_label);
+        var absent = try self.newWriter(allocator, absent_label, "jsonl");
         defer absent.closePartial() catch {};
         var absence_error: ?anyerror = null;
         absence.check(allocator, self.cfg.absence84, root, rows, self.deadline,

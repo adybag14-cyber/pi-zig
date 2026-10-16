@@ -78,6 +78,7 @@ pub const Controller = struct {
     cleanup_error: ?anyerror = null,
     job_zero: bool = false,
     pipes_retired: bool = false,
+    capture_complete: bool = false,
     metadata_retired: bool = false,
     early_retirement_ms: u64 = 0,
     final_task: ?*FinalTask = null,
@@ -195,7 +196,7 @@ pub const Controller = struct {
         final.thread = null;
         self.settleReceipts() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
         const successful = self.first_error == null and self.cleanup_error == null and self.job_zero and self.pipes_retired and
-            self.ledger_retired and self.capture_handles_closed and self.metadata_retired and
+            self.ledger_retired and self.capture_handles_closed and self.metadata_retired and self.capture_complete and
             self.worker_exit_code != null and self.worker_exit_code.? == 0 and self.node_exit_code != null and
             self.node_exit_code.? == 0 and self.node_identity_bound and final.set.outcome.exact();
         return successful;
@@ -416,12 +417,18 @@ pub const Controller = struct {
                 (if (self.node_meta) |request| request.thread == null else true);
             self.output.advance() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
             self.errors.advance() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
+            if (self.output.first_error) |err| self.cleanup_error = self.cleanup_error orelse err;
+            if (self.errors.first_error) |err| self.cleanup_error = self.cleanup_error orelse err;
             self.channel.cancel() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
             const snapshot = try self.job.snapshot();
             try self.observeSnapshot(snapshot, snapshot.zero());
             if (snapshot.zero() and self.worker.info.process == null and self.node_handle == null) self.job_zero = true;
             self.pipes_retired = self.output.ioRetired() and self.errors.ioRetired() and self.channel.retired() and
                 (self.output.state == .eof or self.output.state == .failed) and (self.errors.state == .eof or self.errors.state == .failed);
+            self.capture_complete = self.pipes_retired and self.output.state == .eof and self.errors.state == .eof and
+                self.output.first_error == null and self.errors.first_error == null and
+                !self.output.overflow and !self.errors.overflow and
+                self.output.bytes_received == self.output.bytes_written and self.errors.bytes_received == self.errors.bytes_written;
             if (self.job_zero and self.pipes_retired and self.metadata_retired) return;
             try self.waitEvents(end);
         }
@@ -540,7 +547,8 @@ const Publication = struct {
             .cleanup_error = if (c.cleanup_error) |err| @errorName(err) else @as(?[]const u8, null),
             .worker_exit_code = c.worker_exit_code, .node_exit_code = c.node_exit_code,
             .root_identity_complete = c.worker.full_identity_bound, .node_identity_complete = c.node_identity_bound,
-            .job_zero = c.job_zero, .pipes_retired = c.pipes_retired, .ledger_retired = c.ledger_retired,
+            .job_zero = c.job_zero, .pipes_retired = c.pipes_retired, .capture_complete = c.capture_complete,
+            .ledger_retired = c.ledger_retired,
             .metadata_retired = c.metadata_retired,
             .capture_handles_closed = c.capture_handles_closed, .lifetime_total_processes = count,
             .unattributed_lifetime_process_count = count -| known,
