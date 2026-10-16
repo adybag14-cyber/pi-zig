@@ -2,6 +2,8 @@
 
 The implementation/capture candidate is the isolated `C:\Users\adyba\pi-zig-latest-4dd2-models-20261016`, branch `work/latest-4dd2-models-20261016`, from Root9df. Its final clean full HEAD must be supplied explicitly to `Freeze-Latest4ddSource.ps1`; publication of source code does not admit any child. Root must review and grant this SourceLite reservation independently before launch, including any overlap with C9.
 
+The executable outer controller is now prepared in `Run-Latest4ddSerialCapture.ps1`. Its exact gate schemas,5700s outer budget, bounded phase workers, cleared child PSI policy, permission/network controls and external outer-absence confirmation are specified in `EXECUTABLE-LAUNCHER.md`. This plan and that executable remain unexecuted.
+
 ## Ownership, resource and time admission
 
 One outer PowerShell owner remains alive from the full before check through all serial Node children, full between/final checks, artifact sealing and independent child/descendant absence. The retained child owner is `C:\Users\adyba\pi-zig-update-evidence-20261003\Invoke-OwnedModelsClassSource-20261016.ps1`, SHA256 `96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5`. This exact existing owner records native retained-handle PID/start time, executable/hash and argv, with live CIM identity when available. Its timeout termination targets only the verified owned root, never a broad process name/tree. The outer owner additionally retains observed child identities and verifies their independent absence; unexpected surviving children fail cleanup and prevent acceptance.
