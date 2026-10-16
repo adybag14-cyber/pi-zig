@@ -10,6 +10,17 @@ const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync,
 const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access, appendFile };
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
+    return installMode(engine, io, false);
+}
+/// Explicit assembler seam: install genuine process/streams before freezing
+/// fs ESM exports. Existing filesystem-only callers retain their original path.
+/// Windows writer selection stays guarded until the CRT owner proposal passes
+/// independent review; no HANDLE is substituted for a Node descriptor.
+pub fn installWithStreams(engine: *engine_mod.Engine, io: std.Io, actual_process: c.JSValue) !void {
+    try @import("native_node_stream.zig").install(engine, actual_process);
+    return installMode(engine, io, true);
+}
+fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool) !void {
     engine.native_io = io;
     try node_buffer.install(engine);
     const exports = try engine.checked(c.JS_NewObject(engine.context));
@@ -36,6 +47,7 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     try node_directory.install(engine, exports, promises);
     try @import("node_fs_metadata.zig").install(engine, exports);
     try @import("node_copy_file.zig").install(engine, exports);
+    if (with_streams) try @import("native_node_fs_write_stream.zig").install(engine, exports);
     try engine.registerDefaultModule("node:fs", exports);
     try engine.registerDefaultModule("fs", exports);
     try engine.registerDefaultModule("node:fs/promises", promises);
@@ -409,6 +421,17 @@ fn writeContent(file: std.Io.File, io: std.Io, bytes: []const u8, append: bool) 
 }
 fn callCaptured(engine: *engine_mod.Engine, method: Method, args: []c.JSValue, snapshot: *?c.JSValue) !c.JSValue {
     if (args.len == 0) return error.MissingFilesystemPath;
+    if (c.JS_IsNumber(args[0]) and (method == .readFileSync or method == .writeFileSync or method == .appendFileSync)) {
+        // A real native fd must never become a filename through ToString.
+        // Shared registry-backed descriptor read/sync IO is a distinct missing
+        // capability; reject it explicitly before any filesystem side effect.
+        return @import("node_events.zig").codedError(engine, "Error", "ERR_METHOD_NOT_IMPLEMENTED", "Filesystem descriptor read/sync operations require the owned descriptor provider");
+    }
+    if ((method == .readFileSync or method == .writeFileSync or method == .appendFileSync) and c.JS_IsObject(args[0]) and !native_url.isURL(engine, args[0]) and c.JS_GetTypedArrayType(args[0]) < 0) {
+        // No FileHandle provider is selected here. A purported FileHandle or
+        // arbitrary object cannot become a filename through guest toString.
+        return @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_TYPE", "The path argument must be a string, Buffer or URL; FileHandle requires its native provider");
+    }
     const io = engine.native_io orelse return error.NativeIoUnavailable;
     const path = if (native_url.isURL(engine, args[0])) try native_url.filePath(engine, args[0], builtin.os.tag == .windows) else try engine.toString(args[0]);
     defer engine.gpa.free(path);

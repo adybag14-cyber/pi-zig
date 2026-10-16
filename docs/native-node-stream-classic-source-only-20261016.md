@@ -1,0 +1,42 @@
+# Classic Node stream source-only draft
+
+This isolated draft starts at Root `642016544a0861a871708c0204731857d2a58ab9`. It adds owner-thread native classic stream classes for the actual selected consumers at upstream `4dd2b149d155d7369de16ea4dc77c84e9f5ffb24`. Nothing in this packet is a native or Source20 qualification. Canonical Zig formatting, AST checking, compilation, Node capture and runtime execution are held during the Root 718fb/C9 lease. No Engine or C source is changed. Existing WHATWG packets remain byte-identical to the base.
+
+The only existing production-file change is additive visibility of `node_buffer.fromBacking` and `node_buffer.isBuffer`; both bodies are preserved. The build file gains one isolated test root. Production SDK/worker assembly is not changed: its owner must call `native_node_stream.install(engine, actual_process)` after installing the genuine process and before evaluating consumers. Public child-process asynchronous pipes remain blocked.
+
+## Real consumers and dependencies
+
+The selected source closure contains the unchanged full `utils/child-process.ts`, `core/package-manager.ts`, `core/sdk.ts`, `utils/tools-manager.ts`, `modes/rpc/jsonl.ts`, their RPC/PackageManager tests, and issue 5303 regression. Each copied full file is hashed against both latest4dd and historical0fb; the separate JSON inventory records the result. The child wait excerpt contains the exact original grace constant and exact exported function bytes through EOF. It is a verification input, not a replacement implementation or a claim that the entire child module can load.
+
+* Child wait uses live stdout/stderr getters, actual data/end listeners, error/exit/close, a 100 ms idle grace rearmed by data after exit, cleanup, and stream destruction. Process exit never means producer EOF.
+* PackageManager capture waits for child close, accumulates actual Buffer bytes, and kills only on its explicit timeout. Its other command helper intentionally waits for process exit. This packet preserves the stream distinction and does not claim full PackageManager or SDK assembly qualification.
+* Tools download requires actual `Readable.fromWeb(response.body)` and Node-stage promise pipeline to the real filesystem writer. The filesystem writer integration is a separate gate.
+* Original RPC JSONL uses the native BOM-preserving StringDecoder with cross-chunk UTF-8 carry and LF-only framing. Its unchanged full module is transformed only by the existing native TypeScript parser in the prepared test, then executed as guest verification input.
+
+Native dependencies are the existing real EventEmitter/nextTick process owner, Buffer backing storage, binary encoding, native UTF-16 string helpers, genuine native AsyncFunction continuations, actual WHATWG reader branding/state, AbortSignal listeners, and normal native Node functions. No JavaScript, TypeScript or Python implements these host stream classes. The only guest JS/TS in this packet is reference control input and immutable original consumer input.
+
+## Authored behavior
+
+`Stream`, `Readable`, `Writable`, `Duplex`, `Transform` and `PassThrough` use real ordinary constructor behavior and real EventEmitter inheritance. Readable and writable sides retain separate GC-visible native state. The producer supplies live `_read`, `_write`, `_writev`, `_final`, `_construct` and `_destroy` hooks. Native queues retain callbacks and chunk roots until the corresponding owner-thread completion. No callback is acknowledged merely because a child exited.
+
+Readable supports byte/object modes, high-water marks (including the actual Windows 16 KiB default), synchronous versus flowing delivery, read/unshift, pause/resume, readable/end ticks, StringDecoder, and readable pipe/unpipe with drain tracking. The legacy base `Stream.pipe` has its own original lifecycle and writable checks. Writable supports queued writes, actual callback completion, cork/writev, drain, prefinish/finish, live final/destroy hooks, and separate error/close publication. Duplex supplies both sides and half-open policy; Writable's real hasInstance hook recognizes its writable state.
+
+`Readable.from` follows the synchronous iterator loop without an unnecessary Await. Async iterators and thenable values use genuine native AsyncFunction suspension only where the pinned source awaits. Iterator throw/return cleanup also uses real Await. `fromWeb` obtains the actual reader and uses captured intrinsic Promise reactions for read, closed and cancellation; it retains actual reader errors and cancellation identity.
+
+Promise pipeline currently authors the Node-stage branch, including per-pair end/error/EOS handling and `end:false`; function, iterable and Web pipeline stages are explicitly outside this draft capability. Promise finished and callbacks use separate EOS end/finish/close state. No timers or extra microtasks pad stream settlement. Source-specified process.nextTick calls use the supplied genuine process's live function.
+
+## Filesystem and child integration contract
+
+Filesystem lane source-only commit `c5092509490858b6de692e18bfc2acd8f6f08ed3` has `Pump.step(io, whole_stable_input_slice)`, `retire(io)`, offset, failure and retirement_pending. This is the synchronous whole-slice seam. It cannot accept a changing asynchronous write queue under its current offset.
+
+Future asynchronous integration requires explicit `beginChunk`, acknowledged `takeCompletion`, `finishInput`, and output pause/resume/retirement APIs. Backend slots retain native bytes only. Windows copies no more than 64 KiB per owned overlapped slot; partial completions acknowledge actual bytes. Quarantined slots never retain Engine or guest callbacks. Output Sink bytes are ephemeral until its callback returns: copy and enqueue to the VM owner, then call `pushBytes`; false pauses OS drain. Keep each input chunk stable until its real acknowledgement; only then call the saved JS write callback. `_final` closes the exact stdin endpoint only after queued writes drain. `_destroy` retires only owned endpoints and reports once; it does not signal or kill the process. Only confirmed pipe EOF calls `pushEnd`. Descendants can retain stdout after process exit.
+
+## Prepared controls and explicit gaps
+
+The immutable shared Source20 input and original Node runner cover constructor/namespace metadata, sync and async writable order, cork/writev, final/finish/close, destroy once, duplex half-open, read/unshift, pipe/drain/unpipe, UTF-8/BOM carry, UTF-16/base64 carry, original RPC JSONL, thenable Await order, async iterator cleanup, actual Web readers/cancel, Transform backpressure, Node pipeline/end:false, premature close and original child output after exit. The runner requires actual Node `v24.14.0`, one named case per fresh child, and publishes its actual packet only after terminal completion. It has not run.
+
+The native test root contains four authored draft behavioral checks and one strict full Source20 replay gate. Actual compiled/imported test inventory is unknown. `node-stream-classic-node24.capture-pending.json` contains `captureAccepted:false` and no expected packets; the strict replay gate must fail closed until all twenty genuine controls are captured, accepted and hash-closed. No expected JSON was invented. The exact complete metadata case deliberately exposes the currently incomplete namespace and reflection surface.
+
+Known unqualified surfaces include full Node stream namespace/static operator coverage, public state/private-symbol representation and mutation compatibility, complete exact error diagnostics/metadata, function-source reflection, legacy/custom third-party stream shapes, general async-iterator consumption of a Readable, function/iterable/Web pipeline stages, production SDK assembly, filesystem writer integration, child asynchronous stdio retirement/backpressure, GC/OOM replay, and all cross-platform runtime behavior. The existing readable/writable/transform behavior is authored from source and still requires the canonical parser/compiler checks and real controls; source review is not a passed gate.
+
+No QuickJS annotation, executable builtin JavaScript body, new C source, historical whole-file overwrite, main merge or release is part of this packet. Future source or native execution requires a new explicit Root grant, exact sealed-head admission, the original bounded owner and full pre/post inventories; the prepared control manifest keeps every grant false.

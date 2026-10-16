@@ -1,0 +1,58 @@
+import {Readable,Writable,PassThrough} from 'node:stream';
+import {pipeline,finished} from 'node:stream/promises';
+import {EventEmitter} from 'node:events';
+const rows=[];
+const tick=()=>new Promise(resolve=>process.nextTick(resolve));
+const sleep=()=>new Promise(resolve=>setTimeout(resolve,0));
+const state=r=>({destroyed:r.destroyed,closed:r.closed,readable:r.readable,readableEnded:r.readableEnded,readableLength:r.readableLength,writableFinished:r.writableFinished??null});
+const error=e=>({name:e?.name??null,code:e?.code??null,message:e?.message??null});
+const readable=values=>new Readable({objectMode:true,read(){for(const value of values)this.push(value);this.push(null)}});
+switch(caseName){
+case 'iterator-genuine-brand':{
+ const r=new Readable({read(){}});const a=r[Symbol.asyncIterator]();const b=r.iterator({destroyOnReturn:false});const sample=(async function*(){})();const intrinsic=Object.getPrototypeOf(Object.getPrototypeOf(sample));
+ rows.push({tag:Object.prototype.toString.call(a),samePrototype:Object.getPrototypeOf(a)===Object.getPrototypeOf(b),intrinsic:Object.getPrototypeOf(Object.getPrototypeOf(a))===intrinsic,ownKeys:Reflect.ownKeys(a).map(String),prototypeKeys:Reflect.ownKeys(Object.getPrototypeOf(a)).map(String),stream:a.stream===r,self:a[Symbol.asyncIterator]()===a,next:a.next===sample.next,return:a.return===sample.return,throw:a.throw===sample.throw});
+ rows.push(await a.next.call({}).then(()=>['fulfilled'],e=>['rejected',error(e)]));rows.push(r.listenerCount('readable'));await a.return(1);await b.return(2);rows.push(state(r),r.listenerCount('readable'));r.destroy();await tick();break;
+}
+case 'iterator-lazy-pending-eof':{
+ const trace=[];const r=new Readable({objectMode:true,read(n){trace.push(['read',n])}});const it=r[Symbol.asyncIterator]();rows.push(r.listenerCount('readable'),state(r));let settled=false;const pending=it.next().then(value=>{settled=true;return value});rows.push(r.listenerCount('readable'),settled);r.push('a');rows.push(await pending);let done=false;const final=it.next().then(value=>{done=true;return value});await Promise.resolve();rows.push(done);r.push(null);rows.push(await final);await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-for-await-natural':{
+ const r=readable(['a','b','c']);const trace=[];for await(const value of r)trace.push(value);await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-break-default':{
+ const trace=[];const r=readable(['a','b']);r.on('error',e=>trace.push(['error',error(e)]));r.on('close',()=>trace.push(['close']));for await(const value of r){trace.push(['value',value]);break}rows.push(state(r));await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-return-false-resume':{
+ const r=readable(['a','b','c']);const it=r.iterator({destroyOnReturn:false});rows.push(await it.next(),await it.return(7));await tick();rows.push(state(r),r.listenerCount('readable'),r.listenerCount('error'));const values=[];for await(const value of r)values.push(value);await tick();rows.push(values,state(r));break;
+}
+case 'iterator-options-live-finally':{
+ const trace=[];const opts={get destroyOnReturn(){trace.push('option');return false}};const r=readable(['a','b']);const it=r.iterator(opts);rows.push(trace.slice(),await it.next(),trace.slice());const thenable={get then(){trace.push('get-then');return resolve=>{trace.push('then');resolve(9)}}};rows.push(await it.return(thenable));rows.push(trace,state(r),r.listenerCount('readable'));r.destroy();await tick();break;
+}
+case 'iterator-yield-thenable':{
+ const trace=[];const item={get then(){trace.push('get-then');return resolve=>{trace.push('then');resolve('awaited')}}};const r=readable([item,'tail']);const it=r[Symbol.asyncIterator]();rows.push(await it.next(),await it.next(),await it.next());await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-yield-rejection':{
+ const marker=new Error('yield-marker');const r=readable([{then(resolve,reject){reject(marker)}}]);const trace=[];r.on('error',e=>trace.push(['error',e===marker,error(e)]));const it=r.iterator({destroyOnReturn:false});rows.push(await it.next().then(()=>['fulfilled'],e=>['rejected',e===marker]));await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-throw-identity':{
+ const marker=new Error('throw-marker');const r=readable(['a','b']);const trace=[];r.on('error',e=>trace.push(['error',e===marker,error(e)]));const it=r[Symbol.asyncIterator]();rows.push(await it.next(),await it.throw(marker).then(()=>['fulfilled'],e=>['rejected',e===marker]));await tick();rows.push(trace,state(r));break;
+}
+case 'iterator-pending-stream-error':{
+ const marker=new Error('producer-marker');const r=new Readable({read(){}});const it=r[Symbol.asyncIterator]();const pending=it.next().then(()=>['fulfilled'],e=>['rejected',e===marker]);r.destroy(marker);rows.push(await pending);await tick();rows.push(state(r));break;
+}
+case 'iterator-return-queued-behind-read':{
+ const r=new Readable({objectMode:true,read(){}});const it=r.iterator({destroyOnReturn:false});let returned=false;const next=it.next();const ret=it.return(4).then(value=>{returned=true;return value});await Promise.resolve();rows.push(returned,state(r));r.push('actual-byte-batch');rows.push(await next,await ret,state(r));r.destroy();await tick();break;
+}
+case 'iterator-child-exit-is-not-eof':{
+ const child=new EventEmitter();const r=new Readable({objectMode:true,read(){}});const it=r[Symbol.asyncIterator]();let resolved=false;const first=it.next().then(value=>{resolved=true;return value});child.emit('exit',0,null);await Promise.resolve();rows.push(resolved,state(r));r.push('descendant-tail');rows.push(await first);const last=it.next();r.push(null);rows.push(await last);await tick();rows.push(state(r));break;
+}
+case 'pipeline-node-real-completion-backpressure':{
+ const trace=[];const writes=[];const source=Readable.from(['a','b','c']);const target=new Writable({highWaterMark:1,write(chunk,encoding,cb){trace.push(['write',chunk.toString(),encoding]);writes.push(cb)},final(cb){trace.push('final');cb()}});let done=false;const waiting=pipeline(source,target).then(()=>{done=true});
+ while(!writes.length)await sleep();rows.push(done,target.writableLength,source.isPaused());for(let n=0;n<3;n++){while(writes.length<=n)await sleep();writes[n]();trace.push(['ack',n]);}await waiting;await tick();rows.push(trace,state(source),state(target));break;
+}
+case 'pipeline-node-error-closes-source-iterator':{
+ const trace=[];const marker=new Error('write-marker');async function* values(){try{yield 'a';yield 'b'}finally{trace.push('iterator-finally')}}const source=Readable.from(values());const target=new Writable({write(chunk,encoding,cb){trace.push(['write',chunk.toString()]);cb(marker)}});rows.push(await pipeline(source,target).then(()=>['fulfilled'],e=>['rejected',e===marker]));await tick();rows.push(trace,state(source),state(target));break;
+}
+default:throw new Error(`Unknown immutable classic iterator case ${caseName}`);
+}
+globalThis.packet={case:caseName,rows};

@@ -1,0 +1,7 @@
+{
+  "schema": "pi-zig-write-stream-source8-capture-state-v1",
+  "captureAccepted": false,
+  "expectedPackets": null,
+  "nodeVersionRequired": "v24.14.0",
+  "reason": "New original writer controls are prepared only. Windows CRT association and failed-close ownership remain unselected pending independent review. Source20/14 and historical proofs are immutable."
+}

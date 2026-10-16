@@ -1,0 +1,78 @@
+{
+  "schema": "pi-zig-selected-classic-stream-consumers-v1",
+  "latest_source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "historical_source_head": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "full_file_count": 8,
+  "full_files": [
+    {
+      "source_path": "packages/coding-agent/src/utils/child-process.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/child-process.ts",
+      "latest4dd_sha256": "CD324F5B9A1ABADD85AB5A331750D475C8BD51EC65CAE091AD9B416245EC85D4",
+      "historical0fb_sha256": "CD324F5B9A1ABADD85AB5A331750D475C8BD51EC65CAE091AD9B416245EC85D4",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/src/modes/rpc/jsonl.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/jsonl.ts",
+      "latest4dd_sha256": "95723D349FCEBAD1F1DA7CE103D02BA7D5E2C876B7D178D41D8B56BEEDBD93E0",
+      "historical0fb_sha256": "95723D349FCEBAD1F1DA7CE103D02BA7D5E2C876B7D178D41D8B56BEEDBD93E0",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/src/core/package-manager.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/package-manager.ts",
+      "latest4dd_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+      "historical0fb_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/src/core/sdk.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/sdk.ts",
+      "latest4dd_sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+      "historical0fb_sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/src/utils/tools-manager.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/tools-manager.ts",
+      "latest4dd_sha256": "CFD082080D10A6209D7994AC7829C29DBB39694BDF3FE549E907C28CFC506A17",
+      "historical0fb_sha256": "CFD082080D10A6209D7994AC7829C29DBB39694BDF3FE549E907C28CFC506A17",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/test/rpc-jsonl.test.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/rpc-jsonl.test.ts",
+      "latest4dd_sha256": "4A5A9738D39BB226E12535E6ACDCEBCD92EA675E9B1FD5FFADBDC0D7EA4BABB6",
+      "historical0fb_sha256": "4A5A9738D39BB226E12535E6ACDCEBCD92EA675E9B1FD5FFADBDC0D7EA4BABB6",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/test/package-manager.test.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/package-manager.test.ts",
+      "latest4dd_sha256": "FC4513EE2D0974CD8D2CE334C7B086DE3C1973B4AC9E567211FFBAB77E51ADB2",
+      "historical0fb_sha256": "FC4513EE2D0974CD8D2CE334C7B086DE3C1973B4AC9E567211FFBAB77E51ADB2",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    },
+    {
+      "source_path": "packages/coding-agent/test/suite/regressions/5303-bash-output-truncation.test.ts",
+      "fixture_path": "src/extensions/fixtures/node-stream-classic-source/5303-bash-output-truncation.test.ts",
+      "latest4dd_sha256": "D38754F1ABADB955553F0D2CE3276F580FB07CA9B937E0D4ABE3B6226D2E3B87",
+      "historical0fb_sha256": "D38754F1ABADB955553F0D2CE3276F580FB07CA9B937E0D4ABE3B6226D2E3B87",
+      "unchanged_since0fb": true,
+      "fixture_byte_identical": true
+    }
+  ],
+  "excerpt": {
+    "path": "src/extensions/fixtures/node-stream-classic-source/wait-for-child-process.excerpt.ts",
+    "sha256": "28C12EC411849604F1DBC95C88EECEBE510A0A074A5A7CED01E627BE40FF8322",
+    "rule": "Exact original const EXIT_STDIO_GRACE_MS = 100; plus two LF bytes plus exact exported waitForChildProcess declaration through source EOF; TypeScript preserved; never a host implementation"
+  },
+  "source_only": true
+}

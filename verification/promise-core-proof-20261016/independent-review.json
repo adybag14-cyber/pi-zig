@@ -1,0 +1,1584 @@
+{
+  "status": "accepted_selected_core_regression",
+  "reviewer": "models_auth_resume",
+  "reviewed_utc": "2026-10-16T20:53:28.8313261+00:00",
+  "candidate": "a3ea0d060c782848cf9cc43169d80bd5bb1623ec",
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-tla-qualification\\vendor\\quickjs\\quickjs.c",
+      "hash": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-tla-qualification\\vendor\\quickjs\\quickjs.h",
+      "hash": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\Run-CoreRegression.ps1",
+      "hash": "9E159012F745C060334AB0701A056044E1392D303C36F72E1DEBA8BD5CAEF8F6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-tla-qualification\\tools\\ci\\native_qualification_ci.ps1",
+      "hash": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-tla-qualification\\tools\\ci\\Invoke-NativeTestProtocol.ps1",
+      "hash": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D"
+    }
+  ],
+  "source_files": 10510,
+  "compiler_files": 19546,
+  "actual_entries": 116,
+  "groups": [
+    {
+      "metadata_names_match": true,
+      "sha256": "D5B93713EC726121605FA327F2F3C1CEF1931EAC4AFF31DEC6E7D30450163E6B",
+      "count": 6,
+      "raw": {
+        "started": 6,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "completed": 6,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\highlight-root10db-foundation.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "foundation"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "50EAA0B8D0A04360F103615BD2BBF1EBD109242203DB390467C5B1A4D2FFCB30",
+      "count": 26,
+      "raw": {
+        "started": 26,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22,
+          23,
+          24,
+          25
+        ],
+        "completed": 26,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\highlight-root10db-async26.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "async26"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "D80ECA613AAC631C9ED44B2926D9CB9514F5FF695C35626CA981B2877B4B8A8E",
+      "count": 19,
+      "raw": {
+        "started": 19,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18
+        ],
+        "completed": 19,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\highlight-root10db-generator.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "generator"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "B4DB91430A5711100FDD334B095B62E64F8EB91A296431CC0C82B793991CB979",
+      "count": 2,
+      "raw": {
+        "started": 2,
+        "indices": [
+          0,
+          1
+        ],
+        "completed": 2,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\highlight-root10db-generator-gpa.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 96,
+      "name": "generator-gpa"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "3325D01EC0DBDB01DB466B1C9D1EA9315BD4BB402766176A56F0E2CD03E38C20",
+      "count": 11,
+      "raw": {
+        "started": 11,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10
+        ],
+        "completed": 11,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\highlight-root10db-json.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "json"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "47A5710E42B8E1F4E3C6A302E88B1BAD908942D714748DC754BBE2BF917CC962",
+      "count": 2,
+      "raw": {
+        "started": 2,
+        "indices": [
+          0,
+          1
+        ],
+        "completed": 2,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\highlight-root10db-source51.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "source51"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "4DEBB72C30E64685E9B5D025B57698B4B55C4A5C098D5E9B8A61B5553CA8E54A",
+      "count": 2,
+      "raw": {
+        "started": 2,
+        "indices": [
+          0,
+          1
+        ],
+        "completed": 2,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\highlight-root10db-operators.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "operators"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "7D8FA0F9A3E149E6F32C8763C627A046FD673A890B051C834F6CE49C04F69A72",
+      "count": 20,
+      "raw": {
+        "started": 20,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19
+        ],
+        "completed": 20,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\highlight-root10db-engine.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "engine"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "CAE52F320A2D94F9C4E9F371CBD4F7BDEA03EB8DDDBBBC4E3DCDFB10E82EA16A",
+      "count": 23,
+      "raw": {
+        "started": 23,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          22
+        ],
+        "completed": 23,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\highlight-root10db-recovery.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 241,
+      "name": "recovery"
+    },
+    {
+      "metadata_names_match": true,
+      "sha256": "9A8744FA74AEC2A00B38EF11E490E8AC45161D06C26B3BC94ACAE234284BEA79",
+      "count": 5,
+      "raw": {
+        "started": 5,
+        "indices": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "completed": 5,
+        "version": "0.16.0",
+        "flags": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "compiled": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe",
+      "canonical": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe",
+      "runtime_stderr_bytes": 0,
+      "name": "sdk-boundary"
+    }
+  ],
+  "owners": [
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2068,
+      "group": "foundation",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:40:08.397362Z",
+      "pid": 80692,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-foundation -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe",
+      "retained_handle": 1612,
+      "group": "foundation",
+      "sha256": "D5B93713EC726121605FA327F2F3C1CEF1931EAC4AFF31DEC6E7D30450163E6B",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:40:21.0226966Z",
+      "pid": 76616,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe",
+      "retained_handle": 2356,
+      "group": "foundation",
+      "sha256": "D5B93713EC726121605FA327F2F3C1CEF1931EAC4AFF31DEC6E7D30450163E6B",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:40:22.559647Z",
+      "pid": 52004,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2268,
+      "group": "async26",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:40:36.1164549Z",
+      "pid": 70600,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-async26 -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe",
+      "retained_handle": 2632,
+      "group": "async26",
+      "sha256": "50EAA0B8D0A04360F103615BD2BBF1EBD109242203DB390467C5B1A4D2FFCB30",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:40:50.6498423Z",
+      "pid": 55864,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe",
+      "retained_handle": 2244,
+      "group": "async26",
+      "sha256": "50EAA0B8D0A04360F103615BD2BBF1EBD109242203DB390467C5B1A4D2FFCB30",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:40:52.1641596Z",
+      "pid": 78512,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 816,
+      "group": "generator",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:41:04.8243184Z",
+      "pid": 77320,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-generator -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe",
+      "retained_handle": 1872,
+      "group": "generator",
+      "sha256": "D80ECA613AAC631C9ED44B2926D9CB9514F5FF695C35626CA981B2877B4B8A8E",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:41:19.9065616Z",
+      "pid": 36640,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe",
+      "retained_handle": 2600,
+      "group": "generator",
+      "sha256": "D80ECA613AAC631C9ED44B2926D9CB9514F5FF695C35626CA981B2877B4B8A8E",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:41:21.3806842Z",
+      "pid": 77332,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2588,
+      "group": "generator-gpa",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:41:32.9592325Z",
+      "pid": 70404,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-generator-gpa -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe",
+      "retained_handle": 2076,
+      "group": "generator-gpa",
+      "sha256": "B4DB91430A5711100FDD334B095B62E64F8EB91A296431CC0C82B793991CB979",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:41:46.9241855Z",
+      "pid": 76616,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe",
+      "retained_handle": 2652,
+      "group": "generator-gpa",
+      "sha256": "B4DB91430A5711100FDD334B095B62E64F8EB91A296431CC0C82B793991CB979",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:41:48.4305271Z",
+      "pid": 72104,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2468,
+      "group": "json",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:42:00.169384Z",
+      "pid": 5812,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-json -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe",
+      "retained_handle": 2804,
+      "group": "json",
+      "sha256": "3325D01EC0DBDB01DB466B1C9D1EA9315BD4BB402766176A56F0E2CD03E38C20",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:42:20.727491Z",
+      "pid": 75932,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe",
+      "retained_handle": 2572,
+      "group": "json",
+      "sha256": "3325D01EC0DBDB01DB466B1C9D1EA9315BD4BB402766176A56F0E2CD03E38C20",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:42:22.2695118Z",
+      "pid": 29824,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2800,
+      "group": "source51",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:42:34.0777119Z",
+      "pid": 79096,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-source51 -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe",
+      "retained_handle": 2704,
+      "group": "source51",
+      "sha256": "47A5710E42B8E1F4E3C6A302E88B1BAD908942D714748DC754BBE2BF917CC962",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:42:45.4400963Z",
+      "pid": 75352,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe",
+      "retained_handle": 2844,
+      "group": "source51",
+      "sha256": "47A5710E42B8E1F4E3C6A302E88B1BAD908942D714748DC754BBE2BF917CC962",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:42:46.6051995Z",
+      "pid": 75964,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 1752,
+      "group": "operators",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:42:57.6008005Z",
+      "pid": 64192,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-operators -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe",
+      "retained_handle": 2820,
+      "group": "operators",
+      "sha256": "4DEBB72C30E64685E9B5D025B57698B4B55C4A5C098D5E9B8A61B5553CA8E54A",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:43:08.56592Z",
+      "pid": 78192,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe",
+      "retained_handle": 2468,
+      "group": "operators",
+      "sha256": "4DEBB72C30E64685E9B5D025B57698B4B55C4A5C098D5E9B8A61B5553CA8E54A",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:43:09.9480345Z",
+      "pid": 31688,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2292,
+      "group": "engine",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:43:20.3818763Z",
+      "pid": 79996,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-engine -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe",
+      "retained_handle": 2504,
+      "group": "engine",
+      "sha256": "7D8FA0F9A3E149E6F32C8763C627A046FD673A890B051C834F6CE49C04F69A72",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:43:31.6634419Z",
+      "pid": 80364,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe",
+      "retained_handle": 1316,
+      "group": "engine",
+      "sha256": "7D8FA0F9A3E149E6F32C8763C627A046FD673A890B051C834F6CE49C04F69A72",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:43:32.8207435Z",
+      "pid": 2264,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2900,
+      "group": "recovery",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:43:43.8139827Z",
+      "pid": 16044,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-highlight-root10db-recovery -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe",
+      "retained_handle": 828,
+      "group": "recovery",
+      "sha256": "CAE52F320A2D94F9C4E9F371CBD4F7BDEA03EB8DDDBBBC4E3DCDFB10E82EA16A",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:43:55.8898916Z",
+      "pid": 62816,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe",
+      "retained_handle": 1916,
+      "group": "recovery",
+      "sha256": "CAE52F320A2D94F9C4E9F371CBD4F7BDEA03EB8DDDBBBC4E3DCDFB10E82EA16A",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:43:57.2607953Z",
+      "pid": 54444,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "retained_handle": 2656,
+      "group": "sdk-boundary",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "stage": "compile",
+      "created_utc": "2026-10-16T20:44:12.9793486Z",
+      "pid": 10984,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-sdk-exception-boundary -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-tla-focused-20261016\\global-cache --summary all"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe",
+      "retained_handle": 2656,
+      "group": "sdk-boundary",
+      "sha256": "9A8744FA74AEC2A00B38EF11E490E8AC45161D06C26B3BC94ACAE234284BEA79",
+      "stage": "metadata",
+      "created_utc": "2026-10-16T20:44:24.1567103Z",
+      "pid": 65444,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "exit": 0,
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe",
+      "retained_handle": 2588,
+      "group": "sdk-boundary",
+      "sha256": "9A8744FA74AEC2A00B38EF11E490E8AC45161D06C26B3BC94ACAE234284BEA79",
+      "stage": "runtime",
+      "created_utc": "2026-10-16T20:44:25.3790434Z",
+      "pid": 75192,
+      "command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe\" --listen=-"
+    }
+  ],
+  "full_seal_checks": [
+    {
+      "drift": 0,
+      "seal": "foundation-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "foundation-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "async26-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "async26-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "generator-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "generator-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "generator-gpa-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "generator-gpa-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "json-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "json-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "source51-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "source51-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "operators-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "operators-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "engine-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "engine-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "recovery-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "recovery-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "sdk-boundary-after",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "sdk-boundary-after",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "final",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "focused-final to core-before",
+      "count": 10510,
+      "kind": "source"
+    },
+    {
+      "drift": 0,
+      "seal": "final",
+      "count": 19546,
+      "kind": "compiler"
+    },
+    {
+      "drift": 0,
+      "seal": "focused-final to core-before",
+      "count": 19546,
+      "kind": "compiler"
+    }
+  ],
+  "all_drift": 0,
+  "admission_probes": [
+    {
+      "free_kib": 17598568,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:40:07.571523+01:00"
+    },
+    {
+      "free_kib": 17650020,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:40:08.3783253+01:00"
+    },
+    {
+      "free_kib": 17462392,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:40:22.5431749+01:00"
+    },
+    {
+      "free_kib": 17303740,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:40:36.1150412+01:00"
+    },
+    {
+      "free_kib": 17198376,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:40:52.1623504+01:00"
+    },
+    {
+      "free_kib": 17323140,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:41:04.8227305+01:00"
+    },
+    {
+      "free_kib": 17096428,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:41:21.37926+01:00"
+    },
+    {
+      "free_kib": 17148788,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:41:32.9575885+01:00"
+    },
+    {
+      "free_kib": 17154268,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:41:48.4291292+01:00"
+    },
+    {
+      "free_kib": 17036480,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:42:00.1678064+01:00"
+    },
+    {
+      "free_kib": 17079288,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:42:22.2679823+01:00"
+    },
+    {
+      "free_kib": 17130088,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:42:34.0763889+01:00"
+    },
+    {
+      "free_kib": 17151088,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:42:46.6039416+01:00"
+    },
+    {
+      "free_kib": 17140640,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:42:57.5994777+01:00"
+    },
+    {
+      "free_kib": 17225884,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:43:09.9467031+01:00"
+    },
+    {
+      "free_kib": 17177092,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:43:20.380664+01:00"
+    },
+    {
+      "free_kib": 17216264,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:43:32.8195682+01:00"
+    },
+    {
+      "free_kib": 17245232,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:43:43.8127674+01:00"
+    },
+    {
+      "free_kib": 17246740,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:43:57.2595875+01:00"
+    },
+    {
+      "free_kib": 17263256,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:44:12.9781516+01:00"
+    },
+    {
+      "free_kib": 17386820,
+      "minimum_kib": 16777216,
+      "native_roots": 0,
+      "utc": "2026-10-16T21:44:25.3777038+01:00"
+    }
+  ],
+  "minimum_free_kib": 17036480.0,
+  "historical_owners_live": 0,
+  "native_roots_after": 0,
+  "unrelated_pid_reuse": [],
+  "expected_stderr": [
+    {
+      "bytes": 96,
+      "sha256": "1D1B8AE8735D307813F429052C84D9982AE57BEBC1D2DB290DBF33A9742160B2",
+      "group": "generator-gpa",
+      "meaning": "Preserved expected std.debug.print during GPA injection; identical prior F06 packet"
+    },
+    {
+      "bytes": 241,
+      "sha256": "13ACD9E8628E989ACEA49774FF19738154005C9C7F5F37544230C350B0458876",
+      "group": "recovery",
+      "meaning": "Preserved explicit targeted-heap coverage summary; identical prior F06 continuation"
+    }
+  ],
+  "linked_focused_entries": 34,
+  "combined_actual_entries": 150,
+  "artifact_seals": [
+    {
+      "sha256": "2428D28CE280F6485AD1F7C971E97C499A1973BADCB5CA925C2CC3D84AC31B63",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-independent-auth-20261016\\Review-Core.ps1"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-after.json"
+    },
+    {
+      "sha256": "0AD42F0F997C8A88C268BBEEB03A585D3C24530332751CA6DD8F223A908B6D57",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-artifact-copy.json"
+    },
+    {
+      "sha256": "491AAAD1FDE3E642B014005CF1ACE749D611550DBA55FD8EEDBB56F7D028663C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-compile.json"
+    },
+    {
+      "sha256": "A5049EFC93B17FA566C16DD12D672171519F83FD25063916EF10F5F5D8BA77E0",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-metadata.stderr.log"
+    },
+    {
+      "sha256": "3C11E83CB0E439E2E1D9A0174D91BDF16608D124E4B23D385867B3D7313F3F9E",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-metadata.stdout.bin"
+    },
+    {
+      "sha256": "50EAA0B8D0A04360F103615BD2BBF1EBD109242203DB390467C5B1A4D2FFCB30",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\highlight-root10db-async26.exe"
+    },
+    {
+      "sha256": "50EAA0B8D0A04360F103615BD2BBF1EBD109242203DB390467C5B1A4D2FFCB30",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "5E3C0642C23DD9721297BC95A233E332E3C636ADE608D23C2BF1740F0569FA4A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-runtime.stderr.log"
+    },
+    {
+      "sha256": "56DC4A7C05E1C3737462393C3B4634752F59259EAA3179B86E0D9E18330BB11B",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-runtime.stdout.bin"
+    },
+    {
+      "sha256": "1C0328721C9C0B48FBCFEEC8344A71F713C50CDE341BFB476510F8A3F486CF80",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\before.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-after.json"
+    },
+    {
+      "sha256": "A4FBF4AFC3D8E1DA73540CB60D08B9E234D80D3BF2E21534BB278D7F7F996380",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-artifact-copy.json"
+    },
+    {
+      "sha256": "CF206EB72F45CAEBFECEA2686D6D2C84D2E91CF2E438660AC2295A3C69C26597",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-compile.json"
+    },
+    {
+      "sha256": "FD32AF96B532A6A3FD6B87F15CB4CACC410518195310FDA2FE398B28EB291D37",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-metadata.stderr.log"
+    },
+    {
+      "sha256": "38768C559701C15A8522654D83030B2A7DB8A968B4ED2FEDF206E265E33F4838",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-metadata.stdout.bin"
+    },
+    {
+      "sha256": "7D8FA0F9A3E149E6F32C8763C627A046FD673A890B051C834F6CE49C04F69A72",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\highlight-root10db-engine.exe"
+    },
+    {
+      "sha256": "7D8FA0F9A3E149E6F32C8763C627A046FD673A890B051C834F6CE49C04F69A72",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "F810AE99FF5F09343AD332BBF4C79CC69053D54D3C9744DB71213F5B7324203E",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-runtime.stderr.log"
+    },
+    {
+      "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-runtime.stdout.bin"
+    },
+    {
+      "sha256": "569F7FDF5C87FE154EA029269750FA166988F64B7F8F681CAD2D80FE74CCC1E6",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\final.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-after.json"
+    },
+    {
+      "sha256": "6C7C9DE5BBB78353B93A378113CDBCC5451EDF2BC5FA849BE9F5ACB8E7E4F337",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-artifact-copy.json"
+    },
+    {
+      "sha256": "EDC91D6B4C35A5268DC5AD7C6F8157C375A335800D0F6D7FEADB9BA7A8A28EF7",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-compile.json"
+    },
+    {
+      "sha256": "DB8B8B2FD35685BDE2CF223C0B31259F20DA3ED39EC94823C3396614E6571BA4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-metadata.stderr.log"
+    },
+    {
+      "sha256": "699E561DCA394C4FBA9ED8761CEC7C12E2AD7F6FCDF8BF61B95B5D02F9024C19",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-metadata.stdout.bin"
+    },
+    {
+      "sha256": "D5B93713EC726121605FA327F2F3C1CEF1931EAC4AFF31DEC6E7D30450163E6B",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\highlight-root10db-foundation.exe"
+    },
+    {
+      "sha256": "D5B93713EC726121605FA327F2F3C1CEF1931EAC4AFF31DEC6E7D30450163E6B",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "C9BC01D363FC3701D7969886DBE348F1936AEB6317C54C4B05140BFBEA117173",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-runtime.stderr.log"
+    },
+    {
+      "sha256": "CADEA13994919EDA102479E880F92A027E463D2EAAB1A25D792B255C30A0C9AC",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-runtime.stdout.bin"
+    },
+    {
+      "sha256": "39E7817EF55E79BE340EAD319832EF624618D99B61AD6535D80DFB24072E4D03",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-after.json"
+    },
+    {
+      "sha256": "F2561B4D7E46CCC9580B34D216BB19D9B54EC5D39DFB5ABA42A602DAEB47C84C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-artifact-copy.json"
+    },
+    {
+      "sha256": "7AB7D09D2AD595503A8B168D0A7D97A851AE334F3447EA23175B7F6F22DCAC2C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-compile.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-after.json"
+    },
+    {
+      "sha256": "F8BEEC0474C57E09D24B3B6460323A10F6E4FC2FF33CB64890870FE69E77DEF4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-artifact-copy.json"
+    },
+    {
+      "sha256": "688905EF89367C09AE299136BFC1EF98C949CE5FE63A98A54F253D2693AF1CD9",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-compile.json"
+    },
+    {
+      "sha256": "7074BC7637EBF4C7C2EA05C02504F1E8E85182BD99B5AAED0FE4F26BE11202B0",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-metadata.stderr.log"
+    },
+    {
+      "sha256": "CE0F68BBE337F2FB08165D8D8CAF1F6F32EB347DF4B16E0C97EB682FA411D263",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-metadata.stdout.bin"
+    },
+    {
+      "sha256": "B4DB91430A5711100FDD334B095B62E64F8EB91A296431CC0C82B793991CB979",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\highlight-root10db-generator-gpa.exe"
+    },
+    {
+      "sha256": "B4DB91430A5711100FDD334B095B62E64F8EB91A296431CC0C82B793991CB979",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "0B2A37E76632A14E204903C383186F00AEDE1A9AA7AFE788623C4F24804B0AEB",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-runtime.json"
+    },
+    {
+      "sha256": "1D1B8AE8735D307813F429052C84D9982AE57BEBC1D2DB290DBF33A9742160B2",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-runtime.stderr.log"
+    },
+    {
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-runtime.stdout.bin"
+    },
+    {
+      "sha256": "39931F131353F1D619937F37735156509E9DBF675ECCC49A44B59563F3434C9B",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-selected-tests.json"
+    },
+    {
+      "sha256": "E4561CDE46F16F33A4C25FDDC4D62392AB1BA9514421FFEE9BC304C289931283",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-metadata.stderr.log"
+    },
+    {
+      "sha256": "3674E10ED3B023D730D2113FB4430288A14968AF472E4E3F7B01E8F42BD74F0E",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-metadata.stdout.bin"
+    },
+    {
+      "sha256": "D80ECA613AAC631C9ED44B2926D9CB9514F5FF695C35626CA981B2877B4B8A8E",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\highlight-root10db-generator.exe"
+    },
+    {
+      "sha256": "D80ECA613AAC631C9ED44B2926D9CB9514F5FF695C35626CA981B2877B4B8A8E",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "6CA81CC751C4EEEE36B0B76262421BE3FA6434244CF79BFD49B37B00CFD4DD69",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-runtime.stderr.log"
+    },
+    {
+      "sha256": "136FCB278196BA0C61F737899375B0E7E36AED09697212D11295B7702ECCFA7D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-runtime.stdout.bin"
+    },
+    {
+      "sha256": "FE079018C4FE4AC33DC86C1FDBCB90D09037F2403FAFADE4493037AB8528E862",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-selected-tests.json"
+    },
+    {
+      "sha256": "27E9406031B70AA379C1862240A7E7D659B3B1DF97E62D9621ECB5E3A7153621",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\grant.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-after.json"
+    },
+    {
+      "sha256": "F89D5D853056B4C865C0D3EA65C771E8D2CBD4BF80740BB960673AE64CE9DD95",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-artifact-copy.json"
+    },
+    {
+      "sha256": "4270241B8BA0C67AEDB5076CBAEABBDF02A9458091243ED025EDD8B097672F0D",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-compile.json"
+    },
+    {
+      "sha256": "25E06B06C580600CF822E5B5280575C76EA5F3981FFFFFB8295230274F8BBF63",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-metadata.stderr.log"
+    },
+    {
+      "sha256": "D1CF5443E1C0096F0C68209732E8FFD0576F0174F55A2232C6435F822955EBE4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-metadata.stdout.bin"
+    },
+    {
+      "sha256": "3325D01EC0DBDB01DB466B1C9D1EA9315BD4BB402766176A56F0E2CD03E38C20",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\highlight-root10db-json.exe"
+    },
+    {
+      "sha256": "3325D01EC0DBDB01DB466B1C9D1EA9315BD4BB402766176A56F0E2CD03E38C20",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "E9966CA50DB80D1C697E3352CE3E878BBB3C1AED6761B1BE08CFB277A0C65E33",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-runtime.stderr.log"
+    },
+    {
+      "sha256": "A5C5E0A326D572167BDB7E8A7957C52A7F6D47937304343C14C063DB09BD0652",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-runtime.stdout.bin"
+    },
+    {
+      "sha256": "9275205088961339674B883BF6D5E9756C7F889EB70CE6693A545736A308DE53",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-after.json"
+    },
+    {
+      "sha256": "493521D54C8E3E5AA78E7435B9E5F902FBBC7B750825EF96FE8AA81DF8190D18",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-artifact-copy.json"
+    },
+    {
+      "sha256": "7BF68D5540AB1D64AD4698FC4D67C650CA6373BA1C86A03FE5EF2B4E41699285",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-compile.json"
+    },
+    {
+      "sha256": "4A6BC9562C9772452F9F0935D259C7C910885F5507B49E9A2428507CD25863DE",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-metadata.stderr.log"
+    },
+    {
+      "sha256": "07639753206A318F14DD71F6154DF81A226DCBC7FC38DE21D0353FE77C33B7A6",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-metadata.stdout.bin"
+    },
+    {
+      "sha256": "4DEBB72C30E64685E9B5D025B57698B4B55C4A5C098D5E9B8A61B5553CA8E54A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\highlight-root10db-operators.exe"
+    },
+    {
+      "sha256": "4DEBB72C30E64685E9B5D025B57698B4B55C4A5C098D5E9B8A61B5553CA8E54A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "D9685DAF4EA01E5ECA313FC1690518BA15B449CC3827DABB5CA52DB842E5B8C7",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-runtime.stderr.log"
+    },
+    {
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-runtime.stdout.bin"
+    },
+    {
+      "sha256": "A2B51BF1F8FE13DFC83D68904FB8AED4058562BBD78398C3B960BB91A55E1D25",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-after.json"
+    },
+    {
+      "sha256": "B1E5CB7500BD9E4EB66C7023A0716FE47B6B4C29DDF19FF1B70BAC52D7A10375",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-artifact-copy.json"
+    },
+    {
+      "sha256": "69D688B5BACF9495CC5CC23D985FFBDD2EBECEE1577C01FEB63A8C06F11AADA0",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-compile.json"
+    },
+    {
+      "sha256": "4351E02E12680F49806FE73823F40B14FD6ACCE74C93037DFA287C182D2A3703",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-metadata.stderr.log"
+    },
+    {
+      "sha256": "9155D7D9207AF82B81264D07138AD8F4E989EA9C0D531DBB54B205798B22E281",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-metadata.stdout.bin"
+    },
+    {
+      "sha256": "CAE52F320A2D94F9C4E9F371CBD4F7BDEA03EB8DDDBBBC4E3DCDFB10E82EA16A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\highlight-root10db-recovery.exe"
+    },
+    {
+      "sha256": "CAE52F320A2D94F9C4E9F371CBD4F7BDEA03EB8DDDBBBC4E3DCDFB10E82EA16A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "FD0E90805E920FB513F0516E89F94EF13A5EE85006E92449C6D5921294C1768C",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-runtime.json"
+    },
+    {
+      "sha256": "13ACD9E8628E989ACEA49774FF19738154005C9C7F5F37544230C350B0458876",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-runtime.stderr.log"
+    },
+    {
+      "sha256": "50821D5C408C6FCB7CDA4532E9568A94AC00618083F3186BE16D836491252864",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-runtime.stdout.bin"
+    },
+    {
+      "sha256": "F8909F6C16F6D87A1BECD1315E05B171261F03D27AA74764553DEF4F806AF639",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-selected-tests.json"
+    },
+    {
+      "sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json"
+    },
+    {
+      "sha256": "9E159012F745C060334AB0701A056044E1392D303C36F72E1DEBA8BD5CAEF8F6",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\Run-CoreRegression.ps1"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-after.json"
+    },
+    {
+      "sha256": "7269A512CAF4209C955B03B347F43290D9ABD5FD7D2CD051321CCF47E2D6088A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-artifact-copy.json"
+    },
+    {
+      "sha256": "D354DC95164E994F52E90526E3FD59075533F768E63B576E667E984935BCCF23",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-compile.json"
+    },
+    {
+      "sha256": "3E0838B911C39B90F9B6B351D0B82D87C05BA9CB2D1E316151089C4BAFB1D541",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-metadata.stderr.log"
+    },
+    {
+      "sha256": "1FA2A9449287249B26BBC8E4F558BBA17EC69BA9F36E3B48389BFA72B5F02115",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-metadata.stdout.bin"
+    },
+    {
+      "sha256": "9A8744FA74AEC2A00B38EF11E490E8AC45161D06C26B3BC94ACAE234284BEA79",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "1D85AE75F30A33233B8238F782B1F12B4084B3EC5B46FE235B198EBD55B11928",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-runtime.stderr.log"
+    },
+    {
+      "sha256": "12A99A350E13E5B1473CCD10A9F634131784CE356DA4809961160DC19B0DBAD8",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-runtime.stdout.bin"
+    },
+    {
+      "sha256": "447D5150CFC463C508DBD04141AB1316E9DD22CFEF4F93AA9AA544E1BCE98B25",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-selected-tests.json"
+    },
+    {
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-after.json"
+    },
+    {
+      "sha256": "3E36175C0A4A5829517355FF0BD8A0A45852FF7E851A0BA451E4FF5B3905E822",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-artifact-copy.json"
+    },
+    {
+      "sha256": "E23A5BF5CE70919B918547AEDF0E610FDB99CD6F3B859643F3A6E915EDB012E7",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-compile.json"
+    },
+    {
+      "sha256": "8CF5021E3C35E5603A4072E2D2658E117951D5DA889B467B51C0D846EFC79DF8",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-metadata.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-metadata.stderr.log"
+    },
+    {
+      "sha256": "14A236F9188928B64BB44CE3537508DC8438A478E4FDF77071FFACC8F3B41012",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-metadata.stdout.bin"
+    },
+    {
+      "sha256": "47A5710E42B8E1F4E3C6A302E88B1BAD908942D714748DC754BBE2BF917CC962",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\highlight-root10db-source51.exe"
+    },
+    {
+      "sha256": "47A5710E42B8E1F4E3C6A302E88B1BAD908942D714748DC754BBE2BF917CC962",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-out\\bin\\test.exe"
+    },
+    {
+      "sha256": "83E2A0D3FE0E87839C51476D6AEDD9FE231199F3534FB4C27A7FEF497C8469EA",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-runtime.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-runtime.stderr.log"
+    },
+    {
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-runtime.stdout.bin"
+    },
+    {
+      "sha256": "05EEFC10535FA980C73562611BA3B34A4003DD4CF7BA4AA989050B29271BFD2A",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-selected-tests.json"
+    },
+    {
+      "sha256": "6057819C94F745EFB5F9F837353A1E9C1305F5B95993B082FD83BF9701538055",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-independent-auth-20261016\\review.json"
+    }
+  ],
+  "limitations": [
+    "116 selected entries include overlapping/imported tests, not116 unique public behaviors",
+    "Expected debug diagnostics preserved explicitly; all protocol status/log-error/leak flags zero",
+    "Scoped native evidence, not whole application/default SDK or INIT/other-helper/catchable-enqueue qualification",
+    "No native/Node/compiler jobs or C/source edits during this audit"
+  ]
+}

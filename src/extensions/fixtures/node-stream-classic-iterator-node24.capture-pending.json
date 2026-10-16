@@ -1,0 +1,7 @@
+{
+  "schema": "pi-zig-classic-iterator-source14-capture-state-v1",
+  "captureAccepted": false,
+  "expectedPackets": null,
+  "nodeVersionRequired": "v24.14.0",
+  "reason": "New original Source14 controls are prepared but unexecuted. Existing Source20 inputs and expected state remain immutable."
+}

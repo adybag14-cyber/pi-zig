@@ -1,0 +1,58 @@
+{
+  "schema": "pi-zig-native-write-stream-authority-v1",
+  "node_version": "v24.14.0",
+  "resolved_authority": "C:\\Users\\adyba\\pi-zig\\evidence\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "authority_sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "actual_captured_builtin_modules": [
+    {
+      "module": "fs",
+      "utf8_bytes": 91694,
+      "sha256": "802F46EB69B050A3E1BB4A401A29A4188839818FD460FBF4DAC1A4DC5D6A30FD"
+    },
+    {
+      "module": "internal/fs/streams",
+      "utf8_bytes": 16137,
+      "sha256": "BB866DA0880D623FF2DA7FB92ED1D801A832BB66AA4630177EDB880ABD48946C"
+    },
+    {
+      "module": "internal/fs/utils",
+      "utf8_bytes": 28023,
+      "sha256": "9FA29C5DA3E2156F7751D427AEE2444A07E9BDE859CF57973540279F027331F2"
+    },
+    {
+      "module": "internal/streams/destroy",
+      "utf8_bytes": 7716,
+      "sha256": "3926D962D1C6A096C766FC9DFEBFB10B100AEA7E9AE16DA45AC6D971FFB2782D"
+    },
+    {
+      "module": "internal/streams/writable",
+      "utf8_bytes": 34724,
+      "sha256": "428C1E0246B0503891971DE48CC1CA291168D8E20DE00B1AAF7D2E0325E36733"
+    },
+    {
+      "module": "internal/errors",
+      "utf8_bytes": 71331,
+      "sha256": "2CDA1AE333267DFBE6BF20DA6357111D1C680AA6A5E1A0D4F10117742B6C4231"
+    },
+    {
+      "module": "internal/validators",
+      "utf8_bytes": 19778,
+      "sha256": "66F780F147EAAD7C0C9293B02BAEB2BBEEB380A458B6A3B554DBDCC4C5E65390"
+    }
+  ],
+  "primary_read_only_references": [
+    "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/open-osfhandle?view=msvc-170",
+    "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/close?view=msvc-170",
+    "https://learn.microsoft.com/en-us/cpp/c-runtime-library/reference/open-wopen?view=msvc-170",
+    "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/node_file.cc",
+    "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/fs.c"
+  ],
+  "pinned_windows_header": "toolchain/zig-x86_64-windows-0.16.0/lib/libc/include/any-windows-any/fcntl.h",
+  "pinned_windows_header_sha256": "D5F509A50CA32E344A88A8DBAB1D657CA0F035CB636E5F71A1ECB099D857FDAF",
+  "runtime_status": "recovery_pending",
+  "reference_read_is_execution": false,
+  "source_capture_jobs_run": 0,
+  "native_jobs_run": 0,
+  "crt_proposal_selected": false,
+  "canonical_fmt_or_AST_run": false
+}

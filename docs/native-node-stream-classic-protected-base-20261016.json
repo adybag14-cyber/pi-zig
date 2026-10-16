@@ -1,0 +1,411 @@
+{
+  "schema": "pi-zig-classic-stream-protected-base-inventory-v1",
+  "base": "642016544a0861a871708c0204731857d2a58ab9",
+  "file_count": 57,
+  "files": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "base_git_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "current_git_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/env-readable-pipe-source-24.input.txt",
+      "sha256": "E681A21A40D744527474B0CC33053CAD7D709DE8FA8E6818A016CD0470370B62",
+      "base_git_blob": "6efb10ed903db8646371245982230b2be7c604ee",
+      "current_git_blob": "6efb10ed903db8646371245982230b2be7c604ee",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/env-readable-pipe-source-24.json",
+      "sha256": "5B79640FE44BC589133693EB87E6CCD5914EDB14313653E624DE6257C6F51B4F",
+      "base_git_blob": "c369c6bf4e479dde7d3e62a90980f48840b20d6c",
+      "current_git_blob": "c369c6bf4e479dde7d3e62a90980f48840b20d6c",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/stream-web-queue-text-node24.input.txt",
+      "sha256": "0FE151DCD8715FB219CAA50EF19C677AFF5015AED0E4E0066DB3AED7AEFC1648",
+      "base_git_blob": "522b315519f3d9d3475af1b1e2a2f760ae6bac5e",
+      "current_git_blob": "522b315519f3d9d3475af1b1e2a2f760ae6bac5e",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/stream-web-queue-text-node24.json",
+      "sha256": "6B635FB4DC56515C52524D26E829BC47A46449FAFF7B9FC1BD8E03F16A98E8AD",
+      "base_git_blob": "f4a0b23935470ea8169b285aea4be313ee3512a7",
+      "current_git_blob": "f4a0b23935470ea8169b285aea4be313ee3512a7",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_ai_lazy_api.zig",
+      "sha256": "D8586B8BF1DF68056B02E98E89DCCAB2EE6FFAC99AFEA06A11BE5F561933FBFB",
+      "base_git_blob": "dc0dfbbe9c0c92510a3010c53dd3994dd331e5bc",
+      "current_git_blob": "dc0dfbbe9c0c92510a3010c53dd3994dd331e5bc",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "base_git_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "current_git_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "0CEA9590A5EA47288D8C435B33C34AF842F5FF271DBE852798045568BB36D9DC",
+      "base_git_blob": "4792f9485d39265c05f2e57d450b8fdb7884a69a",
+      "current_git_blob": "4792f9485d39265c05f2e57d450b8fdb7884a69a",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0",
+      "base_git_blob": "b81779d3d0fa59cce20f2d89e0c94a6fc1c05c88",
+      "current_git_blob": "b81779d3d0fa59cce20f2d89e0c94a6fc1c05c88",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_compression_stream.zig",
+      "sha256": "E063F5612A6176949F1AA03BE5328698616DC6D03764879832E0A5536EDDFBA0",
+      "base_git_blob": "ffb764295bc19f85f733b428b99e27514b40a766",
+      "current_git_blob": "ffb764295bc19f85f733b428b99e27514b40a766",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_node_stream_web.zig",
+      "sha256": "0CFB9811860E43FDDE8DE3F83DF8516E86E1285D6FD3A690FA84EA7D57212920",
+      "base_git_blob": "7e6edd7f78ceb8380d3f5a2b0f679423373c38a2",
+      "current_git_blob": "7e6edd7f78ceb8380d3f5a2b0f679423373c38a2",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_readable_stream.zig",
+      "sha256": "2F292C889CC58530644A6020F0038FBA84A4AFE45D9F8D8D12D7DF736D0F26F2",
+      "base_git_blob": "953951ea6bbc5acc7926a9094a08dfd0d788c347",
+      "current_git_blob": "953951ea6bbc5acc7926a9094a08dfd0d788c347",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "56E0BCE5BE8E363F759C1510F08472860154DC1F7F5761823FD504380FC47CE7",
+      "base_git_blob": "b1324709beda78b86739dfe212f9e561819f7d32",
+      "current_git_blob": "b1324709beda78b86739dfe212f9e561819f7d32",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_transform_stream.zig",
+      "sha256": "AC73F18D45C04C0FCD1CCFA9540E22D26B858EE64D16FF0438B7552D55C27B0A",
+      "base_git_blob": "270dca44b7785c880fedcadd21378fd2cbf3b22a",
+      "current_git_blob": "270dca44b7785c880fedcadd21378fd2cbf3b22a",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_web_body.zig",
+      "sha256": "F8120395ED1F4F0A62E75A320CCE520702120A097C93679C5ADDEF456A7E2FFA",
+      "base_git_blob": "3ab8512dcb2d88a5b16468ad725f871c2b285ab6",
+      "current_git_blob": "3ab8512dcb2d88a5b16468ad725f871c2b285ab6",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_web_request.zig",
+      "sha256": "C15D1516ABD1571AB8ABE398DCEA355345D1E7A7A812F51B09BAE04C08C61D58",
+      "base_git_blob": "cf7a2b101b64398a2b65afdc0e3e5c8749ca39b3",
+      "current_git_blob": "cf7a2b101b64398a2b65afdc0e3e5c8749ca39b3",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_web_response.zig",
+      "sha256": "3828EFFFB23EAD7290BFC6F797E74109BBD3080E0389423BC023ED1F1FB452BE",
+      "base_git_blob": "cfeb2e67b9105d5b6e7c4a54625ee0fda3aa7b05",
+      "current_git_blob": "cfeb2e67b9105d5b6e7c4a54625ee0fda3aa7b05",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/native_writable_stream.zig",
+      "sha256": "3E8A175843B939414732D493E52CE63A8514C5BDCA14BEA4A06BFFD6AAFBED6B",
+      "base_git_blob": "b8709ccf72de1b8147f7308de9236c2560b61385",
+      "current_git_blob": "b8709ccf72de1b8147f7308de9236c2560b61385",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "src/extensions/text_decoder.zig",
+      "sha256": "EB4F1F826B34A56417DC656C932F67B572F692A3A0588ABF863EC7031C058459",
+      "base_git_blob": "5ab6cfe78be0f343add6a8209639d79477b5eab6",
+      "current_git_blob": "5ab6cfe78be0f343add6a8209639d79477b5eab6",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/adler32.c",
+      "sha256": "9CD1443A24FF2A3053961695BD432035C58347386A420D3388232376EBABE211",
+      "base_git_blob": "04b81d29bad1691878648d7ae1680726abd905e4",
+      "current_git_blob": "04b81d29bad1691878648d7ae1680726abd905e4",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/crc32.c",
+      "sha256": "8FD16F0A7714D51C89C2EB37EB98EC15E8A4DC57BA343E7B7398B19144039FDA",
+      "base_git_blob": "6c38f5c04c6a87e711ecb50b668e17131fa8fae2",
+      "current_git_blob": "6c38f5c04c6a87e711ecb50b668e17131fa8fae2",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/crc32.h",
+      "sha256": "9A2223575183AC2EE8A247F20BF3AC066E8BD0140369556BDBDFFC777435749E",
+      "base_git_blob": "137df68d616c5ed38913579ba37b4e4c533fa903",
+      "current_git_blob": "137df68d616c5ed38913579ba37b4e4c533fa903",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/deflate.c",
+      "sha256": "3B956337350F94C34987750F785587EF33D9C89CEAEBB7C2AFB189C956360CBE",
+      "base_git_blob": "012ea8148e8d21cf515a9ff47d4af719d049b276",
+      "current_git_blob": "012ea8148e8d21cf515a9ff47d4af719d049b276",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/deflate.h",
+      "sha256": "48BAF016326D8D5E3E32AC8153CC7E22F854B8E6834830B167B998A7FB1E7989",
+      "base_git_blob": "300c6ada62b82e4984dd59a931c694db8636bd8f",
+      "current_git_blob": "300c6ada62b82e4984dd59a931c694db8636bd8f",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffast.c",
+      "sha256": "E6EF64CE5DC0A4CD5C7AD08CEEB2B2A698B8447F6BD156057CAEB2EDAB68C0CB",
+      "base_git_blob": "9354676e786ee7a6a31668adf9d25c712d57e657",
+      "current_git_blob": "9354676e786ee7a6a31668adf9d25c712d57e657",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffast.h",
+      "sha256": "05CC5DC9FF1DA7B8B52A4BD8BDA0D8A5C236A2F39EFE84B941516EA13857E6C5",
+      "base_git_blob": "49c6d156c5c652dbd9e2e6aff90e20eb279a2b37",
+      "current_git_blob": "49c6d156c5c652dbd9e2e6aff90e20eb279a2b37",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffixed.h",
+      "sha256": "237BA710F090E432B62EBF963BEE8B302867E9691406B2D3F8EE89EE7BFEF9B0",
+      "base_git_blob": "d6283277694802ce7938f537f12990d6eead4924",
+      "current_git_blob": "d6283277694802ce7938f537f12990d6eead4924",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inflate.c",
+      "sha256": "34C998CE0037C0537C04B03B276F680B945F9B2C9D1E01B287605BD6879F7FD2",
+      "base_git_blob": "94ecff015a9be7d28d19ba7b2547e2563a1680c5",
+      "current_git_blob": "94ecff015a9be7d28d19ba7b2547e2563a1680c5",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inflate.h",
+      "sha256": "E8D4A51B07694BF48CB91979C19974CF6A5AB0B8A09D26EC0D14DF349230673E",
+      "base_git_blob": "f127b6b1fa5f7d0266e3b502701948dfd3c6abc8",
+      "current_git_blob": "f127b6b1fa5f7d0266e3b502701948dfd3c6abc8",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inftrees.c",
+      "sha256": "5D4F335221D2DC76F17ABD2577D92C2D7BAF68FA6D7F23373B360830493D1563",
+      "base_git_blob": "98cfe164458c40c1d6dd3867039fda7105edafed",
+      "current_git_blob": "98cfe164458c40c1d6dd3867039fda7105edafed",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inftrees.h",
+      "sha256": "0A0FCAF2AE2FAE57426BDC06637270E9BBA974F35202CADBDBA479D946E6409D",
+      "base_git_blob": "396f74b5da798ab1daf8039d748c5334735fed58",
+      "current_git_blob": "396f74b5da798ab1daf8039d748c5334735fed58",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/LICENSE",
+      "sha256": "845EFC77857D485D91FB3E0B884AAA929368C717AE8186B66FE1ED2495753243",
+      "base_git_blob": "ab8ee6f71428c3e4646b12b64ad387cde33462e5",
+      "current_git_blob": "ab8ee6f71428c3e4646b12b64ad387cde33462e5",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/PROVENANCE.md",
+      "sha256": "7934B76B81CF681BD4776DA344AAC8606131E40FEF534AB8C31D634C2D46DDC9",
+      "base_git_blob": "edc149912e153558bea2216c798669fb9525793e",
+      "current_git_blob": "edc149912e153558bea2216c798669fb9525793e",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/trees.c",
+      "sha256": "F63C68C16C05FCD196050529D1A0E7657960E4136B9987D90A6AC3E58A964B0F",
+      "base_git_blob": "6a523ef34e3cf29f5dd01b787660ab48bd6f697d",
+      "current_git_blob": "6a523ef34e3cf29f5dd01b787660ab48bd6f697d",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/trees.h",
+      "sha256": "BB0A9D3CA88EE00C81ADB7C636E73B97085F6EF1B52D6D58EDBE2B6DC3ADEB4D",
+      "base_git_blob": "d35639d82a27807e49ea35c334f8bbcf64720f82",
+      "current_git_blob": "d35639d82a27807e49ea35c334f8bbcf64720f82",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zconf.h",
+      "sha256": "F5134250A67D57459234B63858F0D9D3EF8DCC48E9E1028D3F4FDCF6EAE677AE",
+      "base_git_blob": "62adc8d8431f2f9149ae0b1583915e21a28dd8b5",
+      "current_git_blob": "62adc8d8431f2f9149ae0b1583915e21a28dd8b5",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zlib.h",
+      "sha256": "8A5579AF72EA4F427FF00A4150F0CCB3FC5C1E4379F726E101133B1AB9FC600C",
+      "base_git_blob": "8d4b932eaf6a0fbb8133b3ab49ba5ef587059fa0",
+      "current_git_blob": "8d4b932eaf6a0fbb8133b3ab49ba5ef587059fa0",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zutil.c",
+      "sha256": "8CED40D8C88588811EDD2BDB35B7439983D5E1F8E9E32B8A3B244731F3C317B7",
+      "base_git_blob": "b1c5d2d3c6daf5a4b7a337dafe3e862ca177b41c",
+      "current_git_blob": "b1c5d2d3c6daf5a4b7a337dafe3e862ca177b41c",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zutil.h",
+      "sha256": "DDDB2DC7A1DC339ECF2C8E089B366F08BB731C0839C7110240D17CE731BB4FEA",
+      "base_git_blob": "48dd7febae65eeeaad7794f0a9317bcd054c107f",
+      "current_git_blob": "48dd7febae65eeeaad7794f0a9317bcd054c107f",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/builtin-array-fromasync.h",
+      "sha256": "F41EB2EB028832CFF9A5F8D8D2CB438C27771A9D7D85C30DFD16AA78F34FE6DE",
+      "base_git_blob": "f2b568af5fb91f263a87a0a09c4b2caeff2186fb",
+      "current_git_blob": "f2b568af5fb91f263a87a0a09c4b2caeff2186fb",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/builtin-iterator-zip-keyed.h",
+      "sha256": "24446C6157A043CFEB0B0255C7892F5146809BD3098C70028BFA1EE5311B91F4",
+      "base_git_blob": "471c6bf2135894c42781542eec1c340ce878a3d6",
+      "current_git_blob": "471c6bf2135894c42781542eec1c340ce878a3d6",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/builtin-iterator-zip.h",
+      "sha256": "FDAEF760ECCE82C1F8B62DCA8D0D424AE05EF88A0037E32221858AB7AC8994C9",
+      "base_git_blob": "b69844655afa8254bbfcd2abaaa5103e3dc9f43a",
+      "current_git_blob": "b69844655afa8254bbfcd2abaaa5103e3dc9f43a",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/cutils.h",
+      "sha256": "DFFEC8BEA17F08108DA5A91C1178804754698BBBB6202DC100268E78E8C5B770",
+      "base_git_blob": "d441bba5e781f1817453aae5435ff6a223cbd18e",
+      "current_git_blob": "d441bba5e781f1817453aae5435ff6a223cbd18e",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/dtoa.c",
+      "sha256": "A8D2CF2D04DB406E0C16ACDD95AB0E709D309902865722F41DAC07A1BA5676AF",
+      "base_git_blob": "a89e824f9263ab9d1c47b22d955f48d950719d96",
+      "current_git_blob": "a89e824f9263ab9d1c47b22d955f48d950719d96",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/dtoa.h",
+      "sha256": "1C4A4540C0038632C8A4C225472FBC21BD476FB35C4DA4A857A11965B58231B9",
+      "base_git_blob": "85be040698c99e73e4b8e53af9edffbf7acd1aa2",
+      "current_git_blob": "85be040698c99e73e4b8e53af9edffbf7acd1aa2",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libregexp-opcode.h",
+      "sha256": "2A98D646089F3A72F25480116297C5FDB5B28FD9F815447273951F4ADE4A115E",
+      "base_git_blob": "b3d7b6fdf3a574004fe5e586d1f246b088bcbc07",
+      "current_git_blob": "b3d7b6fdf3a574004fe5e586d1f246b088bcbc07",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libregexp.c",
+      "sha256": "AF13E996ABB1767FE0CDFDA123C45B811D53688D403A2AC47142E97BF79F1FAE",
+      "base_git_blob": "49c474c468918e29977bc5acfdc891f1ccf2ab1b",
+      "current_git_blob": "49c474c468918e29977bc5acfdc891f1ccf2ab1b",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libregexp.h",
+      "sha256": "53FF95A038F7001B752C455D195D998E2955F0AE4ED62A002C13ECA798DB3CEB",
+      "base_git_blob": "44eded3bf5f3d5f7470776736dc9dc6af7d177c0",
+      "current_git_blob": "44eded3bf5f3d5f7470776736dc9dc6af7d177c0",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libunicode-table.h",
+      "sha256": "5840A921AC11664B505EE37B1219F518FFF2A04972FE848B4BDF1E85C5A0BD83",
+      "base_git_blob": "f1cf304187c437d935fbee8633806c92d5a60a94",
+      "current_git_blob": "f1cf304187c437d935fbee8633806c92d5a60a94",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libunicode.c",
+      "sha256": "D755606498FF707DC3A93826713C749F77B9222D8A6B066621D72A308460BF2D",
+      "base_git_blob": "6d539331e995f81310fefdcde0ac758b7b3b71ce",
+      "current_git_blob": "6d539331e995f81310fefdcde0ac758b7b3b71ce",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/libunicode.h",
+      "sha256": "AD13F66AAEA3FAB1616E84B9C048F2A315E1BDBAB628B966617A7A3E55BCBA2B",
+      "base_git_blob": "66c0b3865e8f57472a7dbb11a66685f8fdd9ea2b",
+      "current_git_blob": "66c0b3865e8f57472a7dbb11a66685f8fdd9ea2b",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/list.h",
+      "sha256": "CB6E24E8EE54BCCDD66234FE54CD702D1160B9841DB2B9B9ADEB5003AFE301D5",
+      "base_git_blob": "b8dd716814f541a6de030b099890ca32398b3434",
+      "current_git_blob": "b8dd716814f541a6de030b099890ca32398b3434",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs-atom.h",
+      "sha256": "66654AE6533D15073EA527979C453709D7ED83162142C656095A10DCEF737A60",
+      "base_git_blob": "6b8dde84f1e222b850cb618db3c48089ffa9654b",
+      "current_git_blob": "6b8dde84f1e222b850cb618db3c48089ffa9654b",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs-c-atomics.h",
+      "sha256": "29883C742A5C512278FCE54D19B1B9AF949006E1D7DFC9FFA2E0946B184D8C5C",
+      "base_git_blob": "8fc6b720309cd4da980fe2a12126007b45926119",
+      "current_git_blob": "8fc6b720309cd4da980fe2a12126007b45926119",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs-opcode.h",
+      "sha256": "0054B0C45FD091AFA308C3FB93B5862E0B071235918D3D73E413D23FCE388BBC",
+      "base_git_blob": "ec2a5ad9187c7bb158c169d1b1e63cb7652bee4f",
+      "current_git_blob": "ec2a5ad9187c7bb158c169d1b1e63cb7652bee4f",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B",
+      "base_git_blob": "71e3f43528fdd2e777d4fede6500703c2ead90c2",
+      "current_git_blob": "71e3f43528fdd2e777d4fede6500703c2ead90c2",
+      "git_object_unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "base_git_blob": "1fe806fe1373f0e1ea97cf15587e9614783b15e7",
+      "current_git_blob": "1fe806fe1373f0e1ea97cf15587e9614783b15e7",
+      "git_object_unchanged": true
+    }
+  ],
+  "scope": "Protected Engine/class/AsyncFunction/AsyncGenerator/Body/SDK leaves, QuickJS C+headers, complete upstream codec closure, original WHATWG Source20 and Source16 packet inputs/expected. Existing files are unchanged in the isolated base worktree; SHA256 closes exact current bytes, Git objects independently match immutable base.",
+  "fmt_run": false,
+  "ast_run": false,
+  "native_run": false,
+  "node_run": false
+}

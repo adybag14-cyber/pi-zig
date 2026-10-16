@@ -104,7 +104,7 @@ pub fn fromBytes(engine: *engine_mod.Engine, bytes: []const u8) !c.JSValue {
     return fromBacking(engine, backing, 0, bytes.len);
 }
 
-fn fromBacking(engine: *engine_mod.Engine, backing: c.JSValue, offset: usize, size: usize) !c.JSValue {
+pub fn fromBacking(engine: *engine_mod.Engine, backing: c.JSValue, offset: usize, size: usize) !c.JSValue {
     const prototype = engine.buffer_prototype orelse return error.NativeBufferUnavailable;
     var args = [_]c.JSValue{ backing, c.JS_NewInt64(engine.context, @intCast(offset)), c.JS_NewInt64(engine.context, @intCast(size)) };
     defer engine.freeValue(args[1]);
@@ -233,7 +233,7 @@ fn invokeMethod(context: ?*c.JSContext, this: c.JSValue, argc: c_int, argv: [*c]
     return methodCall(engine, @enumFromInt(magic), this, argv[0..@intCast(argc)]) catch |err| failure(context, err);
 }
 
-fn isBuffer(engine: *engine_mod.Engine, value: c.JSValue) !bool {
+pub fn isBuffer(engine: *engine_mod.Engine, value: c.JSValue) !bool {
     if (!c.JS_IsObject(value)) return false;
     const prototype = engine.buffer_prototype orelse return false;
     var current = c.JS_DupValue(engine.context, value);

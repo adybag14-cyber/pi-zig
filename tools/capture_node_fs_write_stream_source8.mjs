@@ -1,0 +1,21 @@
+// Prepared original Node only. No production stream implementation lives here.
+import fs from 'node:fs';
+import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+if(process.version!=='v24.14.0')throw Error(`Pinned Node v24.14.0 required, got ${process.version}`);
+const cases=['default-binary-web-pipeline','custom-partial-write','custom-cork-writev','destroy-during-write','flush-close-order','autoClose-false-close','monkey-open-override','writer-namespace-metadata'];
+const caseName=process.argv[2];if(!cases.includes(caseName))throw Error('Exactly one original Source8 case required');
+const candidate=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');const container=path.resolve(candidate,'..','..');
+if(!fs.existsSync(path.join(container,'.pi-zig-workspace.json')))throw Error('Contained workspace metadata is required');
+const workspace=JSON.parse(fs.readFileSync(path.join(container,'.pi-zig-workspace.json'),'utf8'));
+const evidence=path.resolve(container,workspace.evidence);const scratch=process.env.PI_STREAM_WRITER_CAPTURE_ROOT;
+if(!scratch||!path.isAbsolute(scratch))throw Error('An explicitly owned contained capture directory is required');
+const owned=path.resolve(scratch);const rel=path.relative(evidence,owned);if(!rel||rel.startsWith('..')||path.isAbsolute(rel))throw Error('Capture directory must remain inside contained evidence');
+if(!fs.statSync(owned).isDirectory())throw Error('Owned capture directory is absent');
+const realEvidence=fs.realpathSync(evidence);const realOwned=fs.realpathSync(owned);const realRel=path.relative(realEvidence,realOwned);if(!realRel||realRel.startsWith('..')||path.isAbsolute(realRel))throw Error('Resolved capture directory escapes contained evidence');
+const outputPath=path.join(owned,`${caseName}.bin`);if(fs.existsSync(outputPath))throw Error('Refuse original control output overwrite');
+globalThis.caseName=caseName;globalThis.outputPath=outputPath;
+const input=fs.readFileSync(path.join(candidate,'src','extensions','fixtures','node-fs-write-stream-node24.input.txt'),'utf8');
+await import(`data:text/javascript;base64,${Buffer.from(input).toString('base64')}`);
+if(!globalThis.packet||packet.case!==caseName)throw Error('Original writer packet did not terminally publish');
+process.stdout.write(`${JSON.stringify({nodeVersion:process.version,platform:process.platform,case:caseName,packet})}\n`);

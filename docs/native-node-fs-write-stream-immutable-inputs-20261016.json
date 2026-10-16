@@ -1,0 +1,104 @@
+{
+  "schema": "pi-zig-contained-writer-immutable-input-check-v1",
+  "base": "74de930b813a9049291ee178d35fba689cf07985",
+  "immutable_classic_file_count": 15,
+  "files": [
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-node24.input.txt",
+      "sha256": "C06254F1E89BFA43EB307031FBF52377221B14551B2FDD00350C840A3A1C8828",
+      "git_blob": "8a980caa7116544e82592d1ecfefb7964f36247d",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-node24.capture-pending.json",
+      "sha256": "52EED305319D231405A9E7C19BF65728BB3E4E0D982182171DA9D6A6FB0AE6C8",
+      "git_blob": "49a76e06cbb3889cf164dcf05b31ae0c70968f36",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "tools/capture_node_stream_classic_source20.mjs",
+      "sha256": "22BD59F8DD8D0AC0D8D5AA992FABAB0FB982F7CCBFBCE46461BD3DEA8F25B804",
+      "git_blob": "fd473b6bd36ef8cccc453db08436b9d084f16595",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-iterator-node24.input.txt",
+      "sha256": "458677C6A72646F54E01037F1F42DC415EF4ED032A5B6B93D22C6CC3721FF1DD",
+      "git_blob": "7e05007dc84f3bccfb78e4b5ffd329c0db2912c6",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-iterator-node24.capture-pending.json",
+      "sha256": "4909FED7C8A532A650A06777F8EE264D0E20193A3DA81904C1C38A9BCA509B2E",
+      "git_blob": "80777583bc02acf3c77aa8d574c4374a682f2f69",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "tools/capture_node_stream_classic_iterator_source14.mjs",
+      "sha256": "F43EC1A2F23317C33247B38581FD3850BB335E923E6CF78958C0B25D8A4598E3",
+      "git_blob": "291f4d66a5d376f16c045f9ddc3e5aa48b0552e9",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/5303-bash-output-truncation.test.ts",
+      "sha256": "D38754F1ABADB955553F0D2CE3276F580FB07CA9B937E0D4ABE3B6226D2E3B87",
+      "git_blob": "888ac833c23097f0012794cae06bb708e7b334d3",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/child-process.ts",
+      "sha256": "CD324F5B9A1ABADD85AB5A331750D475C8BD51EC65CAE091AD9B416245EC85D4",
+      "git_blob": "b152444d6c79cfbfeb61b5cc007b3b5d1dc702be",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/jsonl.ts",
+      "sha256": "95723D349FCEBAD1F1DA7CE103D02BA7D5E2C876B7D178D41D8B56BEEDBD93E0",
+      "git_blob": "8962c734021eee0d39d3a35ad8b5c020b0c2c14b",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/package-manager.test.ts",
+      "sha256": "FC4513EE2D0974CD8D2CE334C7B086DE3C1973B4AC9E567211FFBAB77E51ADB2",
+      "git_blob": "8aedd93c45fac8f77880434a247cc98cff04fe88",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/package-manager.ts",
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+      "git_blob": "1ca63ebbb90bb1881ebba3e83fe49be0a6080724",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/rpc-jsonl.test.ts",
+      "sha256": "4A5A9738D39BB226E12535E6ACDCEBCD92EA675E9B1FD5FFADBDC0D7EA4BABB6",
+      "git_blob": "c8fc89e13e878877e5b82984e192abdc40b98f0f",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/sdk.ts",
+      "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+      "git_blob": "f678ba43ca80a9dfb40dc5f5b05055952590bb1d",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/tools-manager.ts",
+      "sha256": "CFD082080D10A6209D7994AC7829C29DBB39694BDF3FE549E907C28CFC506A17",
+      "git_blob": "f040f52471c28d31cb8f7757eafa4d5763b64ea4",
+      "unchanged_from74de930b": true
+    },
+    {
+      "path": "src/extensions/fixtures/node-stream-classic-source/wait-for-child-process.excerpt.ts",
+      "sha256": "28C12EC411849604F1DBC95C88EECEBE510A0A074A5A7CED01E627BE40FF8322",
+      "git_blob": "8e76c15280f0ffa34e07c351a1bb7b12a46bcb41",
+      "unchanged_from74de930b": true
+    }
+  ],
+  "protected_historical_inventory": "docs/native-node-stream-classic-protected-base-20261016.json",
+  "protected_count": 57,
+  "protected_drift": 0,
+  "historical_proofs_rewritten": false,
+  "source_jobs_run": 0,
+  "native_jobs_run": 0,
+  "canonical_fmt_or_AST_run": false
+}

@@ -13,6 +13,9 @@ pub const Task = struct {
     reject: c.JSValue,
     done: std.atomic.Value(bool) = .init(false),
     abandoned: bool = false,
+    // Callback APIs retire the completed task before propagating a guest throw.
+    // Promise tasks preserve their existing rejection behavior by default.
+    propagate_completion_errors: bool = false,
     pub fn finish(self: *Task) void {
         const engine = self.hub.engine;
         self.done.store(true, .release);
@@ -87,6 +90,7 @@ pub const Hub = struct {
             _ = self.tasks.orderedRemove(index);
             defer task.destroy(task);
             if (!task.abandoned) task.complete(task) catch |err| {
+                if (task.propagate_completion_errors) return err;
                 _ = @import("native_durable.zig").reject(engine, err);
                 const reason = c.JS_GetException(engine.context);
                 defer engine.freeValue(reason);

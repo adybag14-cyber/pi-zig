@@ -1,0 +1,96 @@
+{
+  "schema": "pi-zig-node-classic-stream-builtin-authority-v1",
+  "node_version": "v24.14.0",
+  "authority_file": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "authority_file_sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "module_count": 17,
+  "modules": [
+    {
+      "module": "stream",
+      "utf8_bytes": 5251,
+      "sha256": "D9FC650EE38EADBD98884418D662D80C9D67152F9477F842FAEC0B17D981DB9B"
+    },
+    {
+      "module": "stream/promises",
+      "utf8_bytes": 961,
+      "sha256": "656A5E36AB3EA28F99B5FA91BC0B91393755D5D2D8CF10D81BB02897AA099904"
+    },
+    {
+      "module": "string_decoder",
+      "utf8_bytes": 4664,
+      "sha256": "A7345ABE6B0B8FA783872EBBED107695233F1CE86D8E9E15C24B7B25601C47F6"
+    },
+    {
+      "module": "internal/streams/legacy",
+      "utf8_bytes": 3454,
+      "sha256": "578B9F36CF818820A5F46B424E84A3F422CEF2DC6FE35F1139548506D2C27DC1"
+    },
+    {
+      "module": "internal/streams/state",
+      "utf8_bytes": 1491,
+      "sha256": "2B5F3C8B2D86136C86D9158F8EE1BFC1F63C2377B53C51B03B1166C1656E6809"
+    },
+    {
+      "module": "internal/streams/readable",
+      "utf8_bytes": 53740,
+      "sha256": "CC488D31B8BA81478EFF518970B51CE53F5C25F9044BF2C080DBEDE0465C9897"
+    },
+    {
+      "module": "internal/streams/writable",
+      "utf8_bytes": 34724,
+      "sha256": "428C1E0246B0503891971DE48CC1CA291168D8E20DE00B1AAF7D2E0325E36733"
+    },
+    {
+      "module": "internal/streams/duplex",
+      "utf8_bytes": 6750,
+      "sha256": "4D4F444657532A1B3C71866B8F36E4DC6A3E61A5D510ECDE4013A515A9A0C873"
+    },
+    {
+      "module": "internal/streams/transform",
+      "utf8_bytes": 7327,
+      "sha256": "5101B62070A9BD5ECE5D8ED705019ADFEF30D71E09C452091E2357F24CB94AA3"
+    },
+    {
+      "module": "internal/streams/passthrough",
+      "utf8_bytes": 1809,
+      "sha256": "82F55466F4EC4583F2DA8CDC5329D5E94B2C2E9F5469DD709568C8C26683AC5E"
+    },
+    {
+      "module": "internal/streams/from",
+      "utf8_bytes": 4529,
+      "sha256": "A667AF81D0CDE3A49A41FC3C9BFA781646C09BABA4008619D84C180B96C97E6C"
+    },
+    {
+      "module": "internal/streams/destroy",
+      "utf8_bytes": 7716,
+      "sha256": "3926D962D1C6A096C766FC9DFEBFB10B100AEA7E9AE16DA45AC6D971FFB2782D"
+    },
+    {
+      "module": "internal/streams/end-of-stream",
+      "utf8_bytes": 9224,
+      "sha256": "56DACC5A025F15BFE90EED4862754DEB8B0A184D2E58B5F49DD38E2033D65737"
+    },
+    {
+      "module": "internal/streams/pipeline",
+      "utf8_bytes": 13161,
+      "sha256": "9F18DDB1D692262EBE1400ED7BFA82EED101CCA6E41700254E7CB7A5B292569E"
+    },
+    {
+      "module": "internal/streams/utils",
+      "utf8_bytes": 9293,
+      "sha256": "0EFDF824B8933CFF6AB54673F1C36D0BC1CD2866AAB45D3888A421D2BE85DEBC"
+    },
+    {
+      "module": "internal/streams/add-abort-signal",
+      "utf8_bytes": 1785,
+      "sha256": "65882F3EB9ECFB255AB274F7D93AD3E68DCB1F5E5EF9071EB25FC8ABEEC01D63"
+    },
+    {
+      "module": "internal/webstreams/adapters",
+      "utf8_bytes": 27726,
+      "sha256": "DE93A0C8E67F7E7263F70C86DA02C4B00CD0D09FFA06D66333146C7BB40A2B57"
+    }
+  ],
+  "source_only": true,
+  "executed_in_this_packet": false
+}

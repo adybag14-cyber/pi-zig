@@ -1,0 +1,82 @@
+import * as stream from 'node:stream';
+import { Readable, Writable, Duplex, Transform, PassThrough, Stream } from 'node:stream';
+import { pipeline, finished } from 'node:stream/promises';
+import { StringDecoder } from 'node:string_decoder';
+import { Buffer } from 'node:buffer';
+import { EventEmitter } from 'node:events';
+import { ReadableStream } from 'node:stream/web';
+const rows=[];
+const tick=()=>new Promise(resolve=>process.nextTick(resolve));
+const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+const endOf=s=>new Promise((resolve,reject)=>{s.once('end',resolve);s.once('error',reject)});
+const key=k=>typeof k==='symbol'?String(k):k;
+const descriptor=d=>({enumerable:d.enumerable,configurable:d.configurable,...('value'in d?{writable:d.writable,type:typeof d.value,name:typeof d.value==='function'?d.value.name:null,length:typeof d.value==='function'?d.value.length:null}:{get:d.get?.name??null,set:d.set?.name??null})});
+const state=s=>({readable:s.readable??null,writable:s.writable??null,readableLength:s.readableLength??null,writableLength:s.writableLength??null,readableFlowing:s.readableFlowing??null,readableEnded:s.readableEnded??null,writableEnded:s.writableEnded??null,writableFinished:s.writableFinished??null,needDrain:s.writableNeedDrain??null,destroyed:s.destroyed,closed:s.closed});
+const error=e=>({name:e.name,message:e.message,code:e.code??null,keys:Reflect.ownKeys(e).map(key)});
+switch(caseName){
+case 'constructor-metadata':{
+ rows.push({namespaceKeys:Reflect.ownKeys(stream).map(key),namespaceDescriptors:Reflect.ownKeys(stream).map(k=>[key(k),descriptor(Object.getOwnPropertyDescriptor(stream,k))])});
+ for(const ctor of [Stream,Readable,Writable,Duplex,Transform,PassThrough,StringDecoder])rows.push({name:ctor.name,length:ctor.length,keys:Reflect.ownKeys(ctor).map(key),prototypeKeys:Reflect.ownKeys(ctor.prototype).map(key),descriptors:Reflect.ownKeys(ctor.prototype).map(k=>[key(k),descriptor(Object.getOwnPropertyDescriptor(ctor.prototype,k))]),source:Function.prototype.toString.call(ctor)});
+ const p=new PassThrough();rows.push({readable:p instanceof Readable,writable:p instanceof Writable,duplex:p instanceof Duplex,transform:p instanceof Transform,stream:p instanceof Stream,defaultHwm:[p.readableHighWaterMark,p.writableHighWaterMark],same:[stream.default===Stream,Stream.Readable===Readable,Stream.PassThrough===PassThrough]});p.destroy();await tick();break;
+}
+case 'write-sync-order':{
+ const trace=[];const w=new Writable({highWaterMark:1,write(chunk,enc,cb){trace.push(['write',chunk.toString(),enc,this===w]);cb();trace.push(['after-cb',this.writableLength])}});w.on('drain',()=>trace.push(['drain']));w.on('finish',()=>trace.push(['finish']));w.on('close',()=>trace.push(['close']));
+ const same=e=>trace.push(['cb',e===null]);rows.push(w.write('a',same),w.write('b',same));trace.push(['after-write']);w.end(e=>trace.push(['endcb',e===null]));await finished(w);await tick();rows.push(trace,state(w));break;
+}
+case 'write-async-backpressure':{
+ const trace=[];let complete;const w=new Writable({highWaterMark:2,write(chunk,enc,cb){trace.push(['write',chunk.toString(),enc]);complete=cb}});w.on('drain',()=>trace.push(['drain',w.writableLength]));rows.push(w.write('ab',e=>trace.push(['cb1',e===null])),w.write('c',e=>trace.push(['cb2',e===null])),state(w));const cb1=complete;cb1();rows.push(state(w));complete();rows.push(trace,state(w));w.end();await finished(w);rows.push(state(w));break;
+}
+case 'cork-writev':{
+ const trace=[];const w=new Writable({writev(chunks,cb){trace.push(['writev',chunks.map(x=>[x.chunk.toString(),x.encoding]),chunks.allBuffers]);cb()}});w.cork();w.write('a',()=>trace.push('a'));w.cork();w.write(Buffer.from('b'),()=>trace.push('b'));rows.push(w.writableCorked,w.writableLength);w.uncork();rows.push(trace.slice(),w.writableCorked);w.end(()=>trace.push('end'));await finished(w);rows.push(trace,state(w));break;
+}
+case 'final-finish-close':{
+ const trace=[];let finishFinal;const w=new Writable({write(c,e,cb){trace.push('write');cb()},final(cb){trace.push(['final',this===w]);finishFinal=cb}});for(const event of ['prefinish','finish','close'])w.on(event,()=>trace.push(event));w.end('x',()=>trace.push('endcb'));rows.push(trace.slice(),state(w));finishFinal();await finished(w);rows.push(trace,state(w));break;
+}
+case 'destroy-once':{
+ const trace=[];const marker=new Error('owned-retirement');const w=new Writable({write(c,e,cb){cb()},destroy(e,cb){trace.push(['destroy',e===marker,this.destroyed]);cb(e);cb(e)}});w.on('error',e=>trace.push(['error',e===marker]));w.on('close',()=>trace.push(['close']));w.destroy(marker, e=>trace.push(['callback',e===marker]));w.destroy(marker,()=>trace.push(['second']));rows.push(trace.slice(),state(w));await tick();rows.push(trace,state(w));break;
+}
+case 'duplex-half-open':{
+ const trace=[];const d=new Duplex({allowHalfOpen:false,read(){this.push('x');this.push(null)},write(c,e,cb){cb()},final(cb){trace.push('final');cb()}});for(const ev of ['data','end','finish','close'])d.on(ev,chunk=>trace.push(ev==='data'?[ev,chunk.toString()]:ev));await finished(d);rows.push(trace,state(d));break;
+}
+case 'readable-read-unshift':{
+ const trace=[];const r=new Readable({read(n){trace.push(['read',n]);this.push(Buffer.from('abc'));this.push(null)}});rows.push(r.read(2)?.toString(),r.readableLength);r.unshift(Buffer.from('z'));rows.push(r.read(2)?.toString(),r.readableLength,r.read()?.toString());await tick();rows.push(trace,state(r));break;
+}
+case 'pipe-pause-drain-unpipe':{
+ const trace=[];let complete;const r=new Readable({read(){}});const w=new Writable({highWaterMark:1,write(c,e,cb){trace.push(['write',c.toString()]);complete=cb}});for(const ev of ['pause','resume'])r.on(ev,()=>trace.push(ev));w.on('pipe',s=>trace.push(['pipe',s===r]));w.on('unpipe',(s,info)=>trace.push(['unpipe',s===r,info.hasUnpiped]));r.pipe(w);await tick();rows.push(r.push('a'),r.push('b'),state(r),state(w));complete();rows.push(state(r));await tick();r.unpipe(w);if(complete)complete();rows.push(trace,state(r),state(w));r.destroy();w.destroy();await tick();break;
+}
+case 'decoder-utf8-carry-bom':{
+ for(const bytes of [[0xef,0xbb,0xbf,0xf0,0x9f,0x8c,0x8d],[0xc0,0x80,0xe0,0xa0],[0xed,0xa0,0x80,0x41],[0xf5,0x80,0x80,0x80]]){const d=new StringDecoder('utf8');const parts=[];for(const b of bytes)parts.push([d.write(Buffer.from([b])),d.lastNeed,d.lastTotal,Array.from(d.lastChar)]);parts.push([d.end(),d.lastNeed,d.lastTotal]);rows.push(parts)}break;
+}
+case 'decoder-utf16-base64':{
+ for(const enc of ['utf16le','base64','base64url']){const d=new StringDecoder(enc);const parts=[];for(const bytes of [[0x00],[0xd8],[0x3c],[0xdf],[0x41]])parts.push([d.write(Buffer.from(bytes)),d.lastNeed,d.lastTotal]);parts.push([d.end(),d.write(Buffer.from([0x42,0x00])),d.end()]);rows.push([enc,parts])}break;
+}
+case 'from-sync-jsonl-original':{
+ const {attachJsonlLineReader,serializeJsonLine}=originalJsonl;const r=Readable.from([serializeJsonLine({text:'a\u2028b\u2029c'}),Buffer.from('{"a":1}\r\n{"b":2}')]);const lines=[];const done=endOf(r);const cleanup=attachJsonlLineReader(r,line=>lines.push(line));await done;cleanup();rows.push(lines,state(r),r.listenerCount('data'),r.listenerCount('end'));break;
+}
+case 'from-async-values-order':{
+ const trace=[];const value={get then(){trace.push('get-then');return resolve=>{trace.push('then');resolve('a')}}};const r=Readable.from([value,'b']);r.on('data',x=>trace.push(['data',x]));r.on('end',()=>trace.push('end'));process.nextTick(()=>trace.push('tick'));queueMicrotask(()=>trace.push('microtask'));await endOf(r);await tick();rows.push(trace,state(r));break;
+}
+case 'from-async-iterator-close':{
+ const trace=[];const iterable={[Symbol.asyncIterator](){trace.push('iterator');let n=0;return {async next(){trace.push(['next',++n]);return {done:false,value:n}},async throw(e){trace.push(['throw',e.message]);return {done:false,value:Promise.resolve('thrown')}},async return(){trace.push('return');return {done:true,value:Promise.resolve('returned')}}}}};const r=Readable.from(iterable);const marker=new Error('cancel');r.once('data',x=>{trace.push(['data',x]);r.destroy(marker)});r.on('error',e=>trace.push(['error',e===marker]));await new Promise(resolve=>r.once('close',resolve));rows.push(trace,state(r));break;
+}
+case 'from-web-real-reader':{
+ const trace=[];const web=new ReadableStream({start(c){c.enqueue(new Uint8Array([0xef,0xbb]));c.enqueue(new Uint8Array([0xbf,0x41]));c.close()}});const options={get highWaterMark(){trace.push('hwm');return 1},get encoding(){trace.push('encoding');return 'utf8'},get objectMode(){trace.push('objectMode');return false},get signal(){trace.push('signal');return undefined}};const r=Readable.fromWeb(web,options);r.on('data',c=>trace.push(['data',c]));await endOf(r);await tick();rows.push(trace,state(r),web.locked);break;
+}
+case 'from-web-cancel':{
+ const trace=[];const marker=new Error('reader-cancel');const web=new ReadableStream({cancel(reason){trace.push(['cancel',reason===marker]);return Promise.resolve()}});const r=Readable.fromWeb(web);r.on('error',e=>trace.push(['error',e===marker]));const closed=new Promise(resolve=>r.once('close',resolve));r.destroy(marker);trace.push(['destroyed',r.destroyed]);await closed;rows.push(trace,state(r),web.locked);break;
+}
+case 'passthrough-readable-backpressure':{
+ const trace=[];const p=new PassThrough({readableHighWaterMark:1,writableHighWaterMark:2});rows.push(p.write('ab',()=>trace.push('writecb')),state(p));rows.push(p.read()?.toString(),state(p));p.end('c',()=>trace.push('endcb'));p.resume();await finished(p);rows.push(trace,state(p));break;
+}
+case 'pipeline-node-and-end-false':{
+ const trace=[];const r=Readable.from(['a','b']);const t=new Transform({transform(c,e,cb){trace.push(['transform',c.toString()]);cb(null,c)}});const w=new Writable({write(c,e,cb){trace.push(['write',c.toString()]);cb()}});await pipeline(r,t,w);rows.push(trace,state(r),state(t),state(w));const target=new PassThrough();target.resume();await pipeline(Readable.from(['x']),target,{end:false});rows.push(state(target));target.end();await finished(target);rows.push(state(target));break;
+}
+case 'finished-premature-close':{
+ const r=new Readable({read(){}});const f=finished(r,{cleanup:true}).then(()=>['fulfilled'],e=>['rejected',error(e)]);r.destroy();rows.push(await f,r.listenerCount('end'),r.listenerCount('error'),r.listenerCount('close'));let sync=false;let result;try{result=pipeline(new Readable({read(){}}),new Writable({write(c,e,cb){cb()}}),{get signal(){throw new Error('option-getter')}})}catch{sync=true}rows.push(sync,await result.then(()=>['fulfilled'],e=>['rejected',error(e)]));break;
+}
+case 'original-child-exit-tail':{
+ const {waitForChildProcess}=originalChildWait;const child=Object.assign(new EventEmitter(),{stdin:null,stdout:new PassThrough(),stderr:new PassThrough()});let output='';child.stdout.on('data',c=>{output+=c.toString()});let resolved=false;const waiting=waitForChildProcess(child).then(code=>{resolved=true;return code});child.stdout.write('HEAD\n');child.emit('exit',0,null);for(let n=1;n<=3;n++){await sleep(50);child.stdout.write(`TICK${n}\n`)}rows.push(resolved,child.stdout.destroyed);child.stdout.end('TAIL\n');child.stderr.end();rows.push(await waiting,output,child.stdout.destroyed,child.stderr.destroyed,child.listenerCount('exit'),child.listenerCount('close'));break;
+}
+default:throw new Error(`Unknown immutable classic stream case ${caseName}`);
+}
+globalThis.packet={case:caseName,rows};

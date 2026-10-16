@@ -16,6 +16,12 @@ decompressed and rehashed after creation.
 The ten core executable artifacts remain in the contained local evidence tree;
 this raw packet does not contain them. They must not be retired under a claim
 that this archive saved their bytes. The focused34 archives separately contain
-their five executable artifacts. Independent core acceptance is recorded
-separately when complete. Neither suite certifies the default SDK graph,
+their five executable artifacts. Independent core acceptance is sealed in
+`independent-review.json`, SHA256
+`FFE06944D810062D301C9127EFEA66CAFCD63C06544EF8BF63F90FE7544E89C2`.
+The audit independently decoded all 116 results, checked thirty process owners,
+all twenty-one admission probes, and twenty-four complete source/compiler seal
+comparisons. Generator GPA and recovery stderr contain the same expected direct
+fault-injection diagnostics as the earlier accepted F06 runs; all test-protocol
+log flags remain zero. Neither suite certifies the default SDK graph,
 complete provider set, final application or a shipping Windows package.

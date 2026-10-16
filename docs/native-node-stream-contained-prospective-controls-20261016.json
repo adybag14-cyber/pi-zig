@@ -1,0 +1,60 @@
+{
+  "schema": "pi-zig-contained-stream-prospective-controls-v1",
+  "container": "C:\\Users\\adyba\\pi-zig",
+  "candidate": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams",
+  "main": "C:\\Users\\adyba\\pi-zig\\main",
+  "source": "C:\\Users\\adyba\\pi-zig\\upstream\\pi",
+  "integration_source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "evidence": "C:\\Users\\adyba\\pi-zig\\evidence",
+  "runtime": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-20261012",
+  "runtime_status": "recovery_pending",
+  "compiler": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "compiler_version_required": "0.16.0",
+  "compiler_sha256_required": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "workspace_resolver": "C:\\Users\\adyba\\pi-zig\\main\\tools\\workspace\\Resolve-PiZigWorkspace.ps1",
+  "historical_path_resolver": "C:\\Users\\adyba\\pi-zig\\main\\tools\\workspace\\Resolve-PiZigHistoricalPath.ps1",
+  "source20_runner": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams\\tools\\capture_node_stream_classic_source20.mjs",
+  "source14_runner": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams\\tools\\capture_node_stream_classic_iterator_source14.mjs",
+  "writer_source8_runner": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams\\tools\\capture_node_fs_write_stream_source8.mjs",
+  "writer_windows_crt_selected": false,
+  "child_windows_output_scheduler_selected": false,
+  "immutable_references": [
+    {
+      "historical_path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-Env15-OwnedJob-Slot2-20261015.ps1",
+      "resolved_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Invoke-Env15-OwnedJob-Slot2-20261015.ps1",
+      "sha256": "1282E647F4A51D2354BB71D5107032CF37012EF1E020C89198A02E0A9308EB49",
+      "historical_bytes_rewritten": false
+    },
+    {
+      "historical_path": "C:/Users/adyba/pi-zig-update-evidence-20261003/Invoke-Env15-OwnedJob-Slot5-20261016.ps1",
+      "resolved_path": "C:\\Users\\adyba\\pi-zig\\evidence\\Invoke-Env15-OwnedJob-Slot5-20261016.ps1",
+      "sha256": "874C391A56B196EDDF1C16FBD880A3AD29505FDD4B9275A27234B3552C0EF6C1",
+      "historical_bytes_rewritten": false
+    },
+    {
+      "historical_path": "C:/Users/adyba/pi-zig-update-evidence-20261003/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+      "resolved_path": "C:\\Users\\adyba\\pi-zig\\evidence\\web-body-node24-source-first-20261015-node-builtin-authorities.json",
+      "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+      "historical_bytes_rewritten": false
+    }
+  ],
+  "root_grant": false,
+  "source_grant": false,
+  "canonical_checks_released": false,
+  "native_minimum_available_gib": 16,
+  "source_minimum_available_gib": 2,
+  "source_node_version_required": "v24.14.0",
+  "source_node_heap_mib": 256,
+  "compiler_jobs": 1,
+  "compile_outer_seconds": 1320,
+  "runtime_outer_seconds": 300,
+  "test_seconds": 120,
+  "host_await_seconds": 10,
+  "settle_seconds": 10,
+  "maximum_coordinated_roots": 4,
+  "expected_packets_manufactured": false,
+  "historical_receipts_rewritten": false,
+  "relocation_is_execution": false,
+  "launch_allowed": false,
+  "reason": "Prospective paths resolved from contained workspace. Runtime recovery, complete original inventories, explicit absences, Root resource ownership and fresh full pre/post seals must be accepted before any future execution."
+}
