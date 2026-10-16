@@ -80,11 +80,11 @@ console.log(JSON.stringify({modules:report.modules.length,declarations:report.de
 
 // Lower into ordinary compiled Zig callbacks. The output contains native
 // operations and literals, never an AST/source blob for runtime interpretation.
-const functions=[],functionIds=new WeakMap();let serial=0;
+const functions=[],functionIds=new WeakMap(),branchHelpers=[];let serial=0;
 const q=value=>JSON.stringify(value).replace(/\\u([0-9a-fA-F]{4})/g,'\\u{$1}').replace(/\\b/g,'\\x08').replace(/\\f/g,'\\x0c');
 const fresh=prefix=>`${prefix}_${serial++}`;
 const line=(ctx,text)=>ctx.lines.push(text);
-function value(ctx,expression){const name=fresh('x');line(ctx,`const ${name} = ${expression};`);return name}
+function value(ctx,expression){const name=`native_values[${ctx.slots.count++}]`;line(ctx,`${name} = ${expression};`);return name}
 function discard(ctx,result){if(/^[A-Za-z0-9_]+$/.test(result)&&(ctx.lines.join('\n').match(new RegExp('\\b'+result+'\\b','g'))??[]).length===1)line(ctx,`_ = ${result};`)}
 function names(pattern,out=new Set()){if(!pattern)return out;if(pattern.type==='Identifier')out.add(pattern.name);else if(pattern.type==='ArrayPattern')for(const e of pattern.elements)names(e,out);else if(pattern.type==='AssignmentPattern')names(pattern.left,out);else if(pattern.type==='RestElement')names(pattern.argument,out);else throw Error('Pattern '+pattern.type);return out}
 function localsOf(node){const result=new Set();for(const p of node.params??[])names(p,result);function visit(n){if(!n||typeof n!=='object')return;if(n!==node&&(n.type==='FunctionDeclaration'||n.type==='FunctionExpression'||n.type==='ArrowFunctionExpression')){if(n.type==='FunctionDeclaration')result.add(n.id.name);return}if(n.type==='VariableDeclarator')names(n.id,result);for(const v of Object.values(n))if(Array.isArray(v))v.forEach(visit);else if(v&&typeof v==='object')visit(v)}visit(node.body);return result}
@@ -105,7 +105,7 @@ function bindPattern(ctx,pattern,input){
 function compileFunction(node,module,inferred='',ancestors=new Set()){
  if(functionIds.has(node))return functionIds.get(node);
  const id=functions.length;functionIds.set(node,id);functions.push(null);
- const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],receiver:'receiver'};
+ const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],receiver:'receiver',slots:{count:0}};
  for(let i=0;i<node.params.length;i++){const p=node.params[i];const input=value(ctx,p.type==='RestElement'?`try rt.rest(s, args, ${i})`:`rt.argument(args, ${i})`);bindPattern(ctx,p,input)}
  if(node.body.type==='BlockStatement'){statement(ctx,node.body);if(!returns(node.body))line(ctx,'return c.pi_js_undefined();')}
  else {const output=expr(ctx,node.body);line(ctx,`return c.JS_DupValue(engine.context, ${output});`)}
@@ -113,7 +113,21 @@ function compileFunction(node,module,inferred='',ancestors=new Set()){
  const length=node.params.findIndex(p=>p.type==='AssignmentPattern'||p.type==='RestElement');
  const body=ctx.lines.join('\n'),usesReceiver=/\breceiver\b/.test(body),usesArgs=/\bargs\b/.test(body);
  const arrow=node.type==='ArrowFunctionExpression';
- functions[id]={id,node,module,name:sourceName,length:length<0?node.params.length:length,arrow,body,usesReceiver,usesArgs};return id;
+ functions[id]={id,node,module,name:sourceName,length:length<0?node.params.length:length,arrow,body,usesReceiver,usesArgs,slots:ctx.slots.count};return id;
+}
+function branchFunction(ctx,node){
+ const id=branchHelpers.length,helper={...ctx,lines:[],receiver:'receiver'};branchHelpers.push(null);
+ const conditional=node.type==='ConditionalExpression';
+ const left=expr(helper,conditional?node.test:node.left);
+ const condition=conditional?`s.truthy(${left})`:node.operator==='&&'?`s.truthy(${left})`:node.operator==='||'?`!s.truthy(${left})`:`rt.nullish(${left})`;
+ function complete(next){
+  if(next.type==='ConditionalExpression'||next.type==='LogicalExpression'){
+   const child=branchFunction(helper,next);line(helper,`return @call(.always_tail, branch_${child}, .{ s, env, receiver, native_values });`);
+  }else{const output=expr(helper,next);line(helper,`return ${output};`)}
+ }
+ line(helper,`if (${condition}) {`);complete(conditional?node.consequent:node.right);line(helper,'} else {');
+ if(conditional)complete(node.alternate);else line(helper,`return ${left};`);
+ line(helper,'}');branchHelpers[id]={body:helper.lines.join('\n'),source:ctx.module.file,start:node.start,end:node.end};return id;
 }
 function functionValue(ctx,node,inferred=''){
  const id=compileFunction(node,ctx.module,inferred,ctx.locals),f=functions[id];
@@ -164,9 +178,7 @@ function expr(ctx,node,inferred=''){
    }}return object;
   }
   case 'ConditionalExpression':case 'LogicalExpression':{
-   const left=expr(ctx,node.type==='ConditionalExpression'?node.test:node.left),output=fresh('branch');line(ctx,`var ${output}: c.JSValue = undefined;`);
-   const condition=node.type==='ConditionalExpression'?`s.truthy(${left})`:node.operator==='&&'?`s.truthy(${left})`:node.operator==='||'?`!s.truthy(${left})`:`rt.nullish(${left})`;
-   line(ctx,`if (${condition}) {`);const first=expr(ctx,node.type==='ConditionalExpression'?node.consequent:node.right);line(ctx,`${output} = ${first};`);line(ctx,'} else {');const second=node.type==='ConditionalExpression'?expr(ctx,node.alternate):left;line(ctx,`${output} = ${second};`);line(ctx,'}');return output;
+   const id=branchFunction(ctx,node);return value(ctx,`try branch_${id}(s, env, ${ctx.receiver}, native_values)`);
   }
   case 'BinaryExpression':{if(!['+','-','*','/','<','<=','>','>=','%','**','&','|','<<','>>','===','!==','in','instanceof'].includes(node.operator))throw Error('Unlowered binary '+node.operator);const left=expr(ctx,node.left),right=expr(ctx,node.right);return value(ctx,`try rt.binary(s, ${q(node.operator)}, ${left}, ${right})`)}
   case 'UnaryExpression':{if(node.operator==='-'&&node.argument.type==='Literal'&&typeof node.argument.value==='number')return expr(ctx,{type:'Literal',value:-node.argument.value});if(!['!','typeof'].includes(node.operator))throw Error('Unlowered unary '+node.operator);const input=expr(ctx,node.argument);return value(ctx,`try rt.unary(s, ${q(node.operator)}, ${input})`)}
@@ -205,12 +217,12 @@ function statement(ctx,node){
   case 'TryStatement':{
    if(node.handler||!returns(node.block)||returns(node.finalizer))throw Error('Unexpected try control shape');
    const id=tryHelpers.length,helper={...ctx,lines:[]};tryHelpers.push(null);statement(helper,node.block);tryHelpers[id]={body:helper.lines.join('\n')};
-   const result=fresh('completion');line(ctx,`const ${result} = try_block_${id}(s, env, ${ctx.receiver});`);line(ctx,`errdefer if (${result}) |returned| engine.freeValue(returned) else |_| {};`);statement(ctx,node.finalizer);line(ctx,`return ${result};`);return;
+   const result=fresh('completion');line(ctx,`const ${result} = try_block_${id}(s, env, ${ctx.receiver}, native_values);`);line(ctx,`errdefer if (${result}) |returned| engine.freeValue(returned) else |_| {};`);statement(ctx,node.finalizer);line(ctx,`return ${result};`);return;
   }
   default:throw Error('Unlowered statement '+node.type+' in '+ctx.module.file);
  }
 }
-const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()'};
+const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()',slots:{count:0}};
 for(const b of chosen.values())if(!b.external&&(b.init||b.node.type==='ClassDeclaration'))line(initialize,`try rt.declare(s, env, ${q(b.id)});`);
 for(const b of chosen.values()){
  if(b.external){const operations=['EvaluateTemplateLiteral','EvaluateEnum','EvaluateIntersect','EvaluateType','EvaluateUnion','EvaluateDependent','EvaluateUnionFast'];const lengths=[1,1,1,1,1,3,1];
@@ -235,16 +247,17 @@ const prelude='//! Generated native operations from pinned TypeBox1.3.27 authori
 let native=prelude;
 for(const f of functions){
  native+=`fn f_${f.id}(engine: *rt.Engine, ${f.usesReceiver&&!f.arrow?'receiver':'_'}: c.JSValue, ${f.usesArgs?'args':'_'}: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\n${/\benv\b/.test(f.body)?'const env':'_'} = try rt.environment(s, roots[0]);\n`;
- if(f.arrow&&f.usesReceiver)native+='const receiver = roots[1];\n';native+=f.body+'\n}\n';
+ if(f.arrow&&f.usesReceiver)native+='const receiver = roots[1];\n';if(f.slots)native+=`const native_values = try engine.gpa.alloc(c.JSValue, ${f.slots});\ndefer engine.gpa.free(native_values);\n`;native+=f.body+'\n}\n';
 }
-for(let i=0;i<tryHelpers.length;i++){const h=tryHelpers[i];native+=`fn try_block_${i}(s: *rt.Scope, env: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue) anyerror!c.JSValue {\nconst engine = s.engine;\n${h.body}\n}\n`}
-native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\nconst env = try rt.environment(s, c.pi_js_null());\n'+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
+for(let i=0;i<tryHelpers.length;i++){const h=tryHelpers[i];native+=`fn try_block_${i}(s: *rt.Scope, env: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {\nconst engine = s.engine;\n${h.body}\n}\n`}
+for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i];native+=`fn branch_${i}(s: *rt.Scope, ${/\benv\b/.test(h.body)?'env':'_'}: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, ${/\bnative_values\b/.test(h.body)?'native_values':'_'}: []c.JSValue) anyerror!c.JSValue {\n${/\bengine\b/.test(h.body)?'const engine = s.engine;\n':''}${h.body}\n}\n`}
+native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\nconst env = try rt.environment(s, c.pi_js_null());\n'+`const native_values = try engine.gpa.alloc(c.JSValue, ${initialize.slots.count});\ndefer engine.gpa.free(native_values);\n`+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
 for(const [name,b] of publicRoots)native+=`try s.put(namespace, ${q(name)}, try rt.get(s, env, ${q(b.id)}));\n`;
 native+='return c.JS_DupValue(engine.context, namespace);\n}\n';
 native+='pub fn install(engine: *rt.Engine, type_builder: c.JSValue, graph: c.JSValue) !void {\nconst namespace = try create(engine, graph);\ndefer engine.freeValue(namespace);\ntry @import("native_js_values.zig").spreadInto(engine, type_builder, namespace);\n}\n';
 const nativePath=new URL('../../src/extensions/native_typebox_operators_production.zig',import.meta.url);
 fs.writeFileSync(nativePath,native);
-fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length},null,2)+'\n');
+fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,heapOperandSlots:f.slots})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,tailChained:true}))},null,2)+'\n');
 for(const file of new Set(initializationOrder.map(row=>row.module))){const selected=initializationOrder.filter(row=>row.module===file);for(let index=1;index<selected.length;index++)if(selected[index-1].start>=selected[index].start)throw Error('Original declaration order regression '+file)}
 fs.writeFileSync(new URL('./initialization-order.json',import.meta.url),JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
 console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));
