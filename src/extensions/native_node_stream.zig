@@ -533,7 +533,7 @@ fn constructor(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue,
     var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return js.capture(engine);
     const kind: Kind = @enumFromInt(raw);
     const names = [_][*:0]const u8{ "Stream", "Readable", "Writable", "Duplex", "Transform", "PassThrough" };
-    const ctor = try scope.get(roots[0], names[@intFromEnum(kind)]);
+    const ctor = try scope.get(roots[0], names[@intCast(@intFromEnum(kind))]);
     const instance = c.JS_IsInstanceOf(engine.context, receiver, ctor);
     if (instance < 0) return js.capture(engine);
     if (instance == 0) { var inputs = [_]c.JSValue{arg(args, 0)}; return engine.checked(c.JS_CallConstructor(engine.context, ctor, inputs.len, &inputs)); }

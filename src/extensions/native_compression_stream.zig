@@ -194,7 +194,8 @@ fn inputBytes(scope: *Scope, owner: c.JSValue, value: c.JSValue) !Input {
         defer scope.engine.gpa.free(received);
         const message = try std.fmt.allocPrint(scope.engine.gpa, "The \"chunk\" argument must be of type string or an instance of Buffer, TypedArray, or DataView. Received {s}", .{received});
         defer scope.engine.gpa.free(message);
-        return nativeError(scope, owner, message, "ERR_INVALID_ARG_TYPE", null, true);
+        _ = try nativeError(scope, owner, message, "ERR_INVALID_ARG_TYPE", null, true);
+        unreachable;
     }
     var actual_view = value;
     var buffer_instance = false;
