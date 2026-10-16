@@ -2,6 +2,7 @@
 //! The context is the actual supplied string, including its live inherited
 //! properties. General internal/errors stack/inspection parity is not claimed.
 const em = @import("engine.zig"); const c = em.c;
+const std = @import("std");
 const js = @import("native_js_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const fnc = @import("native_node_function.zig");
@@ -34,8 +35,8 @@ fn accessor(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
 }
 fn addAccessor(scope: *Scope, value: c.JSValue, context: c.JSValue, name: [*:0]const u8, path: bool) !void {
     const atom = c.JS_NewAtom(scope.engine.context, name); if (atom == c.JS_ATOM_NULL) return js.capture(scope.engine); defer c.JS_FreeAtom(scope.engine.context, atom);
-    const get = try scope.own(try fnc.createMethod(scope.engine, "get", 0, accessor, &.{ context, try scope.text(name), c.pi_js_bool(scope.engine.context, 0), c.pi_js_bool(scope.engine.context, @intFromBool(path)) }));
-    const set = try scope.own(try fnc.createArrow(scope.engine, "set", 1, accessor, &.{ context, try scope.text(name), c.pi_js_bool(scope.engine.context, 1), c.pi_js_bool(scope.engine.context, @intFromBool(path)) }));
+    const get = try scope.own(try fnc.createMethod(scope.engine, "get", 0, accessor, &.{ context, try scope.text(std.mem.span(name)), c.pi_js_bool(scope.engine.context, 0), c.pi_js_bool(scope.engine.context, @intFromBool(path)) }));
+    const set = try scope.own(try fnc.createArrow(scope.engine, "set", 1, accessor, &.{ context, try scope.text(std.mem.span(name)), c.pi_js_bool(scope.engine.context, 1), c.pi_js_bool(scope.engine.context, @intFromBool(path)) }));
     if (c.JS_DefinePropertyGetSet(scope.engine.context, value, atom, c.JS_DupValue(scope.engine.context, get), c.JS_DupValue(scope.engine.context, set), c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE) < 0) return js.capture(scope.engine);
 }
 fn toString(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
