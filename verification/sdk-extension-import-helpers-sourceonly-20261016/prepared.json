@@ -1,0 +1,165 @@
+{
+  "status": "actual_extension_import_helpers_source_only_prepared_unrun",
+  "base": "f12aa12fa5236eb0e00d4ef520478d88fcce66fd",
+  "upstream": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_authorities": [
+    {
+      "relative": "packages/coding-agent/src/core/extensions/loader.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        }
+      ],
+      "identical": true
+    },
+    {
+      "relative": "packages/coding-agent/src/core/extensions/virtual-modules.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        }
+      ],
+      "identical": true
+    },
+    {
+      "relative": "packages/coding-agent/src/core/extensions/jiti-loader.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\jiti-loader.ts",
+          "sha256": "199594E72A9D8ABE002C5E80420B94BB65AD0D7953F301249CF7A08652359042",
+          "bytes": 177
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\jiti-loader.ts",
+          "sha256": "199594E72A9D8ABE002C5E80420B94BB65AD0D7953F301249CF7A08652359042",
+          "bytes": 177
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\jiti-loader.ts",
+          "sha256": "199594E72A9D8ABE002C5E80420B94BB65AD0D7953F301249CF7A08652359042",
+          "bytes": 177
+        }
+      ],
+      "identical": true
+    },
+    {
+      "relative": "packages/coding-agent/src/core/extensions/jiti-static-loader.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\jiti-static-loader.ts",
+          "sha256": "B8507BC36A9C9BCB2F4BAFBC70B103269FFC3FB7C9052D5D76BF290C4D51BC7B",
+          "bytes": 203
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\jiti-static-loader.ts",
+          "sha256": "B8507BC36A9C9BCB2F4BAFBC70B103269FFC3FB7C9052D5D76BF290C4D51BC7B",
+          "bytes": 203
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\jiti-static-loader.ts",
+          "sha256": "B8507BC36A9C9BCB2F4BAFBC70B103269FFC3FB7C9052D5D76BF290C4D51BC7B",
+          "bytes": 203
+        }
+      ],
+      "identical": true
+    }
+  ],
+  "products": [
+    {
+      "path": "src/extensions/native_sdk_extension_aliases.zig",
+      "sha256": "1EE119314F2A9A5E8E53D9AC6FF0C663D217F372C0287AF54E4B9DCCA8C84E5E",
+      "bytes": 4891
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_alias_resolver.zig",
+      "sha256": "283D4E0B21C242F5153DAF6DF1BF99DF30CCAE9ED1B70EF9A45456769881F4F8",
+      "bytes": 4659
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_lazy_imports.zig",
+      "sha256": "7A06BD43FD00AB273B618A9C4AB31B503B93DCAEC4530EC100D072CEEB721338",
+      "bytes": 8532
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_assembly.zig",
+      "sha256": "E647C99533EEACBFEDC8CF83A174C7E89248BB53D18525D5A145479F332021E1",
+      "bytes": 2844
+    },
+    {
+      "path": "src/native_sdk_extension_import_helpers_controls.zig",
+      "sha256": "CAC5088674A231FDE82F023ED3D02167C2DCC56A09B3F8034FE85DFF2B6C19D9",
+      "bytes": 8179
+    }
+  ],
+  "alias_properties": 20,
+  "alias_require_resolutions": 3,
+  "alias_workspace_import_resolutions": 5,
+  "alias_adapter_allowed_packages": 5,
+  "physical_lazy_module_definitions": 3,
+  "source_getter_promise_result_cached": true,
+  "queued_dynamic_import_required": true,
+  "queued_dynamic_import_abi_composed": false,
+  "immediate_JS_LoadModule_substitution": false,
+  "complete_native_createJiti_required": true,
+  "complete_native_createJiti_available": false,
+  "registered_namespace_provenance_is_caller_obligation": true,
+  "prepared_control_entry_points": 6,
+  "prepared_js_programs": 2,
+  "actual_compiled_count": null,
+  "protected_files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/engine.zig",
+    "src/extensions/native_async_function.zig",
+    "src/extensions/native_async_body.zig",
+    "src/extensions/native_sdk_prompt_scope.zig",
+    "src/extensions/native_sdk_default_real_assembly.zig",
+    "src/extensions/native_sdk_factory_provider_callbacks.zig",
+    "src/extensions/native_sdk_factory_flags.zig",
+    "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+    "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+    "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+    "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+    "src/extensions/fixtures/sdk-module-policy-4954.expected.json",
+    "src/extensions/native_sdk_extension_loader_production.zig",
+    "src/extensions/native_sdk_extension_virtual_modules.zig",
+    "src/extensions/native_sdk_extension_initializer.zig",
+    "src/extensions/native_sdk_extension_cache.zig",
+    "src/native_sdk_extension_loader_controls.zig",
+    "src/extensions/commonjs.zig",
+    "src/extensions/module_resolver.zig",
+    "src/extensions/native_sdk_factory_production.zig"
+  ],
+  "protected_drift": 0,
+  "runtime_status": "recovery_pending",
+  "fmt_ast": false,
+  "node_reference": false,
+  "source_generator": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "default_selected": false
+}
