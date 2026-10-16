@@ -1,0 +1,468 @@
+{
+  "status": "prepared_byte_exact_component_compile_metadata_proof",
+  "scope": "Mixed-head compilation and metadata only;29entries25named+4storage;zero runtime tests",
+  "archive": "raw-proof.zip",
+  "archive_sha256": "4DDC8D8EED01C9BA3E5AA5453BDC219B0BBBF9902E88786C7EE0472A37BDB261",
+  "archive_bytes": 17868798,
+  "members_count": 65,
+  "original_packet_top_level_members": 61,
+  "independent_review_members": 4,
+  "members": [
+    {
+      "member": "root-components-compile-20261016/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\before.json",
+      "bytes": 9646557,
+      "sha256": "DAA1988B0B9539204702BFBEF9F01ED50C2DCE1D4798DFECFB9D867975C94BAC",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\grant.json",
+      "bytes": 1202,
+      "sha256": "2BD0E07451682EE4AA80F4913CC7E528863DF25B5D02DCA2D24728B008A3C1C2",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-after.json",
+      "bytes": 9646557,
+      "sha256": "BF66E94B4CFF62773F4F1E91310A410C6CE7CA63C3C6E87A43595C7B17364450",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-compile.json",
+      "bytes": 1906,
+      "sha256": "E25C7E47D86D50D1DC08266653F76516E08A766E5968B97BA62739FB73D66CB7",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-compile.stderr.log",
+      "bytes": 14078,
+      "sha256": "9452D0425F6BA1B302E20B672BC48D479858F1F0B48879B5182E7AFB6DC23D25",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-metadata.json",
+      "bytes": 1101,
+      "sha256": "4AEF8C3CCB1578DBC46825409342CEE07E223A7B4934191905A570111C85A7D7",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-metadata.stdout.bin",
+      "bytes": 950,
+      "sha256": "767FB89D2D7F020CC3A27609BA896B7680DF65EB311B87869239627672BB7785",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/iterator-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\iterator-selected-tests.json",
+      "bytes": 1269,
+      "sha256": "D95CE2C41EC251699C34C59B0FEDF9D322EFBC18B2961F5D8DC8E63075ABF8E3",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\result.json",
+      "bytes": 8390,
+      "sha256": "1EFA8CEBA615E2841340631475A708C571650AA4B5EA306EBDE143C88985BF64",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/Run-CompileMetadata.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\Run-CompileMetadata.ps1",
+      "bytes": 7711,
+      "sha256": "D7EDAC048801C30E62122453051F6D7AF5F70CC9A6357D1E914902A1F4D6DB74",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/writer-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\writer-compile.json",
+      "bytes": 1996,
+      "sha256": "AB14FF0DF2DCB669FFA221399E620D572A5C317A81D224FCB0ED7FE203325E81",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/writer-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\writer-compile.stderr.log",
+      "bytes": 20061,
+      "sha256": "F96A1AF44944D12FE15618CF34DA320C8BCDF923DA996039FD4B293AC6C79903",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/writer-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\writer-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\before.json",
+      "bytes": 9646557,
+      "sha256": "4ABD1062C79EDE2E9F38948D6204BE92EC547DE644F2950904CDFBAA0D4E3DE0",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\final.json",
+      "bytes": 9646557,
+      "sha256": "4ABD1062C79EDE2E9F38948D6204BE92EC547DE644F2950904CDFBAA0D4E3DE0",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\grant.json",
+      "bytes": 1077,
+      "sha256": "A30F80AFFD93F3B00D2E59C2997C9BD0D4605EF7178B333EECA4A87F9F0980DF",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\result.json",
+      "bytes": 4588,
+      "sha256": "A00142F8CD9E9A715226EF75DD136A6FC70760F9A958165E3BF36ECEE93CFF4F",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/Run-CompileMetadata.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\Run-CompileMetadata.ps1",
+      "bytes": 7492,
+      "sha256": "511A9AD2C9F0FBA5B5BDA9DAD80175CC8EEC0CB3AA2710961DAA50D2DF2B6F0B",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-after.json",
+      "bytes": 9646557,
+      "sha256": "4ABD1062C79EDE2E9F38948D6204BE92EC547DE644F2950904CDFBAA0D4E3DE0",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-compile.json",
+      "bytes": 1886,
+      "sha256": "314F0859CD699ADA484C56FF5776DD8A1C3DB6234FE46EBD8831FAFEED2B174E",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-compile.stderr.log",
+      "bytes": 14071,
+      "sha256": "A5868873E9D6D31FF5C86CF4F2DDE4232A23A08B6EB6035890B121DBEAEED2AD",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-metadata.json",
+      "bytes": 1095,
+      "sha256": "66036CA6EA8C2E75CAA584EEEC0415A3AFF723F4FF4A8E51B4D90A68170E2E40",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-metadata.stdout.bin",
+      "bytes": 1158,
+      "sha256": "5967908940515437B1F9CC71071FF6034C85CC15845B3FA94C48ECF1F79E8470",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v4-20261016/writer-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v4-20261016\\writer-selected-tests.json",
+      "bytes": 1475,
+      "sha256": "253A9869A96948D4B8196E07AE5CF282B3BF2241FF81CD6E6441DA87DBF48AF0",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "independent-review/review.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-independent-auth-20261016\\review.json",
+      "bytes": 31729,
+      "sha256": "3A6445E64181D7CCAD022472DADA0436CC33DEB2CF4FC0BE6D2E12B1099386CC",
+      "role": "byte_exact_independent_review_copy"
+    },
+    {
+      "member": "independent-review/review-supplement.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-independent-auth-20261016\\review-supplement.json",
+      "bytes": 6405,
+      "sha256": "1E000C7A0F9109C727351D79AD2A205F06B5562239D672ECEAF16023BD6DCBAE",
+      "role": "byte_exact_independent_review_copy"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\final.json",
+      "bytes": 9646557,
+      "sha256": "BF66E94B4CFF62773F4F1E91310A410C6CE7CA63C3C6E87A43595C7B17364450",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "independent-review/Review-Components.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-independent-auth-20261016\\Review-Components.ps1",
+      "bytes": 12852,
+      "sha256": "CDFB65E81902C9C5B92DC90AD9062203DDF0E1E0F76A8C3C2C2019F008F25486",
+      "role": "byte_exact_independent_review_copy"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-selected-tests.json",
+      "bytes": 970,
+      "sha256": "84F44485D76E238E40A018BC7C7D272AA918961261BA6FA6758AE3832EEF161D",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/crypto-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\crypto-compile.json",
+      "bytes": 1986,
+      "sha256": "6FE1F7D38212CED71F1559A0222448050728E1568F41CA35E6D4BF084C586C68",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/crypto-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\crypto-compile.stderr.log",
+      "bytes": 19162,
+      "sha256": "C4ED876CB62936D68AD0134F8461E0FA8E25B5E94177FE77CF011CA1FB2CF7F2",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/crypto-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\crypto-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\final.json",
+      "bytes": 9646557,
+      "sha256": "DAA1988B0B9539204702BFBEF9F01ED50C2DCE1D4798DFECFB9D867975C94BAC",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\grant.json",
+      "bytes": 1263,
+      "sha256": "D2C6338A2B8A444FBF53B211D724337549A3C085CC1038F95A1BDD15E8D01ADC",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\result.json",
+      "bytes": 595,
+      "sha256": "A3A35D46361A04DBF904F1AA5D01AEBA4DCEC4EAE71CEB1A19A13BB85DA2E679",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-20261016/Run-CompileMetadata.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-20261016\\Run-CompileMetadata.ps1",
+      "bytes": 7812,
+      "sha256": "01F11E7850E5FA3C037CA95E0FD371C1DF07D5B55FD780195272FD64D0B922DF",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\before.json",
+      "bytes": 9646557,
+      "sha256": "9CB9670C43317B3BAEF1740C7F307854FE2626F3279AB033E69F09DF50453272",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/classic-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\classic-compile.json",
+      "bytes": 1995,
+      "sha256": "B9F1A48BDBF7DBFAD6326BBFC3CFF25ECB32B8F35ECA43F662E13AA625CABB56",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/classic-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\classic-compile.stderr.log",
+      "bytes": 21593,
+      "sha256": "EB780722C323DB37B6B4A67F3BBD715FF64414035509C185C158D3B0DB57728A",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/classic-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\classic-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-after.json",
+      "bytes": 9646557,
+      "sha256": "9CB9670C43317B3BAEF1740C7F307854FE2626F3279AB033E69F09DF50453272",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-compile.json",
+      "bytes": 1882,
+      "sha256": "B30BA2179F82282ADDC4963C2EE42F300907562AD727719E44FF25536939E7E0",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-compile.stderr.log",
+      "bytes": 14069,
+      "sha256": "FFC80668D548ACACB63A218A221A5C888B82CA224A7EFD6E19A0661CE8200196",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-metadata.json",
+      "bytes": 1095,
+      "sha256": "5F6D4AD1E6782DFAEE36F2DC5F053DD4DBE80BDF6C3637AF83560D3B08350833",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-metadata.stdout.bin",
+      "bytes": 727,
+      "sha256": "AAC401573166AD3973D8DB1620B98AE90AD21D94DC56704F0BE4BC8D2B0A78E7",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/crypto-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\crypto-selected-tests.json",
+      "bytes": 1044,
+      "sha256": "E81E7222D1C071EF389FC375BE576D3F620B32DFA7580C456CA05C225FB47DCF",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\final.json",
+      "bytes": 9646557,
+      "sha256": "9CB9670C43317B3BAEF1740C7F307854FE2626F3279AB033E69F09DF50453272",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\grant.json",
+      "bytes": 1263,
+      "sha256": "9C9CA3810A8341A8326DD47B42AACFEC3ECE7CFB638F54B4FF4D1DD52DE49A30",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\result.json",
+      "bytes": 4397,
+      "sha256": "0B15B90679887500290112A2AFF4AEBEFF3D507AC92DC143A516740565F022A6",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v2-20261016/Run-CompileMetadata.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v2-20261016\\Run-CompileMetadata.ps1",
+      "bytes": 7812,
+      "sha256": "9C6F2A11C7AD4282DCD142D1442F48F661BE08C510C3214E249B77D203D7F1A6",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\before.json",
+      "bytes": 9646557,
+      "sha256": "BF66E94B4CFF62773F4F1E91310A410C6CE7CA63C3C6E87A43595C7B17364450",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-after.json",
+      "bytes": 9646557,
+      "sha256": "BF66E94B4CFF62773F4F1E91310A410C6CE7CA63C3C6E87A43595C7B17364450",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-compile.json",
+      "bytes": 1886,
+      "sha256": "13C99266E4BDDCEBF532617FCF553213013C104736B63F338F9692CDC2D91432",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-compile.stderr.log",
+      "bytes": 14238,
+      "sha256": "78713B04157DF8C942A22840DAA7C62B3A685D08B1C6433E401E9973DA25AE68",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-metadata.json",
+      "bytes": 1098,
+      "sha256": "6B17DD48C231F583C9E216114FBD40FF71104CC7D92B770FCA3B7FB92D107828",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "root-components-compile-v3-20261016/classic-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-v3-20261016\\classic-metadata.stdout.bin",
+      "bytes": 652,
+      "sha256": "3DDC8F61637B0AF86D16942E49F3F6236D05157AE0AD8FF5EF7908DFB6947666",
+      "role": "original_top_level_raw_packet"
+    },
+    {
+      "member": "independent-review/Review-Supplement.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-components-compile-independent-auth-20261016\\Review-Supplement.ps1",
+      "bytes": 7122,
+      "sha256": "CC3619E454693036567BF60BAFD3AE718EF8D72066EBD4A255F80DCF692CC963",
+      "role": "byte_exact_independent_review_copy"
+    }
+  ],
+  "excluded": "All nested out/bin/executables/PDB/DLL/objects/caches; local binaries are not saved or moved"
+}
