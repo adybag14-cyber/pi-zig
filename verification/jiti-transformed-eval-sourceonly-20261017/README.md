@@ -47,8 +47,11 @@ The real parse-marker branch preserves three mod.exports and two marker reads
 when truthy, destructuring and template conversion order, actual Error creation,
 then a second live Error binding read for captureStackTrace with actual
 jitiRequire, returning onError, then
-loaded=true and interop. Missing captureStackTrace fails explicitly; no dummy
-stack helper is installed. The compile SyntaxError/async/nativeImport branch
+loaded=true and interop. The actual C2 captureStackTrace implementation already
+exists; this leaf calls the live property without a synthetic missing-feature
+guard, so guest removal/noncallability produces the real VM TypeError. No dummy
+stack helper is installed. Its jitiRequire cut/format semantics still require
+qualification. The compile SyntaxError/async/nativeImport branch
 performs actual fallback debug then fails `RequiredActualJitiEsmEval`; data URL,
 temporary-file import/finally/unlink fallback remains missing. It neither
 substitutes a fake function nor silently enters the ordinary catch. Filename

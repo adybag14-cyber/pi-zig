@@ -181,7 +181,6 @@ fn finish(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []con
             // constructor/template effects can replace the global binding.
             const capture_owner = try s.global("Error");
             const capture = try s.get(capture_owner, "captureStackTrace");
-            if (c.JS_IsUndefined(capture)) return error.RequiredActualErrorCaptureStackTrace;
             _ = try s.call(capture, capture_owner, &.{ reason, try s.get(roots[0], "jitiRequire") });
             _ = try s.invoke(context, "onError", &.{reason});
         }
