@@ -13,11 +13,14 @@ test "native ignore7 original callers match genuine pinned package observations"
     try std.testing.expectEqualStrings("643735013bdcf86dfeca4d38fb74d9a4fafa7a640ad2d251077862f18b2556fe", root.get("packageSha256").?.string);
     try std.testing.expectEqualStrings("4dd2b149d155d7369de16ea4dc77c84e9f5ffb24", root.get("sourceHead").?.string);
     try std.testing.expectEqualStrings("5d8a62805bd3866fd7742f0f6fa6f3e05411961155f95a7de8d9b60cd19d6363", root.get("callerSha256").?.string);
+    try std.testing.expectEqualStrings("f18ce5b5c25311e054c50b87a487372ba7e0222371a2427545ff0a90a35b1ef6", root.get("liveCallerSha256").?.string);
     try std.testing.expectEqualStrings("v24.14.0", root.get("actualNode").?.object.get("version").?.string);
     try std.testing.expectEqualStrings("win32", root.get("actualNode").?.object.get("platform").?.string);
     try std.testing.expectEqual(@as(i64, 42), root.get("matrixSets").?.integer);
     try std.testing.expectEqual(@as(i64, 54), root.get("matrixPaths").?.integer);
     try std.testing.expectEqual(@as(i64, 2375), root.get("cases").?.integer);
+    try std.testing.expectEqual(@as(i64, 12), root.get("liveCases").?.integer);
+    try std.testing.expectEqual(@as(i64, 2387), root.get("totalCases").?.integer);
     const observations = root.get("observations").?;
     try std.testing.expectEqual(root.get("cases").?.integer, @as(i64, @intCast(observations.array.items.len)));
     const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
@@ -34,4 +37,13 @@ test "native ignore7 original callers match genuine pinned package observations"
     const expected = try std.json.Stringify.valueAlloc(gpa, observations, .{});
     defer gpa.free(expected);
     try std.testing.expectEqualStrings(expected, actual);
+    const live_evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ignore7-live-prototype-controls.input.txt"), "native-ignore7-live-prototype-callers.mjs");
+    engine.freeValue(live_evaluated);
+    const live_actual = try engine.stringify(try scope.get(try scope.own(c.JS_GetGlobalObject(engine.context)), "ignore7LiveObservations"));
+    defer gpa.free(live_actual);
+    const live_observations = root.get("liveObservations").?;
+    try std.testing.expectEqual(@as(usize, 12), live_observations.array.items.len);
+    const live_expected = try std.json.Stringify.valueAlloc(gpa, live_observations, .{});
+    defer gpa.free(live_expected);
+    try std.testing.expectEqualStrings(live_expected, live_actual);
 }

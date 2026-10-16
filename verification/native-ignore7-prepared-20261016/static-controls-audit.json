@@ -1,0 +1,14 @@
+{
+  "method": "Static declaration review and byte identity; no execution",
+  "originalSets": 42,
+  "originalPaths": 54,
+  "originalMatrixRows": 2310,
+  "originalApiRows": 65,
+  "originalCases": 2375,
+  "additiveLivePrototypeCases": 12,
+  "totalPlannedCases": 2387,
+  "actualCapturedCases": null,
+  "actualNativeTestMetadata": null,
+  "protectedRootCount": 10073,
+  "protectedRootChanges": 0
+}
