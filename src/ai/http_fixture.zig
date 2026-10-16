@@ -14,6 +14,9 @@ pub const Reply = struct {
     expected_request_headers: []const std.http.Header = &.{},
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
+    /// Optional real peer gate after its chunk writes, before response EOF.
+    /// Existing Source write/flush plans leave this unset.
+    body_end_release: ?*std.Io.Event = null,
 };
 pub const Captured = struct { path: []u8, payload: []u8 };
 pub const PlanServer = struct {
@@ -110,6 +113,7 @@ pub const PlanServer = struct {
                     try response.writer.flush();
                     try response.flush();
                 }
+                if (reply.body_end_release) |event| try event.waitTimeout(self.io, .{ .duration = .{ .raw = .fromSeconds(10), .clock = .awake } });
                 try response.end();
             } else if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;

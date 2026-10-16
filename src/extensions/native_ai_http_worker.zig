@@ -152,7 +152,9 @@ pub const Worker = struct {
         const worker = try a.create(Worker);
         errdefer a.destroy(worker);
         worker.* = .{ .io = io, .input = owned, .notify_context = notify_context, .notify = notify };
-        worker.writer.buffer = &worker.transfer_buffer;
+        // Byte streams publish actual incoming reader chunks without waiting
+        // for this sink's buffer to fill or the response to reach EOF.
+        worker.writer.buffer = if (input.framing == .bytes) &.{} else &worker.transfer_buffer;
         worker.thread = try std.Thread.spawn(.{}, run, .{worker});
         return worker;
     }
