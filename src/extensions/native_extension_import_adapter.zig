@@ -10,6 +10,9 @@ const body = @import("native_async_body.zig");
 const af = body.native;
 const charged = @import("native_env_charged_allocator.zig");
 const ts = @import("typescript.zig");
+fn put(engine: *em.Engine, target: c.JSValue, name: [*:0]const u8, borrowed: c.JSValue) !void {
+    if (c.JS_DefinePropertyValueStr(engine.context, target, name, c.JS_DupValue(engine.context, borrowed), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+}
 pub const Kind = enum { transformed_ts, shared_esm, shared_commonjs, shared_json, shared_value };
 pub const Namespace = struct { specifier: []const u8, canonical_name: []const u8, exports_authority: c.JSValue };
 pub const Inputs = struct { io: std.Io, namespaces: []const Namespace };
@@ -184,7 +187,9 @@ fn classifyJavaScript(session: *SessionRecord, path: []const u8) !Kind {
 }
 fn kindOf(session: *SessionRecord, path: []const u8) !Kind {
     try checkLoader(session);
-    if (session.hub.engine.native_module_names.contains(path)) return .shared_value;
+    for (session.bindings) |binding| if (std.mem.eql(u8, binding.canonical_name, path)) return .shared_value;
+    if (std.mem.startsWith(u8, path, "node:") and session.hub.engine.native_module_names.contains(path)) return .shared_value;
+    if (!std.fs.path.isAbsolute(path)) return error.UnobservedExtensionCanonicalModuleKind;
     if (find(session.hub.shared, path)) |entry| return entry.kind;
     if (find(session.private, path)) |entry| return entry.kind;
     const extension = std.fs.path.extension(path);
@@ -314,20 +319,22 @@ fn importInner(engine: *em.Engine, roots: []const c.JSValue, state: *c.JSValue, 
         session.started = true;
         if (!c.JS_IsUndefined(roots[3])) return error.UnobservedExtensionImportAttributes;
         const job = try body.init(&scope, state);
-        try scope.put(job, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
+        try put(engine, job, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
         const base = try engine.toString(roots[1]); defer engine.gpa.free(base);
         const specifier = try engine.toString(roots[2]); defer engine.gpa.free(specifier);
         const name = try normalized(session, base, specifier); defer owner.allocator().free(name);
         const terminated = try owner.allocator().dupeZ(u8, name); defer owner.allocator().free(terminated);
-        if (try kindOf(session, name) == .transformed_ts) {
+        const kind = try kindOf(session, name);
+        if (kind == .shared_value) return error.ExtensionRootRequiresPhysicalModule;
+        if (kind == .transformed_ts) {
             const graph = c.JS_PiNewPrivateModuleGraph2(engine.context, normalizeGraph, selectGraph, loadGraph, session) orelse return js.capture(engine);
             session.graph = graph;
             const compiled = try scope.own(try compilePrivate(session, graph, terminated, c.pi_js_undefined()));
-            try scope.put(job, "module", compiled);
-            try scope.put(job, "shared", c.pi_js_bool(engine.context, 0));
+            try put(engine, job, "module", compiled);
+            try put(engine, job, "shared", c.pi_js_bool(engine.context, 0));
             return .{ .awaited = try engine.checked(c.JS_EvalFunction(engine.context, c.JS_DupValue(engine.context, compiled))) };
         }
-        try scope.put(job, "shared", c.pi_js_bool(engine.context, 1));
+        try put(engine, job, "shared", c.pi_js_bool(engine.context, 1));
         const base_z = try owner.allocator().dupeZ(u8, base); defer owner.allocator().free(base_z);
         return .{ .awaited = try engine.checked(c.JS_LoadModule(engine.context, base_z.ptr, terminated.ptr)) };
     }

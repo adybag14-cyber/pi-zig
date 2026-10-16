@@ -130,6 +130,18 @@ pub fn verify(engine: *em.Engine, inputs: adapter.Inputs, owned_directory: []con
     try std.testing.expectEqualStrings(platform_path, actual_filename);
     try files.write("unobserved.mts", "export const value=1;\n");
     try std.testing.expectError(error.JavaScriptException, files.load("unobserved.mts"));
+    try files.write("unobserved.cts", "module.exports=()=>1;\n");
+    const probe_source = "import value from './unobserved.cts';export const same=typeof value==='function';\n";
+    try files.write("ordinary-probe.mjs", probe_source);
+    const probe_path = try files.path("ordinary-probe.mjs"); defer engine.gpa.free(probe_path);
+    const probe_z = try engine.gpa.dupeZ(u8, probe_path); defer engine.gpa.free(probe_z);
+    const ordinary = try engine.evalModule(probe_source, probe_z); defer engine.freeValue(ordinary);
+    const probe_ok = try js.get(engine, ordinary, "same"); defer engine.freeValue(probe_ok);
+    try std.testing.expect(c.JS_ToBool(engine.context, probe_ok) != 0);
+    try std.testing.expectError(error.JavaScriptException, files.load("unobserved.cts"));
+    const virtual_root_session = try engine.createExtensionImportSession(inputs);
+    const virtual_root = try engine.startExtensionImport(virtual_root_session, physical, "typebox", c.pi_js_undefined()); defer engine.freeValue(virtual_root);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(virtual_root));
     const invalid: *adapter.Session = @ptrFromInt(1);
     try std.testing.expectError(error.InvalidExtensionImportSession, engine.startExtensionImport(invalid, physical, physical, c.pi_js_undefined()));
 }

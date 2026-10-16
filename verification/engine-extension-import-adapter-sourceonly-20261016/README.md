@@ -22,6 +22,10 @@ const pending = try engine.startExtensionImport(session, physical_base,
 The caller owns `pending` and its Await. The current Source39 subset starts one
 root per session. Reusing that host session for a second root is rejected; old
 factory dynamic imports keep the exact C graph and captured resolver afterward.
+The root must be a physical module; virtual/builtin roots are outside this
+extension-file entrypoint. Only explicit configured virtual authorities and
+registered node: names select shared values directly. An absolute name in the
+ordinary CJS/native module registry cannot bypass physical kind admission.
 
 All twenty Source VIRTUAL_MODULES names are required real inputs. Every binding
 must reference a registered native module and the exact cached export-authority

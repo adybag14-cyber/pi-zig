@@ -1,0 +1,25 @@
+{
+  "status": "adapter_physical_kind_and_pending_definition_source_only_corrections",
+  "parent": "957a03a923cb19f8e8172f690c675e6a7c942468",
+  "changes": [
+    "only_configured_virtual_authorities_and_registered_node_names_are_shared_values",
+    "absolute_CJS_registry_names_cannot_bypass_physical_kind_admission",
+    "root_entry_requires_physical_module_not_virtual_or_builtin",
+    "all4_private_state_definitions_capture_current_pending_reason_locally"
+  ],
+  "controls": "real ordinary worker loads CTS then adapter rejects it; virtual root rejects; nofake namespace",
+  "root_import_calls": 21,
+  "ordinary_probe_programs": 1,
+  "host_invalid_handle_controls": 1,
+  "final_physical_files": 17,
+  "write_versions": 26,
+  "leaf_sha256": "AEA85D372A462FDB8A7934AE2A133CEFA24339733ED77224F5B3A9B0B08BF6B9",
+  "controls_sha256": "410941D251E88F38E6C9D619FF6EA9C00134B6153C18062263BD8D3B8918390E",
+  "shared_Scope_changed": false,
+  "sdk_changed": false,
+  "engine_changed": false,
+  "c_changed": false,
+  "fmt_ast": false,
+  "native_executed": false,
+  "default_selected": false
+}
