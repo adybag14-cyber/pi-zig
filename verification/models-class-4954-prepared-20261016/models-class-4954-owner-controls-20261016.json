@@ -1,0 +1,8 @@
+{
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "heap_mb": 256,
+  "root_grant": "LIGHT7",
+  "case_count": 18,
+  "network": false,
+  "expected_absent": true
+}
