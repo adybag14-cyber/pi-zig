@@ -246,9 +246,9 @@ test "native TLA resumed fatal ordinary nonmodule async callbacks retain rejecti
     try std.testing.expectEqual(@as(u64, 0), engine.native_allocation_generation);
 }
 
-fn fatalCompletionHook(context: ?*c.JSContext, kind: c.JSPromiseHookType, _: c.JSValue, _: c.JSValue, opaque: ?*anyopaque) callconv(.c) void {
+fn fatalCompletionHook(context: ?*c.JSContext, kind: c.JSPromiseHookType, _: c.JSValue, _: c.JSValue, hook_data: ?*anyopaque) callconv(.c) void {
     if (kind != c.JS_PROMISE_HOOK_RESOLVE) return;
-    const engine: *em.Engine = @ptrCast(@alignCast(opaque.?));
+    const engine: *em.Engine = @ptrCast(@alignCast(hook_data.?));
     const global = c.JS_GetGlobalObject(context);
     defer c.JS_FreeValue(context, global);
     const armed = c.JS_GetPropertyStr(context, global, "armCompletion");
