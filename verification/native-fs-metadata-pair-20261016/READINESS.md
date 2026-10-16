@@ -12,6 +12,14 @@ Actual Node24.14.0 Source22 capture was qualified at clean caller head
 capture. Original output, terminal owner, 43 controls, 31 physical assets,
 complete before/post hashes and inventories and 84 absences are preserved.
 
+Primary implementation guidance is Node v24.14.0
+[lib/internal/fs/utils.js](https://github.com/nodejs/node/blob/v24.14.0/lib/internal/fs/utils.js)
+for StatsBase/Stats/BigIntStats and lazy dates, and the genuine pinned builtin
+function strings preserved separately as implementationSources in the Source22
+packet for statSync/realpathSync/native and the deprecated Stats wrapper. The
+comparison uses caller rows only; native function source-text identity is not
+substituted for behavior.
+
 The native owner requires Root's new exact NATIVE4 grant after a clean seal,
 fresh 16 GiB, one -j1 compile, 1320 seconds compile / 300 runtime / 120 per test,
 and ten-second owned settling. It freezes complete candidate/vendor, compiler
