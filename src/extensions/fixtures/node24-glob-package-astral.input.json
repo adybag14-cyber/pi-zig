@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "authority": "Supplemental original Node v24.14.0 fs.globSync observations; no expected answers",
+  "files": ["unicode/😀.js", "unicode/prefix😀.js", "unicode/😀-dir/inside.js", "src/😀/src/end.js"],
+  "directories": ["unicode/😀-dir", "src/😀/src"],
+  "links": [],
+  "cases": [
+    {"id": "astral-literal", "pattern": "unicode/😀.js"},
+    {"id": "astral-suffix", "pattern": "unicode/*😀.js"},
+    {"id": "astral-question-one", "pattern": "unicode/?.js"},
+    {"id": "astral-question-two", "pattern": "unicode/??.js"},
+    {"id": "astral-cwd", "pattern": "*.js", "cwdSuffix": "unicode/😀-dir"},
+    {"id": "astral-absolute", "pattern": "unicode/😀.js", "absolutePattern": true},
+    {"id": "astral-recursive", "pattern": "unicode/**/*.js"},
+    {"id": "ordered-globstar-states", "pattern": "**/src/**"}
+  ]
+}

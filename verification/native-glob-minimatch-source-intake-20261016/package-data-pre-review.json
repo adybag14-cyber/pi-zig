@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "prepared_source_only_review_confirmation_pending",
+  "base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+  "source_commit": "cfb9adc01d6105d4633311e22d6d0e6fd1b21e16",
+  "retained_candidate": "48869e78eb9b8b88a1780572db2fd910297c75dc",
+  "virtual_tree": "2c1222f775bc36900e40eebe867efa1bc38a170d",
+  "delta": [
+    "A\tsrc/extensions/native_sdk_package_data.zig"
+  ],
+  "path": "src/extensions/native_sdk_package_data.zig",
+  "git_blob": "e273762300c78c895a26ff4b263be4e81e688f38",
+  "sha256": "3815559A3920B79F5CB17294940754C10D14E2C41A24083505A02CDEE06FB380",
+  "patch_sha256": "CC37BBBD8F6CD0FE4A4C8B3D3831C4931000EB5C824E44CF20A5059B4D0B84FE",
+  "hash_drift": 0,
+  "prior_review": "Body independently closed cfb9adc source delta in collaboration, including duplicate-once borrowed put and pending reason capture; durable historical receipt not located",
+  "current_confirmation": "requested_from_body_validation_resume",
+  "main_changed": false,
+  "build_changed": false,
+  "registration_changed": false,
+  "jobs_executed": false
+}

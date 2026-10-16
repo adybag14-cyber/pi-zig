@@ -1,0 +1,27 @@
+{
+  "status": "SOURCE_ONLY_UNCOMPILED_UNEXECUTED",
+  "baseCommit": "7af3116b051bf6f087e4c5a40ed35bbdb6ca4af9",
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "minimatch": "10.2.6",
+  "casesSha256": "f3bd0b91e49977a2e69e52074da42fb6b01947d9dd9b3da9f7b8f17342f0d352",
+  "caseCount": 48,
+  "originalAstSha256": "ec35db8358a5a7333dbd6bdb1ea6bd3f03d1433297de7d615f24f7df5fba06b5",
+  "nativeAstSha256": "572288d2ea9ec9ab00d4ea8a515c0b7a3d31f961e5229e7062eeca231ac85801",
+  "nativeCoreSha256": "c9d8ff0221267c505d749e3421cfb84abf7f4538b92e19b7cd05e46e7274005e",
+  "original92Inputs": "UNCHANGED",
+  "supplementary68Inputs": "UNCHANGED",
+  "originalExpected": "ABSENT",
+  "nativeObserved": "ABSENT",
+  "compileExecuted": false,
+  "nodeExecuted": false,
+  "loaderRegistered": false,
+  "publicActivation": false,
+  "resourceLimits": {
+    "nodes": 16384,
+    "recursiveFrames": 64,
+    "intermediateTextBytes": 4000000,
+    "parityPass": false
+  },
+  "remaining": "Original and native differential jobs, allocation/stack/quota/interrupt proof, cross-platform controls, malformed grammar audit, actual caller assembly; no full minimatch/Pi qualification",
+  "lease": "Root-controlled serial runtime lease; no runtime job permitted for this source packet"
+}

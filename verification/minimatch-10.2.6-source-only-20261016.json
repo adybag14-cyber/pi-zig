@@ -1,0 +1,70 @@
+{
+  "status": "SOURCE_ONLY_UNCOMPILED_UNEXECUTED",
+  "baseline": "642016544a0861a871708c0204731857d2a58ab9",
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "minimatch": "10.2.6",
+  "braceExpansion": "5.0.12",
+  "balancedMatch": "4.0.4",
+  "expected": "ABSENT",
+  "nativeObserved": "ABSENT",
+  "caseCount": 92,
+  "originalCallerControl": "Pending upstream_refresh_resume original PackageManager gate; dependency controls alone do not qualify caller assembly",
+  "sourceFiles": [
+    {
+      "name": "packageManager",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\package-manager.ts",
+      "sha256": "61bb2f0b434b0f5c48ab6bfacd9dff1d99084320eecf695755cd32bd88099310"
+    },
+    {
+      "name": "modelResolver",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\model-resolver.ts",
+      "sha256": "69c9f9a0aea3039e3ffff49cd5977a3d7ea574ad491f02e6c9cf339ec3e4a88e"
+    },
+    {
+      "name": "minimatch",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\index.js",
+      "sha256": "59821ec2ce0d3df968292036e5c831ad322b33e9c33a949ecbc9dfe125d165be"
+    },
+    {
+      "name": "ast",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\ast.js",
+      "sha256": "ec35db8358a5a7333dbd6bdb1ea6bd3f03d1433297de7d615f24f7df5fba06b5"
+    },
+    {
+      "name": "classes",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\brace-expressions.js",
+      "sha256": "7c888d47a86b751d5e876938095c0875e837e7dd30da626ede6117c00481baeb"
+    },
+    {
+      "name": "braces",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\brace-expansion\\dist\\esm\\index.js",
+      "sha256": "eea9a18920e1cde68f0068c36c040541ad6e93b0bb89eaab38c8ab49925b90a8"
+    },
+    {
+      "name": "balanced",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\balanced-match\\dist\\esm\\index.js",
+      "sha256": "3070c820855fe9e6596fc2a00effd7a18882dff166d6326903e1940d6eb4082a"
+    },
+    {
+      "name": "cases",
+      "path": "C:\\Users\\adyba\\pi-zig-minimatch-native-20261016\\src\\extensions\\fixtures\\minimatch-10.2.6.cases.json",
+      "sha256": "dbfcdaf53776e3c7c0854a32e628af614cb016b3a6d42aea3816cc33be607145"
+    },
+    {
+      "name": "assertValid",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\assert-valid-pattern.js",
+      "sha256": "90e8d3327d573b9d2391edf03dc7d50c1c0b468d720a4c0fb4a08a36ee5c50dc"
+    },
+    {
+      "name": "escape",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\escape.js",
+      "sha256": "8418e37c202bcd247e76b1c205d4eff9474f15fb76c1db1ef0688cb6a8ec3c94"
+    },
+    {
+      "name": "unescape",
+      "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\minimatch\\dist\\esm\\unescape.js",
+      "sha256": "2cd61ba96e616969f152445c61ec2ca129a0afd2028ea71309b862a4222304d6"
+    }
+  ],
+  "runtimeLease": "718fb highlighter; no Zig, C, Node or native jobs permitted for this packet"
+}

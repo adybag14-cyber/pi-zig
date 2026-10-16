@@ -1,0 +1,192 @@
+{
+  "status": "source_only_intake_prepared_not_compiled_or_executed",
+  "source_candidate_head": "57d5f311f1b16be4690503ae2e69cbd76dfb5acb",
+  "native_source_head": "de7f662023acd1f982dab5cfa8f55a766cd23b26",
+  "target_base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+  "captured_main_head": "6e35b2a40690b0b11ee88fabb448436c55885120",
+  "main_head_at_seal": "e9fdebc24637cb29a19e1229256b51654a286fba",
+  "main_status_at_seal": [],
+  "source_status_at_seal": [],
+  "core_lines": 635,
+  "ast_lines": 379,
+  "core_sha256": "C9D8FF0221267C505D749E3421CFB84ABF7F4538B92E19B7CD05E46E7274005E",
+  "ast_sha256": "572288D2EA9EC9AB00D4EA8A515C0B7A3D31F961E5229E7062EECA231AC85801",
+  "source_pins": {
+    "pi": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+    "minimatch": "10.2.6",
+    "brace_expansion": "5.0.12",
+    "balanced_match": "4.0.4",
+    "original_minimatch_index_sha256": "59821EC2CE0D3DF968292036E5C831AD322B33E9C33A949ECBC9DFE125D165BE",
+    "original_minimatch_ast_sha256": "EC35DB8358A5A7333DBD6BDB1EA6BD3F03D1433297DE7D615F24F7DF5FBA06B5",
+    "package_manager_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+    "model_resolver_sha256": "69C9F9A0AEA3039E3FFFF49CD5977A3D7EA574AD491F02E6C9CF339EC3E4A88E"
+  },
+  "corpus": [
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.cases.json",
+      "count": 92,
+      "sha256": "DBFCDAF53776E3C7C0854A32E628AF614CB016B3A6D42AEA3816CC33BE607145"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.linebreak-globstar.cases.json",
+      "count": 44,
+      "sha256": "2B2199C9E715F26CE84703DA4AA589355203E3A4ADD96503399405EA90501D76"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.astral-classes.cases.json",
+      "count": 14,
+      "sha256": "450DECF57823BE30AB3B5EC901E66C42FA2F50C6F8B92CFAD37954645EC92D6D"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.peer-regressions.cases.json",
+      "count": 10,
+      "sha256": "02D6BF1EF3CBB5179A8E6A20FD868FD2579F8251E19588D44380350427BF374A"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.ast.cases.json",
+      "count": 48,
+      "sha256": "F3BD0B91E49977A2E69E52074DA42FB6B01947D9DD9B3DA9F7B8F17342F0D352"
+    }
+  ],
+  "direct_import_embed_checks": [
+    {
+      "from": "src/extensions/native_minimatch.zig",
+      "kind": "import",
+      "target": "src/extensions/native_minimatch_ast.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/extensions/native_minimatch_namespace.zig",
+      "kind": "import",
+      "target": "src/extensions/native_ai_provider_values.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/extensions/native_minimatch_namespace.zig",
+      "kind": "import",
+      "target": "src/extensions/native_node_function.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/extensions/native_minimatch_namespace.zig",
+      "kind": "import",
+      "target": "src/extensions/native_minimatch.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_test.zig",
+      "kind": "import",
+      "target": "src/extensions/engine.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_sdk.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_minimatch_namespace.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_test.zig",
+      "kind": "embedFile",
+      "target": "src/extensions/fixtures/minimatch-10.2.6.cases.json",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_supplement_test.zig",
+      "kind": "import",
+      "target": "src/extensions/engine.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_supplement_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_sdk.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_supplement_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_minimatch_namespace.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_supplement_test.zig",
+      "kind": "embedFile",
+      "target": "src/extensions/fixtures/minimatch-10.2.6.linebreak-globstar.cases.json",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_supplement_test.zig",
+      "kind": "embedFile",
+      "target": "src/extensions/fixtures/minimatch-10.2.6.astral-classes.cases.json",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_ast_test.zig",
+      "kind": "import",
+      "target": "src/extensions/engine.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_ast_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_sdk.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_ast_test.zig",
+      "kind": "import",
+      "target": "src/extensions/native_minimatch_namespace.zig",
+      "present_in_private_tree": true
+    },
+    {
+      "from": "src/native_minimatch_ast_test.zig",
+      "kind": "embedFile",
+      "target": "src/extensions/fixtures/minimatch-10.2.6.ast.cases.json",
+      "present_in_private_tree": true
+    }
+  ],
+  "missing_direct_dependencies": [],
+  "linked_utf16_apis_declared_in_existing_main_header": [
+    "JS_NewStringUTF16",
+    "JS_ToCStringLenUTF16",
+    "JS_FreeCStringUTF16"
+  ],
+  "review_status": "Source candidate and prior peer findings retained; AST/default-depth/adoption code targets pinned source but has no original/native differential qualification. The separate restricted Node24 glob adapter48869e78 source review closed against this exact dependency pair; that review does not qualify the full namespace or grammar.",
+  "expected_absences": [
+    "src/extensions/fixtures/minimatch-10.2.6.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.linebreak-globstar.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.astral-classes.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.peer-regressions.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.ast.expected.json"
+  ],
+  "tests_registered": false,
+  "peer_regressions_native_test_present": false,
+  "pending": [
+    "All five original dependency captures and matching platform native differentials",
+    "Actual six-site PackageManager and model-resolver assembly/caller controls",
+    "Peer-regression native gate for its ten inputs",
+    "Malformed grammar and option/prototype behavior review",
+    "Allocation/stack/resource quota/interrupt and cross-platform qualification"
+  ],
+  "runtime_status": "recovery_pending",
+  "runtime_verification_receipt": null,
+  "runtime_verification_receipt_sha256": null,
+  "runtime_execution_permitted": false,
+  "excluded_from_patch": [
+    "Old Root/shared helpers and build graph",
+    "Public package/default selection and SDK assembly",
+    "Relocation planner and its moving metadata/helper authority seals",
+    "Expected/native-observed outputs and generated goldens"
+  ],
+  "no_c_or_engine_delta": true,
+  "no_main_worktree_index_or_head_edits": true,
+  "no_node_zig_formatter_ast_compiler_native_jobs": true,
+  "observed_utc": "2026-10-16T22:30:12.2717956+00:00"
+}

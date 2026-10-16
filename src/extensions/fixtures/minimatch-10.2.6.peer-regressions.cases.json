@@ -1,0 +1,61 @@
+[
+  {
+    "id": "unc-wildcard-server-nocase",
+    "path": "//SERVER/share/a.ts",
+    "pattern": "//serv*/share/*.ts",
+    "options": {
+      "nocase": true
+    }
+  },
+  {
+    "id": "unc-wildcard-share-nocase",
+    "path": "//server/SHARE/a.ts",
+    "pattern": "//server/sha*/*.ts",
+    "options": {
+      "nocase": true
+    }
+  },
+  {
+    "id": "unc-literal-root-remains-case-sensitive",
+    "path": "//SERVER/SHARE/a.ts",
+    "pattern": "//server/share/*.ts",
+    "options": {
+      "nocase": true
+    }
+  },
+  {
+    "id": "escaped-extglob-operator",
+    "path": "y",
+    "pattern": "@(\\@(x)|y)"
+  },
+  {
+    "id": "escaped-extglob-close",
+    "path": "@(x|y)",
+    "pattern": "@(\\@(x)|y)"
+  },
+  {
+    "id": "nested-nonadoptable-negations",
+    "path": "a",
+    "pattern": "a!(!(!(!(b))))"
+  },
+  {
+    "id": "nested-adoptable-at",
+    "path": "x",
+    "pattern": "@(@(@(@(x))))"
+  },
+  {
+    "id": "integer-precision-original-rounding",
+    "path": "9007199254740993",
+    "pattern": "{9007199254740993..9007199254740993}"
+  },
+  {
+    "id": "integer-precision-rounded-value",
+    "path": "9007199254740992",
+    "pattern": "{9007199254740993..9007199254740993}"
+  },
+  {
+    "id": "sequential-65-extglobs",
+    "path": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "pattern": "@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)@(x)"
+  }
+]

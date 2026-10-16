@@ -1,0 +1,16 @@
+[
+  {"id":"astral-class-pair","path":"😀","pattern":"[😀]"},
+  {"id":"astral-class-high-unit","path":"\ud83d","pattern":"[😀]"},
+  {"id":"astral-class-low-unit","path":"\ude00","pattern":"[😀]"},
+  {"id":"astral-class-two-units","path":"😀","pattern":"[😀][😀]"},
+  {"id":"astral-range-pair","path":"😀","pattern":"[😀-🙏]"},
+  {"id":"astral-range-high-unit","path":"\ud83d","pattern":"[😀-🙏]"},
+  {"id":"astral-range-first-low-unit","path":"\ude00","pattern":"[😀-🙏]"},
+  {"id":"astral-range-last-low-unit","path":"\ude4f","pattern":"[😀-🙏]"},
+  {"id":"astral-class-negated-high","path":"\ud83d","pattern":"[!😀]"},
+  {"id":"astral-class-negated-other","path":"x","pattern":"[!😀]"},
+  {"id":"lone-high-singleton","path":"\ud83d","pattern":"[\ud83d]"},
+  {"id":"lone-low-singleton","path":"\ude00","pattern":"[\ude00]"},
+  {"id":"astral-and-posix-unicode-flag","path":"😀","pattern":"[😀[:alpha:]]"},
+  {"id":"astral-and-posix-high-unit","path":"\ud83d","pattern":"[😀[:alpha:]]"}
+]

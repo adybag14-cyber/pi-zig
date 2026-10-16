@@ -1,0 +1,49 @@
+{
+  "schema": 1,
+  "authority": "Node v24.14.0 fs.globSync; Pi 4dd2b149 package-manager expandPackageGlob",
+  "files": ["README.md", "root.js", "a.js", "A.JS", "x.ts", ".hidden/root.js", "src/a.js", "src/b.ts", "src/.secret.js", "src/deep/end.js", "src/deep/target", "src/target", "other/z.js", "other/target", "unicode/café.js"],
+  "directories": ["empty", "src/empty", ".hidden", "unicode"],
+  "links": [
+    {"path": "link-src", "target": "src", "type": "dir"},
+    {"path": "link-file.js", "target": "src/a.js", "type": "file"},
+    {"path": "broken", "target": "absent", "type": "file"},
+    {"path": "src/loop", "target": "..", "type": "dir"}
+  ],
+  "cases": [
+    {"id": "root-star", "pattern": "*"},
+    {"id": "suffix", "pattern": "*.js"},
+    {"id": "question", "pattern": "?.js"},
+    {"id": "all", "pattern": "**"},
+    {"id": "recursive-suffix", "pattern": "**/*.js"},
+    {"id": "recursive-literal", "pattern": "**/target"},
+    {"id": "subtree", "pattern": "src/**"},
+    {"id": "recursive-typescript", "pattern": "src/**/*.ts"},
+    {"id": "directory-trailing", "pattern": "src/*/"},
+    {"id": "recursive-directory-trailing", "pattern": "**/"},
+    {"id": "leading-dot", "pattern": "./**/*.js"},
+    {"id": "explicit-hidden", "pattern": ".hidden/*.js"},
+    {"id": "explicit-symlink", "pattern": "link-src/*.ts"},
+    {"id": "globstar-symlink", "pattern": "**/link-src/*.js"},
+    {"id": "directory-globstar", "pattern": "**/src/**"},
+    {"id": "globstar-chain", "pattern": "**/**/target"},
+    {"id": "literal-broken-link", "pattern": "broken"},
+    {"id": "literal-file", "pattern": "README.md"},
+    {"id": "literal-missing", "pattern": "absent"},
+    {"id": "missing-wildcard", "pattern": "missing*"},
+    {"id": "empty-pattern", "pattern": ""},
+    {"id": "missing-cwd", "pattern": "**/*.js", "cwdSuffix": "absent"},
+    {"id": "backslash-separator", "pattern": "src\\*.js"},
+    {"id": "absolute-pattern", "pattern": "src/*.js", "absolutePattern": true},
+    {"id": "options-getter-order", "pattern": "src/*.js", "observeOptions": true}
+  ],
+  "broaderReferenceOnly": [
+    {"id": "leading-bang-literal", "pattern": "!*.js"},
+    {"id": "leading-hash-literal", "pattern": "#*.js"},
+    {"id": "brace", "pattern": "{src,other}/*.js"},
+    {"id": "class", "pattern": "[ar]*.js"},
+    {"id": "extglob", "pattern": "@(src|other)/*.js"},
+    {"id": "parent", "pattern": "src/../*.js"},
+    {"id": "middle-dot", "pattern": "src/./*.js"},
+    {"id": "dot-trailing", "pattern": "./"}
+  ]
+}

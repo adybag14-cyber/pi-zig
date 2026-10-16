@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "required_prerequisites_absent_from_base_and_minimal_result",
+  "base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+  "virtual_tree": "415fd5342d7aeecc816090a816e0b6c25489b59d",
+  "files": [
+    {
+      "path": "src/extensions/native_minimatch.zig",
+      "sha256": "C9D8FF0221267C505D749E3421CFB84ABF7F4538B92E19B7CD05E46E7274005E",
+      "git_blob": "dd9ca24911f5a060fb5336a66b882c0bafbdf57e",
+      "authority_commit": "de7f662023acd1f982dab5cfa8f55a766cd23b26",
+      "retained_worktrees": ["worktrees/minimatch", "worktrees/package-manager"],
+      "owner": "minimatch_native_resume"
+    },
+    {
+      "path": "src/extensions/native_minimatch_ast.zig",
+      "sha256": "572288D2EA9EC9AB00D4EA8A515C0B7A3D31F961E5229E7062EECA231AC85801",
+      "git_blob": "a1e2fdd739bba5a431fc21bcaa4262a886006a8c",
+      "authority_commit": "de7f662023acd1f982dab5cfa8f55a766cd23b26",
+      "retained_worktrees": ["worktrees/minimatch", "worktrees/package-manager"],
+      "owner": "minimatch_native_resume"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_data.zig",
+      "sha256": "3815559A3920B79F5CB17294940754C10D14E2C41A24083505A02CDEE06FB380",
+      "git_blob": "e273762300c78c895a26ff4b263be4e81e688f38",
+      "authority_commit": "cfb9adc01d6105d4633311e22d6d0e6fd1b21e16",
+      "retained_worktrees": ["worktrees/package-manager"],
+      "owner": "upstream_refresh_resume"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+{
+  "status": "prepared_source_only_not_intaken",
+  "base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+  "captured_main_head": "6e35b2a40690b0b11ee88fabb448436c55885120",
+  "source_head": "57d5f311f1b16be4690503ae2e69cbd76dfb5acb",
+  "native_source_head": "de7f662023acd1f982dab5cfa8f55a766cd23b26",
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-minimatch-intake-prepared-20261016\\minimatch-source-only.patch",
+    "bytes": 127342,
+    "sha256": "65B731B4BD836EC228CC19AEC889DD094D8BD6366D77D516032F5C1BD23F1FA0"
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_minimatch.zig",
+      "bytes": 30166,
+      "sha256": "C9D8FF0221267C505D749E3421CFB84ABF7F4538B92E19B7CD05E46E7274005E",
+      "git_blob": "dd9ca24911f5a060fb5336a66b882c0bafbdf57e"
+    },
+    {
+      "path": "src/extensions/native_minimatch_ast.zig",
+      "bytes": 19414,
+      "sha256": "572288D2EA9EC9AB00D4EA8A515C0B7A3D31F961E5229E7062EECA231AC85801",
+      "git_blob": "a1e2fdd739bba5a431fc21bcaa4262a886006a8c"
+    },
+    {
+      "path": "src/extensions/native_minimatch_namespace.zig",
+      "bytes": 9569,
+      "sha256": "5403D7F30AF956F6671E86D9BE2C4F2CB86CFA0AC3B1E7F55FBA7828353386D8",
+      "git_blob": "c67e8fe80d0dffedf496b4902781b4b9c28f22c0"
+    },
+    {
+      "path": "src/native_minimatch_test.zig",
+      "bytes": 3163,
+      "sha256": "67B24F762665EE8AEDF38AB1576F0A71A6DD6EC5B1C80B7BEC72FEE65C58C80A",
+      "git_blob": "1a7de25afdb496d7e374edca8fd6412629b7de2c"
+    },
+    {
+      "path": "src/native_minimatch_supplement_test.zig",
+      "bytes": 3486,
+      "sha256": "E5C1B01BE2A4FF205DB0C569159B04827E96B44B0C5823B235F72D6BCD5CAAB2",
+      "git_blob": "6c2e3bfcc66e737c4acb872cafaf509244f54754"
+    },
+    {
+      "path": "src/native_minimatch_ast_test.zig",
+      "bytes": 3002,
+      "sha256": "445F40B16A5E81C8E1930D8D09D1090305BD4A6336C6F85F7FC28DEDBB98E4E8",
+      "git_blob": "ce35969d1621924932e50e53475c96144bd4ac6f"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.cases.json",
+      "bytes": 6001,
+      "sha256": "DBFCDAF53776E3C7C0854A32E628AF614CB016B3A6D42AEA3816CC33BE607145",
+      "git_blob": "b60355aa4d59d126c8ef0788c91f1111c4c99a90"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.linebreak-globstar.cases.json",
+      "bytes": 3033,
+      "sha256": "2B2199C9E715F26CE84703DA4AA589355203E3A4ADD96503399405EA90501D76",
+      "git_blob": "c3a17b43d07d844e1d9cf16ff457b5df0df92490"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.astral-classes.cases.json",
+      "bytes": 1029,
+      "sha256": "450DECF57823BE30AB3B5EC901E66C42FA2F50C6F8B92CFAD37954645EC92D6D",
+      "git_blob": "0591a65bdadbcc5b43380b3ba015f5751600f589"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.peer-regressions.cases.json",
+      "bytes": 1578,
+      "sha256": "02D6BF1EF3CBB5179A8E6A20FD868FD2579F8251E19588D44380350427BF374A",
+      "git_blob": "b52c053fb08c9372ff267ea074ff48d7da201501"
+    },
+    {
+      "path": "src/extensions/fixtures/minimatch-10.2.6.ast.cases.json",
+      "bytes": 3519,
+      "sha256": "F3BD0B91E49977A2E69E52074DA42FB6B01947D9DD9B3DA9F7B8F17342F0D352",
+      "git_blob": "102797266b1707e880796da664ba5b74986cc495"
+    },
+    {
+      "path": "tools/source-minimatch-10.2.6-oracle.mjs",
+      "bytes": 2932,
+      "sha256": "846515E11A9639CA8B80B5A5C9716B33FDBAAB21933C6BC760F4619CD9050986",
+      "git_blob": "7e51386c4ab08de87d4ce4bd0e05695f74c4cae6"
+    },
+    {
+      "path": "tools/source-minimatch-10.2.6-supplement-oracle.mjs",
+      "bytes": 3132,
+      "sha256": "D510B1BAB8262514B7C0536F5673643EA4FC858FDA54FCA16D29CBF55A61CF8C",
+      "git_blob": "836a29761b70423ed2230f748aff4f6f851cbad5"
+    },
+    {
+      "path": "tools/source-minimatch-10.2.6-ast-oracle.mjs",
+      "bytes": 3211,
+      "sha256": "F1FBB3490A3920E1135C5E7A7F9AEB2ABB2316A372C8CA618E94DCBFB21AEFDD",
+      "git_blob": "9d7e19a092c2476b9260473504758254f12942e7"
+    },
+    {
+      "path": "vendor/minimatch-contract-licenses/minimatch-BlueOak-1.0.0.md",
+      "bytes": 1550,
+      "sha256": "2C7C5D22ED5A8EE968C64757710979AFCD77438C48B4A265B94E615BABD8A901",
+      "git_blob": "8cb5cc6e616c0d9259b4965f9d2ce8528e4d2828"
+    },
+    {
+      "path": "vendor/minimatch-contract-licenses/brace-expansion-MIT.txt",
+      "bytes": 1144,
+      "sha256": "9C63A23124D68CD30CD316A94A1A0BCA34F032786DF6DF69FC4B5F136BAC8D2E",
+      "git_blob": "46e7b75c91ced041ae473299398af2b0472dc352"
+    },
+    {
+      "path": "vendor/minimatch-contract-licenses/balanced-match-MIT.md",
+      "bytes": 1155,
+      "sha256": "D408F38FFA3355C5FAEC517153295338892EB0F1EA43F57874BB23C6075979B5",
+      "git_blob": "61ece8cc92afb41fdb1552ec1f72ac147b9eaceb"
+    },
+    {
+      "path": "verification/minimatch-10.2.6-source-only-20261016.json",
+      "bytes": 3370,
+      "sha256": "85AC6A26AD4AB3194862B96ABB2297DD4F47A6EC8B66A708CEE0524A78AEB872",
+      "git_blob": "6ad73a907a43f11053cb767438af1a69d70d7420"
+    },
+    {
+      "path": "verification/minimatch-10.2.6-supplement-source-only-20261016.json",
+      "bytes": 1791,
+      "sha256": "AB9C63FA5CD6859C2264A22992A9211E49BB1174BE0DA2E8539C4628A8497D0B",
+      "git_blob": "93325801c651d8e43f96e47fac00e05602083a1b"
+    },
+    {
+      "path": "verification/minimatch-10.2.6-ast-source-only-20261016.json",
+      "bytes": 1261,
+      "sha256": "C2C3A7A83C69D4A9DBD9A5172CF590BC11F6A383129C3F244B2FC0BE4EA052F6",
+      "git_blob": "613f2178543997a369d963bac3e99c0951657e05"
+    },
+    {
+      "path": "docs/native-minimatch-source-only-20261016.md",
+      "bytes": 4823,
+      "sha256": "B80DB7A041161F027A48B21F12E65076D365F6FA03A65D0EC823B9EDC2EE32FA",
+      "git_blob": "a1ede121d07b863537adf711cfcc4a33279970d4"
+    },
+    {
+      "path": "docs/native-minimatch-supplement-source-only-20261016.md",
+      "bytes": 5153,
+      "sha256": "6D2CAFD1C40EDEEBF28403FD6B5553EEDBE6660C90186BCC9155765EB4302446",
+      "git_blob": "1682cca0fa6252fd2a7c07c7334cc7ddd856fc9b"
+    },
+    {
+      "path": "docs/native-minimatch-ast-source-only-20261016.md",
+      "bytes": 4383,
+      "sha256": "CD978E5FE1343611A635D8865544F4C92397B4D8C222D791F2773098707BE596",
+      "git_blob": "133f89b2dd7f13f9f1b3b90ae93869a2deb21970"
+    }
+  ],
+  "private_index_checks": [
+    {
+      "base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+      "index": "C:\\Users\\adyba\\pi-zig\\evidence\\root-minimatch-intake-prepared-20261016\\private-index-b44c9b34",
+      "index_sha256": "831C37F70A778AE9954C344F0DB54765DA3C0CB27C84C0E25C9FE93B7AF99C8A",
+      "result_tree": "945cd6c4ffc89ba38f44feda2c56688d953ddffa",
+      "added_paths": 23,
+      "apply_check": "passed",
+      "apply": "passed",
+      "whitespace": "passed",
+      "blob_drift": 0,
+      "scope_drift": 0
+    },
+    {
+      "base": "6e35b2a40690b0b11ee88fabb448436c55885120",
+      "index": "C:\\Users\\adyba\\pi-zig\\evidence\\root-minimatch-intake-prepared-20261016\\private-index-6e35b2a4",
+      "index_sha256": "E5DC648F06AFFAFB324C0D908A4B93644B4E442B1C995636231594FC78A142BA",
+      "result_tree": "84b67de384fb813c7c11cd43e26402843db9b06b",
+      "added_paths": 23,
+      "apply_check": "passed",
+      "apply": "passed",
+      "whitespace": "passed",
+      "blob_drift": 0,
+      "scope_drift": 0
+    }
+  ],
+  "expected_absences": [
+    "src/extensions/fixtures/minimatch-10.2.6.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.linebreak-globstar.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.astral-classes.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.peer-regressions.expected.json",
+    "src/extensions/fixtures/minimatch-10.2.6.ast.expected.json"
+  ],
+  "source_only": true,
+  "node_executed": false,
+  "zig_executed": false,
+  "native_executed": false,
+  "main_edited": false
+}

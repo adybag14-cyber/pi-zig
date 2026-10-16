@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "status": "prepared_source_only_virtual_intake",
+  "base": "b44c9b34fcd57d8e293f7ecdc4d034aaff35c019",
+  "candidate": "48869e78eb9b8b88a1780572db2fd910297c75dc",
+  "virtual_tree": "415fd5342d7aeecc816090a816e0b6c25489b59d",
+  "patch": "glob-sourceonly-918ff993-to-48869e78-minimal.patch",
+  "patch_sha256": "7F51814873DD562FE45AF5F8B36F8CFFA198F6D3445BFCE0668A1858B7B09340",
+  "candidate_publication": "unpublished_no_network_check_or_push_in_this_task",
+  "added_paths": 14,
+  "delta": [
+    "A\tsrc/extensions/fixtures/node24-glob-package-astral.input.json",
+    "A\tsrc/extensions/fixtures/node24-glob-package.input.json",
+    "A\tsrc/extensions/fixtures/node24-glob-package.input.mjs",
+    "A\tsrc/extensions/native_node_glob_path_codec.zig",
+    "A\tsrc/extensions/native_node_glob_pattern.zig",
+    "A\tsrc/extensions/native_node_glob_sync.zig",
+    "A\tverification/node24-glob-package-sourceonly-20261016/README.md",
+    "A\tverification/node24-glob-package-sourceonly-20261016/UNICODE-AMENDMENT.md",
+    "A\tverification/node24-glob-package-sourceonly-20261016/official-node24/NODE-LICENSE",
+    "A\tverification/node24-glob-package-sourceonly-20261016/official-node24/glob.js",
+    "A\tverification/node24-glob-package-sourceonly-20261016/official-node24/minimatch-index.js",
+    "A\tverification/node24-glob-package-sourceonly-20261016/official-node24/minimatch-package.json",
+    "A\tverification/node24-glob-package-sourceonly-20261016/source-only-manifest.json",
+    "A\tverification/node24-glob-package-sourceonly-20261016/unicode-amendment-manifest.json"
+  ],
+  "hash_drift": 0,
+  "files": [
+    {
+      "path": "src/extensions/fixtures/node24-glob-package-astral.input.json",
+      "candidate_blob": "3821c1f4383a1cb49d7487255906894cbcd2d05e",
+      "virtual_blob": "3821c1f4383a1cb49d7487255906894cbcd2d05e",
+      "raw_file_blob": "3821c1f4383a1cb49d7487255906894cbcd2d05e",
+      "sha256": "5ADF687CD5F85292F97779F02B489F287F75B601CB78067B2C2A078D194F5F6E",
+      "drift": false
+    },
+    {
+      "path": "src/extensions/fixtures/node24-glob-package.input.json",
+      "candidate_blob": "7767fc3057b1d5938b5c6b9fc476cbd0bee2be6f",
+      "virtual_blob": "7767fc3057b1d5938b5c6b9fc476cbd0bee2be6f",
+      "raw_file_blob": "7767fc3057b1d5938b5c6b9fc476cbd0bee2be6f",
+      "sha256": "52A386CC71B1DB31B7E033A72CE644F2CE6145D8D64A43F7474DC19A5F0F7962",
+      "drift": false
+    },
+    {
+      "path": "src/extensions/fixtures/node24-glob-package.input.mjs",
+      "candidate_blob": "30c1ca08fab5e8752bbe5bc84f5973a3bf4acade",
+      "virtual_blob": "30c1ca08fab5e8752bbe5bc84f5973a3bf4acade",
+      "raw_file_blob": "30c1ca08fab5e8752bbe5bc84f5973a3bf4acade",
+      "sha256": "39A624DDE785C743CE5FAEBD7EEE73873C6EAD13EF82898BDF0E9F7D8A236660",
+      "drift": false
+    },
+    {
+      "path": "src/extensions/native_node_glob_path_codec.zig",
+      "candidate_blob": "f616eb9f6ff1822a5ce74ac59bda7dac505b2bb5",
+      "virtual_blob": "f616eb9f6ff1822a5ce74ac59bda7dac505b2bb5",
+      "raw_file_blob": "f616eb9f6ff1822a5ce74ac59bda7dac505b2bb5",
+      "sha256": "4300AB741E5416B2F3327986CF1CE83F46100C6BBB83D617B743D2B4A339DE9F",
+      "drift": false
+    },
+    {
+      "path": "src/extensions/native_node_glob_pattern.zig",
+      "candidate_blob": "cecee8b4d3fa78c17171cfe8066819cfb5a04428",
+      "virtual_blob": "cecee8b4d3fa78c17171cfe8066819cfb5a04428",
+      "raw_file_blob": "cecee8b4d3fa78c17171cfe8066819cfb5a04428",
+      "sha256": "1842BA58F5DA61D7956527315164A8F5C3EB3C780EB9D0AAF5A28F5F9969CA90",
+      "drift": false
+    },
+    {
+      "path": "src/extensions/native_node_glob_sync.zig",
+      "candidate_blob": "4592c04429f729bd9c05c58d2e92a667565f0eea",
+      "virtual_blob": "4592c04429f729bd9c05c58d2e92a667565f0eea",
+      "raw_file_blob": "4592c04429f729bd9c05c58d2e92a667565f0eea",
+      "sha256": "91130606E66F406EDADB1012975F6C470302872B7676977C8589FBA7B29AF7B2",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/README.md",
+      "candidate_blob": "b0d2a558dd7aac70786dc448e159d651a0652018",
+      "virtual_blob": "b0d2a558dd7aac70786dc448e159d651a0652018",
+      "raw_file_blob": "b0d2a558dd7aac70786dc448e159d651a0652018",
+      "sha256": "B1ADC70497FCBCC467F2DD4A19D0310FB554A607C870D12E582785AA4612DE3B",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/UNICODE-AMENDMENT.md",
+      "candidate_blob": "c8e6da2b5ee77733311959c17d025ecedc8d69a3",
+      "virtual_blob": "c8e6da2b5ee77733311959c17d025ecedc8d69a3",
+      "raw_file_blob": "c8e6da2b5ee77733311959c17d025ecedc8d69a3",
+      "sha256": "589D19F07E7A09D71B37D2A9A99BAB0410B8740B073E807EF7E111DC4EA942BD",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/official-node24/NODE-LICENSE",
+      "candidate_blob": "403ea3c5717087b20e9cddaa2b4881256b6b4858",
+      "virtual_blob": "403ea3c5717087b20e9cddaa2b4881256b6b4858",
+      "raw_file_blob": "403ea3c5717087b20e9cddaa2b4881256b6b4858",
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/official-node24/glob.js",
+      "candidate_blob": "526efd4c010d7c8e08def40dccc0e5a71a82fbba",
+      "virtual_blob": "526efd4c010d7c8e08def40dccc0e5a71a82fbba",
+      "raw_file_blob": "526efd4c010d7c8e08def40dccc0e5a71a82fbba",
+      "sha256": "3514AC6A0935EE287E500A20C009CCB6A4A13067A2ABAC5365BF260DD48B4364",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/official-node24/minimatch-index.js",
+      "candidate_blob": "519a68f788d64a334c01c8de64b0404c4300e43d",
+      "virtual_blob": "519a68f788d64a334c01c8de64b0404c4300e43d",
+      "raw_file_blob": "519a68f788d64a334c01c8de64b0404c4300e43d",
+      "sha256": "799682EAA0CD88C6016D2AE6D8D0D58FBBA45CEBF5454F682182AE11B854ABF1",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/official-node24/minimatch-package.json",
+      "candidate_blob": "e303df7cc5855053c8211398509cb44c9db2074f",
+      "virtual_blob": "e303df7cc5855053c8211398509cb44c9db2074f",
+      "raw_file_blob": "e303df7cc5855053c8211398509cb44c9db2074f",
+      "sha256": "42BAB984CF3973FDB0EFD1A9F8E52B3F80161C74239250695B21034E3C1F9EAE",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/source-only-manifest.json",
+      "candidate_blob": "9719ff995c490f027b5828bd509647950f975163",
+      "virtual_blob": "9719ff995c490f027b5828bd509647950f975163",
+      "raw_file_blob": "9719ff995c490f027b5828bd509647950f975163",
+      "sha256": "8ACE05A8E4122EEE46C7BD82ACDDDE48640752B9F975CCCC82D5DD3B50D2D524",
+      "drift": false
+    },
+    {
+      "path": "verification/node24-glob-package-sourceonly-20261016/unicode-amendment-manifest.json",
+      "candidate_blob": "ab23500d0a8d44a3fd02c982f026beec0f9d4a79",
+      "virtual_blob": "ab23500d0a8d44a3fd02c982f026beec0f9d4a79",
+      "raw_file_blob": "ab23500d0a8d44a3fd02c982f026beec0f9d4a79",
+      "sha256": "BD9A701EDB97D04EED770F08FCA1B3EAB787F2E6D30A6DBAE6066CC348E0BAB3",
+      "drift": false
+    }
+  ],
+  "excluded_dependency_absence": [
+    {
+      "path": "src/extensions/native_minimatch.zig",
+      "base_absent": true,
+      "virtual_absent": true
+    },
+    {
+      "path": "src/extensions/native_minimatch_ast.zig",
+      "base_absent": true,
+      "virtual_absent": true
+    },
+    {
+      "path": "src/extensions/native_sdk_package_data.zig",
+      "base_absent": true,
+      "virtual_absent": true
+    }
+  ],
+  "build_executed": false,
+  "source_capture_executed": false,
+  "main_worktree_or_index_modified": false
+}

@@ -1,0 +1,49 @@
+{
+  "status": "SOURCE_ONLY_UNCOMPILED_UNEXECUTED",
+  "baseCommit": "d849736a0c7d2d73bf63711b6f99a6bd76469b06",
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "originalCasesCount": 92,
+  "originalCasesSha256": "dbfcdaf53776e3c7c0854a32e628af614cb016b3a6d42aea3816cc33be607145",
+  "suites": {
+    "linebreak-globstar": {
+      "sha256": "2b2199c9e715f26ce84703da4aa589355203e3a4add96503399405ea90501d76",
+      "count": 44,
+      "expected": "ABSENT",
+      "nativeObserved": "ABSENT"
+    },
+    "astral-classes": {
+      "sha256": "450decf57823be30ab3b5ec901e66c42fa2f50c6f8b92cfad37954645ec92d6d",
+      "count": 14,
+      "expected": "ABSENT",
+      "nativeObserved": "ABSENT"
+    },
+    "peer-regressions": {
+      "sha256": "02d6bf1ef3cbb5179a8e6a20fd868fd2579f8251e19588d44380350427bf374a",
+      "count": 10,
+      "expected": "ABSENT",
+      "nativeObserved": "ABSENT"
+    }
+  },
+  "originalEvidenceRequired": true,
+  "originalExpectedProduced": false,
+  "nativeExpectedProduced": false,
+  "nativeRuntimeExecuted": false,
+  "C_Engine_sharedEdits": false,
+  "currentLease": "05f Models17; no Zig/Node/C/native jobs",
+  "peerRegressions": "UNC and escaped-operator changes are source candidates; nested AST/adoption remains unresolved; >MAX_SAFE_INTEGER numeric ranges explicitly unsupported",
+  "pins": "minimatch10.2.6 brace-expansion5.0.12 balanced-match4.0.4",
+  "linkedQuickjsSourceRead": [
+    {
+      "file": "quickjs.h",
+      "sha256": "341cf06f8041b8311d49767026c85c7b859bcfee3088380f3ffe6d77527052ab"
+    },
+    {
+      "file": "quickjs.c",
+      "sha256": "e2f988956b452ebacddc1b24ab45e5f70f7afb4777f7452edf1457649b2d1d3b"
+    },
+    {
+      "file": "libregexp.c",
+      "sha256": "af13e996abb1767fe0cdfda123c45b811d53688d403a2ac47142e97bf79f1fae"
+    }
+  ]
+}
