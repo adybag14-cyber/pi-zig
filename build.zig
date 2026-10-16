@@ -1656,6 +1656,12 @@ pub fn build(b: *std.Build) void {
     ai_compat_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-compat", "Compare original global API registry and compat dispatch with captured dependencies").dependOn(&b.addRunArtifact(ai_compat_tests).step);
     b.step("build-native-ai-compat", "Compile native compat before bounded runtime checks").dependOn(&ai_compat_tests.step);
+    const actual_provider_factories_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_factories_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual provider factories"}, .use_llvm = use_llvm });
+    linkQuickJs(b, actual_provider_factories_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(actual_provider_factories_tests.root_module, sqlite_lib_dir, sqlite_library);
+    actual_provider_factories_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("test-native-actual-provider-factories", "Replay genuine Source92 over actual Models providers APIs and wrappers").dependOn(&b.addRunArtifact(actual_provider_factories_tests).step);
+    b.step("build-native-actual-provider-factories", "Compile actual provider factory Source92 qualification independently of runtime").dependOn(&actual_provider_factories_tests.step);
     const ai_models_auth_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_models_auth_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual Models auth"}, .use_llvm = use_llvm });
     linkQuickJs(b, ai_models_auth_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(ai_models_auth_tests.root_module, sqlite_lib_dir, sqlite_library);
