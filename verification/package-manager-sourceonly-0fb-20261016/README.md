@@ -50,3 +50,17 @@ No Zig formatter, AST checker, compiler, native runtime, Node/source capture or
 C build has run for this task. Root source files and the extension lane's five
 command transport/API/initializer/cache/import modules remain untouched.
 Whitespace checks only were performed. All qualification flags remain false.
+
+Independent static review found an invented empty-spec guard in the first
+installNpmBatch draft. The successor removes it: the actual Source always
+resolves storage, ensures the npm project and awaits the real command. A
+separate prepared physical/offline-npm supplement requires actual execution,
+retains the original method identities through transparent getter probes,
+and supplies no successful command callback. It is unrun and adds one control
+to the prepared 43, without changing their original bytes.
+
+The successor also preserves exact fresh private OOM reasons before native
+error classification in synchronous withProgress catches and the storage
+catch boundaries. Completion progress now takes its own fresh generation;
+ordinary/stale-tag/lookalike reasons retain Source catch behavior. These are
+source-only corrections; they have no inherited native qualification.

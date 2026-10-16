@@ -4,6 +4,7 @@ const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
+const body = @import("native_async_body.zig");
 pub const Inputs = struct { paths: c.JSValue, filesystem: c.JSValue, create_hash: c.JSValue, mark_cloud_ignored: c.JSValue, strip_bom: c.JSValue, config_dir: c.JSValue };
 pub const methods = .{ "getInstalledNpmVersion", "hasMissingGitDependencies", "getGitUpdateMarkerPath", "pruneEmptyGitParents", "ensureNpmProject", "ensureGitIgnore", "getNpmInstallRoot", "getGlobalNpmRoot", "getPnpmGlobalPackagePath", "getManagedNpmInstallPath", "getLegacyGlobalNpmInstallPath", "getNpmInstallPath", "getGitInstallPath", "getGitInstallRoot", "getTemporaryDir", "resolveManagedPath" };
 const Method = enum(i32) { getInstalledNpmVersion, hasMissingGitDependencies, getGitUpdateMarkerPath, pruneEmptyGitParents, ensureNpmProject, ensureGitIgnore, getNpmInstallRoot, getGlobalNpmRoot, getPnpmGlobalPackagePath, getManagedNpmInstallPath, getLegacyGlobalNpmInstallPath, getNpmInstallPath, getGitInstallPath, getGitInstallRoot, getTemporaryDir, resolveManagedPath };
@@ -29,6 +30,7 @@ fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.
 fn array(s: *Scope, values: []const c.JSValue) !c.JSValue { const result = try s.array(); for (values, 0..) |value, index| try s.index(result, @intCast(index), value); return result; }
 fn options(s: *Scope, recursive: bool, force: bool) !c.JSValue { const result = try s.object(); if (recursive) try s.put(result, "recursive", c.pi_js_bool(s.engine.context, 1)); if (force) try s.put(result, "force", c.pi_js_bool(s.engine.context, 1)); return result; }
 fn exists(s: *Scope, imports: c.JSValue, path: c.JSValue) !bool { return s.truthy(try imported(s, imports, "existsSync", &.{path})); }
+fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void { if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation); }
 fn ignored(s: *Scope, manager: c.JSValue, imports: c.JSValue, directory: c.JSValue) !void {
     if (!try exists(s, imports, directory)) _ = try imported(s, imports, "mkdirSync", &.{ directory, try options(s, true, false) });
     const path = try imported(s, imports, "join", &.{ directory, try s.text(".gitignore") });
@@ -53,7 +55,7 @@ fn parsedManifest(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue {
 fn installedVersion(s: *Scope, imports: c.JSValue, root: c.JSValue) !c.JSValue {
     const path = try imported(s, imports, "join", &.{ root, try s.text("package.json") }); if (!try exists(s, imports, path)) return c.pi_js_undefined();
     const generation = s.engine.native_allocation_generation;
-    return versionInner(s, imports, path) catch |err| { const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; return c.pi_js_undefined(); };
+    return versionInner(s, imports, path) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; return c.pi_js_undefined(); };
 }
 fn versionInner(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue { return s.get(try parsedManifest(s, imports, path), "version"); }
 fn missingDependency(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -76,7 +78,7 @@ fn missingInner(s: *Scope, imports: c.JSValue, root: c.JSValue, path: c.JSValue)
 fn missing(s: *Scope, imports: c.JSValue, root: c.JSValue) !c.JSValue {
     const path = try imported(s, imports, "join", &.{ root, try s.text("package.json") }); if (!try exists(s, imports, path)) return c.pi_js_bool(s.engine.context, 0);
     const generation = s.engine.native_allocation_generation;
-    return missingInner(s, imports, root, path) catch |err| { const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; return c.pi_js_bool(s.engine.context, 0); };
+    return missingInner(s, imports, root, path) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; return c.pi_js_bool(s.engine.context, 0); };
 }
 fn managed(s: *Scope, imports: c.JSValue, root: c.JSValue, parts: []const c.JSValue) !c.JSValue {
     const resolved_root = try imported(s, imports, "resolve", &.{root}); const args = try s.engine.gpa.alloc(c.JSValue, parts.len + 1); defer s.engine.gpa.free(args); args[0] = resolved_root; @memcpy(args[1..], parts);
@@ -123,7 +125,7 @@ fn prune(s: *Scope, imports: c.JSValue, target: c.JSValue, root: c.JSValue) !voi
         if (!try exists(s, imports, current)) { current = try imported(s, imports, "dirname", &.{current}); continue; }
         if (try @import("native_image_arithmetic.zig").compare(s.engine, .greater, try s.get(try imported(s, imports, "readdirSync", &.{current}), "length"), c.JS_NewInt32(s.engine.context, 0))) break;
         const generation = s.engine.native_allocation_generation;
-        _ = imported(s, imports, "rmSync", &.{ current, try options(s, true, true) }) catch |err| { const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; break; };
+        _ = imported(s, imports, "rmSync", &.{ current, try options(s, true, true) }) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; break; };
         current = try imported(s, imports, "dirname", &.{current});
     }
 }
@@ -137,7 +139,7 @@ fn invoke(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roo
         .getNpmInstallRoot => blk: { if (s.truthy(second)) break :blk try s.invoke(manager, "getTemporaryDir", &.{try s.text("npm")}); if (try v.eq(&s, first, "project")) { _ = try s.invoke(manager, "assertProjectTrustedForScope", &.{first}); break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "cwd"), try s.get(imports, "configDir"), try s.text("npm") }); } break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("npm") }); },
         .getGlobalNpmRoot => try globalRoot(&s, manager, imports), .getPnpmGlobalPackagePath => try pnpmPath(&s, manager, first),
         .getManagedNpmInstallPath => blk: { if (try v.eq(&s, second, "temporary")) break :blk try imported(&s, imports, "join", &.{ try s.invoke(manager, "getTemporaryDir", &.{try s.text("npm")}), try s.text("node_modules"), try s.get(first, "name") }); if (try v.eq(&s, second, "project")) { _ = try s.invoke(manager, "assertProjectTrustedForScope", &.{second}); break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "cwd"), try s.get(imports, "configDir"), try s.text("npm"), try s.text("node_modules"), try s.get(first, "name") }); } break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("npm"), try s.text("node_modules"), try s.get(first, "name") }); },
-        .getLegacyGlobalNpmInstallPath => blk: { const generation = engine.native_allocation_generation; break :blk legacy(&s, manager, imports, first) catch |err| { const failure = engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; break :blk c.pi_js_undefined(); }; },
+        .getLegacyGlobalNpmInstallPath => blk: { const generation = engine.native_allocation_generation; break :blk legacy(&s, manager, imports, first) catch |err| { try trustedBoundary(engine, err, generation); const failure = engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; break :blk c.pi_js_undefined(); }; },
         .getNpmInstallPath => blk: { const path = try s.invoke(manager, "getManagedNpmInstallPath", &.{ first, second }); if (!try v.eq(&s, second, "user") or try exists(&s, imports, path)) break :blk path; const previous = try s.invoke(manager, "getLegacyGlobalNpmInstallPath", &.{first}); break :blk if (s.truthy(previous) and try exists(&s, imports, previous)) previous else path; },
         .getGitInstallPath => blk: { if (try v.eq(&s, second, "temporary")) { const get = try s.get(manager, "getTemporaryDir"); const prefix = try s.concat(try s.text("git-"), try s.stringify(try s.get(first, "host"))); break :blk try s.call(get, manager, &.{ prefix, try s.get(first, "path"), try s.get(first, "ref") }); } const root = try s.invoke(manager, "getGitInstallRoot", &.{second}); if (!s.truthy(root)) return v.errorText(&s, try s.text("Missing git install root")); break :blk try s.invoke(manager, "resolveManagedPath", &.{ root, try s.get(first, "host"), try s.get(first, "path") }); },
         .getGitInstallRoot => blk: { if (try v.eq(&s, first, "temporary")) break :blk c.pi_js_undefined(); if (try v.eq(&s, first, "project")) { _ = try s.invoke(manager, "assertProjectTrustedForScope", &.{first}); break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "cwd"), try s.get(imports, "configDir"), try s.text("git") }); } break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("git") }); },

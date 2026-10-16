@@ -171,7 +171,6 @@ fn asyncBody(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, 
             break :value try s.call(run, manager, &.{ try s.get(command, "command"), try combinedArgs(&s, command, arg(args, 0)), arg(args, 1) });
         },
         .installNpm, .installNpmBatch => |kind| value: {
-            if (kind == .installNpmBatch and s.equal(try s.get(arg(args, 0), "length"), c.JS_NewInt32(engine.context, 0))) return .{ .returned = c.pi_js_undefined() };
             const root = try s.invoke(manager, "getNpmInstallRoot", &.{ arg(args, 1), if (kind == .installNpm) arg(args, 2) else c.pi_js_bool(engine.context, 0) });
             _ = try s.invoke(manager, "ensureNpmProject", &.{root});
             const run = try s.get(manager, "runNpmCommand");
