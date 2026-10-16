@@ -24,6 +24,7 @@ pub fn verifyConstructorAndPrivateParents(engine: *v.em.Engine, actual_inputs: m
         \\const inherited=Object.create(child),getter=Object.getOwnPropertyDescriptor(Module.prototype,'parent').get;if(getter.call(inherited)!==undefined)throw Error('private state inherited');
         \\const d=Object.getOwnPropertyDescriptor(Module.prototype,'constructor'),p=Object.getOwnPropertyDescriptor(Module.prototype,'parent');
         \\if(d.configurable||d.enumerable||d.set!==undefined||d.get.call({})!==Module||p.configurable||p.enumerable||p.get.name!=='deprecated'||p.get.length!==0||p.set.length!==1)throw Error('prototype descriptors');
+        \\for(const receiver of [Symbol('weak-key'),Symbol.for('registered'),undefined,null,0,false,'',1n]){let caught;try{p.set.call(receiver,parent)}catch(e){caught=e}if(!(caught instanceof TypeError))throw Error('primitive private setter accepted');if(receiver!==null&&receiver!==undefined&&p.get.call(receiver)!==undefined)throw Error('primitive private state retained')}
         \\class Derived extends Module{}const derived=new Derived('derived');if(!(derived instanceof Module)||!(derived instanceof Derived)||Object.getPrototypeOf(derived)!==Derived.prototype)throw Error('new-target prototype');
         \\export const parentForNativeCheck=parent,childForNativeCheck=child;
     , "node-module-constructor-private-parents.mjs");

@@ -12,8 +12,8 @@
     },
     {
       "path": "src/extensions/native_node_module_constructor.zig",
-      "sha256": "81A7FB6A1E4D075CE0B576D9E3FFA1D50E96808673D8A22D08297F405C2F03DF",
-      "bytes": 13356
+      "sha256": "A67A8A9472C0A7EC4A3CDB9C0ABEFD3CF3BB4BBB46BD2EA17462847FDE73FEF4",
+      "bytes": 13642
     },
     {
       "path": "src/extensions/native_node_module_paths.zig",
@@ -22,15 +22,15 @@
     },
     {
       "path": "src/native_node_module_constructor_controls.zig",
-      "sha256": "34FB56AD594C9EF47D5890B70826FBC3387A3DA6B08D72E6FE9FBF484B685E35",
-      "bytes": 12908
+      "sha256": "4C09A9B2804EDDF1A5703D7B7D04266FB557AAB7ECFAE01EB7B1200728D91C2F",
+      "bytes": 13284
     }
   ],
   "controls": [
     {
       "path": "verification/node-module-constructor-sourceonly-20261016/reference-input.mjs",
-      "sha256": "8CD0CD43F3E15FA2DA77B6274BADE4ECBB2779A43DD681EB9E80BA44F6ECF500",
-      "bytes": 12559
+      "sha256": "A34BE5B3C40B2C435E7CD9B548DF4E08975A00449DC8330CDE882F0A41FD5923",
+      "bytes": 12942
     },
     {
       "path": "verification/node-module-constructor-sourceonly-20261016/deprecation-reference-input.mjs",
@@ -39,12 +39,12 @@
     },
     {
       "path": "verification/node-module-constructor-sourceonly-20261016/README.md",
-      "sha256": "E0759E6C0631250DFB7F0B5AD5FB1146203F954EF6E5CF5BE7A27D6968251D53",
-      "bytes": 6949
+      "sha256": "40AF63C8625C08C2337005E34629896AD1474E8BA017CD0AD18C77C602F1953A",
+      "bytes": 7103
     },
     {
       "path": "verification/node-module-constructor-sourceonly-20261016/CAPTURE-PLAN.md",
-      "sha256": "CA72A30FC557B9C3DD6B7E918D3F732359F0E190403653FCFB8264C41B236592",
+      "sha256": "5971064519EF63A1D12FA0C096176FC111BF30CE884492A56F009055A54C56CD",
       "bytes": 2928
     },
     {
@@ -163,7 +163,7 @@
   "protected_drift": 0,
   "native_control_entrypoints": 6,
   "native_guest_programs": 5,
-  "ordinary_reference_rows": 42,
+  "ordinary_reference_rows": 43,
   "ordinary_reference_row_order": [
     "constructor-metadata",
     "default-fields",
@@ -179,6 +179,7 @@
     "constructor-getter-receiver",
     "parent-get-null",
     "parent-set-primitive",
+    "parent-set-all-primitives",
     "parent-proxy-private",
     "constructor-effects",
     "exports-own-define",
@@ -230,5 +231,6 @@
   "c_changed": false,
   "default_selected": false,
   "scoped_whitespace_check": "passed",
-  "full_whitespace_authority_exception": "Original Node LICENSE.txt line362 space-before-tab, immutable bytes preserved"
+  "full_whitespace_authority_exception": "Original Node LICENSE.txt line362 space-before-tab, immutable bytes preserved",
+  "primitive_parent_setter_guard": "Every primitive rejected after pending warning; Symbol weakkeys never accepted"
 }

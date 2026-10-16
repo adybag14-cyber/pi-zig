@@ -29,6 +29,8 @@ not an already accepted V8 parity claim. Captured roots are VM marked, charged
 in aggregate native memory, and freed by the callable finalizer. Root ownership
 cycles are visible to the linked VM collector. No global ambient receiver/state
 or uncharged host registry is introduced.
+The parent setter explicitly rejects all primitive receivers after warning,
+including Symbols that the underlying WeakMap would otherwise accept as keys.
 
 The actual existing `engine.commonjs_cache` and `createRequire` identity are
 reused. `publish(engine, constructor, filename, actualModule)` writes through
@@ -63,7 +65,7 @@ and separate pending-deprecation behavior. They require a fresh Engine with
 actual namespaces and actual host flags. No plain object is used as a Module.
 The six entrypoints contain five guest test programs; all are uncompiled/unrun.
 
-`reference-input.mjs` has 42 ordered genuine Node/jiti observations: 22
+`reference-input.mjs` has 43 ordered genuine Node/jiti observations: 23
 constructor/metadata/cache effects, 14 physical platform lookup inputs, three
 lookup edge cases, and three real jiti loading cases. The supplied actual jiti
 entry must be the sealed extracted `lib/jiti.mjs`. Three retained physical

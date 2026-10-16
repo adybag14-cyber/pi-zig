@@ -154,6 +154,9 @@ fn getParent(engine: *v.em.Engine, receiver: c.JSValue, _: []const c.JSValue, ro
 fn setParent(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     try warn(&s, roots[0], roots[1]);
+    // V8's strict private-property store rejects primitive receivers. WeakMap
+    // also accepts nonregistered Symbols, so it cannot enforce that boundary.
+    if (!c.JS_IsObject(receiver)) return v.js.typeError(engine, "Cannot assign Module private parent to a primitive receiver");
     _ = try s.call(try s.get(roots[0], "weakSet"), try s.get(roots[0], "firstParents"), &.{ receiver, arg(args, 0) });
     return c.pi_js_undefined();
 }

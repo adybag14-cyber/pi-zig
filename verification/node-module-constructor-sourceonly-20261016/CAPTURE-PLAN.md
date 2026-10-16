@@ -10,7 +10,7 @@ of the final sealed runner, complete manifests and exact physical destinations.
    unverified 31064-file runtime. Seal the complete current source/candidate,
    compiler inventory, protected goldens and all owner/runner/input controls;
    preserve the usual 84 explicit absences. New expected must be absent.
-2. Seal one ordinary reference invocation for 42 ordered rows and two separate
+2. Seal one ordinary reference invocation for 43 ordered rows and two separate
    actual host-option deprecation profiles for three rows each. Each invocation
    needs its own owned process identity/metadata and Root admission. Default
    profile runs without pending-deprecation. Secondary profiles use the genuine
