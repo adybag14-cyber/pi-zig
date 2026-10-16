@@ -1,0 +1,121 @@
+{
+  "scope": "Fresh genuine Node Source42 after input newline normalization; native C unexecuted",
+  "capture_owner": {
+    "phase": "capture",
+    "pid": 16932,
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "created_utc": "2026-10-16T09:56:04.3975197Z",
+    "argv": [
+      "--max-old-space-size=256",
+      "--expose-gc",
+      "--import",
+      "file:///C:/Users/adyba/pi-zig-native-async-function-proposal-20261016/scripts/observe-native-async-function-node24.mjs",
+      "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\capture-native-async-function-node24.mjs",
+      "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-output.json",
+      "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\src\\extensions\\fixtures\\async-function-body-node24.input.txt"
+    ],
+    "command_line": null,
+    "identity_source": "retained kernel process handle PID/starttime and exact native argv; live CIM when available",
+    "status": "passed",
+    "timeout_seconds": 300,
+    "exit_code": 0,
+    "completed_utc": "2026-10-16T09:56:04.8113523+00:00",
+    "handle_has_exited": true,
+    "original_identity_absent": true
+  },
+  "before": {
+    "candidate_files": 8006,
+    "source_dependencies": "Node builtins only; no upstream source or external package substitution",
+    "native_executed": false,
+    "candidate_head": "e3216f5f9824e7edc64ae7430cee25705f292a93",
+    "compiler_executed": false,
+    "utc": "2026-10-16T09:56:01.8573512+00:00",
+    "node_files": 1774,
+    "compiler_files": 19546,
+    "controls": [
+      {
+        "sha256": "D78ACC4AF7CDFA5A377B556EF81521FB92B43992621C6B332C7419EDEA1A3184",
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\capture-native-async-function-node24.mjs"
+      },
+      {
+        "sha256": "F4F2F8FC803C4EB4D4F369107B0E5A2C157930AB454E1E971DB5EFE5D94D8F5E",
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\observe-native-async-function-node24.mjs"
+      },
+      {
+        "sha256": "5776BF2FA3CD180CD299DB2295875CADE31A2D3FC6A0403A8BD1B171AA7ACFB2",
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\src\\extensions\\fixtures\\async-function-body-node24.input.txt"
+      },
+      {
+        "sha256": "BAE7D2371FB08B9D1FABC73F3B489B0F2AAAB5411A1A7E0A336CAA94C2F9B8C4",
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\capture-native-async-function-node24.ps1"
+      },
+      {
+        "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json"
+      },
+      {
+        "sha256": "CB34F4FBC552C035348692DF524D1C64A96184BBCECD5FA865BDB011C94AD9F6",
+        "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\auth-storage-production-4954-source47-first-20261015-compiler-before.json"
+      }
+    ]
+  },
+  "posthash": {
+    "node_drift": [],
+    "head_drift": false,
+    "native_executed": false,
+    "run_failure": null,
+    "node_files": 1774,
+    "candidate_inventory_drift": [],
+    "control_manifest_drift": false,
+    "compiler_drift": [],
+    "candidate_files": 8006,
+    "candidate_drift": [],
+    "control_drift": [],
+    "compiler_files": 19546,
+    "utc": "2026-10-16T09:56:24.0054221+00:00"
+  },
+  "validation": {
+    "source_cases": 42,
+    "actual_observed_file_modules": [
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\observe-native-async-function-node24.mjs",
+        "sha256": "f4f2f8fc803c4eb4d4f369107b0e5a2c157930ab454e1e971db5efe5d94d8f5e"
+      },
+      {
+        "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\scripts\\capture-native-async-function-node24.mjs",
+        "sha256": "d78acc4af7cdfa5a377b556ef81521fb92b43992621c6b332c7419edea1a3184"
+      }
+    ],
+    "expected_sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653",
+    "expected_matches_new_genuine_capture": true,
+    "expected_preexisting_unchanged": true,
+    "native_executed": false,
+    "runtime": "v24.14.0",
+    "expected_published_after_terminal_and_full_posthash": true,
+    "native_qualified": false,
+    "full_pi_qualified": false
+  },
+  "preserved_first_input": {
+    "sha256": "2F8C0DAB4866BD0215A6B0CF968EA7567BB02B7D33D42425D8310E5B3E40B070",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-original-input-byte-exact.txt",
+    "original_commit": "e3216f5f"
+  },
+  "full_manifests": [
+    {
+      "sha256": "588369B30FDB5068A76B5C12102050BC47AA3E44D668BDDD414EDBE73756E0C5",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-candidate-before.json",
+      "files": 8006
+    },
+    {
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+      "files": 1774
+    },
+    {
+      "sha256": "CB34F4FBC552C035348692DF524D1C64A96184BBCECD5FA865BDB011C94AD9F6",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\auth-storage-production-4954-source47-first-20261015-compiler-before.json",
+      "files": 19546
+    }
+  ]
+}

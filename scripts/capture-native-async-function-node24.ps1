@@ -1,5 +1,6 @@
 param([string]$Attempt='review1')
 $ErrorActionPreference='Stop'
+$PSNativeCommandUseErrorActionPreference=$true
 $taskCandidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $taskEvidence='C:\Users\adyba\pi-zig-update-evidence-20261003'
 $taskName="async-function-body-node24-source42-$Attempt-20261016"
@@ -13,7 +14,8 @@ $taskExpected=Join-Path $taskCandidate 'src\extensions\fixtures\async-function-b
 $taskOutput=Join-Path $taskEvidence "$taskName-output.json"
 $taskModules=Join-Path $taskEvidence "$taskName-modules.jsonl"
 if($Attempt -notmatch '^[a-zA-Z0-9_-]+$'){throw 'Invalid attempt identifier'}
-foreach($taskPath in @($taskOutput,$taskModules,$taskExpected,(Join-Path $taskEvidence "$taskName-before.json"))){if(Test-Path -LiteralPath $taskPath){throw "Refuse capture replay $taskPath"}}
+$taskExpectedBefore=if(Test-Path -LiteralPath $taskExpected){(Get-FileHash -LiteralPath $taskExpected).Hash}else{$null}
+foreach($taskPath in @($taskOutput,$taskModules,(Join-Path $taskEvidence "$taskName-before.json"))){if(Test-Path -LiteralPath $taskPath){throw "Refuse capture replay $taskPath"}}
 function Write-Json($path,$value){$value|ConvertTo-Json -Depth 12|Set-Content -LiteralPath $path -Encoding utf8NoBOM}
 function File-Rows($paths){@($paths|ForEach-Object {@{path=[IO.Path]::GetFullPath($_);sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash}})}
 function Drift($rows){@($rows|Where-Object {!(Test-Path -LiteralPath $_.path -PathType Leaf) -or (Get-FileHash -LiteralPath $_.path -Algorithm SHA256).Hash -cne $_.sha256}|ForEach-Object path)}
@@ -92,6 +94,8 @@ $taskResult=Get-Content -LiteralPath $taskOutput -Raw|ConvertFrom-Json
 if($taskResult.runtime -cne 'v24.14.0' -or $taskResult.count -ne 42 -or @($taskResult.rows).Count -ne 42 -or @($taskResult.rows.name|Sort-Object -Unique).Count -ne 42){throw 'Genuine Source42 result incomplete'}
 $taskObserved=@(Get-Content -LiteralPath $taskModules|ForEach-Object {$_|ConvertFrom-Json})
 if($taskObserved.Count -ne 2){throw 'Expected exactly driver and observer file modules; all dependencies builtin'}
-Copy-Item -LiteralPath $taskOutput -Destination $taskExpected
-Write-Json (Join-Path $taskEvidence "$taskName-validation.json") @{source_cases=42;runtime=$taskResult.runtime;expected_sha256=(Get-FileHash -LiteralPath $taskExpected).Hash;expected_published_after_terminal_and_full_posthash=$true;actual_observed_file_modules=$taskObserved;native_executed=$false;native_qualified=$false;full_pi_qualified=$false}
+if($taskExpectedBefore){
+ if((Get-FileHash -LiteralPath $taskExpected).Hash -cne $taskExpectedBefore -or (Get-FileHash -LiteralPath $taskOutput).Hash -cne $taskExpectedBefore){throw 'Existing expected fixture must remain unchanged and match new genuine capture exactly'}
+}else{Copy-Item -LiteralPath $taskOutput -Destination $taskExpected}
+Write-Json (Join-Path $taskEvidence "$taskName-validation.json") @{source_cases=42;runtime=$taskResult.runtime;expected_sha256=(Get-FileHash -LiteralPath $taskExpected).Hash;expected_matches_new_genuine_capture=$true;expected_preexisting_unchanged=[bool]$taskExpectedBefore;expected_published_after_terminal_and_full_posthash=$true;actual_observed_file_modules=$taskObserved;native_executed=$false;native_qualified=$false;full_pi_qualified=$false}
 Write-Output 'GENUINE_NODE24_ASYNC_FUNCTION_SOURCE42_CAPTURED_POSTHASH_ZERO_DRIFT'
