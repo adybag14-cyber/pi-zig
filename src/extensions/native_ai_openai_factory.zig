@@ -152,7 +152,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 fn aborted(scope: *Scope, owner: c.JSValue) !bool {
     return scope.truthy(try v.optional(scope, try v.optional(scope, try scope.get(owner, "options"), "signal"), "aborted"));
 }
-fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
+fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
     const reason = flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
