@@ -1,0 +1,11 @@
+{
+  "status": "manual_fresh16GiB_admitted",
+  "free_kib": 19438424,
+  "required_kib": 16777216,
+  "observed_utc": "2026-10-16T12:38:07.1142188+00:00",
+  "candidate": "2ee403d48e327930a4637caed6237333c3e0678d",
+  "runner_sha256": "331FA1DB066CAAC5BE1FAD0079790E7C0D46E2982A5A518B03D246C25211FB4D",
+  "explicit_root_first_attempt_only": true,
+  "expected_copy_authorized": false,
+  "proof_publication_authorized": false
+}

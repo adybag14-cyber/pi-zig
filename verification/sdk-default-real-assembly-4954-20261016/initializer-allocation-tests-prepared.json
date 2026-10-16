@@ -1,0 +1,14 @@
+{
+  "status": "initializer_native_allocation_identity_checks_prepared",
+  "implementation": "0a7607e60fd35173633d27823d7393dde81441ba",
+  "subjects": "caller must supply actual constructed loader/eventBus namespaces; no replacement runtime/registry/initializer",
+  "injection": "only hosttest callback creates private native allocation tag and records original value before throw",
+  "checks": [
+    "synchronousfactorythrow -> realdiscardunsubscribe -> freshnativeallocation exactidentity",
+    "resumedcommitthrow -> realdiscardunsubscribe -> freshnativeallocation exactidentity",
+    "uncatchableflag and usercatch not executed"
+  ],
+  "test_sha256": "F6654BDEB074FF61EA3BB1B3C73304678DE5B8DACE7704BA3844D8B9E9CE3E48",
+  "fmt_ast": false,
+  "native_tested": false
+}

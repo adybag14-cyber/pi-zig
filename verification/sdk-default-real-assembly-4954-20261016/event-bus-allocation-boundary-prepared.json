@@ -1,0 +1,10 @@
+{
+  "status": "event_bus_outer_allocation_boundary_source_only",
+  "prior": "d4d881d5b44a423559efbbc65331e6f9f6411b2e",
+  "source_capture": "2ee403d48e327930a4637caed6237333c3e0678d Source48 finished before this edit; wrapperidentitynegative heldforRootreview",
+  "change": "outerSTART/resume/console.error failures use exactcurrentfresh rethrowRecognizedAllocation thenfailureSince; Source ordinaryrawerror and loggerthrow unchanged",
+  "native_sha256": "14E32B3A04CEDA4560D05B95A0E3AD2337A7649A0D74EDC95E4C03F90461CEDA",
+  "source_controls_changed": false,
+  "fmt_ast": false,
+  "native_tested": false
+}

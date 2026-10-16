@@ -1,0 +1,20 @@
+{
+  "status": "saved_source48_root_supplement_proof_verified",
+  "captured_candidate": "2ee403d48e327930a4637caed6237333c3e0678d",
+  "cases": 48,
+  "payloads": 29,
+  "frozen_inventories": 4,
+  "observed_modules": 1486,
+  "observed_typebox_modules": 668,
+  "physical_versions": 22,
+  "final_physical_files": 25,
+  "actual_node_pid": 75292,
+  "actual_node_exit": 0,
+  "original_wrapper_exit": 1,
+  "explicit_root_supplement": true,
+  "historical_full_posthash_drift": 0,
+  "expected_sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00",
+  "native_compiled": false,
+  "native_qualified": false,
+  "default_selected": false
+}

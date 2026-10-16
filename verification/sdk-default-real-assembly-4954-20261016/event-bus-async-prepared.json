@@ -1,0 +1,12 @@
+{
+  "status": "event_bus_actual_async_source_only",
+  "source": "packages/coding-agent/src/core/event-bus.ts",
+  "source_sha256": "FE5C39A57081FB9674C5BDC8C4BC6779BB8524C8895AFC337AF5EA517BDC71A2",
+  "change": "safeHandler real resumable AsyncFunctionArrow; one intrinsic Await; Source raw catch/log/undefined return",
+  "native_sha256": "82431DF407C4CC56A7C8B7158C4CC81A5390310CE39E3DDDE6F97C86A075AF57",
+  "recognized_native_allocation": "current invocation boundary; exact rethrowRecognizedAllocation before Source guest catch",
+  "fmt_ast": false,
+  "native_tested": false,
+  "source53_44_15_changed": false,
+  "default_selected": false
+}

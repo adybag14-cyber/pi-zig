@@ -1,0 +1,376 @@
+[
+  {
+    "entry": "versions/00/dependency.ts",
+    "sha256": "73026BBDEDFB687C11A521DFA736F49C66C83DA9417F003DE85161C423137CBC",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+      "bytes": "globalThis.freshRootCounts.dependency++; export const value:number=1; export const count=globalThis.freshRootCounts.dependency;\n",
+      "sha256": "73026bbdedfb687c11a521dfa736f49c66c83da9417f003de85161c423137cbc",
+      "ino": "3096224749314280",
+      "size": "128",
+      "mtimeNs": "1792154340797399000",
+      "ctimeNs": "1792154340797399000",
+      "birthtimeNs": "1792154340797399000"
+    }
+  },
+  {
+    "entry": "versions/01/root.ts",
+    "sha256": "AF42C2AE77F179D118DC15D6E177208C91088F0A45BACF47C3C63DAAF63D277D",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\root.ts",
+      "bytes": "import {value,count} from './dependency.ts'; globalThis.freshRootCounts.root++; export const version:number=1; export const rootCount=globalThis.freshRootCounts.root; export const dependency=value; export const dependencyCount=count; export const url=import.meta.url; export const read=()=>({version,dependency,rootCount,dependencyCount}); export default read;\n",
+      "sha256": "af42c2ae77f179d118dc15d6e177208c91088f0a45bacf47c3c63daaf63d277d",
+      "ino": "2533274811169441",
+      "size": "361",
+      "mtimeNs": "1792154340798398700",
+      "ctimeNs": "1792154340798398700",
+      "birthtimeNs": "1792154340798398700"
+    }
+  },
+  {
+    "entry": "versions/02/root.ts",
+    "sha256": "301A2F0663A9B2A6DE45D7AFD40C7A4C9F87B3CFE9E083177E3E77053291848A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\root.ts",
+    "label": "root-edited",
+    "recorded_metadata": {
+      "label": "root-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\root.ts",
+      "bytes": "import {value,count} from './dependency.ts'; globalThis.freshRootCounts.root++; export const version:number=2; export const rootCount=globalThis.freshRootCounts.root; export const dependency=value; export const dependencyCount=count; export const url=import.meta.url; export const read=()=>({version,dependency,rootCount,dependencyCount}); export default read;\n",
+      "sha256": "301a2f0663a9b2a6de45d7afd40c7a4c9f87b3cfe9e083177e3e77053291848a",
+      "ino": "2533274811169441",
+      "size": "361",
+      "mtimeNs": "1792154340954893800",
+      "ctimeNs": "1792154340954893800",
+      "birthtimeNs": "1792154340798398700"
+    }
+  },
+  {
+    "entry": "versions/03/dependency.ts",
+    "sha256": "461EB4EA5EA2D81AC6785B69FD2E2DCC98E488DA19647F6F631DEDECD2D2A3E0",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+    "label": "dependency-edited",
+    "recorded_metadata": {
+      "label": "dependency-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+      "bytes": "globalThis.freshRootCounts.dependency++; export const value:number=2; export const count=globalThis.freshRootCounts.dependency;\n",
+      "sha256": "461eb4ea5ea2d81ac6785b69fd2e2dcc98e488da19647f6f631dedecd2d2a3e0",
+      "ino": "3096224749314280",
+      "size": "128",
+      "mtimeNs": "1792154340967435700",
+      "ctimeNs": "1792154340967435700",
+      "birthtimeNs": "1792154340797399000"
+    }
+  },
+  {
+    "entry": "versions/04/direct-self.ts",
+    "sha256": "6188D8B72F96303F7C636ED21CABA81AB37BC381CFA5A863736FEE82B0B8E232",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\direct-self.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\direct-self.ts",
+      "bytes": "import {read as selfRead} from './direct-self.ts'; export const version:number=1; export function read(){return version}; export const same=()=>selfRead===read; export default ()=>({version:read(),same:same(),url:import.meta.url});\n",
+      "sha256": "6188d8b72f96303f7c636ed21caba81ab37bc381cfa5a863736fee82b0b8e232",
+      "ino": "2251799834458789",
+      "size": "232",
+      "mtimeNs": "1792154340977450800",
+      "ctimeNs": "1792154340977450800",
+      "birthtimeNs": "1792154340976444600"
+    }
+  },
+  {
+    "entry": "versions/05/cycle-dependency.ts",
+    "sha256": "CDEDD028442E9DFA016B4DFD219635CEF4FD61F2959F41CD940A20AC716062DC",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-dependency.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-dependency.ts",
+      "bytes": "import {version} from './cycle-root.ts'; globalThis.freshRootCounts.cycleDependency++; export const peek=()=>version;\n",
+      "sha256": "cdedd028442e9dfa016b4dfd219635cef4fd61f2959f41cd940a20ac716062dc",
+      "ino": "2533274811169447",
+      "size": "118",
+      "mtimeNs": "1792154340988474400",
+      "ctimeNs": "1792154340988474400",
+      "birthtimeNs": "1792154340988474400"
+    }
+  },
+  {
+    "entry": "versions/06/cycle-root.ts",
+    "sha256": "C96045E9E49547A49A5C843D5B3E00E57D7347D2304C33CDD8A16EFA2D81720B",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-root.ts",
+      "bytes": "import {peek} from './cycle-dependency.ts'; globalThis.freshRootCounts.cycleRoot++; export const version:number=1; export default ()=>({version,peek:peek()});\n",
+      "sha256": "c96045e9e49547a49a5c843d5b3e00e57d7347d2304c33cdd8a16efa2d81720b",
+      "ino": "2533274811169448",
+      "size": "159",
+      "mtimeNs": "1792154340989979100",
+      "ctimeNs": "1792154340989979100",
+      "birthtimeNs": "1792154340989979100"
+    }
+  },
+  {
+    "entry": "versions/07/cycle-root.ts",
+    "sha256": "0429E2BAAE1A82C0ED3E278BCCCA6DB2A4C61D71E7D8892712D417A66DBBE231",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-root.ts",
+    "label": "cycle-root-edited",
+    "recorded_metadata": {
+      "label": "cycle-root-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cycle-root.ts",
+      "bytes": "import {peek} from './cycle-dependency.ts'; globalThis.freshRootCounts.cycleRoot++; export const version:number=2; export default ()=>({version,peek:peek()});\n",
+      "sha256": "0429e2baae1a82c0ed3e278bccca6db2a4c61d71e7d8892712d417a66dbbe231",
+      "ino": "2533274811169448",
+      "size": "159",
+      "mtimeNs": "1792154341005516000",
+      "ctimeNs": "1792154341005516000",
+      "birthtimeNs": "1792154340989979100"
+    }
+  },
+  {
+    "entry": "versions/08/dependency.cjs",
+    "sha256": "0BFC0567318B1F9103C059D977EC96A7E705AF4F4B7C609E5C52C55A7A5CBF5C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+      "bytes": "globalThis.freshRootCounts.cjs++;module.exports={value:1,count:globalThis.freshRootCounts.cjs};\n",
+      "sha256": "0bfc0567318b1f9103c059d977ec96a7e705af4f4b7c609e5c52c55a7a5cbf5c",
+      "ino": "6192449508408048",
+      "size": "96",
+      "mtimeNs": "1792154341015029600",
+      "ctimeNs": "1792154341015029600",
+      "birthtimeNs": "1792154341015029600"
+    }
+  },
+  {
+    "entry": "versions/09/cjs-root.ts",
+    "sha256": "73742F071F48EB31E78174D3D0A5C6FC3879784752F4FA9963E3EA56073026E9",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cjs-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\cjs-root.ts",
+      "bytes": "import value from './dependency.cjs'; export default ()=>value;\n",
+      "sha256": "73742f071f48eb31e78174d3d0a5c6fc3879784752f4fa9963e3ea56073026e9",
+      "ino": "4785074624854941",
+      "size": "64",
+      "mtimeNs": "1792154341016533200",
+      "ctimeNs": "1792154341016533200",
+      "birthtimeNs": "1792154341016533200"
+    }
+  },
+  {
+    "entry": "versions/10/dependency.cjs",
+    "sha256": "DE87F601FFC4065F6622BBA50F0EEF3D211ED8130D9E58D17D772BDF513EC97F",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+    "label": "cjs-dependency-edited",
+    "recorded_metadata": {
+      "label": "cjs-dependency-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.cjs",
+      "bytes": "globalThis.freshRootCounts.cjs++;module.exports={value:2,count:globalThis.freshRootCounts.cjs};\n",
+      "sha256": "de87f601ffc4065f6622bba50f0eef3d211ed8130d9e58d17d772bdf513ec97f",
+      "ino": "6192449508408048",
+      "size": "96",
+      "mtimeNs": "1792154341029571900",
+      "ctimeNs": "1792154341029571900",
+      "birthtimeNs": "1792154341015029600"
+    }
+  },
+  {
+    "entry": "versions/11/shared-root.ts",
+    "sha256": "A8422711D961522BEE2F8AD39FC1D6108FEFA634958626B86D0EFA07710EEAEC",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\shared-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\shared-root.ts",
+      "bytes": "import {value,count} from './dependency.ts';export default ()=>({value,count});\n",
+      "sha256": "a8422711d961522bee2f8ad39fc1d6108fefa634958626b86d0efa07710eeaec",
+      "ino": "1688849881037923",
+      "size": "80",
+      "mtimeNs": "1792154341036579400",
+      "ctimeNs": "1792154341036579400",
+      "birthtimeNs": "1792154341036579400"
+    }
+  },
+  {
+    "entry": "versions/12/dependency.ts",
+    "sha256": "1A601CF3E9BACE6D6D0F2D85199840C40A5DA020DBDED1D0E083A69E650AF1B3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+    "label": "shared-dependency-edited",
+    "recorded_metadata": {
+      "label": "shared-dependency-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\dependency.ts",
+      "bytes": "globalThis.freshRootCounts.dependency++;export const value:number=3;export const count=globalThis.freshRootCounts.dependency;\n",
+      "sha256": "1a601cf3e9bace6d6d0f2d85199840c40a5da020dbded1d0e083a69e650af1b3",
+      "ino": "3096224749314280",
+      "size": "126",
+      "mtimeNs": "1792154341045096400",
+      "ctimeNs": "1792154341045096400",
+      "birthtimeNs": "1792154340797399000"
+    }
+  },
+  {
+    "entry": "versions/13/data.json",
+    "sha256": "3A37782E8974C48EEBF2A0517C866AD15641C53B3D31993188796B56AEB79624",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+      "bytes": "{\"value\":1}\n",
+      "sha256": "3a37782e8974c48eebf2a0517c866ad15641c53b3d31993188796b56aeb79624",
+      "ino": "1407374904327269",
+      "size": "12",
+      "mtimeNs": "1792154341056620500",
+      "ctimeNs": "1792154341056620500",
+      "birthtimeNs": "1792154341056620500"
+    }
+  },
+  {
+    "entry": "versions/14/json-root.ts",
+    "sha256": "4A82E72A62A4BE033A2AEA01463DB98D410A425C2DF92E67F8F2793763E7BACE",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\json-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\json-root.ts",
+      "bytes": "import data from './data.json';export default ()=>data;\n",
+      "sha256": "4a82e72a62a4be033a2aea01463db98d410a425c2df92e67f8f2793763e7bace",
+      "ino": "3096224764591210",
+      "size": "56",
+      "mtimeNs": "1792154341057625900",
+      "ctimeNs": "1792154341057625900",
+      "birthtimeNs": "1792154341057625900"
+    }
+  },
+  {
+    "entry": "versions/15/data.json",
+    "sha256": "6E0D9D0268C35E8B9C620E4F529378B20D9E71AF3A03CD57AD43C1F74A9EBC40",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+    "label": "json-edited",
+    "recorded_metadata": {
+      "label": "json-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\data.json",
+      "bytes": "{\"value\":2}\n",
+      "sha256": "6e0d9d0268c35e8b9c620e4f529378b20d9e71af3a03cd57ad43c1f74a9ebc40",
+      "ino": "1407374904327269",
+      "size": "12",
+      "mtimeNs": "1792154341066642400",
+      "ctimeNs": "1792154341066642400",
+      "birthtimeNs": "1792154341056620500"
+    }
+  },
+  {
+    "entry": "versions/16/native-dependency.mjs",
+    "sha256": "340FBABB6A89EC21981E3843A40F4FEACB4B4F49C1CB6A394DBBC66CA7B4942D",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+      "bytes": "export const value=1;export const url=import.meta.url;\n",
+      "sha256": "340fbabb6a89ec21981e3843a40f4feacb4b4f49c1cb6a394dbbc66ca7b4942d",
+      "ino": "9007199275518265",
+      "size": "55",
+      "mtimeNs": "1792154341072154400",
+      "ctimeNs": "1792154341072154400",
+      "birthtimeNs": "1792154341071152200"
+    }
+  },
+  {
+    "entry": "versions/17/native-root.ts",
+    "sha256": "2DE98C4930A378A245C72DAAACFFC0B704FD8CAC37FE1577A65D64298162B00E",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-root.ts",
+      "bytes": "import {value,url} from './native-dependency.mjs';export default ()=>({value,url});\n",
+      "sha256": "2de98c4930a378a245c72daaacffc0b704fd8cac37fe1577a65d64298162b00e",
+      "ino": "2533274811174414",
+      "size": "84",
+      "mtimeNs": "1792154341072154400",
+      "ctimeNs": "1792154341072154400",
+      "birthtimeNs": "1792154341072154400"
+    }
+  },
+  {
+    "entry": "versions/18/native-dependency.mjs",
+    "sha256": "BD3661E5608DE585F9EB2343A1175147839DEB416B70DB5A2171B3EDDB5F1602",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+    "label": "native-dependency-edited",
+    "recorded_metadata": {
+      "label": "native-dependency-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\native-dependency.mjs",
+      "bytes": "export const value=2;export const url=import.meta.url;\n",
+      "sha256": "bd3661e5608de585f9eb2343a1175147839deb416b70db5a2171b3eddb5f1602",
+      "ino": "9007199275518265",
+      "size": "55",
+      "mtimeNs": "1792154341081164500",
+      "ctimeNs": "1792154341081164500",
+      "birthtimeNs": "1792154341071152200"
+    }
+  },
+  {
+    "entry": "versions/19/tla-root.ts",
+    "sha256": "78F9B1D3AF0E1B46D871BAA4FBD38C507E9600E2FB6ABEFEABCFD521F52DF11C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\tla-root.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\tla-root.ts",
+      "bytes": "export const before:number=1;await Promise.resolve();export const after:number=2;export const url=import.meta.url;export default ()=>({before,after,url});\n",
+      "sha256": "78f9b1d3af0e1b46d871baa4fbd38c507e9600e2fb6abefeabcfd521f52df11c",
+      "ino": "1688849881075169",
+      "size": "155",
+      "mtimeNs": "1792154341087673100",
+      "ctimeNs": "1792154341087673100",
+      "birthtimeNs": "1792154341086669500"
+    }
+  },
+  {
+    "entry": "versions/20/stale-extension.ts",
+    "sha256": "6F883DABCFE67FA35CED85D48BC9A22A78DECDDEDB72D7A9D5152F3DC13ABF4D",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\stale-extension.ts",
+    "label": "created",
+    "recorded_metadata": {
+      "label": "created",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\stale-extension.ts",
+      "bytes": "globalThis.freshStaleRuns.push(1);globalThis.freshRootStarted();await globalThis.freshRootGate;export default pi=>pi.registerCommand('stale',{handler:()=>1});\n",
+      "sha256": "6f883dabcfe67fa35ced85d48bc9a22a78decddedb72d7a9d5152f3dc13abf4d",
+      "ino": "1407374904364780",
+      "size": "159",
+      "mtimeNs": "1792154341094959000",
+      "ctimeNs": "1792154341094959000",
+      "birthtimeNs": "1792154341094959000"
+    }
+  },
+  {
+    "entry": "versions/21/stale-extension.ts",
+    "sha256": "F22E5E852BAF4C0500CFA5305DD93E1533C19A34C966756DDF0F45D4ACE9F70C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\stale-extension.ts",
+    "label": "stale-root-edited",
+    "recorded_metadata": {
+      "label": "stale-root-edited",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-loader-inputs-source48-20261016\\sdk-loader-inputs-source-first-20261016-output.json.physical-files\\stale-extension.ts",
+      "bytes": "globalThis.freshStaleRuns.push(2);export default pi=>pi.registerCommand('stale',{handler:()=>2});\n",
+      "sha256": "f22e5e852baf4c0500cfa5305dd93e1533c19a34c966756ddf0f45d4ace9f70c",
+      "ino": "1407374904364780",
+      "size": "98",
+      "mtimeNs": "1792154341107478900",
+      "ctimeNs": "1792154341107478900",
+      "birthtimeNs": "1792154341094959000"
+    }
+  }
+]
