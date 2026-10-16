@@ -1,0 +1,547 @@
+{
+  "runtime": "v24.14.0",
+  "source": "actual Node24 syntax and intrinsic util/types/Promise/vm; no native proposal substituted",
+  "count": 42,
+  "rows": [
+    {
+      "name": "genuine-async-metadata",
+      "value": {
+        "echo": {
+          "name": "echo",
+          "length": 2,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 2,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "echo",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "thrower": {
+          "name": "thrower",
+          "length": 1,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 1,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "thrower",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "reflect": {
+          "name": "reflect",
+          "length": 0,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 0,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "reflect",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "arrow": {
+          "name": "arrow",
+          "length": 1,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 1,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "arrow",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "awaiter": {
+          "name": "awaiter",
+          "length": 2,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 2,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "awaiter",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "catcher": {
+          "name": "catcher",
+          "length": 2,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 2,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "catcher",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        },
+        "stateful": {
+          "name": "stateful",
+          "length": 1,
+          "brand": true,
+          "tag": "[object AsyncFunction]",
+          "ownNames": [
+            "length",
+            "name"
+          ],
+          "prototype": false,
+          "constructible": false,
+          "descriptors": {
+            "length": {
+              "value": 1,
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            },
+            "name": {
+              "value": "stateful",
+              "writable": false,
+              "enumerable": false,
+              "configurable": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "prototype-counterfeit-is-not-async",
+      "value": {
+        "brand": false,
+        "tag": "[object AsyncFunction]"
+      }
+    },
+    {
+      "name": "bound-async-is-not-async-brand",
+      "value": {
+        "brand": false,
+        "name": "bound echo",
+        "length": 1,
+        "prototype": false
+      }
+    },
+    {
+      "name": "proxy-async-is-not-async-brand",
+      "value": {
+        "brand": false,
+        "tag": "[object AsyncFunction]"
+      }
+    },
+    {
+      "name": "strict-receiver-undefined",
+      "value": {
+        "same": true,
+        "type": "undefined",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-receiver-null",
+      "value": {
+        "same": true,
+        "type": "object",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-receiver-number",
+      "value": {
+        "same": true,
+        "type": "number",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-receiver-string",
+      "value": {
+        "same": true,
+        "type": "string",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-receiver-symbol",
+      "value": {
+        "same": true,
+        "type": "symbol",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-receiver-object",
+      "value": {
+        "same": true,
+        "type": "object",
+        "args": [
+          1,
+          2
+        ]
+      }
+    },
+    {
+      "name": "strict-rest-arguments-preserve-identities",
+      "value": {
+        "count": 3,
+        "a": true,
+        "b": true,
+        "missing": true
+      }
+    },
+    {
+      "name": "lexical-arrow-ignores-call-receiver",
+      "value": {
+        "sameThis": true,
+        "sameValue": true
+      }
+    },
+    {
+      "name": "lexical-arrow-ignores-bound-receiver",
+      "value": {
+        "sameThis": true,
+        "sameValue": true
+      }
+    },
+    {
+      "name": "new-target-rejected-before-body",
+      "value": {
+        "error": "TypeError",
+        "trace": []
+      }
+    },
+    {
+      "name": "own-prototype-does-not-enable-new",
+      "value": {
+        "error": "TypeError",
+        "brand": true
+      }
+    },
+    {
+      "name": "body-starts-synchronously",
+      "value": {
+        "before": [
+          "body"
+        ],
+        "value": 7,
+        "trace": [
+          "body",
+          "after",
+          "then"
+        ]
+      }
+    },
+    {
+      "name": "real-outer-promise-identity",
+      "value": {
+        "different": true,
+        "identity": true
+      }
+    },
+    {
+      "name": "return-thenable-getter-and-job-order",
+      "value": {
+        "same": true,
+        "trace": [
+          "body",
+          "get",
+          "after",
+          "call"
+        ]
+      }
+    },
+    {
+      "name": "return-thenable-multiple-settlements",
+      "value": {
+        "value": 3,
+        "trace": [
+          "end"
+        ]
+      }
+    },
+    {
+      "name": "return-throwing-then-getter-preserves-identity",
+      "value": true
+    },
+    {
+      "name": "synchronous-body-throw-becomes-rejection",
+      "value": {
+        "same": true,
+        "trace": [
+          "returned"
+        ]
+      }
+    },
+    {
+      "name": "throw-never-inspects-raw-reason",
+      "value": {
+        "same": true,
+        "reads": 0
+      }
+    },
+    {
+      "name": "await-primitive-resumes-as-job",
+      "value": {
+        "before": [
+          "start"
+        ],
+        "value": 7,
+        "trace": [
+          "start",
+          "after",
+          "resumed"
+        ]
+      }
+    },
+    {
+      "name": "await-thenable-order",
+      "value": {
+        "value": 8,
+        "trace": [
+          "start",
+          "get",
+          "after",
+          "call",
+          "resumed"
+        ]
+      }
+    },
+    {
+      "name": "await-intrinsic-promise-bypasses-public-then",
+      "value": {
+        "value": 9,
+        "reads": 0
+      }
+    },
+    {
+      "name": "await-rejection-identity",
+      "value": true
+    },
+    {
+      "name": "await-catch-preserves-reason-and-order",
+      "value": {
+        "same": true,
+        "trace": [
+          "start",
+          "after",
+          "caught"
+        ]
+      }
+    },
+    {
+      "name": "await-poisoned-constructor-enters-body-catch",
+      "value": {
+        "same": true,
+        "trace": [
+          "start",
+          "constructor",
+          "caught",
+          "after"
+        ]
+      }
+    },
+    {
+      "name": "await-poisoned-constructor-uncaught-identity",
+      "value": true
+    },
+    {
+      "name": "await-private-locals-survive-gc",
+      "value": {
+        "tag": "private-local"
+      }
+    },
+    {
+      "name": "pending-arguments-receiver-and-captures-survive-gc",
+      "value": {
+        "value": 11,
+        "trace": [
+          "start",
+          "resumed"
+        ]
+      }
+    },
+    {
+      "name": "proxy-apply-observes-real-target",
+      "value": {
+        "value": 12,
+        "trace": [
+          {
+            "brand": true,
+            "count": 1
+          }
+        ]
+      }
+    },
+    {
+      "name": "proxy-apply-can-override-return-without-async-wrapping",
+      "value": 13
+    },
+    {
+      "name": "bound-prefix-arguments",
+      "value": {
+        "receiver": true,
+        "value": true,
+        "tail": 14
+      }
+    },
+    {
+      "name": "native-wrapper-toString",
+      "value": {
+        "bound": "function () { [native code] }",
+        "proxy": "function () { [native code] }"
+      }
+    },
+    {
+      "name": "revoked-callable-proxy-toString",
+      "value": "function () { [native code] }"
+    },
+    {
+      "name": "toString-does-not-read-public-name",
+      "value": true
+    },
+    {
+      "name": "creation-realm-promise-prototype-after-gc",
+      "value": {
+        "other": true,
+        "outer": false,
+        "value": 42,
+        "brand": true
+      }
+    },
+    {
+      "name": "async-call-ignores-replaced-global-Promise",
+      "value": {
+        "original": true,
+        "value": 15,
+        "calls": 0
+      }
+    },
+    {
+      "name": "ordinary-bytecode-function-remains-ordinary",
+      "value": {
+        "brand": false,
+        "constructible": true,
+        "result": 16,
+        "same": true
+      }
+    },
+    {
+      "name": "ordinary-bound-proxy-Source-toString",
+      "value": {
+        "bound": "function () { [native code] }",
+        "proxy": "function () { [native code] }"
+      }
+    },
+    {
+      "name": "return-thenable-reentry-and-gc",
+      "value": {
+        "value": 17,
+        "trace": [
+          "body",
+          "get",
+          "body",
+          "call"
+        ]
+      }
+    }
+  ]
+}
