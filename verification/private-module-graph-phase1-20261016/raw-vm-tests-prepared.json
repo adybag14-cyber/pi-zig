@@ -1,0 +1,27 @@
+{
+  "status": "private_module_graph_12_raw_vm_tests_prepared_unrun",
+  "c_checkpoint": "4092f4a7c9e0e03d5e0a3cd1257ea2391ebb0172",
+  "tests": [
+    "test \"private live dynamic caches preserve old and first late factory policy\" {",
+    "test \"private exact nested import meta and attribute snapshot survive same physical name\" {",
+    "test \"private loader foreign pointer rejects without dereferencing controlled address\" {",
+    "test \"private failed link preserves unrelated earlier compiled definition\" {",
+    "test \"private evaluated failure keeps escaped nested import meta closure alive\" {",
+    "test \"private static indirect cycle resolves current graph before old physical modules\" {",
+    "test \"private parallel dynamic top level await evaluates dependency once\" {",
+    "test \"private attribute capture preserves original guest getter throw before selector\" {",
+    "test \"private selector native allocation exact identity survives negative and success with pending reason\" {",
+    "test \"shared bytecode serialization stays byte identical and private definitions reject\" {",
+    "test \"private pending dynamic job cancels through actual context runtime teardown\" {",
+    "test \"private foreign context capability rejects before dereferencing graph fields\" {"
+  ],
+  "test_sha256": "EB4F3E2EFB9E166BEAFA6F6198B04A3783BA48FA1572897ED446D96A6A7558FD",
+  "subjects": "actualQuickJSVM/Engine andrealcompileduserinputmodules; controlledloaderfixturesonly",
+  "source48_proof": "76025577a173943bc613283c17d1252d20bc0da8",
+  "source39_proof": "a44aee979f2e67feecea2de8011f2abd1af8e768",
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "production_graph_gc_qualified": false,
+  "default_selected": false
+}
