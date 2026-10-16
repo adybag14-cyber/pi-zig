@@ -1,0 +1,50 @@
+{
+  "rows": [
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 77040,
+        "parent_pid": 12780,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:13:19.1385760+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\before.json -ConfigSha256 E3A54F23B4942A4174181BEFF634F09BC1B33F7326E704C2447F7AA490207D6B"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 69560,
+        "parent_pid": 77040,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:13:19.1415210+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 4656,
+        "parent_pid": 12780,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:13:21.4096710+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-609b-273-20261016\\configs\\final-fallback.json -ConfigSha256 A1D10E7C20732D15EEE7671AEDBFC2DAC5CDFC34F356C6BA81E9DB76D9D6C898"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 41576,
+        "parent_pid": 4656,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:13:21.4129850+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    }
+  ],
+  "present": 0,
+  "observed_utc": "2026-10-16T15:13:23.9083317+00:00"
+}

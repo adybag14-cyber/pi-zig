@@ -1,0 +1,33 @@
+{
+  "checks": [
+    {
+      "path": "verification/latest-upstream-4dd2-20261016/Run-Latest4ddSerialCapture.ps1",
+      "sha256": "4AC4148A111D98D8465A7DFBDE8AE31D0DC2738A099C9A8D55821A3F0EE3F994",
+      "parserErrors": 0,
+      "executed": false
+    },
+    {
+      "path": "verification/latest-upstream-4dd2-20261016/Freeze-Latest4ddSource.ps1",
+      "sha256": "A8FB8110326AD265D3506FCA568E105DDACFB56818C6B324F175771D691867AB",
+      "parserErrors": 0,
+      "executed": false
+    },
+    {
+      "path": "verification/latest-upstream-4dd2-20261016/Invoke-Latest4ddPhase.ps1",
+      "sha256": "88862F5387F50ADDC65C794174D14A2FE8AB030B6C70A5580E0646EC13DFB0D7",
+      "parserErrors": 0,
+      "executed": false
+    },
+    {
+      "path": "verification/latest-upstream-4dd2-20261016/Confirm-Latest4ddOuterAbsent.ps1",
+      "sha256": "9CDD62BF5C774F9EF0A111F41571A01F2AE618EDD44CA04661468126FF114DFB",
+      "parserErrors": 0,
+      "executed": false
+    }
+  ],
+  "nodeJobs": 0,
+  "sourceCases": 0,
+  "expectedCreated": false,
+  "priorOuter": "609b second negative preserved; artifact seal pass",
+  "validation": "Parser only for successor"
+}

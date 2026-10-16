@@ -1,0 +1,10 @@
+{
+  "grant_id": "ROOT-LATEST4DD-273-THIRD-PATHEXT-REVIEWED-20261016",
+  "authorized": true,
+  "expires_utc": "2026-10-16T15:21:55.2063329+00:00",
+  "launcher_sha256": "4AC4148A111D98D8465A7DFBDE8AE31D0DC2738A099C9A8D55821A3F0EE3F994",
+  "manual_fresh_16gib": true,
+  "candidate_head": "e260372ac1cb328b125699f8e8d1ec68fdfa0e70",
+  "run_id": "root-e260-273-20261016",
+  "issued_utc": "2026-10-16T15:16:55.2063329+00:00"
+}

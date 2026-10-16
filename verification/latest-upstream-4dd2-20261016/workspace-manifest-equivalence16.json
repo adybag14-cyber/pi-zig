@@ -1,0 +1,82 @@
+[
+  {
+    "path": "packages/chord/package.json",
+    "sha256": "1CFCCB1C93B8E96D1BE4AE8A19B4F10E545B9D3E0B9F005B199C3722DA0512F8",
+    "same4954": true
+  },
+  {
+    "path": "packages/agent/package.json",
+    "sha256": "67728D06E96459B7FE96C490B563865FB78F7EAFCECB708E7AE43E6DD857A324",
+    "same4954": true
+  },
+  {
+    "path": "packages/ai/package.json",
+    "sha256": "4E9ED07B06A91D844485874C251F312B610D015A4A4FD32C78CDE58A7862A3F1",
+    "same4954": true
+  },
+  {
+    "path": "packages/codemode/package.json",
+    "sha256": "537CBC71FF74AC9AEE012FAA7D0F8B7A082115434D2E3FA4305B434B3F9C000F",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/package.json",
+    "sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5",
+    "same4954": true
+  },
+  {
+    "path": "packages/durable/package.json",
+    "sha256": "7877411C036932F74AF4226563FF37F121013A9F69D4F9CEB55F5CDBCF6E5C54",
+    "same4954": true
+  },
+  {
+    "path": "packages/env/package.json",
+    "sha256": "5AE2B9C9061E1CDB8F9024244E0001FCE339F8FB9BC3747D20D17BCCA2D11FA9",
+    "same4954": true
+  },
+  {
+    "path": "packages/evals/package.json",
+    "sha256": "27B212BA5619D80476EA641B79E8363EAEAC45435CBCEBFDB6857E9314E197B0",
+    "same4954": true
+  },
+  {
+    "path": "packages/mcp/package.json",
+    "sha256": "139827D9A6F2DD45F06B2E9310580183EA11F9B4A003B36234A6D56B67952457",
+    "same4954": true
+  },
+  {
+    "path": "packages/telemetry/package.json",
+    "sha256": "386479E7767A2AFF572FEA6339558405B1B23E9E7951504731515FC71B7DB6AE",
+    "same4954": true
+  },
+  {
+    "path": "packages/tui/package.json",
+    "sha256": "A6A82AF81ED5B6069267EABFDCF047D0AF8013695B0E64D72F3C9F44F8E8124E",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/examples/extensions/custom-provider-anthropic/package.json",
+    "sha256": "00BC494F889375F4B4DBDB1139B235EC3B5CA548875FBB7DD3655CAC8228B87B",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/examples/extensions/custom-provider-gitlab-duo/package.json",
+    "sha256": "B67BD73D2C037D93DB12F0424D99A467BBE03ABF09BB17E63173B5DB11FFC850",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/examples/extensions/gondolin/package.json",
+    "sha256": "69408851D6F68A212BD5629CC4388F256A0214B8250D131D8B4B1DE2F9B14BF5",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/examples/extensions/sandbox/package.json",
+    "sha256": "C0BC737C489938C3DE3055FEC2744EF97920F3EA93A6E7F642FB49049ADCFFF6",
+    "same4954": true
+  },
+  {
+    "path": "packages/coding-agent/examples/extensions/with-deps/package.json",
+    "sha256": "F5B1D39748FB18EA26C490E53DF47AD73FB12E43F0DB3AF93287BE7FBF0D51EF",
+    "same4954": true
+  }
+]

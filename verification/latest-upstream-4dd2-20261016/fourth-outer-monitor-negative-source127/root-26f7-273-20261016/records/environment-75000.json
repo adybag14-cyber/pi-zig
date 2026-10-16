@@ -1,0 +1,29 @@
+{
+  "pid": 75000,
+  "names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PATHEXT",
+    "PI_CODING_AGENT_DIR",
+    "PI_LATEST_CAPTURE_KIND",
+    "PI_LATEST_CAPTURE_RECORD_DIR",
+    "PI_SOURCE_ORACLE_CONTROL_MANIFEST",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "PSModulePath",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ],
+  "allowlistMatched": true,
+  "ownedProfileTempAgent": true,
+  "credentialValuesRecorded": false
+}

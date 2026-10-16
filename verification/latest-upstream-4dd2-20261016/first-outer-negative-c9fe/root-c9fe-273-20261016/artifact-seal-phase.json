@@ -1,0 +1,15 @@
+{
+  "label": "artifact-seal",
+  "timed_out": false,
+  "exit_code": 1,
+  "terminal": true,
+  "completed_utc": "2026-10-16T15:09:39.2285458+00:00",
+  "identity": {
+    "pid": 74188,
+    "parent_pid": 78296,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T15:09:38.6495750+00:00",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\artifact-seal.json -ConfigSha256 576412A41A7EFCE8788A7288FC5245E1EAB446B2368E4640A38A2A7F701BD5E1"
+  },
+  "budget_seconds": 120
+}

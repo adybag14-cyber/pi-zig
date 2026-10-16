@@ -1,0 +1,48 @@
+{
+  "raw_source_records": 127,
+  "full_seals": [
+    "before",
+    "after-summary30",
+    "after-summary45",
+    "after-openai52",
+    "final"
+  ],
+  "status": "accepted_genuine_source127_only",
+  "probes": [
+    {
+      "kind": "summary30",
+      "count": 30,
+      "node_pid": 37480,
+      "node_exit": 0,
+      "raw_sha256": "820AD75D3D804E3EABBC9E78D2268DC09C92F485AFCDCC4BB55A26EDA656582B",
+      "ordered_ids_valid": true,
+      "closure_valid": true
+    },
+    {
+      "kind": "summary45",
+      "count": 45,
+      "node_pid": 71036,
+      "node_exit": 0,
+      "raw_sha256": "AED51DB78585E898D9CFBDACD27CFE75B09852D4DA27430CE8C559CEDE30DF8C",
+      "ordered_ids_valid": true,
+      "closure_valid": true
+    },
+    {
+      "kind": "openai52",
+      "count": 52,
+      "node_pid": 75000,
+      "node_exit": 0,
+      "raw_sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674",
+      "ordered_ids_valid": true,
+      "closure_valid": true
+    }
+  ],
+  "missing_monitor_row_identity_not_recoverable": true,
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "new_expected_files_created": false,
+  "outer_monitor_negative_preserved": true,
+  "native_parity_qualified": false,
+  "full_seals_failures": 0,
+  "recorded_utc": "2026-10-16T15:39:10.4188720+00:00",
+  "owned_originals_absent": true
+}

@@ -1,0 +1,9 @@
+{
+  "kind": "acceptance",
+  "nonce": "97d0aa0e7f254f34adaef6813c38d454",
+  "issued_utc": "2026-10-16T15:50:25.3126702+00:00",
+  "approved": true,
+  "candidate_head": "accbe7929ed1efb21867fd091967e10c7ac94f62",
+  "root_fresh_free_kib": 18465728,
+  "run_id": "root-accb-google146-20261016"
+}

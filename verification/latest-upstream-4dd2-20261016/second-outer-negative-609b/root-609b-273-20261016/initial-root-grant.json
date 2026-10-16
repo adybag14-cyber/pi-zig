@@ -1,0 +1,10 @@
+{
+  "authorized": true,
+  "manual_fresh_16gib": true,
+  "launcher_sha256": "6692F143302F3CAA8C9EBB490C265610D7CE13957AC35A7C329FEA670CDC584A",
+  "run_id": "root-609b-273-20261016",
+  "candidate_head": "609b76f4979bfd2943d689e502dff4831b72c030",
+  "expires_utc": "2026-10-16T15:17:26.8408426+00:00",
+  "issued_utc": "2026-10-16T15:12:26.8408426+00:00",
+  "grant_id": "ROOT-LATEST4DD-273-SECOND-REVIEWED-SOURCELITE-20261016"
+}

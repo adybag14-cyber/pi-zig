@@ -1,0 +1,59 @@
+{
+  "method": "Only exact Read-Rows function AST evaluated; real JSON parse/count/path/SHA shape checks; no hash/fullrunner/Node/Zig",
+  "groups": [
+    {
+      "name": "source",
+      "count": 1970,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    },
+    {
+      "name": "runtime",
+      "count": 31064,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    },
+    {
+      "name": "node",
+      "count": 1774,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    },
+    {
+      "name": "run_controls",
+      "count": 18,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    },
+    {
+      "name": "synthetic_object_inputs",
+      "count": 1,
+      "all_rows_nonnull": true,
+      "all_path_fields_absolute_present": true,
+      "all_sha256_fields_present": true,
+      "file_hashing_performed": false
+    }
+  ],
+  "elapsed_seconds": 0.5500193,
+  "node_jobs": 0,
+  "zig_commands": 0,
+  "fullrunner_started": false,
+  "run_controls_census": "18 original control rows; original full group19 includes manifest self row",
+  "prior_shape_probe": "Expected19 run-controls incorrectly; corrected to actual18 without production change"
+}

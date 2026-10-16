@@ -1,0 +1,53 @@
+const api=latestSummaryAPI,rows=[],oldNow=Date.now;
+Date.now=()=>1000;
+const names=['metadata','history-undefined','history-null','history-zero','history-negative','history-symbol','history-reserve-throws','history-max-getter-throws','history-high','history-max-thinking','history-raw-thinking','history-instructions-before-reasoning','history-reasoning-throws','history-inherited-max','text-wrapper','compact-normal','compact-split','compact-prefix-only','compact-empty-prefix','compact-live-preparation','compact-inherited-preparation','branch-normal','branch-empty','branch-reserve-coercion','branch-inherited-options','branch-context-getter','branch-max-getter-throws','branch-reserve-throws','defaults','defaults-mutable'];
+try{for(const name of names){
+ const trace=[],marker={case:name},headers={owned:'headers'},env={OWNED:'env'},thinking={owned:'thinking'};
+ const usage={input:1,output:2,cacheRead:3,cacheWrite:4,totalTokens:10,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+ const model={id:'owned-summary',api:'owned-summary-api',provider:'owned-summary-provider',contextWindow:128000,reasoning:true};
+ Object.defineProperty(model,'maxTokens',{get(){trace.push('model.maxTokens');throw marker;}});
+ const messages=[{role:'user',content:'Keep this request.',timestamp:1},{role:'assistant',content:[{type:'text',text:'Owned reply.'}],timestamp:2}];
+ let reserve=1000,level='high',instructions,previous,calls=0,result,error,inheritedMax;
+ const stream=function(m,context,options){
+  calls++;trace.push({event:'request',call:calls,thisUndefined:this===undefined,modelSame:m===model,keys:Object.keys(options),hasOwnMaxTokens:Object.hasOwn(options,'maxTokens'),headersSame:options.headers===headers,envSame:options.env===env,reasoningSame:options.reasoning===level,reasoning:typeof options.reasoning==='object'?'owned-object':options.reasoning,sessionId:name.startsWith('branch-')?typeof options.sessionId==='string'&&options.sessionId.length>0:options.sessionId,cacheRetention:options.cacheRetention,context});
+  return{result(){return{role:'assistant',content:[{type:'text',text:'summary-'+calls}],stopReason:'stop',usage,timestamp:0};}};
+ };
+ try{
+  if(name==='metadata')result=['generateSummary','generateSummaryWithUsage','compact','generateBranchSummary'].map(key=>{const fn=api[key];return{key,name:fn.name,length:fn.length,ownPrototype:Object.hasOwn(fn,'prototype'),async:Object.getPrototypeOf(fn)===Object.getPrototypeOf(async()=>{})};});
+  else if(name==='defaults')result=Object.entries(api.defaultModelPerProvider);
+  else if(name==='defaults-mutable'){
+   const map=api.defaultModelPerProvider,old=map.xiaomi;
+   try{map.xiaomi='owned-mutated-default';result={same:api.defaultModelPerProvider===map,value:api.defaultModelPerProvider.xiaomi,descriptor:Object.getOwnPropertyDescriptor(map,'xiaomi')};}finally{map.xiaomi=old;}
+  }else if(name.startsWith('branch-')){
+   let options={model,apiKey:'owned-key',headers,env,signal:undefined,customInstructions:undefined,replaceInstructions:false,reserveTokens:1000,streamFn:stream,retry:undefined,callbacks:undefined};
+   if(name==='branch-reserve-coercion')options.reserveTokens={[Symbol.toPrimitive](hint){trace.push(['reserve.coercion',hint]);return 64;}};
+   if(name==='branch-reserve-throws')options.reserveTokens={[Symbol.toPrimitive](hint){trace.push(['reserve.coercion',hint]);throw marker;}};
+   if(name==='branch-context-getter')Object.defineProperty(model,'contextWindow',{get(){trace.push('model.contextWindow');return 128000;}});
+   if(name==='branch-inherited-options'){const inherited={};for(const key of Object.keys(options))Object.defineProperty(inherited,key,{get(){trace.push(['options',key]);return optionsValues[key];}});const optionsValues=options;options=Object.create(inherited);}
+   const entries=name==='branch-empty'?[]:messages.map((message,index)=>({type:'message',id:'entry-'+index,parentId:index?'entry-0':null,timestamp:'2026-10-16T00:00:00.000Z',message}));
+   result=await api.generateBranchSummary(entries,options);
+  }else if(name.startsWith('compact-')){
+   const values={firstKeptEntryId:'kept',messagesToSummarize:name==='compact-prefix-only'?[]:messages,turnPrefixMessages:name==='compact-empty-prefix'?[]:[{role:'user',content:'Owned prefix.',timestamp:3}],isSplitTurn:name!=='compact-normal',tokensBefore:123,previousSummary:undefined,fileOps:api.createFileOps()};
+   Object.defineProperty(values,'settings',{get(){trace.push('preparation.settings');throw marker;}});
+   let preparation=values;
+   if(name==='compact-live-preparation'||name==='compact-inherited-preparation'){const live={};for(const key of Object.keys(values))Object.defineProperty(live,key,{get(){trace.push(['preparation',key]);return values[key];}});Object.defineProperty(live,'settings',{get(){trace.push('preparation.settings');throw marker;}});preparation=name==='compact-inherited-preparation'?Object.create(live):live;}
+   result=await api.compact(preparation,model,'owned-key',headers,undefined,undefined,level,stream,env,undefined,undefined,'owned-route');
+  }else{
+   if(name==='history-undefined')reserve=undefined;
+   if(name==='history-null')reserve=null;
+   if(name==='history-zero')reserve=0;
+   if(name==='history-negative')reserve=-10;
+   if(name==='history-symbol')reserve=Symbol('unused-reserve');
+   if(name==='history-reserve-throws')reserve={[Symbol.toPrimitive](hint){trace.push(['reserve.coercion',hint]);throw marker;}};
+   if(name==='history-max-thinking')level='max';
+   if(name==='history-raw-thinking')level=thinking;
+   if(name==='history-instructions-before-reasoning'){instructions={[Symbol.toPrimitive](hint){trace.push(['instructions',hint]);return'owned-focus';}};Object.defineProperty(model,'reasoning',{get(){trace.push('model.reasoning');return true;}});}
+   if(name==='history-reasoning-throws')Object.defineProperty(model,'reasoning',{get(){trace.push('model.reasoning');throw marker;}});
+   if(name==='history-inherited-max'){inheritedMax=Object.getOwnPropertyDescriptor(Object.prototype,'maxTokens');Object.defineProperty(Object.prototype,'maxTokens',{configurable:true,get(){trace.push('inherited.maxTokens');throw marker;}});}
+   result=await api[name==='text-wrapper'?'generateSummary':'generateSummaryWithUsage'](messages,model,reserve,'owned-key',headers,undefined,instructions,previous,level,stream,env,undefined,undefined,'owned-route');
+  }
+ }catch(value){error=value===marker?{marker:true}:{name:value.name,message:value.message};}
+ finally{if(name==='history-inherited-max'){if(inheritedMax)Object.defineProperty(Object.prototype,'maxTokens',inheritedMax);else delete Object.prototype.maxTokens;}}
+ rows.push({name,result,error,trace,calls});
+}}finally{Date.now=oldNow;}
+globalThis.latestSummaryRows=JSON.parse(JSON.stringify(rows));

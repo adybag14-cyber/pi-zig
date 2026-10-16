@@ -1,0 +1,9 @@
+{
+  "run_id": "root-26f7-273-20261016",
+  "approved": true,
+  "nonce": "35524540696c416d923fd53bc8e4aa67",
+  "issued_utc": "2026-10-16T15:29:10.9203021+00:00",
+  "root_fresh_free_kib": 20320400,
+  "candidate_head": "26f7a0da9bd29fbf0b1889e74ce49ec93f28a1d8",
+  "kind": "openai52"
+}

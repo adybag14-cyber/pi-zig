@@ -1,0 +1,7 @@
+{
+  "admitted": true,
+  "observed_utc": "2026-10-16T15:46:31.1879102+00:00",
+  "manual_root_grant_sha256": "A187DAF2A6847E5F1E5DDB316ECE881A0C916AE9BFF4D3F93B6DDE4DD7A33D4B",
+  "free_kib": 19832876,
+  "required_free_kib": 16777216
+}

@@ -1,0 +1,50 @@
+{
+  "observed_utc": "2026-10-16T15:09:38.6458160+00:00",
+  "present": 0,
+  "rows": [
+    {
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 75028,
+        "parent_pid": 78296,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:09:33.7540340+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\before.json -ConfigSha256 9910722C81C83F92770CA3D2D91B3DEAF79A54E8BF70FE808509562EE7537ED2"
+      },
+      "pid_reused": false
+    },
+    {
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 37860,
+        "parent_pid": 75028,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:09:33.7569360+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "pid_reused": false
+    },
+    {
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 49556,
+        "parent_pid": 78296,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:09:35.9962150+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-c9fe-273-20261016\\configs\\final-fallback.json -ConfigSha256 A9D307ED88F2477CE1DFCF8861E0E003E40757838B64CE889AB0DC66C9885233"
+      },
+      "pid_reused": false
+    },
+    {
+      "original_identity_absent": true,
+      "identity": {
+        "pid": 27788,
+        "parent_pid": 49556,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:09:36.0085300+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "pid_reused": false
+    }
+  ]
+}

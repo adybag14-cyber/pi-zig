@@ -485,7 +485,7 @@ pub fn defaultModel(provider: Provider) []const u8 {
         .opencode_go => "kimi-k3",
         .openai_codex => "gpt-6.1-sol",
         .vercel_ai_gateway => "zai/glm-5.1",
-        .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.5-pro",
+        .xiaomi, .xiaomi_token_plan_ams, .xiaomi_token_plan_cn, .xiaomi_token_plan_sgp => "mimo-v2.6-pro",
         .zai, .zai_coding_cn => "glm-5.3",
     };
 }

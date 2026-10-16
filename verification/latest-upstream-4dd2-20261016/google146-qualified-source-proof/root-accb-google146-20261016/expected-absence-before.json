@@ -1,0 +1,10 @@
+{
+  "observed_utc": "2026-10-16T15:46:31.6383211+00:00",
+  "paths": [
+    "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-latest4dd.expected.json",
+    "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-original45-latest4dd.expected.json",
+    "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\ai-openai-tool-output4dd.expected.json",
+    "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\ai-google-tool-output4dd.expected.json"
+  ],
+  "present": []
+}

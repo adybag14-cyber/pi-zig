@@ -1,0 +1,15 @@
+{
+  "identity": {
+    "pid": 47220,
+    "parent_pid": 71360,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T15:46:31.6652790+00:00",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\configs\\before.json -ConfigSha256 4B5FD95712A6B4D26B2DE436E0BA03DAB0E3E9CF1C5987118BB92BE30515D19E"
+  },
+  "label": "before",
+  "completed_utc": "2026-10-16T15:47:07.3623149+00:00",
+  "budget_seconds": 600,
+  "exit_code": 0,
+  "terminal": true,
+  "timed_out": false
+}

@@ -1,0 +1,8 @@
+{
+  "path": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\node_modules",
+  "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules",
+  "link_type": "Junction",
+  "only_new_source_changed": true,
+  "source_or_native_execution": false,
+  "observed_utc": "2026-10-16T15:07:07.2414393+00:00"
+}

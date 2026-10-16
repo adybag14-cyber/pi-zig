@@ -266,18 +266,13 @@ fn generateStart(engine: *em.Engine, owner: c.JSValue, entries: c.JSValue, optio
     try scope.put(message, "content", content);
     try scope.put(message, "timestamp", try scope.invoke(try scope.global("Date"), "now", &.{}));
     try scope.index(summary_messages, 0, message);
-    const min_object = try scope.global("Math");
-    const min = try scope.get(min_object, "min");
     const model = try scope.get(owner, "model");
-    const cap = if (try math.compare(engine, .greater, try scope.get(model, "maxTokens"), c.JS_NewInt32(engine.context, 0))) try scope.get(model, "maxTokens") else try scope.get(try scope.global("Number"), "POSITIVE_INFINITY");
-    const maximum = try scope.call(min, min_object, &.{ c.JS_NewInt32(engine.context, 4096), cap });
     const raw_context = try scope.object();
     try scope.put(raw_context, "systemPrompt", try scope.text(@embedFile("compaction_system_prompt_b45.txt")));
     try scope.put(raw_context, "messages", summary_messages);
     const context = try scope.own(try @import("native_ai_transcript_context.zig").normalize(engine, raw_context));
     const request = try scope.object();
     inline for (.{ "apiKey", "headers", "env", "signal" }) |name| try scope.put(request, name, try scope.get(owner, name));
-    try scope.put(request, "maxTokens", maximum);
     try flow.wait(generated, engine, owner, try scope.call(complete, c.pi_js_undefined(), &.{ model, context, request, try scope.get(owner, "streamFn"), try scope.get(owner, "retry"), try scope.get(owner, "callbacks") }), 0);
 }
 fn generated(engine: *em.Engine, owner: c.JSValue, response: c.JSValue, rejected: bool, _: c_int) !void {

@@ -1,0 +1,52 @@
+[
+  {
+    "path": "vendor/quickjs/quickjs.c",
+    "git_blob": "4a51bb042ca626f9814e5c5c6e26ea1ed03586b1",
+    "unchanged": true
+  },
+  {
+    "path": "vendor/quickjs/quickjs.h",
+    "git_blob": "7a680107291245d9476f3d4516ed08c236f27b44",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/engine.zig",
+    "git_blob": "c220c7537a481f4bd13f8b7b3c755ab0d18a38c2",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/native_async_function.zig",
+    "git_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/native_async_body.zig",
+    "git_blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/native_agent_async.zig",
+    "git_blob": "b389d2ce336d333f0adb97b95fac08a57a0eb921",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-factory-default-models-4954.json",
+    "git_blob": "9fc27c617d6c23a3fab886ae079a21b3b16829ca",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-summary-generation-b45.input.txt",
+    "git_blob": "2a66ee54241482c3326c6eaa7fea1e375a72ff23",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/fixtures/sdk-summary-generation-b45.json",
+    "git_blob": "6c55b8e3ef14a7d43b710eb92308be6afd29ff20",
+    "unchanged": true
+  },
+  {
+    "path": "src/extensions/native_durable_compaction_task.zig",
+    "git_blob": "a1ec99f8f8acbc6245a5a4167474b65bf351e978",
+    "unchanged": true
+  }
+]

@@ -1,0 +1,9 @@
+{
+  "pid": 37480,
+  "attempts": [],
+  "networkRequests": 0,
+  "permissionModel": true,
+  "childProcessAllowed": false,
+  "workerAllowed": false,
+  "addonAllowed": false
+}

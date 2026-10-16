@@ -1,0 +1,2568 @@
+{
+  "purpose": "Ordered caller identity manifest only; no Source output expectations",
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "cases": [
+    {
+      "kind": "summary30",
+      "index": 0,
+      "caseId": "summary30/000/metadata",
+      "selector": {
+        "name": "metadata"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 1,
+      "caseId": "summary30/001/history-undefined",
+      "selector": {
+        "name": "history-undefined"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 2,
+      "caseId": "summary30/002/history-null",
+      "selector": {
+        "name": "history-null"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 3,
+      "caseId": "summary30/003/history-zero",
+      "selector": {
+        "name": "history-zero"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 4,
+      "caseId": "summary30/004/history-negative",
+      "selector": {
+        "name": "history-negative"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 5,
+      "caseId": "summary30/005/history-symbol",
+      "selector": {
+        "name": "history-symbol"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 6,
+      "caseId": "summary30/006/history-reserve-throws",
+      "selector": {
+        "name": "history-reserve-throws"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 7,
+      "caseId": "summary30/007/history-max-getter-throws",
+      "selector": {
+        "name": "history-max-getter-throws"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 8,
+      "caseId": "summary30/008/history-high",
+      "selector": {
+        "name": "history-high"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 9,
+      "caseId": "summary30/009/history-max-thinking",
+      "selector": {
+        "name": "history-max-thinking"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 10,
+      "caseId": "summary30/010/history-raw-thinking",
+      "selector": {
+        "name": "history-raw-thinking"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 11,
+      "caseId": "summary30/011/history-instructions-before-reasoning",
+      "selector": {
+        "name": "history-instructions-before-reasoning"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 12,
+      "caseId": "summary30/012/history-reasoning-throws",
+      "selector": {
+        "name": "history-reasoning-throws"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 13,
+      "caseId": "summary30/013/history-inherited-max",
+      "selector": {
+        "name": "history-inherited-max"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 14,
+      "caseId": "summary30/014/text-wrapper",
+      "selector": {
+        "name": "text-wrapper"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 15,
+      "caseId": "summary30/015/compact-normal",
+      "selector": {
+        "name": "compact-normal"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 16,
+      "caseId": "summary30/016/compact-split",
+      "selector": {
+        "name": "compact-split"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 17,
+      "caseId": "summary30/017/compact-prefix-only",
+      "selector": {
+        "name": "compact-prefix-only"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 18,
+      "caseId": "summary30/018/compact-empty-prefix",
+      "selector": {
+        "name": "compact-empty-prefix"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 19,
+      "caseId": "summary30/019/compact-live-preparation",
+      "selector": {
+        "name": "compact-live-preparation"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 20,
+      "caseId": "summary30/020/compact-inherited-preparation",
+      "selector": {
+        "name": "compact-inherited-preparation"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 21,
+      "caseId": "summary30/021/branch-normal",
+      "selector": {
+        "name": "branch-normal"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 22,
+      "caseId": "summary30/022/branch-empty",
+      "selector": {
+        "name": "branch-empty"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 23,
+      "caseId": "summary30/023/branch-reserve-coercion",
+      "selector": {
+        "name": "branch-reserve-coercion"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 24,
+      "caseId": "summary30/024/branch-inherited-options",
+      "selector": {
+        "name": "branch-inherited-options"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 25,
+      "caseId": "summary30/025/branch-context-getter",
+      "selector": {
+        "name": "branch-context-getter"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 26,
+      "caseId": "summary30/026/branch-max-getter-throws",
+      "selector": {
+        "name": "branch-max-getter-throws"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 27,
+      "caseId": "summary30/027/branch-reserve-throws",
+      "selector": {
+        "name": "branch-reserve-throws"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 28,
+      "caseId": "summary30/028/defaults",
+      "selector": {
+        "name": "defaults"
+      }
+    },
+    {
+      "kind": "summary30",
+      "index": 29,
+      "caseId": "summary30/029/defaults-mutable",
+      "selector": {
+        "name": "defaults-mutable"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 0,
+      "caseId": "summary45/000/metadata",
+      "selector": {
+        "name": "metadata"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 1,
+      "caseId": "summary45/001/initial",
+      "selector": {
+        "name": "initial"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 2,
+      "caseId": "summary45/002/text-wrapper",
+      "selector": {
+        "name": "text-wrapper"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 3,
+      "caseId": "summary45/003/update",
+      "selector": {
+        "name": "update"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 4,
+      "caseId": "summary45/004/instructions",
+      "selector": {
+        "name": "instructions"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 5,
+      "caseId": "summary45/005/both",
+      "selector": {
+        "name": "both"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 6,
+      "caseId": "summary45/006/empty-previous",
+      "selector": {
+        "name": "empty-previous"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 7,
+      "caseId": "summary45/007/max-capped",
+      "selector": {
+        "name": "max-capped"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 8,
+      "caseId": "summary45/008/max-zero",
+      "selector": {
+        "name": "max-zero"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 9,
+      "caseId": "summary45/009/max-negative",
+      "selector": {
+        "name": "max-negative"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 10,
+      "caseId": "summary45/010/max-string",
+      "selector": {
+        "name": "max-string"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 11,
+      "caseId": "summary45/011/reserve-fraction",
+      "selector": {
+        "name": "reserve-fraction"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 12,
+      "caseId": "summary45/012/reserve-negative",
+      "selector": {
+        "name": "reserve-negative"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 13,
+      "caseId": "summary45/013/reserve-nan",
+      "selector": {
+        "name": "reserve-nan"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 14,
+      "caseId": "summary45/014/reserve-infinity",
+      "selector": {
+        "name": "reserve-infinity"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 15,
+      "caseId": "summary45/015/reserve-coercion",
+      "selector": {
+        "name": "reserve-coercion"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 16,
+      "caseId": "summary45/016/max-getter",
+      "selector": {
+        "name": "max-getter"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 17,
+      "caseId": "summary45/017/reasoning-on",
+      "selector": {
+        "name": "reasoning-on"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 18,
+      "caseId": "summary45/018/reasoning-off",
+      "selector": {
+        "name": "reasoning-off"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 19,
+      "caseId": "summary45/019/reasoning-empty",
+      "selector": {
+        "name": "reasoning-empty"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 20,
+      "caseId": "summary45/020/reasoning-object",
+      "selector": {
+        "name": "reasoning-object"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 21,
+      "caseId": "summary45/021/mixed-content",
+      "selector": {
+        "name": "mixed-content"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 22,
+      "caseId": "summary45/022/response-error",
+      "selector": {
+        "name": "response-error"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 23,
+      "caseId": "summary45/023/response-length",
+      "selector": {
+        "name": "response-length"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 24,
+      "caseId": "summary45/024/response-tool-call",
+      "selector": {
+        "name": "response-tool-call"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 25,
+      "caseId": "summary45/025/response-aborted",
+      "selector": {
+        "name": "response-aborted"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 26,
+      "caseId": "summary45/026/stream-throw",
+      "selector": {
+        "name": "stream-throw"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 27,
+      "caseId": "summary45/027/usage-getter-throw",
+      "selector": {
+        "name": "usage-getter-throw"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 28,
+      "caseId": "summary45/028/content-getter",
+      "selector": {
+        "name": "content-getter"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 29,
+      "caseId": "summary45/029/live-math",
+      "selector": {
+        "name": "live-math"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 30,
+      "caseId": "summary45/030/instructions-coercion",
+      "selector": {
+        "name": "instructions-coercion"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 31,
+      "caseId": "summary45/031/previous-coercion",
+      "selector": {
+        "name": "previous-coercion"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 32,
+      "caseId": "summary45/032/null-messages",
+      "selector": {
+        "name": "null-messages"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 33,
+      "caseId": "summary45/033/compact-normal",
+      "selector": {
+        "name": "compact-normal"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 34,
+      "caseId": "summary45/034/compact-split-history",
+      "selector": {
+        "name": "compact-split-history"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 35,
+      "caseId": "summary45/035/compact-split-no-history",
+      "selector": {
+        "name": "compact-split-no-history"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 36,
+      "caseId": "summary45/036/compact-split-empty-prefix",
+      "selector": {
+        "name": "compact-split-empty-prefix"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 37,
+      "caseId": "summary45/037/compact-previous-empty",
+      "selector": {
+        "name": "compact-previous-empty"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 38,
+      "caseId": "summary45/038/compact-files",
+      "selector": {
+        "name": "compact-files"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 39,
+      "caseId": "summary45/039/compact-missing-id",
+      "selector": {
+        "name": "compact-missing-id"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 40,
+      "caseId": "summary45/040/compact-preparation-getters",
+      "selector": {
+        "name": "compact-preparation-getters"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 41,
+      "caseId": "summary45/041/compact-reserve-getters",
+      "selector": {
+        "name": "compact-reserve-getters"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 42,
+      "caseId": "summary45/042/compact-prefix-error",
+      "selector": {
+        "name": "compact-prefix-error"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 43,
+      "caseId": "summary45/043/compact-prefix-tool",
+      "selector": {
+        "name": "compact-prefix-tool"
+      }
+    },
+    {
+      "kind": "summary45",
+      "index": 44,
+      "caseId": "summary45/044/compact-prefix-aborted",
+      "selector": {
+        "name": "compact-prefix-aborted"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 0,
+      "caseId": "openai52/000",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 1,
+      "caseId": "openai52/001",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 2,
+      "caseId": "openai52/002",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 3,
+      "caseId": "openai52/003",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 4,
+      "caseId": "openai52/004",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 5,
+      "caseId": "openai52/005",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 6,
+      "caseId": "openai52/006",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 7,
+      "caseId": "openai52/007",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 8,
+      "caseId": "openai52/008",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 9,
+      "caseId": "openai52/009",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 10,
+      "caseId": "openai52/010",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 11,
+      "caseId": "openai52/011",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 12,
+      "caseId": "openai52/012",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 13,
+      "caseId": "openai52/013",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 14,
+      "caseId": "openai52/014",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 15,
+      "caseId": "openai52/015",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 16,
+      "caseId": "openai52/016",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 17,
+      "caseId": "openai52/017",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 18,
+      "caseId": "openai52/018",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 19,
+      "caseId": "openai52/019",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 20,
+      "caseId": "openai52/020",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 21,
+      "caseId": "openai52/021",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 22,
+      "caseId": "openai52/022",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 23,
+      "caseId": "openai52/023",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 24,
+      "caseId": "openai52/024",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 25,
+      "caseId": "openai52/025",
+      "selector": {
+        "api": "openai-completions"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 26,
+      "caseId": "openai52/026",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 27,
+      "caseId": "openai52/027",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 28,
+      "caseId": "openai52/028",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 29,
+      "caseId": "openai52/029",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 30,
+      "caseId": "openai52/030",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 31,
+      "caseId": "openai52/031",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 32,
+      "caseId": "openai52/032",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 33,
+      "caseId": "openai52/033",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 34,
+      "caseId": "openai52/034",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 35,
+      "caseId": "openai52/035",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 36,
+      "caseId": "openai52/036",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 37,
+      "caseId": "openai52/037",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 38,
+      "caseId": "openai52/038",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 39,
+      "caseId": "openai52/039",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 40,
+      "caseId": "openai52/040",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 41,
+      "caseId": "openai52/041",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 42,
+      "caseId": "openai52/042",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 43,
+      "caseId": "openai52/043",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 44,
+      "caseId": "openai52/044",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 45,
+      "caseId": "openai52/045",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 46,
+      "caseId": "openai52/046",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 47,
+      "caseId": "openai52/047",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 48,
+      "caseId": "openai52/048",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 49,
+      "caseId": "openai52/049",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 50,
+      "caseId": "openai52/050",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "openai52",
+      "index": 51,
+      "caseId": "openai52/051",
+      "selector": {
+        "api": "openai-responses"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 0,
+      "caseId": "google/000/empty",
+      "selector": {
+        "withImage": false,
+        "name": "empty",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 1,
+      "caseId": "google/001/ascii",
+      "selector": {
+        "withImage": false,
+        "name": "ascii",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 2,
+      "caseId": "google/002/ecma-unicode",
+      "selector": {
+        "withImage": false,
+        "name": "ecma-unicode",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 3,
+      "caseId": "google/003/bom",
+      "selector": {
+        "withImage": false,
+        "name": "bom",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 4,
+      "caseId": "google/004/nel",
+      "selector": {
+        "withImage": false,
+        "name": "nel",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 5,
+      "caseId": "google/005/zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "zwsp",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 6,
+      "caseId": "google/006/mvs",
+      "selector": {
+        "withImage": false,
+        "name": "mvs",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 7,
+      "caseId": "google/007/preserved",
+      "selector": {
+        "withImage": false,
+        "name": "preserved",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 8,
+      "caseId": "google/008/bom-wrapped",
+      "selector": {
+        "withImage": false,
+        "name": "bom-wrapped",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 9,
+      "caseId": "google/009/unicode-text",
+      "selector": {
+        "withImage": false,
+        "name": "unicode-text",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 10,
+      "caseId": "google/010/spaces-nel",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-nel",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 11,
+      "caseId": "google/011/spaces-zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-zwsp",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 12,
+      "caseId": "google/012/zero-text-blocks",
+      "selector": {
+        "withImage": false,
+        "name": "zero-text-blocks",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 13,
+      "caseId": "google/013/joined-preserved",
+      "selector": {
+        "withImage": false,
+        "name": "joined-preserved",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 14,
+      "caseId": "google/014/empty",
+      "selector": {
+        "withImage": false,
+        "name": "empty",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 15,
+      "caseId": "google/015/ascii",
+      "selector": {
+        "withImage": false,
+        "name": "ascii",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 16,
+      "caseId": "google/016/ecma-unicode",
+      "selector": {
+        "withImage": false,
+        "name": "ecma-unicode",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 17,
+      "caseId": "google/017/bom",
+      "selector": {
+        "withImage": false,
+        "name": "bom",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 18,
+      "caseId": "google/018/nel",
+      "selector": {
+        "withImage": false,
+        "name": "nel",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 19,
+      "caseId": "google/019/zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "zwsp",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 20,
+      "caseId": "google/020/mvs",
+      "selector": {
+        "withImage": false,
+        "name": "mvs",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 21,
+      "caseId": "google/021/preserved",
+      "selector": {
+        "withImage": false,
+        "name": "preserved",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 22,
+      "caseId": "google/022/bom-wrapped",
+      "selector": {
+        "withImage": false,
+        "name": "bom-wrapped",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 23,
+      "caseId": "google/023/unicode-text",
+      "selector": {
+        "withImage": false,
+        "name": "unicode-text",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 24,
+      "caseId": "google/024/spaces-nel",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-nel",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 25,
+      "caseId": "google/025/spaces-zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-zwsp",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 26,
+      "caseId": "google/026/zero-text-blocks",
+      "selector": {
+        "withImage": false,
+        "name": "zero-text-blocks",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 27,
+      "caseId": "google/027/joined-preserved",
+      "selector": {
+        "withImage": false,
+        "name": "joined-preserved",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 28,
+      "caseId": "google/028/empty",
+      "selector": {
+        "withImage": true,
+        "name": "empty",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 29,
+      "caseId": "google/029/ascii",
+      "selector": {
+        "withImage": true,
+        "name": "ascii",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 30,
+      "caseId": "google/030/ecma-unicode",
+      "selector": {
+        "withImage": true,
+        "name": "ecma-unicode",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 31,
+      "caseId": "google/031/bom",
+      "selector": {
+        "withImage": true,
+        "name": "bom",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 32,
+      "caseId": "google/032/nel",
+      "selector": {
+        "withImage": true,
+        "name": "nel",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 33,
+      "caseId": "google/033/zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "zwsp",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 34,
+      "caseId": "google/034/mvs",
+      "selector": {
+        "withImage": true,
+        "name": "mvs",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 35,
+      "caseId": "google/035/preserved",
+      "selector": {
+        "withImage": true,
+        "name": "preserved",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 36,
+      "caseId": "google/036/bom-wrapped",
+      "selector": {
+        "withImage": true,
+        "name": "bom-wrapped",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 37,
+      "caseId": "google/037/unicode-text",
+      "selector": {
+        "withImage": true,
+        "name": "unicode-text",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 38,
+      "caseId": "google/038/spaces-nel",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-nel",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 39,
+      "caseId": "google/039/spaces-zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-zwsp",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 40,
+      "caseId": "google/040/zero-text-blocks",
+      "selector": {
+        "withImage": true,
+        "name": "zero-text-blocks",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 41,
+      "caseId": "google/041/joined-preserved",
+      "selector": {
+        "withImage": true,
+        "name": "joined-preserved",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 42,
+      "caseId": "google/042/empty",
+      "selector": {
+        "withImage": true,
+        "name": "empty",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 43,
+      "caseId": "google/043/ascii",
+      "selector": {
+        "withImage": true,
+        "name": "ascii",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 44,
+      "caseId": "google/044/ecma-unicode",
+      "selector": {
+        "withImage": true,
+        "name": "ecma-unicode",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 45,
+      "caseId": "google/045/bom",
+      "selector": {
+        "withImage": true,
+        "name": "bom",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 46,
+      "caseId": "google/046/nel",
+      "selector": {
+        "withImage": true,
+        "name": "nel",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 47,
+      "caseId": "google/047/zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "zwsp",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 48,
+      "caseId": "google/048/mvs",
+      "selector": {
+        "withImage": true,
+        "name": "mvs",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 49,
+      "caseId": "google/049/preserved",
+      "selector": {
+        "withImage": true,
+        "name": "preserved",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 50,
+      "caseId": "google/050/bom-wrapped",
+      "selector": {
+        "withImage": true,
+        "name": "bom-wrapped",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 51,
+      "caseId": "google/051/unicode-text",
+      "selector": {
+        "withImage": true,
+        "name": "unicode-text",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 52,
+      "caseId": "google/052/spaces-nel",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-nel",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 53,
+      "caseId": "google/053/spaces-zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-zwsp",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 54,
+      "caseId": "google/054/zero-text-blocks",
+      "selector": {
+        "withImage": true,
+        "name": "zero-text-blocks",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 55,
+      "caseId": "google/055/joined-preserved",
+      "selector": {
+        "withImage": true,
+        "name": "joined-preserved",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 56,
+      "caseId": "google/056/empty",
+      "selector": {
+        "withImage": false,
+        "name": "empty",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 57,
+      "caseId": "google/057/ascii",
+      "selector": {
+        "withImage": false,
+        "name": "ascii",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 58,
+      "caseId": "google/058/ecma-unicode",
+      "selector": {
+        "withImage": false,
+        "name": "ecma-unicode",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 59,
+      "caseId": "google/059/bom",
+      "selector": {
+        "withImage": false,
+        "name": "bom",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 60,
+      "caseId": "google/060/nel",
+      "selector": {
+        "withImage": false,
+        "name": "nel",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 61,
+      "caseId": "google/061/zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "zwsp",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 62,
+      "caseId": "google/062/mvs",
+      "selector": {
+        "withImage": false,
+        "name": "mvs",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 63,
+      "caseId": "google/063/preserved",
+      "selector": {
+        "withImage": false,
+        "name": "preserved",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 64,
+      "caseId": "google/064/bom-wrapped",
+      "selector": {
+        "withImage": false,
+        "name": "bom-wrapped",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 65,
+      "caseId": "google/065/unicode-text",
+      "selector": {
+        "withImage": false,
+        "name": "unicode-text",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 66,
+      "caseId": "google/066/spaces-nel",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-nel",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 67,
+      "caseId": "google/067/spaces-zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-zwsp",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 68,
+      "caseId": "google/068/zero-text-blocks",
+      "selector": {
+        "withImage": false,
+        "name": "zero-text-blocks",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 69,
+      "caseId": "google/069/joined-preserved",
+      "selector": {
+        "withImage": false,
+        "name": "joined-preserved",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 70,
+      "caseId": "google/070/empty",
+      "selector": {
+        "withImage": false,
+        "name": "empty",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 71,
+      "caseId": "google/071/ascii",
+      "selector": {
+        "withImage": false,
+        "name": "ascii",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 72,
+      "caseId": "google/072/ecma-unicode",
+      "selector": {
+        "withImage": false,
+        "name": "ecma-unicode",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 73,
+      "caseId": "google/073/bom",
+      "selector": {
+        "withImage": false,
+        "name": "bom",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 74,
+      "caseId": "google/074/nel",
+      "selector": {
+        "withImage": false,
+        "name": "nel",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 75,
+      "caseId": "google/075/zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "zwsp",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 76,
+      "caseId": "google/076/mvs",
+      "selector": {
+        "withImage": false,
+        "name": "mvs",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 77,
+      "caseId": "google/077/preserved",
+      "selector": {
+        "withImage": false,
+        "name": "preserved",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 78,
+      "caseId": "google/078/bom-wrapped",
+      "selector": {
+        "withImage": false,
+        "name": "bom-wrapped",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 79,
+      "caseId": "google/079/unicode-text",
+      "selector": {
+        "withImage": false,
+        "name": "unicode-text",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 80,
+      "caseId": "google/080/spaces-nel",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-nel",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 81,
+      "caseId": "google/081/spaces-zwsp",
+      "selector": {
+        "withImage": false,
+        "name": "spaces-zwsp",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 82,
+      "caseId": "google/082/zero-text-blocks",
+      "selector": {
+        "withImage": false,
+        "name": "zero-text-blocks",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 83,
+      "caseId": "google/083/joined-preserved",
+      "selector": {
+        "withImage": false,
+        "name": "joined-preserved",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 84,
+      "caseId": "google/084/empty",
+      "selector": {
+        "withImage": true,
+        "name": "empty",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 85,
+      "caseId": "google/085/ascii",
+      "selector": {
+        "withImage": true,
+        "name": "ascii",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 86,
+      "caseId": "google/086/ecma-unicode",
+      "selector": {
+        "withImage": true,
+        "name": "ecma-unicode",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 87,
+      "caseId": "google/087/bom",
+      "selector": {
+        "withImage": true,
+        "name": "bom",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 88,
+      "caseId": "google/088/nel",
+      "selector": {
+        "withImage": true,
+        "name": "nel",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 89,
+      "caseId": "google/089/zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "zwsp",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 90,
+      "caseId": "google/090/mvs",
+      "selector": {
+        "withImage": true,
+        "name": "mvs",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 91,
+      "caseId": "google/091/preserved",
+      "selector": {
+        "withImage": true,
+        "name": "preserved",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 92,
+      "caseId": "google/092/bom-wrapped",
+      "selector": {
+        "withImage": true,
+        "name": "bom-wrapped",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 93,
+      "caseId": "google/093/unicode-text",
+      "selector": {
+        "withImage": true,
+        "name": "unicode-text",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 94,
+      "caseId": "google/094/spaces-nel",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-nel",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 95,
+      "caseId": "google/095/spaces-zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-zwsp",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 96,
+      "caseId": "google/096/zero-text-blocks",
+      "selector": {
+        "withImage": true,
+        "name": "zero-text-blocks",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 97,
+      "caseId": "google/097/joined-preserved",
+      "selector": {
+        "withImage": true,
+        "name": "joined-preserved",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 98,
+      "caseId": "google/098/empty",
+      "selector": {
+        "withImage": true,
+        "name": "empty",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 99,
+      "caseId": "google/099/ascii",
+      "selector": {
+        "withImage": true,
+        "name": "ascii",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 100,
+      "caseId": "google/100/ecma-unicode",
+      "selector": {
+        "withImage": true,
+        "name": "ecma-unicode",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 101,
+      "caseId": "google/101/bom",
+      "selector": {
+        "withImage": true,
+        "name": "bom",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 102,
+      "caseId": "google/102/nel",
+      "selector": {
+        "withImage": true,
+        "name": "nel",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 103,
+      "caseId": "google/103/zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "zwsp",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 104,
+      "caseId": "google/104/mvs",
+      "selector": {
+        "withImage": true,
+        "name": "mvs",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 105,
+      "caseId": "google/105/preserved",
+      "selector": {
+        "withImage": true,
+        "name": "preserved",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 106,
+      "caseId": "google/106/bom-wrapped",
+      "selector": {
+        "withImage": true,
+        "name": "bom-wrapped",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 107,
+      "caseId": "google/107/unicode-text",
+      "selector": {
+        "withImage": true,
+        "name": "unicode-text",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 108,
+      "caseId": "google/108/spaces-nel",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-nel",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 109,
+      "caseId": "google/109/spaces-zwsp",
+      "selector": {
+        "withImage": true,
+        "name": "spaces-zwsp",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 110,
+      "caseId": "google/110/zero-text-blocks",
+      "selector": {
+        "withImage": true,
+        "name": "zero-text-blocks",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 111,
+      "caseId": "google/111/joined-preserved",
+      "selector": {
+        "withImage": true,
+        "name": "joined-preserved",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 112,
+      "caseId": "google/112/nonvision-whitespace-image",
+      "selector": {
+        "withImage": true,
+        "name": "nonvision-whitespace-image",
+        "isError": false,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 113,
+      "caseId": "google/113/nonvision-whitespace-image",
+      "selector": {
+        "withImage": true,
+        "name": "nonvision-whitespace-image",
+        "isError": true,
+        "id": "gemini-3.1-pro-preview"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 114,
+      "caseId": "google/114/nonvision-whitespace-image",
+      "selector": {
+        "withImage": true,
+        "name": "nonvision-whitespace-image",
+        "isError": false,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 115,
+      "caseId": "google/115/nonvision-whitespace-image",
+      "selector": {
+        "withImage": true,
+        "name": "nonvision-whitespace-image",
+        "isError": true,
+        "id": "gemini-2.5-pro"
+      }
+    },
+    {
+      "kind": "google",
+      "index": 116,
+      "caseId": "google/116/getter-forward",
+      "selector": {
+        "name": "getter-forward",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 117,
+      "caseId": "google/117/getter-forward",
+      "selector": {
+        "name": "getter-forward",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 118,
+      "caseId": "google/118/getter-throws",
+      "selector": {
+        "name": "getter-throws",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 119,
+      "caseId": "google/119/getter-throws",
+      "selector": {
+        "name": "getter-throws",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 120,
+      "caseId": "google/120/call-throws",
+      "selector": {
+        "name": "call-throws",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 121,
+      "caseId": "google/121/call-throws",
+      "selector": {
+        "name": "call-throws",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 122,
+      "caseId": "google/122/length-zero",
+      "selector": {
+        "name": "length-zero",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 123,
+      "caseId": "google/123/length-zero",
+      "selector": {
+        "name": "length-zero",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 124,
+      "caseId": "google/124/length-fraction",
+      "selector": {
+        "name": "length-fraction",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 125,
+      "caseId": "google/125/length-fraction",
+      "selector": {
+        "name": "length-fraction",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 126,
+      "caseId": "google/126/length-large",
+      "selector": {
+        "name": "length-large",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 127,
+      "caseId": "google/127/length-large",
+      "selector": {
+        "name": "length-large",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 128,
+      "caseId": "google/128/length-negative",
+      "selector": {
+        "name": "length-negative",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 129,
+      "caseId": "google/129/length-negative",
+      "selector": {
+        "name": "length-negative",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 130,
+      "caseId": "google/130/length-nan",
+      "selector": {
+        "name": "length-nan",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 131,
+      "caseId": "google/131/length-nan",
+      "selector": {
+        "name": "length-nan",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 132,
+      "caseId": "google/132/length-coerce",
+      "selector": {
+        "name": "length-coerce",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 133,
+      "caseId": "google/133/length-coerce",
+      "selector": {
+        "name": "length-coerce",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 134,
+      "caseId": "google/134/length-coerce-throws",
+      "selector": {
+        "name": "length-coerce-throws",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 135,
+      "caseId": "google/135/length-coerce-throws",
+      "selector": {
+        "name": "length-coerce-throws",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 136,
+      "caseId": "google/136/length-throws",
+      "selector": {
+        "name": "length-throws",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 137,
+      "caseId": "google/137/length-throws",
+      "selector": {
+        "name": "length-throws",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 138,
+      "caseId": "google/138/length-bigint",
+      "selector": {
+        "name": "length-bigint",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 139,
+      "caseId": "google/139/length-bigint",
+      "selector": {
+        "name": "length-bigint",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 140,
+      "caseId": "google/140/length-symbol",
+      "selector": {
+        "name": "length-symbol",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 141,
+      "caseId": "google/141/length-symbol",
+      "selector": {
+        "name": "length-symbol",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 142,
+      "caseId": "google/142/return-null",
+      "selector": {
+        "name": "return-null",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 143,
+      "caseId": "google/143/return-null",
+      "selector": {
+        "name": "return-null",
+        "withImage": true
+      }
+    },
+    {
+      "kind": "google",
+      "index": 144,
+      "caseId": "google/144/missing-method",
+      "selector": {
+        "name": "missing-method",
+        "withImage": false
+      }
+    },
+    {
+      "kind": "google",
+      "index": 145,
+      "caseId": "google/145/missing-method",
+      "selector": {
+        "name": "missing-method",
+        "withImage": true
+      }
+    }
+  ]
+}

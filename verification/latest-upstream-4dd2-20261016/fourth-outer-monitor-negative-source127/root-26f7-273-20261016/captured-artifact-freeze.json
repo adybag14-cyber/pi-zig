@@ -1,0 +1,86 @@
+[
+  {
+    "sha256": "8E338DF98FB64F78F84847088CB56C81376044FD588DF9FD8FFB5467A929D2E3",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary30.request.json"
+  },
+  {
+    "sha256": "CF4A646BEDDD9AB3FD31F0CDDA15800C985487A47932909645C390DDEEB4FD7F",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary30.approval.json"
+  },
+  {
+    "sha256": "D6BDFA191572E5A27F65924E583047749408B9C5FD31E6273F687073B5054F53",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary30.reservation.json"
+  },
+  {
+    "sha256": "820AD75D3D804E3EABBC9E78D2268DC09C92F485AFCDCC4BB55A26EDA656582B",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary30-raw-source.json"
+  },
+  {
+    "sha256": "08698E7DAED74392CFFEA1EDD0307F084A8908071D19C22F43CCC3824AAAB447",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\latest4dd-root-26f7-273-20261016-summary30.json"
+  },
+  {
+    "sha256": "99771DB7DAB9AEEA8ABFAFB3710B6E00E9617283D7F76570488FA43F6B8A2196",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\environment-37480.json"
+  },
+  {
+    "sha256": "46153DEE1F853502032243A5A991A1E4484AF7A421EFC2C252F1FFEB3D563F28",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\network-37480.json"
+  },
+  {
+    "sha256": "E2AAAAB0B67CE331C516B824A3B9B2E11CFC13ABBCD04C889B54104ACA9973BA",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\source4dd2-closure-37480-0-20261016.json"
+  },
+  {
+    "sha256": "2076D84830DA07826AF9F0CA87CEE29DC4D0AEDC07C434EDABE5560C4BD82865",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\source4dd2-modules-37480-0-20261016.jsonl"
+  },
+  {
+    "sha256": "B22ACC0BCB689F06E3E5C5ED23DB6612E3298849DCF455E9AE8411AD6FCE8F6E",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary45.request.json"
+  },
+  {
+    "sha256": "1FA2FCBA81D08CF73BCC71EC43443EDAA338CB69B1DCF0C2E463ACA461A32B66",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary45.approval.json"
+  },
+  {
+    "sha256": "687A730C96545DA31CCFB3BDF870C7CFBF40CD8E57E2433ABAC82DDA857B31C6",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\summary45.reservation.json"
+  },
+  {
+    "sha256": "AED51DB78585E898D9CFBDACD27CFE75B09852D4DA27430CE8C559CEDE30DF8C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary45-raw-source.json"
+  },
+  {
+    "sha256": "2047E2061EFD5AADBE5BEDC37FCB344753C1B0F57779E22D292077A67AE258C8",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\latest4dd-root-26f7-273-20261016-summary45.json"
+  },
+  {
+    "sha256": "8457230CD0AA3F25E18E934F7E50358ABA0F449E196365CB81B90BD0616EDC1C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\environment-71036.json"
+  },
+  {
+    "sha256": "28E383771F672C744193535AA3BCC0FBC7BB331DEECCB946C77DFF11E41395D1",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\network-71036.json"
+  },
+  {
+    "sha256": "5948F95343C2637305406B6658B469B52A194A2FF6A700F7146E0D48C18504BD",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\source4dd2-closure-71036-0-20261016.json"
+  },
+  {
+    "sha256": "0205B1F8CE7CE57CA9F26252348C62D8DB99BB170D63E0263161974A4251798B",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\records\\source4dd2-modules-71036-0-20261016.jsonl"
+  },
+  {
+    "sha256": "604286D3F5F88968D8CBECDE410EC5BB2E474F92B12698704DCD85C4453DFCC5",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\openai52.request.json"
+  },
+  {
+    "sha256": "39C91C274C0636B0A4EFF8847055161A56FA8FF2FCCAF89FD19808A7931E3707",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\openai52.approval.json"
+  },
+  {
+    "sha256": "2E26143CC859F84624524B59C56B19752580D6AFBC1A80DF61A3CCC5458F26E8",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\admission\\openai52.reservation.json"
+  }
+]

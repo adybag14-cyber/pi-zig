@@ -1,0 +1,5705 @@
+{
+  "cases": [
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 0,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          ""
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/000/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 1,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/001/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 2,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/002/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 3,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/003/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 4,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "\u0085"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\u0085\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/004/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 5,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "​"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "​"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"​\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/005/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 6,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "᠎"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"᠎\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/006/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 7,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \tanswer\n "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\tanswer\\n \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/007/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 8,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "﻿ answer ﻿"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"﻿ answer ﻿\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/008/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 9,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "é"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "é"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"é\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/009/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 10,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \u0085 "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \u0085 \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/010/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 11,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " ​ "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" ​ \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/011/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 12,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/012/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 13,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\nanswer \n﻿"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\nanswer \\n﻿\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/013/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 14,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          ""
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/014/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 15,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/015/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 16,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/016/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 17,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/017/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 18,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "\u0085"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\u0085\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/018/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 19,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "​"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "​"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"​\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/019/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 20,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "᠎"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"᠎\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/020/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 21,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \tanswer\n "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\tanswer\\n \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/021/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 22,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "﻿ answer ﻿"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"﻿ answer ﻿\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/022/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 23,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "é"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "é"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"é\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/023/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 24,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \u0085 "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \u0085 \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/024/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 25,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " ​ "
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" ​ \"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/025/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 26,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/026/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 27,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\nanswer \n﻿"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\nanswer \\n﻿\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/027/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 28,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          ""
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/028/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 29,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/029/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 30,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/030/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 31,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/031/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 32,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "\u0085"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\u0085\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/032/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 33,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "​"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "​"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"​\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/033/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 34,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "᠎"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"᠎\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/034/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 35,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \tanswer\n "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\tanswer\\n \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/035/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 36,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "﻿ answer ﻿"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"﻿ answer ﻿\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/036/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 37,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "é"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "é"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"é\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/037/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 38,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \u0085 "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \u0085 \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/038/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 39,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " ​ "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" ​ \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/039/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 40,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/040/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 41,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\nanswer \n﻿"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\nanswer \\n﻿\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/041/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 42,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          ""
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/042/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 43,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/043/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 44,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/044/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 45,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/045/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 46,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "\u0085"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\u0085\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/046/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 47,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "​"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "​"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"​\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/047/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 48,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "᠎"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"᠎\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/048/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 49,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \tanswer\n "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\tanswer\\n \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/049/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 50,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "﻿ answer ﻿"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"﻿ answer ﻿\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/050/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 51,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          "é"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "é"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"é\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/051/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 52,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \u0085 "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \u0085 \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/052/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 53,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " ​ "
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" ​ \"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/053/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 54,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/054/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 55,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\nanswer \n﻿"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\nanswer \\n﻿\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/055/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 56,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          ""
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/056/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 57,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/057/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 58,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/058/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 59,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/059/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 60,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "\u0085"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\u0085\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/060/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 61,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "​"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "​"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"​\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/061/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 62,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "᠎"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"᠎\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/062/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 63,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \tanswer\n "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\tanswer\\n \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/063/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 64,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "﻿ answer ﻿"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"﻿ answer ﻿\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/064/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 65,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "é"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "é"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"é\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/065/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 66,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \u0085 "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \u0085 \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/066/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 67,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " ​ "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" ​ \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/067/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 68,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-2.5-pro",
+        "texts": [],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/068/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 69,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\nanswer \n﻿"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\nanswer \\n﻿\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/069/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 70,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          ""
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/070/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 71,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/071/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 72,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/072/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 73,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/073/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 74,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "\u0085"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\u0085\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/074/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 75,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "​"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "​"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"​\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/075/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 76,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "᠎"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"᠎\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/076/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 77,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \tanswer\n "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\tanswer\\n \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/077/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 78,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "﻿ answer ﻿"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"﻿ answer ﻿\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/078/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 79,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "é"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "é"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"é\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/079/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 80,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \u0085 "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \u0085 \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/080/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 81,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " ​ "
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" ​ \"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/081/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 82,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-2.5-pro",
+        "texts": [],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": ""
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/082/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 83,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": false,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\nanswer \n﻿"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\nanswer \\n﻿\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/083/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 84,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          ""
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/084/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 85,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/085/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 86,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/086/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 87,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/087/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 88,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "\u0085"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\u0085\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/088/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 89,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "​"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "​"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"​\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/089/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 90,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "᠎"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"᠎\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/090/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 91,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \tanswer\n "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\tanswer\\n \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/091/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 92,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "﻿ answer ﻿"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"﻿ answer ﻿\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/092/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 93,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "é"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "é"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"é\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/093/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 94,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \u0085 "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \u0085 \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/094/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 95,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " ​ "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" ​ \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/095/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 96,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-2.5-pro",
+        "texts": [],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/096/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 97,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\nanswer \n﻿"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\nanswer \\n﻿\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/097/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 98,
+      "observation": {
+        "name": "empty",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          ""
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/098/empty"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 99,
+      "observation": {
+        "name": "ascii",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/099/ascii"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 100,
+      "observation": {
+        "name": "ecma-unicode",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t\r\n\u000b\f             \u2028\u2029  　﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/100/ecma-unicode"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 101,
+      "observation": {
+        "name": "bom",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/101/bom"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 102,
+      "observation": {
+        "name": "nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "\u0085"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "\u0085"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"\u0085\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/102/nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 103,
+      "observation": {
+        "name": "zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "​"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "​"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"​\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/103/zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 104,
+      "observation": {
+        "name": "mvs",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "᠎"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "᠎"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"᠎\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/104/mvs"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 105,
+      "observation": {
+        "name": "preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \tanswer\n "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \tanswer\n "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\tanswer\\n \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/105/preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 106,
+      "observation": {
+        "name": "bom-wrapped",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "﻿ answer ﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "﻿ answer ﻿"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"﻿ answer ﻿\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/106/bom-wrapped"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 107,
+      "observation": {
+        "name": "unicode-text",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          "é"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "é"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"é\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/107/unicode-text"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 108,
+      "observation": {
+        "name": "spaces-nel",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \u0085 "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \u0085 "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \u0085 \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/108/spaces-nel"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 109,
+      "observation": {
+        "name": "spaces-zwsp",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " ​ "
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " ​ "
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" ​ \"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/109/spaces-zwsp"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 110,
+      "observation": {
+        "name": "zero-text-blocks",
+        "id": "gemini-2.5-pro",
+        "texts": [],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": "(see attached image)"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\"(see attached image)\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/110/zero-text-blocks"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 111,
+      "observation": {
+        "name": "joined-preserved",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t",
+          "answer ",
+          "﻿"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text",
+          "image"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\nanswer \n﻿"
+                  }
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "parts": [
+              {
+                "text": "Tool result image:"
+              },
+              {
+                "inlineData": {
+                  "mimeType": "image/png",
+                  "data": "AA=="
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\nanswer \\n﻿\"}}}]},{\"role\":\"user\",\"parts\":[{\"text\":\"Tool result image:\"},{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/111/joined-preserved"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 112,
+      "observation": {
+        "name": "nonvision-whitespace-image",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\n(tool image omitted: model does not support images)"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\n(tool image omitted: model does not support images)\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/112/nonvision-whitespace-image"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 113,
+      "observation": {
+        "name": "nonvision-whitespace-image",
+        "id": "gemini-3.1-pro-preview",
+        "texts": [
+          " \t"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\n(tool image omitted: model does not support images)"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\n(tool image omitted: model does not support images)\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/113/nonvision-whitespace-image"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 114,
+      "observation": {
+        "name": "nonvision-whitespace-image",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t"
+        ],
+        "withImage": true,
+        "isError": false,
+        "input": [
+          "text"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": " \t\n(tool image omitted: model does not support images)"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\" \\t\\n(tool image omitted: model does not support images)\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/114/nonvision-whitespace-image"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 115,
+      "observation": {
+        "name": "nonvision-whitespace-image",
+        "id": "gemini-2.5-pro",
+        "texts": [
+          " \t"
+        ],
+        "withImage": true,
+        "isError": true,
+        "input": [
+          "text"
+        ],
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "error": " \t\n(tool image omitted: model does not support images)"
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"error\":\" \\t\\n(tool image omitted: model does not support images)\"}}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/115/nonvision-whitespace-image"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 116,
+      "observation": {
+        "name": "getter-forward",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/116/getter-forward"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 117,
+      "observation": {
+        "name": "getter-forward",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/117/getter-forward"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 118,
+      "observation": {
+        "name": "getter-throws",
+        "withImage": false,
+        "trace": [
+          "trim getter"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/118/getter-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 119,
+      "observation": {
+        "name": "getter-throws",
+        "withImage": true,
+        "trace": [
+          "trim getter"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/119/getter-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 120,
+      "observation": {
+        "name": "call-throws",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/120/call-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 121,
+      "observation": {
+        "name": "call-throws",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/121/call-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 122,
+      "observation": {
+        "name": "length-zero",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/122/length-zero"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 123,
+      "observation": {
+        "name": "length-zero",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/123/length-zero"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 124,
+      "observation": {
+        "name": "length-fraction",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/124/length-fraction"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 125,
+      "observation": {
+        "name": "length-fraction",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/125/length-fraction"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 126,
+      "observation": {
+        "name": "length-large",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/126/length-large"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 127,
+      "observation": {
+        "name": "length-large",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/127/length-large"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 128,
+      "observation": {
+        "name": "length-negative",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/128/length-negative"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 129,
+      "observation": {
+        "name": "length-negative",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/129/length-negative"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 130,
+      "observation": {
+        "name": "length-nan",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": ""
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/130/length-nan"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 131,
+      "observation": {
+        "name": "length-nan",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "(see attached image)"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"(see attached image)\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/131/length-nan"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 132,
+      "observation": {
+        "name": "length-coerce",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter",
+          "length valueOf"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/132/length-coerce"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 133,
+      "observation": {
+        "name": "length-coerce",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter",
+          "length valueOf"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/133/length-coerce"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 134,
+      "observation": {
+        "name": "length-coerce-throws",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter",
+          "length valueOf"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/134/length-coerce-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 135,
+      "observation": {
+        "name": "length-coerce-throws",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter",
+          "length valueOf"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/135/length-coerce-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 136,
+      "observation": {
+        "name": "length-throws",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/136/length-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 137,
+      "observation": {
+        "name": "length-throws",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "rawSame": true,
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/137/length-throws"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 138,
+      "observation": {
+        "name": "length-bigint",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/138/length-bigint"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 139,
+      "observation": {
+        "name": "length-bigint",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "reasonFormatting": 0,
+        "contents": [
+          {
+            "role": "user",
+            "parts": [
+              {
+                "functionResponse": {
+                  "name": "fixture-tool",
+                  "response": {
+                    "output": "fixture-tool-output"
+                  },
+                  "parts": [
+                    {
+                      "inlineData": {
+                        "mimeType": "image/png",
+                        "data": "AA=="
+                      }
+                    }
+                  ],
+                  "id": "fixture-call"
+                }
+              }
+            ]
+          }
+        ],
+        "serialized": "[{\"role\":\"user\",\"parts\":[{\"functionResponse\":{\"name\":\"fixture-tool\",\"response\":{\"output\":\"fixture-tool-output\"},\"parts\":[{\"inlineData\":{\"mimeType\":\"image/png\",\"data\":\"AA==\"}}],\"id\":\"fixture-call\"}}]}]"
+      },
+      "kind": "google",
+      "caseId": "google/139/length-bigint"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 140,
+      "observation": {
+        "name": "length-symbol",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/140/length-symbol"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 141,
+      "observation": {
+        "name": "length-symbol",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call",
+          "length getter"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/141/length-symbol"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 142,
+      "observation": {
+        "name": "return-null",
+        "withImage": false,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/142/return-null"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 143,
+      "observation": {
+        "name": "return-null",
+        "withImage": true,
+        "trace": [
+          "trim getter",
+          "trim call"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/143/return-null"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 144,
+      "observation": {
+        "name": "missing-method",
+        "withImage": false,
+        "trace": [
+          "trim getter"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/144/missing-method"
+    },
+    {
+      "input_sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+      "script_sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+      "index": 145,
+      "observation": {
+        "name": "missing-method",
+        "withImage": true,
+        "trace": [
+          "trim getter"
+        ],
+        "errorName": "TypeError",
+        "reasonFormatting": 0
+      },
+      "kind": "google",
+      "caseId": "google/145/missing-method"
+    }
+  ],
+  "capture_kinds": [
+    "google"
+  ],
+  "count": 146.0,
+  "purpose": "Raw genuine Source capture artifact; not an accepted expected fixture"
+}

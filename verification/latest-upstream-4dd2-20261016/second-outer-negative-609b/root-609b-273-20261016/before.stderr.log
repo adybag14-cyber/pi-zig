@@ -1,0 +1,5 @@
+Freeze-Latest4ddSource.ps1: C:\Users\adyba\pi-zig-latest-4dd2-models-20261016\verification\latest-upstream-4dd2-20261016\Invoke-Latest4ddPhase.ps1:13
+Line |
+  13 |      & $taskConfig.freeze -CandidateHead $taskConfig.candidate_head -O .
+     |      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+     | Cannot run a document in the middle of a pipeline: C:\Program Files\Git\cmd\git.exe.

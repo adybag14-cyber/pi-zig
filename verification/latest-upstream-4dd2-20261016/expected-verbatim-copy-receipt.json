@@ -1,0 +1,36 @@
+{
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_records": 273,
+  "authority": "Root independently accepted Source127 supplement and Source146 final; no native qualification",
+  "copies": [
+    {
+      "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary30-raw-source.json",
+      "expected": "src/extensions/fixtures/sdk-summary-latest4dd.expected.json",
+      "sha256": "820AD75D3D804E3EABBC9E78D2268DC09C92F485AFCDCC4BB55A26EDA656582B",
+      "records": 30,
+      "verbatim": true
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary45-raw-source.json",
+      "expected": "src/extensions/fixtures/sdk-summary-original45-latest4dd.expected.json",
+      "sha256": "AED51DB78585E898D9CFBDACD27CFE75B09852D4DA27430CE8C559CEDE30DF8C",
+      "records": 45,
+      "verbatim": true
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\openai52-raw-source.json",
+      "expected": "src/extensions/fixtures/ai-openai-tool-output4dd.expected.json",
+      "sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674",
+      "records": 52,
+      "verbatim": true
+    },
+    {
+      "original": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\google-raw-source.json",
+      "expected": "src/extensions/fixtures/ai-google-tool-output4dd.expected.json",
+      "sha256": "3F00C88144C6430E6B6B2A162CA005BDF021A679EA727191D9EC09112D573725",
+      "records": 146,
+      "verbatim": true
+    }
+  ],
+  "historical_expected_overwritten": false
+}

@@ -1,0 +1,31 @@
+{
+  "all_other_names_absent": true,
+  "profile": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\profile",
+  "network_policy": "deny capture network entrypoints; Node native permission model disallows child/worker/addon and fs writes outside owned run",
+  "runtime_generated_allowed_names": [
+    "PSModulePath"
+  ],
+  "allowed_names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PATHEXT",
+    "PI_CODING_AGENT_DIR",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ],
+  "temp": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\temp",
+  "agent": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-accb-google146-20261016\\profile\\agent",
+  "credential_values_read": false,
+  "inheritance": "ProcessStartInfo.Environment.Clear"
+}

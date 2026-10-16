@@ -1,0 +1,31 @@
+{
+  "network_policy": "deny capture network entrypoints; Node native permission model disallows child/worker/addon and fs writes outside owned run",
+  "inheritance": "ProcessStartInfo.Environment.Clear",
+  "agent": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\profile\\agent",
+  "runtime_generated_allowed_names": [
+    "PSModulePath"
+  ],
+  "profile": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\profile",
+  "credential_values_read": false,
+  "temp": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-e260-273-20261016\\temp",
+  "all_other_names_absent": true,
+  "allowed_names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PATHEXT",
+    "PI_CODING_AGENT_DIR",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ]
+}

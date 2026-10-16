@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-10-16T15:29:11.3741777+00:00",
+  "kind": "openai52",
+  "required_free_kib": 16777216,
+  "nonce": "35524540696c416d923fd53bc8e4aa67",
+  "approved_sha256": "39C91C274C0636B0A4EFF8847055161A56FA8FF2FCCAF89FD19808A7931E3707",
+  "admitted": true,
+  "source_reserved_kib": 2097152,
+  "free_kib": 20369120,
+  "heap_mb": 256
+}

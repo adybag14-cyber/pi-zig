@@ -51,19 +51,9 @@ fn raise(scope: *Scope, message: c.JSValue) anyerror {
     _ = scope.engine.checked(c.JS_Throw(scope.engine.context, reason)) catch |err| return err;
     unreachable;
 }
-fn maximum(scope: *Scope, model: c.JSValue, reserve: c.JSValue, fraction: f64) !c.JSValue {
-    const min_receiver = try scope.global("Math");
-    const min = try scope.get(min_receiver, "min");
-    const floor_receiver = try scope.global("Math");
-    const floor = try scope.get(floor_receiver, "floor");
-    const product = try scope.own(try math.binary(scope.engine, .multiply, c.JS_NewFloat64(scope.engine.context, fraction), reserve));
-    const budget = try scope.call(floor, floor_receiver, &.{product});
-    const cap = if (try math.compare(scope.engine, .greater, try scope.get(model, "maxTokens"), c.JS_NewInt32(scope.engine.context, 0))) try scope.get(model, "maxTokens") else try scope.get(try scope.global("Number"), "POSITIVE_INFINITY");
-    return scope.call(min, min_receiver, &.{ budget, cap });
-}
-fn completionOptions(scope: *Scope, owner: c.JSValue, max_tokens: c.JSValue) !c.JSValue {
+fn completionOptions(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const options = try scope.object();
-    inline for (.{ "maxTokens", "signal", "apiKey", "headers", "env", "sessionId" }, .{ max_tokens, try arg(scope, owner, 5), try arg(scope, owner, 3), try arg(scope, owner, 4), try arg(scope, owner, 10), try arg(scope, owner, 13) }) |name, value| try scope.put(options, name, value);
+    inline for (.{ "signal", "apiKey", "headers", "env", "sessionId" }, .{ try arg(scope, owner, 5), try arg(scope, owner, 3), try arg(scope, owner, 4), try arg(scope, owner, 10), try arg(scope, owner, 13) }) |name, value| try scope.put(options, name, value);
     const thinking = try arg(scope, owner, 8);
     if (scope.truthy(try scope.get(try arg(scope, owner, 1), "reasoning")) and scope.truthy(thinking) and !scope.equal(thinking, try scope.text("off"))) try scope.put(options, "reasoning", thinking);
     return options;
@@ -97,7 +87,6 @@ fn generationStart(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue
     defer scope.deinit();
     try keepArgs(&scope, owner, args);
     try scope.put(owner, "prefix", c.pi_js_bool(engine.context, @intFromBool(prefix)));
-    const max_tokens = try maximum(&scope, args[1], args[2], if (prefix) 0.5 else 0.8);
     var base_prompt = if (prefix) c.pi_js_undefined() else try scope.text(if (scope.truthy(args[7])) @embedFile("compaction_update_prompt_b45.txt") else @embedFile("compaction_initial_prompt_b45.txt"));
     if (!prefix and scope.truthy(args[6])) base_prompt = try scope.concat(try scope.concat(base_prompt, try scope.text("\n\nAdditional focus: ")), try scope.stringify(args[6]));
     const bindings = try scope.get(owner, "agent");
@@ -120,9 +109,9 @@ fn generationStart(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue
     var context = c.pi_js_undefined();
     if (prefix) {
         context = try buildContext(&scope, prompt);
-        options = try completionOptions(&scope, owner, max_tokens);
+        options = try completionOptions(&scope, owner);
     } else {
-        options = try completionOptions(&scope, owner, max_tokens);
+        options = try completionOptions(&scope, owner);
         context = try buildContext(&scope, prompt);
     }
     const completion = try scope.call(try scope.get(bindings, "request"), c.pi_js_undefined(), &.{ args[1], context, options, args[9], args[11], args[12] });
@@ -181,7 +170,7 @@ fn compactStart(engine: *em.Engine, owner: c.JSValue, args: []const c.JSValue) !
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     try keepArgs(&scope, owner, args);
-    inline for (.{ "firstKeptEntryId", "messagesToSummarize", "turnPrefixMessages", "isSplitTurn", "tokensBefore", "previousSummary", "fileOps", "settings" }) |name| try scope.put(owner, name, try scope.get(args[0], name));
+    inline for (.{ "firstKeptEntryId", "messagesToSummarize", "turnPrefixMessages", "isSplitTurn", "tokensBefore", "previousSummary", "fileOps" }) |name| try scope.put(owner, name, try scope.get(args[0], name));
     const split = scope.truthy(try scope.get(owner, "isSplitTurn")) and try math.compare(engine, .greater, try scope.get(try scope.get(owner, "turnPrefixMessages"), "length"), c.JS_NewInt32(engine.context, 0));
     try scope.put(owner, "split", c.pi_js_bool(engine.context, @intFromBool(split)));
     if (split) {
@@ -196,7 +185,7 @@ fn requestPart(scope: *Scope, owner: c.JSValue, prefix: bool) !void {
     const args = [_]c.JSValue{
         try scope.get(owner, if (prefix) "turnPrefixMessages" else "messagesToSummarize"),
         try arg(scope, owner, 1),
-        try scope.get(try scope.get(owner, "settings"), "reserveTokens"),
+        c.pi_js_undefined(),
         try arg(scope, owner, 2),
         try arg(scope, owner, 3),
         try arg(scope, owner, 5),

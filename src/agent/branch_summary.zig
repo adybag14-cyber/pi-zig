@@ -636,7 +636,6 @@ pub fn summarizeAndSwitch(sess: *session_mod.Session, options: Options) !Result 
                     .retry_enabled = options.retry_enabled,
                     .retry_max_retries = options.retry_max_retries,
                     .retry_base_delay_ms = options.retry_base_delay_ms,
-                    .max_output_tokens = 2_048,
                     .abort_flag = options.abort_flag,
                     .retry_abort_flag = options.retry_abort_flag,
                     .on_event = options.on_retry_event,
@@ -817,7 +816,7 @@ test "branch summary retries and persists at navigation target" {
     });
 
     try std.testing.expect(result.summary_entry_id != null);
-    try std.testing.expectEqual(@as(u64, 2_048), model.last_completion_options.max_tokens);
+    try std.testing.expectEqual(@as(u64, 0), model.last_completion_options.max_tokens);
     try std.testing.expectEqual(@as(usize, 2), result.summarized_entries);
     try std.testing.expectEqual(@as(usize, 1), probe.scheduled);
     try std.testing.expectEqual(@as(usize, 1), probe.started);
