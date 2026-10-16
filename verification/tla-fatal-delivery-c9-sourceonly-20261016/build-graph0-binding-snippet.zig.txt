@@ -1,0 +1,7 @@
+// Prospective only. Requires exact DA14/A79 ABI and observed compiler metadata.
+const graph0_binding_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_extension_graph0_binding_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"actual Graph0 binding"}, .use_llvm = use_llvm });
+linkQuickJs(b, graph0_binding_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(graph0_binding_tests.root_module, sqlite_lib_dir, sqlite_library);
+graph0_binding_tests.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-graph0-binding", "Compile actual SDK Graph0 leaf controls").dependOn(&b.addInstallArtifact(graph0_binding_tests, .{}).step);
+b.step("test-native-graph0-binding", "Run metadata-selected actual SDK leaf controls after explicit grant").dependOn(&b.addRunArtifact(graph0_binding_tests).step);

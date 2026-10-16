@@ -1,0 +1,63 @@
+{
+  "status": "source_only_actual_binding_test_composition_unexecuted",
+  "base": "0f424a02a11250be76ad84ddfe34263c4c4f39cf",
+  "incoming_sdk": "0d546939997f916e597183395d450be598f0950d",
+  "incoming_leaf_bytes_exact": true,
+  "product_c_unchanged": true,
+  "product_h_unchanged": true,
+  "reviews": "async_c_review_resume C/7controls closed; models_auth_resume exact SDK leaf source review closed",
+  "executed_jobs": 0,
+  "production_selected": false,
+  "prepared_named_declarations": {
+    "queued": 7,
+    "binding": 2
+  },
+  "actual_compiled_metadata_count": null,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "bytes": 1247,
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406"
+    },
+    {
+      "path": "src/native_extension_graph0_binding_controls.zig",
+      "bytes": 2478,
+      "sha256": "61548E6230525B977B56BAD3D60B986C4B32691BFE0D1F649952F6FB45830BBC"
+    },
+    {
+      "path": "src/native_dynamic_import_graph0_test.zig",
+      "bytes": 17791,
+      "sha256": "E70628423F2F5CE9A93996DFD2644521AF1877D38D7CDCC91918B2B7CCBD8155"
+    },
+    {
+      "path": "src/native_extension_graph0_binding_test.zig",
+      "bytes": 1088,
+      "sha256": "E5EB7CCC4C96B917E9412E6C4A723B589A1F0E1CB4AB0C1939A35E0C375C8C39"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-dynamic-import-graph0-snippet.zig.txt",
+      "bytes": 902,
+      "sha256": "EAE17D304093D1095C1E9F342BF90B6EA298E43CB33F180C6F2F7C693D788CC2"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-graph0-binding-snippet.zig.txt",
+      "bytes": 877,
+      "sha256": "F393B9C38D77E4429B32E482169D0285C5295269A0D1ECE7522B5B64503CB570"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/GRAPH0-ACTUAL-BINDING-COMPOSITION.md",
+      "bytes": 2464,
+      "sha256": "41F048F5A833EC3B865AB77658AE2D8C7168672CD74446D161C90112A70280A8"
+    }
+  ]
+}

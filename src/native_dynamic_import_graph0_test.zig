@@ -3,11 +3,16 @@
 const std = @import("std");
 const em = @import("extensions/engine.zig");
 const Scope = @import("extensions/native_models_stream_scope.zig").Scope;
+const binding = @import("extensions/native_extension_dynamic_import_graph0.zig");
+const js = @import("extensions/native_js_values.zig");
 const c = em.c;
 
-fn importGraph0(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
-    if (argc != 2) return c.JS_ThrowTypeError(context, "expected basename and specifier");
-    return c.JS_PiDynamicImportGraph0(context, args[0], args[1]);
+fn installBinding(engine: *em.Engine) !void {
+    const function = try binding.create(engine);
+    defer engine.freeValue(function);
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try js.define(engine, global, "queuedImport", c.JS_DupValue(engine.context, function));
 }
 fn eval(engine: *em.Engine, source: []const u8) !c.JSValue {
     return engine.eval(source, "C:/physical/foreign-caller.js", c.JS_EVAL_TYPE_GLOBAL);
@@ -38,7 +43,7 @@ fn lazyModule(engine: *em.Engine, scope: *Scope) !void {
         "globalThis.events=[]; globalThis.moduleInit=0;" ++
         "({get value(){moduleInit++;events.push('init');return 41}})"));
     try engine.registerValueModule("C:/physical/lazy.mjs", exports);
-    try engine.bindFunction("queuedImport", importGraph0, 2);
+    try installBinding(engine);
 }
 
 test "queued Graph0 import public then read precedes lazy initialization and survives GC" {
@@ -108,7 +113,7 @@ test "queued Graph0 import uses explicit captured base with absent and foreign a
     defer scope.deinit();
     var probe: NormalizeProbe = .{};
     engine.setSourceLoader(.{ .context = &probe, .normalize = normalize, .load = load });
-    try engine.bindFunction("queuedImport", importGraph0, 2);
+    try installBinding(engine);
     // Raw ABI call has no script frame. Release input owners immediately: the
     // ordinary job must own its duplicates independently of the caller.
     const raw = queued: {
@@ -139,7 +144,7 @@ test "queued Graph0 import concurrent TLA and guest import share namespace witho
     defer engine.deinit();
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    try engine.bindFunction("queuedImport", importGraph0, 2);
+    try installBinding(engine);
     try engine.registerModule("C:/physical/tla.mjs", "globalThis.evaluations++;await Promise.resolve();export const value=19;");
     _ = try scope.own(try eval(engine,
         "globalThis.evaluations=0;" ++
@@ -168,7 +173,7 @@ test "queued Graph0 import ordinary coercion and module failure preserve raw rej
     defer engine.deinit();
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    try engine.bindFunction("queuedImport", importGraph0, 2);
+    try installBinding(engine);
     try engine.registerModule("C:/physical/rejected.mjs", "globalThis.evaluations++;throw globalThis.moduleReason;");
     _ = try scope.own(try eval(engine,
         "globalThis.evaluations=0;globalThis.moduleReason={};globalThis.coercionReason={};globalThis.coercions=0;" ++
