@@ -5,7 +5,8 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const async_body = @import("native_async_body.zig");
+const native = async_body.native;
 const c = em.c;
 const Method = enum(c_int) { _getIdleWaitPromise, _resolveIdleWaitIfIdle, _disconnectFromAgent, dispose, refreshContext, clearQueue, abort, waitForIdle, syncQueueModesFromSettings, setSteeringMode, setFollowUpMode, abortCompaction, abortBranchSummary, abortRetry, abortBash, _flushPendingBashMessages, setSessionName, setAutoRetryEnabled, setAutoCompactionEnabled };
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
@@ -15,17 +16,24 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     defer engine.freeValue(cleanup);
     inline for (std.meta.fields(Method)) |field| {
         const method: Method = @enumFromInt(field.value);
+        if (method == .abort or method == .waitForIdle) {
+            const Adapter = struct {
+                fn body(host: *em.Engine, session: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+                    const generation = host.native_allocation_generation;
+                    return asyncBody(host, session, method, state, completion, input) catch |err| async_body.failureSince(host, err, generation);
+                }
+            };
+            const function = try native.createResumable(engine, field.name, 0, Adapter.body, &.{});
+            defer engine.freeValue(function);
+            if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+            continue;
+        }
         var roots = [_]c.JSValue{cleanup};
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, switch (method) {
             .setSteeringMode, .setFollowUpMode, .setSessionName, .setAutoRetryEnabled, .setAutoCompactionEnabled => 1,
             else => 0,
         }, field.value, roots.len, &roots));
         defer engine.freeValue(function);
-        if (method == .abort or method == .waitForIdle) {
-            const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-            defer engine.freeValue(parent);
-            if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
-        }
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
 }
@@ -34,7 +42,6 @@ fn dispatch(context: ?*c.JSContext, session: c.JSValue, argc: c_int, argv: [*c]c
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const method: Method = @enumFromInt(magic);
-    if (method == .abort or method == .waitForIdle) return beginAsync(engine, session, method) catch |err| sdk.fail(engine, err);
     return invoke(engine, session, method, if (argc > 0) argv[0] else c.pi_js_undefined(), roots[0]) catch |err| sdk.fail(engine, err);
 }
 fn invoke(engine: *em.Engine, session: c.JSValue, method: Method, value: c.JSValue, cleanup: c.JSValue) !c.JSValue {
@@ -162,29 +169,30 @@ fn disposeAbort(scope: *Scope, session: c.JSValue) !void {
     inline for (.{ "abortRetry", "abortCompaction", "abortBranchSummary", "abortBash" }) |name| _ = try scope.invoke(session, name, &.{});
     _ = try scope.invoke(try scope.get(session, "agent"), "abort", &.{});
 }
-fn beginAsync(engine: *em.Engine, session: c.JSValue, method: Method) !c.JSValue {
-    const pending = try flow.create(engine, session);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    initialAsync(engine, pending.owner, method) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn initialAsync(engine: *em.Engine, owner: c.JSValue, method: Method) !void {
+fn asyncBody(engine: *em.Engine, session: c.JSValue, method: Method, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const session = try scope.get(owner, "agent");
+    if (completion != .start) {
+        if (completion == .rejected) {
+            var generation: u64 = 0;
+            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
+            try async_body.rethrowRecognizedAllocation(engine, input, generation);
+            return .{ .thrown = c.JS_DupValue(engine.context, input) };
+        }
+        return .{ .returned = c.pi_js_undefined() };
+    }
+    const generation = engine.native_allocation_generation;
+    const owner = try async_body.init(&scope, state);
+    try scope.put(owner, "nativeGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
     if (method == .abort) {
         if (scope.truthy(try scope.get(session, "_isAgentRunActive"))) try scope.set(session, "_agentRunAbortRequested", c.pi_js_bool(engine.context, 1));
         inline for (.{ "abortRetry", "abortCompaction", "abortBranchSummary" }) |name| _ = try scope.invoke(session, name, &.{});
         if (scope.truthy(try scope.get(session, "_isBeforeSettle"))) try scope.set(session, "_abortDuringBeforeSettle", c.pi_js_bool(engine.context, 1));
         _ = try scope.invoke(try scope.get(session, "agent"), "abort", &.{});
         const result = try scope.invoke(session, "waitForIdle", &.{});
-        return flow.wait(completed, engine, owner, result, 0);
+        return .{ .awaited = c.JS_DupValue(engine.context, result) };
     }
-    if (scope.truthy(try scope.get(session, "isIdle"))) return flow.settle(engine, owner, false, c.pi_js_undefined());
+    if (scope.truthy(try scope.get(session, "isIdle"))) return .{ .returned = c.pi_js_undefined() };
     const result = try scope.invoke(session, "_getIdleWaitPromise", &.{});
-    try flow.wait(completed, engine, owner, result, 0);
-}
-fn completed(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
-    try flow.settle(engine, owner, rejected, if (rejected) value else c.pi_js_undefined());
+    return .{ .awaited = c.JS_DupValue(engine.context, result) };
 }
