@@ -18,16 +18,16 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     const result = try s.object(); try s.put(result, "fromUrl", try s.own(try f.createMethod(engine, "fromUrl", 2, fromUrl, &.{ inputs.node_url, cache })));
     return c.JS_DupValue(engine.context, result);
 }
-fn starts(s: *Scope, value: c.JSValue, prefix: []const u8) !bool { return s.truthy(try s.invoke(value, "startsWith", &.{try s.text(prefix)})); }
-fn ends(s: *Scope, value: c.JSValue, suffix: []const u8) !bool { return s.truthy(try s.invoke(value, "endsWith", &.{try s.text(suffix)})); }
-fn includes(s: *Scope, value: c.JSValue, needle: []const u8) !bool { return s.truthy(try s.invoke(value, "includes", &.{try s.text(needle)})); }
-fn cmp(s: *Scope, comptime operation: @import("native_image_arithmetic.zig").Operation, first: c.JSValue, second: c.JSValue) !bool { return @import("native_image_arithmetic.zig").compare(s.engine, operation, first, second); }
-fn index(s: *Scope, value: c.JSValue, needle: []const u8) !c.JSValue { return s.invoke(value, "indexOf", &.{try s.text(needle)}); }
-fn offset(s: *Scope, value: c.JSValue, amount: i32) !c.JSValue { return s.own(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 0, value, c.JS_NewInt32(s.engine.context, amount)))); }
-fn slice(s: *Scope, value: c.JSValue, first: c.JSValue, last: ?c.JSValue) !c.JSValue { return if (last) |end| s.invoke(value, "slice", &.{ first, end }) else s.invoke(value, "slice", &.{first}); }
+pub fn starts(s: *Scope, value: c.JSValue, prefix: []const u8) !bool { return s.truthy(try s.invoke(value, "startsWith", &.{try s.text(prefix)})); }
+pub fn ends(s: *Scope, value: c.JSValue, suffix: []const u8) !bool { return s.truthy(try s.invoke(value, "endsWith", &.{try s.text(suffix)})); }
+pub fn includes(s: *Scope, value: c.JSValue, needle: []const u8) !bool { return s.truthy(try s.invoke(value, "includes", &.{try s.text(needle)})); }
+pub fn cmp(s: *Scope, comptime operation: @import("native_image_arithmetic.zig").Operation, first: c.JSValue, second: c.JSValue) !bool { return @import("native_image_arithmetic.zig").compare(s.engine, operation, first, second); }
+pub fn index(s: *Scope, value: c.JSValue, needle: []const u8) !c.JSValue { return s.invoke(value, "indexOf", &.{try s.text(needle)}); }
+pub fn offset(s: *Scope, value: c.JSValue, amount: i32) !c.JSValue { return s.own(try s.engine.checked(c.JS_PiBinaryOperator(s.engine.context, 0, value, c.JS_NewInt32(s.engine.context, amount)))); }
+pub fn slice(s: *Scope, value: c.JSValue, first: c.JSValue, last: ?c.JSValue) !c.JSValue { return if (last) |end| s.invoke(value, "slice", &.{ first, end }) else s.invoke(value, "slice", &.{first}); }
 fn regex(s: *Scope, pattern: []const u8) !c.JSValue { var args = [_]c.JSValue{ try s.text(pattern), try s.text("") }; return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, 2, &args))); }
 fn array(s: *Scope, values: []const []const u8) !c.JSValue { const result = try s.array(); for (values, 0..) |value, i| try s.index(result, @intCast(i), try s.text(value)); return result; }
-fn shorthand(s: *Scope, input: c.JSValue) !bool {
+pub fn shorthand(s: *Scope, input: c.JSValue) !bool {
     const hash = try index(s, input, "#"); const slash = try index(s, input, "/"); const second_method = try s.get(input, "indexOf"); const second = try s.call(second_method, input, &.{ try s.text("/"), try offset(s, slash, 1) }); const colon = try index(s, input, ":");
     const space = try s.invoke(try regex(s, "\\s"), "exec", &.{input}); const at = try index(s, input, "@"); const minus = c.JS_NewInt32(s.engine.context, -1); const zero = c.JS_NewInt32(s.engine.context, 0);
     const after_hash = try cmp(s, .greater, hash, minus);
@@ -45,12 +45,12 @@ fn correctProtocol(s: *Scope, input: c.JSValue) !c.JSValue {
     const left = try s.get(input, "slice"); const prefix = try s.call(left, input, &.{ c.JS_NewInt32(s.engine.context, 0), try offset(s, colon, 1) }); const right = try s.get(input, "slice"); const suffix = try s.call(right, input, &.{try offset(s, colon, 1)}); return s.concat(try s.concat(try s.stringify(prefix), try s.text("//")), try s.stringify(suffix));
 }
 fn lastBefore(s: *Scope, input: c.JSValue, char: []const u8) !c.JSValue { const hash = try index(s, input, "#"); const method = try s.get(input, "lastIndexOf"); const before = if (try cmp(s, .greater, hash, c.JS_NewInt32(s.engine.context, -1))) hash else try s.global("Infinity"); return s.call(method, input, &.{ try s.text(char), before }); }
-fn correctUrl(s: *Scope, input: c.JSValue) !c.JSValue {
-    var result = input; const at = try lastBefore(s, result, "@"); const colon = try lastBefore(s, result, ":"); if (try cmp(s, .greater, colon, at)) { const first = try slice(s, result, c.JS_NewInt32(s.engine.context, 0), colon); const method = try s.get(result, "slice"); const last = try s.call(method, result, &.{try offset(s, colon, 1)}); result = try s.concat(try s.concat(first, try s.text("/")), last); }
+pub fn correctUrl(s: *Scope, input: c.JSValue) !c.JSValue {
+    var result = input; const at = try lastBefore(s, result, "@"); const colon = try lastBefore(s, result, ":"); if (try cmp(s, .greater, colon, at)) { const first = try s.stringify(try slice(s, result, c.JS_NewInt32(s.engine.context, 0), colon)); const method = try s.get(result, "slice"); const last = try s.stringify(try s.call(method, result, &.{try offset(s, colon, 1)})); result = try s.concat(try s.concat(first, try s.text("/")), last); }
     if (s.equal(try lastBefore(s, result, ":"), c.JS_NewInt32(s.engine.context, -1)) and s.equal(try index(s, result, "//"), c.JS_NewInt32(s.engine.context, -1))) result = try s.concat(try s.text("git+ssh://"), try s.stringify(result)); return result;
 }
 fn construct(s: *Scope, namespace: c.JSValue, input: c.JSValue) !c.JSValue { const constructor = try s.get(namespace, "URL"); var args = [_]c.JSValue{input}; return s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, 1, &args))); }
-fn safeUrl(s: *Scope, constructor: c.JSValue, input: c.JSValue) !c.JSValue { const generation = s.engine.native_allocation_generation; return construct(s, constructor, input) catch |err| { try caught.ignore(s.engine, err, generation); return c.pi_js_undefined(); }; }
+pub fn safeUrl(s: *Scope, constructor: c.JSValue, input: c.JSValue) !c.JSValue { const generation = s.engine.native_allocation_generation; return construct(s, constructor, input) catch |err| { try caught.ignore(s.engine, err, generation); return c.pi_js_undefined(); }; }
 fn parseUrl(s: *Scope, constructor: c.JSValue, input: c.JSValue) !c.JSValue { const corrected = try correctProtocol(s, input); const parsed = try safeUrl(s, constructor, corrected); return if (s.truthy(parsed)) parsed else safeUrl(s, constructor, try correctUrl(s, corrected)); }
 fn shortcutHost(s: *Scope, value: c.JSValue) !?Host { inline for (.{ .{ "github:", Host.github }, .{ "bitbucket:", Host.bitbucket }, .{ "gitlab:", Host.gitlab }, .{ "gist:", Host.gist }, .{ "sourcehut:", Host.sourcehut } }) |pair| if (try v.eq(s, value, pair[0])) return pair[1]; return null; }
 fn domainHost(s: *Scope, value: c.JSValue) !?Host { inline for (.{ .{ "github.com", Host.github }, .{ "bitbucket.org", Host.bitbucket }, .{ "gitlab.com", Host.gitlab }, .{ "gist.github.com", Host.gist }, .{ "git.sr.ht", Host.sourcehut } }) |pair| if (try v.eq(s, value, pair[0])) return pair[1]; return null; }
@@ -106,10 +106,10 @@ fn parseHosted(s: *Scope, constructor: c.JSValue, input: c.JSValue) !c.JSValue {
         const is_uri = c.JS_IsInstanceOf(s.engine.context, reason, try s.global("URIError")); if (is_uri < 0) return v.js.capture(s.engine); if (is_uri != 0) return c.pi_js_undefined(); _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, reason))); unreachable;
     };
 }
-fn count(s: *Scope, cache: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(s.engine.context, &value, try s.get(cache, "size")) < 0) return v.js.capture(s.engine); return value; }
-fn find(s: *Scope, entries: c.JSValue, size: u32, key: c.JSValue) !?u32 { for (0..size) |index_value| { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); const row = try v.at(&local, entries, @intCast(index_value)); if (local.equal(try local.get(row, "key"), key)) return @intCast(index_value); } return null; }
-fn moveLast(s: *Scope, entries: c.JSValue, size: u32, index_value: u32) !c.JSValue { const row = try v.at(s, entries, index_value); var i = index_value; while (i + 1 < size) : (i += 1) { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); try local.index(entries, i, try v.at(&local, entries, i + 1)); } try s.index(entries, size - 1, row); return s.get(row, "value"); }
-fn remove(s: *Scope, cache: c.JSValue, entries: c.JSValue, size: u32, index_value: u32) !void {
+pub fn count(s: *Scope, cache: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(s.engine.context, &value, try s.get(cache, "size")) < 0) return v.js.capture(s.engine); return value; }
+pub fn find(s: *Scope, entries: c.JSValue, size: u32, key: c.JSValue) !?u32 { for (0..size) |index_value| { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); const row = try v.at(&local, entries, @intCast(index_value)); if (local.equal(try local.get(row, "key"), key)) return @intCast(index_value); } return null; }
+pub fn moveLast(s: *Scope, entries: c.JSValue, size: u32, index_value: u32) !c.JSValue { const row = try v.at(s, entries, index_value); var i = index_value; while (i + 1 < size) : (i += 1) { var local: Scope = .{ .engine = s.engine }; defer local.deinit(); try local.index(entries, i, try v.at(&local, entries, i + 1)); } try s.index(entries, size - 1, row); return s.get(row, "value"); }
+pub fn remove(s: *Scope, cache: c.JSValue, entries: c.JSValue, size: u32, index_value: u32) !void {
     _ = try moveLast(s, entries, size, index_value); const atom = c.JS_NewAtomUInt32(s.engine.context, size - 1); if (atom == c.JS_ATOM_NULL) return v.js.capture(s.engine); defer c.JS_FreeAtom(s.engine.context, atom); if (c.JS_DeleteProperty(s.engine.context, entries, atom, 0) < 0) return v.js.capture(s.engine); try s.put(cache, "size", c.JS_NewUint32(s.engine.context, size - 1));
 }
 fn fromUrl(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {

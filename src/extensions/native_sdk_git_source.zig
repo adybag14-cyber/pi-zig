@@ -86,7 +86,7 @@ fn generic(s: *Scope, input: c.JSValue) !c.JSValue {
 fn filterBoolean(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { var s: Scope = .{ .engine = engine }; defer s.deinit(); return c.JS_DupValue(engine.context, try s.call(try s.global("Boolean"), c.pi_js_undefined(), &.{arg(args, 0)})); }
 fn hostedResult(s: *Scope, hosted: c.JSValue, split: c.JSValue, input: c.JSValue, https: bool) !?c.JSValue {
     const ref = try s.get(split, "ref"); const split_repo = try s.get(split, "repo");
-    const candidates = try s.array(); try s.index(candidates, 0, if (s.truthy(ref)) try s.concat(try s.concat(if (https) try s.concat(try text(s, "https://"), try s.stringify(split_repo)) else try s.stringify(split_repo), try text(s, "#")), try s.stringify(ref)) else c.pi_js_undefined()); try s.index(candidates, 1, if (https) try s.concat(try text(s, "https://"), try s.stringify(input)) else input);
+    const candidates = try s.array(); try s.index(candidates, 0, if (s.truthy(ref)) try s.concat(try s.concat(if (https) try s.concat(try text(s, "https://"), try s.stringify(split_repo)) else try s.stringify(split_repo), try text(s, "#")), try s.stringify(try s.get(split, "ref"))) else c.pi_js_undefined()); try s.index(candidates, 1, if (https) try s.concat(try text(s, "https://"), try s.stringify(input)) else input);
     const filtered = try s.invoke(candidates, "filter", &.{try s.own(try f.createArrow(s.engine, "", 1, filterBoolean, &.{}))}); var iterator = try v.iterator(s, filtered); defer iterator.deinit(); errdefer iterator.closePreserving();
     while (try iterator.next()) |item| {
         const candidate = try s.own(item);

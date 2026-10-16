@@ -1,0 +1,37 @@
+//! Actual parse-url.js and from-url.js over the full live host/protocol tables.
+const h = @import("native_hosted_git_template_values.zig");
+const v = h.v; const c = v.c; const Scope = v.Scope;
+const p = @import("native_hosted_git_projection.zig");
+const caught = @import("native_sdk_package_catch.zig");
+fn getKey(s: *Scope, object: c.JSValue, key: c.JSValue) !c.JSValue { return s.own(try v.js.getKey(s.engine, object, key)); }
+fn decode(s: *Scope, value: c.JSValue) !c.JSValue { return s.call(try s.global("decodeURIComponent"), c.pi_js_undefined(), &.{value}); }
+fn correctProtocol(s: *Scope, input: c.JSValue, protocols: c.JSValue) !c.JSValue {
+    const colon = try p.index(s, input, ":"); const method = try s.get(input, "slice"); const proto = try s.call(method, input, &.{ c.JS_NewInt32(s.engine.context, 0), try p.offset(s, colon, 1) });
+    const has = try s.get(try s.get(try s.global("Object"), "prototype"), "hasOwnProperty"); if (s.truthy(try s.invoke(has, "call", &.{ protocols, proto }))) return input;
+    if (try v.eq(s, try s.invoke(input, "substr", &.{ colon, c.JS_NewInt32(s.engine.context, 3) }), "://")) return input;
+    const at = try p.index(s, input, "@"); if (try p.cmp(s, .greater, at, c.JS_NewInt32(s.engine.context, -1))) return if (try p.cmp(s, .greater, at, colon)) s.concat(try s.text("git+ssh://"), try s.stringify(input)) else input;
+    const left = try s.get(input, "slice"); const prefix = try s.stringify(try s.call(left, input, &.{ c.JS_NewInt32(s.engine.context, 0), try p.offset(s, colon, 1) })); const right = try s.get(input, "slice"); const suffix = try s.stringify(try s.call(right, input, &.{try p.offset(s, colon, 1)})); return s.concat(try s.concat(prefix, try s.text("//")), suffix);
+}
+pub fn parseUrl(s: *Scope, node_url: c.JSValue, input: c.JSValue, protocols: c.JSValue) !c.JSValue {
+    const corrected = if (s.truthy(protocols)) try correctProtocol(s, input, protocols) else input; const parsed = try p.safeUrl(s, node_url, corrected); return if (s.truthy(parsed)) parsed else p.safeUrl(s, node_url, try p.correctUrl(s, corrected));
+}
+fn extract(s: *Scope, parsed: c.JSValue, shortcut: c.JSValue, host: c.JSValue, protocols: c.JSValue, auth: c.JSValue, opts: c.JSValue, host_name: c.JSValue) !c.JSValue {
+    var user = c.pi_js_null(); var project = c.pi_js_null(); var ref = c.pi_js_null(); var representation = c.pi_js_null();
+    if (s.truthy(shortcut)) {
+        var path = if (try p.starts(s, try s.get(parsed, "pathname"), "/")) try p.slice(s, try s.get(parsed, "pathname"), c.JS_NewInt32(s.engine.context, 1), null) else try s.get(parsed, "pathname"); const at = try p.index(s, path, "@"); if (try p.cmp(s, .greater, at, c.JS_NewInt32(s.engine.context, -1))) { const method = try s.get(path, "slice"); path = try s.call(method, path, &.{try p.offset(s, at, 1)}); }
+        const slash = try s.invoke(path, "lastIndexOf", &.{try s.text("/")}); if (try p.cmp(s, .greater, slash, c.JS_NewInt32(s.engine.context, -1))) { const decoder = try s.global("decodeURIComponent"); user = try s.call(decoder, c.pi_js_undefined(), &.{try p.slice(s, path, c.JS_NewInt32(s.engine.context, 0), slash)}); if (!s.truthy(user)) user = c.pi_js_null(); const project_decoder = try s.global("decodeURIComponent"); const method = try s.get(path, "slice"); project = try s.call(project_decoder, c.pi_js_undefined(), &.{try s.call(method, path, &.{try p.offset(s, slash, 1)})}); } else project = try decode(s, path);
+        if (try p.ends(s, project, ".git")) project = try p.slice(s, project, c.JS_NewInt32(s.engine.context, 0), c.JS_NewInt32(s.engine.context, -4)); if (s.truthy(try s.get(parsed, "hash"))) { const decoder = try s.global("decodeURIComponent"); ref = try s.call(decoder, c.pi_js_undefined(), &.{try p.slice(s, try s.get(parsed, "hash"), c.JS_NewInt32(s.engine.context, 1), null)}); } representation = try s.text("shortcut");
+    } else {
+        if (!s.truthy(try s.invoke(try s.get(host, "protocols"), "includes", &.{try s.get(parsed, "protocol")}))) return c.pi_js_undefined();
+        const segments = try s.invoke(host, "extract", &.{parsed}); if (!s.truthy(segments)) return c.pi_js_undefined(); const segment_user = try s.get(segments, "user"); user = if (s.truthy(segment_user)) blk: { const decoder = try s.global("decodeURIComponent"); break :blk try s.call(decoder, c.pi_js_undefined(), &.{try s.get(segments, "user")}); } else segment_user;
+        const decoder = try s.global("decodeURIComponent"); project = try s.call(decoder, c.pi_js_undefined(), &.{try s.get(segments, "project")}); const ref_decoder = try s.global("decodeURIComponent"); ref = try s.call(ref_decoder, c.pi_js_undefined(), &.{try s.get(segments, "committish")});
+        const protocol_info = try getKey(s, protocols, try s.get(parsed, "protocol")); const name = if (v.nullish(protocol_info)) c.pi_js_undefined() else try s.get(protocol_info, "name"); representation = if (s.truthy(name)) name else try p.slice(s, try s.get(parsed, "protocol"), c.JS_NewInt32(s.engine.context, 0), c.JS_NewInt32(s.engine.context, -1));
+    }
+    const values = try s.array(); for ([_]c.JSValue{ host_name, user, auth, project, ref, representation, opts }, 0..) |value, i| try s.index(values, @intCast(i), value); return values;
+}
+pub fn arguments(s: *Scope, owner: c.JSValue, input: c.JSValue, opts: c.JSValue) !c.JSValue {
+    if (!s.truthy(input)) return c.pi_js_undefined(); const corrected = if (try p.shorthand(s, input)) try s.concat(try s.text("github:"), try s.stringify(input)) else input; const protocols = try s.get(owner, "protocols"); const hosts = try s.get(owner, "hosts"); const parsed = try parseUrl(s, try s.get(owner, "nodeUrl"), corrected, protocols); if (!s.truthy(parsed)) return c.pi_js_undefined();
+    const shortcut = try getKey(s, try s.get(hosts, "byShortcut"), try s.get(parsed, "protocol")); const domains = try s.get(hosts, "byDomain"); const hostname = if (try p.starts(s, try s.get(parsed, "hostname"), "www.")) try p.slice(s, try s.get(parsed, "hostname"), c.JS_NewInt32(s.engine.context, 4), null) else try s.get(parsed, "hostname"); const domain = try getKey(s, domains, hostname); const host_name = if (s.truthy(shortcut)) shortcut else domain; if (!s.truthy(host_name)) return c.pi_js_undefined(); const host = try getKey(s, hosts, if (s.truthy(shortcut)) shortcut else domain);
+    var auth = c.pi_js_null(); const protocol_info = try getKey(s, protocols, try s.get(parsed, "protocol")); if (!v.nullish(protocol_info) and s.truthy(try s.get(protocol_info, "auth")) and (s.truthy(try s.get(parsed, "username")) or s.truthy(try s.get(parsed, "password")))) { const user = try s.stringify(try s.get(parsed, "username")); const password = if (s.truthy(try s.get(parsed, "password"))) try s.concat(try s.text(":"), try s.stringify(try s.get(parsed, "password"))) else try s.text(""); auth = try s.concat(user, password); }
+    const generation = s.engine.native_allocation_generation; return extract(s, parsed, shortcut, host, protocols, auth, opts, host_name) catch |err| { const reason = (try caught.take(s.engine, err, generation)) orelse return err; defer s.engine.freeValue(reason); const uri = c.JS_IsInstanceOf(s.engine.context, reason, try s.global("URIError")); if (uri < 0) return v.js.capture(s.engine); if (uri != 0) return c.pi_js_undefined(); _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, reason))); unreachable; };
+}

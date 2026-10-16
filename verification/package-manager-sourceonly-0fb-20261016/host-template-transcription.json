@@ -1,0 +1,434 @@
+{
+  "source": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\hosted-git-info\\lib\\hosts.js",
+  "sha256": "B9941C9D4F3D9166A4ABFA41899E519B66CC5AE0FBC7360EA3AE81EFFB62A140",
+  "templates": [
+    {
+      "index": 0,
+      "group": "defaults",
+      "name": "sshtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "git@${domain}:${user}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 1,
+      "group": "defaults",
+      "name": "sshurltemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "git+ssh://git@${domain}/${user}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 2,
+      "group": "defaults",
+      "name": "edittemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "editpath",
+        "path"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('/', editpath, '/', maybeEncode(committish || 'HEAD'), '/', path)}"
+    },
+    {
+      "index": 3,
+      "group": "defaults",
+      "name": "browsetemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "treepath"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('/', treepath, '/', maybeEncode(committish))}"
+    },
+    {
+      "index": 4,
+      "group": "defaults",
+      "name": "browsetreetemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "treepath",
+        "path",
+        "fragment",
+        "hashformat"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/${treepath}/${maybeEncode(committish || 'HEAD')}/${path}${maybeJoin('#', hashformat(fragment || ''))}"
+    },
+    {
+      "index": 5,
+      "group": "defaults",
+      "name": "browseblobtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "blobpath",
+        "path",
+        "fragment",
+        "hashformat"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/${blobpath}/${maybeEncode(committish || 'HEAD')}/${path}${maybeJoin('#', hashformat(fragment || ''))}"
+    },
+    {
+      "index": 6,
+      "group": "defaults",
+      "name": "docstemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "treepath",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('/', treepath, '/', maybeEncode(committish))}#readme"
+    },
+    {
+      "index": 7,
+      "group": "defaults",
+      "name": "httpstemplate",
+      "fields": [
+        "auth",
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "git+https://${maybeJoin(auth, '@')}${domain}/${user}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 8,
+      "group": "defaults",
+      "name": "filetemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "path"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/raw/${maybeEncode(committish || 'HEAD')}/${path}"
+    },
+    {
+      "index": 9,
+      "group": "defaults",
+      "name": "shortcuttemplate",
+      "fields": [
+        "type",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "${type}:${user}/${project}${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 10,
+      "group": "defaults",
+      "name": "pathtemplate",
+      "fields": [
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "${user}/${project}${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 11,
+      "group": "defaults",
+      "name": "bugstemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/issues"
+    },
+    {
+      "index": 12,
+      "group": "github",
+      "name": "filetemplate",
+      "fields": [
+        "auth",
+        "user",
+        "project",
+        "committish",
+        "path"
+      ],
+      "original_template": "https://${maybeJoin(auth, '@')}raw.githubusercontent.com/${user}/${project}/${maybeEncode(committish || 'HEAD')}/${path}"
+    },
+    {
+      "index": 13,
+      "group": "github",
+      "name": "gittemplate",
+      "fields": [
+        "auth",
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "git://${maybeJoin(auth, '@')}${domain}/${user}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 14,
+      "group": "github",
+      "name": "tarballtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://codeload.${domain}/${user}/${project}/tar.gz/${maybeEncode(committish || 'HEAD')}"
+    },
+    {
+      "index": 15,
+      "group": "bitbucket",
+      "name": "edittemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "treepath",
+        "path",
+        "editpath"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('/', treepath, '/', maybeEncode(committish || 'HEAD'), '/', path, editpath)}"
+    },
+    {
+      "index": 16,
+      "group": "bitbucket",
+      "name": "tarballtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/get/${maybeEncode(committish || 'HEAD')}.tar.gz"
+    },
+    {
+      "index": 17,
+      "group": "gitlab",
+      "name": "tarballtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/api/v4/projects/${maybeEncode(user + '/' + project)}/repository/archive.tar.gz?sha=${maybeEncode(committish || 'HEAD')}"
+    },
+    {
+      "index": 18,
+      "group": "gist",
+      "name": "sshtemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "git@${domain}:${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 19,
+      "group": "gist",
+      "name": "sshurltemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "git+ssh://git@${domain}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 20,
+      "group": "gist",
+      "name": "edittemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "editpath"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('/', maybeEncode(committish))}/${editpath}"
+    },
+    {
+      "index": 21,
+      "group": "gist",
+      "name": "browsetemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${project}${maybeJoin('/', maybeEncode(committish))}"
+    },
+    {
+      "index": 22,
+      "group": "gist",
+      "name": "browsetreetemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish",
+        "path",
+        "hashformat"
+      ],
+      "original_template": "https://${domain}/${project}${maybeJoin('/', maybeEncode(committish))}${maybeJoin('#', hashformat(path))}"
+    },
+    {
+      "index": 23,
+      "group": "gist",
+      "name": "browseblobtemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish",
+        "path",
+        "hashformat"
+      ],
+      "original_template": "https://${domain}/${project}${maybeJoin('/', maybeEncode(committish))}${maybeJoin('#', hashformat(path))}"
+    },
+    {
+      "index": 24,
+      "group": "gist",
+      "name": "docstemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${project}${maybeJoin('/', maybeEncode(committish))}"
+    },
+    {
+      "index": 25,
+      "group": "gist",
+      "name": "httpstemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "git+https://${domain}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 26,
+      "group": "gist",
+      "name": "filetemplate",
+      "fields": [
+        "user",
+        "project",
+        "committish",
+        "path"
+      ],
+      "original_template": "https://gist.githubusercontent.com/${user}/${project}/raw${maybeJoin('/', maybeEncode(committish))}/${path}"
+    },
+    {
+      "index": 27,
+      "group": "gist",
+      "name": "shortcuttemplate",
+      "fields": [
+        "type",
+        "project",
+        "committish"
+      ],
+      "original_template": "${type}:${project}${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 28,
+      "group": "gist",
+      "name": "pathtemplate",
+      "fields": [
+        "project",
+        "committish"
+      ],
+      "original_template": "${project}${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 29,
+      "group": "gist",
+      "name": "bugstemplate",
+      "fields": [
+        "domain",
+        "project"
+      ],
+      "original_template": "https://${domain}/${project}"
+    },
+    {
+      "index": 30,
+      "group": "gist",
+      "name": "gittemplate",
+      "fields": [
+        "domain",
+        "project",
+        "committish"
+      ],
+      "original_template": "git://${domain}/${project}.git${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 31,
+      "group": "gist",
+      "name": "tarballtemplate",
+      "fields": [
+        "project",
+        "committish"
+      ],
+      "original_template": "https://codeload.github.com/gist/${project}/tar.gz/${maybeEncode(committish || 'HEAD')}"
+    },
+    {
+      "index": 32,
+      "group": "sourcehut",
+      "name": "filetemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish",
+        "path"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/blob/${maybeEncode(committish) || 'HEAD'}/${path}"
+    },
+    {
+      "index": 33,
+      "group": "sourcehut",
+      "name": "httpstemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${user}/${project}${maybeJoin('#', committish)}"
+    },
+    {
+      "index": 34,
+      "group": "sourcehut",
+      "name": "tarballtemplate",
+      "fields": [
+        "domain",
+        "user",
+        "project",
+        "committish"
+      ],
+      "original_template": "https://${domain}/${user}/${project}/archive/${maybeEncode(committish) || 'HEAD'}.tar.gz"
+    }
+  ]
+}
