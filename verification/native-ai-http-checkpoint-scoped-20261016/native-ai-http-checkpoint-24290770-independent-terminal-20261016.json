@@ -1,0 +1,70 @@
+{
+  "candidate": "24290770c8310b0a005712d2af990fa5e97cac4e",
+  "compile": "passed",
+  "metadata": 74,
+  "runtime": "failed",
+  "actual_test_summary": "73 passed; 0 skipped; 1 failed",
+  "strict_source30_qualified": false,
+  "strict_failure_case": "mistral-thinking-tools",
+  "strict_google_vertex_prefix_cases_passed": 20,
+  "scoped_pass": "HTTPcheckpoint and completeHTTP/UA; ImmediateSource31+stall; all19timers; productionEventStream/VMgenerators/AgentLoop; Google request27/functionalSource30/GC/OOM/ADC and genuineSource60typedID import; eight real importedtest_0 roots",
+  "full_mistral_source60_parity": false,
+  "failure": "Mistral thinking_end/toolcall_start/firsttoolcall_delta observe final args and usage earlier than genuineSource snapshot",
+  "artifact": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-fetch-20261015\\.zig-cache\\o\\00723cd147f8a30608c5ee3e1d208f24\\test.exe",
+  "artifact_sha256": "8B4CEC992202A6C92F6E6822B378F0D2A0B1A6DB7BAD46DC5A4B4A90CE3EE7C6",
+  "compile_pid": 66432,
+  "runtime_pid": 67716,
+  "owned_identity_absence": [
+    {
+      "pid": 66432,
+      "pid_absent": true,
+      "current_identity": null
+    },
+    {
+      "pid": 25960,
+      "pid_absent": true,
+      "current_identity": null
+    },
+    {
+      "pid": 44304,
+      "pid_absent": true,
+      "current_identity": null
+    },
+    {
+      "pid": 67716,
+      "pid_absent": true,
+      "current_identity": null
+    }
+  ],
+  "candidate_files": 6704,
+  "candidate_drift": 0,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "control_files": 18,
+  "control_drift": 0,
+  "reference_inventories": [
+    {
+      "drift": 0,
+      "name": "source",
+      "count": 1967
+    },
+    {
+      "drift": 0,
+      "name": "dependencies",
+      "count": 31064
+    },
+    {
+      "drift": 0,
+      "name": "node_tools",
+      "count": 1774
+    }
+  ],
+  "absence_records": 84,
+  "absence_drift": 0,
+  "compile_receipt_sha256": "DE554BF35B3B211CF7C6A0B07BDE7D1FFBB1E177E5817C2E79B863165DBA2D85",
+  "runtime_receipt_sha256": "FB79F6DD99A52D551BAE234F28ED04C6379EA6A9A79A8B55204C276689741663",
+  "runtime_log_sha256": "CDE4969D2018FE8BBF7F336F826CFB116E5855241BC79458F14F4FD3F51798BC",
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "independently_checked_utc": "2026-10-16T10:22:09.2188198+00:00"
+}

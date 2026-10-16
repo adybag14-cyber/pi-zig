@@ -1,0 +1,73 @@
+diff --git a/src/extensions/native_ai_http.zig b/src/extensions/native_ai_http.zig
+index a9015647..3cd92cb4 100644
+--- a/src/extensions/native_ai_http.zig
++++ b/src/extensions/native_ai_http.zig
+@@ -268,7 +268,15 @@ pub fn pump(engine: *em.Engine) !bool {
+         defer scope.deinit();
+         const signal_aborted = !temp.nullish(job.signal) and scope.truthy(try scope.get(job.signal, "aborted"));
+         if (signal_aborted) job.worker.cancel();
++        // Wire publications are I/O turns. Finish the current VM microtask
++        // checkpoint before delivering another head, byte or EOF observation.
++        // Abort and closed-owner retirement remain control work during jobs.
++        if (!job.closed and !signal_aborted and c.JS_IsJobPending(engine.runtime)) {
++            index += 1;
++            continue;
++        }
+         while (job.worker.peek()) |kind| {
++            if (!job.closed and !signal_aborted and c.JS_IsJobPending(engine.runtime)) break;
+             if (kind != .head and job.waiters.items.len == 0 and !job.closed) break;
+             const event = job.worker.pop() orelse break;
+             defer event.deinit();
+@@ -288,7 +296,9 @@ pub fn pump(engine: *em.Engine) !bool {
+                 try call(&scope, waiter.resolve, try result(&scope, value, false));
+             }
+         }
+-        if (job.worker.finished.load(.acquire) and job.worker.peek() == null) {
++        if (job.worker.finished.load(.acquire) and job.worker.peek() == null and
++            (job.closed or signal_aborted or !c.JS_IsJobPending(engine.runtime)))
++        {
+             const failure: ?anyerror = if (signal_aborted) error.ProviderRequestAborted else job.worker.failure;
+             const prepared_failure = if (failure) |err| err == error.NativeHttpPreparedFailure else false;
+             const reason = if (prepared_failure and job.worker.modeled_failure != null) try modeledFailureValue(&scope, job.worker.modeled_failure.?) else if (failure) |err| try failureValue(&scope, err) else c.pi_js_undefined();
+@@ -309,6 +319,41 @@ pub fn pump(engine: *em.Engine) !bool {
+     }
+     return progressed;
+ }
++
++test "native AI HTTP ready bytes and EOF wait for complete Promise checkpoints" {
++    const fixture = @import("../ai/http_fixture.zig");
++    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/checkpoint", .body = "wire" }});
++    defer server.deinit();
++    const url = try server.url(std.testing.allocator, "/checkpoint");
++    defer std.testing.allocator.free(url);
++    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
++    defer engine.deinit();
++    engine.native_io = std.testing.io;
++    const transport = try open(engine, .{ .url = url, .method = .GET, .payload = "", .headers = &.{}, .timeout_ms = 2000, .framing = .bytes }, c.pi_js_undefined());
++    defer engine.freeValue(transport);
++    const worker = (try stateFor(engine)).jobs.items[0].worker;
++    const deadline = std.Io.Clock.awake.now(std.testing.io).toMilliseconds() + 2000;
++    // Observe actual worker completion without publishing a VM response. The
++    // ready head, bytes and terminal state are then genuinely available when
++    // each Promise chain runs, independent of socket or machine timing.
++    while (!worker.finished.load(.acquire)) {
++        const epoch = engine.native_owner_signal.observe();
++        if (worker.finished.load(.acquire)) break;
++        const remaining = deadline - std.Io.Clock.awake.now(std.testing.io).toMilliseconds();
++        if (remaining <= 0) return error.HttpCheckpointWorkerDidNotFinish;
++        _ = try engine.native_owner_signal.waitAfter(std.testing.io, epoch, .{ .duration = .{ .raw = .fromMilliseconds(@intCast(remaining)), .clock = .awake } });
++    }
++    var scope: Scope = .{ .engine = engine };
++    defer scope.deinit();
++    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
++    try scope.put(global, "checkpointRequest", transport);
++    const module = try engine.evalModule(
++        \\const order=[];function chain(label){Promise.resolve().then(()=>order.push(label+'1')).then(()=>order.push(label+'2')).then(()=>order.push(label+'3'))}
++        \\chain('head');await checkpointRequest.ready;order.push('ready');chain('byte');const bytes=await checkpointRequest.events.next();if(bytes.done||bytes.value.type!=='bytes')throw Error('missing wire bytes');order.push('bytes');chain('end');if(!(await checkpointRequest.events.next()).done)throw Error('missing EOF');order.push('eof');if(JSON.stringify(order)!==JSON.stringify(['head1','head2','head3','ready','byte1','byte2','byte3','bytes','end1','end2','end3','eof']))throw Error(JSON.stringify(order));export const done=true;
++    , "native-http-promise-checkpoint.mjs");
++    engine.freeValue(module);
++    try server.finish();
++}
+ test "native AI HTTP typed preparation failure skips HTTP and preserves abort precedence" {
+     const Prepare = struct {
+         fn call(a: std.mem.Allocator, _: @import("native_ai_http_prepare.zig").View, _: []const u8, _: @import("native_ai_http_prepare.zig").Budget) !@import("native_ai_http_prepare.zig").Prepared {

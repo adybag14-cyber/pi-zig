@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "archive_sha256": "2D6BE84C72060121F9C99F19BB213DC5BD2E3E83EDD7605E4A5D310F35A58B99",
+  "manifest_payloads": 45,
+  "actual_entries": 46,
+  "all_payload_hashes_verified": true,
+  "candidate": "24290770c8310b0a005712d2af990fa5e97cac4e",
+  "full_source30_qualified": false,
+  "runtime_summary": "failed73pass1strictSource30Mistralfailure",
+  "verified_utc": "2026-10-16T10:23:12.4410563+00:00"
+}
