@@ -211,20 +211,24 @@ function statement(ctx,node){
  }
 }
 const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()'};
+for(const b of chosen.values())if(!b.external&&(b.init||b.node.type==='ClassDeclaration'))line(initialize,`try rt.declare(s, env, ${q(b.id)});`);
 for(const b of chosen.values()){
  if(b.external){const operations=['EvaluateTemplateLiteral','EvaluateEnum','EvaluateIntersect','EvaluateType','EvaluateUnion','EvaluateDependent','EvaluateUnionFast'];const lengths=[1,1,1,1,1,3,1];
   const rhs=b.external==='evaluation'?`try rt.evaluationBinding(s, graph, ${q(b.name)}, ${operations.indexOf(b.name)}, ${lengths[operations.indexOf(b.name)]})`:`try s.get(graph, ${q(b.name)})`;line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${rhs});`);
  }else if(b.node.type==='FunctionDeclaration'){
   const id=compileFunction(b.node,b.module,b.name),f=functions[id];line(initialize,`try rt.bind(s, env, ${q(b.id)}, try rt.function(s, ${q(f.name)}, ${f.length}, f_${id}, env, c.pi_js_undefined(), false));`);
- }else if(b.node.type==='ClassDeclaration'){
-  if(b.name!=='InvalidLiteralValue')throw Error('Unlowered class '+b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, try s.own(try @import("native_typebox_errors.zig").literalConstructor(engine)));`);
  }
 }
-const initialized=new Set();
+const initialized=new Set(),initializationOrder=[];
 function initializeModule(file){if(initialized.has(file)||external.has(file)||!modules.has(file))return;initialized.add(file);const m=moduleOf(file);for(const stmt of m.ast.body)if(stmt.source)initializeModule(relative(file,stmt.source.value));
  // ESM evaluates selected variable initializers in their original declaration
  // order. Dependency discovery order may encounter Digit before Zero/NonZero.
- for(const b of m.local.values())if(b.module===m&&chosen.has(b.id)&&b.init){initialize.module=m;const output=expr(initialize,b.init,b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${output});`)}
+ for(const b of m.local.values())if(b.module===m&&chosen.has(b.id)){
+  if(b.init||b.node.type==='ClassDeclaration')initializationOrder.push({module:m.file,moduleSha256:crypto.createHash('sha256').update(m.source).digest('hex'),binding:b.id,name:b.name,start:b.node.start,kind:b.node.type==='ClassDeclaration'?'class':'lexical-variable'});
+  if(b.node.type==='ClassDeclaration'){
+   if(b.name!=='InvalidLiteralValue')throw Error('Unlowered class '+b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, try s.own(try @import("native_typebox_errors.zig").literalConstructor(engine)));`);
+  }else if(b.init){initialize.module=m;const output=expr(initialize,b.init,b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${output});`)}
+ }
 }
 for(const b of chosen.values())if(!b.external)initializeModule(b.module.file);
 const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\n';
@@ -241,4 +245,6 @@ native+='pub fn install(engine: *rt.Engine, type_builder: c.JSValue, graph: c.JS
 const nativePath=new URL('../../src/extensions/native_typebox_operators_production.zig',import.meta.url);
 fs.writeFileSync(nativePath,native);
 fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length},null,2)+'\n');
+for(const file of new Set(initializationOrder.map(row=>row.module))){const selected=initializationOrder.filter(row=>row.module===file);for(let index=1;index<selected.length;index++)if(selected[index-1].start>=selected[index].start)throw Error('Original declaration order regression '+file)}
+fs.writeFileSync(new URL('./initialization-order.json',import.meta.url),JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
 console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));

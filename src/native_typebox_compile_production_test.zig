@@ -9,6 +9,25 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     c.JS_RunGC(e.runtime);
     return c.pi_js_undefined();
 }
+fn readBefore(e: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    return c.JS_DupValue(e.context, try @import("extensions/native_typebox_operators_runtime.zig").get(&s, roots[0], "m0_Before"));
+}
+fn lexicalOrderControl(e: *em.Engine, s: *Scope) !void {
+    const rt = @import("extensions/native_typebox_operators_runtime.zig");
+    const env = try rt.environment(s, c.pi_js_null());
+    try rt.declare(s, env, "m0_Before");
+    const global = try s.own(c.JS_GetGlobalObject(e.context));
+    try s.put(global, "nativeTypeBoxReadBefore", try s.own(try @import("extensions/native_node_function.zig").create(e, "readBefore", 0, readBefore, &.{env})));
+    const pending = try s.own(try e.evalModule(
+        \\let guest,native;try{Before}catch(error){guest={reference:error instanceof ReferenceError,name:error.name}}const Before=1;try{nativeTypeBoxReadBefore()}catch(error){native={reference:error instanceof ReferenceError,name:error.name}}if(JSON.stringify(guest)!==JSON.stringify(native)||!native?.reference)throw Error(JSON.stringify({scope:'actual guest and native module TDZ',guest,native}));export const pass=true;
+    , "actual-typebox-native-lexical-tdz.mjs"));
+    _ = try s.own(try e.awaitValue(pending));
+    try rt.bind(s, env, "m0_Before", c.JS_NewInt32(e.context, 1));
+    const initialized = try s.own(try e.evalModule("if(nativeTypeBoxReadBefore()!==1)throw Error('native module lexical initialization');export const pass=true;", "actual-typebox-native-lexical-initialized.mjs"));
+    _ = try s.own(try e.awaitValue(initialized));
+}
 pub fn graph(e: *em.Engine) !c.JSValue {
     return @import("extensions/native_typebox_production_graph.zig").create(e) catch |err| {
         std.debug.print("Actual shared TypeBox graph: {s}\n", .{e.last_error orelse "no diagnostic"});
@@ -37,7 +56,10 @@ test "actual TypeBox Compile Validator matches complete genuine Source80" {
     const bytes = @embedFile("extensions/fixtures/typebox-compile-production.json");
     const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-compile-source80.json")));
     const actual = try s.own(try graph(e));
-    try replay(e, actual, source);
+    replay(e, actual, source) catch |err| {
+        std.debug.print("Actual TypeBox Source80 replay: {s}\n", .{e.last_error orelse "no diagnostic"});
+        return err;
+    };
     std.debug.print("TYPEBOX_COMPILE_SOURCE_PARITY cases=80 actual_shared_graph=true native_ir=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
 }
 test "actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph" {
@@ -48,7 +70,10 @@ test "actual provider schemas Partial and Memory match genuine Source52 on share
     const bytes = @embedFile("extensions/fixtures/ai-model-schemas-partial-4954.json");
     const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-schema-source52.json")));
     const actual = try s.own(try graph(e));
-    try @import("native_ai_model_schemas_partial_test.zig").replay(e, try s.get(actual, "Type"), actual, try s.get(actual, "Schemas"), try s.get(actual, "Compiler"), source);
+    @import("native_ai_model_schemas_partial_test.zig").replay(e, try s.get(actual, "Type"), actual, try s.get(actual, "Schemas"), try s.get(actual, "Compiler"), source) catch |err| {
+        std.debug.print("Actual TypeBox Source52 replay: {s}\n", .{e.last_error orelse "no diagnostic"});
+        return err;
+    };
     std.debug.print("TYPEBOX_PROVIDER_SCHEMA_SOURCE_PARITY cases=52 actual_shared_graph=true full_HOST_GPA=false C_malloc_exhaustive=false\n", .{});
 }
 test "actual TypeBox generic operators match complete genuine Source396 on shared compiler graph" {
@@ -56,6 +81,7 @@ test "actual TypeBox generic operators match complete genuine Source396 on share
     defer e.deinit();
     var s: Scope = .{ .engine = e };
     defer s.deinit();
+    try lexicalOrderControl(e, &s);
     const bytes = @embedFile("extensions/fixtures/typebox-operators-production.expected.json");
     const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-operators-source396.json")));
     const actual = try s.own(try graph(e));
