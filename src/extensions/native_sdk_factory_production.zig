@@ -7,10 +7,51 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const body = @import("native_async_body.zig");
+const af = body.native;
 const c = em.c;
 const Operation = enum(c_int) { createAgentSession, createAgentSessionServices, createAgentSessionFromServices, createAgentSessionRuntime };
 const Stage = enum(c_int) { runtime, reload, initial_model, services_runtime, services_reload, services_refresh, lifecycle };
+const ActionKind = enum(c_int) { returned, awaited };
+fn put(engine: *em.Engine, target: c.JSValue, name: [*:0]const u8, borrowed: c.JSValue) !void {
+    if (c.JS_DefinePropertyValueStr(engine.context, target, name, c.JS_DupValue(engine.context, borrowed), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+}
+fn wait(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
+    try put(engine, owner, "factoryStage", c.JS_NewInt32(engine.context, @intFromEnum(stage)));
+    try put(engine, owner, "factoryValue", value);
+    try put(engine, owner, "factoryAction", c.JS_NewInt32(engine.context, @intFromEnum(ActionKind.awaited)));
+}
+fn resolve(engine: *em.Engine, owner: c.JSValue, value: c.JSValue) !void {
+    try put(engine, owner, "factoryValue", value);
+    try put(engine, owner, "factoryAction", c.JS_NewInt32(engine.context, @intFromEnum(ActionKind.returned)));
+}
+fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return err;
+        try body.rethrowRecognizedAllocation(engine, reason, generation);
+    };
+}
+fn currentFailure(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return err;
+        body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
+    };
+    if (err == error.JavaScriptException and c.JS_HasException(engine.context)) {
+        const reason = c.JS_GetException(engine.context);
+        _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |current| return current;
+        unreachable;
+    }
+    return err;
+}
+fn takeReason(engine: *em.Engine, err: anyerror, generation: u64) !c.JSValue {
+    const current = currentFailure(engine, err, generation);
+    try trustedBoundary(engine, current, generation);
+    if (current != error.JavaScriptException) return current;
+    const reason = engine.captured_exception orelse return error.MissingFactoryCapturedReason;
+    engine.captured_exception = null;
+    return reason;
+}
 
 /// Import bindings captured once, just as Source module imports are captured.
 /// AgentSession is deliberately absent: compose() creates it through the actual
@@ -32,31 +73,71 @@ pub fn create(engine: *em.Engine, imports: c.JSValue, ordinary: c.JSValue) !c.JS
     inline for (required_functions) |name| {
         const value = try scope.get(imports, name);
         if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualSdkFactoryBinding;
-        try scope.put(bindings, name, value);
+        try put(scope.engine, bindings, name, value);
     }
     if (!c.JS_IsConstructor(engine.context, ordinary)) return error.RequiredOrdinaryAgentSessionConstructor;
-    try scope.put(bindings, "AgentSession", ordinary);
-    try scope.put(bindings, "process", try scope.get(imports, "process"));
-    try scope.put(bindings, "DEFAULT_THINKING_LEVEL", try scope.get(imports, "DEFAULT_THINKING_LEVEL"));
-    try scope.put(bindings, "DEFAULT_TOOL_NAMES", try scope.get(imports, "DEFAULT_TOOL_NAMES"));
+    try put(scope.engine, bindings, "AgentSession", ordinary);
+    try put(scope.engine, bindings, "process", try scope.get(imports, "process"));
+    try put(scope.engine, bindings, "DEFAULT_THINKING_LEVEL", try scope.get(imports, "DEFAULT_THINKING_LEVEL"));
+    try put(scope.engine, bindings, "DEFAULT_TOOL_NAMES", try scope.get(imports, "DEFAULT_TOOL_NAMES"));
     // Source SDK module preserves agent-core's pre-0.81 low-level fallback by
     // setting its actual shared default to the actual compat dispatch once.
     _ = try imported(&scope, bindings, "setDefaultStreamFn", &.{try scope.get(bindings, "streamSimple")});
     const result = try scope.object();
     inline for (@typeInfo(Operation).@"enum".fields) |field| {
-        var roots = [_]c.JSValue{bindings};
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, field.name, if (field.value == @intFromEnum(Operation.createAgentSession)) 0 else if (field.value == @intFromEnum(Operation.createAgentSessionRuntime)) 2 else 1, field.value, roots.len, &roots)));
-        if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
-        try scope.put(result, field.name, function);
+        const function = try scope.own(try af.createResumable(engine, field.name, if (field.value == @intFromEnum(Operation.createAgentSession)) 0 else if (field.value == @intFromEnum(Operation.createAgentSessionRuntime)) 2 else 1, factoryBody, &.{bindings, c.JS_NewInt32(engine.context, field.value)}));
+        try put(scope.engine, result, field.name, function);
+        // Source's services module captures the original SDK function binding.
+        if (comptime field.value == @intFromEnum(Operation.createAgentSession)) try put(scope.engine, bindings, "createAgentSession", function);
     }
-    try scope.put(result, "AgentSession", ordinary);
+    try put(scope.engine, result, "AgentSession", ordinary);
     return c.JS_DupValue(engine.context, result);
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return begin(engine, roots[0], @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+fn factoryBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const generation = engine.native_allocation_generation;
+    return factoryInner(engine, args, roots, state, completion, input) catch |err| {
+        const current = currentFailure(engine, err, generation);
+        try trustedBoundary(engine, current, generation);
+        if (current == error.JavaScriptException) {
+            const reason = engine.captured_exception orelse return error.MissingFactoryCapturedReason;
+            engine.captured_exception = null;
+            return .{ .thrown = reason };
+        }
+        return body.failureSince(engine, current, generation);
+    };
+}
+fn factoryInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .start) {
+        const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+        af.replaceState(engine, state, c.JS_DupValue(engine.context, owner));
+        try put(engine, owner, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
+        var raw: i32 = 0;
+        if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return js.capture(engine);
+        try start(engine, owner, roots[0], @enumFromInt(raw), if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
+    } else {
+        const owner = state.*;
+        // The primitive owns input during this call; release the old Await
+        // expression before resuming Source lexical work.
+        try put(engine, owner, "factoryValue", c.pi_js_undefined());
+        if (completion == .rejected) {
+            if (c.JS_IsUncatchableError(input)) {
+                _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, input)));
+                unreachable;
+            }
+            var boundary: u64 = 0;
+            if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(owner, "generation")) < 0) return js.capture(engine);
+            try body.rethrowRecognizedAllocation(engine, input, boundary);
+            return .{ .thrown = c.JS_DupValue(engine.context, input) };
+        }
+        var raw: i32 = 0;
+        if (c.JS_ToInt32(engine.context, &raw, try scope.get(owner, "factoryStage")) < 0) return js.capture(engine);
+        try resumeBody(engine, owner, input, @enumFromInt(raw));
+    }
+    var raw: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &raw, try scope.get(state.*, "factoryAction")) < 0) return js.capture(engine);
+    const value = c.JS_DupValue(engine.context, try scope.get(state.*, "factoryValue"));
+    return switch (@as(ActionKind, @enumFromInt(raw))) { .returned => .{ .returned = value }, .awaited => .{ .awaited = value } };
 }
 fn imported(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return scope.call(try scope.get(bindings, name), c.pi_js_undefined(), args);
@@ -64,55 +145,46 @@ fn imported(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []con
 fn construct(scope: *Scope, bindings: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return scope.own(try scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try scope.get(bindings, name), @intCast(args.len), @constCast(args.ptr))));
 }
-fn begin(engine: *em.Engine, bindings: c.JSValue, operation: Operation, first: c.JSValue, second: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    start(engine, pending.owner, bindings, operation, first, second) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
 fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, operation: Operation, first: c.JSValue, second: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    try scope.put(owner, "bindings", bindings);
+    try put(scope.engine, owner, "bindings", bindings);
     switch (operation) {
         .createAgentSession => {
             const options = if (c.JS_IsUndefined(first)) try scope.object() else first;
-            try scope.put(owner, "options", options);
+            try put(scope.engine, owner, "options", options);
             try startSession(engine, owner);
         },
         .createAgentSessionServices => {
-            try scope.put(owner, "options", first);
+            try put(scope.engine, owner, "options", first);
             try startServices(engine, owner);
         },
         .createAgentSessionFromServices => {
+            const inner_function = try scope.get(bindings, "createAgentSession");
             const options = try scope.object();
             // Source evaluates options.services independently for each field.
-            inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader" }) |name| try scope.put(options, name, try scope.get(try scope.get(first, "services"), name));
-            inline for (.{ "sessionManager", "model", "thinkingLevel", "scopedModels", "tools", "excludeTools", "noTools", "customTools", "sessionStartEvent" }) |name| try scope.put(options, name, try scope.get(first, name));
+            inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader" }) |name| try put(scope.engine, options, name, try scope.get(try scope.get(first, "services"), name));
+            inline for (.{ "sessionManager", "model", "thinkingLevel", "scopedModels", "tools", "excludeTools", "noTools", "customTools", "sessionStartEvent" }) |name| try put(scope.engine, options, name, try scope.get(first, name));
             // Source returns the inner async call from a separate async body.
             // Keep both promises and the adoption job, including synchronous
             // options-getter rejection of this outer call before the inner call.
-            const inner = try scope.own(try begin(engine, bindings, .createAgentSession, options, c.pi_js_undefined()));
-            return flow.settle(engine, owner, false, inner);
+            const inner = try scope.call(inner_function, c.pi_js_undefined(), &.{options});
+            return resolve(engine, owner, inner);
         },
         .createAgentSessionRuntime => {
-            _ = try imported(&scope, bindings, "assertSessionCwdExists", &.{ try scope.get(second, "sessionManager"), try scope.get(second, "cwd") });
-            try scope.put(owner, "createRuntime", first);
-            return flow.wait(continueFactory, engine, owner, try scope.call(first, c.pi_js_undefined(), &.{second}), @intFromEnum(Stage.lifecycle));
+            const assert_cwd = try scope.get(bindings, "assertSessionCwdExists");
+            _ = try scope.call(assert_cwd, c.pi_js_undefined(), &.{ try scope.get(second, "sessionManager"), try scope.get(second, "cwd") });
+            try put(scope.engine, owner, "createRuntime", first);
+            return wait(engine, owner, try scope.call(first, c.pi_js_undefined(), &.{second}), .lifecycle);
         },
     }
-}
-fn continueFactory(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    if (rejected) return flow.settle(engine, owner, true, value);
-    resumeBody(engine, owner, value, @enumFromInt(stage)) catch |err| try flow.rejectError(engine, owner, err);
 }
 fn resumeBody(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     switch (stage) {
         .runtime => {
-            try scope.put(owner, "modelRuntime", value);
+            try put(scope.engine, owner, "modelRuntime", value);
             try sessionServices(engine, owner);
         },
         .reload => {
@@ -122,24 +194,26 @@ fn resumeBody(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Sta
         .initial_model => {
             const bindings = try scope.get(owner, "bindings");
             const model = try scope.get(value, "model");
-            try scope.put(owner, "model", model);
+            try put(scope.engine, owner, "model", model);
             if (!scope.truthy(model)) {
-                try scope.put(owner, "modelFallbackMessage", try imported(&scope, bindings, "formatNoModelsAvailableMessage", &.{}));
+                try put(scope.engine, owner, "modelFallbackMessage", try imported(&scope, bindings, "formatNoModelsAvailableMessage", &.{}));
             } else if (scope.truthy(try scope.get(owner, "modelFallbackMessage"))) {
                 const suffix = try scope.concat(try scope.concat(try scope.concat(try scope.text(". Using "), try scope.stringify(try scope.get(model, "provider"))), try scope.text("/")), try scope.stringify(try scope.get(model, "id")));
-                try scope.put(owner, "modelFallbackMessage", try scope.concat(try scope.get(owner, "modelFallbackMessage"), suffix));
+                try put(scope.engine, owner, "modelFallbackMessage", try scope.concat(try scope.get(owner, "modelFallbackMessage"), suffix));
             }
             try finishSession(engine, owner);
         },
         .services_runtime => {
-            try scope.put(owner, "modelRuntime", value);
+            try put(scope.engine, owner, "modelRuntime", value);
             try servicesLoader(engine, owner);
         },
         .services_reload => try registerPendingProviders(engine, owner),
         .services_refresh => try finishServices(engine, owner),
         .lifecycle => {
-            const target = try construct(&scope, try scope.get(owner, "bindings"), "AgentSessionRuntime", &.{ try scope.get(value, "session"), try scope.get(value, "services"), try scope.get(owner, "createRuntime"), try scope.get(value, "diagnostics"), try scope.get(value, "modelFallbackMessage") });
-            try flow.settle(engine, owner, false, target);
+            const constructor = try scope.get(try scope.get(owner, "bindings"), "AgentSessionRuntime");
+            const arguments = [_]c.JSValue{ try scope.get(value, "session"), try scope.get(value, "services"), try scope.get(owner, "createRuntime"), try scope.get(value, "diagnostics"), try scope.get(value, "modelFallbackMessage") };
+            const target = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, constructor, arguments.len, @constCast(&arguments))));
+            try resolve(engine, owner, target);
         },
     }
 }
@@ -154,10 +228,10 @@ fn startSession(engine: *em.Engine, owner: c.JSValue) !void {
         work = if (temp.nullish(manager)) c.pi_js_undefined() else try scope.invoke(manager, "getCwd", &.{});
         if (temp.nullish(work)) work = try scope.invoke(try scope.get(bindings, "process"), "cwd", &.{});
     }
-    try scope.put(owner, "cwd", try imported(&scope, bindings, "resolvePath", &.{work}));
+    try put(scope.engine, owner, "cwd", try imported(&scope, bindings, "resolvePath", &.{work}));
     const directory = if (scope.truthy(try scope.get(options, "agentDir"))) try imported(&scope, bindings, "resolvePath", &.{try scope.get(options, "agentDir")}) else try imported(&scope, bindings, "getAgentDir", &.{});
-    try scope.put(owner, "agentDir", directory);
-    try scope.put(owner, "resourceLoader", try scope.get(options, "resourceLoader"));
+    try put(scope.engine, owner, "agentDir", directory);
+    try put(scope.engine, owner, "resourceLoader", try scope.get(options, "resourceLoader"));
     const auth_path = if (scope.truthy(try scope.get(options, "agentDir"))) try imported(&scope, bindings, "join", &.{ directory, try scope.text("auth.json") }) else c.pi_js_undefined();
     const models_path = if (scope.truthy(try scope.get(options, "agentDir"))) try imported(&scope, bindings, "join", &.{ directory, try scope.text("models.json") }) else c.pi_js_undefined();
     const runtime = try scope.get(options, "modelRuntime");
@@ -165,11 +239,11 @@ fn startSession(engine: *em.Engine, owner: c.JSValue) !void {
         const constructor = try scope.get(bindings, "ModelRuntime");
         const create_method = try scope.get(constructor, "create");
         const configured = try scope.object();
-        try scope.put(configured, "authPath", auth_path);
-        try scope.put(configured, "modelsPath", models_path);
-        return flow.wait(continueFactory, engine, owner, try scope.call(create_method, constructor, &.{configured}), @intFromEnum(Stage.runtime));
+        try put(scope.engine, configured, "authPath", auth_path);
+        try put(scope.engine, configured, "modelsPath", models_path);
+        return wait(engine, owner, try scope.call(create_method, constructor, &.{configured}), .runtime);
     }
-    try scope.put(owner, "modelRuntime", runtime);
+    try put(scope.engine, owner, "modelRuntime", runtime);
     try sessionServices(engine, owner);
 }
 fn sessionServices(engine: *em.Engine, owner: c.JSValue) !void {
@@ -181,7 +255,7 @@ fn sessionServices(engine: *em.Engine, owner: c.JSValue) !void {
     const directory = try scope.get(owner, "agentDir");
     var settings = try scope.get(options, "settingsManager");
     if (temp.nullish(settings)) settings = try scope.invoke(try scope.get(bindings, "SettingsManager"), "create", &.{ cwd, directory });
-    try scope.put(owner, "settingsManager", settings);
+    try put(scope.engine, owner, "settingsManager", settings);
     var manager = try scope.get(options, "sessionManager");
     if (temp.nullish(manager)) {
         // Preserve lookup of SessionManager.create before evaluating its arguments.
@@ -189,15 +263,15 @@ fn sessionServices(engine: *em.Engine, owner: c.JSValue) !void {
         const create_method = try scope.get(ctor, "create");
         manager = try scope.call(create_method, ctor, &.{ cwd, try imported(&scope, bindings, "getDefaultSessionDir", &.{ cwd, directory }) });
     }
-    try scope.put(owner, "sessionManager", manager);
+    try put(scope.engine, owner, "sessionManager", manager);
     if (!scope.truthy(try scope.get(owner, "resourceLoader"))) {
         const configured = try scope.object();
-        try scope.put(configured, "cwd", cwd);
-        try scope.put(configured, "agentDir", directory);
-        try scope.put(configured, "settingsManager", settings);
+        try put(scope.engine, configured, "cwd", cwd);
+        try put(scope.engine, configured, "agentDir", directory);
+        try put(scope.engine, configured, "settingsManager", settings);
         const loader = try construct(&scope, bindings, "DefaultResourceLoader", &.{configured});
-        try scope.put(owner, "resourceLoader", loader);
-        return flow.wait(continueFactory, engine, owner, try scope.invoke(loader, "reload", &.{}), @intFromEnum(Stage.reload));
+        try put(scope.engine, owner, "resourceLoader", loader);
+        return wait(engine, owner, try scope.invoke(loader, "reload", &.{}), .reload);
     }
     try restoreSession(engine, owner);
 }
@@ -210,15 +284,15 @@ fn restoreSession(engine: *em.Engine, owner: c.JSValue) !void {
     const runtime = try scope.get(owner, "modelRuntime");
     const settings = try scope.get(owner, "settingsManager");
     const existing = try scope.invoke(manager, "buildSessionContext", &.{});
-    try scope.put(owner, "existingSession", existing);
+    try put(scope.engine, owner, "existingSession", existing);
     const has_existing = try scope.positive(try scope.get(try scope.get(existing, "messages"), "length"));
-    try scope.put(owner, "hasExistingSession", c.pi_js_bool(engine.context, @intFromBool(has_existing)));
+    try put(scope.engine, owner, "hasExistingSession", c.pi_js_bool(engine.context, @intFromBool(has_existing)));
     const branch = try scope.invoke(manager, "getBranch", &.{});
     const some = try scope.get(branch, "some");
     const predicate = try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, isThinkingEntry, "", 1)));
-    try scope.put(owner, "hasThinkingEntry", try scope.call(some, branch, &.{predicate}));
+    try put(scope.engine, owner, "hasThinkingEntry", try scope.call(some, branch, &.{predicate}));
     var model = try scope.get(options, "model");
-    try scope.put(owner, "modelFallbackMessage", c.pi_js_undefined());
+    try put(scope.engine, owner, "modelFallbackMessage", c.pi_js_undefined());
     const select = try scope.get(bindings, "getBranchSelection");
     const current_branch = try scope.invoke(manager, "getBranch", &.{});
     var roots = [_]c.JSValue{runtime};
@@ -232,18 +306,18 @@ fn restoreSession(engine: *em.Engine, owner: c.JSValue) !void {
         }
         if (!scope.truthy(model)) {
             const message = try scope.concat(try scope.concat(try scope.concat(try scope.text("Could not restore model "), try scope.stringify(try scope.get(selection, "provider"))), try scope.text("/")), try scope.stringify(try scope.get(selection, "modelId")));
-            try scope.put(owner, "modelFallbackMessage", message);
+            try put(scope.engine, owner, "modelFallbackMessage", message);
         }
     }
-    try scope.put(owner, "model", model);
+    try put(scope.engine, owner, "model", model);
     if (!scope.truthy(model)) {
         const find = try scope.get(bindings, "findInitialModel");
         const configured = try scope.object();
-        try scope.put(configured, "scopedModels", try scope.array());
-        try scope.put(configured, "isContinuing", c.pi_js_bool(engine.context, @intFromBool(has_existing)));
-        inline for (.{ .{ "defaultProvider", "getDefaultProvider" }, .{ "defaultModelId", "getDefaultModel" }, .{ "defaultThinkingLevel", "getDefaultThinkingLevel" }, .{ "modelThinkingLevels", "getAllModelThinkingLevels" } }) |pair| try scope.put(configured, pair[0], try scope.invoke(settings, pair[1], &.{}));
-        try scope.put(configured, "modelRuntime", runtime);
-        return flow.wait(continueFactory, engine, owner, try scope.call(find, c.pi_js_undefined(), &.{configured}), @intFromEnum(Stage.initial_model));
+        try put(scope.engine, configured, "scopedModels", try scope.array());
+        try put(scope.engine, configured, "isContinuing", c.pi_js_bool(engine.context, @intFromBool(has_existing)));
+        inline for (.{ .{ "defaultProvider", "getDefaultProvider" }, .{ "defaultModelId", "getDefaultModel" }, .{ "defaultThinkingLevel", "getDefaultThinkingLevel" }, .{ "modelThinkingLevels", "getAllModelThinkingLevels" } }) |pair| try put(scope.engine, configured, pair[0], try scope.invoke(settings, pair[1], &.{}));
+        try put(scope.engine, configured, "modelRuntime", runtime);
+        return wait(engine, owner, try scope.call(find, c.pi_js_undefined(), &.{configured}), .initial_model);
     }
     try finishSession(engine, owner);
 }
@@ -313,7 +387,7 @@ fn finishSession(engine: *em.Engine, owner: c.JSValue) !void {
     const converter = try scope.own(try @import("native_sdk_block_images.zig").create(engine, settings));
     const runner_ref = try scope.object();
     const agent_box = try scope.object();
-    try scope.put(agent_box, "initialized", c.pi_js_bool(engine.context, 0));
+    try put(scope.engine, agent_box, "initialized", c.pi_js_bool(engine.context, 0));
     var agent_roots = [_]c.JSValue{agent_box};
     const agent_getter = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, readAgentBinding, "get value", 0, 0, agent_roots.len, &agent_roots)));
     const agent_atom = c.JS_NewAtom(engine.context, "value");
@@ -329,21 +403,21 @@ fn finishSession(engine: *em.Engine, owner: c.JSValue) !void {
     const callbacks = try scope.own(try @import("native_sdk_factory_provider_callbacks.zig").create(engine, settings, runtime, manager, runner_ref, agent_box, warmer));
     const agent_config = try scope.object();
     const state = try scope.object();
-    try scope.put(state, "systemPrompt", try scope.text(""));
-    try scope.put(state, "model", model);
-    try scope.put(state, "thinkingLevel", thinking);
-    try scope.put(state, "tools", try scope.array());
-    try scope.put(state, "messages", try scope.get(try scope.get(owner, "existingSession"), "messages"));
-    try scope.put(agent_config, "initialState", state);
-    try scope.put(agent_config, "convertToLlm", converter);
-    inline for (.{ .{ "streamFn", "streamFn" }, .{ "onPayload", "onPayload" }, .{ "onResponse", "onResponse" }, .{ "onProviderStreamEvent", "onProviderStreamEvent" } }) |pair| try scope.put(agent_config, pair[0], try scope.get(callbacks, pair[1]));
-    try scope.put(agent_config, "sessionId", try scope.invoke(manager, "getSessionId", &.{}));
-    try scope.put(agent_config, "transformContext", try scope.get(callbacks, "transformContext"));
-    inline for (.{ .{ "steeringMode", "getSteeringMode" }, .{ "followUpMode", "getFollowUpMode" }, .{ "transport", "getTransport" }, .{ "thinkingBudgets", "getThinkingBudgets" } }) |pair| try scope.put(agent_config, pair[0], try scope.invoke(settings, pair[1], &.{}));
-    try scope.put(agent_config, "maxRetryDelayMs", try scope.get(try scope.invoke(settings, "getProviderRetrySettings", &.{}), "maxRetryDelayMs"));
+    try put(scope.engine, state, "systemPrompt", try scope.text(""));
+    try put(scope.engine, state, "model", model);
+    try put(scope.engine, state, "thinkingLevel", thinking);
+    try put(scope.engine, state, "tools", try scope.array());
+    try put(scope.engine, state, "messages", try scope.get(try scope.get(owner, "existingSession"), "messages"));
+    try put(scope.engine, agent_config, "initialState", state);
+    try put(scope.engine, agent_config, "convertToLlm", converter);
+    inline for (.{ .{ "streamFn", "streamFn" }, .{ "onPayload", "onPayload" }, .{ "onResponse", "onResponse" }, .{ "onProviderStreamEvent", "onProviderStreamEvent" } }) |pair| try put(scope.engine, agent_config, pair[0], try scope.get(callbacks, pair[1]));
+    try put(scope.engine, agent_config, "sessionId", try scope.invoke(manager, "getSessionId", &.{}));
+    try put(scope.engine, agent_config, "transformContext", try scope.get(callbacks, "transformContext"));
+    inline for (.{ .{ "steeringMode", "getSteeringMode" }, .{ "followUpMode", "getFollowUpMode" }, .{ "transport", "getTransport" }, .{ "thinkingBudgets", "getThinkingBudgets" } }) |pair| try put(scope.engine, agent_config, pair[0], try scope.invoke(settings, pair[1], &.{}));
+    try put(scope.engine, agent_config, "maxRetryDelayMs", try scope.get(try scope.invoke(settings, "getProviderRetrySettings", &.{}), "maxRetryDelayMs"));
     const agent = try construct(&scope, bindings, "Agent", &.{agent_config});
-    try scope.put(agent_box, "binding", agent);
-    try scope.put(agent_box, "initialized", c.pi_js_bool(engine.context, 1));
+    try put(scope.engine, agent_box, "binding", agent);
+    try put(scope.engine, agent_box, "initialized", c.pi_js_bool(engine.context, 1));
     if (has_existing) {
         if (!has_thinking) _ = try scope.invoke(manager, "appendThinkingLevelChange", &.{thinking});
     } else {
@@ -354,30 +428,30 @@ fn finishSession(engine: *em.Engine, owner: c.JSValue) !void {
         _ = try scope.invoke(manager, "appendThinkingLevelChange", &.{thinking});
     }
     const config = try scope.object();
-    try scope.put(config, "agent", agent);
-    try scope.put(config, "sessionManager", manager);
-    try scope.put(config, "settingsManager", settings);
-    try scope.put(config, "cwd", try scope.get(owner, "cwd"));
-    try scope.put(config, "scopedModels", try scope.get(options, "scopedModels"));
-    try scope.put(config, "resourceLoader", try scope.get(owner, "resourceLoader"));
-    try scope.put(config, "customTools", try scope.get(options, "customTools"));
-    try scope.put(config, "modelRuntime", runtime);
-    try scope.put(config, "cacheWarmer", warmer);
-    try scope.put(config, "initialActiveToolNames", active);
+    try put(scope.engine, config, "agent", agent);
+    try put(scope.engine, config, "sessionManager", manager);
+    try put(scope.engine, config, "settingsManager", settings);
+    try put(scope.engine, config, "cwd", try scope.get(owner, "cwd"));
+    try put(scope.engine, config, "scopedModels", try scope.get(options, "scopedModels"));
+    try put(scope.engine, config, "resourceLoader", try scope.get(owner, "resourceLoader"));
+    try put(scope.engine, config, "customTools", try scope.get(options, "customTools"));
+    try put(scope.engine, config, "modelRuntime", runtime);
+    try put(scope.engine, config, "cacheWarmer", warmer);
+    try put(scope.engine, config, "initialActiveToolNames", active);
     const uses_defaults = (c.JS_IsUndefined(try scope.get(options, "tools")) or !c.JS_IsUndefined(modifiers)) and !scope.truthy(try scope.get(options, "noTools"));
-    try scope.put(config, "usesDefaultTools", c.pi_js_bool(engine.context, @intFromBool(uses_defaults)));
-    try scope.put(config, "defaultToolModifiers", modifiers);
-    try scope.put(config, "allowedToolNames", allowed);
-    try scope.put(config, "excludedToolNames", excluded);
-    try scope.put(config, "extensionRunnerRef", runner_ref);
-    try scope.put(config, "sessionStartEvent", try scope.get(options, "sessionStartEvent"));
+    try put(scope.engine, config, "usesDefaultTools", c.pi_js_bool(engine.context, @intFromBool(uses_defaults)));
+    try put(scope.engine, config, "defaultToolModifiers", modifiers);
+    try put(scope.engine, config, "allowedToolNames", allowed);
+    try put(scope.engine, config, "excludedToolNames", excluded);
+    try put(scope.engine, config, "extensionRunnerRef", runner_ref);
+    try put(scope.engine, config, "sessionStartEvent", try scope.get(options, "sessionStartEvent"));
     const session = try construct(&scope, bindings, "AgentSession", &.{config});
     const extensions = try scope.invoke(try scope.get(owner, "resourceLoader"), "getExtensions", &.{});
     const result = try scope.object();
-    try scope.put(result, "session", session);
-    try scope.put(result, "extensionsResult", extensions);
-    try scope.put(result, "modelFallbackMessage", try scope.get(owner, "modelFallbackMessage"));
-    try flow.settle(engine, owner, false, result);
+    try put(scope.engine, result, "session", session);
+    try put(scope.engine, result, "extensionsResult", extensions);
+    try put(scope.engine, result, "modelFallbackMessage", try scope.get(owner, "modelFallbackMessage"));
+    try resolve(engine, owner, result);
 }
 fn readAgentBinding(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
@@ -406,20 +480,20 @@ fn startServices(engine: *em.Engine, owner: c.JSValue) !void {
     defer scope.deinit();
     const bindings = try scope.get(owner, "bindings");
     const options = try scope.get(owner, "options");
-    try scope.put(owner, "cwd", try imported(&scope, bindings, "resolvePath", &.{try scope.get(options, "cwd")}));
+    try put(scope.engine, owner, "cwd", try imported(&scope, bindings, "resolvePath", &.{try scope.get(options, "cwd")}));
     const directory = if (scope.truthy(try scope.get(options, "agentDir"))) try imported(&scope, bindings, "resolvePath", &.{try scope.get(options, "agentDir")}) else try imported(&scope, bindings, "getAgentDir", &.{});
-    try scope.put(owner, "agentDir", directory);
+    try put(scope.engine, owner, "agentDir", directory);
     const runtime = try scope.get(options, "modelRuntime");
     if (temp.nullish(runtime)) {
         const ctor = try scope.get(bindings, "ModelRuntime");
         const create_method = try scope.get(ctor, "create");
         const configured = try scope.object();
-        try scope.put(configured, "authPath", try imported(&scope, bindings, "join", &.{ directory, try scope.text("auth.json") }));
-        try scope.put(configured, "modelsPath", try imported(&scope, bindings, "join", &.{ directory, try scope.text("models.json") }));
-        try scope.put(configured, "signal", try scope.get(options, "modelRuntimeSignal"));
-        return flow.wait(continueFactory, engine, owner, try scope.call(create_method, ctor, &.{configured}), @intFromEnum(Stage.services_runtime));
+        try put(scope.engine, configured, "authPath", try imported(&scope, bindings, "join", &.{ directory, try scope.text("auth.json") }));
+        try put(scope.engine, configured, "modelsPath", try imported(&scope, bindings, "join", &.{ directory, try scope.text("models.json") }));
+        try put(scope.engine, configured, "signal", try scope.get(options, "modelRuntimeSignal"));
+        return wait(engine, owner, try scope.call(create_method, ctor, &.{configured}), .services_runtime);
     }
-    try scope.put(owner, "modelRuntime", runtime);
+    try put(scope.engine, owner, "modelRuntime", runtime);
     try servicesLoader(engine, owner);
 }
 fn servicesLoader(engine: *em.Engine, owner: c.JSValue) !void {
@@ -431,25 +505,25 @@ fn servicesLoader(engine: *em.Engine, owner: c.JSValue) !void {
     const directory = try scope.get(owner, "agentDir");
     var settings = try scope.get(options, "settingsManager");
     if (temp.nullish(settings)) settings = try scope.invoke(try scope.get(bindings, "SettingsManager"), "create", &.{ cwd, directory });
-    try scope.put(owner, "settingsManager", settings);
+    try put(scope.engine, owner, "settingsManager", settings);
     var supplied = try scope.get(options, "resourceLoaderOptions");
     if (temp.nullish(supplied)) supplied = try scope.object();
     const configured = try scope.own(try js.spread(engine, supplied));
-    try scope.put(configured, "cwd", cwd);
-    try scope.put(configured, "agentDir", directory);
-    try scope.put(configured, "settingsManager", settings);
+    try put(scope.engine, configured, "cwd", cwd);
+    try put(scope.engine, configured, "agentDir", directory);
+    try put(scope.engine, configured, "settingsManager", settings);
     const loader = try construct(&scope, bindings, "DefaultResourceLoader", &.{configured});
-    try scope.put(owner, "resourceLoader", loader);
+    try put(scope.engine, owner, "resourceLoader", loader);
     const reload = try scope.get(loader, "reload");
-    return flow.wait(continueFactory, engine, owner, try scope.call(reload, loader, &.{try scope.get(options, "resourceLoaderReloadOptions")}), @intFromEnum(Stage.services_reload));
+    return wait(engine, owner, try scope.call(reload, loader, &.{try scope.get(options, "resourceLoaderReloadOptions")}), .services_reload);
 }
 fn registerPendingProviders(engine: *em.Engine, owner: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const diagnostics = try scope.array();
-    try scope.put(owner, "diagnostics", diagnostics);
+    try put(scope.engine, owner, "diagnostics", diagnostics);
     const extensions = try scope.invoke(try scope.get(owner, "resourceLoader"), "getExtensions", &.{});
-    try scope.put(owner, "extensionsResult", extensions);
+    try put(scope.engine, owner, "extensionsResult", extensions);
     const runtime = try scope.get(owner, "modelRuntime");
     inline for (.{ .{ "pendingProviderRegistrations", "registerProvider" }, .{ "pendingNativeProviderRegistrations", "registerNativeProvider" }, .{ "pendingVirtualModelRegistrations", "registerVirtualModel" } }, 0..) |pair, kind| {
         const pending = try scope.get(try scope.get(extensions, "runtime"), pair[0]);
@@ -464,17 +538,18 @@ fn registerPendingProviders(engine: *em.Engine, owner: c.JSValue) !void {
             const first = try frame.get(row, if (kind == 0) "name" else if (kind == 1) "provider" else "definition");
             const config = if (kind == 0) try frame.get(row, "config") else c.pi_js_undefined();
             const path = try frame.get(row, "extensionPath");
+            const generation = engine.native_allocation_generation;
             const ignored = js.invoke(engine, runtime, pair[1], if (kind == 0) &.{ first, config } else &.{first}) catch |err| {
-                const reason = try frame.own(flow.reason(engine, err));
+                const reason = try frame.own(try takeReason(engine, err, generation));
                 const error_ctor = try frame.global("Error");
                 const instance = c.JS_IsInstanceOf(engine.context, reason, error_ctor);
                 if (instance < 0) return js.capture(engine);
                 const message = if (instance == 1) try frame.get(reason, "message") else try frame.call(try frame.global("String"), c.pi_js_undefined(), &.{reason});
                 const push = try frame.get(diagnostics, "push");
                 const diagnostic = try frame.object();
-                try frame.put(diagnostic, "type", try frame.text("error"));
+                try put(frame.engine, diagnostic, "type", try frame.text("error"));
                 const text = try frame.concat(try frame.concat(try frame.concat(try frame.text("Extension \""), try frame.stringify(path)), try frame.text("\" error: ")), try frame.stringify(message));
-                try frame.put(diagnostic, "message", text);
+                try put(frame.engine, diagnostic, "message", text);
                 _ = try frame.call(push, diagnostics, &.{diagnostic});
                 continue;
             };
@@ -484,8 +559,8 @@ fn registerPendingProviders(engine: *em.Engine, owner: c.JSValue) !void {
     }
     const refresh = try scope.get(runtime, "refresh");
     const configured = try scope.object();
-    try scope.put(configured, "allowNetwork", c.pi_js_bool(engine.context, 0));
-    return flow.wait(continueFactory, engine, owner, try scope.call(refresh, runtime, &.{configured}), @intFromEnum(Stage.services_refresh));
+    try put(scope.engine, configured, "allowNetwork", c.pi_js_bool(engine.context, 0));
+    return wait(engine, owner, try scope.call(refresh, runtime, &.{configured}), .services_refresh);
 }
 fn finishServices(engine: *em.Engine, owner: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -502,6 +577,6 @@ fn finishServices(engine: *em.Engine, owner: c.JSValue) !void {
     for (0..length) |index| values.appendAssumeCapacity(try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, arguments, @intCast(index)))));
     _ = try scope.call(push, diagnostics, values.items);
     const result = try scope.object();
-    inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader", "diagnostics" }) |name| try scope.put(result, name, try scope.get(owner, name));
-    try flow.settle(engine, owner, false, result);
+    inline for (.{ "cwd", "agentDir", "modelRuntime", "settingsManager", "resourceLoader", "diagnostics" }) |name| try put(scope.engine, result, name, try scope.get(owner, name));
+    try resolve(engine, owner, result);
 }
