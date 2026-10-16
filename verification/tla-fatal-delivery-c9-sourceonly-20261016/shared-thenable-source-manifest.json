@@ -1,0 +1,39 @@
+{
+  "kind": "shared-thenable-active-fatal-source-only-unexecuted",
+  "base": "36bb05d6940c90518544beed49f04f2d889f65a8",
+  "base_c_sha256": "E33481B9435F0B1C2FC88674FFC480A7071C24C05B5A12057E9CD71FBA6FC635",
+  "design_sha256": "1ECEEF3A458D4B6C7E5BB2A053404C99C43BD9A7B20D7A785888B512C479F3A2",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "38F00D3893BDBE1E8CD06FC9051171CD3AD4825304CD9EAE1DC4E8643CB1824A"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_shared_thenable_fatal_test.zig",
+      "sha256": "33DB5F2B4C600868DAA54EB0D7E9738734F91ECCB6B86FC4ED6FE48A273E9C8B"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/SHARED-THENABLE-FATAL-DESIGN.md",
+      "sha256": "1ECEEF3A458D4B6C7E5BB2A053404C99C43BD9A7B20D7A785888B512C479F3A2"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/SHARED-THENABLE-FATAL-IMPLEMENTATION.md",
+      "sha256": "9F39E90740A2281D368DF352E0C0842DA7CD08E31365A07C2DFABF9F41B00D01"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-shared-thenable-snippet.zig.txt",
+      "sha256": "0A39AA6CE7FBEE701E8FABC837A31FD750982461E529592FA7E80239190A45F9"
+    }
+  ],
+  "checks": [
+    "git diff --check only; static source inspection against pinned tokenizer"
+  ],
+  "execution": "No compiler, Zig, formatter, Node, Source generator or native jobs",
+  "review": "Root and independent C-owner before composition/execution",
+  "scope": "Active current uncatchable getter/then-call/BEFORE/AFTER boundaries only; no data inference/context ownership/module/tags/ABI"
+}
