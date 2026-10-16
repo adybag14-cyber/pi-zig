@@ -1,0 +1,2537 @@
+{
+  "schema": 1,
+  "purpose": "Explicit relocation of immutable historical paths; never rewrite original proof bytes",
+  "recorded_utc": "2026-10-16T17:33:57.3946100+00:00",
+  "mappings": [
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-native-markdown-container-rs-source-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-markdown-container-rs-source-20261009-a"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-native-successor-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-native-successor-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-conversation-retirement-diag-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-conversation-retirement-diag-20261010"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-actual-models-qualification-root10db-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-historical"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-semver785-package-manager-sourceonly-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-idle-settlement-realasync-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-idle-settlement-realasync-source-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-public-validator-root223-integration-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-validator-root223-integration-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-refresh-native-qualification-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-refresh-native-qualification-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-resized-persistent-surface-observer-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\resized-persistent-surface-observer-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-process-terminal-parent-root240-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-terminal-parent-root240-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-modelconfig-modelsstore-4954-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public122-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public122-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-factory-composition-20261013"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-native-single-retained-service-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-native-single-retained-service-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-async-phase-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-async-phase-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public121-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public121-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-files-source-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-files-source-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-typebox-compile-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-typebox-compile-production-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native1-thinking-order-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native1-thinking-order-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-model-schemas-partial-4954-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-hook-helpers-realasync-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\session-hooks"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-rs-source-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-capabilities-rs-source-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-builtin-templates20-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-builtin-templates20-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-final-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-capabilities-final-6fb-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-builtin-templates19-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-builtin-templates19-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-root55-regression-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-root55-regression-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-guest-join-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-guest-join-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-binding22-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-binding22-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-main-typed-model-integration-6fb-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-typed-model-integration-6fb-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-filehandle-webstream-publish-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-filehandle-webstream-publish-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-rab-transfer-publish-f232312-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-rab-transfer-publish-f232312-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-historical"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-auth-storage-backend-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-provider-composer-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-provider-composer-production-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-session-projection-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-projection-candidate-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-keybindings-manager-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\keybindings-manager-rs-source-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-process-stream-protocol-458-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-stream-protocol-458-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native4-wait-success-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native4-wait-success-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners19-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners19-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners20-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners20-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-main-followon-root223-proof-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-main-followon-root223-proof-20261009"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-engine-extension-import-adapter-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-lifetime-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-lifetime-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-identity-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-identity-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-auth-storage-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-auth-storage-production-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-refresh-retired-projection-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-refresh-retired-projection-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-async-function-proposal-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-native-fix-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-native-fix-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-real-filesystem-namespaces-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-real-filesystem-namespaces-20261016"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77b-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified77b-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-composition-retry-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-composition-retry-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-hosted-frontend-diagnostic-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-hosted-frontend-diagnostic-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-dynamic-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-dynamic-20261010"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77c-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified77c-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-file-revision-qualified-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-revision-qualified-20261016"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-final-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-final-6fb-20261009-a"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\highlighter"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-rs-source-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-rs-source-20261009-a"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-settings-stream-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-settings-stream-candidate-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-main-physical-baseline-source-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\main-physical-baseline-source-20261011"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root463-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-complete191-root463-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-storage-lifetime-root-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-storage-lifetime-root-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-aea5-portable-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-aea5-portable-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\schema-foundation-qualified77-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-oauth-copilot-kimi-xai-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-copilot-kimi-xai-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-latest-host-gpa-5ab7fe7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-latest-host-gpa-5ab7fe7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-anthropic-router-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-foreign-context-5ab7fe7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-virtual-models-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-virtual-models-production-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-multipart-intrinsics-next-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-multipart-intrinsics-next-20261016"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified80-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified80-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified81-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified81-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified82-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified82-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-catalog-fixture-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-catalog-fixture-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-pipe-native-next-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-pipe-native-next-20261016"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-constructor-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-constructor-rs-source-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-codemode202-diagnostic-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-codemode202-diagnostic-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-config-schema-projection-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\config-schema-projection-6fb-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-session-anchor-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-anchor-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-model-runtime-class-4954-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-model-runtime-class-4954-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\typebox-operators-production-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-complete191-root55-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-keybinding-config-schema-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\keybinding-config-schema-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-owner-transport-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-transform-compression-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-transform-compression-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-toolinfo-root223-integration-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-root223-integration-20261009"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-session-files-candidate2-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-files-candidate2-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-sdk-composition-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-sdk-composition-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-openai-http58-composition-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-openai-http58-composition-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-main-typed-model-adapter-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-typed-model-adapter-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-tool-catalog16-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-tool-catalog16-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-provider-factories-models-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-responses-ws-provider-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-ws-provider-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-manager-native-callbacks-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-manager-native-callbacks-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-virtual-schema-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-virtual-schema-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-registry-qualified66-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-registry-qualified66-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-permission-result-diagnostic-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\permission-result-diagnostic-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-structured-clone-qualified84-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\structured-clone-qualified84-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-check-compaction-audit-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\check-compaction-audit-proof-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-model-registry-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-model-registry-candidate-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-session-files-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-files-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-a0bf-debug-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-a0bf-debug-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-native-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-watchers-native-6fb-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-http81-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-http81-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-runtime-qualified68-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-runtime-qualified68-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-source804-freeze-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-source804-freeze-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-process-terminal-parent-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-terminal-parent-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native4-http33bf-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native4-http33bf-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-catalog-source-ae7b16d-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\catalog-source-ae7b16d-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-provider-foundations-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\integration-checkpoint"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-word-navigation-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\word-navigation-rs-source-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-exec-command-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-exec-command-production-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-fork-root-integration-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-fork-root-integration-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-windows-mcp-failure-fixture-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\windows-mcp-failure-fixture-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-word-navigation-final-6fb-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\word-navigation-final-6fb-20261008-a"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-private-module-graph-phase1-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-private-modules"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-google-whitespace4dd-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\google-whitespace4dd-source-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-combined-autocomplete-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-combined-autocomplete-20261010-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-identity-traversal-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-adapter-allocation-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-adapter-allocation-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-final-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-watchers-final-6fb-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-models-auth-methods-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-session-ai-assembly-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-ai-assembly-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-native-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-native-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-session-integration-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-integration-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-writable-retirement-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-writable-retirement-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-real-ui-context-parity-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-real-ui-context-parity-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-production-constructor-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-production-constructor-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-macos-retirement-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-rs-source-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-watchers-rs-source-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-node-ownership-f232312-20261014"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-iterator-intrinsic-477-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-iterator-intrinsic-477-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-stream-web-assembly-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-stream-web-assembly-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-session-runtime-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\session-runtime-production-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-model-bridge-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-model-bridge-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-source-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified73-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified73-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-response-qualification-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-response-qualification-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-custom-message-audit-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\custom-message-audit-proof-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-general-dialog-rs-source-20261008-f",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\general-dialog-rs-source-20261008-f"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-general-dialog-rs-source-20261008-h",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\general-dialog-rs-source-20261008-h"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-native-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-native-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ui-macos-diagnostics-dfe-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-macos-diagnostics-dfe-20261009-a"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified71-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified71-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-source60-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-source60-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified69-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified69-20261008"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-registry-dispatch-repair75-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\registry-dispatch-repair75-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-native-async-generator-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-native-async-generator-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-assembly"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-strict-consumer-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-strict-consumer-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-oauth-codex-radius-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-codex-radius-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-native-fork-5ab7fe7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-native-fork-5ab7fe7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-provider-successor-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-provider-successor-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-duplicate-definitions-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-duplicate-definitions-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-6fb-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-capabilities-6fb-20261009"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-api-version-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-api-version-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-ready-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-ready-20261016"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-validator-private117-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\tool-validator-private117-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-layout-final-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-layout-final-6fb-20261009-a"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-node-stream-core-64201654-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-refresh-production-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-refresh-production-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ui-late-persistence-dfe-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-late-persistence-dfe-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-pipe-hydration-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-pipe-hydration-20261010-a"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-native-layout-rs-source-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-layout-rs-source-20261009-a"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-native-child-process-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\child-process"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-builtin-runtime-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-builtin-runtime-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-auth-snapshot-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-auth-snapshot-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-native-lists-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-lists-rs-source-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-cli-fixture-contract-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-cli-fixture-contract-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-cli-platform-oracles-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-cli-platform-oracles-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-public-input-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\public-input-rs-source-20261008-a"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-typed-provider-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\typed-provider-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-frontend-input-owner-ack-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\frontend-input-owner-ack-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-public-input-final-6fb-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-input-final-6fb-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-weakref-kept-objects-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-weakref-kept-objects-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-lists-final-6fb-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-lists-final-6fb-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public120-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public120-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-catalog-providers-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-catalog-providers-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-6fb-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-6fb-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-editor-autocomplete-166-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-autocomplete-166-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-guest-join-root-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-guest-join-root-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-stream-root-intake-a41a-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\stream-root-intake-a41a-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-binding-linkage-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-binding-linkage-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-fetch-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-fetch-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-main-native-context-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-native-context-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-renderer-control-repair-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-control-repair-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-function-metadata-20261010-b",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-function-metadata-20261010-b"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-timer-callee-fix-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-fixes"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-extensions-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-extensions-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-oom-retire-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-oom-retire-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-utf16-state-rs-source-20261008-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\utf16-state-rs-source-20261008-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-model-config-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-model-config-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-1ced-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\sdk-reference-1ced-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-public-validator-raw123-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-validator-raw123-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-json108-qualified-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-json108-qualified-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-theme-producer-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-theme-producer-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-exec-per-stream-raw-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-exec-per-stream-raw-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-function-metadata-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-function-metadata-20261010-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-federation-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-model-allocation-ranges-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\model-allocation-ranges-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-private-context-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-private-context-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-graph-next-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-graph-next-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mistral-header-timeout-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mistral-header-timeout-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-retry-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ignore7-root642-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-openai-producer-ae7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-openai-producer-ae7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-writable-stream-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-discovery-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-discovery-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-management-http-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-management-http-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-persistent-ui-baseline-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\persistent-ui-baseline-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-provider-hosted-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-provider-hosted-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-harness-public-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-pipe-only-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-pipe-only-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-mistral-rootcurrent-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\mistral"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-factory-production-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\sdk-reference-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-darwin-renderer-repair-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\darwin-renderer-repair-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-refresh-projection-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-refresh-projection-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-dialog-keybindings-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\dialog-keybindings-6fb-20261008"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\sdk-reference-7fb-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-tool-callers13-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-tool-callers13-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch10-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-sdk-fetch-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-sdk-fetch-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-auth-unsettled-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-auth-unsettled-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-images-classifiers-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-images-classifiers-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-configured-latest-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-configured-latest-20261005"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tla-fatal-delivery-c9-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-oauth-source-graph-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-deploy-diagnostic-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-notifications-6fb-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-notifications-6fb-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-constructor-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-constructor-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-oauth-callback-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-callback-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-auth-helpers-oauth-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-sqlite-source-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-sqlite-source-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-catalog-values-ae7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-catalog-values-ae7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch8-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ui-macos-startup-d8-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-macos-startup-d8-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-full-diagnostic-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-full-diagnostic-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch6-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch6-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch5-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch5-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch4-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch4-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch3-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch3-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sqlite-override-paths-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sqlite-override-paths-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch9-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-stream-exports-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-stream-exports-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-allocation-shards-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-allocation-shards-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-native-next-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-native-next-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch1-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch1-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\pi"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-actual-stdio-464-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-actual-stdio-464-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-resources-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-resources-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-binding-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-binding-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-oauth-chatgpt-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-chatgpt-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-render-duration-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-render-duration-20261007"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-config-candidate-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-config-candidate-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-package-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-package-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-body-integration-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-catalog-ae7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-actual-stdio-463-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-actual-stdio-463-20261010"
+    },
+    {
+      "role": "missing_runtime_recovery_pending",
+      "old": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-20261012"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-file-revision-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-revision-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-authorize-signin-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-byte-public-next-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-byte-public-next-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-capability-drvfs-20261007"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-auth69-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-diagnostics"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-exec-native-next-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-exec-native-next-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-loadout-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-gc-next-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-gc-next-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-oom-32a-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-oom-32a-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-observers-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-observers-vm-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-v4-package-b45-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-v4-package-b45-20261014"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-pi-route-bindings-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-pi-route-bindings-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-oauth-composition-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-oauth-composition-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-event-stream-live-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-event-stream-live-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-documents-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-documents-vm-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-aws-chain-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-aws-chain-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-bedrock-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\reference-body"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-owner-broker-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-status-da-ownership-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\status-da-ownership-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-select-settings-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\select-settings-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-integration-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-deploy-baseline-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-deploy-baseline-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-reload-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-reload-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-registry-vm-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-registry-vm-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-editor-autocomplete-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-autocomplete-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-readable-public-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-public-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-platforms-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-auth-projection-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-auth-projection-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-ui-base20-proof-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-ui-base20-proof-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-query-fifo-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-query-fifo-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-main-native-catalog-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-native-catalog-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-toolinfo-catalog118-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-catalog118-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-builtin-apis-ae7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-builtin-apis-ae7-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-json-audit-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-json-audit-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-command-surface-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-command-surface-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-codemode-models-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-component-cache-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\component-cache-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-ws-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-cursor-boundary-fix-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\cursor-boundary-fix-20261008"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\ae7b16d-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-5ab7fe7-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\5ab7fe7-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\b45e0eb-20261014"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-async-hook-pair-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-async-hook-pair-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-toolinfo-catalog119-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-catalog119-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-allocation-race-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-allocation-race-20261007"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\package-manager"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-identity-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-anthropic-oom-diag-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\anthropic-oom-diag-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-v4-state-b45-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-v4-state-b45-20261014"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ci-repair-verified-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-jsonl-baseline-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-jsonl-baseline-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-harness-vm-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\audit-0fbdbd3-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-class-20261015"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-contract-89e5-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\contract-89e5-20261011"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-contract-8a9c-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\contract-8a9c-20261011"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-powershell-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-powershell-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-webstream-next-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-webstream-next-20261015"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-callback-close-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-callback-close-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-general-ui-final-20261008-h",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\general-ui-final-20261008-h"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-refresh-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-refresh-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-quickjs-debug-og-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\quickjs-debug-og-20261010-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-authorized-get-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-authorized-get-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-codemode-agent-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-codemode-agent-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-oauth-provider-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-oauth-provider-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-resources-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-resources-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-one-shot-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-one-shot-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-immediates-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-immediates-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-editor-components-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-components-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-late-registration-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\late-registration-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-web-crypto-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-web-crypto-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-anthropic-oom-fix-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\anthropic-oom-fix-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-contracts-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-contracts-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ci-native-linkage-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ci-native-linkage-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-scheduler-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-scheduler-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-oauth-concurrency-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\oauth-concurrency-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-url-errors-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-url-errors-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-custom-message-ci-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\custom-message-ci-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-provider-fixtures-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\provider-fixtures-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-frontend-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-http-web-fetch-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-http-web-fetch-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-meta-oauth-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-meta-oauth-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-facade-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-facade-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-main-screen-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-main-screen-20261010-a"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-ui-modal-replay-20261009-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\ui-modal-replay-20261009-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-runtime19cb-20261012",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-runtime19cb-20261012"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-models-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-models-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-events-hosted-20261013"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-flow-builtin-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-upstream-f10993b-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-f10993b-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-main-tool-policy-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-tool-policy-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-responses-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-context-files-f1-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\context-files-f1-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-tui-colors-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-tui-colors-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-schema-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-schema-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-components-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-components-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-builtins-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-builtins-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-diagnostic-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-diagnostic-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-catalog-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-remote-files-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-remote-files-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-session-core-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-session-core-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-active-tools-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-active-tools-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-tool-catalog-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-tool-catalog-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-renderer-mailbox-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-mailbox-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-public-input-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-input-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-state-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-state-vm-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-literal-regex-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-literal-regex-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-repair-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-http-followup-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-http-followup-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-tasks-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-tasks-vm-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-latest-contracts-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\latest-contracts-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-live-manager-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-live-manager-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-qualified-models-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\qualified-models-20261005"
+    },
+    {
+      "role": "active-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-minimatch-native-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\minimatch"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-fs-metadata-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-fs-metadata-20261016"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-macos-20261007"
+    },
+    {
+      "role": "evidence",
+      "old": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+      "new": "C:\\Users\\adyba\\pi-zig\\evidence"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-catalogs-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-catalogs-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-utf16-state-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\utf16-state-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-word-format-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\word-format-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\checkpoint-6100-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-chat-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-chat-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-integration-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-integration-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-storage-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-session-exports-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\session-exports-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-phase-ack-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-phase-ack-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition198-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition198-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-drift-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition210-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition210-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-b7df-contracts-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\b7df-contracts-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition208-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition208-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition207-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition207-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition206-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition206-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition205-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition205-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition204-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition204-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition199-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition199-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-completion-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-completion-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition203-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition203-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-mcp-fix-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-mcp-fix-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition202-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition202-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition201-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition201-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition200-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition200-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-pi-messages-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-pi-messages-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-models-actions-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-actions-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-configured-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-configured-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\final-fixtures-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition219-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition219-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-a"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-b",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-b"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-registry-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-registry-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-cursor-1cedd32-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\cursor-1cedd32-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-status-dialogs-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\status-dialogs-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition243-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition243-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition242-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition242-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition240-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition240-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition225-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition225-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-ui-probe-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ui-probe-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-program-status-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\program-status-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-provider-proof-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\provider-proof-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-c",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-c"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-completion-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\regular-custom-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-renderer-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-renderer-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-boundaries-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition211-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition211-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition212-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition212-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition224-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition224-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ui-integration-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-integration-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition223-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition223-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition222-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition222-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition221-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition221-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composition220-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition220-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-screens-20261010-b",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-screens-20261010-b"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-persistent-ui-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\persistent-ui-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-chord-json132-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-json132-20261009"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-eba84973-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\eba84973-20261009"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-ea448f45-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\ea448f45-20261010"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-e6b9a6af-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\e6b9a6af-20261011"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-async-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-async-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-screens-20261010-a",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-screens-20261010-a"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-cdaf6c22-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\cdaf6c22-20261011"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-ack-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-c5f5b328-20261010",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\c5f5b328-20261010"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tui-input-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-input-6fb-20261008"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-89e5c2c0-20261011",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\89e5c2c0-20261011"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-compat-b45-20261014"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-catalog-1ced-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\catalog-1ced-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-deadline-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-deadline-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-bindings-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-bindings-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-ready2-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ready2-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-mouse-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-mouse-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-lazy-ssh-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-sdk-navigate-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-navigate-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-0fb-20261016"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-98d2e19-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\98d2e19-20261005"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-28dcce2-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\28dcce2-20261005"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-b78e6a9-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\b78e6a9-20261005"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-1cedd32-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\1cedd32-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-b7dfc04-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\b7dfc04-20261005"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-f10993b-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\f10993b-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-6fb2e78-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\6fb2e78-20261008"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\7fb59f9-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-031b24a-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\031b24a-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-response-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-response-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-codemode-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-codemode-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-f1b2e77-20261009",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\f1b2e77-20261009"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-storage-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-web-headers-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-headers-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-workers-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-group-owner-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\group-owner-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-runtime-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-runtime-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-state-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-state-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-catalog-6fb-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\catalog-6fb-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-composed-ui-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composed-ui-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-tool-render-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-render-20261015"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-macos-ready-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ready-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-mcp-adapter-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-adapter-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-components-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\components-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-vm-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-vm-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-ai-json-ci-20261014",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-json-ci-20261014"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-general-ui-20261008",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\general-ui-20261008"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-native-sdk-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-20261007"
+    },
+    {
+      "role": "toolchain",
+      "old": "C:\\Users\\adyba\\pi-zig-toolchain-20261003",
+      "new": "C:\\Users\\adyba\\pi-zig\\toolchain"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-jsonl-20261007"
+    },
+    {
+      "role": "upstream",
+      "old": "C:\\Users\\adyba\\pi-upstream-audit-853a80d",
+      "new": "C:\\Users\\adyba\\pi-zig\\upstream\\archive\\audit-853a80d"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-renderers-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderers-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-theme-tui-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-tui-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-platform-20261015",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\platform-20261015"
+    },
+    {
+      "role": "unregistered",
+      "old": "C:\\Users\\adyba\\pi-zig-v8-checkpoint-185",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\v8-checkpoint-185"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-durable-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-widgets-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\widgets-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-update-20261003",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\update-20261003"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-latest-20261007",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\latest-20261007"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-env-20261005",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-20261005"
+    },
+    {
+      "role": "historical-worktree",
+      "old": "C:\\Users\\adyba\\pi-zig-rewrite",
+      "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\rewrite"
+    },
+    {
+      "role": "old_primary_checkout",
+      "old": "C:\\Users\\adyba\\pi-zig",
+      "new": "C:\\Users\\adyba\\pi-zig\\main"
+    }
+  ]
+}

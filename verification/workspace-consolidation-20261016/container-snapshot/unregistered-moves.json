@@ -1,0 +1,338 @@
+[
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified69-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified69-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified71-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified71-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-durable-waiter-qualified73-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\durable-waiter-qualified73-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-general-dialog-rs-source-20261008-f",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\general-dialog-rs-source-20261008-f"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-general-dialog-rs-source-20261008-h",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\general-dialog-rs-source-20261008-h"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-keybindings-manager-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\keybindings-manager-rs-source-20261008-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-main-physical-baseline-source-20261011",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\main-physical-baseline-source-20261011"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-native-layout-rs-source-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-layout-rs-source-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-native-lists-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-lists-rs-source-20261008-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-native-markdown-container-rs-source-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\native-markdown-container-rs-source-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-public-input-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\public-input-rs-source-20261008-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-registry-dispatch-repair75-20261009",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\registry-dispatch-repair75-20261009"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77b-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified77b-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77c-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified77c-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified80-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified80-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified81-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified81-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified82-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\schema-foundation-qualified82-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-api-version-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-api-version-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-catalog-fixture-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-catalog-fixture-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-config-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-config-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-model-bridge-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-model-bridge-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-model-registry-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-model-registry-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-session-anchor-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-anchor-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-session-files-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-files-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-session-files-candidate2-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-files-candidate2-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-session-projection-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-session-projection-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-settings-stream-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-settings-stream-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-virtual-schema-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\sdk-virtual-schema-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-structured-clone-qualified84-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\structured-clone-qualified84-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-rs-source-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-capabilities-rs-source-20261009-a"
+  },
+  {
+    "head": "0833248def234ed69238299104af9bac2e15f016",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-6fb-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "directory",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-6fb-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-final-6fb-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-final-6fb-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-image-api-rs-source-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\terminal-image-api-rs-source-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-theme-constructor-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-constructor-rs-source-20261008-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-final-6fb-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-watchers-final-6fb-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-rs-source-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\theme-watchers-rs-source-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-tool-validator-private117-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\tool-validator-private117-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-typed-provider-candidate-20261008",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\typed-provider-candidate-20261008"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-ui-modal-replay-20261009-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\ui-modal-replay-20261009-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-utf16-state-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\utf16-state-rs-source-20261008-a"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-v8-checkpoint-185",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\v8-checkpoint-185"
+  },
+  {
+    "head": null,
+    "old": "C:\\Users\\adyba\\pi-zig-word-navigation-rs-source-20261008-a",
+    "old_absent": true,
+    "status": "archived_without_deletion",
+    "git_kind": "absent",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\unregistered-archive\\word-navigation-rs-source-20261008-a"
+  }
+]

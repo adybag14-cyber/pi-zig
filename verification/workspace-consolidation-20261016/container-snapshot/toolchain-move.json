@@ -1,0 +1,8 @@
+{
+  "old_absent": true,
+  "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+  "new": "C:\\Users\\adyba\\pi-zig\\toolchain",
+  "old": "C:\\Users\\adyba\\pi-zig-toolchain-20261003",
+  "moved_utc": "2026-10-16T17:28:11.6458610+00:00"
+}

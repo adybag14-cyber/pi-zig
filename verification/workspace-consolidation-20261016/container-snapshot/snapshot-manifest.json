@@ -1,0 +1,67 @@
+[
+  {
+    "name": ".pi-zig-workspace.json",
+    "sha256": "D551DA72833FA330C8365A625E4FDD6D2693456BAC5333C080E9657D1E38DFBF",
+    "bytes": 817
+  },
+  {
+    "name": "active-worktree-moves.json",
+    "sha256": "4903C3CD869665AF139C782F9EA20E4A5954642164AEFD352DE622DEBDB4BDC9",
+    "bytes": 7142
+  },
+  {
+    "name": "AGENTS.md",
+    "sha256": "B60E4C447442508242421A05735919B96E3355C366B6998486ADC36695773DB8",
+    "bytes": 2026
+  },
+  {
+    "name": "evidence-move.json",
+    "sha256": "ED7A34719AA7D14C2D6B388C50E0468DB73E1BF3125F201D7252BDDBD08C4724",
+    "bytes": 1788
+  },
+  {
+    "name": "historical-worktree-moves.json",
+    "sha256": "6E5D55D36DDC140E7F7DB1341F993B989947F45BA859A500A6C26713B1D9DDD3",
+    "bytes": 136277
+  },
+  {
+    "name": "path-relocations.json",
+    "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5",
+    "bytes": 109801
+  },
+  {
+    "name": "primary-before.json",
+    "sha256": "AAFDA3FA5C45DD310241C05C5C0D45F3FAD45D5972E70C521BE99CA9BC4A9A35",
+    "bytes": 375
+  },
+  {
+    "name": "primary-move-result.json",
+    "sha256": "2D86123793F6E82E52D4291739288FE041BE69A66445E28F69E7E321300859F9",
+    "bytes": 446
+  },
+  {
+    "name": "README-WORKSPACE.md",
+    "sha256": "34FA05F8BE2A3B1880C7B0649364AAF0640D378F0722E5D32BFB473B677479C0",
+    "bytes": 1845
+  },
+  {
+    "name": "toolchain-move.json",
+    "sha256": "DEC75CF36204179C6F0A441E145CF29AB0A01CB5FF4F57B324B74C02E9A8BECE",
+    "bytes": 360
+  },
+  {
+    "name": "unregistered-moves.json",
+    "sha256": "D68A6E168E8BE948A60CBB3BB41D4A58A74A7E888C20CAF776A907B72A9A26E0",
+    "bytes": 13170
+  },
+  {
+    "name": "upstream-layout-before.json",
+    "sha256": "D6E293A914CA40CFF842FA87CD60B6D4ECC4B5AD4B253152086CE089844EA62E",
+    "bytes": 6206
+  },
+  {
+    "name": "upstream-moves.json",
+    "sha256": "67F76F469B4B880CA62CCC2FE8E98931B897B7BD0153E50510C3E0DF7AAD15CC",
+    "bytes": 12533
+  }
+]

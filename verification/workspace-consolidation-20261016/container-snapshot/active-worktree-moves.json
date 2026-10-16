@@ -1,0 +1,191 @@
+[
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-native-provider-foundations-20261015",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:20:57.8139504+00:00",
+    "head": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\integration-checkpoint"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:20:58.5734428+00:00",
+    "head": "421587f22bdf326677daa3ec5eb92dc75a788117",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:20:59.2749650+00:00",
+    "head": "1f973ca947eb8422e03b6e0ca15f163c62897ff0",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\highlighter"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-tla-fatal-delivery-c9-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:00.0152477+00:00",
+    "head": "b9701e111cdecc2e4da3f0457e24066bbcd6a208",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-minimatch-native-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:00.7120028+00:00",
+    "head": "de7f662023acd1f982dab5cfa8f55a766cd23b26",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\minimatch"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-semver785-package-manager-sourceonly-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:01.3977300+00:00",
+    "head": "db94b6c5b72bd0c34ccb18ec7e49d1118e261879",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:02.1080604+00:00",
+    "head": "50bb35864b442aa85d27cb644732108079af39ac",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\package-manager"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-node-stream-core-64201654-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:02.8122428+00:00",
+    "head": "74de930b813a9049291ee178d35fba689cf07985",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\streams"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-native-child-process-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:03.5142851+00:00",
+    "head": "7c04d8f2bc296eb0542424ccfd74c1a483c332d5",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\child-process"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-ignore7-root642-source-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:04.4017882+00:00",
+    "head": "7d9d7c224dc9d560a5e46541bf8df67e4b93b114",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:05.2198770+00:00",
+    "head": "4ad5bf5955c1af070597d5a19e287b16bdadd303",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-models-auth69-source-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:05.9951539+00:00",
+    "head": "05f1e971566da1c22f2895cc1f0fd37ee89d6775",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-diagnostics"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-models-timer-callee-fix-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:06.7795263+00:00",
+    "head": "b148e167573e5e17bbec7adc9f9ecb339a6516be",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-fixes"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-private-module-graph-phase1-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:07.5730696+00:00",
+    "head": "b09a8f65c7177295efa18300fe36d5e7b7a9c8fb",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-private-modules"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-engine-extension-import-adapter-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:08.3148495+00:00",
+    "head": "beb88c4e502200411daa5df141d46d51a7de3b93",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:09.0225933+00:00",
+    "head": "8ab0773b8780dcc45f1dde1f663cf51d054a20b7",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-assembly"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-ai-mistral-rootcurrent-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:09.7463101+00:00",
+    "head": "2e0003b4bac70721a27e826f260373b51b16c0bb",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\mistral"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:10.4056806+00:00",
+    "head": "527da97fc0dbde3c5d98fb074997a0f8752098d0",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\reference-body"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-typebox-production-qualification-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:11.1405681+00:00",
+    "head": "4311a7000ce7c0046d648d8e9d354c1d4f325c20",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-historical"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-hook-helpers-realasync-source-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:11.9126524+00:00",
+    "head": "85f50bae1762c138aca6397dd53389b2e7219968",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\session-hooks"
+  },
+  {
+    "old_absent": true,
+    "old": "C:\\Users\\adyba\\pi-zig-actual-models-qualification-root10db-20261016",
+    "status_unchanged": true,
+    "moved_utc": "2026-10-16T17:21:12.7454829+00:00",
+    "head": "2d7e852174d83abb88f271d31c2f976ade04eab1",
+    "clean": true,
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\models-historical"
+  }
+]

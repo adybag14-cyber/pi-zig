@@ -1,0 +1,9 @@
+{
+  "recorded_utc": "2026-10-16T17:15:23.7424259+00:00",
+  "worktree_registry_sha256": "F6E8A6CC536236F63DCAB9477A49BEE34153ADBB4677E6F50D4DBDDB199E7BF8",
+  "primary_branch": "main",
+  "integration_clean": true,
+  "primary_head": "03e266e865db7ad565dbded9cf81dc903a121f82",
+  "primary_clean": true,
+  "integration_head": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc"
+}

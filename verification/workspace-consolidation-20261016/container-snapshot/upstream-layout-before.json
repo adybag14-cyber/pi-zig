@@ -1,0 +1,182 @@
+[
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-031b24a-20261005",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-031b24a-20261005",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-1cedd32-20261007",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-1cedd32-20261007",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-28dcce2-20261005",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-28dcce2-20261005",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-6fb2e78-20261008",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-6fb2e78-20261008",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-7fb59f9-20261007",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-7fb59f9-20261007",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-89e5c2c0-20261011",
+    "git_kind": "absent",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-98d2e19-20261005",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-98d2e19-20261005",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-audit-0fbdbd3-20261016",
+    "git_kind": "absent",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-audit-853a80d",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-b78e6a9-20261005",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-b78e6a9-20261005",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-b7dfc04-20261005",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-b7dfc04-20261005",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-c5f5b328-20261010",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-c5f5b328-20261010",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-catalog-source-ae7b16d-20261015",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-cdaf6c22-20261011",
+    "git_kind": "absent",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-contract-89e5-20261011",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-contract-89e5-20261011",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-contract-8a9c-20261011",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-contract-97195-20261011/.git/worktrees/pi-upstream-contract-8a9c-20261011",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-e6b9a6af-20261011",
+    "git_kind": "absent",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-ea448f45-20261010",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-ea448f45-20261010",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-eba84973-20261009",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-eba84973-20261009",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-f10993b-20261007",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-f10993b-20261007",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-f1b2e77-20261009",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-f1b2e77-20261009",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-1ced-20261008",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-sdk-reference-1ced-20261008",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-6fb-20261008",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-sdk-reference-7fb-20261007",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-20261003/.git/worktrees/pi-upstream-sdk-reference-7fb-20261007",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-5ab7fe7-20261015",
+    "git_kind": "file",
+    "git_file": "gitdir: C:/Users/adyba/pi-upstream-source-b45e0eb-20261014/.git/worktrees/pi-upstream-source-5ab7fe7-20261015",
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  },
+  {
+    "old": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014",
+    "git_kind": "directory",
+    "git_file": null,
+    "root_reparse": false
+  }
+]

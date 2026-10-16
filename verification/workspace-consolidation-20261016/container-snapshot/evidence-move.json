@@ -1,0 +1,44 @@
+{
+  "checked_files": [
+    {
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+      "relative": "source4954-runtime-manifest-20261015.json"
+    },
+    {
+      "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C",
+      "relative": "source4954-full-manifest-20261015.json"
+    },
+    {
+      "sha256": "8409F5E55DF01F2FF8C3DC833F7F0E2F9DA8291AFAEAC481A9EE061EF362D1BB",
+      "relative": "root-latest4dd-source127-independent-review-20261016.json"
+    },
+    {
+      "sha256": "48F12A42AA8174284E2FF3CE9C781C7958A4B4652161763628B4F803F5BAE7BE",
+      "relative": "root-latest4dd-source146-independent-review-20261016.json"
+    },
+    {
+      "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5",
+      "relative": "Invoke-OwnedModelsClassSource-20261016.ps1"
+    },
+    {
+      "sha256": "F6E8A6CC536236F63DCAB9477A49BEE34153ADBB4677E6F50D4DBDDB199E7BF8",
+      "relative": "workspace-consolidation-20261016\\git-worktrees-before.json"
+    },
+    {
+      "sha256": "4903C3CD869665AF139C782F9EA20E4A5954642164AEFD352DE622DEBDB4BDC9",
+      "relative": "workspace-consolidation-20261016\\active-worktree-moves.json"
+    },
+    {
+      "sha256": "6E5D55D36DDC140E7F7DB1341F993B989947F45BA859A500A6C26713B1D9DDD3",
+      "relative": "workspace-consolidation-20261016\\historical-worktree-moves.json"
+    },
+    {
+      "sha256": "67F76F469B4B880CA62CCC2FE8E98931B897B7BD0153E50510C3E0DF7AAD15CC",
+      "relative": "workspace-consolidation-20261016\\upstream-moves.json"
+    }
+  ],
+  "new": "C:\\Users\\adyba\\pi-zig\\evidence",
+  "old_absent": true,
+  "old": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+  "moved_utc": "2026-10-16T17:29:40.8702509+00:00"
+}

@@ -1,0 +1,3274 @@
+[
+  {
+    "head": "89957f4b9d4bd3e18b223ebd46b16f80078eab04",
+    "moved_utc": "2026-10-16T17:23:58.2466108+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-bedrock-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-bedrock-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "625ed425526021e6cace0ef97b06b562ad3f8d56",
+    "moved_utc": "2026-10-16T17:23:59.0247219+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-federation-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-federation-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "1f0eff119af104455d8d3160a4382546e3195f5b",
+    "moved_utc": "2026-10-16T17:23:59.7042906+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-sdk-composition-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-sdk-composition-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "3c9a4e38637981b0b23a159c9d2640474dcffaa6",
+    "moved_utc": "2026-10-16T17:24:00.3337342+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-anthropic-sdk-fetch-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-anthropic-sdk-fetch-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "240e8f1b5e2f6bab59d0e2ad53d4135e755ada95",
+    "moved_utc": "2026-10-16T17:24:00.8984169+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-auth-helpers-oauth-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-auth-helpers-oauth-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "daa3c6ed6c82c7cb7091ae179514b6f0f94f13fb",
+    "moved_utc": "2026-10-16T17:24:01.4898312+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-a0bf-debug-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-a0bf-debug-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "cce1dd458416b8b05bd9e6b91204ad78c2335e38",
+    "moved_utc": "2026-10-16T17:24:02.0656548+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-aws-chain-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-aws-chain-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "7c9b2e9b99567960cf27c89ab8f306eeee377c2f",
+    "moved_utc": "2026-10-16T17:24:02.6277815+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-facade-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-facade-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e05529322ddef8060c5716d2ee8df7f8622a67f6",
+    "moved_utc": "2026-10-16T17:24:03.2047448+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "89710fd46e402cb392183e1c97ba4b807de41ce2",
+    "moved_utc": "2026-10-16T17:24:03.7560937+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-files-source-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-files-source-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "b31a6a72ee7355e7edd9620e8a117ac85367e1d9",
+    "moved_utc": "2026-10-16T17:24:04.3589272+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-lifecycle-http81-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-lifecycle-http81-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "a0bf4b9d7a4c2c27fdba6837ecb0e0dcc1f1efc7",
+    "moved_utc": "2026-10-16T17:24:04.9128450+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native1-thinking-order-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native1-thinking-order-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "227d1f7d235e7fc3407286ebf9812feb3cb9001c",
+    "moved_utc": "2026-10-16T17:24:05.5046631+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native4-http33bf-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native4-http33bf-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "bd53dd689926ed4b7828c2ef05d069475f14a332",
+    "moved_utc": "2026-10-16T17:24:06.1104977+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-native4-wait-success-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-native4-wait-success-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "8044f315c22468315d0a9fb167979f982483867e",
+    "moved_utc": "2026-10-16T17:24:06.7031731+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-bedrock-source804-freeze-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-bedrock-source804-freeze-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "da08fef32336c7d73f454917dc0ff8b33479e3b6",
+    "moved_utc": "2026-10-16T17:24:07.2605277+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-builtin-apis-ae7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-builtin-apis-ae7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "16628618f994310b8477ff984745dfb4cdd95f98",
+    "moved_utc": "2026-10-16T17:24:07.8262237+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-catalog-values-ae7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-catalog-values-ae7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e3b8a89a3a1c67ea7f0bca9754fc5ba7e93eb631",
+    "moved_utc": "2026-10-16T17:24:08.3768371+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-compat-b45-20261014",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-compat-b45-20261014",
+    "old_absent": true
+  },
+  {
+    "head": "e94845320ab0652220df1259fc242df0efde89b1",
+    "moved_utc": "2026-10-16T17:24:08.9660548+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-event-stream-live-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-event-stream-live-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "2c94bf7711003285de3328e07d22b18559aec1cf",
+    "moved_utc": "2026-10-16T17:24:09.5145361+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "31cecbdf55ec8b8e6a9a3264fc74746d2e3c7981",
+    "moved_utc": "2026-10-16T17:24:10.1185273+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-fetch-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-fetch-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "20cd1ee5c0da6b5c884cbb98b928e06a1a1e4ea9",
+    "moved_utc": "2026-10-16T17:24:10.8143536+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-google-mistral-source60-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-google-mistral-source60-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "f193b0b28ed00ecfd3c70df3c834538d68a74372",
+    "moved_utc": "2026-10-16T17:24:11.3978453+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-http-followup-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-http-followup-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "422ac616ca1a6447e91f0337bc925f0ea971e7e2",
+    "moved_utc": "2026-10-16T17:24:12.1640255+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-http-web-fetch-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-http-web-fetch-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "b0b97b2dea55700aca6746c074aa37d0ae5095c8",
+    "moved_utc": "2026-10-16T17:24:12.8119366+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-images-classifiers-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-images-classifiers-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fa4b2699d1c57e3b7eb52cc94679813655d04d54",
+    "moved_utc": "2026-10-16T17:24:13.4488350+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-json-audit-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-json-audit-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "5d0ff0bd32a72d4392693552aad7f118a0e0b756",
+    "moved_utc": "2026-10-16T17:24:13.9897978+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-json-ci-20261014",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-json-ci-20261014",
+    "old_absent": true
+  },
+  {
+    "head": "078052a0b157d3fb9e74a703cf76b2b924736a79",
+    "moved_utc": "2026-10-16T17:24:14.5404871+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-literal-regex-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-literal-regex-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "30bcfaee2d90087c8dbb06a30a9fe28254da6b01",
+    "moved_utc": "2026-10-16T17:24:15.0963625+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-native-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-native-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "fbc9d81b9bc171ae81311adf15e8478728c40a31",
+    "moved_utc": "2026-10-16T17:24:15.7156703+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-native-successor-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-native-successor-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "0a0ae5c0e5c51724dafdd024f2a567ac09c0697a",
+    "moved_utc": "2026-10-16T17:24:16.4510934+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-model-operations-source-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-model-operations-source-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e0b7f5832a003e5d9f2a5c50b74e84665165ca90",
+    "moved_utc": "2026-10-16T17:24:17.0866440+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-native-async-generator-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-native-async-generator-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "a4ff050ea247cc0451e8f254645f47f302841ea7",
+    "moved_utc": "2026-10-16T17:24:17.7648682+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-oauth-composition-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-oauth-composition-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "341032147bcfe06edd3d5720612c3586e9d8885b",
+    "moved_utc": "2026-10-16T17:24:18.5114781+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-oauth-source-graph-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-oauth-source-graph-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "99b9b075d627a9894e3800142b988c05af5e937f",
+    "moved_utc": "2026-10-16T17:24:19.1595560+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-one-shot-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-one-shot-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "0f48944a4d42d352bda99a212d8d84008558a31e",
+    "moved_utc": "2026-10-16T17:24:19.8558680+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-openai-http58-composition-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-openai-http58-composition-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "c5f9aff379ab43a3a1948ce880125d6038b6407c",
+    "moved_utc": "2026-10-16T17:24:20.5530935+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-openai-producer-ae7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-openai-producer-ae7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d9617f8c7e70df2fb6f891f3b3a5d3194749677b",
+    "moved_utc": "2026-10-16T17:24:21.2305742+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-pi-messages-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-pi-messages-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "961c25e433254cfb6d2e4007704ba046e6c3bb95",
+    "moved_utc": "2026-10-16T17:24:21.8934187+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-pi-route-bindings-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-pi-route-bindings-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "ac90adbfc39ec50805b3d864c9c444e9fc203097",
+    "moved_utc": "2026-10-16T17:24:22.4682289+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ai-provider-factories-models-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ai-provider-factories-models-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "f9ada04e5e9fca034824a996c5df17cea776b31b",
+    "moved_utc": "2026-10-16T17:24:23.2026944+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\anthropic-oom-diag-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-anthropic-oom-diag-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "86f5be0f495c776e56fb95f589ee507c019ff0cd",
+    "moved_utc": "2026-10-16T17:24:23.8558635+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\anthropic-oom-fix-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-anthropic-oom-fix-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d26c1d62b2b1512af7f9cbbe87243bf3be09b90a",
+    "moved_utc": "2026-10-16T17:24:24.5063529+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\b7df-contracts-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-b7df-contracts-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "04cd4503a8d8d02561303a2ab2b32e7a23c43d52",
+    "moved_utc": "2026-10-16T17:24:25.0294850+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\catalog-1ced-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-catalog-1ced-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "70a0f12592a6ad9c5b72c67e6f72775d4a25a89f",
+    "moved_utc": "2026-10-16T17:24:25.5623752+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\catalog-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-catalog-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "8085a76597c5d0366d9e4a0523009076d1e574ed",
+    "moved_utc": "2026-10-16T17:24:26.1080428+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\check-compaction-audit-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-check-compaction-audit-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d0d1986d84f42f5b3c4b19ea90818a96a3a39b36",
+    "moved_utc": "2026-10-16T17:24:26.6554790+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\checkpoint-6100-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-checkpoint-6100-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "64addaa049c021da570909b14eda3a50f8de624d",
+    "moved_utc": "2026-10-16T17:24:27.1949124+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-foreign-context-5ab7fe7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-foreign-context-5ab7fe7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "f3c8ae2ddd59857e39760c3e61cbf0e5ee3f5559",
+    "moved_utc": "2026-10-16T17:24:27.7879904+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-fork-root-integration-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-fork-root-integration-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "45fd51172fd26f7a3e0dcd466a537fcbfcd33460",
+    "moved_utc": "2026-10-16T17:24:28.3219172+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-json108-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-json108-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "45fd51172fd26f7a3e0dcd466a537fcbfcd33460",
+    "moved_utc": "2026-10-16T17:24:28.8513022+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-json132-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-json132-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "b39e50d77cb6a8f8cf0efe185dcc3ac884676960",
+    "moved_utc": "2026-10-16T17:24:29.3983420+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-latest-host-gpa-5ab7fe7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-latest-host-gpa-5ab7fe7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6b1e21fd1bc91dd444813ee1e1f90bfc7949c2db",
+    "moved_utc": "2026-10-16T17:24:29.9583883+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-native-fork-5ab7fe7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-native-fork-5ab7fe7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e90d349f92f659132cb6803dfe512db5f27cbda0",
+    "moved_utc": "2026-10-16T17:24:30.5030791+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-runtime19cb-20261012",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-runtime19cb-20261012",
+    "old_absent": true
+  },
+  {
+    "head": "36f3fa95e1c66fb7a65ce5a32732a90a51aa4dce",
+    "moved_utc": "2026-10-16T17:24:31.0882017+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-v4-package-b45-20261014",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-v4-package-b45-20261014",
+    "old_absent": true
+  },
+  {
+    "head": "6decefb5d36f8a7ac731a08350d7c2db3ec6378e",
+    "moved_utc": "2026-10-16T17:24:31.6447550+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\chord-v4-state-b45-20261014",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-chord-v4-state-b45-20261014",
+    "old_absent": true
+  },
+  {
+    "head": "ab1b5d1593e47e6b31ca2a67dc2cf53395c1392f",
+    "moved_utc": "2026-10-16T17:24:32.2553542+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ci-native-linkage-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ci-native-linkage-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "59cb5cc638d5e6811c8643968e3b9eb76cbbebca",
+    "moved_utc": "2026-10-16T17:24:32.8064635+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ci-repair-verified-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ci-repair-verified-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "01fc98fbb4ad62f62b06500333fc44bdf250ac80",
+    "moved_utc": "2026-10-16T17:24:33.3399731+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-adapter-allocation-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-adapter-allocation-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "df21c68d32c8c5b790ac6998e87177e1b43a661a",
+    "moved_utc": "2026-10-16T17:24:33.8824548+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-builtin-runtime-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-builtin-runtime-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "01663ea220146e8fc0a2f5131dd05334b5557b49",
+    "moved_utc": "2026-10-16T17:24:34.4148014+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-discovery-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-discovery-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "823e6779efa00b53cbf708bc669c0915314523d5",
+    "moved_utc": "2026-10-16T17:24:34.9350834+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-identity-traversal-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-identity-traversal-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "82d3968c7acaf18853a49c22403186389397e579",
+    "moved_utc": "2026-10-16T17:24:35.4732067+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-loadout-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-loadout-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "39e76ec87904eeca49d1f10f27ab8ff81a1e86b2",
+    "moved_utc": "2026-10-16T17:24:36.0025907+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-models-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-models-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "2a0c32f96315da9a92befb1a9738ff7743f43c97",
+    "moved_utc": "2026-10-16T17:24:36.5378816+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\codemode-owner-transport-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-codemode-owner-transport-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:24:37.0716428+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\component-cache-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-component-cache-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "59cb5cc638d5e6811c8643968e3b9eb76cbbebca",
+    "moved_utc": "2026-10-16T17:24:37.6287405+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\components-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-components-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "4b2509e9b3a101e859bb77fcd78be0097f366400",
+    "moved_utc": "2026-10-16T17:24:38.1654580+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composed-ui-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composed-ui-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "ec9a2f25cadcc3abe792fb332b14d591069f8171",
+    "moved_utc": "2026-10-16T17:24:38.7088389+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition198-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition198-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "56047ffb85ec65d3b5dd288c8562f294787d7770",
+    "moved_utc": "2026-10-16T17:24:39.2541425+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition199-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition199-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "dbb80b0278995a1b080aa30e25573d89fc1ffef9",
+    "moved_utc": "2026-10-16T17:24:39.8109774+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition200-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition200-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "bf054061e3d67a95a1cffeac2d99db696e708c3f",
+    "moved_utc": "2026-10-16T17:24:40.3470151+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition201-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition201-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "4053ecaaf8ca6d435a87be1b598f26c6b3fbe832",
+    "moved_utc": "2026-10-16T17:24:40.9018416+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition202-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition202-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "ec1dd6492b3a2ce70c422f87474cfe5a9d5ef318",
+    "moved_utc": "2026-10-16T17:24:41.4342984+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition203-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition203-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "37058357b83f5332e2bad9c5490808ec02c399bf",
+    "moved_utc": "2026-10-16T17:24:41.9877145+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition204-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition204-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "37441e0c6c51c01afc6c97fc618749529f5e8c67",
+    "moved_utc": "2026-10-16T17:24:42.5701730+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition205-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition205-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "b25093b1f3d67d618f3f431490ea5fa0948a5468",
+    "moved_utc": "2026-10-16T17:24:43.3720047+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition206-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition206-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "2efe7d956ad3d7db84eb855ec9033501c6ba3f20",
+    "moved_utc": "2026-10-16T17:24:44.0609688+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition207-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition207-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "2579a88d4a089e9583f45c251b30625f6ea528c3",
+    "moved_utc": "2026-10-16T17:24:44.6942888+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition208-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition208-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "0fdb6e667c7920de2eaf4487303e627c01059900",
+    "moved_utc": "2026-10-16T17:24:45.2221213+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition210-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition210-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "1f3ebc40b6771381629854418dfa16deb2739d44",
+    "moved_utc": "2026-10-16T17:24:45.7551262+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition211-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition211-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "503d905288dec8b7ed2a89f375ae9012e020279a",
+    "moved_utc": "2026-10-16T17:24:46.2757674+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition212-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition212-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "172d47d27bb8d69b8b257f64885d6e68589cfe20",
+    "moved_utc": "2026-10-16T17:24:46.7958444+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition219-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition219-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "313f8d50f64c1a0597fa81598554a16bea9d7199",
+    "moved_utc": "2026-10-16T17:24:47.3306355+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition220-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition220-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "99b77880040baabecd8b89a976fe3385cf948088",
+    "moved_utc": "2026-10-16T17:24:47.8795145+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition221-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition221-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "0fd59bd5e1b750b277313b4393f88848a8fb7759",
+    "moved_utc": "2026-10-16T17:24:48.4091772+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition222-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition222-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e094a84ceec965f16e7d05da5ba65b787a78baf3",
+    "moved_utc": "2026-10-16T17:24:48.9433160+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition223-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition223-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "6de06cf21f8af3de178b5f523f6be9ba1f77089c",
+    "moved_utc": "2026-10-16T17:24:49.4626405+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition224-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition224-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "1a90ca5333f934d810f98b57382a4f3888daf97e",
+    "moved_utc": "2026-10-16T17:24:49.9885990+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition225-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition225-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "de6d647bf123bb89281b7d8e142a582154002048",
+    "moved_utc": "2026-10-16T17:24:50.5176848+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition240-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition240-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "5a3013314724be26b56cac4fe7d87f068801aa99",
+    "moved_utc": "2026-10-16T17:24:51.0659024+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition242-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition242-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "5371959964185dd7a199f6106817f63969c8ee66",
+    "moved_utc": "2026-10-16T17:24:51.6204717+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\composition243-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-composition243-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "68eacb2c434ed43824e11923f00de2b3914b6451",
+    "moved_utc": "2026-10-16T17:24:52.2194355+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\config-schema-projection-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-config-schema-projection-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "63d22138d5d26bed1c7eaa13d8aabdc3bf22d9ff",
+    "moved_utc": "2026-10-16T17:24:52.9454688+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\context-files-f1-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-context-files-f1-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:24:53.5279101+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\cursor-1cedd32-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-cursor-1cedd32-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:24:54.2695408+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\cursor-boundary-fix-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-cursor-boundary-fix-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "801cfd36fa516c40d944a138f500ca265a225bad",
+    "moved_utc": "2026-10-16T17:24:54.9194473+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\custom-message-audit-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-custom-message-audit-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "0c5dad6539d42617afe0035348c8e3b852069387",
+    "moved_utc": "2026-10-16T17:24:55.5795470+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\custom-message-ci-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-custom-message-ci-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "68f5d42f4fddb0575770136388c2b14e872cc616",
+    "moved_utc": "2026-10-16T17:24:56.1295897+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\darwin-renderer-repair-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-darwin-renderer-repair-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "8679252bd71a2dcab872062923d43dd709077eed",
+    "moved_utc": "2026-10-16T17:24:56.6648866+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\dialog-keybindings-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-dialog-keybindings-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "59cb5cc638d5e6811c8643968e3b9eb76cbbebca",
+    "moved_utc": "2026-10-16T17:24:57.4517564+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "a6413acdae91f3e551269638d77b3339fb134db6",
+    "moved_utc": "2026-10-16T17:24:58.0892689+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-async-phase-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-async-phase-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "612222afa6bfb6a3c001a3bbd239060d4d748bba",
+    "moved_utc": "2026-10-16T17:24:58.6467221+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-dynamic-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-dynamic-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "678aff463783b25de99ddd730df55bf741c99dd4",
+    "moved_utc": "2026-10-16T17:24:59.1759832+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-guest-join-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-guest-join-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "06cf2874c4d0027fa77023bbdcd0581b95aa5a0f",
+    "moved_utc": "2026-10-16T17:24:59.7029258+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-identity-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-identity-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "500ac5c99ea9bc7858244ecde7d2b7afc7e9e114",
+    "moved_utc": "2026-10-16T17:25:00.2333368+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-actual-storage-lifetime-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-actual-storage-lifetime-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "c6e875d110a49b446d8b7a32001178e54b463b1e",
+    "moved_utc": "2026-10-16T17:25:00.7665592+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-binding-linkage-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-binding-linkage-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:01.3065717+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-builtins-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-builtins-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:01.8449027+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-contracts-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-contracts-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "688e425f3a0d668fe7b0b7b368159097615629a4",
+    "moved_utc": "2026-10-16T17:25:02.4106159+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-conversation-retirement-diag-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-conversation-retirement-diag-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:03.1600306+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-documents-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-documents-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "c209c5a09818de3d4208f509dcd86a56dc71dca6",
+    "moved_utc": "2026-10-16T17:25:03.7854406+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-guest-join-root-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-guest-join-root-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:04.3867546+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-harness-public-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-harness-public-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:04.9074954+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-harness-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-harness-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "4809956e11f214985dc0f4f89b70b4285a8b3265",
+    "moved_utc": "2026-10-16T17:25:05.4434641+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-integration-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-integration-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:05.9803386+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-observers-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-observers-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:06.5193516+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-owner-broker-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-owner-broker-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fb08f5f26524b1eb84d183851291670c8098fa04",
+    "moved_utc": "2026-10-16T17:25:07.0552338+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-powershell-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-powershell-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:07.6199907+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-registry-qualified66-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-registry-qualified66-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:08.1561968+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-registry-vm-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-registry-vm-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:08.6925658+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-runtime-qualified68-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-runtime-qualified68-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "4fdee261e20c41eb82901470463c6d4baf1d6ebb",
+    "moved_utc": "2026-10-16T17:25:09.2222858+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-scheduler-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-scheduler-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:09.7653275+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-sqlite-source-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-sqlite-source-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:10.2930513+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-state-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-state-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "4b2509e9b3a101e859bb77fcd78be0097f366400",
+    "moved_utc": "2026-10-16T17:25:10.8812850+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-storage-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-storage-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "e696bfd471194a09af8771eb4ace604ffa9bf44e",
+    "moved_utc": "2026-10-16T17:25:11.5014294+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-storage-lifetime-root-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-storage-lifetime-root-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:12.2023046+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-tasks-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-tasks-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "9a780fcdbc2d1ae841a93ff2726e0983dfaedbf6",
+    "moved_utc": "2026-10-16T17:25:12.8662530+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-tool-callers13-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-tool-callers13-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "91404c07cee5515acb2849002ff8671416ca260b",
+    "moved_utc": "2026-10-16T17:25:13.5145767+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\durable-vm-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-durable-vm-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:25:14.0860121+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-autocomplete-166-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-editor-autocomplete-166-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "68f5d42f4fddb0575770136388c2b14e872cc616",
+    "moved_utc": "2026-10-16T17:25:14.6085314+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-autocomplete-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-editor-autocomplete-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "68f5d42f4fddb0575770136388c2b14e872cc616",
+    "moved_utc": "2026-10-16T17:25:15.1333402+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\editor-components-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-editor-components-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "cd149227b99189b56bffe9d888fb19405c637654",
+    "moved_utc": "2026-10-16T17:25:15.6616103+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "972d0a7e8ccd98796d0005db625e10d4df116783",
+    "moved_utc": "2026-10-16T17:25:16.1982841+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-byte-public-next-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-byte-public-next-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:16.7903869+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-capability-drvfs-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-capability-drvfs-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:25:17.3158262+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-completion-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-completion-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "91404c07cee5515acb2849002ff8671416ca260b",
+    "moved_utc": "2026-10-16T17:25:17.8566825+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-deploy-baseline-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-deploy-baseline-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "91404c07cee5515acb2849002ff8671416ca260b",
+    "moved_utc": "2026-10-16T17:25:18.3835879+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-deploy-diagnostic-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-deploy-diagnostic-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "972d0a7e8ccd98796d0005db625e10d4df116783",
+    "moved_utc": "2026-10-16T17:25:18.9210302+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-exec-native-next-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-exec-native-next-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "671e2285ee8cd2a5c7dc9c657249b2e01313018e",
+    "moved_utc": "2026-10-16T17:25:19.4655620+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-exec-per-stream-raw-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-exec-per-stream-raw-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "cbd2e2492c00e7ec07b771d351c74623b8e9828f",
+    "moved_utc": "2026-10-16T17:25:20.0818703+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-filehandle-webstream-publish-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-filehandle-webstream-publish-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6f6802361b9f4eb40b724f416ebd2816e05ecb70",
+    "moved_utc": "2026-10-16T17:25:20.7947088+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-integration-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-integration-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:21.4403839+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-jsonl-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-jsonl-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:22.0312498+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-jsonl-baseline-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-jsonl-baseline-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+    "moved_utc": "2026-10-16T17:25:22.6578674+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-lazy-ssh-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-lazy-ssh-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "f23231231a057e9a1f0c2194371b5f6039cfbb55",
+    "moved_utc": "2026-10-16T17:25:23.4038370+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-node-ownership-f232312-20261014",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-node-ownership-f232312-20261014",
+    "old_absent": true
+  },
+  {
+    "head": "972d0a7e8ccd98796d0005db625e10d4df116783",
+    "moved_utc": "2026-10-16T17:25:24.0791751+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-rab-transfer-publish-f232312-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-rab-transfer-publish-f232312-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "429dd9c852e6975c9468d69f71aa95a2a5d0817e",
+    "moved_utc": "2026-10-16T17:25:24.7234079+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-composition-retry-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-composition-retry-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d7eebba62375265eeafb7736bcb4c82d9ba39fd5",
+    "moved_utc": "2026-10-16T17:25:25.2530641+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-gc-next-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-gc-next-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "c410b3f9b6cba01a89a5b697ba9c8794123e9b11",
+    "moved_utc": "2026-10-16T17:25:25.8381821+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-graph-next-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-graph-next-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "4594aec9b6291956f1b7fe180e8d37d33a1e62e5",
+    "moved_utc": "2026-10-16T17:25:26.3789002+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-oom-32a-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-oom-32a-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6e2f1d1409e68ace9bb51519fbc017b05419b103",
+    "moved_utc": "2026-10-16T17:25:26.9076945+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-oom-retire-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-oom-retire-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6fbdedfcc5e90c852afc8c2d8e378972c086f255",
+    "moved_utc": "2026-10-16T17:25:27.4914474+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-pipe-native-next-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-pipe-native-next-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "d84b0935f85faaf689bbb5de6a061390f1610eb5",
+    "moved_utc": "2026-10-16T17:25:28.0304700+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-pipe-only-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-pipe-only-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "7854bf0c8af38b7288685a0964d75a02ec8d599d",
+    "moved_utc": "2026-10-16T17:25:28.5694700+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-readable-public-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-readable-public-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+    "moved_utc": "2026-10-16T17:25:29.1007495+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-remote-files-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-remote-files-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:29.6279962+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-storage-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-storage-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:30.1669541+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:30.6827797+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-ack-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-ack-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:31.2276160+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-identity-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-identity-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:31.7557014+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-macos-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-macos-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:32.2690108+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-macos-retirement-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-macos-retirement-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "972d0a7e8ccd98796d0005db625e10d4df116783",
+    "moved_utc": "2026-10-16T17:25:32.8041965+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-native-next-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-native-next-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:33.3329095+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-platforms-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-platforms-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:33.8537759+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-watch-repair-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-watch-repair-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "972d0a7e8ccd98796d0005db625e10d4df116783",
+    "moved_utc": "2026-10-16T17:25:34.3752254+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-webstream-next-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-webstream-next-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:34.9653964+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\env-workers-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-env-workers-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+    "moved_utc": "2026-10-16T17:25:35.4971588+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\final-fixtures-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-final-fixtures-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "89642a20693d9f123a84d95007201ca21ff90c05",
+    "moved_utc": "2026-10-16T17:25:36.0203957+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\frontend-input-owner-ack-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-frontend-input-owner-ack-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:25:36.5504347+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\general-ui-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-general-ui-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:25:37.0812761+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\general-ui-final-20261008-h",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-general-ui-final-20261008-h",
+    "old_absent": true
+  },
+  {
+    "head": "b0d378220c0dac22ac2ab6fb9e99b2c3653bd861",
+    "moved_utc": "2026-10-16T17:25:37.6017192+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\google-whitespace4dd-source-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-google-whitespace4dd-source-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "d26c1d62b2b1512af7f9cbbe87243bf3be09b90a",
+    "moved_utc": "2026-10-16T17:25:38.1700875+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\group-owner-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-group-owner-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "239098cf4bfc1ce5e9f4d28e35d037ffba5ba29e",
+    "moved_utc": "2026-10-16T17:25:38.7061579+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-aea5-portable-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-aea5-portable-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d01845d01d0f8462894a919353cff8e814961fae",
+    "moved_utc": "2026-10-16T17:25:39.2470518+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-complete191-root463-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root463-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "8685fd09298955e1f2fbae41e7677141b07e7b14",
+    "moved_utc": "2026-10-16T17:25:39.8047420+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-complete191-root55-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fed244fe58017fa539f999d1abb661875c5b0bd1",
+    "moved_utc": "2026-10-16T17:25:40.3837108+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch1-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch1-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "3c352181519631175cee37c8c7dc685dde280243",
+    "moved_utc": "2026-10-16T17:25:40.9796920+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch10-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch10-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "63b9e542f9a2c8b4ba92ced430fec270f9b958c6",
+    "moved_utc": "2026-10-16T17:25:41.5121806+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch3-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch3-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "aff26143e45fcdc79d10c541a2d209aeab67087f",
+    "moved_utc": "2026-10-16T17:25:42.0653162+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch4-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch4-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "303d078ea69482957fff831cbec53709b3cac3b2",
+    "moved_utc": "2026-10-16T17:25:42.6755946+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch5-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch5-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "7c1a5116bab00c6e90e11efac9de6159fd80b157",
+    "moved_utc": "2026-10-16T17:25:43.3623911+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch6-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch6-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "20bc816810b633a4b3d393aa61ca1c170fada537",
+    "moved_utc": "2026-10-16T17:25:43.9940531+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6322c3fc25d730eb4077222427eaa6d67c207b57",
+    "moved_utc": "2026-10-16T17:25:44.5864039+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch8-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch8-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "c46f88a7d9459cb47f724df04fdb0d8f6a20bd8f",
+    "moved_utc": "2026-10-16T17:25:45.1394579+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-lazy-batch9-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-lazy-batch9-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "5da41c531461f52ff4bf321369a85c3a938bdfab",
+    "moved_utc": "2026-10-16T17:25:45.6749125+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\highlight-root55-regression-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-highlight-root55-regression-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "40c742c6233c740adaea2dd041fff95bca3c444e",
+    "moved_utc": "2026-10-16T17:25:46.2038191+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\keybinding-config-schema-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-keybinding-config-schema-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:25:46.7398289+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\late-registration-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-late-registration-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:25:47.2947022+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\latest-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-latest-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "90a6748b2b57079936bbf1173f5a6ef3c16b5a0c",
+    "moved_utc": "2026-10-16T17:25:47.8610719+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\latest-contracts-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-latest-contracts-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "0f6d99c4bd7a8cb4c72ece187fb92effccaff20a",
+    "moved_utc": "2026-10-16T17:25:48.3771050+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-codemode202-diagnostic-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-codemode202-diagnostic-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "224ff246028d0c8f9462e4622d406b385dfbafe9",
+    "moved_utc": "2026-10-16T17:25:48.9041411+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-diagnostic-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-diagnostic-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "587c043dfcda124acd71304b18f85a82fd12382a",
+    "moved_utc": "2026-10-16T17:25:49.4285189+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-full-diagnostic-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-full-diagnostic-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:25:49.9514619+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-phase-ack-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-phase-ack-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "168db17f665abf7a264a26ef1549e8d4f095425c",
+    "moved_utc": "2026-10-16T17:25:50.4815968+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ready-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-ready-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:25:50.9956948+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ready2-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-ready2-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "dbb80b0278995a1b080aa30e25573d89fc1ffef9",
+    "moved_utc": "2026-10-16T17:25:51.5189352+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-renderer-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-renderer-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "9de7cc7068aaa816fe7dfe6ee5835a387693abbb",
+    "moved_utc": "2026-10-16T17:25:52.0410535+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\macos-ui-probe-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-macos-ui-probe-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "b49432e058d46d57e70a23564427cb212ee15369",
+    "moved_utc": "2026-10-16T17:25:52.5889379+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-native-catalog-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-main-native-catalog-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "765859e189c65b84927c1b17a618fee029b24d15",
+    "moved_utc": "2026-10-16T17:25:53.2670245+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-native-context-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-main-native-context-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "9741d4fde8fe10223f5db4f4d249ea5ea823b43b",
+    "moved_utc": "2026-10-16T17:25:53.9469995+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-tool-policy-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-main-tool-policy-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "279141514351033da0b34d634c53fa154fc076f1",
+    "moved_utc": "2026-10-16T17:25:54.5667372+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-typed-model-adapter-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-main-typed-model-adapter-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "673d28b9708296e7613eccc904d052738a317e20",
+    "moved_utc": "2026-10-16T17:25:55.2600940+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\main-typed-model-integration-6fb-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-main-typed-model-integration-6fb-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fb08f5f26524b1eb84d183851291670c8098fa04",
+    "moved_utc": "2026-10-16T17:25:55.9025004+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-adapter-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-adapter-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "48ce8fd32cb16698718a77c8d308d2d2c3b672ef",
+    "moved_utc": "2026-10-16T17:25:56.4627092+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-allocation-race-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-allocation-race-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "5c2ccef1d063eac7c2f62bcd87a668e7c0c828fd",
+    "moved_utc": "2026-10-16T17:25:56.9895178+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-async-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-async-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "32ab959d9fc8438c268287e49e782bd007737203",
+    "moved_utc": "2026-10-16T17:25:57.5348378+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-authorize-signin-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-authorize-signin-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "ef4e00e3708fe538ab5fac26836dc849872da3ad",
+    "moved_utc": "2026-10-16T17:25:58.1923016+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-authorized-get-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-authorized-get-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:25:58.7326321+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-callback-close-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-callback-close-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "85657694a262efb252a51aefe22cca499613d3d7",
+    "moved_utc": "2026-10-16T17:25:59.2576325+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-cli-fixture-contract-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-cli-fixture-contract-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "7aaef3201cd9c25cd2c55fcadff7cc2281dbd96c",
+    "moved_utc": "2026-10-16T17:25:59.7862772+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-cli-platform-oracles-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-cli-platform-oracles-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "17389b6807796ba1cc368cbbec12470945fdd017",
+    "moved_utc": "2026-10-16T17:26:00.3117530+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-codemode-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-codemode-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "c653ec16678df53a4877e2188ba3f6a5bd90f202",
+    "moved_utc": "2026-10-16T17:26:00.8306696+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-codemode-agent-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-codemode-agent-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "95a578bbc667efbcd1e3228023311d64880b3aed",
+    "moved_utc": "2026-10-16T17:26:01.3603306+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-command-surface-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-command-surface-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1d5b6394f597626aed79d55fce68b9c376beb9f5",
+    "moved_utc": "2026-10-16T17:26:01.9105664+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-completion-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-completion-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+    "moved_utc": "2026-10-16T17:26:02.4606748+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-configured-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-configured-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:26:02.9909632+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-configured-latest-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-configured-latest-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:26:03.5133025+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-deadline-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-deadline-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "82c03cf150ad6998f8dfec1efc86755ea94ea33b",
+    "moved_utc": "2026-10-16T17:26:04.0396904+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-duplicate-definitions-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-duplicate-definitions-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "6fc9d21d18f2e5a8f4d4443f3db9ba80d67938f6",
+    "moved_utc": "2026-10-16T17:26:04.5658006+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-flow-builtin-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-flow-builtin-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "d838772484748d3098f732f320d3453106c3002f",
+    "moved_utc": "2026-10-16T17:26:05.0940160+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-live-manager-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-live-manager-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "d838772484748d3098f732f320d3453106c3002f",
+    "moved_utc": "2026-10-16T17:26:05.6123271+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-manager-native-callbacks-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-manager-native-callbacks-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e2f7348f4ec42c6d2c8271fee35407c9521669ad",
+    "moved_utc": "2026-10-16T17:26:06.1639961+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-notifications-6fb-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-notifications-6fb-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "475d325df7e3565d4af4cad3b97a865312c125e6",
+    "moved_utc": "2026-10-16T17:26:06.7032654+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-oauth-provider-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-oauth-provider-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "9505ce2b26f4fa064cfae0ab4b538e019f150ef3",
+    "moved_utc": "2026-10-16T17:26:07.2266666+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-resources-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-resources-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fb08f5f26524b1eb84d183851291670c8098fa04",
+    "moved_utc": "2026-10-16T17:26:07.7719691+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mcp-runtime-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mcp-runtime-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "1e9feeb046cb8e162c062444e5df127f6a3ebad1",
+    "moved_utc": "2026-10-16T17:26:08.3101988+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\mistral-header-timeout-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-mistral-header-timeout-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "bf5d68622c0e7104949d0a8554f69454319eaee1",
+    "moved_utc": "2026-10-16T17:26:08.8370273+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\model-allocation-ranges-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-model-allocation-ranges-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+    "moved_utc": "2026-10-16T17:26:09.3760702+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-actions-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-models-actions-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "ef090132a515c4954823aa7c1b5f1052db4290e8",
+    "moved_utc": "2026-10-16T17:26:09.9230808+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-auth-unsettled-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-models-auth-unsettled-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "380f257c9a6101f46c0b83a2ebd7a642b454e591",
+    "moved_utc": "2026-10-16T17:26:10.4749222+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-refresh-native-qualification-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-models-refresh-native-qualification-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "dbcc78b9e503e88b2e4d5f293812bd2e8c378441",
+    "moved_utc": "2026-10-16T17:26:11.0504383+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\models-refresh-production-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-models-refresh-production-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "65e3d6e4e7300e595c0386d290b7c74cfdfde9a1",
+    "moved_utc": "2026-10-16T17:26:11.7490665+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-async-function-proposal-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "0774f24203c16f59d2122e862006f0289ba21d6f",
+    "moved_utc": "2026-10-16T17:26:12.3691191+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-auth-storage-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-auth-storage-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fb5bd0dbe2381ae4401ecda9b004d105a86253f2",
+    "moved_utc": "2026-10-16T17:26:12.9537073+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-catalog-providers-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-catalog-providers-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fb08f5f26524b1eb84d183851291670c8098fa04",
+    "moved_utc": "2026-10-16T17:26:13.5095938+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-catalogs-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-catalogs-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "1128df3ea1ef2d240c4c21365a56f8882efe1b94",
+    "moved_utc": "2026-10-16T17:26:14.0505434+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-auth-storage-backend-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-file-auth-storage-backend-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d21acb167144c55366d9b2cb7e28db7c9b821a60",
+    "moved_utc": "2026-10-16T17:26:14.5965736+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-revision-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-file-revision-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "06f02d4531dddd675682e13f22a823f25b440649",
+    "moved_utc": "2026-10-16T17:26:15.1570737+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-file-revision-qualified-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-file-revision-qualified-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "c645ed3b9a900559e98cfdd8b7908ea51275ad4a",
+    "moved_utc": "2026-10-16T17:26:15.7040522+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-immediates-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-immediates-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:26:16.2947450+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-layout-final-6fb-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-layout-final-6fb-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:26:16.8499050+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-lists-final-6fb-20261008-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-lists-final-6fb-20261008-a",
+    "old_absent": true
+  },
+  {
+    "head": "d0547d0c32ca6cceb7ca011dfbeea9c2673caaf3",
+    "moved_utc": "2026-10-16T17:26:17.3764640+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-management-http-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-management-http-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "168db17f665abf7a264a26ef1549e8d4f095425c",
+    "moved_utc": "2026-10-16T17:26:17.9358476+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-mcp-fix-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-mcp-fix-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "b66aba94d2315b0d3cdb295b8a8d4a79dc3320a2",
+    "moved_utc": "2026-10-16T17:26:18.4605888+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-meta-oauth-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-meta-oauth-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "f144385ac79f4a8d81e82f7bb331f0730c046994",
+    "moved_utc": "2026-10-16T17:26:19.0019188+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-model-schemas-partial-4954-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-model-schemas-partial-4954-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "40537244e2bbcb912b48042c8da7294633cbcbe7",
+    "moved_utc": "2026-10-16T17:26:19.5397903+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-modelconfig-modelsstore-4954-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-modelconfig-modelsstore-4954-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "2af5978b26ab1c20ef60fffb9580855a489fd002",
+    "moved_utc": "2026-10-16T17:26:20.0885788+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-models-auth-methods-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:26:20.6205757+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-mouse-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-mouse-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "86d0baf6d5deeea4d3aae951b15d32fbcb563d48",
+    "moved_utc": "2026-10-16T17:26:21.1415431+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-anthropic-router-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-oauth-anthropic-router-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d319455100ca7dde1a55a994f9d5ce9c2dda4d81",
+    "moved_utc": "2026-10-16T17:26:21.6972209+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-callback-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-oauth-callback-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "11b3c0ebd2f4cac335e6e93cdb276cd48127fe85",
+    "moved_utc": "2026-10-16T17:26:22.2854749+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-chatgpt-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-oauth-chatgpt-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "b7fc16e00cc16196542bc071093a57042bbc2aed",
+    "moved_utc": "2026-10-16T17:26:22.8723822+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-codex-radius-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-oauth-codex-radius-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e0087c1b176cf11f88c134c3235f769ff23e6cfb",
+    "moved_utc": "2026-10-16T17:26:23.5541411+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-oauth-copilot-kimi-xai-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-oauth-copilot-kimi-xai-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "373ae068491053eeeb1743baa0a09cd16e842262",
+    "moved_utc": "2026-10-16T17:26:24.2596975+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-provider-hosted-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-provider-hosted-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "087858aad7c3425dab083ec2dc0a3dda5f93835f",
+    "moved_utc": "2026-10-16T17:26:24.9830281+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-provider-successor-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-provider-successor-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "106a401a5e8d6ca807714f2b4c3cf8b98ee153f9",
+    "moved_utc": "2026-10-16T17:26:25.6498670+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-responses-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "cdceb00262999deca1e02b531266227b5ad61588",
+    "moved_utc": "2026-10-16T17:26:26.3479627+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-retry-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-responses-retry-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "7c0d6630615425da30db0a1b60b31cd60a72b3ec",
+    "moved_utc": "2026-10-16T17:26:26.9839471+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-ws-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-responses-ws-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "807c5ef2723e4aacfe8b61c35ce6991917631b00",
+    "moved_utc": "2026-10-16T17:26:27.5681996+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-responses-ws-provider-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-responses-ws-provider-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:28.1529614+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:28.7003753+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-auth-snapshot-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-auth-snapshot-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:29.2504794+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-chat-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-chat-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:29.8016134+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-model-config-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-model-config-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:30.3491880+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-models-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-models-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:30.8769475+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-refresh-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-refresh-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:31.4433084+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-sdk-resources-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-sdk-resources-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "540df5ea5f021d8fe4a011f8761519b1247e67a1",
+    "moved_utc": "2026-10-16T17:26:32.0195736+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-ai-assembly-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-session-ai-assembly-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d0da323437529a19fbb05bb3d3de7855be7f0b93",
+    "moved_utc": "2026-10-16T17:26:32.6035597+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-factory-composition-20261013",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-session-factory-composition-20261013",
+    "old_absent": true
+  },
+  {
+    "head": "7ccdd3aacbc1064d7e32017dd75d61479a76e6eb",
+    "moved_utc": "2026-10-16T17:26:33.1493190+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-session-integration-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-session-integration-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "f952f602542547db105960e85da17c1b175c27f4",
+    "moved_utc": "2026-10-16T17:26:33.8451903+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-stream-exports-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-stream-exports-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "ef1a3376767e98687480aeff0e3b9237106a4efc",
+    "moved_utc": "2026-10-16T17:26:34.5583918+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-stream-web-assembly-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-stream-web-assembly-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "8ada90fca110d1b9a81b9bdc10b02b6ce478e389",
+    "moved_utc": "2026-10-16T17:26:35.2396821+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-transform-compression-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-transform-compression-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "72780f4189126f955bbde2f4ae259c04ea9d21fc",
+    "moved_utc": "2026-10-16T17:26:35.8337753+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-typebox-compile-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-typebox-compile-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "ba7d950a8876e19c6e7a520b8adcd8a3aa212a4e",
+    "moved_utc": "2026-10-16T17:26:36.3842593+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-url-errors-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-url-errors-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "5c4a89e072c0a62f5796e6b989d3485d1326b6e9",
+    "moved_utc": "2026-10-16T17:26:36.9590871+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-web-crypto-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-web-crypto-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "db4110b1868b8fbbf3334387e44170b5eb64955e",
+    "moved_utc": "2026-10-16T17:26:37.8065449+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-writable-retirement-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-writable-retirement-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6fce4363495bc56b7b1c1fc572aab7c318456f73",
+    "moved_utc": "2026-10-16T17:26:38.3984519+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\native-writable-stream-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-native-writable-stream-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+    "moved_utc": "2026-10-16T17:26:38.9880264+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\oauth-concurrency-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-oauth-concurrency-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "8968dfb3a5d96de9d848c27f4959af3f715f4d47",
+    "moved_utc": "2026-10-16T17:26:39.5300346+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\permission-result-diagnostic-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-permission-result-diagnostic-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:26:40.0560420+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\persistent-ui-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-persistent-ui-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:26:40.5946197+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\persistent-ui-baseline-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-persistent-ui-baseline-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "1ccf1144d39c45fa5835b04ad121ede9becab759",
+    "moved_utc": "2026-10-16T17:26:41.1222636+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\platform-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-platform-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "cd51afe673e85b6367dbeab010b45924a0b9d975",
+    "moved_utc": "2026-10-16T17:26:41.7124275+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\program-status-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-program-status-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "4809956e11f214985dc0f4f89b70b4285a8b3265",
+    "moved_utc": "2026-10-16T17:26:42.2459092+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\provider-fixtures-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-provider-fixtures-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "0d9f859b4a5252451900dad85aacc7b095c70a85",
+    "moved_utc": "2026-10-16T17:26:42.7760257+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\provider-proof-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-provider-proof-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:26:43.3221230+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-input-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-public-input-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:26:43.8603967+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-input-final-6fb-20261008-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-public-input-final-6fb-20261008-a",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:26:44.3897094+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-validator-raw123-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-public-validator-raw123-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e094a84ceec965f16e7d05da5ba65b787a78baf3",
+    "moved_utc": "2026-10-16T17:26:44.9189504+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\public-validator-root223-integration-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-public-validator-root223-integration-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e62ff9074e6f1fb94ed9cedda3ab330dab5810c2",
+    "moved_utc": "2026-10-16T17:26:45.4383028+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\qualified-models-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-qualified-models-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "47ac0d35937cf7cb39cef35011870d106ffcc2db",
+    "moved_utc": "2026-10-16T17:26:45.9624589+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\quickjs-debug-og-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-quickjs-debug-og-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "4b2509e9b3a101e859bb77fcd78be0097f366400",
+    "moved_utc": "2026-10-16T17:26:46.4848513+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\regular-custom-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-regular-custom-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:26:47.0125864+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-control-repair-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-renderer-control-repair-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "90a6748b2b57079936bbf1173f5a6ef3c16b5a0c",
+    "moved_utc": "2026-10-16T17:26:47.5513505+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-frontend-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-renderer-frontend-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "d26c1d62b2b1512af7f9cbbe87243bf3be09b90a",
+    "moved_utc": "2026-10-16T17:26:48.1091378+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderer-mailbox-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-renderer-mailbox-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "4b2509e9b3a101e859bb77fcd78be0097f366400",
+    "moved_utc": "2026-10-16T17:26:48.6386487+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\renderers-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-renderers-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "89642a20693d9f123a84d95007201ca21ff90c05",
+    "moved_utc": "2026-10-16T17:26:49.1751526+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\resized-persistent-surface-observer-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-resized-persistent-surface-observer-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "012e80ced763e8d8ac7e01f7331d32dad3ab468b",
+    "moved_utc": "2026-10-16T17:26:49.7217784+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\rewrite",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-rewrite",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:26:50.2778473+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\schema-foundation-qualified77-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-schema-foundation-qualified77-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "962eee47f2b6bacb24188e2d1b2037f098e665fd",
+    "moved_utc": "2026-10-16T17:26:50.8056562+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-active-tools-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-active-tools-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "9daef26acab7a242b564582041be21b179b75dd3",
+    "moved_utc": "2026-10-16T17:26:51.4125349+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-actual-stdio-463-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-actual-stdio-463-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "97521ed23d85d69c68a27990cb23b2bc80f154ed",
+    "moved_utc": "2026-10-16T17:26:51.9749207+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-actual-stdio-464-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-actual-stdio-464-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "1ea3ba9abf9a5d20592be244308917ab511982a6",
+    "moved_utc": "2026-10-16T17:26:52.5354405+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-allocation-shards-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-allocation-shards-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "7f539916f07a3c30ef093c4e86c6ca7bec88d8cc",
+    "moved_utc": "2026-10-16T17:26:53.1884121+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-async-hook-pair-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-async-hook-pair-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:26:53.8676443+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-auth-projection-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-auth-projection-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "3e617c72abbadf27c9bf37263d6e3d1f41993cc9",
+    "moved_utc": "2026-10-16T17:26:54.5242800+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-bindings-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-bindings-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "e1973d7a4795796e400df45e9c2cb81f6d00ba18",
+    "moved_utc": "2026-10-16T17:26:55.1101855+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-boundaries-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-boundaries-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "4372f12bf63aef69e809b52fd23d2746c27295b0",
+    "moved_utc": "2026-10-16T17:26:55.7018893+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-builtin-templates19-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-builtin-templates19-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "44f462563d3ef713354b3e2fd1ea82ccfdd7bb2f",
+    "moved_utc": "2026-10-16T17:26:56.2387820+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-builtin-templates20-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-builtin-templates20-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "aea5f178efdd3105d903553c8f5ff82bfbb25ea3",
+    "moved_utc": "2026-10-16T17:26:56.7698716+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-events-hosted-20261013",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-events-hosted-20261013",
+    "old_absent": true
+  },
+  {
+    "head": "20bb26753eb77fdeaf8c315ed8b2a45cd543d969",
+    "moved_utc": "2026-10-16T17:26:57.4027535+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-exec-command-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-exec-command-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "bde590a3650c50a45b1a4dce081febca37609f4a",
+    "moved_utc": "2026-10-16T17:26:57.9385166+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-factory-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-factory-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "8beca65dac983c32c8619d2bb3112e5589f3bfb7",
+    "moved_utc": "2026-10-16T17:26:58.5854629+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-fs-metadata-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-fs-metadata-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "59852290a3806f60fbbc44da3f542a9463f09a89",
+    "moved_utc": "2026-10-16T17:26:59.1162315+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-hosted-frontend-diagnostic-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-hosted-frontend-diagnostic-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "74bf9fa2f943f49a616c3dc79b4c0a85a5ac8b95",
+    "moved_utc": "2026-10-16T17:26:59.6979966+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-idle-settlement-realasync-source-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-idle-settlement-realasync-source-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "6c84e40c6cd5bbc9fdc83c2b6c126fb20498467a",
+    "moved_utc": "2026-10-16T17:27:00.2660247+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-iterator-intrinsic-477-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-iterator-intrinsic-477-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "740802617a64b5f1772a0d0dddcccfa44220c6c4",
+    "moved_utc": "2026-10-16T17:27:00.7956650+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-main-followon-root223-proof-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-main-followon-root223-proof-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "660c0a6f4f5a7641f1111ded4349e29ff769c624",
+    "moved_utc": "2026-10-16T17:27:01.3360777+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-model-runtime-class-4954-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-model-runtime-class-4954-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "04508ee871e5b786c4f0da94737e663e2351afe7",
+    "moved_utc": "2026-10-16T17:27:01.8949485+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-native-single-retained-service-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-native-single-retained-service-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "cc0b3ee31e3bfafaf47d8f035865a888662124c6",
+    "moved_utc": "2026-10-16T17:27:02.4452358+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-navigate-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-navigate-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "df598610d364c2cb287bc2780b81beb242e1a2b1",
+    "moved_utc": "2026-10-16T17:27:03.0326589+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-private-context-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-private-context-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "a74be96ddad8613afda9da0b474f84c7d0b6caa7",
+    "moved_utc": "2026-10-16T17:27:03.5600914+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-stream-protocol-458-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-process-stream-protocol-458-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "bd582f3314d3d7a1a755bb5c9f931b2241717912",
+    "moved_utc": "2026-10-16T17:27:04.2642173+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-terminal-parent-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-process-terminal-parent-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "71c5a069de7396a75c6bcd2111e334ba09b010f2",
+    "moved_utc": "2026-10-16T17:27:04.7901243+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-process-terminal-parent-root240-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-process-terminal-parent-root240-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "c80e33987a441518edc8a2fb678c9ace0c29bb78",
+    "moved_utc": "2026-10-16T17:27:05.3836077+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-production-constructor-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-production-constructor-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "059c4224b6f8ac9de1763a0bc09cf2991e4be45f",
+    "moved_utc": "2026-10-16T17:27:05.9884394+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-provider-composer-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-provider-composer-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "d6599aa2e7f808abc5fac8973bbf4dd8571d998f",
+    "moved_utc": "2026-10-16T17:27:06.6915939+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-real-filesystem-namespaces-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-real-filesystem-namespaces-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "97e3f1d394a50134afac87bf64db03bc9ab8050f",
+    "moved_utc": "2026-10-16T17:27:07.3432087+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-real-ui-context-parity-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-real-ui-context-parity-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:27:07.8929739+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-refresh-projection-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-refresh-projection-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "2a94d5a9527b683584c2bfffd87ea072f57c3ace",
+    "moved_utc": "2026-10-16T17:27:08.4229644+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-refresh-retired-projection-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-refresh-retired-projection-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "47248bd503378505f9d30a192f958570d5b524ca",
+    "moved_utc": "2026-10-16T17:27:08.9976274+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-binding-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-binding-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "47248bd503378505f9d30a192f958570d5b524ca",
+    "moved_utc": "2026-10-16T17:27:09.6169652+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-binding22-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-binding22-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "2249f3223943e5c65dd2eff0cbfee365a1086ab6",
+    "moved_utc": "2026-10-16T17:27:10.1448073+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-class-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-class-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "710aeaf8450106ef235725c6656ddacfce1e4a82",
+    "moved_utc": "2026-10-16T17:27:10.6881529+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-extensions-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-extensions-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "47248bd503378505f9d30a192f958570d5b524ca",
+    "moved_utc": "2026-10-16T17:27:11.2166280+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "6ebaa5299531ab4a202d86871ed47a01d473fab1",
+    "moved_utc": "2026-10-16T17:27:11.7727391+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners19-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners19-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "6ebaa5299531ab4a202d86871ed47a01d473fab1",
+    "moved_utc": "2026-10-16T17:27:12.4484007+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-owners20-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-owners20-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "70710a256f7c6c7358c5795c66cbc28c601ce3ba",
+    "moved_utc": "2026-10-16T17:27:13.1611226+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-package-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-package-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "2b490bc96119bc6120da9d565617e49b04f51cf2",
+    "moved_utc": "2026-10-16T17:27:13.9393153+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-native-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-native-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "92d3b40f66856c3df620a83f477bf1121948d42f",
+    "moved_utc": "2026-10-16T17:27:14.6179335+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-native-fix-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-native-fix-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fc3e935c67edb2f1e3e430e71e906f4195bc21a7",
+    "moved_utc": "2026-10-16T17:27:15.2844856+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-parser-ready-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-parser-ready-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "8076ad746d5738fbfffb62929a0586a43903abbf",
+    "moved_utc": "2026-10-16T17:27:15.8355971+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-resource-reload-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-resource-reload-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6047678ba6172a08c8f770d7097f4462e629b9a4",
+    "moved_utc": "2026-10-16T17:27:16.4213766+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-session-core-20261010",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-session-core-20261010",
+    "old_absent": true
+  },
+  {
+    "head": "4372f12bf63aef69e809b52fd23d2746c27295b0",
+    "moved_utc": "2026-10-16T17:27:17.1302240+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-tool-catalog-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-tool-catalog-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "4372f12bf63aef69e809b52fd23d2746c27295b0",
+    "moved_utc": "2026-10-16T17:27:17.7872626+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-tool-catalog16-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-tool-catalog16-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "c3fa4f03340a71da8b5f15c4d62177d57028131f",
+    "moved_utc": "2026-10-16T17:27:18.3971149+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-ui-base20-proof-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-ui-base20-proof-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "53c68a60afe0669af849b3b7ff36be3390dedd25",
+    "moved_utc": "2026-10-16T17:27:18.9622028+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-virtual-models-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-virtual-models-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "fe68aed9075db20b5b5ddc273d7b9a733fe74da5",
+    "moved_utc": "2026-10-16T17:27:19.4950007+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sdk-weakref-kept-objects-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sdk-weakref-kept-objects-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:20.1476632+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\select-settings-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-select-settings-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "f64fd1d0f3b18402f1ff56ce0b2e78563e6c0953",
+    "moved_utc": "2026-10-16T17:27:20.7356808+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\session-exports-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-session-exports-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "6d11a2ecbf3dd657bcc15476d346636db437642c",
+    "moved_utc": "2026-10-16T17:27:21.3317013+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\session-runtime-production-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-session-runtime-production-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "c6e875d110a49b446d8b7a32001178e54b463b1e",
+    "moved_utc": "2026-10-16T17:27:21.8882607+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\sqlite-override-paths-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-sqlite-override-paths-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "403ca786c06192f7e8418ac0cc0e012c8fbd17c0",
+    "moved_utc": "2026-10-16T17:27:22.4289626+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\status-da-ownership-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-status-da-ownership-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "06f65e93c47e86393e23d74bfce0224829281e7b",
+    "moved_utc": "2026-10-16T17:27:22.9657768+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\status-dialogs-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-status-dialogs-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "d4426e83afaccc5e731789050c5b25692f7d3fe3",
+    "moved_utc": "2026-10-16T17:27:23.4955319+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\stream-root-intake-a41a-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-stream-root-intake-a41a-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:24.0820406+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-capabilities-6fb-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-6fb-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:24.6282400+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-capabilities-final-6fb-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-capabilities-final-6fb-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "af51b43f45f0f86e380638f85c1f4d2a99525dc7",
+    "moved_utc": "2026-10-16T17:27:25.1897027+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "f12f7feca44082a2beda45d5ffb83d2f348f2316",
+    "moved_utc": "2026-10-16T17:27:25.8312325+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-b",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-b",
+    "old_absent": true
+  },
+  {
+    "head": "3b4436e627f9ca16f437dad0068560bbef5e38d3",
+    "moved_utc": "2026-10-16T17:27:26.5212450+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-eof-20261010-c",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-eof-20261010-c",
+    "old_absent": true
+  },
+  {
+    "head": "cdd0b38d7f41aa51789c62b7f13e17f5c4d45f8a",
+    "moved_utc": "2026-10-16T17:27:27.1732098+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-pipe-hydration-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-pipe-hydration-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "57594e8dc9e7a63e525e6907d972f8fd958a4c7f",
+    "moved_utc": "2026-10-16T17:27:27.7427579+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-query-fifo-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-query-fifo-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "a4dd27ab6f5161e711f29220b30e047bc94758c4",
+    "moved_utc": "2026-10-16T17:27:28.2646702+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\terminal-theme-producer-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-terminal-theme-producer-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:27:28.8222991+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-components-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-components-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:29.5024635+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-constructor-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-constructor-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:27:30.1837795+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-registry-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-registry-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:30.8607956+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-schema-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-schema-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:27:31.5093182+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-state-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-state-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:32.0482721+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-strict-consumer-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-strict-consumer-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:27:32.6040729+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-tui-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-tui-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "e071d075da16a004dc984296b907d25befff1278",
+    "moved_utc": "2026-10-16T17:27:33.1476001+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-tui-colors-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-tui-colors-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "eff0b7b1bf471d8d060c9bd34af75377810a4339",
+    "moved_utc": "2026-10-16T17:27:33.6804735+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\theme-watchers-native-6fb-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-theme-watchers-native-6fb-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "d3ca2648e7f76ec214638582d9bd1f52bd0874b0",
+    "moved_utc": "2026-10-16T17:27:34.2150723+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-render-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tool-render-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "168db17f665abf7a264a26ef1549e8d4f095425c",
+    "moved_utc": "2026-10-16T17:27:34.7977192+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-render-duration-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tool-render-duration-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:27:35.3340624+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public120-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public120-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:27:35.8679795+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public121-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public121-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:27:36.3933025+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tool-validator-public122-qualified-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tool-validator-public122-qualified-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:27:36.9169986+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-catalog118-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-toolinfo-catalog118-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fefc394b0767883feaf5ad7a623009a46257d7de",
+    "moved_utc": "2026-10-16T17:27:37.4318165+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-catalog119-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-toolinfo-catalog119-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "e094a84ceec965f16e7d05da5ba65b787a78baf3",
+    "moved_utc": "2026-10-16T17:27:37.9804251+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\toolinfo-root223-integration-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-toolinfo-root223-integration-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "08fd2736438b8816194327907f8d33d8d84f14a2",
+    "moved_utc": "2026-10-16T17:27:38.6858651+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-combined-autocomplete-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-combined-autocomplete-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "c46278029bb366eeefab7ede88ea5096020a0d66",
+    "moved_utc": "2026-10-16T17:27:39.3726508+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-function-metadata-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-function-metadata-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "f8e6131bc8a80ce74327a90c6e9692c5f34ccc0e",
+    "moved_utc": "2026-10-16T17:27:40.0264393+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-function-metadata-20261010-b",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-function-metadata-20261010-b",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:40.7550456+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-input-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-input-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "1c8983e4116fa1acd476167e31c29d4c7eab523b",
+    "moved_utc": "2026-10-16T17:27:41.4114670+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-main-screen-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-main-screen-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "b6c586369fe37c8e2db32042b69cf648c8ac91f3",
+    "moved_utc": "2026-10-16T17:27:41.9984050+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-screens-20261010-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-screens-20261010-a",
+    "old_absent": true
+  },
+  {
+    "head": "46f1fb465d71178a902a2d9d73609854f1edf124",
+    "moved_utc": "2026-10-16T17:27:42.5212423+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\tui-screens-20261010-b",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-tui-screens-20261010-b",
+    "old_absent": true
+  },
+  {
+    "head": "3432c2199980364089978e7f6948b22f0d7d4df0",
+    "moved_utc": "2026-10-16T17:27:43.0567620+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\typebox-operators-production-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-typebox-operators-production-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "2620e5ac7eb59597f3477669dfdc8e955aff93c2",
+    "moved_utc": "2026-10-16T17:27:43.6486116+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-integration-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ui-integration-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "dfe6527cc78b1b876bdd8548bc51a14fc9d10781",
+    "moved_utc": "2026-10-16T17:27:44.1889970+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-late-persistence-dfe-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ui-late-persistence-dfe-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "dfe6527cc78b1b876bdd8548bc51a14fc9d10781",
+    "moved_utc": "2026-10-16T17:27:44.7236593+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-macos-diagnostics-dfe-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ui-macos-diagnostics-dfe-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "d8cf881014051d3cdd4d32adb2dc8f509179b367",
+    "moved_utc": "2026-10-16T17:27:45.2609391+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\ui-macos-startup-d8-20261009-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-ui-macos-startup-d8-20261009-a",
+    "old_absent": true
+  },
+  {
+    "head": "82db348ecf42fc7e5e6021f3bd59dcbfe11c7a75",
+    "moved_utc": "2026-10-16T17:27:45.7849004+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\update-20261003",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-update-20261003",
+    "old_absent": true
+  },
+  {
+    "head": "0431de9f65275fdd45ee4875a4a7e4908f10d29e",
+    "moved_utc": "2026-10-16T17:27:46.3150504+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-0fb-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-upstream-0fb-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "963619aa4161cc9582899d442d050faa8476edd1",
+    "moved_utc": "2026-10-16T17:27:46.8634179+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-catalog-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-upstream-catalog-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "83899965064f8fdd8103a05915a411a704a98219",
+    "moved_utc": "2026-10-16T17:27:47.4013942+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-catalog-ae7-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-upstream-catalog-ae7-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:27:47.9808860+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-drift-20261005",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-upstream-drift-20261005",
+    "old_absent": true
+  },
+  {
+    "head": "91404c07cee5515acb2849002ff8671416ca260b",
+    "moved_utc": "2026-10-16T17:27:48.5355641+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\upstream-f10993b-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-upstream-f10993b-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:49.0792037+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\utf16-state-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-utf16-state-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "7e89e838851da41885c586c5c5b8acdaf7ccf52b",
+    "moved_utc": "2026-10-16T17:27:49.6274969+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-body-integration-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-web-body-integration-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "a8b2ef7de68e63e77f46c1d21b44de28a31391ed",
+    "moved_utc": "2026-10-16T17:27:50.3492752+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-headers-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-web-headers-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "49d569f6a7897b656c2440414b6a9501343feb01",
+    "moved_utc": "2026-10-16T17:27:51.0473288+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-multipart-intrinsics-next-20261016",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-web-multipart-intrinsics-next-20261016",
+    "old_absent": true
+  },
+  {
+    "head": "dbd839cf0a583e127ae7b74fbf85f1ebe22c12c5",
+    "moved_utc": "2026-10-16T17:27:51.6820583+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-response-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-web-response-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "65d372665cdf63bf344e9278937f551af6144292",
+    "moved_utc": "2026-10-16T17:27:52.2077451+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\web-response-qualification-20261015",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-web-response-qualification-20261015",
+    "old_absent": true
+  },
+  {
+    "head": "1665296020007c26c5c82084029c093c930bce40",
+    "moved_utc": "2026-10-16T17:27:52.8021343+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\widgets-20261007",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-widgets-20261007",
+    "old_absent": true
+  },
+  {
+    "head": "c4c2cd7adc6c51c368e178c6fea9d695301f552a",
+    "moved_utc": "2026-10-16T17:27:53.4116053+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\windows-mcp-failure-fixture-20261009",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-windows-mcp-failure-fixture-20261009",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:54.1308832+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\word-format-6fb-20261008",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-word-format-6fb-20261008",
+    "old_absent": true
+  },
+  {
+    "head": "fcc54972117bcb28c6f03d5693f5eb849269f0cb",
+    "moved_utc": "2026-10-16T17:27:54.7865090+00:00",
+    "new": "C:\\Users\\adyba\\pi-zig\\worktrees\\archive\\word-navigation-final-6fb-20261008-a",
+    "status": "moved",
+    "old": "C:\\Users\\adyba\\pi-zig-word-navigation-final-6fb-20261008-a",
+    "old_absent": true
+  }
+]

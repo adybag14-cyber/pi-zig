@@ -1,0 +1,21 @@
+{
+  "schema": 1,
+  "main": "main",
+  "worktrees": "worktrees",
+  "upstream": "upstream",
+  "upstream_repository": "upstream/pi",
+  "integration_upstream_commit": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "runtime": "upstream/runtime/19cb534-20261012",
+  "runtime_status": "recovery_pending",
+  "evidence": "evidence",
+  "toolchain": "toolchain",
+  "zig": "toolchain/zig-x86_64-windows-0.16.0/zig.exe",
+  "zig_version": "0.16.0",
+  "zig_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+  "path_relocations": "path-relocations.json",
+  "all_agent_jobs_held_for_revalidation": true,
+  "main_source_head": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+  "public_activation": false,
+  "runtime_verification_receipt": null,
+  "runtime_verification_receipt_sha256": null
+}

@@ -1,0 +1,11 @@
+{
+  "recorded_utc": "2026-10-16T17:19:15.4331100+00:00",
+  "status": "primary_moved_and_git_links_repaired",
+  "old_main_preserved": "refs/heads/main at03e266e8",
+  "common_git": ".git",
+  "staging_absent": true,
+  "integration_original_head": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+  "container": "C:\\Users\\adyba\\pi-zig",
+  "main_head": "41eb87551e0108bd2eaf3a2caa1c8b5f79900efc",
+  "main": "C:\\Users\\adyba\\pi-zig\\main"
+}
