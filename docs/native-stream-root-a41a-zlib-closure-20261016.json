@@ -1,0 +1,82 @@
+[
+  {
+    "path": "vendor/native-zlib-1.3.1/adler32.c",
+    "sha256": "9CD1443A24FF2A3053961695BD432035C58347386A420D3388232376EBABE211"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/crc32.c",
+    "sha256": "8FD16F0A7714D51C89C2EB37EB98EC15E8A4DC57BA343E7B7398B19144039FDA"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/crc32.h",
+    "sha256": "9A2223575183AC2EE8A247F20BF3AC066E8BD0140369556BDBDFFC777435749E"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/deflate.c",
+    "sha256": "3B956337350F94C34987750F785587EF33D9C89CEAEBB7C2AFB189C956360CBE"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/deflate.h",
+    "sha256": "48BAF016326D8D5E3E32AC8153CC7E22F854B8E6834830B167B998A7FB1E7989"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inffast.c",
+    "sha256": "E6EF64CE5DC0A4CD5C7AD08CEEB2B2A698B8447F6BD156057CAEB2EDAB68C0CB"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inffast.h",
+    "sha256": "05CC5DC9FF1DA7B8B52A4BD8BDA0D8A5C236A2F39EFE84B941516EA13857E6C5"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inffixed.h",
+    "sha256": "237BA710F090E432B62EBF963BEE8B302867E9691406B2D3F8EE89EE7BFEF9B0"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inflate.c",
+    "sha256": "34C998CE0037C0537C04B03B276F680B945F9B2C9D1E01B287605BD6879F7FD2"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inflate.h",
+    "sha256": "E8D4A51B07694BF48CB91979C19974CF6A5AB0B8A09D26EC0D14DF349230673E"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inftrees.c",
+    "sha256": "5D4F335221D2DC76F17ABD2577D92C2D7BAF68FA6D7F23373B360830493D1563"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/inftrees.h",
+    "sha256": "0A0FCAF2AE2FAE57426BDC06637270E9BBA974F35202CADBDBA479D946E6409D"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/LICENSE",
+    "sha256": "845EFC77857D485D91FB3E0B884AAA929368C717AE8186B66FE1ED2495753243"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/PROVENANCE.md",
+    "sha256": "7934B76B81CF681BD4776DA344AAC8606131E40FEF534AB8C31D634C2D46DDC9"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/trees.c",
+    "sha256": "F63C68C16C05FCD196050529D1A0E7657960E4136B9987D90A6AC3E58A964B0F"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/trees.h",
+    "sha256": "BB0A9D3CA88EE00C81ADB7C636E73B97085F6EF1B52D6D58EDBE2B6DC3ADEB4D"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/zconf.h",
+    "sha256": "F5134250A67D57459234B63858F0D9D3EF8DCC48E9E1028D3F4FDCF6EAE677AE"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/zlib.h",
+    "sha256": "8A5579AF72EA4F427FF00A4150F0CCB3FC5C1E4379F726E101133B1AB9FC600C"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/zutil.c",
+    "sha256": "8CED40D8C88588811EDD2BDB35B7439983D5E1F8E9E32B8A3B244731F3C317B7"
+  },
+  {
+    "path": "vendor/native-zlib-1.3.1/zutil.h",
+    "sha256": "DDDB2DC7A1DC339ECF2C8E089B366F08BB731C0839C7110240D17CE731BB4FEA"
+  }
+]

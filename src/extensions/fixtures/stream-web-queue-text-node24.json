@@ -1,0 +1,1460 @@
+{
+  "namespace-metadata": {
+    "keys": [
+      "ReadableStream",
+      "ReadableStreamDefaultReader",
+      "ReadableStreamBYOBReader",
+      "ReadableStreamBYOBRequest",
+      "ReadableByteStreamController",
+      "ReadableStreamDefaultController",
+      "TransformStream",
+      "TransformStreamDefaultController",
+      "WritableStream",
+      "WritableStreamDefaultWriter",
+      "WritableStreamDefaultController",
+      "ByteLengthQueuingStrategy",
+      "CountQueuingStrategy",
+      "TextEncoderStream",
+      "TextDecoderStream",
+      "CompressionStream",
+      "DecompressionStream"
+    ],
+    "descriptors": [
+      {
+        "key": "ReadableStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableStream",
+        "length": 0
+      },
+      {
+        "key": "ReadableStreamDefaultReader",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableStreamDefaultReader",
+        "length": 1
+      },
+      {
+        "key": "ReadableStreamBYOBReader",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableStreamBYOBReader",
+        "length": 1
+      },
+      {
+        "key": "ReadableStreamBYOBRequest",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableStreamBYOBRequest",
+        "length": 0
+      },
+      {
+        "key": "ReadableByteStreamController",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableByteStreamController",
+        "length": 0
+      },
+      {
+        "key": "ReadableStreamDefaultController",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ReadableStreamDefaultController",
+        "length": 0
+      },
+      {
+        "key": "TransformStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "TransformStream",
+        "length": 0
+      },
+      {
+        "key": "TransformStreamDefaultController",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "TransformStreamDefaultController",
+        "length": 0
+      },
+      {
+        "key": "WritableStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "WritableStream",
+        "length": 0
+      },
+      {
+        "key": "WritableStreamDefaultWriter",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "WritableStreamDefaultWriter",
+        "length": 1
+      },
+      {
+        "key": "WritableStreamDefaultController",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "WritableStreamDefaultController",
+        "length": 0
+      },
+      {
+        "key": "ByteLengthQueuingStrategy",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "ByteLengthQueuingStrategy",
+        "length": 1
+      },
+      {
+        "key": "CountQueuingStrategy",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "CountQueuingStrategy",
+        "length": 1
+      },
+      {
+        "key": "TextEncoderStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "TextEncoderStream",
+        "length": 0
+      },
+      {
+        "key": "TextDecoderStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "TextDecoderStream",
+        "length": 0
+      },
+      {
+        "key": "CompressionStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "CompressionStream",
+        "length": 1
+      },
+      {
+        "key": "DecompressionStream",
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "type": "function",
+        "name": "DecompressionStream",
+        "length": 1
+      }
+    ],
+    "esmKeys": [
+      "ByteLengthQueuingStrategy",
+      "CompressionStream",
+      "CountQueuingStrategy",
+      "DecompressionStream",
+      "ReadableByteStreamController",
+      "ReadableStream",
+      "ReadableStreamBYOBReader",
+      "ReadableStreamBYOBRequest",
+      "ReadableStreamDefaultController",
+      "ReadableStreamDefaultReader",
+      "TextDecoderStream",
+      "TextEncoderStream",
+      "TransformStream",
+      "TransformStreamDefaultController",
+      "WritableStream",
+      "WritableStreamDefaultController",
+      "WritableStreamDefaultWriter",
+      "default"
+    ],
+    "esmPrototypeNull": true,
+    "identities": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "ByteLengthQueuingStrategy": {
+      "constructor": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "ByteLengthQueuingStrategy"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "ByteLengthQueuingStrategy",
+          "length": 1
+        },
+        {
+          "key": "highWaterMark",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get highWaterMark",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "size",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get size",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "[nodejs.util.inspect.custom]",
+          "length": 2
+        },
+        {
+          "key": "Symbol(Symbol.toStringTag)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "ByteLengthQueuingStrategy"
+        }
+      ]
+    },
+    "CountQueuingStrategy": {
+      "constructor": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "CountQueuingStrategy"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "CountQueuingStrategy",
+          "length": 1
+        },
+        {
+          "key": "highWaterMark",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get highWaterMark",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "size",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get size",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "[nodejs.util.inspect.custom]",
+          "length": 2
+        },
+        {
+          "key": "Symbol(Symbol.toStringTag)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "CountQueuingStrategy"
+        }
+      ]
+    },
+    "TextEncoderStream": {
+      "constructor": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "TextEncoderStream"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TextEncoderStream",
+          "length": 0
+        },
+        {
+          "key": "encoding",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get encoding",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "readable",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get readable",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "writable",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get writable",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "[nodejs.util.inspect.custom]",
+          "length": 2
+        }
+      ]
+    },
+    "TextDecoderStream": {
+      "constructor": [
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "number"
+        },
+        {
+          "key": "name",
+          "enumerable": false,
+          "configurable": true,
+          "writable": false,
+          "type": "string",
+          "value": "TextDecoderStream"
+        },
+        {
+          "key": "prototype",
+          "enumerable": false,
+          "configurable": false,
+          "writable": false,
+          "type": "object"
+        }
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "TextDecoderStream",
+          "length": 0
+        },
+        {
+          "key": "encoding",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get encoding",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "fatal",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get fatal",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "ignoreBOM",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get ignoreBOM",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "readable",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get readable",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "writable",
+          "enumerable": true,
+          "configurable": true,
+          "get": "get writable",
+          "getLength": 0,
+          "set": null
+        },
+        {
+          "key": "Symbol(nodejs.util.inspect.custom)",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "type": "function",
+          "name": "[nodejs.util.inspect.custom]",
+          "length": 2
+        }
+      ]
+    }
+  },
+  "queue-basic": {
+    "count": {
+      "hwm": 2,
+      "negative": -1,
+      "size": 1,
+      "shared": true,
+      "name": "size",
+      "length": 0
+    },
+    "bytes": {
+      "infinite": true,
+      "nan": true,
+      "size": 7,
+      "rawIdentity": true,
+      "shared": true,
+      "name": "size",
+      "length": 1
+    }
+  },
+  "queue-conversion": {
+    "rows": [
+      {
+        "reads": 2,
+        "calls": 1,
+        "value": 3.5
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot convert a BigInt value to a number",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot convert a Symbol value to a number",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      },
+      {
+        "reads": 2,
+        "calls": 1,
+        "value": 3.5
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot convert a BigInt value to a number",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot convert a Symbol value to a number",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      }
+    ]
+  },
+  "queue-errors": {
+    "rows": [
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received undefined",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received null",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received type number (1)",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received type string ('x')",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received an instance of Array",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received function ",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_MISSING_OPTION",
+          "message": "init.highWaterMark is required",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received undefined",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received null",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received type number (1)",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received type string ('x')",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received an instance of Array",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_ARG_TYPE",
+          "message": "The \"init\" argument must be of type object. Received function ",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_MISSING_OPTION",
+          "message": "init.highWaterMark is required",
+          "identity": false
+        }
+      }
+    ],
+    "newless": {
+      "error": {
+        "name": "TypeError",
+        "code": null,
+        "message": "Class constructor CountQueuingStrategy cannot be invoked without 'new'",
+        "identity": false
+      }
+    }
+  },
+  "queue-brand": {
+    "rows": [
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #state from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #countSizeFunction from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #state from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #byteSizeFunction from an object whose class did not declare it",
+          "identity": false
+        }
+      }
+    ],
+    "unboundCount": 1,
+    "constructSize": {
+      "error": {
+        "name": "TypeError",
+        "code": null,
+        "message": "() => 1 is not a constructor",
+        "identity": false
+      }
+    }
+  },
+  "queue-size-getters": {
+    "rows": [
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read properties of undefined (reading 'byteLength')",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read properties of null (reading 'byteLength')",
+          "identity": false
+        }
+      },
+      {},
+      {},
+      {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      }
+    ],
+    "tags": [
+      "[object ByteLengthQueuingStrategy]",
+      "[object CountQueuingStrategy]"
+    ]
+  },
+  "encoder-carry": {
+    "transfer": {
+      "outputs": [
+        [
+          240,
+          144,
+          128,
+          128
+        ],
+        [
+          97
+        ],
+        [
+          239,
+          191,
+          189,
+          88
+        ],
+        [
+          239,
+          191,
+          189
+        ],
+        [
+          239,
+          191,
+          189
+        ]
+      ],
+      "writes": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "close": {},
+      "reader": {
+        "done": true
+      },
+      "readableLocked": true,
+      "writableLocked": true
+    }
+  },
+  "encoder-empty-eof": {
+    "rows": [
+      {
+        "outputs": [],
+        "writes": [],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [],
+        "writes": [
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          [
+            239,
+            191,
+            189
+          ]
+        ],
+        "writes": [
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          [
+            239,
+            191,
+            189
+          ]
+        ],
+        "writes": [
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          [
+            244,
+            143,
+            191,
+            191
+          ]
+        ],
+        "writes": [
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          [
+            239,
+            191,
+            189
+          ],
+          [
+            240,
+            144,
+            128,
+            128
+          ]
+        ],
+        "writes": [
+          {},
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      }
+    ]
+  },
+  "encoder-conversion": {
+    "transfer": {
+      "outputs": [
+        [
+          117,
+          110,
+          100,
+          101,
+          102,
+          105,
+          110,
+          101,
+          100
+        ],
+        [
+          110,
+          117,
+          108,
+          108
+        ],
+        [
+          49,
+          50,
+          51
+        ],
+        [
+          116,
+          114,
+          117,
+          101
+        ],
+        [
+          83,
+          121,
+          109,
+          98,
+          111,
+          108,
+          40,
+          120,
+          41
+        ],
+        [
+          65
+        ],
+        [
+          240,
+          144,
+          128,
+          128
+        ]
+      ],
+      "writes": [
+        {},
+        {},
+        {},
+        {},
+        {},
+        {},
+        {}
+      ],
+      "close": {},
+      "reader": {
+        "done": true
+      },
+      "readableLocked": true,
+      "writableLocked": true
+    }
+  },
+  "encoder-error": {
+    "transfer": {
+      "outputs": [],
+      "writes": [
+        {
+          "error": {
+            "name": "object",
+            "code": null,
+            "message": null,
+            "identity": true
+          }
+        }
+      ],
+      "close": {
+        "error": {
+          "name": "TypeError",
+          "code": "ERR_INVALID_STATE",
+          "message": "Invalid state: WritableStream is closed",
+          "identity": false
+        }
+      },
+      "reader": {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      },
+      "readableLocked": true,
+      "writableLocked": true
+    }
+  },
+  "decoder-utf8-bom": {
+    "rows": [
+      {
+        "outputs": [
+          "🌍A",
+          "�"
+        ],
+        "writes": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          "﻿",
+          "🌍A",
+          "�"
+        ],
+        "writes": [
+          {},
+          {},
+          {},
+          {},
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      }
+    ]
+  },
+  "decoder-utf16": {
+    "rows": [
+      {
+        "outputs": [
+          "🌍"
+        ],
+        "writes": [
+          {},
+          {},
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          "🌍"
+        ],
+        "writes": [
+          {},
+          {},
+          {},
+          {}
+        ],
+        "close": {},
+        "reader": {
+          "done": true
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      }
+    ]
+  },
+  "decoder-options": {
+    "rows": [
+      {
+        "encoding": "utf-8",
+        "fatal": null,
+        "ignoreBOM": null,
+        "readable": true,
+        "writable": true
+      },
+      {
+        "encoding": "utf-16be",
+        "fatal": true,
+        "ignoreBOM": true,
+        "readable": true,
+        "writable": true
+      },
+      {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      },
+      {
+        "error": {
+          "name": "object",
+          "code": null,
+          "message": null,
+          "identity": true
+        }
+      },
+      {
+        "error": {
+          "name": "RangeError",
+          "code": "ERR_ENCODING_NOT_SUPPORTED",
+          "message": "The \"missing-encoding\" encoding is not supported",
+          "identity": false
+        }
+      }
+    ]
+  },
+  "decoder-fatal": {
+    "rows": [
+      {
+        "outputs": [],
+        "writes": [
+          {}
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+            "message": "The encoded data was not valid for encoding utf-8",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+            "message": "The encoded data was not valid for encoding utf-8",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [],
+        "writes": [
+          {
+            "error": {
+              "name": "TypeError",
+              "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+              "message": "The encoded data was not valid for encoding utf-8",
+              "identity": false
+            }
+          }
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_STATE",
+            "message": "Invalid state: WritableStream is closed",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+            "message": "The encoded data was not valid for encoding utf-8",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [
+          "A"
+        ],
+        "writes": [
+          {},
+          {}
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+            "message": "The encoded data was not valid for encoding utf-8",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_ENCODING_INVALID_ENCODED_DATA",
+            "message": "The encoded data was not valid for encoding utf-8",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      }
+    ]
+  },
+  "decoder-undefined": {
+    "rows": [
+      {
+        "outputs": [],
+        "writes": [
+          {
+            "error": {
+              "name": "TypeError",
+              "code": "ERR_INVALID_ARG_TYPE",
+              "message": "The \"chunk\" argument must be of type string. Received undefined",
+              "identity": false
+            }
+          }
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_STATE",
+            "message": "Invalid state: WritableStream is closed",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_ARG_TYPE",
+            "message": "The \"chunk\" argument must be of type string. Received undefined",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [],
+        "writes": [
+          {
+            "error": {
+              "name": "TypeError",
+              "code": "ERR_INVALID_ARG_TYPE",
+              "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received null",
+              "identity": false
+            }
+          }
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_STATE",
+            "message": "Invalid state: WritableStream is closed",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_ARG_TYPE",
+            "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received null",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [],
+        "writes": [
+          {
+            "error": {
+              "name": "TypeError",
+              "code": "ERR_INVALID_ARG_TYPE",
+              "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received type string ('abc')",
+              "identity": false
+            }
+          }
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_STATE",
+            "message": "Invalid state: WritableStream is closed",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_ARG_TYPE",
+            "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received type string ('abc')",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      },
+      {
+        "outputs": [],
+        "writes": [
+          {
+            "error": {
+              "name": "TypeError",
+              "code": "ERR_INVALID_ARG_TYPE",
+              "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received an instance of Object",
+              "identity": false
+            }
+          }
+        ],
+        "close": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_STATE",
+            "message": "Invalid state: WritableStream is closed",
+            "identity": false
+          }
+        },
+        "reader": {
+          "error": {
+            "name": "TypeError",
+            "code": "ERR_INVALID_ARG_TYPE",
+            "message": "The \"input\" argument must be an instance of ArrayBuffer or ArrayBufferView. Received an instance of Object",
+            "identity": false
+          }
+        },
+        "readableLocked": true,
+        "writableLocked": true
+      }
+    ]
+  },
+  "decoder-gc": {
+    "transfer": {
+      "outputs": [
+        "🌍"
+      ],
+      "writes": [
+        {},
+        {},
+        {}
+      ],
+      "close": {},
+      "reader": {
+        "done": true
+      },
+      "readableLocked": true,
+      "writableLocked": true
+    },
+    "brands": [
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #handle from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #transform from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #transform from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #handle from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #transform from an object whose class did not declare it",
+          "identity": false
+        }
+      },
+      {
+        "error": {
+          "name": "TypeError",
+          "code": null,
+          "message": "Cannot read private member #transform from an object whose class did not declare it",
+          "identity": false
+        }
+      }
+    ]
+  }
+}

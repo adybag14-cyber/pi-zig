@@ -1,0 +1,202 @@
+{
+  "pipe-values": {
+    "lockedDuring": [
+      true,
+      true
+    ],
+    "identities": [
+      true,
+      true
+    ],
+    "closed": 1,
+    "lockedAfter": [
+      false,
+      false
+    ]
+  },
+  "pipe-final-chunk": {
+    "before": [
+      "last"
+    ],
+    "after": [
+      "last",
+      "write-done",
+      "close"
+    ],
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-closed-source-hwm-zero": {
+    "closed": 1,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-source-error": {
+    "identity": true,
+    "abortIdentity": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-destination-error": {
+    "identity": true,
+    "cancelIdentity": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-write-error": {
+    "identity": true,
+    "cancelIdentity": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-prevent-close": {
+    "afterPipeClosed": 0,
+    "seen": [
+      "first",
+      "after"
+    ],
+    "closed": 1
+  },
+  "pipe-prevent-abort": {
+    "identity": true,
+    "aborted": 0,
+    "seen": [
+      "after"
+    ]
+  },
+  "pipe-prevent-cancel": {
+    "identity": true,
+    "cancelled": 0,
+    "remaining": 2
+  },
+  "pipe-pre-abort": {
+    "identity": true,
+    "abortIdentity": true,
+    "cancelIdentity": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-abort-pending-write": {
+    "before": [
+      "write"
+    ],
+    "identity": true,
+    "after": [
+      "write",
+      "write-done",
+      "abort",
+      "cancel"
+    ],
+    "abortIdentity": true,
+    "cancelIdentity": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-abort-actions-reject": {
+    "abortFailure": true,
+    "cancelFailure": false,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-through-identity": {
+    "readableIdentity": true,
+    "valueIdentity": true,
+    "end": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-through-error": {
+    "identity": true,
+    "cancelIdentity": false
+  },
+  "pipe-through-getter-order": {
+    "log": [
+      "readable",
+      "writable",
+      "preventAbort",
+      "preventCancel",
+      "preventClose",
+      "signal"
+    ],
+    "identity": true,
+    "end": true
+  },
+  "pipe-borrowed-receivers": {
+    "pipeTo": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    },
+    "pipeThrough": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_THIS",
+        "message": "Value of \"this\" must be of type ReadableStream"
+      }
+    }
+  },
+  "pipe-locked-source-order": {
+    "failure": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_STATE",
+        "message": "Invalid state: The ReadableStream is locked"
+      }
+    },
+    "log": [
+      "preventAbort",
+      "preventCancel",
+      "preventClose",
+      "signal"
+    ]
+  },
+  "pipe-locked-destination": {
+    "failure": {
+      "error": {
+        "name": "TypeError",
+        "code": "ERR_INVALID_STATE",
+        "message": "Invalid state: The WritableStream is locked"
+      }
+    },
+    "sourceLocked": false
+  },
+  "pipe-closed-destination": {
+    "failure": {
+      "name": "TypeError",
+      "code": "ERR_INVALID_STATE",
+      "message": "Invalid state: Destination WritableStream is closed"
+    },
+    "sameReason": true,
+    "locks": [
+      false,
+      false
+    ]
+  },
+  "pipe-close-error": {
+    "identity": true,
+    "locks": [
+      false,
+      false
+    ]
+  }
+}

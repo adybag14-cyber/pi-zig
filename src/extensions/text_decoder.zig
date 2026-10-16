@@ -370,6 +370,20 @@ pub fn install(engine: *engine_mod.Engine) !void {
         if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, getter, c.pi_js_undefined(), c.JS_PROP_ENUMERABLE | c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     }
     if (c.JS_DefinePropertyValueStr(engine.context, global, "TextDecoder", c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    // Native stream consumers retain the genuine implementation at creation,
+    // before a guest can replace the global, prototype methods or getters.
+    const js = @import("native_js_values.zig");
+    const owner = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()));
+    defer engine.freeValue(owner);
+    try js.define(engine, owner, "constructor", c.JS_DupValue(engine.context, constructor));
+    try js.define(engine, owner, "decode", try js.get(engine, prototype, "decode"));
+    inline for (.{ "encoding", "fatal", "ignoreBOM" }) |name| try js.define(engine, owner, name, try intrinsicGetter(engine, prototype, name));
+    try engine.registerValueModule("pi-native:text-decoder-bindings", owner);
+}
+
+pub fn nativeBindings(engine: *engine_mod.Engine) !c.JSValue {
+    if (engine.text_decoder_class == 0) try install(engine);
+    return c.JS_DupValue(engine.context, engine.native_module_values.get("pi-native:text-decoder-bindings") orelse return error.TextDecoderBindingsUnavailable);
 }
 
 fn fixture(source: []const u8, expected: []const u8) !void {

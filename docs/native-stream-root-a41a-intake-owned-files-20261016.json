@@ -1,0 +1,210 @@
+{
+  "base": "a41a94de0b0ca5e689bb9d59cd31c26b78edeebb",
+  "current_root_review": "07609651754f498de1713389f720711fdad93033",
+  "existing_modified": [
+    "build.zig",
+    "src/extensions/native_transform_stream.zig",
+    "src/extensions/text_decoder.zig"
+  ],
+  "new_exact_files": [
+    {
+      "path": "src/extensions/fixtures/env-readable-pipe-source-24.input.txt",
+      "sha256": "E681A21A40D744527474B0CC33053CAD7D709DE8FA8E6818A016CD0470370B62",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/fixtures/env-readable-pipe-source-24.json",
+      "sha256": "5B79640FE44BC589133693EB87E6CCD5914EDB14313653E624DE6257C6F51B4F",
+      "origin": "6fbdedfcc5e90c852afc8c2d8e378972c086f255"
+    },
+    {
+      "path": "src/extensions/fixtures/stream-web-queue-text-node24.input.txt",
+      "sha256": "0FE151DCD8715FB219CAA50EF19C677AFF5015AED0E4E0066DB3AED7AEFC1648",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/fixtures/stream-web-queue-text-node24.json",
+      "sha256": "6B635FB4DC56515C52524D26E829BC47A46449FAFF7B9FC1BD8E03F16A98E8AD",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/native_compression_stream.zig",
+      "sha256": "E063F5612A6176949F1AA03BE5328698616DC6D03764879832E0A5536EDDFBA0",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/native_node_stream_web.zig",
+      "sha256": "0CFB9811860E43FDDE8DE3F83DF8516E86E1285D6FD3A690FA84EA7D57212920",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/native_queuing_strategy.zig",
+      "sha256": "B77E72A7D1954A589B66309C621FE1B4C616B32D75997A3F5A05B4672E3CFABB",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/extensions/native_text_stream.zig",
+      "sha256": "96C053BE42D55D127ECD8BAD5F9F9B0C94B918D314FFEC70C1538CBFFFC635F2",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/native_readable_pipe_oom_test.zig",
+      "sha256": "A9AA46E6B9E8E9599F8B08CB15ACD15A8DD76152F55A56BE4ACC2CCA415846F8",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/native_readable_pipe_source_test.zig",
+      "sha256": "E6DD6D75ABCC1567174792761858B43BA6E99C9EAC2AFA33DB34D906F4721C19",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/native_stream_exports_test.zig",
+      "sha256": "D61A7E0CC817B89129B7BF4E85B230D89DFCB9C2471A0B8C1BF06DEBC66FD4E6",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/native_stream_web_assembly_test.zig",
+      "sha256": "E6885C5DCEE0824BFCB197AF534CAC248F18D60B7EF154AED672AED34E9A386F",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "src/native_stream_web_source16_test.zig",
+      "sha256": "42914F05EEBC69BEE2650499621FD100C135F7838F2ADC9E81D74FD9B51CBE3F",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "tools/build_native_transform_compression.zig",
+      "sha256": "ED03E0536E3374482B898D46332C499A96C99F81EAF1091297976533377E6BF7",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "tools/capture-stream-web-queue-text-node24.mjs",
+      "sha256": "D0066EDEFB735C55E7A495546184BE8A0D6E260F30FFC06C5199E38877A80E7E",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/adler32.c",
+      "sha256": "9CD1443A24FF2A3053961695BD432035C58347386A420D3388232376EBABE211",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/crc32.c",
+      "sha256": "8FD16F0A7714D51C89C2EB37EB98EC15E8A4DC57BA343E7B7398B19144039FDA",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/crc32.h",
+      "sha256": "9A2223575183AC2EE8A247F20BF3AC066E8BD0140369556BDBDFFC777435749E",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/deflate.c",
+      "sha256": "3B956337350F94C34987750F785587EF33D9C89CEAEBB7C2AFB189C956360CBE",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/deflate.h",
+      "sha256": "48BAF016326D8D5E3E32AC8153CC7E22F854B8E6834830B167B998A7FB1E7989",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffast.c",
+      "sha256": "E6EF64CE5DC0A4CD5C7AD08CEEB2B2A698B8447F6BD156057CAEB2EDAB68C0CB",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffast.h",
+      "sha256": "05CC5DC9FF1DA7B8B52A4BD8BDA0D8A5C236A2F39EFE84B941516EA13857E6C5",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inffixed.h",
+      "sha256": "237BA710F090E432B62EBF963BEE8B302867E9691406B2D3F8EE89EE7BFEF9B0",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inflate.c",
+      "sha256": "34C998CE0037C0537C04B03B276F680B945F9B2C9D1E01B287605BD6879F7FD2",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inflate.h",
+      "sha256": "E8D4A51B07694BF48CB91979C19974CF6A5AB0B8A09D26EC0D14DF349230673E",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inftrees.c",
+      "sha256": "5D4F335221D2DC76F17ABD2577D92C2D7BAF68FA6D7F23373B360830493D1563",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/inftrees.h",
+      "sha256": "0A0FCAF2AE2FAE57426BDC06637270E9BBA974F35202CADBDBA479D946E6409D",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/LICENSE",
+      "sha256": "845EFC77857D485D91FB3E0B884AAA929368C717AE8186B66FE1ED2495753243",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/PROVENANCE.md",
+      "sha256": "7934B76B81CF681BD4776DA344AAC8606131E40FEF534AB8C31D634C2D46DDC9",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/trees.c",
+      "sha256": "F63C68C16C05FCD196050529D1A0E7657960E4136B9987D90A6AC3E58A964B0F",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/trees.h",
+      "sha256": "BB0A9D3CA88EE00C81ADB7C636E73B97085F6EF1B52D6D58EDBE2B6DC3ADEB4D",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zconf.h",
+      "sha256": "F5134250A67D57459234B63858F0D9D3EF8DCC48E9E1028D3F4FDCF6EAE677AE",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zlib.h",
+      "sha256": "8A5579AF72EA4F427FF00A4150F0CCB3FC5C1E4379F726E101133B1AB9FC600C",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zutil.c",
+      "sha256": "8CED40D8C88588811EDD2BDB35B7439983D5E1F8E9E32B8A3B244731F3C317B7",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "vendor/native-zlib-1.3.1/zutil.h",
+      "sha256": "DDDB2DC7A1DC339ECF2C8E089B366F08BB731C0839C7110240D17CE731BB4FEA",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    },
+    {
+      "path": "verification/env-pipe-source20-4954-accepted-20261016/source-only-acceptance.json",
+      "sha256": "6B5944E46C297D1D7F08428EEA9A61807F4994C36D1DFB4DE457483CB0AC6164",
+      "origin": "6fbdedfcc5e90c852afc8c2d8e378972c086f255"
+    },
+    {
+      "path": "verification/stream-web-source16-4954-accepted-20261016/source-only-acceptance.json",
+      "sha256": "B57B2DB5C6BDFE91AE01B6ECCF891832CEB947314F3BF5820CD349F5E362C82A",
+      "origin": "ef1a3376767e98687480aeff0e3b9237106a4efc"
+    }
+  ],
+  "new_exact_file_count": 37,
+  "codec_closure_files": 20,
+  "codec_closure_manifest_sha256": "A258DF600B70B8EC22B132F13879FB79277CA3628AF6D297BAFD8DE2A91564D9",
+  "dependency_inventory_sha256": "5066C1C1A0A7EBDA387D1A0D74B246934090F840887A76731F28E46471CEB67E",
+  "pipe20_expected_sha256": "5B79640FE44BC589133693EB87E6CCD5914EDB14313653E624DE6257C6F51B4F",
+  "streamweb16_expected_sha256": "6B635FB4DC56515C52524D26E829BC47A46449FAFF7B9FC1BD8E03F16A98E8AD",
+  "canonical_fmt": "held",
+  "ast": "held",
+  "native_jobs_launched": 0,
+  "source_jobs_launched": 0,
+  "new_c_annotation": false,
+  "existing_vm_c_changed": false,
+  "engine_changed": false,
+  "native_qualified": false
+}

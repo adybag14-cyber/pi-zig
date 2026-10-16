@@ -162,6 +162,12 @@ pub fn errorNative(engine: *em.Engine, controller: c.JSValue, reason: c.JSValue)
     const owner = engine.native_module_values.get(module_key) orelse return error.TransformStreamNotInstalled;
     try errorBoth(streamState(try branded(engine, owner, controller, true)), reason);
 }
+/// Run the same terminal transition as the captured controller method.
+pub fn terminateNative(engine: *em.Engine, controller: c.JSValue) !void {
+    const owner = engine.native_module_values.get(module_key) orelse return error.TransformStreamNotInstalled;
+    const result = try invoke(engine, controller, &.{}, .terminate, owner, c.pi_js_undefined());
+    engine.freeValue(result);
+}
 fn promiseCall(scope: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
     // A transformer may call controller.error/terminate and collect while its
     // own callback is executing. Algorithm retirement must not free this frame.
@@ -477,6 +483,7 @@ pub fn install(engine: *em.Engine) !void {
     const constructor = try scope.own(try class.constructor(engine, "TransformStream", 0, prototype, construct, &.{owner}));
     const controller_constructor = try scope.own(try class.constructor(engine, "TransformStreamDefaultController", 0, controller_prototype, illegal, &.{owner}));
     try scope.put(owner, "constructor", constructor);
+    try scope.put(owner, "controllerConstructor", controller_constructor);
     try defineGetter(&scope, prototype, owner, "readable", "get readable", .readable_get);
     try defineGetter(&scope, prototype, owner, "writable", "get writable", .writable_get);
     try defineGetter(&scope, controller_prototype, owner, "desiredSize", "get desiredSize", .desired_get);
@@ -501,4 +508,20 @@ pub fn createNative(engine: *em.Engine, transformer: c.JSValue, writable_strateg
     defer engine.freeValue(constructor);
     var args = [_]c.JSValue{ transformer, writable_strategy, readable_strategy };
     return engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args));
+}
+/// Actual default identity transform for native Body/Request transfer consumers.
+pub fn createIdentityNative(engine: *em.Engine) !c.JSValue {
+    return createNative(engine, c.pi_js_undefined(), c.pi_js_undefined(), c.pi_js_undefined());
+}
+/// Owned namespace with the original two captured constructors. Public global
+/// and prototype.constructor mutations do not alter native module identities.
+pub fn exports(engine: *em.Engine) !c.JSValue {
+    try install(engine);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const owner = engine.native_module_values.get(module_key).?;
+    const result = try scope.object();
+    try scope.put(result, "TransformStream", try scope.get(owner, "constructor"));
+    try scope.put(result, "TransformStreamDefaultController", try scope.get(owner, "controllerConstructor"));
+    return c.JS_DupValue(engine.context, result);
 }
