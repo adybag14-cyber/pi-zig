@@ -5,6 +5,7 @@ const js = v.js;
 const c = v.c;
 const Scope = v.Scope;
 const functions = @import("native_node_function.zig");
+const body = @import("native_async_body.zig");
 pub const Inputs = struct { process: c.JSValue, read_file_sync: c.JSValue, spawn_process: c.JSValue, spawn_process_sync: c.JSValue, is_stdout_taken_over: c.JSValue };
 const Method = enum(c_int) { spawnCommand, spawnCaptureCommand, runCommandCapture, runCommand, runCommandSync };
 const Event = enum(c_int) { executor_capture, executor_command, stdout, stderr, timeout, capture_error, capture_close, command_exit };
@@ -57,10 +58,16 @@ fn environment(scope: *Scope, imports: c.JSValue) !c.JSValue {
     if (try scope.positive(try scope.get(keys, "length"))) return scope.get(process, "env");
     const generation = scope.engine.native_allocation_generation;
     return environmentInner(scope, imports) catch |err| {
-        const classified = scope.engine.nativeAllocationError(err, generation);
-        if (classified != error.JavaScriptException) return classified;
-        if (scope.engine.captured_exception) |value| scope.engine.freeValue(value);
+        if (err != error.JavaScriptException) return err;
+        if (scope.engine.captured_exception) |reason| {
+            if (c.JS_IsUncatchableError(reason)) return err;
+            try body.rethrowRecognizedAllocation(scope.engine, reason, generation);
+        }
+        // Source's empty catch owns no binding. Consume this ordinary capture
+        // before the fallback getter can throw the same object anew.
+        const ignored = scope.engine.captured_exception;
         scope.engine.captured_exception = null;
+        if (ignored) |value| scope.engine.freeValue(value);
         return scope.get(process, "env");
     };
 }

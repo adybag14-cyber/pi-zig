@@ -1,0 +1,25 @@
+{
+  "status": "actual_transport_empty_catch_source_only_prepared_unrun",
+  "base": "a44aee979f2e67feecea2de8011f2abd1af8e768",
+  "method": "environment getEnv Linux empty process.env fallback",
+  "changes": [
+    "non_JS_errors_leave_unrelated_captured_slot_untouched",
+    "preserve_preexisting_uncatchable_reason",
+    "fresh_private_allocation_exact_rethrow_before_any_classification",
+    "ordinary_JS_capture_transferred_nulled_and_freed_before_fallback_env_getter",
+    "same_object_thrown_new_by_fallback_is_not_deferred_cleared"
+  ],
+  "prepared_component_tests": 2,
+  "prepared_programs": 3,
+  "controlled_inputs": "process/read/spawn test callbacks only; actual transport installer and actual native function/Engine machinery",
+  "no_child_transport_qualification": true,
+  "original_source53_44_15_48_39_proofs_unchanged": true,
+  "transport_sha256": "4A78250115A65E9008C488FE87F664CB7070088CFF699D219A965E5193062ECD",
+  "test_sha256": "0B57B23D7486CEAF86CBC9B80525DBBA57ABC4BE99A24AB417F6294D7DD968F4",
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "default_selected": false,
+  "engine_changed": false,
+  "c_changed": false
+}
