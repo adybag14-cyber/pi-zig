@@ -120,7 +120,11 @@ try{
  & $taskOwner -Executable $taskZig -WorkingDirectory $taskRoot -Arguments @('build','test-native-async-function-qualification',"-Doptimize=$Optimize",'-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase "$taskBase-runtime" -TimeoutSeconds 300
  $taskRuntime=Get-Content -LiteralPath "$taskBase-runtime.process.json" -Raw|ConvertFrom-Json
  if($taskRuntime.status -cne 'passed' -or $taskRuntime.exit_code -ne 0){throw 'Exact matching runtime failed'}
-}catch{$taskFailure=$_.Exception.Message}finally{
+}catch{
+ $taskFailure=$_.Exception.Message
+ if(!$taskBuild -and (Test-Path -LiteralPath "$taskBase-compile.process.json")){$taskBuild=Get-Content -LiteralPath "$taskBase-compile.process.json" -Raw|ConvertFrom-Json}
+ if(!$taskRuntime -and (Test-Path -LiteralPath "$taskBase-runtime.process.json")){$taskRuntime=Get-Content -LiteralPath "$taskBase-runtime.process.json" -Raw|ConvertFrom-Json}
+}finally{
  try{Verify-Frozen 'post'}catch{$taskPostFailure=$_.Exception.Message}
  Save-Json "$taskBase-terminal.json" @{status=if($taskFailure -or $taskPostFailure){'failed'}else{'passed'};candidate_head=$ExpectedHead;reviewed_source_checkpoint=$taskPublishedHead;compile=$taskBuild;runtime=$taskRuntime;actual_test_metadata=$taskMetadata;artifacts=$taskArtifacts;failure=$taskFailure;posthash_failure=$taskPostFailure;native_qualified=(!$taskFailure -and !$taskPostFailure -and $null -ne $taskRuntime);full_pi_qualified=$false;root_execution_grant=$RootExecutionGrant;owner_sha256=$ApprovedOwnerSHA256;utc=[DateTimeOffset]::UtcNow.ToString('o')}
 }

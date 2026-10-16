@@ -2230,9 +2230,9 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, response_stream_oom_module, quickjs, sqlite_lib_dir);
     response_stream_oom_module.addImport("catalog_tool", catalog_tool);
     const response_stream_oom_tests = b.addTest(.{ .root_module = response_stream_oom_module, .use_llvm = use_llvm, .filters = &.{"native readable host OOM"} });
-    b.step("build-hosted-native-readable-host-oom", "Compile deterministic actual tee permanent host OOM retirement regression").dependOn(&response_stream_oom_tests.step);
+    b.top_level_steps.get("build-hosted-native-readable-host-oom").?.step.dependOn(&response_stream_oom_tests.step);
     const response_stream_oom_run = b.addRunArtifact(response_stream_oom_tests);
-    b.step("test-native-readable-host-oom", "Verify real tee consumers reject native OOM and release all host storage").dependOn(&response_stream_oom_run.step);
+    b.top_level_steps.get("test-native-readable-host-oom").?.step.dependOn(&response_stream_oom_run.step);
     const tui_base_source_module = b.createModule(.{ .root_source_file = b.path("src/native_tui_base_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, tui_base_source_module, quickjs, sqlite_lib_dir);
     tui_base_source_module.addImport("catalog_tool", catalog_tool);
