@@ -113,7 +113,7 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
     const retention = try request.cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
     // createClient captures these defaults before the awaited payload hook.
-    try scope.put(owner, "clientHeaders", try buildHeaders(scope, owner));
+    try scope.put(owner, "clientHeaders", try prepareClientHeaders(scope, owner));
     try scope.put(owner, "clientBaseUrl", try scope.get(try scope.get(owner, "model"), "baseUrl"));
     try scope.put(owner, "clientFetch", try v.optional(scope, options, "fetch"));
     const params = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), options, try scope.get(owner, "compat"), retention, properties, try scope.get(try scope.get(owner, "agent"), "simple")));
@@ -199,26 +199,7 @@ fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     };
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
-fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
-    if (v.nullish(source)) return;
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{source}));
-    defer rows.deinit();
-    errdefer rows.closePreserving();
-    while (try rows.next()) |entry| {
-        defer scope.engine.freeValue(entry);
-        const name = try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{});
-        try v.js.setKey(scope.engine, target, name, try v.at(scope, entry, 1));
-    }
-}
-fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
-    const result = try scope.object();
-    try scope.put(result, "accept", try scope.text("application/json"));
-    // Source disables SDK retries for each outer retryProviderRequest attempt.
-    // Its protocol retry-count header is therefore zero on every SDK request;
-    // caller/model overrides still merge below with ordinary Source precedence.
-    try scope.put(result, "x-stainless-retry-count", try scope.text("0"));
-    try scope.put(result, "content-type", try scope.text("application/json"));
-    try scope.put(result, "authorization", try scope.concat(try scope.text("Bearer "), try scope.stringify(try scope.get(owner, "apiKey"))));
+fn prepareClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const defaults = try scope.object();
     try scope.put(defaults, "User-Agent", try @import("native_ai_user_agent.zig").runtime(scope));
     const model = try scope.get(owner, "model");
@@ -265,14 +246,42 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
         }
     }
     try v.js.spreadInto(scope.engine, defaults, try v.optional(scope, options, "headers"));
-    try mergeHeaders(scope, result, defaults);
-    return result;
+    return defaults;
+}
+fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
+    const base = try scope.object();
+    try scope.put(base, "accept", try scope.text("application/json"));
+    try scope.put(base, "user-agent", try @import("native_ai_user_agent.zig").runtime(scope));
+    // Every outer retry creates a fresh SDK-equivalent request with SDK retries
+    // disabled. Runtime-identifying Stainless fields are deliberately absent.
+    try scope.put(base, "x-stainless-retry-count", try scope.text("0"));
+    const timeout = try scope.get(owner, "requestTimeout");
+    if (scope.truthy(timeout)) {
+        const seconds = try scope.own(try @import("native_image_arithmetic.zig").binary(scope.engine, .divide, timeout, c.JS_NewInt32(scope.engine.context, 1000)));
+        try scope.put(base, "x-stainless-timeout", try scope.stringify(try scope.invoke(try scope.global("Math"), "trunc", &.{seconds})));
+    }
+    const authentication = try scope.object();
+    const key = try scope.own(try scope.engine.checked(c.JS_ToString(scope.engine.context, try scope.get(owner, "apiKey"))));
+    try scope.put(authentication, "authorization", try scope.concat(try scope.text("Bearer "), key));
+    const body_headers = try scope.object();
+    try scope.put(body_headers, "content-type", try scope.text("application/json"));
+    // SDK JSON body headers apply after createClient's defaultHeaders. The
+    // real Headers implementation supplies validation, trimming and append.
+    const built = try @import("native_ai_openai_sdk_headers.zig").build(scope.engine, &.{ base, authentication, try scope.get(owner, "clientHeaders"), body_headers });
+    defer scope.engine.freeValue(built.nulls);
+    return built.values;
 }
 fn open(scope: *Scope, owner: c.JSValue) !void {
     const engine = scope.engine;
     const options = try scope.get(owner, "options");
     if (!v.nullish(try scope.get(owner, "clientFetch"))) return v.errorText(scope, try scope.text("Native OpenAI custom fetch adapter is not yet qualified"));
-    const header_object = try scope.get(owner, "clientHeaders");
+    const base = try scope.get(owner, "clientBaseUrl");
+    const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
+    const url = try engine.toString(try scope.concat(trimmed, try scope.text("/chat/completions")));
+    defer engine.gpa.free(url);
+    const payload = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
+    defer engine.gpa.free(payload);
+    const header_object = try scope.own(try buildHeaders(scope, owner));
     var fields: std.ArrayList(std.http.Header) = .empty;
     defer {
         for (fields.items) |field| {
@@ -281,7 +290,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         }
         fields.deinit(engine.gpa);
     }
-    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{header_object}));
+    var rows = try v.iterator(scope, try scope.invoke(header_object, "entries", &.{}));
     defer rows.deinit();
     errdefer rows.closePreserving();
     while (try rows.next()) |entry| {
@@ -294,13 +303,7 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
         errdefer engine.gpa.free(text);
         try fields.append(engine.gpa, .{ .name = name, .value = text });
     }
-    const base = try scope.get(owner, "clientBaseUrl");
-    const trimmed = if (scope.truthy(try scope.invoke(base, "endsWith", &.{try scope.text("/")}))) try scope.invoke(base, "slice", &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, -1) }) else base;
-    const url = try engine.toString(try scope.concat(trimmed, try scope.text("/chat/completions")));
-    defer engine.gpa.free(url);
-    const payload = try engine.toString(try scope.invoke(try scope.global("JSON"), "stringify", &.{try scope.get(owner, "payload")}));
-    defer engine.gpa.free(payload);
-    const timeout = try v.optional(scope, options, "timeoutMs");
+    const timeout = try scope.get(owner, "requestTimeout");
     var milliseconds: i64 = 600000;
     if (!c.JS_IsUndefined(timeout) and c.JS_ToInt64(engine.context, &milliseconds, timeout) < 0) return v.js.capture(engine);
     const transport = try scope.own(try http.openWithOptions(engine, .{ .url = url, .payload = payload, .headers = fields.items, .timeout_ms = @intCast(@max(0, milliseconds)), .headers_timeout_only = true, .framing = .bytes }, try v.optional(scope, options, "signal"), .{ .raw_header_pairs = true }));
@@ -315,6 +318,11 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
     switch (stage) {
         .payload => {
             if (!c.JS_IsUndefined(value)) try scope.put(owner, "payload", value);
+            const options = try scope.get(owner, "options");
+            const configured = try v.optional(scope, options, "timeoutMs");
+            // Source captures requestOptions once after the payload hook. Its
+            // conditional property spread observes a present timeout twice.
+            try scope.put(owner, "requestTimeout", if (c.JS_IsUndefined(configured)) c.pi_js_undefined() else try v.optional(scope, options, "timeoutMs"));
             try open(scope, owner);
         },
         .ready => {

@@ -1,0 +1,46 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\api\\openai-completions.ts",
+    "sha256": "BDDB09F395DF6D5D29FBAB4DD8039F89DEA0C58F892DC4C15C73BE74FE6E0B7D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-source-ae7b16d-20261015\\packages\\ai\\src\\utils\\provider-retry.ts",
+    "sha256": "91350009509D50845FF0C609BF98BD8818081B6FCC64D034E6D45522F41DB9AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\client.mjs",
+    "sha256": "45B54E0C0A779A8B284CC8BCFB41A0A0F1817EAC32D9CC585FF71875B62AEB6B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\internal\\headers.mjs",
+    "sha256": "CFE8E16C485C42F58182A701BE897DB98E7A52F0A98A40D16D142FD7F200DA0F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\internal\\detect-platform.mjs",
+    "sha256": "11217B3F82FB3527B1670CD6207EA658D3012915F0DC08A80DFE3829141E6489"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\internal\\utils\\values.mjs",
+    "sha256": "158B5322A4496971D91A74F179DC8CFFBA2D23849467618F5F90E79CEA6E1D93"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\internal\\shims.mjs",
+    "sha256": "0EEB939EE18F8DF00273D819FFE94D84FA2C3E990485902C4C94A108669FFAEA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai\\version.mjs",
+    "sha256": "FF69AAAB17CC2ADCF6D464988BE98F3F7D6FB4ABAAF478306B105CEE61C671A1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-fetch-node24-source-first-20261015-bundled-undici.js.txt",
+    "sha256": "C62030F1E505A4010D9972ECBF40155EDDEB355F2A53A9F019A447214E1A9600"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\std\\http\\Client.zig",
+    "sha256": "E1C17A79CF578517A7F8B24FE49B3FDDB0DEDEB4813015A7F3A72F72C396E8FA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\std\\http.zig",
+    "sha256": "1135EA177813AFC13CA4A2CE629CDA6E22DB4781CF8C030C3D27FBF572B43263"
+  }
+]

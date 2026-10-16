@@ -109,12 +109,50 @@ fn compareWire(name: []const u8, captured: []const fixture.Captured, expected: [
     }
     return matches;
 }
+fn nativeDefaultHeader(record: fixture.Captured, name: []const u8, expected: ?[]const u8) bool {
+    var count: usize = 0;
+    var matches = true;
+    for (record.headers) |header| if (std.ascii.eqlIgnoreCase(header.name, name)) {
+        count += 1;
+        if (expected) |value| matches = matches and std.mem.eql(u8, value, header.value);
+    };
+    return matches and count == (if (expected == null) @as(usize, 0) else 1);
+}
+fn compareNativeDefaults(name: []const u8, captured: []const fixture.Captured, owned_host: []const u8, identity: []const u8) !bool {
+    var matches = true;
+    for (captured, 0..) |record, index| {
+        const length = try std.fmt.allocPrint(std.testing.allocator, "{d}", .{record.payload.len});
+        defer std.testing.allocator.free(length);
+        const current = nativeDefaultHeader(record, "host", owned_host) and
+            nativeDefaultHeader(record, "user-agent", identity) and
+            nativeDefaultHeader(record, "x-stainless-retry-count", "0") and
+            nativeDefaultHeader(record, "content-length", length) and
+            nativeDefaultHeader(record, "content-type", "application/json") and
+            nativeDefaultHeader(record, "connection", "close") and
+            nativeDefaultHeader(record, "accept-encoding", "gzip, deflate") and
+            nativeDefaultHeader(record, "transfer-encoding", null);
+        var identity_absent = true;
+        // This fixed original58 corpus has no caller-owned header overrides.
+        // These are independent native-default assertions, not a projection of
+        // Source's immutable Node header record or a native-generated golden.
+        for ([_][]const u8{ "x-stainless-lang", "x-stainless-package-version", "x-stainless-os", "x-stainless-arch", "x-stainless-runtime", "x-stainless-runtime-version", "accept-language", "sec-fetch-mode" }) |field| {
+            identity_absent = identity_absent and nativeDefaultHeader(record, field, null);
+        }
+        if (!current or !identity_absent) {
+            matches = false;
+            std.debug.print("Source58 independent native identity/protocol contract differs {s}/{d}; owned Host={s} identity={s} UTF8 body length={s}\n", .{ name, index, owned_host, identity, length });
+        }
+    }
+    return matches;
+}
 test "native OpenAI original Source58 actual fourteen constructors Models Kimi full snapshots and strict raw wire" {
     const source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, golden, .{});
     defer source.deinit();
     try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", source.value.object.get("sourceHead").?.string);
     const rows = source.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 58), rows.len);
+    const native_identity = try @import("native_ai_openai_header_contract_test.zig").expectedNativeIdentity(std.testing.allocator);
+    defer std.testing.allocator.free(native_identity);
     const producer_source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, producer_golden, .{});
     defer producer_source.deinit();
     try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", producer_source.value.object.get("sourceHead").?.string);
@@ -128,6 +166,10 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
         var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
         defer arena.deinit();
         const requests = row.object.get("requests").?.array.items;
+        const input_fields = row.object.get("input").?.object;
+        inline for (.{ "model", "options" }) |field| if (input_fields.get(field)) |entry| {
+            if (entry.object.get("headers")) |overrides| if (overrides != .null) return error.NativeDefaultHeaderCorpusMustNotContainCallerOverrides;
+        };
         const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, try replies(arena.allocator(), row.object.get("input").?, requests));
         defer server.deinit();
         const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
@@ -169,6 +211,8 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
         }
         try server.finish();
         if (!compareWire(name, server.captured.items, requests)) all_match = false;
+        const owned_host = try std.fmt.allocPrint(arena.allocator(), "127.0.0.1:{d}", .{server.listener.socket.address.getPort()});
+        if (!try compareNativeDefaults(name, server.captured.items, owned_host, native_identity)) all_match = false;
         c.JS_RunGC(engine.runtime);
         try std.testing.expect(!@import("extensions/native_ai_http.zig").pending(engine));
     }
