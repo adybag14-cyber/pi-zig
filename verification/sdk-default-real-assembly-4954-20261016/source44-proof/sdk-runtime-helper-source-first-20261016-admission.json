@@ -1,0 +1,10 @@
+{
+  "status": "admitted",
+  "free_kib": 24471840,
+  "required_kib": 2097152,
+  "heap_mb": 256,
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "slot": "Root LIGHT7",
+  "observed_utc": "2026-10-16T10:45:19.8629069+00:00"
+}

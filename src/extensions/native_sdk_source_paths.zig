@@ -41,6 +41,11 @@ fn shellPath(scope: *Scope, input: c.JSValue) !c.JSValue {
     const drive = try scope.own(try js.getKey(scope.engine, matched, c.JS_NewInt32(scope.engine.context, 1)));
     return scope.concat(try scope.concat(try scope.stringify(try scope.invoke(drive, "toUpperCase", &.{})), try scope.text(":\\")), try scope.stringify(if (temporary.nullish(suffix)) try scope.text("") else suffix));
 }
+pub fn windowsShell(engine: *em.Engine, input: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    return c.JS_DupValue(engine.context, try shellPath(&scope, input));
+}
 pub fn normalize(engine: *em.Engine, input: c.JSValue, supplied_options: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();

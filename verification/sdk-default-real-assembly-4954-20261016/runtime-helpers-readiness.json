@@ -1,0 +1,279 @@
+{
+  "status": "actual_runtime_helpers_source44_prepared",
+  "prior_proof": "bd994a6b790a844c887f8ceb159d5c0dbeb76bab",
+  "zig": "0.16.0",
+  "fmt_ast_passed_files": 54,
+  "zig_files": [
+    {
+      "path": "src/extensions/native_auth_directory_lock.zig",
+      "sha256": "0802985BA774879706C9E6BC7DD01BDF17B6B1F040B639E28E49AE7C128DADA8"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "sha256": "264E0FC4CB63F83C252EEC94EB7AC7B8BD7AF0B438A419E9E91D63474061DBD6"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_fs.zig",
+      "sha256": "3AC9886733EFB473A4A25D4B91DCD66598E12406E68F56C8AE7AA72A393F9E00"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "sha256": "59A6AF908B1A67AF1BFA25EE9B19F1F3E17ABD82CBDC646C6294F9330618E1E0"
+    },
+    {
+      "path": "src/extensions/native_file_revision.zig",
+      "sha256": "CCF64B823B7ECE32074CC4CDD4322B7395CB0EBCBD255F104FC7C2552ECDE2CE"
+    },
+    {
+      "path": "src/extensions/native_file_stat.zig",
+      "sha256": "690FF99C48D0D30842690A4EF83B1D2008E54970B549BAE4F9707BEE93DB2780"
+    },
+    {
+      "path": "src/extensions/native_sdk_agent_directory.zig",
+      "sha256": "8A5810EE87528E63BBDBB82205507FEF93342B1DB2BB1B0A5F0E33ECC6B431B4"
+    },
+    {
+      "path": "src/extensions/native_sdk_configuration_production.zig",
+      "sha256": "87BC47958AB6F10DC085D5DCFB7DBE0323D910ECB5F146763383E13168285189"
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "sha256": "AE031F1CC56D5FB35D8C9DE4CED5C631C326EC5434CED2029C38601630D5BE36"
+    },
+    {
+      "path": "src/extensions/native_sdk_event_bus.zig",
+      "sha256": "D83BAA543F10DAE525CE0FB0DC2046E52ACBB85545B8F6E0D67E26455450FCB8"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_cache.zig",
+      "sha256": "5A93738DB714D85991155F65AB368F377DD3A08B9AFF8F9CC27ED3BAB36C65B5"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_package_warnings.zig",
+      "sha256": "CCBF95AD8D09F2A18B490E7783355A335947739E65CEC9B909D89500EA43177A"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_replacements.zig",
+      "sha256": "6B8FD7E8912012A429BF4F0BEE483FDD2E012CAEF8861437E5B1B11BEC2C0D7D"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54"
+    },
+    {
+      "path": "src/extensions/native_sdk_frontmatter_values.zig",
+      "sha256": "A856DE80111E4E4A7614F85000DDBBDB2E84C7B247EA56A41FC2CBE2169D615E"
+    },
+    {
+      "path": "src/extensions/native_sdk_mcp_config.zig",
+      "sha256": "76EBC570920FECB0E08497DAE6963887CF6293890D847AADA12B30BA50F66E38"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_accumulator.zig",
+      "sha256": "5CCB4849AA1FC261D59D6B71800A08BCED933CB2D40DFA90B6810E46DA49ABEE"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_extension_sources.zig",
+      "sha256": "166C7053AE1BCDA854C8483EDAAC3BF08A321BD5C6DC523839F539D944130A8C"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_identity.zig",
+      "sha256": "96C6C855F3BAD7C4036BA65C6A77BD3FF490365CE83EFE29B187574711370371"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_manager.zig",
+      "sha256": "98B4033E663FA64675003825A6163321EB119B5E823CDB034D08B92EEF5E9130"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_paths.zig",
+      "sha256": "2A2FCDCBFECC2C75A4A339529C740C6CB04757BD409C51C32E411CFC1E728F4F"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_resolve.zig",
+      "sha256": "2710DE4C6EBE0A4970E8E9BDB962912C9F3375D99C581A1B033FF5DC511A01D0"
+    },
+    {
+      "path": "src/extensions/native_sdk_path_utilities_namespace.zig",
+      "sha256": "39BE4B006A643BF476DF6923326641EF48E41063D584BADDACDD5433447A3406"
+    },
+    {
+      "path": "src/extensions/native_sdk_pi_manifest.zig",
+      "sha256": "CC80EAAB34A169B2663FD9ED52465F89BBBA1D430ACB0324D7297CF683DE95F7"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_file.zig",
+      "sha256": "910176A19037E399C1E31A1D4F41437C0DE6F2A1187D801F15F2A324DFA6751F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_loader.zig",
+      "sha256": "4FE8B53723C9131A555844E215B60DC4C689D792AE0269D4A0C21992E757343B"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_async_iterator.zig",
+      "sha256": "757D552D30D6D9F262667B0754FDAEC8F3CAC22D4409A55FBD24467369280703"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_current.zig",
+      "sha256": "8E1A88856A317CDB57074B2917FE7512A545F828772546571AF5C40B56325D87"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_extend.zig",
+      "sha256": "6799A2C57EBA047B07C42EDC3171B1981D654B4F5BB36BD77E8499F859392548"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_factories.zig",
+      "sha256": "58A16F92FA1D368C0A9F5A730FE3D3578570E97A982D9C279D4A806587430C5E"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_final.zig",
+      "sha256": "85B8FBEE1387761FDCF7D6E4FE1E48E1E38E380871C37B5C5C7FC84540395974"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_load_paths.zig",
+      "sha256": "D953D1F1650AADD86DF5A84A3903E2B445587020F260B73C657ECE73D5CF0168"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_paths.zig",
+      "sha256": "FC7D42C02D7136FBDBC409D7D553BB371F8807EE3CC91BD4EE418A5FA6CA3CB6"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_prompt_update.zig",
+      "sha256": "81335E6BDFD4AE284080E37D166B1031D31B602D39CED3654ED457B71B141710"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "sha256": "E479DB781EA8EF2A7C3ABC0E2541EECBC63D30C4585F3504682B856842B4B9CE"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_skill_update.zig",
+      "sha256": "5934B74884695C40E11BD55467BF107258D69E86A3BFC56474C527FF13064AF5"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_sources.zig",
+      "sha256": "B39F6F716FEB84B02DC7907799E14AFCA2C87BEFB87C444AD9B273392079E443"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_theme_update.zig",
+      "sha256": "E72746F5B3018DB00A6CD96697DE701327CED13BD5B21136A279770D3CC8FC37"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_themes.zig",
+      "sha256": "298DF963926A63222FDE4FE2CDABDF80271D17CDB7354AAD1F6D2C412D7B0C86"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_trust.zig",
+      "sha256": "D4E36236CD0DAADE89655CD5C6229FFF9EC1CC26919B4BE4A2AC67C224C5B899"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class.zig",
+      "sha256": "026844528C5568C8A048F8F13F80D8BE4B0A5281E727634FABA32C6372E0D4CF"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_context.zig",
+      "sha256": "0271C036566798EF9C3D1C83E6DDD00F53E9EFD6A914F6F49F920F2E49A40D1F"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_loader_assembly.zig",
+      "sha256": "BBD9D48B4268EC6DD3CEEDFE0116F2CE24971982A1D89AB0D8403EC35C6706EF"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_runtime_owners.zig",
+      "sha256": "96A3D689A95D22D19682D199C57BDF0DBC02FEE47B319E264ABB44169568C325"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_spread.zig",
+      "sha256": "B0BD3066CB8BDC145DC811FD4AC568E2FF5E530E0D064F3506129D0716C20B4A"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "sha256": "11C16AF4D9F511EE1DA7A7953CC286F5BFA983C589030456B59AFF2C1CAD6970"
+    },
+    {
+      "path": "src/extensions/native_sdk_shell_production.zig",
+      "sha256": "D95A67FD0BF3636345F0B38E853AAB1B71AA2A5A4CE0809C4E59CCA207EA9129"
+    },
+    {
+      "path": "src/extensions/native_sdk_skill_file.zig",
+      "sha256": "682A8DCD21441BA148DF68036AE87D078F073B50835AC84F066B97062B1F0AF5"
+    },
+    {
+      "path": "src/extensions/native_sdk_skill_loader.zig",
+      "sha256": "0E6C6D9501EF3E7E82E486CE764FB7E86BD0B6E2703A7C1EF543414874D326A6"
+    },
+    {
+      "path": "src/extensions/native_sdk_source_paths.zig",
+      "sha256": "A751774E4C04038254532D1E0605CE052E93593C03F0FC0987D42EACDA4D3D67"
+    },
+    {
+      "path": "src/extensions/native_sdk_timings.zig",
+      "sha256": "F283A6683E71424D1FA769F912A8FEC12BC1BA028BE90B9A9E6BD6A783220BAF"
+    },
+    {
+      "path": "src/extensions/node_copy_file.zig",
+      "sha256": "7B3EE171C070D574F0C3FD3E0397F14501266ECFC854FA298720723CB30C04C2"
+    },
+    {
+      "path": "src/extensions/node_fs_metadata.zig",
+      "sha256": "7C96C4701FB0D45E275EEA3C0DCAAA3E270517AB6B1525D93732B10DA4F8109A"
+    },
+    {
+      "path": "src/extensions/node_fs.zig",
+      "sha256": "73DC89E04B2749B4D1E5EEB09319FE8FD16676E6E54942FE1B900996713E59BB"
+    }
+  ],
+  "input_sha256": "A11F691DB81F4E268789B55A32A3C67F31C262822F80E869F5B1AB6E5BEC8580",
+  "source_modules": [
+    {
+      "path": "config.ts",
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "utils/shell.ts",
+      "sha256": "C93B05FEF8D75072ADEFF45CDEC2ABFA2E03EB2910D9755C1EDB45CE237E614A",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "core/timings.ts",
+      "sha256": "55E4D7F31BDF3727BAA4E89F361A6ABEE9AE4A76F64A30369EA157CB37BBC2B2",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "core/resource-loader.ts",
+      "sha256": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "core/extensions/loader.ts",
+      "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "core/package-manager.ts",
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "core/session-manager.ts",
+      "sha256": "450D82C529933214E088B8422F00061815E617F352F6C834689787A314064BFF",
+      "unchanged_in_0fb": true
+    },
+    {
+      "path": "utils/pi-user-agent.ts",
+      "sha256": "CD2329BEB4B18FD99F5180D603FD1371C8F50441D4688F7D75918A051E565C26",
+      "unchanged_in_0fb": true
+    }
+  ],
+  "source_authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "current_body_authority": "0fbdbd3",
+  "actual_package_metadata": "packages/coding-agent/package.json version1.3.0, explicit actualSource PI_PACKAGE_DIR",
+  "source_captured": false,
+  "native_compiled": false,
+  "native_qualified": false,
+  "default_selected": false,
+  "remaining": [
+    "real child_process spawn/spawnSync/execSync namespace",
+    "complete actual DefaultPackageManager transport/discovery",
+    "actual extension initializer and cached importer over sharedcache/MCP/chalk/exec"
+  ]
+}

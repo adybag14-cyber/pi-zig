@@ -1,0 +1,7 @@
+{
+  "status": "actual_physical_fixtures_retained",
+  "root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-files",
+  "files": 2,
+  "baseline_sha256": "7514B12D2F4098F65C345995757E7C3A16C822D009FCA410079E280373B766E5",
+  "after_sha256": "E157BF7F40AB91BB3A44E258FF72819A34107D41CF15FA0D6F52B083A918F59A"
+}

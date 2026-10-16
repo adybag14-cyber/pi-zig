@@ -1,0 +1,127 @@
+[
+  {
+    "path": "Run-SdkModelDependenciesSource-20261016.ps1",
+    "sha256": "86DD76FE33BE13AADE23F5497D30BD765BC32A7687B7CF4CDD56F3A9E295D37A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\Run-SdkModelDependenciesSource-20261016.ps1"
+  },
+  {
+    "path": "Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1"
+  },
+  {
+    "path": "sdk-model-dependencies-probe-inventory-20261016.json",
+    "sha256": "BD6B1855873EF04C01977A2F901D718D73E2D44797D888BCA0E337DAE369B718",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-probe-inventory-20261016.json"
+  },
+  {
+    "path": "sdk-model-dependencies-prelaunch-seal-20261016.json",
+    "sha256": "3075EF9FDE56A5F63C0DB473AE3C8B726F54ED1E9B201719589F22562E59C68D",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-prelaunch-seal-20261016.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016.json",
+    "sha256": "5F40E2FA7315DD393A86E1EA95E1B4231FF094CF5C4B1EB4444D2304F0DE078F",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016.stdout.log"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016.stderr.log",
+    "sha256": "DCDF17CED7AD20046BA96FCCEBF24B3BF0C411E60F2DB05DC92192D265CD25AA",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016.stderr.log"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-admission.json",
+    "sha256": "19654105D6699B0EFE99166043B0FCA67953238ED0C9F9B07C9C1547BF56EEBB",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-admission.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-controls-before.json",
+    "sha256": "1A7308911AFB7068058437B7882A7D3BAB18BCB378AD1CF480D2DAF59146C241",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-controls-before.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-posthash.json",
+    "sha256": "CD4EE9F7A5B8EE96FD39795A0B8B0727711F5C575DB2B054A6A52B4E705001EB",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-posthash.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-validation.json",
+    "sha256": "7FE31EE527EE8C40E0978253A4CBFAAD102F934019420BB75B52B70411D8E9AB",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-validation.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-physical-validation.json",
+    "sha256": "04DE4FB89151113D51A9795C8E1992E881B40210DE1D433499E82E64C832483E",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-physical-validation.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-output.json",
+    "sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-output.json.physical-before.json",
+    "sha256": "7514B12D2F4098F65C345995757E7C3A16C822D009FCA410079E280373B766E5",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-before.json"
+  },
+  {
+    "path": "sdk-model-dependencies-source-first-20261016-output.json.physical-after.json",
+    "sha256": "E157BF7F40AB91BB3A44E258FF72819A34107D41CF15FA0D6F52B083A918F59A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-after.json"
+  },
+  {
+    "path": "source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs"
+  },
+  {
+    "path": "source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json"
+  },
+  {
+    "path": "source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json"
+  },
+  {
+    "path": "observed-modules.jsonl",
+    "sha256": "7A27A792284A9B861941EFC935BB17F9C58596281E8567F87DFFB0EF8F1A7673",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-65836-0-20261015.jsonl"
+  },
+  {
+    "path": "frozen-inventories.zip",
+    "sha256": "C52BD107D27728AEB3EF87B3FAC81D75C7E3C222C9C473B65A37040F46E3B73D",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "frozen-inventories.index.json",
+    "sha256": "C5345F3BFC488FC36CD8F8145DF45DC23AB40101DEAA66CFE0383353CADD6BEC",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "observed-modules.zip",
+    "sha256": "BF46735A4B7969BE5BE7B53A6FEF987427200D97472518735095C547ECECFBD3",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "observed-modules.index.json",
+    "sha256": "62B7E089B5F533FF919D1698F8518B67D1E298B58D2D113F9C714C646FD550D5",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "actual-physical-files.zip",
+    "sha256": "AE7C1838C31B49E574D044EFC78E2FBE79024DC446A646BA4FD6E94597716237",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "actual-physical-files.index.json",
+    "sha256": "7A1D9638DFC35F3CC03647634AEBF522B03097EF7595EFDA4EDE638A26A8E110",
+    "original_path": "packaged original bytes/index"
+  }
+]

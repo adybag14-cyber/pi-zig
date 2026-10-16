@@ -34,6 +34,8 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
     }
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "promises", c.JS_DupValue(engine.context, promises), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
     try node_directory.install(engine, exports, promises);
+    try @import("node_fs_metadata.zig").install(engine, exports);
+    try @import("node_copy_file.zig").install(engine, exports);
     try engine.registerDefaultModule("node:fs", exports);
     try engine.registerDefaultModule("fs", exports);
     try engine.registerDefaultModule("node:fs/promises", promises);

@@ -1,0 +1,554 @@
+{
+  "authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "version": "1.3.27",
+  "packageSha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
+  "inputSha256": "e2ada2057a4066b7f13cb7f1a44ee532843976b99b7c70a6a1a737002d79f1d8",
+  "modules": {
+    "core/models-store.ts": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02",
+    "core/model-config.ts": "9f2cf2de7b8dd503ca4bc68119163c1d9bc8a3bf16caccfb1207e55b6e1cd97e"
+  },
+  "cases": 53,
+  "rows": [
+    {
+      "name": "ordinary-class-metadata",
+      "value": {
+        "memory": {
+          "name": "InMemoryCodingAgentModelsStore",
+          "length": 0,
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "length": 0
+            },
+            {
+              "name": "read",
+              "enumerable": false,
+              "length": 2
+            },
+            {
+              "name": "write",
+              "enumerable": false,
+              "length": 3
+            },
+            {
+              "name": "delete",
+              "enumerable": false,
+              "length": 2
+            }
+          ]
+        },
+        "file": {
+          "name": "FileModelsStore",
+          "length": 0,
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "length": 0
+            },
+            {
+              "name": "parse",
+              "enumerable": false,
+              "length": 1
+            },
+            {
+              "name": "updateReadState",
+              "enumerable": false,
+              "length": 3
+            },
+            {
+              "name": "reloadFromStorage",
+              "enumerable": false,
+              "length": 2
+            },
+            {
+              "name": "readLatest",
+              "enumerable": false,
+              "length": 2
+            },
+            {
+              "name": "read",
+              "enumerable": false,
+              "length": 2
+            },
+            {
+              "name": "write",
+              "enumerable": false,
+              "length": 3
+            },
+            {
+              "name": "delete",
+              "enumerable": false,
+              "length": 2
+            }
+          ]
+        },
+        "config": {
+          "name": "ModelConfig",
+          "length": 2,
+          "methods": [
+            {
+              "name": "constructor",
+              "enumerable": false,
+              "length": 2
+            },
+            {
+              "name": "getProvider",
+              "enumerable": false,
+              "length": 1
+            },
+            {
+              "name": "getProviderIds",
+              "enumerable": false,
+              "length": 0
+            },
+            {
+              "name": "getError",
+              "enumerable": false,
+              "length": 0
+            }
+          ],
+          "loadLength": 1,
+          "loadAsync": true
+        }
+      }
+    },
+    {
+      "name": "memory-instance",
+      "value": {
+        "keys": [
+          "entries"
+        ],
+        "ordinary": true,
+        "map": true
+      }
+    },
+    {
+      "name": "memory-write-return"
+    },
+    {
+      "name": "memory-write-clone",
+      "value": {
+        "fetchedAt": 1,
+        "models": [
+          {
+            "id": "one",
+            "nested": {
+              "a": 88
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "memory-read-clone",
+      "value": {
+        "fetchedAt": 1,
+        "models": [
+          {
+            "id": "one",
+            "nested": {
+              "a": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "memory-read-missing"
+    },
+    {
+      "name": "memory-delete-return"
+    },
+    {
+      "name": "memory-delete-result"
+    },
+    {
+      "name": "memory-abort-read",
+      "value": true
+    },
+    {
+      "name": "memory-abort-write",
+      "value": true
+    },
+    {
+      "name": "memory-abort-delete",
+      "value": true
+    },
+    {
+      "name": "memory-write-order",
+      "value": {
+        "same": true,
+        "events": [
+          "entries",
+          "set",
+          "clone"
+        ]
+      }
+    },
+    {
+      "name": "file-instance",
+      "value": {
+        "keys": [
+          "storage",
+          "path",
+          "readState"
+        ],
+        "ordinary": true,
+        "path": true,
+        "readStateKeys": [
+          "data"
+        ]
+      }
+    },
+    {
+      "name": "file-empty-read"
+    },
+    {
+      "name": "file-write-return"
+    },
+    {
+      "name": "file-write-clone",
+      "value": {
+        "fetchedAt": 2,
+        "models": [
+          {
+            "id": "disk",
+            "nested": {
+              "a": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-read-clone",
+      "value": {
+        "fetchedAt": 2,
+        "models": [
+          {
+            "id": "disk",
+            "nested": {
+              "a": 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-json-bytes",
+      "value": "{\n  \"p\": {\n    \"fetchedAt\": 2,\n    \"models\": [\n      {\n        \"id\": \"disk\",\n        \"nested\": {\n          \"a\": 1\n        }\n      }\n    ]\n  }\n}"
+    },
+    {
+      "name": "file-shared-default-state",
+      "value": true
+    },
+    {
+      "name": "file-shared-reload-concurrent",
+      "value": {
+        "differentPromises": true,
+        "values": [
+          {
+            "fetchedAt": 2,
+            "models": [
+              {
+                "id": "disk",
+                "nested": {
+                  "a": 1
+                }
+              }
+            ]
+          },
+          {
+            "fetchedAt": 2,
+            "models": [
+              {
+                "id": "disk",
+                "nested": {
+                  "a": 1
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "name": "file-bounded-custom-state",
+      "value": true
+    },
+    {
+      "name": "file-peer-mutation",
+      "value": {
+        "fetchedAt": 3,
+        "models": []
+      }
+    },
+    {
+      "name": "file-delete-return"
+    },
+    {
+      "name": "file-delete-result"
+    },
+    {
+      "name": "file-external-bom-reload",
+      "value": {
+        "models": [],
+        "fetchedAt": 4
+      }
+    },
+    {
+      "name": "file-parse-rejection",
+      "value": {
+        "name": "SyntaxError",
+        "message": "Expected property name or '}' in JSON at position 1 (line 1 column 2)"
+      }
+    },
+    {
+      "name": "file-after-parse-rejection",
+      "value": {
+        "models": [],
+        "fetchedAt": 5
+      }
+    },
+    {
+      "name": "file-abort-read",
+      "value": true
+    },
+    {
+      "name": "file-abort-write",
+      "value": true
+    },
+    {
+      "name": "file-abort-delete",
+      "value": true
+    },
+    {
+      "name": "file-key-before-clone",
+      "value": {
+        "same": true,
+        "events": [
+          "clone"
+        ]
+      }
+    },
+    {
+      "name": "file-parsed-empty",
+      "value": {}
+    },
+    {
+      "name": "file-parsed-bom",
+      "value": {
+        "a": 1
+      }
+    },
+    {
+      "name": "file-update-getter-order",
+      "value": [
+        [
+          "data",
+          {
+            "x": 1
+          }
+        ],
+        [
+          "revision",
+          "r"
+        ]
+      ]
+    },
+    {
+      "name": "config-empty-undefined",
+      "value": {
+        "ordinary": true,
+        "ids": [],
+        "keys": [
+          "providers",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "config-empty-null",
+      "value": {
+        "ordinary": true,
+        "ids": [],
+        "keys": [
+          "providers",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "config-empty-",
+      "value": {
+        "ordinary": true,
+        "ids": [],
+        "keys": [
+          "providers",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "config-empty-false",
+      "value": {
+        "ordinary": true,
+        "ids": [],
+        "keys": [
+          "providers",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "config-empty-0",
+      "value": {
+        "ordinary": true,
+        "ids": [],
+        "keys": [
+          "providers",
+          "error"
+        ]
+      }
+    },
+    {
+      "name": "config-missing",
+      "value": {
+        "ids": []
+      }
+    },
+    {
+      "name": "config-valid",
+      "value": {
+        "ids": [
+          "custom"
+        ],
+        "provider": {
+          "name": "Custom",
+          "api": "openai-completions",
+          "baseUrl": "https://example.test/v1",
+          "models": [
+            {
+              "id": "m",
+              "cost": {
+                "input": 1,
+                "output": 2,
+                "cacheRead": 3,
+                "cacheWrite": 4
+              },
+              "contextWindow": 2048,
+              "maxTokens": 1024
+            }
+          ],
+          "modelOverrides": {
+            "m": {
+              "cost": {
+                "input": 0.5
+              }
+            }
+          }
+        },
+        "keys": [
+          "providers",
+          "error"
+        ],
+        "map": true
+      }
+    },
+    {
+      "name": "config-deep-freeze",
+      "value": {
+        "provider": true,
+        "models": true,
+        "model": true,
+        "cost": true,
+        "override": true
+      }
+    },
+    {
+      "name": "config-provider-identity",
+      "value": true
+    },
+    {
+      "name": "config-id-snapshot",
+      "value": [
+        "custom"
+      ]
+    },
+    {
+      "name": "config-immutable-load",
+      "value": {
+        "old": [
+          "custom"
+        ],
+        "new": [
+          "changed"
+        ]
+      }
+    },
+    {
+      "name": "config-invalid-required",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers: must have required properties providers\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-invalid-provider-type",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers.p: must be object\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-invalid-empty-id",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers.p.models.0.id: must not have fewer than 1 characters\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-invalid-negative-context",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers.p.models.0.contextWindow: must be > 0\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-invalid-radius-oauth",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers.p.oauth: must be equal to constant\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-invalid-cost-type",
+      "value": {
+        "ids": [],
+        "error": "Invalid models.json schema:\n  - providers.p.modelOverrides.m.cost.input: must be number\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-parse-error",
+      "value": {
+        "ids": [],
+        "error": "Failed to parse models.json: Expected property name or '}' in JSON at position 1 (line 1 column 2)\n\nFile: <fixture>"
+      }
+    },
+    {
+      "name": "config-schema",
+      "value": {
+        "type": "object",
+        "required": [
+          "providers"
+        ],
+        "properties": [
+          "$schema",
+          "providers"
+        ]
+      }
+    }
+  ]
+}

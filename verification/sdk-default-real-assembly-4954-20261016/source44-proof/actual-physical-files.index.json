@@ -1,0 +1,17 @@
+[
+  {
+    "entry": "existing-shell.exe",
+    "sha256": "893E54F22821719B5DD2A1FB13DC38E0D009BEA1D97FCE65532A259D91E48E35",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-output.json.physical-files\\existing-shell.exe"
+  },
+  {
+    "entry": "package\\dist\\package.json",
+    "sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-output.json.physical-files\\package\\dist\\package.json"
+  },
+  {
+    "entry": "package\\package.json",
+    "sha256": "44136FA355B3678A1146AD16F7E8649E94FB4FC21FE77E8310C060F61CAAFF8A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-output.json.physical-files\\package\\package.json"
+  }
+]

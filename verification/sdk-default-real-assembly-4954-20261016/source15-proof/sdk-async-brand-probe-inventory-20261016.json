@@ -1,0 +1,22 @@
+{
+  "status": "actual_Source15_static_inventory",
+  "input_sha256": "481ccbc3e99325da870e22a28565f40e8633690f1a7d5a6f4c01ff8b2a69a840",
+  "count": 15,
+  "cases": [
+    "prototype-tag-negative-control",
+    "actual-class-brand-ModelRuntime",
+    "actual-class-brand-ModelConfig",
+    "actual-class-brand-InMemoryCodingAgentModelsStore",
+    "actual-class-brand-FileModelsStore",
+    "actual-class-brand-AgentSessionRuntime",
+    "actual-static-brand-ModelRuntime-create",
+    "actual-static-brand-ModelConfig-load",
+    "actual-memory-async-order",
+    "actual-memory-raw-rejection",
+    "actual-async-nonconstructor-ModelConfig.load",
+    "actual-async-nonconstructor-Memory.read",
+    "actual-async-nonconstructor-File.readLatest",
+    "actual-async-nonconstructor-Runtime.getAuth",
+    "actual-async-nonconstructor-Session.dispose"
+  ]
+}

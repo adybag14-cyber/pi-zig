@@ -7,7 +7,9 @@ pub const native = @import("native_async_function.zig");
 const flow = @import("native_agent_async.zig");
 const Kind = enum(i32) { returned, awaited, thrown };
 pub fn init(s: *Scope, state: *c.JSValue) !c.JSValue {
-    const job = try s.object();
+    // This owner records native lexical locals, never a Source-visible object.
+    // Missing locals and assignments must not consult guest Object.prototype.
+    const job = try s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null())));
     native.replaceState(s.engine, state, c.JS_DupValue(s.engine.context, job));
     return job;
 }
@@ -40,15 +42,19 @@ pub fn action(s: *Scope, job: c.JSValue) !native.Action {
         .thrown => .{ .thrown = value },
     };
 }
-pub fn failure(engine: *v.em.Engine, err: anyerror) !native.Action {
-    // Trusted host allocation failure belongs to the primitive's fail path,
-    // which marks its exact native OOM reason uncatchable. A .thrown action
-    // would instead turn it into an ordinary guest rejection.
-    if (err == error.OutOfMemory) return error.OutOfMemory;
+pub fn failure(engine: *v.em.Engine, err: anyerror) anyerror!native.Action {
+    // Only a trusted classified host failure enters the primitive's scoped
+    // uncatchable path. Guest names/messages and old native tags are irrelevant.
+    if (err == error.OutOfMemory) return err;
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
         if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
     };
     return .{ .thrown = flow.reason(engine, err) };
+}
+/// The caller snapshots generation before the fallible host/guest boundary.
+/// Engine classification excludes historical tags and guest lookalikes.
+pub fn failureSince(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!native.Action {
+    return failure(engine, engine.nativeAllocationError(err, generation));
 }
 
 /// A rejected value is trusted only when its private allocation tag was born

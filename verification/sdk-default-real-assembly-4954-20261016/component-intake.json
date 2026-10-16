@@ -1,0 +1,42 @@
+{
+  "status": "reviewed_components_intaken_unselected",
+  "base": "1097e7ff3fa72d3284a762d4ed4cb583ae20072f",
+  "upstream": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "toolchain": "0.16.0",
+  "modules": [
+    {
+      "path": "src/extensions/native_sdk_model_runtime_production.zig",
+      "source_commit": "660c0a6f4f5a7641f1111ded4349e29ff769c624",
+      "sha256": "4AFE281F1AE92F4BF322F46A2F61C423D537B8DC6AC33FD25FC316F249341BDC"
+    },
+    {
+      "path": "src/extensions/native_sdk_agent_session_runtime_production.zig",
+      "source_commit": "fb97f56d340a031c0e28d0b59a83c57d9d552897",
+      "sha256": "C251321F729C8B11E5568E0C25BDF837E605A6E742F8017B47516A1BE024B8D2"
+    },
+    {
+      "path": "src/extensions/native_provider_composer_production.zig",
+      "source_commit": "059c4224b6f8ac9de1763a0bc09cf2991e4be45f",
+      "sha256": "96DDAAAC398592CACECBD45AB292AB236027F1B8ED12EBB35D4A987B5DA888FE"
+    },
+    {
+      "path": "src/extensions/native_resolve_config_value_production.zig",
+      "source_commit": "059c4224b6f8ac9de1763a0bc09cf2991e4be45f",
+      "sha256": "85674AE345C763A5BB15EF7C32E1D419C526100803F5968561887DC06CFB84CE"
+    },
+    {
+      "path": "src/extensions/native_sdk_virtual_models_production.zig",
+      "source_commit": "53c68a60afe0669af849b3b7ff36be3390dedd25",
+      "sha256": "D2048C29ED42F81B623BC2B55934F60A8964617C9990E5BC8BC24E005DE3210D"
+    },
+    {
+      "path": "src/extensions/native_sdk_remote_catalog_provider.zig",
+      "source_commit": "fb5bd0dbe2381ae4401ecda9b004d105a86253f2",
+      "sha256": "9696C42FDDD320D859BCA531ECF1EAD14536784B258ABEAED1C8D17F1476C249"
+    }
+  ],
+  "remote_catalog_historical_PI_PACKAGE_DIR": "old metadata explicitly retained; no release claim",
+  "native_compiled": false,
+  "native_qualified": false,
+  "default_selected": false
+}

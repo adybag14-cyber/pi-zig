@@ -1,0 +1,22 @@
+{
+  "status": "shared_async_private_owner_source_only",
+  "parent": "1a13b1ea03695fc3f60273bcc7e5c9fb156012ea",
+  "recorder_failure_origin": "aa7ea2d3f3604af71c6c67bba0b3e71146549226",
+  "recognized_allocation_origin": "90e877bcd2346480506801c1c1dca2336198ebe4",
+  "primitive": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+  "change": "only private native_async_body.init owner uses JS_NewObjectProto(null); public Source objects unchanged",
+  "preserved": [
+    "failureSince current-boundary classification",
+    "recognized rejection exact identity",
+    "uncatchable captured exception forwarding",
+    "trusted OutOfMemory error union propagation"
+  ],
+  "regression": "actual createResumable wrapped Body; active Object.prototype getter/setter positive control; private missing/read/write and stage across actual Await; fulfillment and raw rejection identity; zero guest hooks",
+  "recorder_sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+  "test_sha256": "4A2F93B16850749867F14758305D39FD4184E9484374A47AD82B82293F736309",
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_tests_executed": false,
+  "source53_44_15_observations_changed": false,
+  "default_selected": false
+}

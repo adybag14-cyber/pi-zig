@@ -1,0 +1,58 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-runtime-helpers.mjs",
+    "sha256": "BEBC75DAD828088183F9091C3DB5F8CA69F5DC65D3B06039DC74EA0D1084B0D6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\src\\extensions\\fixtures\\sdk-runtime-helpers-4954.input.mjs",
+    "sha256": "A11F691DB81F4E268789B55A32A3C67F31C262822F80E869F5B1AB6E5BEC8580"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-probe-inventory-20261016.json",
+    "sha256": "2CC551A055A99DAA1E9811F6AF9CA6B842CF4AAD88F292D86123B99B34956F29"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\Run-SdkRuntimeHelpersSource-20261016.ps1",
+    "sha256": "DB503332301869EAD95AAD45B516B0EE54639AD8D4C256DAC6964E5CD5A01299"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-prelaunch-seal-20261016.json",
+    "sha256": "D87CB5119705B9379B693C548729DA0A07E46D28E78CE447E2AFB1BB34CC542B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-candidate-compiler-before.json",
+    "sha256": "503E91647CEF07791CDEF006F39D7D097C254D52EB0A7A5A7F9BEE7825DEEC5B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\component-intake.json",
+    "sha256": "F37FBF90DFDA364372B1911034F35DA4C60C957F0191D639B8210E8C928B461F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-full-manifest-20261015.json",
+    "sha256": "3229A90AB56E791DCEAC7659C2929BF6D3270C0202F1242F298444BE60A5B42C"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-runtime-manifest-20261015.json",
+    "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-node-tools-before-20261015.json",
+    "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+  }
+]

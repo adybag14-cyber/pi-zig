@@ -1,0 +1,118 @@
+{
+  "directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-runtime-helper-source44-20261016\\sdk-runtime-helper-source-first-20261016-output.json.physical-files",
+  "inventory": [
+    {
+      "path": "",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1688849881036195",
+      "mode": "16822",
+      "mtimeNs": "1792147542082896800",
+      "ctimeNs": "1792147542082896800",
+      "birthtimeNs": "1792147539918985200"
+    },
+    {
+      "path": "existing-shell.exe",
+      "kind": "file",
+      "size": "43",
+      "ino": "50665495828691680",
+      "mode": "33206",
+      "mtimeNs": "1792147542082896800",
+      "ctimeNs": "1792147542082896800",
+      "birthtimeNs": "1792147542082896800",
+      "sha256": "893e54f22821719b5dd2a1fb13dc38e0d009bea1d97fce65532a259d91e48e35"
+    },
+    {
+      "path": "package",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1688849881037102",
+      "mode": "16822",
+      "mtimeNs": "1792147542077896300",
+      "ctimeNs": "1792147542077896300",
+      "birthtimeNs": "1792147542076896700"
+    },
+    {
+      "path": "package\\dist",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1688849881037421",
+      "mode": "16822",
+      "mtimeNs": "1792147542078897000",
+      "ctimeNs": "1792147542078897000",
+      "birthtimeNs": "1792147542077896300"
+    },
+    {
+      "path": "package\\dist\\nested",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1688849881037422",
+      "mode": "16822",
+      "mtimeNs": "1792147542077896300",
+      "ctimeNs": "1792147542077896300",
+      "birthtimeNs": "1792147542077896300"
+    },
+    {
+      "path": "package\\dist\\package.json",
+      "kind": "file",
+      "size": "2",
+      "ino": "2814749787880068",
+      "mode": "33206",
+      "mtimeNs": "1792147542079895100",
+      "ctimeNs": "1792147542079895100",
+      "birthtimeNs": "1792147542078897000",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "path": "package\\package.json",
+      "kind": "file",
+      "size": "2",
+      "ino": "5348024578275953",
+      "mode": "33206",
+      "mtimeNs": "1792147542077896300",
+      "ctimeNs": "1792147542077896300",
+      "birthtimeNs": "1792147542077896300",
+      "sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "path": "sessions-agent",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1407374904326794",
+      "mode": "16822",
+      "mtimeNs": "1792147542081894500",
+      "ctimeNs": "1792147542081894500",
+      "birthtimeNs": "1792147542081894500"
+    },
+    {
+      "path": "sessions-agent\\sessions",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1407374904326800",
+      "mode": "16822",
+      "mtimeNs": "1792147542081894500",
+      "ctimeNs": "1792147542081894500",
+      "birthtimeNs": "1792147542081894500"
+    },
+    {
+      "path": "sessions-agent\\sessions\\--C--sdk-helper-project--",
+      "kind": "directory",
+      "size": "0",
+      "ino": "1407374904326860",
+      "mode": "16822",
+      "mtimeNs": "1792147542081894500",
+      "ctimeNs": "1792147542081894500",
+      "birthtimeNs": "1792147542081894500"
+    },
+    {
+      "path": "src",
+      "kind": "directory",
+      "size": "0",
+      "ino": "2814749787879425",
+      "mode": "16822",
+      "mtimeNs": "1792147542073895100",
+      "ctimeNs": "1792147542073895100",
+      "birthtimeNs": "1792147542073895100"
+    }
+  ]
+}

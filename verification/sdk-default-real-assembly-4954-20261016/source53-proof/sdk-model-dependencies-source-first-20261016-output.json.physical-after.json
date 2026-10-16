@@ -1,0 +1,37 @@
+{
+  "directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-default-real-assembly-4954-20261016\\sdk-model-dependencies-source-first-20261016-output.json.physical-files",
+  "inventory": [
+    {
+      "path": "",
+      "kind": "directory",
+      "mode": "16822",
+      "size": "0",
+      "ino": "10977524094216566",
+      "mtimeNs": "1792145147715527300",
+      "ctimeNs": "1792145147715527300",
+      "birthtimeNs": "1792145147685928100"
+    },
+    {
+      "path": "models-store.json",
+      "kind": "file",
+      "mode": "33206",
+      "size": "33",
+      "ino": "562949974175455",
+      "mtimeNs": "1792145147712016600",
+      "ctimeNs": "1792145147712016600",
+      "birthtimeNs": "1792145147692506200",
+      "sha256": "5e9342b3326ca2227499a6b1d8e98ef3529d8a5fb42f19e70846faf2a469b209"
+    },
+    {
+      "path": "models.json",
+      "kind": "file",
+      "mode": "33206",
+      "size": "7",
+      "ino": "3940649694703328",
+      "mtimeNs": "1792145147724526000",
+      "ctimeNs": "1792145147724526000",
+      "birthtimeNs": "1792145147715527300",
+      "sha256": "be302461cda285db3ed2d45fb767b23e08ca8808b35a638009937df22b332d73"
+    }
+  ]
+}
