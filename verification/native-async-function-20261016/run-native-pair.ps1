@@ -77,7 +77,7 @@ $taskScopes=@(
  @{name='compiler';inventory=(Get-CiInventory $taskCompilerRoot tree)},
  @{name='node';inventory=(Get-CiInventory $taskNodeRoot tree)}
 )
-if($taskScopes[1].inventory.rows.Count -ne 1316 -or $taskScopes[2].inventory.rows.Count -ne 19546 -or $taskScopes[3].inventory.rows.Count -ne 1774){throw 'Complete vendor/compiler/Node path inventory count changed'}
+if($taskScopes[1].inventory.rows.Count -ne 1316 -or $taskScopes[2].inventory.rows.Count -ne 19546 -or $taskScopes[3].inventory.rows.Count -ne 1838){throw 'Complete vendor/compiler/Node path inventory count changed'}
 foreach($taskScope in $taskScopes){Save-Json "$taskBase-$($taskScope.name)-frozen.json" $taskScope.inventory}
 Save-Json "$taskBase-controls-frozen.json" $taskControls
 Save-Json "$taskBase-authorities-frozen.json" $taskAuthorities
@@ -90,7 +90,7 @@ function Verify-Frozen($phase){
  $taskAuthority=$null
  try{$taskAuthority=Source-Authority}catch{$taskErrors.Add($_.Exception.Message)}
  if((git -C $taskRoot rev-parse HEAD) -cne $ExpectedHead -or (git -C $taskRoot status --porcelain)){$taskErrors.Add('Candidate head or tracked state drift')}
- Save-Json "$taskBase-$phase.json" @{candidate_head=$ExpectedHead;inventory_errors=@($taskErrors);control_drift=$taskControlDrift;authority_drift=$taskAuthorityDrift;frozen_registry_drift=$taskFrozenDrift;artifact_drift=$taskArtifactDrift;source_authority=$taskAuthority;candidate_files=$taskScopes[0].inventory.rows.Count;vendor_files=1316;compiler_files=19546;node_files=1774;utc=[DateTimeOffset]::UtcNow.ToString('o')}
+ Save-Json "$taskBase-$phase.json" @{candidate_head=$ExpectedHead;inventory_errors=@($taskErrors);control_drift=$taskControlDrift;authority_drift=$taskAuthorityDrift;frozen_registry_drift=$taskFrozenDrift;artifact_drift=$taskArtifactDrift;source_authority=$taskAuthority;candidate_files=$taskScopes[0].inventory.rows.Count;vendor_files=1316;compiler_files=19546;node_pinned_executable_npm_files=1774;node_complete_directory_files=1838;utc=[DateTimeOffset]::UtcNow.ToString('o')}
  if($taskErrors.Count -or $taskControlDrift.Count -or $taskAuthorityDrift.Count -or $taskFrozenDrift.Count -or $taskArtifactDrift.Count){throw "Full $phase frozen qualification failed"}
 }
 Verify-Frozen 'before'
