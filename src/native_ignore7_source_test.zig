@@ -1,49 +1,59 @@
 const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
+fn stringField(scope: *v.Scope, object: c.JSValue, name: [*:0]const u8, expected: []const u8) !void {
+    try std.testing.expect(try v.eq(scope, try scope.get(object, name), expected));
+}
+fn countField(scope: *v.Scope, object: c.JSValue, name: [*:0]const u8, expected: i32) !void {
+    try std.testing.expect(scope.equal(try scope.get(object, name), c.JS_NewInt32(scope.engine.context, expected)));
+}
+fn compare(scope: *v.Scope, expected: c.JSValue, actual: c.JSValue, count: u32, label: []const u8) !void {
+    try std.testing.expectEqual(count, try v.length(scope, expected));
+    try std.testing.expectEqual(count, try v.length(scope, actual));
+    for (0..count) |index| {
+        var row: v.Scope = .{ .engine = scope.engine };
+        defer row.deinit();
+        const want = try scope.engine.stringify(try v.at(&row, expected, @intCast(index)));
+        defer scope.engine.gpa.free(want);
+        const got = try scope.engine.stringify(try v.at(&row, actual, @intCast(index)));
+        defer scope.engine.gpa.free(got);
+        if (!std.mem.eql(u8, want, got)) std.debug.print("ignore7 {s} original case index {d}\n", .{ label, index });
+        try std.testing.expectEqualStrings(want, got);
+    }
+}
 test "native ignore7 original callers match genuine pinned package observations" {
     const gpa = std.testing.allocator;
     // A real admitted Source capture must exist first. Never embed invented goldens.
     const source = try std.Io.Dir.cwd().readFileAlloc(std.testing.io, "verification/native-ignore7-prepared-20261016/source-output.json", gpa, .limited(16 * 1024 * 1024));
     defer gpa.free(source);
-    var parsed = try std.json.parseFromSlice(std.json.Value, gpa, source, .{});
-    defer parsed.deinit();
-    const root = parsed.value.object;
-    try std.testing.expectEqualStrings("7.0.8", root.get("version").?.string);
-    try std.testing.expectEqualStrings("643735013bdcf86dfeca4d38fb74d9a4fafa7a640ad2d251077862f18b2556fe", root.get("packageSha256").?.string);
-    try std.testing.expectEqualStrings("4dd2b149d155d7369de16ea4dc77c84e9f5ffb24", root.get("sourceHead").?.string);
-    try std.testing.expectEqualStrings("5d8a62805bd3866fd7742f0f6fa6f3e05411961155f95a7de8d9b60cd19d6363", root.get("callerSha256").?.string);
-    try std.testing.expectEqualStrings("f18ce5b5c25311e054c50b87a487372ba7e0222371a2427545ff0a90a35b1ef6", root.get("liveCallerSha256").?.string);
-    try std.testing.expectEqualStrings("v24.14.0", root.get("actualNode").?.object.get("version").?.string);
-    try std.testing.expectEqualStrings("win32", root.get("actualNode").?.object.get("platform").?.string);
-    try std.testing.expectEqual(@as(i64, 42), root.get("matrixSets").?.integer);
-    try std.testing.expectEqual(@as(i64, 54), root.get("matrixPaths").?.integer);
-    try std.testing.expectEqual(@as(i64, 2375), root.get("cases").?.integer);
-    try std.testing.expectEqual(@as(i64, 12), root.get("liveCases").?.integer);
-    try std.testing.expectEqual(@as(i64, 2387), root.get("totalCases").?.integer);
-    const observations = root.get("observations").?;
-    try std.testing.expectEqual(root.get("cases").?.integer, @as(i64, @intCast(observations.array.items.len)));
     const engine = try v.em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
+    var scope: v.Scope = .{ .engine = engine };
+    defer scope.deinit();
+    // The original inputs intentionally include lone UTF-16 surrogates. Use
+    // ECMAScript JSON.parse semantics; std.json rejects these valid JS strings.
+    const root = try scope.own(try engine.checked(c.JS_ParseJSON(engine.context, source.ptr, source.len, "actual-ignore7-source-capture.json")));
+    try stringField(&scope, root, "version", "7.0.8");
+    try stringField(&scope, root, "packageSha256", "643735013bdcf86dfeca4d38fb74d9a4fafa7a640ad2d251077862f18b2556fe");
+    try stringField(&scope, root, "sourceHead", "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24");
+    try stringField(&scope, root, "callerSha256", "5d8a62805bd3866fd7742f0f6fa6f3e05411961155f95a7de8d9b60cd19d6363");
+    try stringField(&scope, root, "liveCallerSha256", "f18ce5b5c25311e054c50b87a487372ba7e0222371a2427545ff0a90a35b1ef6");
+    const node = try scope.get(root, "actualNode");
+    try stringField(&scope, node, "version", "v24.14.0");
+    try stringField(&scope, node, "platform", "win32");
+    try countField(&scope, root, "matrixSets", 42);
+    try countField(&scope, root, "matrixPaths", 54);
+    try countField(&scope, root, "cases", 2375);
+    try countField(&scope, root, "liveCases", 12);
+    try countField(&scope, root, "totalCases", 2387);
     try @import("extensions/native_ignore7.zig").install(engine);
     const imported = try engine.evalModule("import ignore from 'ignore';globalThis.nativeIgnore7=ignore;", "native-ignore7-binding.mjs");
     engine.freeValue(imported);
     const evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ignore7-original-caller-controls.input.txt"), "native-ignore7-original-callers.mjs");
     engine.freeValue(evaluated);
-    var scope: v.Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const actual = try engine.stringify(try scope.get(try scope.own(c.JS_GetGlobalObject(engine.context)), "ignore7OriginalObservations"));
-    defer gpa.free(actual);
-    const expected = try std.json.Stringify.valueAlloc(gpa, observations, .{});
-    defer gpa.free(expected);
-    try std.testing.expectEqualStrings(expected, actual);
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try compare(&scope, try scope.get(root, "observations"), try scope.get(global, "ignore7OriginalObservations"), 2375, "matrix/API");
     const live_evaluated = try engine.evalModule(@embedFile("extensions/fixtures/ignore7-live-prototype-controls.input.txt"), "native-ignore7-live-prototype-callers.mjs");
     engine.freeValue(live_evaluated);
-    const live_actual = try engine.stringify(try scope.get(try scope.own(c.JS_GetGlobalObject(engine.context)), "ignore7LiveObservations"));
-    defer gpa.free(live_actual);
-    const live_observations = root.get("liveObservations").?;
-    try std.testing.expectEqual(@as(usize, 12), live_observations.array.items.len);
-    const live_expected = try std.json.Stringify.valueAlloc(gpa, live_observations, .{});
-    defer gpa.free(live_expected);
-    try std.testing.expectEqualStrings(live_expected, live_actual);
+    try compare(&scope, try scope.get(root, "liveObservations"), try scope.get(global, "ignore7LiveObservations"), 12, "live prototype");
 }
