@@ -1,0 +1,3235 @@
+{
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "packageVersion": "1.3.0",
+  "actualNode": {
+    "version": "v24.14.0",
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "pid": 71036
+  },
+  "inputSha256": "891ff13852540cade5aba7726488caae59c9e38bddf124be80b948b6bd966b38",
+  "cases": 45,
+  "scope": "Actual latest4dd exports with exact unchanged original45 caller input. Separate latest capture; original b45 expected and proof are immutable.",
+  "rows": [
+    {
+      "name": "metadata",
+      "result": [
+        {
+          "key": "generateSummaryWithUsage",
+          "name": "generateSummaryWithUsage",
+          "length": 14,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "generateSummary",
+          "name": "generateSummary",
+          "length": 14,
+          "prototype": false,
+          "async": true
+        },
+        {
+          "key": "compact",
+          "name": "compact",
+          "length": 12,
+          "prototype": false,
+          "async": true
+        }
+      ],
+      "trace": [],
+      "calls": 0
+    },
+    {
+      "name": "initial",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "text-wrapper",
+      "result": "summary-1",
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "update",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\n<previous-summary>\nPrior checkpoint\n</previous-summary>\n\nThe messages above are NEW conversation messages to incorporate into the existing summary provided in <previous-summary> tags.\n\nUpdate the existing structured summary with new information. RULES:\n- PRESERVE all existing information from the previous summary\n- ADD new progress, decisions, and context from the new messages\n- UPDATE the Progress section: move items from \"In Progress\" to \"Done\" when completed\n- UPDATE \"Next Steps\" based on what was accomplished\n- PRESERVE exact file paths, function names, and error messages\n- If something is no longer relevant, you may remove it\n\nUse this EXACT format:\n\n## Goal\n[Preserve existing goals, add new ones if the task expanded]\n\n## Constraints & Preferences\n- [Preserve existing, add new ones discovered]\n\n## Progress\n### Done\n- [x] [Include previously done items AND newly completed items]\n\n### In Progress\n- [ ] [Current work - update based on progress]\n\n### Blocked\n- [Current blockers - remove if resolved]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale] (preserve all previous, add new)\n\n## Next Steps\n1. [Update based on current state]\n\n## Critical Context\n- [Preserve important context, add new if needed]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "instructions",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages.\n\nAdditional focus: Keep file names"
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "both",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\n<previous-summary>\nPrior checkpoint\n</previous-summary>\n\nThe messages above are NEW conversation messages to incorporate into the existing summary provided in <previous-summary> tags.\n\nUpdate the existing structured summary with new information. RULES:\n- PRESERVE all existing information from the previous summary\n- ADD new progress, decisions, and context from the new messages\n- UPDATE the Progress section: move items from \"In Progress\" to \"Done\" when completed\n- UPDATE \"Next Steps\" based on what was accomplished\n- PRESERVE exact file paths, function names, and error messages\n- If something is no longer relevant, you may remove it\n\nUse this EXACT format:\n\n## Goal\n[Preserve existing goals, add new ones if the task expanded]\n\n## Constraints & Preferences\n- [Preserve existing, add new ones discovered]\n\n## Progress\n### Done\n- [x] [Include previously done items AND newly completed items]\n\n### In Progress\n- [ ] [Current work - update based on progress]\n\n### Blocked\n- [Current blockers - remove if resolved]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale] (preserve all previous, add new)\n\n## Next Steps\n1. [Update based on current state]\n\n## Critical Context\n- [Preserve important context, add new if needed]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages.\n\nAdditional focus: Keep file names"
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "empty-previous",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "max-capped",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "max-zero",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "max-negative",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "max-string",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reserve-fraction",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reserve-negative",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reserve-nan",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reserve-infinity",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reserve-coercion",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "max-getter",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reasoning-on",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "reasoning": "high",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reasoning-off",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reasoning-empty",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "reasoning-object",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "reasoning",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "reasoning": {
+              "level": "high"
+            },
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "mixed-content",
+      "result": {
+        "text": "one\ntwo",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "response-error",
+      "error": {
+        "name": "Error",
+        "message": "Summarization failed: fixture-failure"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "response-length",
+      "error": {
+        "name": "Error",
+        "message": "Summarization failed: generation hit the token cap and the summary is incomplete"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "response-tool-call",
+      "error": {
+        "name": "Error",
+        "message": "Summarization attempted to call a tool"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "response-aborted",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "stream-throw",
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "usage-getter-throw",
+      "error": {
+        "marker": true
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        "usage.get"
+      ],
+      "calls": 1
+    },
+    {
+      "name": "content-getter",
+      "result": {
+        "text": "content-2",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        [
+          "content.get",
+          1
+        ],
+        [
+          "content.get",
+          2
+        ]
+      ],
+      "calls": 1
+    },
+    {
+      "name": "live-math",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "instructions-coercion",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        [
+          "instructions",
+          "string"
+        ],
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages.\n\nAdditional focus: focus"
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "previous-coercion",
+      "result": {
+        "text": "summary-1",
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        }
+      },
+      "trace": [
+        [
+          "previous",
+          "string"
+        ],
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\n<previous-summary>\nprior\n</previous-summary>\n\nThe messages above are NEW conversation messages to incorporate into the existing summary provided in <previous-summary> tags.\n\nUpdate the existing structured summary with new information. RULES:\n- PRESERVE all existing information from the previous summary\n- ADD new progress, decisions, and context from the new messages\n- UPDATE the Progress section: move items from \"In Progress\" to \"Done\" when completed\n- UPDATE \"Next Steps\" based on what was accomplished\n- PRESERVE exact file paths, function names, and error messages\n- If something is no longer relevant, you may remove it\n\nUse this EXACT format:\n\n## Goal\n[Preserve existing goals, add new ones if the task expanded]\n\n## Constraints & Preferences\n- [Preserve existing, add new ones discovered]\n\n## Progress\n### Done\n- [x] [Include previously done items AND newly completed items]\n\n### In Progress\n- [ ] [Current work - update based on progress]\n\n### Blocked\n- [Current blockers - remove if resolved]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale] (preserve all previous, add new)\n\n## Next Steps\n1. [Update based on current state]\n\n## Critical Context\n- [Preserve important context, add new if needed]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "null-messages",
+      "error": {
+        "name": "TypeError"
+      },
+      "trace": [],
+      "calls": 0
+    },
+    {
+      "name": "compact-normal",
+      "result": {
+        "summary": "summary-1",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-split-history",
+      "result": {
+        "summary": "summary-1\n\n---\n\n**Turn Context (split turn):**\n\nsummary-2",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 2,
+          "output": 4,
+          "cacheRead": 6,
+          "cacheWrite": 8,
+          "totalTokens": 20,
+          "cost": {
+            "input": 2,
+            "output": 4,
+            "cacheRead": 6,
+            "cacheWrite": 8,
+            "total": 20
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        {
+          "event": "request",
+          "call": 2,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 2
+    },
+    {
+      "name": "compact-split-no-history",
+      "result": {
+        "summary": "No prior history.\n\n---\n\n**Turn Context (split turn):**\n\nsummary-1",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-split-empty-prefix",
+      "result": {
+        "summary": "summary-1",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-previous-empty",
+      "result": {
+        "summary": "\n\n---\n\n**Turn Context (split turn):**\n\nsummary-1",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-files",
+      "result": {
+        "summary": "summary-1\n\n<read-files>\nread-only\n</read-files>\n\n<modified-files>\nboth\nnew\n</modified-files>",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [
+            "read-only"
+          ],
+          "modifiedFiles": [
+            "both",
+            "new"
+          ]
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-missing-id",
+      "error": {
+        "name": "Error",
+        "message": "First kept entry has no UUID - session may need migration"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-preparation-getters",
+      "result": {
+        "summary": "summary-1",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 1,
+          "output": 2,
+          "cacheRead": 3,
+          "cacheWrite": 4,
+          "totalTokens": 10,
+          "cost": {
+            "input": 1,
+            "output": 2,
+            "cacheRead": 3,
+            "cacheWrite": 4,
+            "total": 10
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        [
+          "preparation",
+          "firstKeptEntryId"
+        ],
+        [
+          "preparation",
+          "messagesToSummarize"
+        ],
+        [
+          "preparation",
+          "turnPrefixMessages"
+        ],
+        [
+          "preparation",
+          "isSplitTurn"
+        ],
+        [
+          "preparation",
+          "tokensBefore"
+        ],
+        [
+          "preparation",
+          "previousSummary"
+        ],
+        [
+          "preparation",
+          "fileOps"
+        ],
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 1
+    },
+    {
+      "name": "compact-reserve-getters",
+      "result": {
+        "summary": "summary-1\n\n---\n\n**Turn Context (split turn):**\n\nsummary-2",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 2,
+          "output": 4,
+          "cacheRead": 6,
+          "cacheWrite": 8,
+          "totalTokens": 20,
+          "cost": {
+            "input": 2,
+            "output": 4,
+            "cacheRead": 6,
+            "cacheWrite": 8,
+            "total": 20
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        {
+          "event": "request",
+          "call": 2,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 2
+    },
+    {
+      "name": "compact-prefix-error",
+      "error": {
+        "name": "Error",
+        "message": "Turn prefix summarization failed: fixture-failure"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        {
+          "event": "request",
+          "call": 2,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 2
+    },
+    {
+      "name": "compact-prefix-tool",
+      "error": {
+        "name": "Error",
+        "message": "Turn prefix summarization attempted to call a tool"
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        {
+          "event": "request",
+          "call": 2,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 2
+    },
+    {
+      "name": "compact-prefix-aborted",
+      "result": {
+        "summary": "summary-1\n\n---\n\n**Turn Context (split turn):**\n\nsummary-2",
+        "firstKeptEntryId": "kept",
+        "tokensBefore": 123,
+        "usage": {
+          "input": 2,
+          "output": 4,
+          "cacheRead": 6,
+          "cacheWrite": 8,
+          "totalTokens": 20,
+          "cost": {
+            "input": 2,
+            "output": 4,
+            "cacheRead": 6,
+            "cacheWrite": 8,
+            "total": 20
+          }
+        },
+        "details": {
+          "readFiles": [],
+          "modifiedFiles": []
+        }
+      },
+      "trace": [
+        {
+          "event": "request",
+          "call": 1,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "<conversation>\n[User]: User request\n\n[Assistant]: Assistant work\n</conversation>\n\nThe messages above are a conversation to summarize. Create a structured context checkpoint summary that another LLM will use to continue the work.\n\nUse this EXACT format:\n\n## Goal\n[What is the user trying to accomplish? Can be multiple items if the session covers different tasks.]\n\n## Constraints & Preferences\n- [Any constraints, preferences, or requirements mentioned by user]\n- [Or \"(none)\" if none were mentioned]\n\n## Progress\n### Done\n- [x] [Completed tasks/changes]\n\n### In Progress\n- [ ] [Current work]\n\n### Blocked\n- [Issues preventing progress, if any]\n\n## Key Decisions\n- **[Decision]**: [Brief rationale]\n\n## Next Steps\n1. [Ordered list of what should happen next]\n\n## Critical Context\n- [Any data, examples, or references needed to continue]\n- [Or \"(none)\" if not applicable]\n\nKeep each section concise. Preserve exact file paths, function names, and error messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        },
+        {
+          "event": "request",
+          "call": 2,
+          "thisUndefined": true,
+          "modelSame": true,
+          "context": {
+            "messages": [
+              {
+                "role": "system",
+                "content": "You are a context summarization assistant. Your task is to read a conversation between a user and an AI assistant, then produce a structured summary following the exact format specified.\n\nDo NOT continue the conversation. Do NOT respond to any questions in the conversation. ONLY output the structured summary.",
+                "timestamp": 0
+              },
+              {
+                "role": "user",
+                "content": [
+                  {
+                    "type": "text",
+                    "text": "# Conversation\n[User]: Turn prefix\n\n# Instructions\nThe messages above are earlier context from an ongoing conversation. Later messages are stored separately and do not need to be reconstructed.\n\nCreate a concise checkpoint of the user's request and the progress shown above. This checkpoint will be placed before the later messages so the conversation can continue with the necessary context.\n\n## Original Request\n[What did the user ask for?]\n\n## Progress So Far\n- [Key decisions and work completed in these messages]\n\n## Context Needed to Continue\n- [Information from these messages needed to understand the later work]\n\nOnly summarize information explicitly present above. Do not infer or recreate later messages."
+                  }
+                ],
+                "timestamp": 1000
+              }
+            ]
+          },
+          "keys": [
+            "signal",
+            "apiKey",
+            "headers",
+            "env",
+            "sessionId",
+            "cacheRetention"
+          ],
+          "options": {
+            "apiKey": "fixture-api-key",
+            "headers": {
+              "Fixture": "header"
+            },
+            "env": {
+              "FIXTURE": "env"
+            },
+            "sessionId": "owned-route",
+            "cacheRetention": "none"
+          },
+          "headersSame": true,
+          "envSame": true
+        }
+      ],
+      "calls": 2
+    }
+  ]
+}

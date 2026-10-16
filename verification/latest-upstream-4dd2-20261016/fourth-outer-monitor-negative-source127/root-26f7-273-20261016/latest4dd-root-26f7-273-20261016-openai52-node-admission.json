@@ -1,0 +1,9 @@
+{
+  "heap_mb": 256,
+  "free_kib": 20331412,
+  "admitted": true,
+  "node_started": false,
+  "required_free_kib": 16777216,
+  "source_reserved_kib": 2097152,
+  "observed_utc": "2026-10-16T15:29:11.9456129+00:00"
+}

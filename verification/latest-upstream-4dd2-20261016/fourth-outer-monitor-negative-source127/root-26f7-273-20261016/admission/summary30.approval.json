@@ -1,0 +1,9 @@
+{
+  "approved": true,
+  "nonce": "1b1a2b92ad7b41fd8fb9b9e25976d202",
+  "run_id": "root-26f7-273-20261016",
+  "issued_utc": "2026-10-16T15:25:48.3555756+00:00",
+  "kind": "summary30",
+  "candidate_head": "26f7a0da9bd29fbf0b1889e74ce49ec93f28a1d8",
+  "root_fresh_free_kib": 19561932
+}

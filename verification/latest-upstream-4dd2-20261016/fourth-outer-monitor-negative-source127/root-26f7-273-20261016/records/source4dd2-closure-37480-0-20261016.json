@@ -1,0 +1,15 @@
+{
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "captureKind": "summary30",
+  "pid": 37480,
+  "threadId": 0,
+  "required": [
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\compaction\\compaction.ts",
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\compaction\\branch-summarization.ts",
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\compaction\\utils.ts",
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\coding-agent\\src\\core\\model-resolver.ts"
+  ],
+  "observedFiles": 1017,
+  "allObservedFilesFrozen": true,
+  "oldRuntimeSourceFallback": false
+}

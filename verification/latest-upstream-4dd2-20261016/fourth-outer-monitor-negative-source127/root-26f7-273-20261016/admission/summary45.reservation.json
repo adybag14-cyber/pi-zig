@@ -1,0 +1,11 @@
+{
+  "observed_utc": "2026-10-16T15:27:27.1571612+00:00",
+  "kind": "summary45",
+  "required_free_kib": 16777216,
+  "nonce": "dde0fb69062346aea393465c0ddc81dc",
+  "approved_sha256": "1FA2FCBA81D08CF73BCC71EC43443EDAA338CB69B1DCF0C2E463ACA461A32B66",
+  "admitted": true,
+  "source_reserved_kib": 2097152,
+  "free_kib": 20122364,
+  "heap_mb": 256
+}

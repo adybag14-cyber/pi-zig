@@ -1,0 +1,357 @@
+{
+  "scope": "Independent original OpenAI52 review; does not erase outer monitor negative or accept expected fixture",
+  "node_pid": 75000,
+  "node_exit_code": 0,
+  "source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "count": 52,
+  "ordered_case_ids": [
+    "openai52/000",
+    "openai52/001",
+    "openai52/002",
+    "openai52/003",
+    "openai52/004",
+    "openai52/005",
+    "openai52/006",
+    "openai52/007",
+    "openai52/008",
+    "openai52/009",
+    "openai52/010",
+    "openai52/011",
+    "openai52/012",
+    "openai52/013",
+    "openai52/014",
+    "openai52/015",
+    "openai52/016",
+    "openai52/017",
+    "openai52/018",
+    "openai52/019",
+    "openai52/020",
+    "openai52/021",
+    "openai52/022",
+    "openai52/023",
+    "openai52/024",
+    "openai52/025",
+    "openai52/026",
+    "openai52/027",
+    "openai52/028",
+    "openai52/029",
+    "openai52/030",
+    "openai52/031",
+    "openai52/032",
+    "openai52/033",
+    "openai52/034",
+    "openai52/035",
+    "openai52/036",
+    "openai52/037",
+    "openai52/038",
+    "openai52/039",
+    "openai52/040",
+    "openai52/041",
+    "openai52/042",
+    "openai52/043",
+    "openai52/044",
+    "openai52/045",
+    "openai52/046",
+    "openai52/047",
+    "openai52/048",
+    "openai52/049",
+    "openai52/050",
+    "openai52/051"
+  ],
+  "raw_sha256": "B9FA83B3666297E6653163B489B82FE1EF1D7FA5B2E1B3B5423C690E90BCD674",
+  "node_original_sha256": "55AAB789CA7A894AEFE4419481B1B38011A3C147B0F4832C2402CB736E10DF9F",
+  "script_sha256": "6EB05735F4A7E6EBFC13A563A2A4CDCD1A549CF84561EAB9C5220573BE6666F7",
+  "input_sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC",
+  "closure": {
+    "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+    "captureKind": "openai52",
+    "pid": 75000,
+    "threadId": 0,
+    "required": [
+      "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\ai\\src\\api\\openai-completions.ts",
+      "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\ai\\src\\api\\openai-responses-shared.ts"
+    ],
+    "observedFiles": 179,
+    "allObservedFilesFrozen": true,
+    "oldRuntimeSourceFallback": false
+  },
+  "network": {
+    "pid": 75000,
+    "attempts": [],
+    "networkRequests": 0,
+    "permissionModel": true,
+    "childProcessAllowed": false,
+    "workerAllowed": false,
+    "addonAllowed": false
+  },
+  "environment": {
+    "pid": 75000,
+    "names": [
+      "APPDATA",
+      "ComSpec",
+      "HOME",
+      "HOMEDRIVE",
+      "HOMEPATH",
+      "LOCALAPPDATA",
+      "NO_COLOR",
+      "PATH",
+      "PATHEXT",
+      "PI_CODING_AGENT_DIR",
+      "PI_LATEST_CAPTURE_KIND",
+      "PI_LATEST_CAPTURE_RECORD_DIR",
+      "PI_SOURCE_ORACLE_CONTROL_MANIFEST",
+      "POWERSHELL_TELEMETRY_OPTOUT",
+      "POWERSHELL_UPDATECHECK",
+      "PSModulePath",
+      "SystemRoot",
+      "TEMP",
+      "TMP",
+      "USERPROFILE",
+      "WINDIR"
+    ],
+    "allowlistMatched": true,
+    "ownedProfileTempAgent": true,
+    "credentialValuesRecorded": false
+  },
+  "matching_full_before_between_final_failures": 0,
+  "independent_supervisor_present": 0,
+  "observed_utc": "2026-10-16T16:33:55.1342103+01:00",
+  "actual_full_reports": [
+    {
+      "sha256": "255E12326C1653FC26B6DA82400102D5503EEACFD1D0F78D8245B68515113334",
+      "failures": 0,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\before-fullhash.json",
+      "groups": [
+        {
+          "name": "source",
+          "files": 1970,
+          "drift": 0
+        },
+        {
+          "name": "runtime",
+          "files": 31064,
+          "drift": 0
+        },
+        {
+          "name": "node",
+          "files": 1774,
+          "drift": 0
+        },
+        {
+          "name": "compiler",
+          "files": 19546,
+          "drift": 0
+        },
+        {
+          "name": "candidate",
+          "files": 9756,
+          "drift": 0
+        },
+        {
+          "name": "controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "run_controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "owner",
+          "files": 1,
+          "drift": 0
+        }
+      ]
+    },
+    {
+      "sha256": "B9597B0EE69A052ACEEA7AAC9E45C7DB1BFD967F5916FC96A060687E746556E8",
+      "failures": 0,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\after-summary30-fullhash.json",
+      "groups": [
+        {
+          "name": "source",
+          "files": 1970,
+          "drift": 0
+        },
+        {
+          "name": "runtime",
+          "files": 31064,
+          "drift": 0
+        },
+        {
+          "name": "node",
+          "files": 1774,
+          "drift": 0
+        },
+        {
+          "name": "compiler",
+          "files": 19546,
+          "drift": 0
+        },
+        {
+          "name": "candidate",
+          "files": 9756,
+          "drift": 0
+        },
+        {
+          "name": "controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "run_controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "owner",
+          "files": 1,
+          "drift": 0
+        }
+      ]
+    },
+    {
+      "sha256": "77593FD5557EEC296DC3D3F4B3230E2FF331D89A5304E40BD328FFC1DC46F715",
+      "failures": 0,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\after-summary45-fullhash.json",
+      "groups": [
+        {
+          "name": "source",
+          "files": 1970,
+          "drift": 0
+        },
+        {
+          "name": "runtime",
+          "files": 31064,
+          "drift": 0
+        },
+        {
+          "name": "node",
+          "files": 1774,
+          "drift": 0
+        },
+        {
+          "name": "compiler",
+          "files": 19546,
+          "drift": 0
+        },
+        {
+          "name": "candidate",
+          "files": 9756,
+          "drift": 0
+        },
+        {
+          "name": "controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "run_controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "owner",
+          "files": 1,
+          "drift": 0
+        }
+      ]
+    },
+    {
+      "sha256": "C46150EE12152D9A89B2878C1820CA93F2DAAE1D7FC7B542B1E45F5FDB6D8D9F",
+      "failures": 0,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\after-openai52-fullhash.json",
+      "groups": [
+        {
+          "name": "source",
+          "files": 1970,
+          "drift": 0
+        },
+        {
+          "name": "runtime",
+          "files": 31064,
+          "drift": 0
+        },
+        {
+          "name": "node",
+          "files": 1774,
+          "drift": 0
+        },
+        {
+          "name": "compiler",
+          "files": 19546,
+          "drift": 0
+        },
+        {
+          "name": "candidate",
+          "files": 9756,
+          "drift": 0
+        },
+        {
+          "name": "controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "run_controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "owner",
+          "files": 1,
+          "drift": 0
+        }
+      ]
+    },
+    {
+      "sha256": "5714FFA6BE3C33E2685304114A924986842C04E3FFD53C91929843F518C544CA",
+      "failures": 0,
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\final-fullhash.json",
+      "groups": [
+        {
+          "name": "source",
+          "files": 1970,
+          "drift": 0
+        },
+        {
+          "name": "runtime",
+          "files": 31064,
+          "drift": 0
+        },
+        {
+          "name": "node",
+          "files": 1774,
+          "drift": 0
+        },
+        {
+          "name": "compiler",
+          "files": 19546,
+          "drift": 0
+        },
+        {
+          "name": "candidate",
+          "files": 9756,
+          "drift": 0
+        },
+        {
+          "name": "controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "run_controls",
+          "files": 19,
+          "drift": 0
+        },
+        {
+          "name": "owner",
+          "files": 1,
+          "drift": 0
+        }
+      ]
+    }
+  ],
+  "supervisor_receipt_sha256": "1D27877599B378076316580F9EEAEAED728D84582E3E484F524119DB11593B3B"
+}

@@ -1,0 +1,154 @@
+[
+  {
+    "sha256": "B90BF0A24DEF0D9E44494F982E0B214C1F51848D0F863FF69DF54016F3E85E44",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-latest4dd.input.txt"
+  },
+  {
+    "sha256": "891FF13852540CADE5ABA7726488CAAE59C9E38BDDF124BE80B948B6BD966B38",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-generation-b45.input.txt"
+  },
+  {
+    "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\ai-openai-tool-output4dd-native.input.txt"
+  },
+  {
+    "sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\ai-google-tool-output4dd-native.input.txt"
+  },
+  {
+    "sha256": "BAB0C22AF69C5CC20E006D94BB6DB4042A42EBC9C0C8C96D1DF99250E8FCAC6C",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-source-capture.mjs"
+  },
+  {
+    "sha256": "0286E323AF6386CF86F383DA9FEE36C50BF7A651C0BCF89A857E7E534143D982",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-original45-source-capture.mjs"
+  },
+  {
+    "sha256": "C8E817DAF545E9B0AAF98F2B4E6A8931073AB1DB23DE394991F17B88F952FDCD",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\source-observe.mjs"
+  },
+  {
+    "sha256": "0BAC7A5A31EF5587CD04F3E96F4E84ACEABDAC7133B18B29A3539741E992C099",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Freeze-Latest4ddSource.ps1"
+  },
+  {
+    "sha256": "6EB05735F4A7E6EBFC13A563A2A4CDCD1A549CF84561EAB9C5220573BE6666F7",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\openai-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs"
+  },
+  {
+    "sha256": "76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\openai-tool-output4dd-prepared-20261016\\primary-tool-callers.mjs"
+  },
+  {
+    "sha256": "7E7A935503A4227B6FCCECAC856CF9D717A3FA79E551B656E23D070352C64F89",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\google-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs"
+  },
+  {
+    "sha256": "698517770F92D78A336F372046F1771B2DEDABC531D29B44083751B0F1509840",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\google-tool-output4dd-prepared-20261016\\primary-tool-callers.mjs"
+  },
+  {
+    "sha256": "3483B083B9F6981D9338EBE16FF7CC242E00FEFDE06ACC9E87E83E56120EF6AB",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\CAPTURE-PLAN.md"
+  },
+  {
+    "sha256": "4AC4148A111D98D8465A7DFBDE8AE31D0DC2738A099C9A8D55821A3F0EE3F994",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Run-Latest4ddSerialCapture.ps1"
+  },
+  {
+    "sha256": "88862F5387F50ADDC65C794174D14A2FE8AB030B6C70A5580E0646EC13DFB0D7",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1"
+  },
+  {
+    "sha256": "3CC9835406CA89516152D03CBBC0F9A995E32FBAC5819BDC55EACF1082B5E80E",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\source-network-guard.mjs"
+  },
+  {
+    "sha256": "9E07EC91F0C8F13FE8C27BE6784CBFF6436951737B0BA49D8C6BC67E17046807",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\ordered-case-ids.json"
+  },
+  {
+    "sha256": "9CDD62BF5C774F9EF0A111F41571A01F2AE618EDD44CA04661468126FF114DFB",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Confirm-Latest4ddOuterAbsent.ps1"
+  },
+  {
+    "sha256": "9B5AEE7DEA9959BECB524980EAD036DFCE4EE96063EEB76145076788BC91B62B",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\EXECUTABLE-LAUNCHER.md"
+  },
+  {
+    "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\Invoke-OwnedModelsClassSource-20261016.ps1"
+  },
+  {
+    "sha256": "73838F9AF97E69ED367F7BC87D928895052A6D8042270E75C04B949E9DE34C20",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\initial-root-grant.json"
+  },
+  {
+    "sha256": "2D5F581A2B91734E84C591C679D7ED20729244A96144E22DC201CD79B56BC89E",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\initial-admission.json"
+  },
+  {
+    "sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+    "path": "C:\\Program Files\\PowerShell\\7\\pwsh.exe"
+  },
+  {
+    "sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5",
+    "path": "C:\\Program Files\\Git\\cmd\\git.exe"
+  },
+  {
+    "sha256": "FC0F1CAE1304FCDCF4D0749F421C5ED21471EFC856301F92F56D4B844BE84363",
+    "path": "C:\\Program Files\\Git\\mingw64\\bin\\git.exe"
+  },
+  {
+    "sha256": "9E07EC91F0C8F13FE8C27BE6784CBFF6436951737B0BA49D8C6BC67E17046807",
+    "path": "C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\ordered-case-ids.json"
+  },
+  {
+    "sha256": "F2F819ED3A14350A45B10E81FF7F33F03A0B8C39B8481AF554442F1BD3B84F49",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\environment-policy.json"
+  },
+  {
+    "sha256": "006ACB1B050F01EB8B69189041DE02593BAFF6C04E636EB0EE6E800C2662DBB3",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\before.json"
+  },
+  {
+    "sha256": "D727351E5D75499F4112A1160065C83FBA4A7CC9B9383015F6C3748DD3F95802",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-summary30.json"
+  },
+  {
+    "sha256": "78E2D3E4EAA6374D60E2E8EAA8372CDCE85CF383DCD10A08A9B0B6C560FEB90F",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-summary45.json"
+  },
+  {
+    "sha256": "77B178E6018C49155955D32EDC3D937D734F420F57EE25042C378BEABFDB19E0",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-openai52.json"
+  },
+  {
+    "sha256": "3D47A3EAC34FD4ED7E98DF18FFD9C81AF8D34277304830D20E5769498C9DEA0B",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-google.json"
+  },
+  {
+    "sha256": "2F95C8D21C1A2EF12F508BC095E91FE2724CB3F3EAA9F9260BCBC02488E8C804",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\final.json"
+  },
+  {
+    "sha256": "6EB87DC80A89BA71F0DF6F71D5F890ACF5F04009EE2733BDB74700103BB6B247",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\summary30.json"
+  },
+  {
+    "sha256": "ABC7181C4C8B434A35A2E236911DA375DC7B02D7A8E16EA3B85E25A7BDD3B35C",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\summary45.json"
+  },
+  {
+    "sha256": "DBF5E9DA4DF0571E24249B88F9125B57AB24EE5705C895AE5AB5714C3FF86A2F",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\openai52.json"
+  },
+  {
+    "sha256": "F09757D3D827913D230C6A067716BEA96A2C73F8CBC0101763AD949B895F3F60",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\google.json"
+  },
+  {
+    "sha256": "F7E4C53A27232C0401435377CF67158D0FB1701C1F0E5C3344753CD5AB54795D",
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\run-controls.json"
+  }
+]

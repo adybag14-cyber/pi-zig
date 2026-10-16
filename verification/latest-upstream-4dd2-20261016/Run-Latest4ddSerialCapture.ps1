@@ -1,7 +1,8 @@
 param(
     [Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{40}$')][string]$CandidateHead,
     [Parameter(Mandatory)][ValidatePattern('^[a-zA-Z0-9-]{1,60}$')][string]$RunId,
-    [Parameter(Mandatory)][string]$RootGrant
+    [Parameter(Mandatory)][string]$RootGrant,
+    [ValidateSet('summary30','summary45','openai52','google')][string[]]$CaptureKinds=@('summary30','summary45','openai52','google')
 )
 $ErrorActionPreference='Stop'
 $taskCandidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -18,7 +19,11 @@ $taskOwnerOriginal=Join-Path $taskEvidence 'Invoke-OwnedModelsClassSource-202610
 $taskOwnerHash='96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5'
 $taskLauncherHash=(Get-FileHash -LiteralPath $PSCommandPath).Hash
 $taskGrant=Get-Content -LiteralPath $RootGrant -Raw|ConvertFrom-Json
-if(@($taskGrant.PSObject.Properties.Name|Where-Object {$_ -notin @('authorized','manual_fresh_16gib','run_id','candidate_head','launcher_sha256','issued_utc','expires_utc','grant_id')}).Count){throw 'Root grant must contain only the documented metadata fields'}
+if(@($taskGrant.PSObject.Properties.Name|Where-Object {$_ -notin @('authorized','manual_fresh_16gib','run_id','candidate_head','launcher_sha256','issued_utc','expires_utc','grant_id','capture_kinds')}).Count){throw 'Root grant must contain only the documented metadata fields'}
+if(!$CaptureKinds.Count -or @($CaptureKinds|Select-Object -Unique).Count -ne $CaptureKinds.Count){throw 'Distinct explicit capture kinds required'}
+$taskCanonicalKinds=@('summary30','summary45','openai52','google')|Where-Object {$_ -in $CaptureKinds}
+if(($CaptureKinds -join ',') -cne ($taskCanonicalKinds -join ',')){throw 'Canonical caller probe order required'}
+if(($CaptureKinds -join ',') -cne 'summary30,summary45,openai52,google' -or $taskGrant.capture_kinds){if((@($taskGrant.capture_kinds) -join ',') -cne ($CaptureKinds -join ',')){throw 'Exact requested subset must be authorized in Root grant'}}
 $taskNow=[DateTimeOffset]::UtcNow
 if($taskGrant.authorized -isnot [bool] -or $taskGrant.authorized -ne $true -or $taskGrant.manual_fresh_16gib -isnot [bool] -or $taskGrant.manual_fresh_16gib -ne $true -or $taskGrant.run_id -cne $RunId -or $taskGrant.candidate_head -cne $CandidateHead -or $taskGrant.launcher_sha256 -cne $taskLauncherHash -or ([DateTimeOffset]$taskGrant.expires_utc) -le $taskNow -or ([DateTimeOffset]$taskGrant.issued_utc) -gt $taskNow -or ($taskNow-([DateTimeOffset]$taskGrant.issued_utc)).TotalSeconds -gt 300){throw 'Exact fresh manual Root grant required; no owner/child started'}
 if((Get-FileHash -LiteralPath $taskOwnerOriginal).Hash -cne $taskOwnerHash){throw 'Retained owner authority changed'}
@@ -39,6 +44,7 @@ $taskStart=[DateTimeOffset]::UtcNow
 # seal +140 controller/settlement overhead =5700s hard outer budget.
 $taskDeadline=$taskStart.AddSeconds(5700)
 $taskKnown=[Collections.Generic.List[object]]::new()
+$taskIncomplete=[Collections.Generic.List[object]]::new()
 $taskCaseRecords=[Collections.Generic.List[object]]::new()
 $taskFailures=[Collections.Generic.List[string]]::new()
 $taskPhaseRecords=[Collections.Generic.List[object]]::new()
@@ -56,7 +62,7 @@ function Same-Process($Expected,$Actual){
     return $Actual -and [int]$Actual.ProcessId -eq $Expected.pid -and [string]$Actual.ExecutablePath -ceq $Expected.executable -and [string]$Actual.CommandLine -ceq $Expected.command_line -and [Math]::Abs((([DateTimeOffset]$Actual.CreationDate)-([DateTimeOffset]$Expected.created_utc)).TotalMilliseconds) -le 1
 }
 function Remember($Identity){if(!@($taskKnown|Where-Object {$_.pid -eq $Identity.pid -and $_.created_utc -ceq $Identity.created_utc}).Count){$taskKnown.Add($Identity)}}
-function Observe-Descendants([int]$RootPid){
+function Observe-Descendants([int]$RootPid,[string]$RetainedRecord){
     $taskAll=@(Get-CimInstance Win32_Process -OperationTimeoutSec 3)
     $taskParents=[Collections.Generic.HashSet[int]]::new()
     foreach($taskKnownRow in $taskKnown){$taskLive=@($taskAll|Where-Object ProcessId -eq $taskKnownRow.pid);if($taskLive.Count -eq 1 -and (Same-Process $taskKnownRow $taskLive[0])){[void]$taskParents.Add($taskKnownRow.pid)}}
@@ -65,7 +71,25 @@ function Observe-Descendants([int]$RootPid){
         foreach($taskRow in $taskAll){
             if($taskParents.Contains([int]$taskRow.ParentProcessId) -and !$taskParents.Contains([int]$taskRow.ProcessId) -and ([DateTimeOffset]$taskRow.CreationDate) -ge $taskStart){
                 $taskIdentity=Identity $taskRow
-                if(!$taskIdentity.executable -or !$taskIdentity.command_line){throw 'Owned descendant identity incomplete'}
+                if(!$taskIdentity.executable -or !$taskIdentity.command_line){
+                    $taskPartial=@{pid=$taskIdentity.pid;parent_pid=$taskIdentity.parent_pid;created_utc=$taskIdentity.created_utc;missing_executable=!$taskIdentity.executable;missing_command_line=!$taskIdentity.command_line;observed_utc=[DateTimeOffset]::UtcNow.ToString('o');status='bounded_requery_pending'}
+                    $taskIncomplete.Add($taskPartial)
+                    Write-Json (Join-Path $taskRun 'incomplete-descendant-observations.json') $taskIncomplete.ToArray()
+                    $taskRecovered=$null
+                    for($taskAttempt=0;$taskAttempt -lt 2;$taskAttempt++){
+                        $taskAgain=Get-CimInstance Win32_Process -Filter "ProcessId=$($taskIdentity.pid)" -OperationTimeoutSec 3 -ErrorAction Stop
+                        if(!$taskAgain){$taskPartial.status='original_exited_before_requery';break}
+                        if([Math]::Abs((([DateTimeOffset]$taskAgain.CreationDate)-([DateTimeOffset]$taskIdentity.created_utc)).TotalMilliseconds) -gt 1){$taskPartial.status='original_exited_pid_reused';break}
+                        if($taskAgain.ExecutablePath -and $taskAgain.CommandLine){$taskRecovered=Identity $taskAgain;$taskPartial.status='full_cim_identity_recovered';break}
+                        if($RetainedRecord -and (Test-Path -LiteralPath $RetainedRecord)){
+                            $taskRetained=Get-Content -LiteralPath $RetainedRecord -Raw|ConvertFrom-Json
+                            if([int]$taskRetained.pid -eq $taskIdentity.pid -and $taskRetained.identity_captured -and $taskRetained.executable -and $taskRetained.command_line -and [Math]::Abs((([DateTimeOffset]$taskRetained.created_utc)-([DateTimeOffset]$taskIdentity.created_utc)).TotalMilliseconds) -le 1){$taskRecovered=@{pid=$taskIdentity.pid;parent_pid=$taskIdentity.parent_pid;created_utc=$taskRetained.created_utc;executable=$taskRetained.executable;command_line=$taskRetained.command_line};$taskPartial.status='retained_kernel_launch_identity_recovered';break}
+                        }
+                        Start-Sleep -Milliseconds 100
+                    }
+                    Write-Json (Join-Path $taskRun 'incomplete-descendant-observations.json') $taskIncomplete.ToArray()
+                    if($taskRecovered){$taskIdentity=$taskRecovered}elseif($taskPartial.status -in @('original_exited_before_requery','original_exited_pid_reused')){continue}else{throw 'Owned descendant remains live with incomplete identity; preserved without kill authority'}
+                }
                 Remember $taskIdentity;[void]$taskParents.Add($taskIdentity.pid);$taskAdded=$true
             }
         }
@@ -87,8 +111,10 @@ function Absence([string]$Label){
         $taskPresent=Same-Process $taskExpected $taskLive
         @{identity=$taskExpected;original_identity_absent=!$taskPresent;pid_reused=($taskLive -and !$taskPresent)}
     })
-    Write-Json (Join-Path $taskRun ($Label+'-independent-absence.json')) @{rows=$taskRows;present=@($taskRows|Where-Object {!$_.original_identity_absent}).Count;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
-    if(@($taskRows|Where-Object {!$_.original_identity_absent}).Count){throw 'Owned process/observed descendant still present; no handoff'}
+    $taskPartialRows=@(foreach($taskPartial in $taskIncomplete){$taskLive=$taskAll|Where-Object ProcessId -eq $taskPartial.pid|Select-Object -First 1;$taskSame=$taskLive -and [int]$taskLive.ParentProcessId -eq $taskPartial.parent_pid -and [Math]::Abs((([DateTimeOffset]$taskLive.CreationDate)-([DateTimeOffset]$taskPartial.created_utc)).TotalMilliseconds) -le 1;@{observation=$taskPartial;original_identity_absent=!$taskSame;kill_authority=$false}})
+    $taskPresent=@($taskRows|Where-Object {!$_.original_identity_absent}).Count+@($taskPartialRows|Where-Object {!$_.original_identity_absent}).Count
+    Write-Json (Join-Path $taskRun ($Label+'-independent-absence.json')) @{rows=$taskRows;partial_observation_rows=$taskPartialRows;present=$taskPresent;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    if($taskPresent){throw 'Owned process/observed descendant still present; no handoff'}
 }
 function Child-Environment {
     # No caller environment is inherited by phase workers or Node. These are
@@ -116,6 +142,8 @@ function Phase([string]$Label,[string]$Config,[int]$Seconds){
     foreach($taskName in $taskSafe.Keys){$taskInfo.Environment[$taskName]=[string]$taskSafe[$taskName]}
     foreach($taskArgument in @('-NoLogo','-NoProfile','-NonInteractive','-File',$taskWorker,'-Config',$Config,'-ConfigSha256',(Get-FileHash -LiteralPath $Config).Hash)){$taskInfo.ArgumentList.Add($taskArgument)}
     $taskProcess=[Diagnostics.Process]::new();$taskProcess.StartInfo=$taskInfo
+    $taskPhaseConfig=Get-Content -LiteralPath $Config -Raw|ConvertFrom-Json
+    $taskRetainedRecord=if($taskPhaseConfig.mode -eq 'node'){Join-Path $taskRun ($taskPhaseConfig.name+'.json')}else{$null}
     if(!$taskProcess.Start()){throw 'Owned phase worker did not start'}
     $taskOut=$taskProcess.StandardOutput.ReadToEndAsync();$taskErr=$taskProcess.StandardError.ReadToEndAsync()
     $taskCreated=$taskProcess.StartTime.ToUniversalTime()
@@ -126,7 +154,7 @@ function Phase([string]$Label,[string]$Config,[int]$Seconds){
     $taskTimedOut=$false
     try{
         while(!$taskProcess.WaitForExit(200)){
-            Observe-Descendants $taskProcess.Id
+            Observe-Descendants $taskProcess.Id $taskRetainedRecord
             if([DateTimeOffset]::UtcNow -ge $taskPhaseDeadline -or [DateTimeOffset]::UtcNow -ge $taskDeadline){$taskTimedOut=$true;break}
         }
         if($taskTimedOut){
@@ -171,6 +199,9 @@ $taskSpecs=@(
     @{kind='openai52';count=52;driver='verification/openai-tool-output4dd-prepared-20261016/capture-primary-tool-output.mjs';input='verification/openai-tool-output4dd-prepared-20261016/primary-tool-callers.mjs'},
     @{kind='google';count=146;driver='verification/google-tool-output4dd-prepared-20261016/capture-primary-tool-output.mjs';input='verification/google-tool-output4dd-prepared-20261016/primary-tool-callers.mjs'}
 )
+$taskSpecs=@($taskSpecs|Where-Object {$_.kind -in $CaptureKinds})
+$taskRequestedCount=($taskSpecs|Measure-Object -Property count -Sum).Sum
+if($taskRequestedCount -ne @($taskCaseIds|Where-Object {$_.kind -in $CaptureKinds}).Count){throw 'Requested original case subset census mismatch'}
 $taskAdditional=[Collections.Generic.List[object]]::new()
 foreach($taskPath in @($taskOwner,(Join-Path $taskRun 'initial-root-grant.json'),(Join-Path $taskRun 'initial-admission.json'),$taskPwsh,$taskGit,$taskGitActual,$taskCasesPath)){$taskAdditional.Add(@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash})}
 $taskSafe=Child-Environment
@@ -233,9 +264,10 @@ if(@($taskExpectedPaths|Where-Object {Test-Path -LiteralPath $_}).Count){throw '
         foreach($taskPath in @($taskSpec.output,$taskOwnerRecord)+@(Get-ChildItem -LiteralPath (Join-Path $taskRun 'records') -File|Where-Object {$_.Name -match ('(^source4dd2-(modules|closure)-'+$taskNodePid+'-)|(^(network|environment)-'+$taskNodePid+'\.json$)')}|ForEach-Object{$_.FullName})){$taskCapturedArtifacts.Add(@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash})}
         Write-Json (Join-Path $taskRun ($taskSpec.kind+'-probe-complete.json')) @{kind=$taskSpec.kind;count=$taskRows.Count;source_output_sha256=(Get-FileHash -LiteralPath $taskSpec.output).Hash;script_sha256=(Get-FileHash -LiteralPath (Join-Path $taskCandidate $taskSpec.driver)).Hash;input_sha256=(Get-FileHash -LiteralPath (Join-Path $taskCandidate $taskSpec.input)).Hash;node_pid=$taskNodePid;status='terminal0_fullpost0_pending_final_review'}
     }
-    if($taskCaseRecords.Count -ne 273){throw 'All273 original ordered records required'}
-    Write-Json (Join-Path $taskRun 'all273-original-observations.json') @{cases=$taskCaseRecords.ToArray();count=273;purpose='Raw genuine Source capture artifact; not an accepted expected fixture'}
-    $taskCapturedArtifacts.Add(@{path=(Join-Path $taskRun 'all273-original-observations.json');sha256=(Get-FileHash -LiteralPath (Join-Path $taskRun 'all273-original-observations.json')).Hash})
+    if($taskCaseRecords.Count -ne $taskRequestedCount){throw 'All requested original ordered records required'}
+    $taskCombined=Join-Path $taskRun ('original-'+$taskRequestedCount+'-observations.json')
+    Write-Json $taskCombined @{cases=$taskCaseRecords.ToArray();count=$taskRequestedCount;capture_kinds=$CaptureKinds;purpose='Raw genuine Source capture artifact; not an accepted expected fixture'}
+    $taskCapturedArtifacts.Add(@{path=$taskCombined;sha256=(Get-FileHash -LiteralPath $taskCombined).Hash})
     Admission 'acceptance'
     $taskAccepted=$true
 }catch{$taskFailures.Add($_.Exception.Message)}finally{
@@ -258,7 +290,7 @@ if(@($taskExpectedPaths|Where-Object {Test-Path -LiteralPath $_}).Count){throw '
         Phase 'artifact-seal' $taskSealConfig 120
         Absence 'artifact-seal'
     }catch{$taskFailures.Add('Artifact seal/absence negative: '+$_.Exception.Message)}
-    Write-Json (Join-Path $taskRun 'terminal.json') @{status=if($taskAccepted -and !$taskFailures.Count){'captured_pending_root_expected_review'}else{'negative'};failures=$taskFailures.ToArray();records=$taskCaseRecords.Count;candidate_head=$CandidateHead;launcher_sha256=$taskLauncherHash;known_owned_identities=$taskKnown.ToArray();phases=$taskPhaseRecords.ToArray();expected_files_created=$false;handoff='requires external supervisor confirmation of outer identity absence';deadline_utc=$taskDeadline.ToString('o');completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    Write-Json (Join-Path $taskRun 'terminal.json') @{status=if($taskAccepted -and !$taskFailures.Count){'captured_pending_root_expected_review'}else{'negative'};failures=$taskFailures.ToArray();records=$taskCaseRecords.Count;requested_records=$taskRequestedCount;capture_kinds=$CaptureKinds;candidate_head=$CandidateHead;launcher_sha256=$taskLauncherHash;known_owned_identities=$taskKnown.ToArray();incomplete_observations=$taskIncomplete.ToArray();phases=$taskPhaseRecords.ToArray();expected_files_created=$false;handoff='requires external supervisor confirmation of outer identity absence';deadline_utc=$taskDeadline.ToString('o');completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
 }
 if($taskFailures.Count -or !$taskAccepted){throw 'Latest Source serial capture negative; retained full packet; no acceptance/handoff'}
-Write-Output 'LATEST4DD_RAW273_CAPTURED_PENDING_ROOT_EXPECTED_REVIEW'
+Write-Output ('LATEST4DD_RAW'+$taskRequestedCount+'_CAPTURED_PENDING_ROOT_EXPECTED_REVIEW')

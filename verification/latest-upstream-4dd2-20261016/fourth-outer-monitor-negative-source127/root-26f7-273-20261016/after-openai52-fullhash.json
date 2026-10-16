@@ -1,0 +1,64 @@
+{
+  "absence_inventory": 84,
+  "dependency_link": {
+    "link_type": "Junction",
+    "target": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules",
+    "path": "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\node_modules"
+  },
+  "unexpected_present": [],
+  "metadata_errors": [],
+  "phase": "post",
+  "failures": 0,
+  "candidate_head": "26f7a0da9bd29fbf0b1889e74ce49ec93f28a1d8",
+  "groups": [
+    {
+      "drift": 0,
+      "name": "source",
+      "changed": [],
+      "files": 1970
+    },
+    {
+      "drift": 0,
+      "name": "runtime",
+      "changed": [],
+      "files": 31064
+    },
+    {
+      "drift": 0,
+      "name": "node",
+      "changed": [],
+      "files": 1774
+    },
+    {
+      "drift": 0,
+      "name": "compiler",
+      "changed": [],
+      "files": 19546
+    },
+    {
+      "drift": 0,
+      "name": "candidate",
+      "changed": [],
+      "files": 9756
+    },
+    {
+      "drift": 0,
+      "name": "controls",
+      "changed": [],
+      "files": 19
+    },
+    {
+      "drift": 0,
+      "name": "run_controls",
+      "changed": [],
+      "files": 19
+    },
+    {
+      "drift": 0,
+      "name": "owner",
+      "changed": [],
+      "files": 1
+    }
+  ],
+  "observed_utc": "2026-10-16T15:29:47.6819634+00:00"
+}

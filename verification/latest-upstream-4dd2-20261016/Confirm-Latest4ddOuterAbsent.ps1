@@ -13,7 +13,9 @@ $taskRows=@(foreach($taskIdentity in @($taskOuter.identity)+@($taskTerminal.know
     @{identity=$taskIdentity;original_identity_absent=!$taskSame;pid_reused=($taskLive -and !$taskSame)}
 })
 $taskPresent=@($taskRows|Where-Object {!$_.original_identity_absent})
-$taskReceipt=@{rows=$taskRows;present=$taskPresent.Count;candidate_head=$taskTerminal.candidate_head;source_terminal_status=$taskTerminal.status;expected_files_created=$false;outer_and_observed_descendants_absent=($taskPresent.Count -eq 0);observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+$taskPartialRows=@(foreach($taskPartial in $taskTerminal.incomplete_observations){$taskLive=$taskAll|Where-Object ProcessId -eq $taskPartial.pid|Select-Object -First 1;$taskSame=$taskLive -and [int]$taskLive.ParentProcessId -eq $taskPartial.parent_pid -and [Math]::Abs((([DateTimeOffset]$taskLive.CreationDate)-([DateTimeOffset]$taskPartial.created_utc)).TotalMilliseconds) -le 1;@{observation=$taskPartial;original_identity_absent=!$taskSame;kill_authority=$false}})
+$taskPresentCount=$taskPresent.Count+@($taskPartialRows|Where-Object {!$_.original_identity_absent}).Count
+$taskReceipt=@{rows=$taskRows;partial_observation_rows=$taskPartialRows;present=$taskPresentCount;candidate_head=$taskTerminal.candidate_head;source_terminal_status=$taskTerminal.status;expected_files_created=$false;outer_and_observed_descendants_absent=($taskPresentCount -eq 0);observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
 $taskReceipt|ConvertTo-Json -Depth 16|Set-Content -LiteralPath (Join-Path $taskRun 'supervisor-handoff.json') -Encoding utf8NoBOM
-if($taskPresent.Count){throw 'Outer/observed child identities still present; no handoff'}
+if($taskPresentCount){throw 'Outer/observed child identities still present; no handoff'}
 Write-Output 'LATEST4DD_OUTER_AND_OBSERVED_DESCENDANTS_ABSENT'

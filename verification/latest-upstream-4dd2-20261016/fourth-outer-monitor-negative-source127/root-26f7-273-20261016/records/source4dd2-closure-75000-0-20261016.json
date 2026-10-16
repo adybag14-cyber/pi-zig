@@ -1,0 +1,13 @@
+{
+  "sourceHead": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "captureKind": "openai52",
+  "pid": 75000,
+  "threadId": 0,
+  "required": [
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\ai\\src\\api\\openai-completions.ts",
+    "C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016\\packages\\ai\\src\\api\\openai-responses-shared.ts"
+  ],
+  "observedFiles": 179,
+  "allObservedFilesFrozen": true,
+  "oldRuntimeSourceFallback": false
+}

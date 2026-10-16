@@ -1,0 +1,281 @@
+{
+  "present": 0,
+  "rows": [
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 23232,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:24:46.0458090+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\before.json -ConfigSha256 006ACB1B050F01EB8B69189041DE02593BAFF6C04E636EB0EE6E800C2662DBB3"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 54364,
+        "parent_pid": 23232,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:24:46.0487290+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 39564,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:25:48.8416860+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\summary30.json -ConfigSha256 6EB87DC80A89BA71F0DF6F71D5F890ACF5F04009EE2733BDB74700103BB6B247"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 20728,
+        "parent_pid": 39564,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:25:48.8446360+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 37480,
+        "parent_pid": 39564,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "created_utc": "2026-10-16T15:25:49.5760170+00:00",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-source-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary30-raw-source.json C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-latest4dd.input.txt"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 30956,
+        "parent_pid": 37480,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:25:49.5833760+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "parent_pid": 0,
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-source-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary30-raw-source.json C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-latest4dd.input.txt",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "pid": 37480,
+        "created_utc": "2026-10-16T15:25:49.5760172Z"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 61452,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:26:07.0142520+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-summary30.json -ConfigSha256 D727351E5D75499F4112A1160065C83FBA4A7CC9B9383015F6C3748DD3F95802"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 73020,
+        "parent_pid": 61452,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:26:07.0171790+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 47084,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:27:27.1598680+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\summary45.json -ConfigSha256 ABC7181C4C8B434A35A2E236911DA375DC7B02D7A8E16EA3B85E25A7BDD3B35C"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 75052,
+        "parent_pid": 47084,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:27:27.1626140+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 71036,
+        "parent_pid": 47084,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "created_utc": "2026-10-16T15:27:27.8609180+00:00",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-original45-source-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary45-raw-source.json C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-generation-b45.input.txt"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 68120,
+        "parent_pid": 71036,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:27:27.8637400+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "parent_pid": 0,
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\summary-original45-source-capture.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\summary45-raw-source.json C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\src\\extensions\\fixtures\\sdk-summary-generation-b45.input.txt",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "pid": 71036,
+        "created_utc": "2026-10-16T15:27:27.8609187Z"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 48532,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:27:43.2203930+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-summary45.json -ConfigSha256 78E2D3E4EAA6374D60E2E8EAA8372CDCE85CF383DCD10A08A9B0B6C560FEB90F"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 47896,
+        "parent_pid": 48532,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:27:43.2231420+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 62552,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:29:11.3763900+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\openai52.json -ConfigSha256 DBF5E9DA4DF0571E24249B88F9125B57AB24EE5705C895AE5AB5714C3FF86A2F"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 70708,
+        "parent_pid": 62552,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:29:11.3792510+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 75000,
+        "parent_pid": 62552,
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "created_utc": "2026-10-16T15:29:12.0664450+00:00",
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\openai-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\openai52-raw-source.json"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 64532,
+        "parent_pid": 75000,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:29:12.0693750+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "parent_pid": 0,
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission --allow-fs-read=C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-source-4dd2b149-20261016 --allow-fs-read=C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012 --allow-fs-read=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --allow-fs-write=C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016 --conditions=source --experimental-transform-types --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-network-guard.mjs --import file:///C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/source-observe.mjs C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\openai-tool-output4dd-prepared-20261016\\capture-primary-tool-output.mjs C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\openai52-raw-source.json",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "pid": 75000,
+        "created_utc": "2026-10-16T15:29:12.0664457Z"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 36672,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:29:25.2108630+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\after-openai52.json -ConfigSha256 77B178E6018C49155955D32EDC3D937D734F420F57EE25042C378BEABFDB19E0"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 62608,
+        "parent_pid": 36672,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:29:25.2137810+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 71156,
+        "parent_pid": 54304,
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "created_utc": "2026-10-16T15:29:48.0235990+00:00",
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Invoke-Latest4ddPhase.ps1 -Config C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-source-captures\\root-26f7-273-20261016\\configs\\final.json -ConfigSha256 2F95C8D21C1A2EF12F508BC095E91FE2724CB3F3EAA9F9260BCBC02488E8C804"
+      },
+      "original_identity_absent": true
+    },
+    {
+      "pid_reused": false,
+      "identity": {
+        "pid": 47556,
+        "parent_pid": 71156,
+        "executable": "C:\\Windows\\system32\\conhost.exe",
+        "created_utc": "2026-10-16T15:29:48.0263780+00:00",
+        "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4"
+      },
+      "original_identity_absent": true
+    }
+  ],
+  "observed_utc": "2026-10-16T15:30:11.7751910+00:00"
+}

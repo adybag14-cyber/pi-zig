@@ -1,0 +1,17 @@
+{
+  "candidate_head": "26f7a0da9bd29fbf0b1889e74ce49ec93f28a1d8",
+  "deadline_utc": "2026-10-16T16:59:45.6737240+00:00",
+  "maximum_seconds": 5700,
+  "status": "running",
+  "identity": {
+    "pid": 54304,
+    "parent_pid": 79492,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T15:24:44.7846220+00:00",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig-latest-4dd2-models-20261016\\verification\\latest-upstream-4dd2-20261016\\Run-Latest4ddSerialCapture.ps1 -CandidateHead 26f7a0da9bd29fbf0b1889e74ce49ec93f28a1d8 -RunId root-26f7-273-20261016 -RootGrant C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\latest4dd-root-grant-26f7-20261016.json"
+  },
+  "expected_files_created": false,
+  "run_id": "root-26f7-273-20261016",
+  "start_utc": "2026-10-16T15:24:45.6737240+00:00",
+  "launcher_sha256": "4AC4148A111D98D8465A7DFBDE8AE31D0DC2738A099C9A8D55821A3F0EE3F994"
+}
