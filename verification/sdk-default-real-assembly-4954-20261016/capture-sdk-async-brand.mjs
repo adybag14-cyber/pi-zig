@@ -15,6 +15,8 @@ const pins={
 };
 for(const[path,sha]of Object.entries(pins))if(createHash('sha256').update(await readFile(source+path)).digest('hex')!==sha)throw Error('Actual class module drift: '+path);
 const output=process.argv[2];if(!output)throw Error('Explicit no-overwrite output path required');
+const packageRoot=resolve(source,'..');
+if(resolve(process.env.PI_PACKAGE_DIR??'')!==packageRoot)throw Error('Actual current Source package root must be explicit');
 const model=await import(pathToFileURL(source+'core/model-runtime.ts').href);
 const session=await import(pathToFileURL(source+'core/agent-session-runtime.ts').href);
 const config=await import(pathToFileURL(source+'core/model-config.ts').href);
@@ -25,5 +27,8 @@ try{
   globalThis.ActualSdkIsAsyncFunction=types.isAsyncFunction;
   await import(pathToFileURL(input).href);
   const rows=globalThis.ActualSdkAsyncBrandRows;if(!Array.isArray(rows)||rows.length!==15)throw Error('Actual brand15 corpus incomplete');
-  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',brandAuthority:'actual node:util.types.isAsyncFunction',inputSha256:createHash('sha256').update(bytes).digest('hex'),modules:pins,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
+  const packageBytes=await readFile(resolve(packageRoot,'package.json'));const pkg=JSON.parse(packageBytes);
+  const typeboxBytes=await readFile('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/package.json');const typeboxSha=createHash('sha256').update(typeboxBytes).digest('hex');
+  if(pkg.version!=='1.3.0'||typeboxSha!=='c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f'||JSON.parse(typeboxBytes).version!=='1.3.27')throw Error('Actual current package metadata drift');
+  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',brandAuthority:'actual node:util.types.isAsyncFunction',packageRootOverride:packageRoot,packageSha256:createHash('sha256').update(packageBytes).digest('hex'),packageVersion:pkg.version,typeboxVersion:'1.3.27',typeboxPackageSha256:typeboxSha,inputSha256:createHash('sha256').update(bytes).digest('hex'),modules:pins,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
 }finally{delete globalThis.ActualSdkAsyncClasses;delete globalThis.ActualSdkIsAsyncFunction;delete globalThis.ActualSdkAsyncBrandRows}
