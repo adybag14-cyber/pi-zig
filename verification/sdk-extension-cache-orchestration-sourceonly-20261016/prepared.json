@@ -1,0 +1,114 @@
+{
+  "status": "actual_extension_cache_orchestration_source_only_prepared_unrun",
+  "base": "98902b9a79290da6cbb5c9e97c048ceac7dde470",
+  "upstream": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_authorities": [
+    {
+      "relative": "packages/coding-agent/src/core/extensions/loader.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\loader.ts",
+          "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+          "bytes": 28124
+        }
+      ],
+      "identical": true
+    },
+    {
+      "relative": "packages/coding-agent/src/core/extensions/virtual-modules.ts",
+      "copies": [
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\4954d76-20261015\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        },
+        {
+          "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\extensions\\virtual-modules.ts",
+          "sha256": "9A6CDFD7C21FD38FCF1E885990886E38A45F0F0355B918A4BBD757F460470622",
+          "bytes": 2010
+        }
+      ],
+      "identical": true
+    }
+  ],
+  "products": [
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "sha256": "82413A0DADB73A8EC0EAF70C6DA56D75F99F4CC08F037A601215CAA229FAC4D4",
+      "bytes": 18958
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_virtual_modules.zig",
+      "sha256": "F00C1FBD5A4F48FDBB76CCF3D76C3D793B40F4AF17A1730FABC42D74A664739B",
+      "bytes": 4841
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "sha256": "20EFFAB7E4272583C44B94132E71D37D415287CEBAEEFC857EB26AADD420E91B",
+      "bytes": 8675
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_cache.zig",
+      "sha256": "898640E1DDDD7BEF78F3431C10185EBE934CD3D923A651F9BCEE920B4A69DA93",
+      "bytes": 6780
+    },
+    {
+      "path": "src/native_sdk_extension_loader_controls.zig",
+      "sha256": "1C4B99E0F3412F278C6D0E94CD25268A2E882AE41B981A752D6FD452FF25180F",
+      "bytes": 15636
+    }
+  ],
+  "public_async_lengths": {
+    "loadExtensions": 4,
+    "loadExtensionsCached": 4,
+    "loadExtensionFromFactory": 4
+  },
+  "await_expression_kinds": 6,
+  "virtual_properties": 20,
+  "required_real_namespace_groups": 9,
+  "prepared_control_entry_points": 9,
+  "prepared_js_programs": 6,
+  "actual_compiled_count": null,
+  "protected_files": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/engine.zig",
+    "src/extensions/native_async_function.zig",
+    "src/extensions/native_async_body.zig",
+    "src/extensions/native_sdk_prompt_scope.zig",
+    "src/extensions/native_sdk_default_real_assembly.zig",
+    "src/extensions/native_sdk_factory_provider_callbacks.zig",
+    "src/extensions/native_sdk_factory_flags.zig",
+    "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+    "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+    "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+    "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+    "src/extensions/fixtures/sdk-module-policy-4954.expected.json"
+  ],
+  "protected_drift": 0,
+  "graph2_importer_composed": false,
+  "actual_jiti_default_interop_complete": false,
+  "private_graph_reclamation_complete": false,
+  "runtime_status": "recovery_pending",
+  "fmt_ast": false,
+  "node_reference": false,
+  "source_generator": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "default_selected": false
+}
