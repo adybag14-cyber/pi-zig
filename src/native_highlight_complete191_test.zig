@@ -14,6 +14,7 @@ fn bindCore(engine: *em.Engine, core: c.JSValue) !void {
     try s.put(global, "highlightCoreAPI", core);
 }
 pub fn exerciseDirect(gpa: std.mem.Allocator, failure: enum { none, lookup, factory }) !void {
+    @setEvalBranchQuota(100_000);
     const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
     defer engine.deinit();
     const generation = engine.native_allocation_generation;

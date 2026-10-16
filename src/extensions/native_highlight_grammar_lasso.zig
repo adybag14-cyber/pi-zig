@@ -37,7 +37,7 @@ pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
     const no = try s.object();
     try s.put(no, "begin", try s.concat(try s.get(h, "C_NUMBER_RE"), try s.text("|(-?infinity|NaN)\\b")));
     try s.index(code, 2, try s.call(ni, h, &.{ nm, no }));
-    for ([_][]const u8{ "APOS_STRING_MODE", "QUOTE_STRING_MODE" }, 3..) |p, i| {
+    for ([_][*:0]const u8{ "APOS_STRING_MODE", "QUOTE_STRING_MODE" }, 3..) |p, i| {
         const f = try s.get(h, "inherit");
         const m = try s.get(h, p);
         const opt = try s.object();

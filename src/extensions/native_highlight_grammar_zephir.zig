@@ -9,7 +9,7 @@ pub fn build(e: *b.Engine, h: b.c.JSValue) !b.c.JSValue {
     const str = try b.mode(&s, "string");
     try s.put(str, "contains", try b.list(&s, &.{try s.get(h, "BACKSLASH_ESCAPE")}));
     const variants = try s.array();
-    for ([_][]const u8{ "APOS_STRING_MODE", "QUOTE_STRING_MODE" }, 0..) |p, i| {
+    for ([_][*:0]const u8{ "APOS_STRING_MODE", "QUOTE_STRING_MODE" }, 0..) |p, i| {
         const f = try s.get(h, "inherit");
         const mode = try s.get(h, p);
         const opt = try s.object();
