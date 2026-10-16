@@ -1,0 +1,36 @@
+{
+  "completed_utc": "2026-10-15T21:32:56.5349511+00:00",
+  "driver_sha256": "FDBC8F10D51FD430381CCC8B094177DAA0796ED143FFEDCCB87B6E0DAB62CDF9",
+  "extra_control_drift": [],
+  "historical_absence_records": 84,
+  "absent_dependency_drift": [],
+  "manifests": [
+    {
+      "head": "8044f315c22468315d0a9fb167979f982483867e",
+      "inventory_drift": false,
+      "files": 6455,
+      "drift": 0,
+      "changed": [],
+      "name": "candidate"
+    },
+    {
+      "files": 1967,
+      "drift": 0,
+      "name": "source",
+      "changed": []
+    },
+    {
+      "files": 31064,
+      "drift": 0,
+      "name": "dependencies",
+      "changed": []
+    },
+    {
+      "files": 1774,
+      "drift": 0,
+      "name": "node_tools",
+      "changed": []
+    }
+  ],
+  "control_manifest_drift": false
+}

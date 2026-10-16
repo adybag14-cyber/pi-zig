@@ -1,0 +1,50 @@
+[
+  {
+    "file": "bedrock-lifecycle-input8-20261015.json",
+    "sha256": "77063795698B14B7AF2D5BDEE63FADAA447CB55216802F104CB45DE0287CCD73"
+  },
+  {
+    "file": "bedrock-lifecycle-source8-20261015.mjs",
+    "sha256": "8E3FA5B0BCB336744BBF2445A48347D2500B11D054353C6F0F42E5A37C724426"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-admission.json",
+    "sha256": "56AD34462277D626B84DC1A2C863F83BB29ABA074CC459012D626A45C32B80C7"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-candidate-before.json",
+    "sha256": "7DDE37C260B2CAE1DF6ED89A0EDEE06AD540153A78EFDDFC169C714362576BDB"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-extra-before.json",
+    "sha256": "8AED30878FA3DEFE74B7F2B9F1E901467E6980FD904ADEA3C6BD6F2213C5951E"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-output.json",
+    "sha256": "781A236CB431E19742A553AE2D8174B9E611675779C82D9EB2739848C2B1458D"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-owned-files-post.json",
+    "sha256": "0F9BB8A345EA7103001E7D5BD8C0C19ED3CBEA912D24D1C4ED88B35CD02DB3EE"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015-posthash.json",
+    "sha256": "621CBD95A54C14E15677A32A13E5A97F3D94473037DD625A49BC794EB5BE1AC2"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015.json",
+    "sha256": "F7A555099EC807B54467FBB8CCC32769E796292F73DF69D4722B52A86C894E22"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015.stderr.log",
+    "sha256": "3535CB3E2449AC8FAE08A6119DB41044EEB3E4B89C264C2EFE392CF8D126C718"
+  },
+  {
+    "file": "bedrock-lifecycle8-5ab-source8-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "Run-BedrockLifecycle8Source-20261015.ps1",
+    "sha256": "0F966FD6DB39DA3B035D04F0177782CD28AB297732F5650337CA16501A392FFE"
+  }
+]

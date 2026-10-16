@@ -22,6 +22,13 @@ pub const OwnedProfile = struct {
     credential_source: ?[]u8 = null,
     external_id: ?[]u8 = null,
     duration_seconds: ?u32 = null,
+    mfa_serial: ?[]u8 = null,
+    sso_session: ?[]u8 = null,
+    sso_start_url: ?[]u8 = null,
+    sso_account_id: ?[]u8 = null,
+    sso_role_name: ?[]u8 = null,
+    sso_region: ?[]u8 = null,
+    login_session: ?[]u8 = null,
 
     pub fn deinit(self: *OwnedProfile, gpa: std.mem.Allocator) void {
         gpa.free(self.profile_name);
@@ -38,6 +45,7 @@ pub const OwnedProfile = struct {
         if (self.source_profile) |v| gpa.free(v);
         if (self.credential_source) |v| gpa.free(v);
         if (self.external_id) |v| gpa.free(v);
+        inline for (.{ "mfa_serial", "sso_session", "sso_start_url", "sso_account_id", "sso_role_name", "sso_region", "login_session" }) |field| if (@field(self, field)) |value| gpa.free(value);
         self.* = undefined;
     }
 
@@ -103,7 +111,7 @@ fn awsPath(
     leaf: []const u8,
 ) !?[]u8 {
     if (environ.get(override_name)) |path| {
-        if (std.mem.trim(u8, path, " \t\r\n").len != 0) return try gpa.dupe(u8, path);
+        if (path.len != 0) return try gpa.dupe(u8, path);
     }
     const home = environ.get("HOME") orelse environ.get("USERPROFILE") orelse return null;
     return try std.fs.path.join(gpa, &.{ home, ".aws", leaf });
@@ -151,10 +159,10 @@ pub fn mergeIni(
         if (!in_section) continue;
         const eq = std.mem.indexOfScalar(u8, line, '=') orelse continue;
         const key = std.mem.trim(u8, line[0..eq], " \t");
-        var value = std.mem.trim(u8, line[eq + 1 ..], " \t");
-        if (value.len >= 2 and ((value[0] == '"' and value[value.len - 1] == '"') or (value[0] == '\'' and value[value.len - 1] == '\''))) {
-            value = value[1 .. value.len - 1];
-        }
+        // SDK parseIni trims whitespace but preserves quotes in values. In
+        // particular the Source25 credential_process begins and ends with
+        // distinct argv quotes; removing them corrupts the actual command.
+        const value = std.mem.trim(u8, line[eq + 1 ..], " \t");
         if (std.ascii.eqlIgnoreCase(key, "aws_access_key_id")) {
             try replaceOwned(gpa, &out.access_key_id, value);
         } else if (std.ascii.eqlIgnoreCase(key, "aws_secret_access_key")) {
@@ -185,6 +193,10 @@ pub fn mergeIni(
             try replaceOwned(gpa, &out.external_id, value);
         } else if (std.ascii.eqlIgnoreCase(key, "duration_seconds")) {
             out.duration_seconds = std.fmt.parseInt(u32, value, 10) catch null;
+        } else {
+            inline for (.{ "mfa_serial", "sso_session", "sso_start_url", "sso_account_id", "sso_role_name", "sso_region", "login_session" }) |field| if (std.ascii.eqlIgnoreCase(key, field)) {
+                try replaceOwned(gpa, &@field(out, field), value);
+            };
         }
     }
     return saw_section;

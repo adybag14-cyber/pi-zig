@@ -1,0 +1,16 @@
+{
+  "candidate": "227d1f7d235e7fc3407286ebf9812feb3cb9001c",
+  "source": 6488,
+  "source_after": 6488,
+  "source_drift": 0,
+  "vendor": 1316,
+  "vendor_after": 1316,
+  "vendor_drift": 0,
+  "tools": 19546,
+  "tool_drift": 0,
+  "controls": 9,
+  "control_drift": 0,
+  "compile": "failed",
+  "runtime": "not_run",
+  "completed_utc": "2026-10-15T23:00:27.8247230+00:00"
+}

@@ -1,0 +1,50 @@
+[
+  {
+    "file": "bedrock-wire-input3-20261015.json",
+    "sha256": "D03930F1A1AB76B12B3ADFAD27B64F893A5706476A9234076CB589F97DB0B90A"
+  },
+  {
+    "file": "bedrock-wire-source3-20261015.mjs",
+    "sha256": "FDBC8F10D51FD430381CCC8B094177DAA0796ED143FFEDCCB87B6E0DAB62CDF9"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-admission.json",
+    "sha256": "0999F2B939113AAF64E7A171384277BBBD282273AACB0A743FBEEDA223297EC5"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-candidate-before.json",
+    "sha256": "7DDE37C260B2CAE1DF6ED89A0EDEE06AD540153A78EFDDFC169C714362576BDB"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-extra-before.json",
+    "sha256": "4B38391FB0DB0A0562D32D2B26FEB3B7DC7EAD7FA262AC096393252D2A336840"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-output.json",
+    "sha256": "3E39AD98C02C5412F33A711A36A513554106FFCFA446AB657A8EDE05FEC272D8"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-owned-files-post.json",
+    "sha256": "754CC8401383F41C80CFB1894750F7A23E562793FAC39E00A54AEBC6B5FA26FD"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015-posthash.json",
+    "sha256": "524F74E0BF57DB82B48411886F37F735A7D4C2926E5FC279EDCC1BC0363C962C"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015.json",
+    "sha256": "CF1EAC50D195FB28317589760EAF633A401442334880427DEA408E4B28F7BDD4"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015.stderr.log",
+    "sha256": "23B9FAD25D86035DD4C377F45D74E69C1156543C3571649E8E06753E7064BC34"
+  },
+  {
+    "file": "bedrock-wire3-5ab-source3-first-20261015.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "file": "Run-BedrockWire3Source-20261015.ps1",
+    "sha256": "D008ABC3881B67F91D96CA675BC28672376BA280C547EF22769C1D3CDA2C1EAB"
+  }
+]

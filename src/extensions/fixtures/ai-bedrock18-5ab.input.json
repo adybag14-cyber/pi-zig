@@ -1,0 +1,515 @@
+[
+  {
+    "name": "text-usage-stop",
+    "splitWire": true,
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "Hello"
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": " world"
+          }
+        }
+      },
+      {
+        "contentBlockStop": {
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      },
+      {
+        "metadata": {
+          "usage": {
+            "inputTokens": 10,
+            "outputTokens": 3,
+            "cacheReadInputTokens": 2,
+            "cacheWriteInputTokens": 4,
+            "cacheDetails": [
+              {
+                "ttl": "1h",
+                "inputTokens": 1
+              }
+            ],
+            "totalTokens": 13
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "signed-thinking",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 2,
+          "delta": {
+            "reasoningContent": {
+              "text": "consider",
+              "signature": "sig-"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 2,
+          "delta": {
+            "reasoningContent": {
+              "signature": "tail"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockStop": {
+          "contentBlockIndex": 2
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "max_tokens"
+        }
+      }
+    ]
+  },
+  {
+    "name": "redacted-thinking",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 1,
+          "delta": {
+            "reasoningContent": {
+              "signature": "discard",
+              "redactedContent": "AAH/"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 1,
+          "delta": {
+            "reasoningContent": {
+              "signature": "ignore",
+              "redactedContent": "AgM="
+            }
+          }
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "tool-partial-final",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockStart": {
+          "contentBlockIndex": 3,
+          "start": {
+            "toolUse": {
+              "toolUseId": "call-1",
+              "name": "lookup"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 3,
+          "delta": {
+            "toolUse": {
+              "input": "{\"city\":"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 3,
+          "delta": {
+            "toolUse": {
+              "input": "\"London\"}"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockStop": {
+          "contentBlockIndex": 3
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "tool_use"
+        }
+      }
+    ]
+  },
+  {
+    "name": "tool-invalid-final",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockStart": {
+          "contentBlockIndex": 0,
+          "start": {
+            "toolUse": {
+              "toolUseId": "bad",
+              "name": "lookup"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "toolUse": {
+              "input": "{bad"
+            }
+          }
+        }
+      },
+      {
+        "contentBlockStop": {
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "tool_use"
+        }
+      }
+    ]
+  },
+  {
+    "name": "unstopped-block-cleanup",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "partial"
+          }
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "stop_sequence"
+        }
+      }
+    ]
+  },
+  {
+    "name": "missing-stop-error",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "partial"
+          }
+        }
+      }
+    ]
+  },
+  {
+    "name": "unknown-stop-error",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "content_filtered"
+        }
+      }
+    ]
+  },
+  {
+    "name": "stream-exception",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "internalServerException": {
+          "message": "fixture internal failure"
+        }
+      }
+    ]
+  },
+  {
+    "name": "payload-replacement",
+    "payloadReplacement": true,
+    "options": {
+      "requestMetadata": {
+        "fixture": "original"
+      },
+      "headers": {
+        "x-fixture": "custom",
+        "Authorization": "forbidden",
+        "Host": "forbidden",
+        "x-amz-forbidden": "forbidden"
+      }
+    },
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "response-callback-rejection",
+    "responseThrow": true,
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "event-callback-mutation",
+    "eventMutate": true,
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "original"
+          }
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "event-callback-rejection",
+    "eventThrow": true,
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "contentBlockIndex": 0,
+          "delta": {
+            "text": "original"
+          }
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ]
+  },
+  {
+    "name": "http-raw-body-error",
+    "httpError": {
+      "status": 403,
+      "body": "gateway denied with fixture body"
+    },
+    "events": []
+  },
+  {
+    "name": "stream-simple-default",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "delta": {
+            "text": "Simple result"
+          },
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ],
+    "modelId": "anthropic.claude-sonnet-4-6",
+    "simple": true,
+    "modelName": "Claude Sonnet 4.6",
+    "options": {
+      "apiKey": "fixture-placeholder-bearer"
+    }
+  },
+  {
+    "name": "stream-simple-adaptive-block-binding",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "delta": {
+            "text": "Simple result"
+          },
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ],
+    "modelId": "anthropic.claude-opus-4-8",
+    "simple": true,
+    "modelName": "Claude Opus 4.8",
+    "options": {
+      "apiKey": "fixture-placeholder-bearer",
+      "reasoning": "high"
+    }
+  },
+  {
+    "name": "stream-simple-budget-clamp",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "delta": {
+            "text": "Simple result"
+          },
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ],
+    "modelId": "anthropic.claude-3-7-sonnet",
+    "simple": true,
+    "modelName": "Claude 3.7 Sonnet",
+    "options": {
+      "apiKey": "fixture-placeholder-bearer",
+      "reasoning": "high"
+    }
+  },
+  {
+    "name": "stream-simple-non-claude-effort",
+    "events": [
+      {
+        "messageStart": {
+          "role": "assistant"
+        }
+      },
+      {
+        "contentBlockDelta": {
+          "delta": {
+            "text": "Simple result"
+          },
+          "contentBlockIndex": 0
+        }
+      },
+      {
+        "messageStop": {
+          "stopReason": "end_turn"
+        }
+      }
+    ],
+    "modelId": "openai.gpt-5.6",
+    "simple": true,
+    "modelName": "OpenAI GPT-5.6",
+    "options": {
+      "apiKey": "fixture-placeholder-bearer",
+      "reasoning": "xhigh"
+    }
+  }
+]

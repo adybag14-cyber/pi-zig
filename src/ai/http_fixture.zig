@@ -6,16 +6,18 @@ pub const Reply = struct {
     status: std.http.Status = .ok,
     reason: ?[]const u8 = null,
     headers: []const std.http.Header = &.{},
+    content_type: []const u8 = "application/json",
     delay_ms: u32 = 0,
     body_delay_ms: u32 = 0,
     payload_contains: ?[]const u8 = null,
     expected_request_headers: []const std.http.Header = &.{},
     absent_request_headers: []const []const u8 = &.{},
     expected_request_method: ?std.http.Method = null,
+    capture_request_headers: bool = false,
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
 };
-pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method };
+pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method = .POST, headers: []std.http.Header = &.{} };
 pub const PlanServer = struct {
     gpa: std.mem.Allocator,
     io: std.Io,
@@ -52,6 +54,11 @@ pub const PlanServer = struct {
         for (self.captured.items) |record| {
             self.gpa.free(record.path);
             self.gpa.free(record.payload);
+            for (record.headers) |header| {
+                self.gpa.free(header.name);
+                self.gpa.free(header.value);
+            }
+            self.gpa.free(record.headers);
         }
         self.captured.deinit(self.gpa);
         const allocator = self.gpa;
@@ -89,10 +96,36 @@ pub const PlanServer = struct {
             const path = try self.gpa.dupe(u8, request.head.target);
             var captured = false;
             errdefer if (!captured) self.gpa.free(path);
+            var headers_owned: std.ArrayList(std.http.Header) = .empty;
+            errdefer {
+                for (headers_owned.items) |header| {
+                    self.gpa.free(header.name);
+                    self.gpa.free(header.value);
+                }
+                headers_owned.deinit(self.gpa);
+            }
+            if (reply.capture_request_headers) {
+                var iterator = request.iterateHeaders();
+                while (iterator.next()) |header| {
+                    const name = try self.gpa.dupe(u8, header.name);
+                    errdefer self.gpa.free(name);
+                    const value = try self.gpa.dupe(u8, header.value);
+                    errdefer self.gpa.free(value);
+                    try headers_owned.append(self.gpa, .{ .name = name, .value = value });
+                }
+            }
+            const captured_headers = try headers_owned.toOwnedSlice(self.gpa);
+            errdefer if (!captured) {
+                for (captured_headers) |header| {
+                    self.gpa.free(header.name);
+                    self.gpa.free(header.value);
+                }
+                self.gpa.free(captured_headers);
+            };
             const body_reader = request.readerExpectNone(&.{});
             const payload = try body_reader.allocRemaining(self.gpa, .limited(4 * 1024 * 1024));
             errdefer if (!captured) self.gpa.free(payload);
-            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method });
+            try self.captured.append(self.gpa, .{ .path = path, .payload = payload, .method = request.head.method, .headers = captured_headers });
             captured = true;
             if (!std.mem.eql(u8, path, reply.path)) return error.UnexpectedFixturePath;
             if (reply.payload_contains) |marker| if (std.mem.indexOf(u8, payload, marker) == null) return error.UnexpectedFixturePayload;
@@ -106,7 +139,7 @@ pub const PlanServer = struct {
                 has_content_type = true;
                 break;
             };
-            if (!has_content_type) try headers.append(self.gpa, .{ .name = "content-type", .value = "application/json" });
+            if (!has_content_type) try headers.append(self.gpa, .{ .name = "content-type", .value = reply.content_type });
             try headers.appendSlice(self.gpa, reply.headers);
             if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;

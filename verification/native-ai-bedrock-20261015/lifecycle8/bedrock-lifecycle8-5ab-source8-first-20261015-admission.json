@@ -1,0 +1,11 @@
+{
+  "free_kib": 20745184,
+  "status": "admitted",
+  "heap_mb": 256,
+  "required_kib": 2097152,
+  "slot": 6,
+  "candidate": "8044f315c22468315d0a9fb167979f982483867e",
+  "observed_utc": "2026-10-15T21:35:13.3080542+00:00",
+  "candidate_files": 6455,
+  "coordinated_with": "Root grant required for controlled lifecycle Source8"
+}

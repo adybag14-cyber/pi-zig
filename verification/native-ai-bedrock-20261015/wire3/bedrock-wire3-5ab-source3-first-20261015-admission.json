@@ -1,0 +1,11 @@
+{
+  "heap_mb": 256,
+  "observed_utc": "2026-10-15T21:32:04.0934499+00:00",
+  "candidate": "8044f315c22468315d0a9fb167979f982483867e",
+  "required_kib": 2097152,
+  "candidate_files": 6455,
+  "slot": 6,
+  "status": "admitted",
+  "coordinated_with": "Root grant required for focused full-header wire Source3",
+  "free_kib": 20071040
+}
