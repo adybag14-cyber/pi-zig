@@ -79,6 +79,7 @@ pub const Controller = struct {
     job_zero: bool = false,
     pipes_retired: bool = false,
     capture_complete: bool = false,
+    captures_cancel_requested: bool = false,
     metadata_retired: bool = false,
     early_retirement_ms: u64 = 0,
     final_task: ?*FinalTask = null,
@@ -434,6 +435,19 @@ pub const Controller = struct {
             self.errors.advance() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
             if (self.output.first_error) |err| self.cleanup_error = self.cleanup_error orelse err;
             if (self.errors.first_error) |err| self.cleanup_error = self.cleanup_error orelse err;
+            // Preserve normal tail bytes while they drain. A latched capture
+            // failure, or the final second of the one shared ten-second
+            // retirement window, requests cancellation of still-pending owned
+            // capture I/O. Cancellation is negative and never substitutes for
+            // observed completion/EOF; operation state survives until retirement.
+            if ((self.output.first_error != null or self.errors.first_error != null or
+                w.GetTickCount64() >= end -| 1000) and
+                (self.output.read.pending or self.output.write.pending or self.errors.read.pending or self.errors.write.pending)) {
+                self.captures_cancel_requested = true;
+                self.cleanup_error = self.cleanup_error orelse error.CaptureCancellationRequired;
+                self.output.cancel() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
+                self.errors.cancel() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
+            }
             self.channel.cancel() catch |err| { self.cleanup_error = self.cleanup_error orelse err; };
             const snapshot = try self.job.snapshot();
             try self.observeSnapshot(snapshot, snapshot.zero());
@@ -554,7 +568,7 @@ const Publication = struct {
         const target = try files.join(allocator, c.run_root, "phase-terminal.json");
         var writer = try receipts.Writer.create(allocator, c.run_root, temp, &c.publication_quota, c.deadline);
         defer writer.closePartial() catch {};
-        const count = if (c.last_snapshot) |snapshot| snapshot.accounting.basic.total_processes else 0;
+        const count: ?u32 = if (c.last_snapshot) |snapshot| snapshot.accounting.basic.total_processes else null;
         const known: u32 = @as(u32, @intFromBool(c.worker.created_by_this_call)) + @as(u32, @intFromBool(c.node_identity_bound));
         try writer.json(.{ .schema = 1, .phase = c.args.selected,
             .status = if (self.success) (if (c.args.selected == .npm_ci_offline) "ci_reproduced_exact" else "reproduced_exact_pending_independent_review") else "negative",
@@ -563,11 +577,12 @@ const Publication = struct {
             .worker_exit_code = c.worker_exit_code, .node_exit_code = c.node_exit_code,
             .root_identity_complete = c.worker.full_identity_bound, .node_identity_complete = c.node_identity_bound,
             .job_zero = c.job_zero, .pipes_retired = c.pipes_retired, .capture_complete = c.capture_complete,
+            .captures_cancel_requested = c.captures_cancel_requested,
             .ledger_retired = c.ledger_retired,
             .metadata_retired = c.metadata_retired,
             .capture_handles_closed = c.capture_handles_closed, .lifetime_total_processes = count,
-            .unattributed_lifetime_process_count = count -| known,
-            .individual_descendant_identity_coverage = if (count > known) "partial" else "complete",
+            .unattributed_lifetime_process_count = if (count) |total| total -| known else @as(?u32, null),
+            .individual_descendant_identity_coverage = if (count) |total| (if (total > known) "partial" else "complete") else "unknown",
             .memory_denial_attempt_coverage = "observed_only", .job_commit_cap = @import("job.zig").caps.job_memory,
             .process_commit_cap = @import("job.zig").caps.process_memory, .active_cap = 64,
             .job_accounting = if (c.last_snapshot) |snapshot| snapshot.accounting else null,
