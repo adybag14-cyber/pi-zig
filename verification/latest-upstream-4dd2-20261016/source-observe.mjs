@@ -1,5 +1,5 @@
 import { registerHooks } from 'node:module';
-import { readFileSync, realpathSync, existsSync, appendFileSync } from 'node:fs';
+import { readFileSync, realpathSync, existsSync, appendFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolve, join, sep } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -19,6 +19,14 @@ for (const manifest of ['source4dd-full-manifest-before.json', '../ai-model-oper
 if (!process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST) throw Error('Exact latest4dd control manifest is required');
 for (const row of JSON.parse(readFileSync(process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST))) frozen.set(realpathSync(row.path), row.sha256.toLowerCase());
 const seen = new Set();
+const requiredByKind={
+  summary30:['packages/coding-agent/src/core/compaction/compaction.ts','packages/coding-agent/src/core/compaction/branch-summarization.ts','packages/coding-agent/src/core/compaction/utils.ts','packages/coding-agent/src/core/model-resolver.ts'],
+  summary45:['packages/coding-agent/src/core/compaction/compaction.ts','packages/coding-agent/src/core/compaction/utils.ts'],
+  openai52:['packages/ai/src/api/openai-completions.ts','packages/ai/src/api/openai-responses-shared.ts'],
+  google:['packages/ai/src/api/google-shared.ts'],
+};
+const captureKind=process.env.PI_LATEST_CAPTURE_KIND;
+if(!Object.hasOwn(requiredByKind,captureKind))throw Error('Exact latest4dd capture kind is required');
 function record(row) {
   appendFileSync(join(records, `source4dd2-modules-${process.pid}-${threadId}-20261016.jsonl`), JSON.stringify(row) + '\n');
 }
@@ -74,3 +82,8 @@ registerHooks({ resolve(specifier, context, next) {
   return result;
 } });
 observe(import.meta.url);
+process.once('beforeExit',()=>{
+  const required=requiredByKind[captureKind].map(path=>realpathSync(join(root,path)));
+  for(const path of required)if(!seen.has(path))throw Error('Actual latest Source closure was not observed '+path);
+  writeFileSync(join(records,`source4dd2-closure-${process.pid}-${threadId}-20261016.json`),JSON.stringify({sourceHead:audit.latestHead,captureKind,pid:process.pid,threadId,required,observedFiles:seen.size,allObservedFilesFrozen:true,oldRuntimeSourceFallback:false},null,2));
+});

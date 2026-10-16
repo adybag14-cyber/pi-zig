@@ -45,14 +45,20 @@ if($Phase -eq 'before'){
     $taskGroups+=@{name='candidate';rows=$taskCandidateRows}
     $taskControls=@(
         'src/extensions/fixtures/sdk-summary-latest4dd.input.txt',
+        'src/extensions/fixtures/sdk-summary-generation-b45.input.txt',
         'src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt',
         'verification/latest-upstream-4dd2-20261016/summary-source-capture.mjs',
+        'verification/latest-upstream-4dd2-20261016/summary-original45-source-capture.mjs',
         'verification/latest-upstream-4dd2-20261016/source-observe.mjs',
         'verification/latest-upstream-4dd2-20261016/Freeze-Latest4ddSource.ps1',
         'verification/openai-tool-output4dd-prepared-20261016/capture-primary-tool-output.mjs',
         'verification/openai-tool-output4dd-prepared-20261016/primary-tool-callers.mjs'
     )
     $taskGroups+=@{name='controls';rows=@($taskControls|ForEach-Object{$taskPath=Join-Path $taskCandidate $_;@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}})}
+    $taskOwner=Join-Path $taskEvidence 'Invoke-OwnedModelsClassSource-20261016.ps1'
+    $taskOwnerHash=(Get-FileHash -LiteralPath $taskOwner).Hash
+    if($taskOwnerHash -cne '96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5'){throw 'Retained exact Source owner changed'}
+    $taskGroups+=@{name='owner';rows=@(@{path=$taskOwner;sha256=$taskOwnerHash})}
     $taskAbsences=@(Get-Content -LiteralPath (Join-Path $taskEvidence 'env-readable-pipe-source4954-absence84-resume-20261016.json') -Raw|ConvertFrom-Json|ForEach-Object {
         @{relative=$_.relative;runtime=$_.runtime;source=([string]$_.source).Replace('pi-upstream-source-4954d76-20261015','pi-upstream-source-4dd2b149-20261016')}
     })
