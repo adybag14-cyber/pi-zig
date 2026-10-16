@@ -69,7 +69,7 @@ The nine-flow OAuth graph at `341032147bcfe06edd3d5720612c3586e9d8885b` is also 
 
 Source48 and Source39 reference proofs are intaken through `76025577` and `a44aee97`. Independent verification accepted their complete immutable manifests and ordered observations. Source48 retains its original wrapper failure caused by SHA hex-case comparison and the separate acceptance supplement. Source39 establishes per-factory TypeScript graph behavior alongside shared native JavaScript/CJS/JSON caching; this source authority does not qualify a native private-module implementation.
 
-The reviewed C9 highlighter composition is intaken from `46c1e5362a2c03e36fbcc77dd1605a3f7495da72`. Current QuickJS hashes are C `E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B` and header `341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB`. On that isolated exact head, nine Windows Debug runtime groups passed: foundation 6/6, AsyncFunction 26/26, generator 19/19, generator GPA 2/2, complete JSON 11/11 including all twenty real HTTP cases, Source51 2/2, operators 2/2, Engine 19/19 and recovery 22/22. Their compiles, metadata, full post-seals and owned-process release passed. The direct 191-language compile then failed on two non-sentinel string-array declarations and a local compile-time branch quota; no complete191 runtime or 445-observation result is claimed. The full component GPA and complete application remain pending.
+The reviewed C9 highlighter composition is intaken from `46c1e5362a2c03e36fbcc77dd1605a3f7495da72`. At that C9 checkpoint, QuickJS hashes were C `E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B` and header `341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB`. On that isolated exact head, nine Windows Debug runtime groups passed: foundation 6/6, AsyncFunction 26/26, generator 19/19, generator GPA 2/2, complete JSON 11/11 including all twenty real HTTP cases, Source51 2/2, operators 2/2, Engine 19/19 and recovery 22/22. Their compiles, metadata, full post-seals and owned-process release passed. The direct 191-language compile then failed on two non-sentinel string-array declarations and a local compile-time branch quota; no complete191 runtime or 445-observation result is claimed. The full component GPA and complete application remain pending.
 
 The three compile corrections were subsequently tested on exact `718fb247`: all nine preceding runtime groups passed again, and direct191 passed 4/4. The final host445 group passed 3/4; its success419 comparison stopped at one PHP regexp spelling difference, while both thirteen-row lookup/factory failure controls passed. Full seals, artifact identities and owned-process absence passed, and the original negative remains retained. Root has intaken the compile corrections and the reviewed single-line PHP escape-spelling correction from `d0a279b7`; the PHP successor has not run. Complete Source445, current-C highlighter GPA and the combined Root remain unqualified.
 
@@ -134,9 +134,12 @@ assembly caller and complete positive construction remain pending.
 The focused START/resumed C qualification on separate source `55f65f6a` passed
 all fifteen actual metadata-selected entries. Its complete sealed proof is now
 retained in `verification/tla-focused-proof-20261016`; see
-`docs/tla-focused-qualification-20261016.md` for exact hashes and scope. Broader C
-regression execution precedes Root C intake; this does not qualify the combined
-integration or complete native-body resolving behavior.
+`docs/tla-focused-qualification-20261016.md` for exact hashes and scope. The later
+exact F06 core candidate `4e94611b` passed ten groups and 116 selected entries,
+with independent raw protocol, source/compiler and owner validation. The 68-entry
+predecessor and 48-entry continuation have identical source/compiler identities.
+Root has integrated F06 after that scoped acceptance; this does not qualify the
+complete combined integration or later native-body resolving behavior.
 
 ## Remaining integration boundaries
 

@@ -1,0 +1,766 @@
+{
+  "schema": 1,
+  "candidate": "4e94611b6f1379df92a4eb35c14cb91bc5c4531e",
+  "c_sha256": "F06F1F2A23CB024FF381DB02CF43D1C249DE5848689D005918F7D1FB80BE9B5E",
+  "groups": 10,
+  "selected_entries": 116,
+  "test_flags_allzero": true,
+  "owner_receipts": 32,
+  "source_files": 10495,
+  "compiler_files": 19546,
+  "scope": "Scoped Windows Debug C regression/raw proof only, no whole application or later C qualification",
+  "binary_retention": "Exact compiled and canonical executables retained locally in original evidence directories; this zip contains raw receipts/protocol/seals and hashes, not those binary copies",
+  "zip_sha256": "79502188407B3AC3CD1BEB036E411F68C102E6DA3764FA977B800DDDE80DE2F8",
+  "entries": [
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-artifact-copy.json",
+      "sha256": "2D9B1E1A8997819751BA703A1A1C90ED1E30F2918C4F1B48B5ECA42CB139C8FC",
+      "bytes": 437
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-compile.json",
+      "sha256": "FF0FC57B3F00CCDE4CCF23F1D4345F9A915F313B63E0A437AC672622D5A9B6BA",
+      "bytes": 1805
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-compile.stderr.log",
+      "sha256": "958CBF363C8A4AF43BAE4A686F14174BD77ECA745741B9EDD8815FF00BEADD8C",
+      "bytes": 14061
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-metadata.json",
+      "sha256": "1CC208C44B0F016A4351220F7E262C7330F873E72D1597BA3B1F8CB776FEC9FB",
+      "bytes": 1094
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-metadata.stdout.bin",
+      "sha256": "3C11E83CB0E439E2E1D9A0174D91BDF16608D124E4B23D385867B3D7313F3F9E",
+      "bytes": 3508
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-runtime.json",
+      "sha256": "0D45100CF866E3BB5EB7F5D45D7F6F67E4BCDA1BEF504AC864D6C81A27F35E62",
+      "bytes": 1095
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-runtime.results.json",
+      "sha256": "80E190D23D5A0EEBECBEF48F19A7324470FC9C32CC9278D5F5F7AD4E65BEE12C",
+      "bytes": 2466
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-runtime.stdout.bin",
+      "sha256": "56DC4A7C05E1C3737462393C3B4634752F59259EAA3179B86E0D9E18330BB11B",
+      "bytes": 742
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/async26-selected-tests.json",
+      "sha256": "20EE1162120081565CC0DFD8C8E5474D90EAE934510180862DAF584C06FF331B",
+      "bytes": 3827
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/before.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-artifact-copy.json",
+      "sha256": "F8D3EC839F739313D1114D00A560092C7CFE923E207FABEFBBFDB66347D58D96",
+      "bytes": 434
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-compile.json",
+      "sha256": "ACC455111025B10EDE2D1EC6B07F4DA1EF5B1ADF6A9EF203E222C357CA51C1C4",
+      "bytes": 1801
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-compile.stderr.log",
+      "sha256": "2F3149A4730A0ECCB858127364F4B3F3A85204C0D0B8A71020EE586D7ADA5421",
+      "bytes": 13925
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-metadata.json",
+      "sha256": "E3F841D05EB70B52A25C0AC0C8F3F4D461AE3A8FAA082A9DD9026D928F08FD3C",
+      "bytes": 1091
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/engine-metadata.stdout.bin",
+      "sha256": "38768C559701C15A8522654D83030B2A7DB8A968B4ED2FEDF206E265E33F4838",
+      "bytes": 2117
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/final.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-artifact-copy.json",
+      "sha256": "FAA11D2203C54DFFFF1320071BD2982CB6B14CC18364553644A2DBAB3176BA54",
+      "bytes": 446
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-compile.json",
+      "sha256": "AE730E49D364AF95620FEB6931690291C62628A561C9A6ACF8AE767EF7C750DC",
+      "bytes": 1817
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-compile.stderr.log",
+      "sha256": "A44B024E533C8115002C67EB1134658B90183045043D2B222995C76FA33007DE",
+      "bytes": 13930
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-metadata.json",
+      "sha256": "31E39DD51896B8C752AC778B754C06A4E7FF55593CC44FB44A4B96F750C9B32B",
+      "bytes": 1103
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-metadata.stdout.bin",
+      "sha256": "699E561DCA394C4FBA9ED8761CEC7C12E2AD7F6FCDF8BF61B95B5D02F9024C19",
+      "bytes": 840
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-runtime.json",
+      "sha256": "F56073CD363E86093385D15D9D1F37F12E82F85A9F727CBDDD2C265249B5DC32",
+      "bytes": 1104
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-runtime.results.json",
+      "sha256": "97553CEB8C0B39300D820298791D5E02238B8292500591D678B22143FCD3BF71",
+      "bytes": 953
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-runtime.stdout.bin",
+      "sha256": "CADEA13994919EDA102479E880F92A027E463D2EAAB1A25D792B255C30A0C9AC",
+      "bytes": 182
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/foundation-selected-tests.json",
+      "sha256": "B804C34070778BB748F961F5133304E4AA372E7B12CBB9066E2EC87CDA313970",
+      "bytes": 1162
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-artifact-copy.json",
+      "sha256": "7FBC66DE295D8041219A60DECB4E436D8A71C563E1FCE8706670E0EDFCDDD355",
+      "bytes": 443
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-compile.json",
+      "sha256": "54305DB479C4BD801C33DF813686C2E4D9C066AAA898CD7E849DADC10A0B9DE0",
+      "bytes": 1812
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-compile.stderr.log",
+      "sha256": "38C8C80C49B09651BEEC71E623DFFEDA11FDC536609FA44C69C1E96777BEA299",
+      "bytes": 14062
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-artifact-copy.json",
+      "sha256": "C47440F60492DC78A157CDAB8FBE8AF92ECF834063A6F810E701406D88269CA1",
+      "bytes": 455
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-compile.json",
+      "sha256": "2A47F100E6FF762676FEBEBAC279374F3230589A2D45B85F8C6EE5F9AE74B044",
+      "bytes": 1829
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-compile.stderr.log",
+      "sha256": "5BC871D8626F10CEB16D09A389C7BCCCAB6082AFC98A5A645E9A46A5BDC49F0E",
+      "bytes": 14066
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-metadata.json",
+      "sha256": "004619E15C828C2D276EFC69C43C2501DD1A7B5D40A7D39E2951B1B409478E7F",
+      "bytes": 1110
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-metadata.stdout.bin",
+      "sha256": "CE0F68BBE337F2FB08165D8D8CAF1F6F32EB347DF4B16E0C97EB682FA411D263",
+      "bytes": 189
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-runtime.json",
+      "sha256": "D27B6CD4CA7911246EB6318886955A62120BFF2344C8F4868901A243A975A566",
+      "bytes": 1113
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-runtime.results.json",
+      "sha256": "B27B863108566963D90F6FA17BBF2C8494B1D6EF02D25ECC5FE05BC0FBE7BF5A",
+      "bytes": 659
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-runtime.stderr.log",
+      "sha256": "1D1B8AE8735D307813F429052C84D9982AE57BEBC1D2DB290DBF33A9742160B2",
+      "bytes": 96
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-gpa-selected-tests.json",
+      "sha256": "1F133A17FB2EDFBB0CB622BE1992DA5994C538CBC6B13098B2FF076E8CE3BCF4",
+      "bytes": 514
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-metadata.json",
+      "sha256": "B28884FB2190BE474E6693A54FC8F868508A6848A6D02D290CD77074CBA16C4C",
+      "bytes": 1100
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-metadata.stdout.bin",
+      "sha256": "3674E10ED3B023D730D2113FB4430288A14968AF472E4E3F7B01E8F42BD74F0E",
+      "bytes": 2527
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-runtime.json",
+      "sha256": "872DF36C857F493B03E24C6D44FA65004BA4E3A5AFD6A49190DAEE12BBDFB43D",
+      "bytes": 1101
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-runtime.results.json",
+      "sha256": "CBCD3218338669EC5775D2504B9BA441DDEB4052A29C6040EE618453C24388EE",
+      "bytes": 1938
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-runtime.stdout.bin",
+      "sha256": "136FCB278196BA0C61F737899375B0E7E36AED09697212D11295B7702ECCFA7D",
+      "bytes": 546
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/generator-selected-tests.json",
+      "sha256": "4E976B99A4F2A6DC7DE45FA2613CA600FCA1C1E66F48712BBA53F674204CD210",
+      "bytes": 2848
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/grant.json",
+      "sha256": "F2A0A19C92D6732A3096E520E0257B1F9136901037571E632E6D07575A5335B9",
+      "bytes": 2453
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-artifact-copy.json",
+      "sha256": "F2345263E249B079ED1345ABCBEF480CEFE2399592025125BE0C47FE02B0B964",
+      "bytes": 428
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-compile.json",
+      "sha256": "92049A6275310EF4C8003E81E9D8D6E7D56FF2354C79E7597BF973EA949F1E5E",
+      "bytes": 1793
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-compile.stderr.log",
+      "sha256": "BE8C3DC289F8BF03276F7FCA972589E5AFA36705994BA69B5141640A2291E306",
+      "bytes": 14056
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-metadata.json",
+      "sha256": "239EE1DF421F88105E7517D695CC475C562030E3DB68514A37A07C0F0779FE87",
+      "bytes": 1085
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-metadata.stdout.bin",
+      "sha256": "D1CF5443E1C0096F0C68209732E8FFD0576F0174F55A2232C6435F822955EBE4",
+      "bytes": 1453
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-runtime.json",
+      "sha256": "D2186D98F1013A6D78F99C6F06D01D58C748E76C806D4B9369241BBD5B475F0E",
+      "bytes": 1086
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-runtime.results.json",
+      "sha256": "3E32938E9BAF1D469CDB4D7A3264D66D43CFDA0C6FEF8FD70A42D1E273E85BC3",
+      "bytes": 1320
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-runtime.stdout.bin",
+      "sha256": "A5C5E0A326D572167BDB7E8A7957C52A7F6D47937304343C14C063DB09BD0652",
+      "bytes": 322
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/json-selected-tests.json",
+      "sha256": "2B4244CA6EF15D4584D1D4EA0B7CA27BCCCB36BDA6FEFE7B7DB99120AB284F02",
+      "bytes": 1769
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-artifact-copy.json",
+      "sha256": "4AB8C55DA7CBB9721F73F204DE7A51FD3B9DDE1272B08FDD989F663B0E8296C1",
+      "bytes": 443
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-compile.json",
+      "sha256": "61E845177D7F3DF548F887CD76944E98154B9C9D6419E12E706BDC7D73A69D92",
+      "bytes": 1813
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-compile.stderr.log",
+      "sha256": "211EA70404D5CCD77FD2A006E543AFADCA85660D6D72EDFF268CF9FBF8FAF32C",
+      "bytes": 13928
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-metadata.json",
+      "sha256": "7611052212F3A01AE620507E908EC43660ABF34708AECE0C354920511090E9A1",
+      "bytes": 1100
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-metadata.stdout.bin",
+      "sha256": "07639753206A318F14DD71F6154DF81A226DCBC7FC38DE21D0353FE77C33B7A6",
+      "bytes": 208
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-runtime.json",
+      "sha256": "9F3CE60D9161F3CAFE4C4F9513BCEC6048B1221FD5A2339D379A209C88084791",
+      "bytes": 1101
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-runtime.results.json",
+      "sha256": "561819E60D71AA7202B98846934E8FBE02B28912F065A584C7F850400FE80DB7",
+      "bytes": 651
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/operators-selected-tests.json",
+      "sha256": "0BCF8184EBA2A1F13503F15F66E749AC3E336E1560D809988413965E84BE91C4",
+      "bytes": 529
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/result.json",
+      "sha256": "DB2DB3D8B65F98A7A1F00E809A671FA576B294C3E9C17B63CA30B068860A7E2A",
+      "bytes": 38053
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/Run-CoreRegression.ps1",
+      "sha256": "6E615771448B9FD56B44840FFA760D34FAD23E4B3E2EF01A5786915E0555E942",
+      "bytes": 8180
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-after.json",
+      "sha256": "9FF37076CE95589BBA68BCAA9060E933E9C565C6544BCBE83B52E8D727A0845D",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-artifact-copy.json",
+      "sha256": "7ADE4175C4ABFA46CEB021C828ED23700FF2530CD3A6E0FD8CEFE7D2523F19E5",
+      "bytes": 440
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-compile.json",
+      "sha256": "AACBCE1ABD4C98798D8565CBA519AC3E371C683B9C23B8451C471CFFFFD15FBF",
+      "bytes": 1809
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-compile.stderr.log",
+      "sha256": "B2FE320B4914751410FB75EDA46387B8ABDAEBD1795D046D55822FDFCC381E58",
+      "bytes": 14061
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-metadata.json",
+      "sha256": "1E6CB54F6A4C5CD969A5E63B953B65F4A0D977E4EA686A462C211EAB05962204",
+      "bytes": 1097
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-metadata.stdout.bin",
+      "sha256": "14A236F9188928B64BB44CE3537508DC8438A478E4FDF77071FFACC8F3B41012",
+      "bytes": 211
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-runtime.json",
+      "sha256": "01D928AD28554633CFB85A904437382E04F4B062F13E150AF3EF3F7668713B41",
+      "bytes": 1098
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-runtime.results.json",
+      "sha256": "002E76645CDD1047288FE013A61BDF1EFA1EF5DF8ED0179BBF9F1D8A0702A776",
+      "bytes": 649
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-tla-core-regression-v2-20261016/source51-selected-tests.json",
+      "sha256": "43AA9089CF710712E0EA143BD2F480C5D927DE4364A651427CBBA9F16DC1C89C",
+      "bytes": 531
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/before.json",
+      "sha256": "1F91F57DE2065B9487D46C53067115CA6F764201916ACEF16F42F31DBEB754D5",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-after.json",
+      "sha256": "1F91F57DE2065B9487D46C53067115CA6F764201916ACEF16F42F31DBEB754D5",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-artifact-copy.json",
+      "sha256": "68FB8BB19E6DD70F1E1EF545DB22026519E99EC715095634500717C1763B7833",
+      "bytes": 432
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-compile.json",
+      "sha256": "39FF1EDE0A4F597BBE3A29CE88E50696EE268D5930546768AA8F6CF06EE52E06",
+      "bytes": 1799
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-compile.stderr.log",
+      "sha256": "A731B0339B96A3DA230D00001658944F9729DD3F5AF5A1713C0729CEB8DD1CBC",
+      "bytes": 13925
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-metadata.json",
+      "sha256": "AC4A786CB82ACB9C6714C508DDB9322F98497A6DD83978E95926B2D718361086",
+      "bytes": 1088
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-metadata.stdout.bin",
+      "sha256": "38768C559701C15A8522654D83030B2A7DB8A968B4ED2FEDF206E265E33F4838",
+      "bytes": 2117
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-runtime.json",
+      "sha256": "6F4675E25D932EB7CF9DC41A66A97ADB72E3139BA052539D8DD7AB7200CF0E92",
+      "bytes": 1089
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-runtime.results.json",
+      "sha256": "A459C584E4AF8BA49930C4372CE59AEB765127D7476459143C594EE0D3962C86",
+      "bytes": 2006
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-runtime.stdout.bin",
+      "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D",
+      "bytes": 574
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/engine-selected-tests.json",
+      "sha256": "B3CE180B2720D392126E709C17F5F69E317DEA6C952D6CDC38A8BC21590C38B0",
+      "bytes": 2434
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/final.json",
+      "sha256": "1F91F57DE2065B9487D46C53067115CA6F764201916ACEF16F42F31DBEB754D5",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/grant.json",
+      "sha256": "B5212AF17369AA54C9B6A1088BBA40F46E6B897C4F3F37E812D58D8CF101254D",
+      "bytes": 1276
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-after.json",
+      "sha256": "1F91F57DE2065B9487D46C53067115CA6F764201916ACEF16F42F31DBEB754D5",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-artifact-copy.json",
+      "sha256": "884F52F5A75A1D79BBF640F94F3D459BA424C38903F974D9F9EB93BE0ECD5383",
+      "bytes": 438
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-compile.json",
+      "sha256": "98A2358A71B1B9CA731EF52E48038F28F1D6F67E79B7B05A146F52CD588001F6",
+      "bytes": 1807
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-compile.stderr.log",
+      "sha256": "F412B86D1B70062A49F995215092393027F74ED17E707BE6FC2E7ADA0EA1C1B7",
+      "bytes": 13927
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-metadata.json",
+      "sha256": "539443FE445A5EE65979561C3F5F00E5EB84F94AD045C5E302E4072E345E0567",
+      "bytes": 1094
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-metadata.stdout.bin",
+      "sha256": "9155D7D9207AF82B81264D07138AD8F4E989EA9C0D531DBB54B205798B22E281",
+      "bytes": 2681
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-runtime.json",
+      "sha256": "2C720EC33DD66D15D66AC37A0EE801029137B4D50182D96F7ADD8F01D3EE11A7",
+      "bytes": 1095
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-runtime.results.json",
+      "sha256": "DFCF164D7A5B70F3B8C8C4F28E60DED8988B548A4644C4301D3F186E1778F03A",
+      "bytes": 2238
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-runtime.stderr.log",
+      "sha256": "13ACD9E8628E989ACEA49774FF19738154005C9C7F5F37544230C350B0458876",
+      "bytes": 241
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-runtime.stdout.bin",
+      "sha256": "50821D5C408C6FCB7CDA4532E9568A94AC00618083F3186BE16D836491252864",
+      "bytes": 658
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/recovery-selected-tests.json",
+      "sha256": "3F6A166562177E364A1D193E5E652D5D8889C687AD8C3EE0ACFFCDD25DCDBFE5",
+      "bytes": 3000
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/result.json",
+      "sha256": "CBB696F50771B03F5EC543AD8FF93DAA66355E42AFA68C6FC2A3085780FF6DEB",
+      "bytes": 19993
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/Run-CoreContinuation.ps1",
+      "sha256": "65E9E902008691FB480D0ACE172DA1013AA30D987EF2A9563C052D01041C60F4",
+      "bytes": 7374
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/scope.json",
+      "sha256": "6488966360DEE0B18D583745E3B03278B0BCCC0825061133486CE15DF3727F87",
+      "bytes": 635
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-after.json",
+      "sha256": "1F91F57DE2065B9487D46C53067115CA6F764201916ACEF16F42F31DBEB754D5",
+      "bytes": 9529961
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-artifact-copy.json",
+      "sha256": "15B50AFA24DF4D3C764DFDC16D3966241AB209D74BBDB3E5A92CE0F8F8B262B1",
+      "bytes": 423
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-compile.json",
+      "sha256": "F582B0E46D1551F35E13594D09D37C328A0667DF1618887D91F79F682A3F1A65",
+      "bytes": 1819
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-compile.stderr.log",
+      "sha256": "EFF3C8CCA332A6B3D876B9C1B23A07E2304569C52855600F03D1F1BAA9DE0A9E",
+      "bytes": 14063
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-metadata.json",
+      "sha256": "DCDA0FD88E4F13C02E3E2BC0B6222896F00AB10BEF409B67BCB2BC9B026AC83B",
+      "bytes": 1106
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-metadata.stdout.bin",
+      "sha256": "1FA2A9449287249B26BBC8E4F558BBA17EC69BA9F36E3B48389BFA72B5F02115",
+      "bytes": 565
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-runtime.json",
+      "sha256": "119129A681C64C397A19C3A3392DF8AE98858BF5563D788BE1792D0FC5DAFC7E",
+      "bytes": 1107
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-runtime.results.json",
+      "sha256": "857DFE2BBF389ED6866F0C1E3DDFD08B0C49DFC5551AEB39C7DEFE0F930AFE5E",
+      "bytes": 880
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-runtime.stdout.bin",
+      "sha256": "12A99A350E13E5B1473CCD10A9F634131784CE356DA4809961160DC19B0DBAD8",
+      "bytes": 154
+    },
+    {
+      "entry": "root-tla-core-continuation-20261016/sdk-boundary-selected-tests.json",
+      "sha256": "78989D8FA93D213FB1FF9160E5D2FE6DD11BB39D8041B5998230A121BDA695EA",
+      "bytes": 888
+    },
+    {
+      "entry": "root-f06-core-independent-async-review-20261016/Audit-RootF06Core.ps1",
+      "sha256": "E1D524A1525FDD4E94EBF7C7D91F74FB69D8E309DE6CEEC51F1F08E8EC9805B3",
+      "bytes": 15452
+    },
+    {
+      "entry": "root-f06-core-independent-async-review-20261016/audit.json",
+      "sha256": "E38DBAAE4629DC8D27D291547277558427901E542E6E227DD6AD6595EA2F31F5",
+      "bytes": 109922
+    }
+  ]
+}

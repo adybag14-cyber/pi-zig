@@ -32,6 +32,21 @@ driver, import inspection and independent review. Every archive entry was
 rehash-verified. Earlier preflight, SDK-import, metadata-count and test-syntax
 negatives remain unchanged in the project evidence directory.
 
-This is focused component evidence. Broader C regressions, the original Models
-allocation-160 case, complete application/default SDK integration, native-body
-resolving-hook behavior and hosted/release profiles require separate evidence.
+The subsequent scoped C regression run passed ten groups and 116 actual selected
+entries on `4e94611b6f1379df92a4eb35c14cb91bc5c4531e`: foundation6, async26,
+generator19, generator-GPA2, JSON11, Source51-2, operators2, Engine20, recovery23
+and SDK-boundary5. Seven groups passed before the strict metadata gate found
+the additional Engine private-cache test; the three-group continuation retained
+all earlier results and ran the correct complete selections. An independent
+review decoded all streams, checked all 32 owner receipts and rehashed every
+source/compiler file and complete inventory with zero drift and final absence.
+
+`verification/tla-core-proof-20261016` contains the raw regression proof and
+independent audit. Exact executable copies remain in their original local
+evidence directories; the raw-proof archive declares their hashes and does not
+claim to contain those binaries. Root integrated the F06 repair after both
+focused and regression acceptance.
+
+This remains component evidence. The original Models allocation-160 case,
+complete application/default SDK integration, later native-body resolving-hook
+work and hosted/release profiles require separate evidence.
