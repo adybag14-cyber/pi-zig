@@ -1,0 +1,18 @@
+{
+  "status": "admitted",
+  "candidate": "9c4dd6f279966db6ca95c49d7ab96ff394553b3f",
+  "root_base": "10dbf9c069f776c02c4deecf593ff00cf7a536f6",
+  "grant": "ROOT-MODELS259-16GiB-SERIAL-20261016",
+  "phase": "compile",
+  "free_kib": 21394540,
+  "threshold_kib": 16777216,
+  "max_other_native_roots": 0,
+  "other_native_roots": [],
+  "jobs": 1,
+  "llvm": true,
+  "compile_timeout_seconds": 1320,
+  "runtime_timeout_seconds": 300,
+  "test_timeout_seconds": 120,
+  "host_await_timeout_seconds": 10,
+  "observed_utc": "2026-10-16T12:18:12.9387386+00:00"
+}
