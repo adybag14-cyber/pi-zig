@@ -22,6 +22,8 @@ The independent durable harness compaction implementation is byte-unchanged upst
 
 `source-observe.mjs` follows actual official workspace export maps and hashes observed modules against the frozen source/runtime manifests. A strict owner must additionally freeze this driver, observer and exact input through `PI_SOURCE_ORACLE_CONTROL_MANIFEST`, validate full Node1774/compiler19546/candidate/control/84-absence manifests before and after, and keep the owner alive until terminal and independent absence. Node must run the actual Source package v1.3.0, without a `PI_PACKAGE_DIR` override. The new source root still needs its owned dependency junction prepared before any granted launch.
 
+`Freeze-Latest4ddSource.ps1` prepares and checks that complete before/post inventory for an explicit clean candidate HEAD. It records full Source1970/runtime31064/Node1774/compiler19546/candidate and exact controls, and adapts the unchanged 84 dependency absence paths to this isolated source root. It writes a separate control manifest for the observer. It never launches a process. Its PowerShell syntax was parsed without executing the script; the actual full freeze remains deferred. Proof outputs must be outside the candidate worktree so the post check preserves a clean exact candidate.
+
 The historical 45-case summary fixture is retained without changes. Its captured original output has 43 cases making 48 requests; those requests observe removed maximum option fields/keys under latest Source. Its metadata and null-messages cases make no requests. Reserve/max getter and compact settings traces also change in the applicable cases. Historical expectations cannot be used as a latest-source golden or overwritten.
 
 ## Qualification state
