@@ -64,3 +64,21 @@ error classification in synchronous withProgress catches and the storage
 catch boundaries. Completion progress now takes its own fresh generation;
 ordinary/stale-tag/lookalike reasons retain Source catch behavior. These are
 source-only corrections; they have no inherited native qualification.
+
+Further Source-order review corrections retain the outer class-method lookup
+before evaluating nested arguments, preserve uninstallNpm's explicit live
+Array.prototype.push, and separate two different JSON.parse/readFile orders.
+getInstalledNpmVersion reads content before resolving JSON.parse;
+hasMissingGitDependencies resolves JSON.parse before its nested readFileSync.
+Four prepared transparent getter/real-file controls and a real uninstall push
+control supplement the empty batch. There are now 43 original plus six new
+prepared controls, with no expected output. The physical supplement requires
+actual frozen offline npm execution and a fresh owned directory; no command
+success result or filesystem callback is fabricated.
+
+The next source-only cluster supplies the original twelve free pattern-helper
+bodies over required real minimatch/path imports, plus ten class resource/
+filter/manifest callers over required real discovery/manifest helpers. It does
+not implement minimatch/ignore by approximation and does not select a partial
+class. Native discovery helpers and addAutoDiscoveredResources are still
+required, along with install/update orchestration and full assembly.

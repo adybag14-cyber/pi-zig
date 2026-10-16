@@ -14,4 +14,12 @@ for(const name of ['getNpmInstallRoot','ensureNpmProject','runNpmCommand','getNp
 }
 await manager.installNpmBatch([],'user');
 globalThis.packageEmptyBatchRows=[{name:'empty-specs-still-create-and-install',trace,rootExists:existsSync(installRoot),packageJson:readFileSync(join(installRoot,'package.json'),'utf8'),gitignore:readFileSync(join(installRoot,'.gitignore'),'utf8'),lockExists:existsSync(join(installRoot,'package-lock.json'))}];
+{
+ const originalPush=Array.prototype.push,pushes=[];
+ try{
+  Array.prototype.push=function(...values){if(this[0]==='uninstall'&&values[0]==='--legacy-peer-deps')Reflect.apply(originalPush,pushes,[{name:'legacy-peer-deps-push',lengthBefore:this.length}]);return Reflect.apply(originalPush,this,values)};
+  await manager.uninstallNpm({name:'unused-not-installed'},'user');
+ }finally{Array.prototype.push=originalPush}
+ globalThis.packageEmptyBatchRows.push({name:'uninstall-uses-live-explicit-push',pushes});
+}
 globalThis.packageEmptyBatchComplete=true;

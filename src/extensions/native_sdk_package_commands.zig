@@ -190,7 +190,7 @@ fn asyncBody(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, 
             try push(&s, values, try s.get(arg(args, 0), "name"));
             try push(&s, values, try s.text(if (try v.eq(&s, name, "bun")) "--cwd" else "--prefix"));
             try push(&s, values, root);
-            if (!try v.eq(&s, name, "bun") and !try v.eq(&s, name, "pnpm")) try push(&s, values, try s.text("--legacy-peer-deps"));
+            if (!try v.eq(&s, name, "bun") and !try v.eq(&s, name, "pnpm")) try v.js.push(engine, values, try s.text("--legacy-peer-deps"));
             break :value try s.invoke(manager, "runNpmCommand", &.{values});
         },
     };

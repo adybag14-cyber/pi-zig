@@ -1,0 +1,87 @@
+{
+  "status": "source_only_pattern_resource_callers_and_review_corrections",
+  "base_checkpoint": "19bcbe6b4e3b680c150855e14f194d4f7737836b",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "static_class_declaration_coverage": 71,
+  "actual_source_declarations": 98,
+  "remaining_declarations": [
+    "install",
+    "installAndPersist",
+    "remove",
+    "removeAndPersist",
+    "update",
+    "updateConfiguredSources",
+    "shouldUpdateNpmSource",
+    "updateNpmBatch",
+    "checkForAvailableUpdates",
+    "resolvePackageSources",
+    "installParsedSource",
+    "installedNpmMatchesConfiguredVersion",
+    "npmHasAvailableUpdate",
+    "getLatestNpmVersion",
+    "gitHasAvailableUpdate",
+    "getRemoteGitHead",
+    "getLocalGitUpdateTarget",
+    "getGitUpstreamRef",
+    "runGitRemoteCommand",
+    "installGit",
+    "updateGit",
+    "repairMissingGitDependencies",
+    "cleanAndInstallGitDependencies",
+    "ensureGitRef",
+    "refreshTemporaryGitSource",
+    "removeGit",
+    "addAutoDiscoveredResources"
+  ],
+  "new_modules": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_patterns.zig",
+      "sha256": "5BDF0F17BD128DB5D632BDF49DF124883D75B62B76B6C15A48801CC05ED80FBC",
+      "class_methods": [],
+      "native_qualified": false
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_resources.zig",
+      "sha256": "90ED7CB1AA9160762CF4F42D42165D130549FE930C4F0732FECE2F0815D95936",
+      "class_methods": [
+        "collectPackageResources",
+        "collectDefaultResources",
+        "applyPackageFilter",
+        "applyPackageDeltaFilter",
+        "collectManifestFiles",
+        "addManifestEntries",
+        "collectFilesFromManifestEntries",
+        "resolveLocalEntries",
+        "collectFilesFromPaths",
+        "resolveLocalExtensionSource"
+      ],
+      "native_qualified": false
+    }
+  ],
+  "new_source_helpers": 12,
+  "original_prepared43_unchanged": true,
+  "additional_physical_getter_controls": 6,
+  "total_prepared_controls": 49,
+  "unresolved_discovery_helpers": [
+    "collectResourceFiles",
+    "expandPackageGlob",
+    "collectAutoExtensionEntries",
+    "collectAutoSkillEntries",
+    "collectAutoPromptEntries",
+    "collectAutoThemeEntries",
+    "collectAncestorAgentsSkillDirs"
+  ],
+  "unresolved_thirdparty": [
+    "ignore",
+    "minimatch",
+    "semver",
+    "hosted-git-info/full parseGitUrl"
+  ],
+  "scope": "Concrete Source callers only; no successful discovery/process/validator stand-ins and no partial class selection.",
+  "source_capture": false,
+  "expected_output_exists": false,
+  "zig_commands_run": false,
+  "native_qualification": false,
+  "default_selected": false,
+  "root_mutations": 0
+}

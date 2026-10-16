@@ -57,7 +57,14 @@ fn installedVersion(s: *Scope, imports: c.JSValue, root: c.JSValue) !c.JSValue {
     const generation = s.engine.native_allocation_generation;
     return versionInner(s, imports, path) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; return c.pi_js_undefined(); };
 }
-fn versionInner(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue { return s.get(try parsedManifest(s, imports, path), "version"); }
+fn versionInner(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue {
+    // Unlike hasMissingGitDependencies's nested expression, this Source body
+    // reads content before resolving the live JSON.parse property.
+    const content = try imported(s, imports, "readFileSync", &.{ path, try s.text("utf-8") });
+    const json = try s.global("JSON"); const parse = try s.get(json, "parse");
+    const stripped = try imported(s, imports, "stripBom", &.{content});
+    return s.get(try s.call(parse, json, &.{stripped}), "version");
+}
 fn missingDependency(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const path = try imported(&s, roots[0], "resolve", &.{ roots[1], arg(args, 0) });
@@ -118,7 +125,7 @@ fn pnpmPath(s: *Scope, manager: c.JSValue, name: c.JSValue) !c.JSValue {
     while (try iterator.next()) |entry| { defer s.engine.freeValue(entry); const dependencies = try s.get(entry, "dependencies"); const value = if (v.nullish(dependencies)) c.pi_js_undefined() else try s.own(try v.js.getKey(s.engine, dependencies, name)); const path = try v.optional(s, value, "path"); if (s.truthy(path)) return path; }
     return c.pi_js_undefined();
 }
-fn legacy(s: *Scope, manager: c.JSValue, imports: c.JSValue, source: c.JSValue) !c.JSValue { const pnpm = try s.invoke(manager, "getPnpmGlobalPackagePath", &.{try s.get(source, "name")}); return if (!v.nullish(pnpm)) pnpm else imported(s, imports, "join", &.{ try s.invoke(manager, "getGlobalNpmRoot", &.{}), try s.get(source, "name") }); }
+fn legacy(s: *Scope, manager: c.JSValue, imports: c.JSValue, source: c.JSValue) !c.JSValue { const get_pnpm = try s.get(manager, "getPnpmGlobalPackagePath"); const pnpm = try s.call(get_pnpm, manager, &.{try s.get(source, "name")}); return if (!v.nullish(pnpm)) pnpm else imported(s, imports, "join", &.{ try s.invoke(manager, "getGlobalNpmRoot", &.{}), try s.get(source, "name") }); }
 fn prune(s: *Scope, imports: c.JSValue, target: c.JSValue, root: c.JSValue) !void {
     if (!s.truthy(root)) return; const resolved = try imported(s, imports, "resolve", &.{root}); var current = try imported(s, imports, "dirname", &.{target});
     while (s.truthy(try s.invoke(current, "startsWith", &.{resolved})) and !s.equal(current, resolved)) {
@@ -141,7 +148,7 @@ fn invoke(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roo
         .getManagedNpmInstallPath => blk: { if (try v.eq(&s, second, "temporary")) break :blk try imported(&s, imports, "join", &.{ try s.invoke(manager, "getTemporaryDir", &.{try s.text("npm")}), try s.text("node_modules"), try s.get(first, "name") }); if (try v.eq(&s, second, "project")) { _ = try s.invoke(manager, "assertProjectTrustedForScope", &.{second}); break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "cwd"), try s.get(imports, "configDir"), try s.text("npm"), try s.text("node_modules"), try s.get(first, "name") }); } break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("npm"), try s.text("node_modules"), try s.get(first, "name") }); },
         .getLegacyGlobalNpmInstallPath => blk: { const generation = engine.native_allocation_generation; break :blk legacy(&s, manager, imports, first) catch |err| { try trustedBoundary(engine, err, generation); const failure = engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; break :blk c.pi_js_undefined(); }; },
         .getNpmInstallPath => blk: { const path = try s.invoke(manager, "getManagedNpmInstallPath", &.{ first, second }); if (!try v.eq(&s, second, "user") or try exists(&s, imports, path)) break :blk path; const previous = try s.invoke(manager, "getLegacyGlobalNpmInstallPath", &.{first}); break :blk if (s.truthy(previous) and try exists(&s, imports, previous)) previous else path; },
-        .getGitInstallPath => blk: { if (try v.eq(&s, second, "temporary")) { const get = try s.get(manager, "getTemporaryDir"); const prefix = try s.concat(try s.text("git-"), try s.stringify(try s.get(first, "host"))); break :blk try s.call(get, manager, &.{ prefix, try s.get(first, "path"), try s.get(first, "ref") }); } const root = try s.invoke(manager, "getGitInstallRoot", &.{second}); if (!s.truthy(root)) return v.errorText(&s, try s.text("Missing git install root")); break :blk try s.invoke(manager, "resolveManagedPath", &.{ root, try s.get(first, "host"), try s.get(first, "path") }); },
+        .getGitInstallPath => blk: { if (try v.eq(&s, second, "temporary")) { const get = try s.get(manager, "getTemporaryDir"); const prefix = try s.concat(try s.text("git-"), try s.stringify(try s.get(first, "host"))); break :blk try s.call(get, manager, &.{ prefix, try s.get(first, "path"), try s.get(first, "ref") }); } const root = try s.invoke(manager, "getGitInstallRoot", &.{second}); if (!s.truthy(root)) return v.errorText(&s, try s.text("Missing git install root")); const resolve = try s.get(manager, "resolveManagedPath"); break :blk try s.call(resolve, manager, &.{ root, try s.get(first, "host"), try s.get(first, "path") }); },
         .getGitInstallRoot => blk: { if (try v.eq(&s, first, "temporary")) break :blk c.pi_js_undefined(); if (try v.eq(&s, first, "project")) { _ = try s.invoke(manager, "assertProjectTrustedForScope", &.{first}); break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "cwd"), try s.get(imports, "configDir"), try s.text("git") }); } break :blk try imported(&s, imports, "join", &.{ try s.get(manager, "agentDir"), try s.text("git") }); },
         .getTemporaryDir => try temp(&s, manager, imports, first, second, arg(args, 2)), .resolveManagedPath => try managed(&s, imports, first, if (args.len > 1) args[1..] else &.{}),
     }; return c.JS_DupValue(engine.context, result);

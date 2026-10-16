@@ -83,7 +83,7 @@ fn key(s: *Scope, manager: c.JSValue, source: c.JSValue, scope: c.JSValue, setti
 fn installed(s: *Scope, manager: c.JSValue, source: c.JSValue, scope: c.JSValue, imports: c.JSValue) !c.JSValue {
     const parsed = try s.invoke(manager, "parseSource", &.{source}); var path = c.pi_js_undefined();
     if (try v.eq(s, try s.get(parsed, "type"), "npm")) path = try s.invoke(manager, "getNpmInstallPath", &.{ parsed, scope }) else if (try v.eq(s, try s.get(parsed, "type"), "git")) path = try s.invoke(manager, "getGitInstallPath", &.{ parsed, scope }) else if (try v.eq(s, try s.get(parsed, "type"), "local")) {
-        const base = try s.invoke(manager, "getBaseDirForScope", &.{scope}); path = try s.invoke(manager, "resolvePathFromBase", &.{ try s.get(parsed, "path"), base });
+        const base = try s.invoke(manager, "getBaseDirForScope", &.{scope}); const resolve = try s.get(manager, "resolvePathFromBase"); path = try s.call(resolve, manager, &.{ try s.get(parsed, "path"), base });
     } else return c.pi_js_undefined();
     return if (s.truthy(try s.call(try s.get(imports, "existsSync"), c.pi_js_undefined(), &.{path}))) path else c.pi_js_undefined();
 }
@@ -126,8 +126,8 @@ fn method(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roo
         .addSourceToSettings => try mutate(&s, manager, first, second, true), .removeSourceFromSettings => try mutate(&s, manager, first, second, false),
         .getInstalledPath => try installed(&s, manager, first, second, roots[0]), .listConfiguredPackages => try list(&s, manager),
         .getSourceMatchKeyForInput => try key(&s, manager, first, c.pi_js_undefined(), false), .getSourceMatchKeyForSettings => try key(&s, manager, first, second, true),
-        .packageSourcesMatch => blk: { const left = try s.invoke(manager, "getSourceMatchKeyForSettings", &.{ try s.invoke(manager, "getPackageSourceString", &.{first}), arg(args, 2) }); const right = try s.invoke(manager, "getSourceMatchKeyForInput", &.{second}); break :blk c.pi_js_bool(engine.context, @intFromBool(s.equal(left, right))); },
-        .normalizePackageSourceForSettings => blk: { const parsed = try s.invoke(manager, "parseSource", &.{first}); if (!try v.eq(&s, try s.get(parsed, "type"), "local")) break :blk first; const base = try s.invoke(manager, "getBaseDirForScope", &.{second}); const resolved = try s.invoke(manager, "resolvePath", &.{try s.get(parsed, "path")}); const rel = try s.call(try s.get(roots[0], "relative"), c.pi_js_undefined(), &.{ base, resolved }); break :blk if (s.truthy(rel)) rel else try s.text("."); },
+        .packageSourcesMatch => blk: { const get_left = try s.get(manager, "getSourceMatchKeyForSettings"); const source = try s.invoke(manager, "getPackageSourceString", &.{first}); const left = try s.call(get_left, manager, &.{ source, arg(args, 2) }); const right = try s.invoke(manager, "getSourceMatchKeyForInput", &.{second}); break :blk c.pi_js_bool(engine.context, @intFromBool(s.equal(left, right))); },
+        .normalizePackageSourceForSettings => blk: { const parsed = try s.invoke(manager, "parseSource", &.{first}); if (!try v.eq(&s, try s.get(parsed, "type"), "local")) break :blk first; const base = try s.invoke(manager, "getBaseDirForScope", &.{second}); const resolve = try s.get(manager, "resolvePath"); const resolved = try s.call(resolve, manager, &.{try s.get(parsed, "path")}); const rel = try s.call(try s.get(roots[0], "relative"), c.pi_js_undefined(), &.{ base, resolved }); break :blk if (s.truthy(rel)) rel else try s.text("."); },
         .findSuggestedConfiguredSource => try suggestion(&s, manager, first, second),
         .buildNoMatchingPackageMessage => blk: { const suggested = try s.invoke(manager, "findSuggestedConfiguredSource", &.{ first, second }); const prefix = try s.concat(try s.text("No matching package found for "), try s.stringify(first)); break :blk if (!s.truthy(suggested)) prefix else try s.concat(try s.concat(prefix, try s.text(". Did you mean ")), try s.concat(try s.stringify(suggested), try s.text("?"))); },
         .emitProgress => blk: { try emit(&s, manager, first); break :blk c.pi_js_undefined(); },
@@ -139,8 +139,12 @@ fn event(s: *Scope, kind: []const u8, action: c.JSValue, source: c.JSValue, mess
 fn progressError(s: *Scope, manager: c.JSValue, args: []const c.JSValue, reason: c.JSValue) !af.Action {
     const instance = c.JS_IsInstanceOf(s.engine.context, reason, try s.global("Error")); if (instance < 0) return v.js.capture(s.engine);
     const message = if (instance != 0) try s.get(reason, "message") else try s.call(try s.global("String"), c.pi_js_undefined(), &.{reason});
-    _ = try s.invoke(manager, "emitProgress", &.{try event(s, "error", arg(args, 0), arg(args, 1), message)});
+    try emitEvent(s, manager, "error", arg(args, 0), arg(args, 1), message);
     return .{ .thrown = c.JS_DupValue(s.engine.context, reason) };
+}
+fn emitEvent(s: *Scope, manager: c.JSValue, kind: []const u8, action: c.JSValue, source: c.JSValue, message: ?c.JSValue) !void {
+    const emit_progress = try s.get(manager, "emitProgress");
+    _ = try s.call(emit_progress, manager, &.{try event(s, kind, action, source, message)});
 }
 fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation);
@@ -148,7 +152,7 @@ fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
 fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
-        _ = try s.invoke(manager, "emitProgress", &.{try event(&s, "start", arg(args, 0), arg(args, 1), arg(args, 2))});
+        try emitEvent(&s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
         const job = try body.init(&s, state); const generation = engine.native_allocation_generation;
         try s.put(job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
         const pending = s.call(arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| { try trustedBoundary(engine, err, generation); const failure = engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; const reason = try s.own(@import("native_agent_async.zig").reason(engine, failure)); return progressError(&s, manager, args, reason); };
@@ -157,6 +161,6 @@ fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValu
     var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(state.*, "generation")) < 0) return v.js.capture(engine);
     if (completion == .rejected) { try body.rethrowRecognizedAllocation(engine, input, boundary); return progressError(&s, manager, args, input); }
     const complete_generation = engine.native_allocation_generation;
-    _ = s.invoke(manager, "emitProgress", &.{try event(&s, "complete", arg(args, 0), arg(args, 1), null)}) catch |err| { try trustedBoundary(engine, err, complete_generation); const failure = engine.nativeAllocationError(err, complete_generation); if (failure == error.OutOfMemory) return failure; const reason = try s.own(@import("native_agent_async.zig").reason(engine, failure)); return progressError(&s, manager, args, reason); };
+    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| { try trustedBoundary(engine, err, complete_generation); const failure = engine.nativeAllocationError(err, complete_generation); if (failure == error.OutOfMemory) return failure; const reason = try s.own(@import("native_agent_async.zig").reason(engine, failure)); return progressError(&s, manager, args, reason); };
     return .{ .returned = c.pi_js_undefined() };
 }
