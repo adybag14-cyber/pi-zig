@@ -510,9 +510,13 @@ pub const Controller = struct {
         return self.log_queue.append(writer.buffered());
     }
     fn waitLogged(self: *Controller, sequence: u64, end: u64) !void {
-        while (!try self.log_queue.acknowledged(sequence)) {
-            try self.log_queue.requireResponsive();
+        while (true) {
             if (w.GetTickCount64() >= end) return error.PersistenceAckDeadline;
+            if (try self.log_queue.acknowledged(sequence)) {
+                if (w.GetTickCount64() >= end) return error.PersistenceAckLateObservation;
+                return;
+            }
+            try self.log_queue.requireResponsive();
             try self.output.advance(); try self.errors.advance();
             try self.waitEvents(end);
         }
@@ -569,7 +573,7 @@ const Publication = struct {
         var writer = try receipts.Writer.create(allocator, c.run_root, temp, &c.publication_quota, c.deadline);
         defer writer.closePartial() catch {};
         const count: ?u32 = if (c.last_snapshot) |snapshot| snapshot.accounting.basic.total_processes else null;
-        const known: u32 = @as(u32, @intFromBool(c.worker.created_by_this_call)) + @as(u32, @intFromBool(c.node_identity_bound));
+        const known: u32 = @as(u32, @intFromBool(c.worker.full_identity_bound)) + @as(u32, @intFromBool(c.node_identity_bound));
         try writer.json(.{ .schema = 1, .phase = c.args.selected,
             .status = if (self.success) (if (c.args.selected == .npm_ci_offline) "ci_reproduced_exact" else "reproduced_exact_pending_independent_review") else "negative",
             .first_error = if (c.first_error) |err| @errorName(err) else @as(?[]const u8, null),
