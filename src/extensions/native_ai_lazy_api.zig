@@ -207,15 +207,16 @@ pub fn create(engine: *v.em.Engine, load: c.JSValue, capabilities: c.JSValue) !c
     defer scope.deinit();
     const output = try scope.object();
     inline for (.{ "stream", "streamSimple", "fetchDeferred", "cancelDeferred" }, 0..) |method, index| {
-        if (index >= 2 and !scope.truthy(try v.optional(&scope, capabilities, method))) continue;
-        const Adapter = struct {
-            fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-                return operation(host, args, roots, index != 3, index >= 2, index == 3);
-            }
-        };
-        const roots = [_]c.JSValue{ load, try scope.text(method) };
-        const function = if (index == 3) try scope.own(try asynchronous.createResumableArrow(engine, method, 3, operationBody, &.{ roots[0], roots[1], c.JS_NewBool(engine.context, true), c.JS_NewBool(engine.context, true) }, c.pi_js_undefined())) else try scope.own(try functions.createArrow(engine, method, 3, Adapter.call, &roots));
-        try scope.put(output, method, function);
+        if (index < 2 or scope.truthy(try v.optional(&scope, capabilities, method))) {
+            const Adapter = struct {
+                fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+                    return operation(host, args, roots, index != 3, index >= 2, index == 3);
+                }
+            };
+            const roots = [_]c.JSValue{ load, try scope.text(method) };
+            const function = if (index == 3) try scope.own(try asynchronous.createResumableArrow(engine, method, 3, operationBody, &.{ roots[0], roots[1], c.JS_NewBool(engine.context, true), c.JS_NewBool(engine.context, true) }, c.pi_js_undefined())) else try scope.own(try functions.createArrow(engine, method, 3, Adapter.call, &roots));
+            try scope.put(output, method, function);
+        }
     }
     return c.JS_DupValue(engine.context, output);
 }
