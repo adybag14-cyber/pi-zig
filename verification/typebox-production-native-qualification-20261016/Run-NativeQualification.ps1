@@ -55,6 +55,8 @@ function Verify-Frozen {
  $checks+=@{name='candidate_inventory';drift=(Compare-Paths $taskFrozen.candidate (Candidate-Paths))}
  $checks+=@{name='vendor_inventory';drift=(Compare-Paths $taskFrozen.vendor @(Inventory (Join-Path $taskRoot 'vendor')))}
  $checks+=@{name='explicit84_absences';drift=@($taskAbsences|Where-Object{(Test-Path -LiteralPath (Join-Path $taskRuntime $_))-or(Test-Path -LiteralPath (Join-Path $taskSource $_))}).Count}
+ $taskLinkDrift=@(foreach($link in $taskLinks){$entry=Get-Item -LiteralPath $link.path -Force -ErrorAction SilentlyContinue;if(!$entry-or$entry.LinkType -cne $link.type-or$entry.Target -cne $link.target){$link.path}})
+ $checks+=@{name='explicit16_workspace_junctions';drift=$taskLinkDrift.Count;changed=$taskLinkDrift}
  $checks+=@{name='candidate_head';drift=[int]((git -C $taskRoot rev-parse HEAD) -cne $ExpectedHead)}
  $checks+=@{name='reference_head';drift=[int]((git -C $taskSource rev-parse HEAD) -cne $taskContract.sourceHead)}
  $checks
@@ -85,6 +87,9 @@ $taskBeforeBinaries|ConvertTo-Json -AsArray|Set-Content -LiteralPath "$taskBase-
 $taskFailure=$null;$taskMetadata=$null
 try{
  if($Phase -eq 'metadata'){
+  $taskQueryFree=(Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory*1024
+  $taskQueryOther=@(Get-CimInstance Win32_Process|Where-Object{$_.ExecutablePath-and($_.ExecutablePath.EndsWith('\zig.exe')-or$_.ExecutablePath-like'C:\Users\adyba\pi-zig*\.zig-cache\*\build.exe'-or$_.ExecutablePath-like'C:\Users\adyba\pi-zig*\.zig-cache\*\test.exe')})
+  if($taskQueryFree -lt 12GB-or$taskQueryOther.Count){throw 'Fresh metadata launch12GiB/zero-other-native admission failed'}
   . (Join-Path $taskRoot 'tools/ci/native_qualification_ci.ps1')
   $taskMetadata=Read-CiTestMetadata $taskBinary.path $taskRoot "$taskBase-query" $taskContract.expectedTests.Count
   if(@(Compare-Object @($taskMetadata.tests|Sort-Object -CaseSensitive) @($taskContract.expectedTests|Sort-Object -CaseSensitive) -CaseSensitive).Count){throw 'Exact actual Zig test metadata names mismatch'}
