@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "source_head": "a3ea0d060c782848cf9cc43169d80bd5bb1623ec",
+  "zip_sha256": "29CAC1EF025F86A5029203CE9759481877156D1DE60936BB88FED335A19DC8E2",
+  "zip_bytes": 2961992,
+  "entries": [
+    {
+      "entry": "root-promise-fatal-continuation-20261016/before.json",
+      "sha256": "1CC8FABE911FDA6A6C7B92273EA0D0FEDCC22B78BCD21DC09F89C1FA2831C748",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/final.json",
+      "sha256": "1CC8FABE911FDA6A6C7B92273EA0D0FEDCC22B78BCD21DC09F89C1FA2831C748",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/grant.json",
+      "sha256": "9D9B86EE7DE3D05FCD965D16C9785A0CE809ACDA526F2D81C37F66B74AF8F7EA",
+      "bytes": 972
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-compile.json",
+      "sha256": "15874DC2A05A077B637DBEDD2BBD8B740D982D5C8BEE59B8B0CCBDD652C2BB02",
+      "bytes": 1811
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-compile.stderr.log",
+      "sha256": "EF8CFA60EDD8A9E702E0BD06AFD98EC43B0890224BCDA731BA41CE34623A60EC",
+      "bytes": 14058
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-metadata.json",
+      "sha256": "E2BA93F6C90DD9D830E57016EC56D44E4B03A64815FF54B9C8E466C7C1D51125",
+      "bytes": 1109
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-metadata.stdout.bin",
+      "sha256": "51BF0D39A9320FBC28AC90031FB1CBE2A8470553FE74555CAD9EF75B6707ACAD",
+      "bytes": 219
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/inactive-selected-tests.json",
+      "sha256": "C2D19747BA000F3915448CA31C156A73FECE6F1035AEC1A27B13C1073B88E7F5",
+      "bytes": 543
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/result.json",
+      "sha256": "120886D3178B8E442E0C02C64AF63650BAB3BF02D8FC90774CB1FC76DD24791D",
+      "bytes": 241
+    },
+    {
+      "entry": "root-promise-fatal-continuation-20261016/Run-Continuation.ps1",
+      "sha256": "AB818186707F2AC25F06FEE78BB49093417E69B8C94B997A4876E0F4E72D5221",
+      "bytes": 6504
+    }
+  ]
+}

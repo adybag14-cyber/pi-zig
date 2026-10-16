@@ -1,0 +1,168 @@
+{
+  "schema": 1,
+  "source_head": "a3ea0d060c782848cf9cc43169d80bd5bb1623ec",
+  "zip_sha256": "2802DE0F8B00B6CC3EC74615871FCFB97322F3A1873E4EA32453DDBF4DF1A053",
+  "zip_bytes": 40617836,
+  "entries": [
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/before.json",
+      "sha256": "19C0AD9FA16E024C8C42589E5FB13221D0C897D86AAEB3BEAAFC3E7E355B8979",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/final.json",
+      "sha256": "19C0AD9FA16E024C8C42589E5FB13221D0C897D86AAEB3BEAAFC3E7E355B8979",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/grant.json",
+      "sha256": "904098B99C44D0CF83950B620434588DE94D2B2FCBFBA5E2C65BF6E819C0BF7B",
+      "bytes": 1192
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-after.json",
+      "sha256": "19C0AD9FA16E024C8C42589E5FB13221D0C897D86AAEB3BEAAFC3E7E355B8979",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-compile.json",
+      "sha256": "5511BF07519B684EEBD778B971D0D5565D89673203D61ECD83543EEC3255CABA",
+      "bytes": 1817
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-compile.stderr.log",
+      "sha256": "02DB36892BC304A388D683CFE8BBE7763DB0FEE0AAB262CCFCEB339D392D92A4",
+      "bytes": 14058
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-metadata.json",
+      "sha256": "4DF7668E61784B57E5D043EB806E6F16C31209687BC1DF2784DD6C06895A374B",
+      "bytes": 1117
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-metadata.stdout.bin",
+      "sha256": "51BF0D39A9320FBC28AC90031FB1CBE2A8470553FE74555CAD9EF75B6707ACAD",
+      "bytes": 219
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-runtime.json",
+      "sha256": "4A986DFA5B2C33FAD6C2930865FDAF5A5D98304C3E3E29A738B238C6C94303CA",
+      "bytes": 1119
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-runtime.results.json",
+      "sha256": "27A5D416C5759C1B5903972447CD575FA01D6E06128906F7E43A370C62F784DA",
+      "bytes": 663
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/inactive-selected-tests.json",
+      "sha256": "40A47C024164D6A7C6D304CE0A341B354121A5B8E4339B227D4F02BFA8F7C419",
+      "bytes": 546
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/result.json",
+      "sha256": "652AF3EB8EF90478BB01AAABF0CC68D1E5E97B8462AE62D55BC014BB8B505E14",
+      "bytes": 10697
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/Run-Continuation.ps1",
+      "sha256": "1BA2C36CA0EC3E3FD0E27CFBF38C9F6B5FDE1E00B51FB150D1B6C641B2DAAFE8",
+      "bytes": 7429
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-after.json",
+      "sha256": "19C0AD9FA16E024C8C42589E5FB13221D0C897D86AAEB3BEAAFC3E7E355B8979",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-compile.json",
+      "sha256": "F52889C92BD31802CD353B473173A0A4939F2E44D79611DAFEADC69AC027A327",
+      "bytes": 1821
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-compile.stderr.log",
+      "sha256": "C2312BBF91341FBA556510F2FC62B214A50CFB157CB829136752807A0A53035F",
+      "bytes": 14062
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-metadata.json",
+      "sha256": "F649C0CA95EFA2E951B4C9219FC55BD2EDB57697B3CC6EAB3397EEDDCA959087",
+      "bytes": 1112
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-metadata.stdout.bin",
+      "sha256": "830209832E9647492373CA800A57157B59BD3DE7ADA9CC0C38E968237DDFDA98",
+      "bytes": 1635
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-runtime.json",
+      "sha256": "94B4B8E32A3DB6CEB46E11E13623D2AE522893B804BE8F3AC53B4B6CB210AE78",
+      "bytes": 1112
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-runtime.results.json",
+      "sha256": "8F780FE4833AAD836E97A7E39651ECF00272F0C3C4929AFD4B40563C2C9314BE",
+      "bytes": 1414
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-runtime.stdout.bin",
+      "sha256": "A6D5D17483B06112ABC45B475F0D9E03E2BD45B14471AB3CFD9BD25C2F44F1E8",
+      "bytes": 350
+    },
+    {
+      "entry": "root-promise-fatal-continuation-v2-20261016/shared-selected-tests.json",
+      "sha256": "5E21A1A9C19A0CA896CB8CEDC6C5267CED3E8D536306A275B1489962BBEE2650",
+      "bytes": 1960
+    },
+    {
+      "entry": "binaries/inactive/test.exe",
+      "sha256": "7B382895463A49EAE024C38EB8D9241A29DD6CE54DCAE8816FA4856E896E176A",
+      "bytes": 45206528
+    },
+    {
+      "entry": "binaries/shared/test.exe",
+      "sha256": "4C376734A808A64964D73724FB459920DF4C2FCA91D00A912B55220F96ECF524",
+      "bytes": 45259776
+    },
+    {
+      "entry": "independent-review.json",
+      "sha256": "6057819C94F745EFB5F9F837353A1E9C1305F5B95993B082FD83BF9701538055",
+      "bytes": 14718
+    }
+  ]
+}

@@ -1,0 +1,683 @@
+{
+  "schema": 1,
+  "source_head": "a3ea0d060c782848cf9cc43169d80bd5bb1623ec",
+  "zip_sha256": "7B196BAB8BB6A61F4CDAD5053E074EB8CB1E94D0CCBF96627109182FB99D6B03",
+  "zip_bytes": 17805477,
+  "entries": [
+    {
+      "entry": "root-promise-core-regression-20261016/async26-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-artifact-copy.json",
+      "sha256": "0AD42F0F997C8A88C268BBEEB03A585D3C24530332751CA6DD8F223A908B6D57",
+      "bytes": 439
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-compile.json",
+      "sha256": "491AAAD1FDE3E642B014005CF1ACE749D611550DBA55FD8EEDBB56F7D028663C",
+      "bytes": 1807
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-compile.stderr.log",
+      "sha256": "19E67B11C3C408F19D8D049CA7BA7790FCA6C116C1F33814ADC54F8D23372A6E",
+      "bytes": 14060
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-metadata.json",
+      "sha256": "A5049EFC93B17FA566C16DD12D672171519F83FD25063916EF10F5F5D8BA77E0",
+      "bytes": 1097
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-metadata.stdout.bin",
+      "sha256": "3C11E83CB0E439E2E1D9A0174D91BDF16608D124E4B23D385867B3D7313F3F9E",
+      "bytes": 3508
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-runtime.json",
+      "sha256": "5E3C0642C23DD9721297BC95A233E332E3C636ADE608D23C2BF1740F0569FA4A",
+      "bytes": 1098
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-runtime.results.json",
+      "sha256": "0E86B85D992A84FE95AFBABC9960CB4A6DF8AB312933E79FCED44D5AC27536C5",
+      "bytes": 2468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-runtime.stdout.bin",
+      "sha256": "56DC4A7C05E1C3737462393C3B4634752F59259EAA3179B86E0D9E18330BB11B",
+      "bytes": 742
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/async26-selected-tests.json",
+      "sha256": "1C0328721C9C0B48FBCFEEC8344A71F713C50CDE341BFB476510F8A3F486CF80",
+      "bytes": 3828
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/before.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-artifact-copy.json",
+      "sha256": "A4FBF4AFC3D8E1DA73540CB60D08B9E234D80D3BF2E21534BB278D7F7F996380",
+      "bytes": 436
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-compile.json",
+      "sha256": "CF206EB72F45CAEBFECEA2686D6D2C84D2E91CF2E438660AC2295A3C69C26597",
+      "bytes": 1803
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-compile.stderr.log",
+      "sha256": "A99C36B053BE8091739A500007B976E53B67528BF7FC74E30BA76A9F6DDC92C1",
+      "bytes": 13925
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-metadata.json",
+      "sha256": "FD32AF96B532A6A3FD6B87F15CB4CACC410518195310FDA2FE398B28EB291D37",
+      "bytes": 1094
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-metadata.stdout.bin",
+      "sha256": "38768C559701C15A8522654D83030B2A7DB8A968B4ED2FEDF206E265E33F4838",
+      "bytes": 2117
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-runtime.json",
+      "sha256": "F810AE99FF5F09343AD332BBF4C79CC69053D54D3C9744DB71213F5B7324203E",
+      "bytes": 1093
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-runtime.results.json",
+      "sha256": "DAB74E932560D4624A1E8FEF570D1DB83785EB7E9EDD068DC2A665835E11B05A",
+      "bytes": 2010
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-runtime.stdout.bin",
+      "sha256": "19E93005E2F82997FD68DE8EA69FDC9CB560F794CB2EB32FE274D2D91DB45F5D",
+      "bytes": 574
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/engine-selected-tests.json",
+      "sha256": "569F7FDF5C87FE154EA029269750FA166988F64B7F8F681CAD2D80FE74CCC1E6",
+      "bytes": 2436
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/final.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-artifact-copy.json",
+      "sha256": "6C7C9DE5BBB78353B93A378113CDBCC5451EDF2BC5FA849BE9F5ACB8E7E4F337",
+      "bytes": 448
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-compile.json",
+      "sha256": "EDC91D6B4C35A5268DC5AD7C6F8157C375A335800D0F6D7FEADB9BA7A8A28EF7",
+      "bytes": 1819
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-compile.stderr.log",
+      "sha256": "8217FD1B8A6A262675A8317452D82132B25AEBA3EFA7428009D0DB5DFDFF4D0A",
+      "bytes": 13929
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-metadata.json",
+      "sha256": "DB8B8B2FD35685BDE2CF223C0B31259F20DA3ED39EC94823C3396614E6571BA4",
+      "bytes": 1106
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-metadata.stdout.bin",
+      "sha256": "699E561DCA394C4FBA9ED8761CEC7C12E2AD7F6FCDF8BF61B95B5D02F9024C19",
+      "bytes": 840
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-runtime.json",
+      "sha256": "C9BC01D363FC3701D7969886DBE348F1936AEB6317C54C4B05140BFBEA117173",
+      "bytes": 1107
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-runtime.results.json",
+      "sha256": "092505132BF714D9A816BACC90213E07370D8E56BFC02C11F1597301B62C5D37",
+      "bytes": 955
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-runtime.stdout.bin",
+      "sha256": "CADEA13994919EDA102479E880F92A027E463D2EAAB1A25D792B255C30A0C9AC",
+      "bytes": 182
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/foundation-selected-tests.json",
+      "sha256": "39E7817EF55E79BE340EAD319832EF624618D99B61AD6535D80DFB24072E4D03",
+      "bytes": 1163
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-artifact-copy.json",
+      "sha256": "F2561B4D7E46CCC9580B34D216BB19D9B54EC5D39DFB5ABA42A602DAEB47C84C",
+      "bytes": 445
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-compile.json",
+      "sha256": "7AB7D09D2AD595503A8B168D0A7D97A851AE334F3447EA23175B7F6F22DCAC2C",
+      "bytes": 1814
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-compile.stderr.log",
+      "sha256": "D9D25E49310D8599CF9637B084F294CF326526571EC4BF5C4D74AA77115B46D7",
+      "bytes": 14062
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-artifact-copy.json",
+      "sha256": "F8BEEC0474C57E09D24B3B6460323A10F6E4FC2FF33CB64890870FE69E77DEF4",
+      "bytes": 457
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-compile.json",
+      "sha256": "688905EF89367C09AE299136BFC1EF98C949CE5FE63A98A54F253D2693AF1CD9",
+      "bytes": 1831
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-compile.stderr.log",
+      "sha256": "CBAAEBB30DAB75DEDA6D33877D18F6D0FB545A05D8539C9759A136B3709D9DDD",
+      "bytes": 14066
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-metadata.json",
+      "sha256": "7074BC7637EBF4C7C2EA05C02504F1E8E85182BD99B5AAED0FE4F26BE11202B0",
+      "bytes": 1115
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-metadata.stdout.bin",
+      "sha256": "CE0F68BBE337F2FB08165D8D8CAF1F6F32EB347DF4B16E0C97EB682FA411D263",
+      "bytes": 189
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-runtime.json",
+      "sha256": "0B2A37E76632A14E204903C383186F00AEDE1A9AA7AFE788623C4F24804B0AEB",
+      "bytes": 1116
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-runtime.results.json",
+      "sha256": "0D168AB9E3865E1BC15E8E3B5A9924F99D2A505AAD614FC40FB85CDFFCE11DCC",
+      "bytes": 661
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-runtime.stderr.log",
+      "sha256": "1D1B8AE8735D307813F429052C84D9982AE57BEBC1D2DB290DBF33A9742160B2",
+      "bytes": 96
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-gpa-selected-tests.json",
+      "sha256": "39931F131353F1D619937F37735156509E9DBF675ECCC49A44B59563F3434C9B",
+      "bytes": 515
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-metadata.json",
+      "sha256": "E4561CDE46F16F33A4C25FDDC4D62392AB1BA9514421FFEE9BC304C289931283",
+      "bytes": 1103
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-metadata.stdout.bin",
+      "sha256": "3674E10ED3B023D730D2113FB4430288A14968AF472E4E3F7B01E8F42BD74F0E",
+      "bytes": 2527
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-runtime.json",
+      "sha256": "6CA81CC751C4EEEE36B0B76262421BE3FA6434244CF79BFD49B37B00CFD4DD69",
+      "bytes": 1104
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-runtime.results.json",
+      "sha256": "B1764BF142170B24B5CB8BEFA26F04A902DA89F16F77BA53657301E62408F00E",
+      "bytes": 1940
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-runtime.stdout.bin",
+      "sha256": "136FCB278196BA0C61F737899375B0E7E36AED09697212D11295B7702ECCFA7D",
+      "bytes": 546
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/generator-selected-tests.json",
+      "sha256": "FE079018C4FE4AC33DC86C1FDBCB90D09037F2403FAFADE4493037AB8528E862",
+      "bytes": 2849
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/grant.json",
+      "sha256": "27E9406031B70AA379C1862240A7E7D659B3B1DF97E62D9621ECB5E3A7153621",
+      "bytes": 2684
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-artifact-copy.json",
+      "sha256": "F89D5D853056B4C865C0D3EA65C771E8D2CBD4BF80740BB960673AE64CE9DD95",
+      "bytes": 430
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-compile.json",
+      "sha256": "4270241B8BA0C67AEDB5076CBAEABBDF02A9458091243ED025EDD8B097672F0D",
+      "bytes": 1793
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-compile.stderr.log",
+      "sha256": "85830F5836681714BB9DF0F698B0DB392C9A8219EF0338E7777032FF5CEF2C43",
+      "bytes": 14056
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-metadata.json",
+      "sha256": "25E06B06C580600CF822E5B5280575C76EA5F3981FFFFFB8295230274F8BBF63",
+      "bytes": 1088
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-metadata.stdout.bin",
+      "sha256": "D1CF5443E1C0096F0C68209732E8FFD0576F0174F55A2232C6435F822955EBE4",
+      "bytes": 1453
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-runtime.json",
+      "sha256": "E9966CA50DB80D1C697E3352CE3E878BBB3C1AED6761B1BE08CFB277A0C65E33",
+      "bytes": 1089
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-runtime.results.json",
+      "sha256": "AC36D10FDD3160CDE419382EC8D6A3F27521217EA9FB71FE13EE56499FC0FF9A",
+      "bytes": 1322
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-runtime.stdout.bin",
+      "sha256": "A5C5E0A326D572167BDB7E8A7957C52A7F6D47937304343C14C063DB09BD0652",
+      "bytes": 322
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/json-selected-tests.json",
+      "sha256": "9275205088961339674B883BF6D5E9756C7F889EB70CE6693A545736A308DE53",
+      "bytes": 1770
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-artifact-copy.json",
+      "sha256": "493521D54C8E3E5AA78E7435B9E5F902FBBC7B750825EF96FE8AA81DF8190D18",
+      "bytes": 445
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-compile.json",
+      "sha256": "7BF68D5540AB1D64AD4698FC4D67C650CA6373BA1C86A03FE5EF2B4E41699285",
+      "bytes": 1815
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-compile.stderr.log",
+      "sha256": "FCEF11A44A1CF0B9DBEFE339516CE7B3B15B8E381A268B939D27AA3EB7D76088",
+      "bytes": 13928
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-metadata.json",
+      "sha256": "4A6BC9562C9772452F9F0935D259C7C910885F5507B49E9A2428507CD25863DE",
+      "bytes": 1103
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-metadata.stdout.bin",
+      "sha256": "07639753206A318F14DD71F6154DF81A226DCBC7FC38DE21D0353FE77C33B7A6",
+      "bytes": 208
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-runtime.json",
+      "sha256": "D9685DAF4EA01E5ECA313FC1690518BA15B449CC3827DABB5CA52DB842E5B8C7",
+      "bytes": 1104
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-runtime.results.json",
+      "sha256": "7CA77984F6D60B981FC119E1AAC197915288B866982B8F651401B9C52AB88457",
+      "bytes": 653
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/operators-selected-tests.json",
+      "sha256": "A2B51BF1F8FE13DFC83D68904FB8AED4058562BBD78398C3B960BB91A55E1D25",
+      "bytes": 530
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-artifact-copy.json",
+      "sha256": "B1E5CB7500BD9E4EB66C7023A0716FE47B6B4C29DDF19FF1B70BAC52D7A10375",
+      "bytes": 442
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-compile.json",
+      "sha256": "69D688B5BACF9495CC5CC23D985FFBDD2EBECEE1577C01FEB63A8C06F11AADA0",
+      "bytes": 1811
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-compile.stderr.log",
+      "sha256": "54347AF2DEA0604CAC614C4776CA329CF970381E98D7C86D4F2404E1A9E8E593",
+      "bytes": 13927
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-metadata.json",
+      "sha256": "4351E02E12680F49806FE73823F40B14FD6ACCE74C93037DFA287C182D2A3703",
+      "bytes": 1099
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-metadata.stdout.bin",
+      "sha256": "9155D7D9207AF82B81264D07138AD8F4E989EA9C0D531DBB54B205798B22E281",
+      "bytes": 2681
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-runtime.json",
+      "sha256": "FD0E90805E920FB513F0516E89F94EF13A5EE85006E92449C6D5921294C1768C",
+      "bytes": 1101
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-runtime.results.json",
+      "sha256": "20EBDCF6E7F724C6F954ADF62533109DF1F1E1C30BD9FF2BFD929138F95D21E3",
+      "bytes": 2242
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-runtime.stderr.log",
+      "sha256": "13ACD9E8628E989ACEA49774FF19738154005C9C7F5F37544230C350B0458876",
+      "bytes": 241
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-runtime.stdout.bin",
+      "sha256": "50821D5C408C6FCB7CDA4532E9568A94AC00618083F3186BE16D836491252864",
+      "bytes": 658
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/recovery-selected-tests.json",
+      "sha256": "F8909F6C16F6D87A1BECD1315E05B171261F03D27AA74764553DEF4F806AF639",
+      "bytes": 3002
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/result.json",
+      "sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF",
+      "bytes": 61121
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/Run-CoreRegression.ps1",
+      "sha256": "9E159012F745C060334AB0701A056044E1392D303C36F72E1DEBA8BD5CAEF8F6",
+      "bytes": 9189
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-artifact-copy.json",
+      "sha256": "7269A512CAF4209C955B03B347F43290D9ABD5FD7D2CD051321CCF47E2D6088A",
+      "bytes": 427
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-compile.json",
+      "sha256": "D354DC95164E994F52E90526E3FD59075533F768E63B576E667E984935BCCF23",
+      "bytes": 1823
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-compile.stderr.log",
+      "sha256": "205AF8E154405720A22330BCBF4EA7D60708E06CE93C51FDD96D8ECC80D538CB",
+      "bytes": 14063
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-metadata.json",
+      "sha256": "3E0838B911C39B90F9B6B351D0B82D87C05BA9CB2D1E316151089C4BAFB1D541",
+      "bytes": 1112
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-metadata.stdout.bin",
+      "sha256": "1FA2A9449287249B26BBC8E4F558BBA17EC69BA9F36E3B48389BFA72B5F02115",
+      "bytes": 565
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-runtime.json",
+      "sha256": "1D85AE75F30A33233B8238F782B1F12B4084B3EC5B46FE235B198EBD55B11928",
+      "bytes": 1113
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-runtime.results.json",
+      "sha256": "730D9381B066903EAC58D0FEF4D51C03C3FDCBD79888D21E221AB46EDDE8DF52",
+      "bytes": 884
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-runtime.stdout.bin",
+      "sha256": "12A99A350E13E5B1473CCD10A9F634131784CE356DA4809961160DC19B0DBAD8",
+      "bytes": 154
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/sdk-boundary-selected-tests.json",
+      "sha256": "447D5150CFC463C508DBD04141AB1316E9DD22CFEF4F93AA9AA544E1BCE98B25",
+      "bytes": 890
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-after.json",
+      "sha256": "DD7FB1A3E3AF3237A6C18C5C6CD4A305C59F6ECD8C19C6C42BAE7B7F2F680218",
+      "bytes": 9535468
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-artifact-copy.json",
+      "sha256": "3E36175C0A4A5829517355FF0BD8A0A45852FF7E851A0BA451E4FF5B3905E822",
+      "bytes": 442
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-compile.json",
+      "sha256": "E23A5BF5CE70919B918547AEDF0E610FDB99CD6F3B859643F3A6E915EDB012E7",
+      "bytes": 1811
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-compile.stderr.log",
+      "sha256": "FCBC94FFB2B764195EFB0AE5C8A9E178F12F279A5BA91C1287D6A7ED0C709C51",
+      "bytes": 14061
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-metadata.json",
+      "sha256": "8CF5021E3C35E5603A4072E2D2658E117951D5DA889B467B51C0D846EFC79DF8",
+      "bytes": 1100
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-metadata.stdout.bin",
+      "sha256": "14A236F9188928B64BB44CE3537508DC8438A478E4FDF77071FFACC8F3B41012",
+      "bytes": 211
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-runtime.json",
+      "sha256": "83E2A0D3FE0E87839C51476D6AEDD9FE231199F3534FB4C27A7FEF497C8469EA",
+      "bytes": 1101
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-runtime.results.json",
+      "sha256": "99FBBE745001FF75522FA45DF678EAB7509DFA442DC23BDD79B7E70E1BC53D14",
+      "bytes": 651
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-runtime.stdout.bin",
+      "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+      "bytes": 70
+    },
+    {
+      "entry": "root-promise-core-regression-20261016/source51-selected-tests.json",
+      "sha256": "05EEFC10535FA980C73562611BA3B34A4003DD4CF7BA4AA989050B29271BFD2A",
+      "bytes": 532
+    }
+  ]
+}
