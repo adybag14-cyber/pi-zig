@@ -57,12 +57,16 @@ if($Phase -eq 'before'){
         'src/extensions/fixtures/sdk-summary-latest4dd.input.txt',
         'src/extensions/fixtures/sdk-summary-generation-b45.input.txt',
         'src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt',
+        'src/extensions/fixtures/ai-google-tool-output4dd-native.input.txt',
         'verification/latest-upstream-4dd2-20261016/summary-source-capture.mjs',
         'verification/latest-upstream-4dd2-20261016/summary-original45-source-capture.mjs',
         'verification/latest-upstream-4dd2-20261016/source-observe.mjs',
         'verification/latest-upstream-4dd2-20261016/Freeze-Latest4ddSource.ps1',
         'verification/openai-tool-output4dd-prepared-20261016/capture-primary-tool-output.mjs',
-        'verification/openai-tool-output4dd-prepared-20261016/primary-tool-callers.mjs'
+        'verification/openai-tool-output4dd-prepared-20261016/primary-tool-callers.mjs',
+        'verification/google-tool-output4dd-prepared-20261016/capture-primary-tool-output.mjs',
+        'verification/google-tool-output4dd-prepared-20261016/primary-tool-callers.mjs',
+        'verification/latest-upstream-4dd2-20261016/CAPTURE-PLAN.md'
     )
     $taskGroups+=@{name='controls';rows=@($taskControls|ForEach-Object{$taskPath=Join-Path $taskCandidate $_;@{path=$taskPath;sha256=(Get-FileHash -LiteralPath $taskPath).Hash}})}
     $taskOwner=Join-Path $taskEvidence 'Invoke-OwnedModelsClassSource-20261016.ps1'
