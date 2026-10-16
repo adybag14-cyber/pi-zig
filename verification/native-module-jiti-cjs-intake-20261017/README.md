@@ -16,8 +16,9 @@ It requires a later build target linked to the actual TypeScript parser.
 The import census found no missing literal Zig imports for Module at its source
 base. That establishes source presence, not compilation or complete createJiti
 dependencies. The actual nested factory, resolution/options, cache composition,
-interop and lifecycle work remain explicit gates. C3 queued import is separately
-qualified and unselected; Graph2 and default interop are not claimed.
+interop and lifecycle work remain explicit gates. C3 queued import has a
+separate qualification gate and remains unselected; Graph2 and default interop
+are not claimed.
 
 Original Node/jiti/Babel sources and licenses are inert verification authority.
 The upstream Node license's space-before-tab indentation is preserved. No new
