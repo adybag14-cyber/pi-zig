@@ -102,7 +102,7 @@
     },
     {
       "path": "src/extensions/fixtures/git-host-full-0fb.input.mjs",
-      "sha256": "50B0785A346A1E432324B11217DFC1CE547BFF3227522AFE14CB7DC9D66AE7B1"
+      "sha256": "473B8FF3C7BCCF22194564750A85DFCE74C7C0067BBEB3B67982C3B198FFDE17"
     },
     {
       "path": "verification/package-manager-sourceonly-0fb-20261016/transcribe-host-templates.ps1",
@@ -114,7 +114,9 @@
     },
     {
       "path": "verification/package-manager-sourceonly-0fb-20261016/git-host-full-sourceonly.md",
-      "sha256": "2BCC9430B8A5BFA70E480D8B934EEB0EF9CCCF715C894163CDB4FCCD84AEC2C7"
+      "sha256": "B69155CD2AD2DF0FF028D65C914205D16782D65BE0D0C70E5D49411F715B2BAD"
     }
-  ]
+  ],
+  "product_checkpoint": "b8e697414f1ea1c6841a85f866e175b401f37186",
+  "prepared_control_supplement": "b0f10e0a4419a9d940d998fa587e39bf264b9c90"
 }
