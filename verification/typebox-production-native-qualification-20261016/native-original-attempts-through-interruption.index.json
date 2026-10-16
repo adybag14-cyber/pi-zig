@@ -1,0 +1,302 @@
+[
+  {
+    "name": "typebox-b851-preflight-held-owned-shell.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-b851-preflight-held-owned-shell.json",
+    "bytes": 1739,
+    "sha256": "9B2111789F2D5460E78868AE0060AE40959F81A8661ADC0578B60F663025CD97"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016-admission.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016-admission.json",
+    "bytes": 887,
+    "sha256": "73192AB7721F353E5851DB8090B356005136AD0E1F069F723A67C95E53E88234"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016-after.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016-after.json",
+    "bytes": 1537,
+    "sha256": "ACF28885A87E23A6D1E8D718DF7B7CDBF46D7798C9F5954DDB0A805B92917E6B"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016-before.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016-before.json",
+    "bytes": 1537,
+    "sha256": "ACF28885A87E23A6D1E8D718DF7B7CDBF46D7798C9F5954DDB0A805B92917E6B"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016-frozen.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016-frozen.json",
+    "bytes": 16081857,
+    "sha256": "4FFF4EEC2F9611D671B573F0CB1DA8962AF142AD1ACB676E5D9251DFE967D80E"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016.process.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016.process.json",
+    "bytes": 996,
+    "sha256": "30D726FA0863BABD1BE55EB348178847197E568F7DC30F48D38DB0609AB9FA49"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016.stderr.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016.stderr.log",
+    "bytes": 18065,
+    "sha256": "80999126B22442A9F6E34300ACE7C2ABC93F9424BEEB41A7A6C2B19EB2E8B607"
+  },
+  {
+    "name": "typebox-production-build-first-fac78bdd-20261016.stdout.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-first-fac78bdd-20261016.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016-admission.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016-admission.json",
+    "bytes": 887,
+    "sha256": "5C8610984B61756978B50EEE639BA55B143BDA00F33B42FF45EE5BF1A6EEB91E"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016-after.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016-after.json",
+    "bytes": 1537,
+    "sha256": "42387E71166F3E2F1B07334F4F1652C125FA3AEAF57EAEA4387EE1AAFF740BDA"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016-before.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016-before.json",
+    "bytes": 1537,
+    "sha256": "42387E71166F3E2F1B07334F4F1652C125FA3AEAF57EAEA4387EE1AAFF740BDA"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016-frozen.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016-frozen.json",
+    "bytes": 16081857,
+    "sha256": "B23EA2DB751DC2249A0292AE490E497DDCB40955D0A81D54B3FF10A6B34791A2"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016-validation.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016-validation.json",
+    "bytes": 670,
+    "sha256": "54B98E766F8B689558127F5A0BB93708502DD513A52C8D6A0C2F5B581F5B9B50"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016.process.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016.process.json",
+    "bytes": 997,
+    "sha256": "6CFC3249A451DE98ECED24038BFCA83872FEE6AEBA5AD351C21BFC66D9DC6A2C"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016.stderr.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016.stderr.log",
+    "bytes": 13932,
+    "sha256": "CE7601F15A4E9D1980170E640DFD77BCEED403B08AE5706A4EEABA526BA88B5E"
+  },
+  {
+    "name": "typebox-production-build-second-57718f58-20261016.stdout.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-second-57718f58-20261016.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-admission.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-admission.json",
+    "bytes": 887,
+    "sha256": "432281C6852F4068666DA48C876C39D74423550CF600098BCCA04426F630BADB"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-before-binaries.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-before-binaries.json",
+    "bytes": 137,
+    "sha256": "7AFC063E60F5642CCE8FF941F1464E4135ECFDF6613C8950CD0B22D74DF9D7CA"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-before.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-before.json",
+    "bytes": 1537,
+    "sha256": "9C744FC1B4762A4903C26D05C08761556C078ED3818B200C42E9B05B4C971DB7"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-frozen.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-frozen.json",
+    "bytes": 16081857,
+    "sha256": "D3DBF1002B2DBF58F1972165925538F12D97D8B35EC7590236A6F3031A304D42"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-interrupted-passive-posthash.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-interrupted-passive-posthash.json",
+    "bytes": 977,
+    "sha256": "0CB1E5E01B7A6F69E8C7F6DD56F3725B43ADF1D31DFD803FC934FC70100FB6EC"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-interrupted-terminal.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-interrupted-terminal.json",
+    "bytes": 759,
+    "sha256": "408AFB3E9A45424525FC6FD3FBE1708C823E71D215FEBA96EB279A64E27E7D55"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016-root-slot-withdrawal.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016-root-slot-withdrawal.json",
+    "bytes": 1223,
+    "sha256": "8B6BD8237472F87B2282116F5BF391A4AAC32152783956511B3149E389335B83"
+  },
+  {
+    "name": "typebox-production-build-third-b851cd92-20261016.process.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-build-third-b851cd92-20261016.process.json",
+    "bytes": 922,
+    "sha256": "94550753742B38441D9F819800F68DDECAF67E890EF017EF4CBD818DA3E79F4D"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-admission.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-admission.json",
+    "bytes": 890,
+    "sha256": "E2E2D2A6432D08BC17A777D4100B56A9147ED71A66DB59C4C5025B708438E9BB"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-after.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-after.json",
+    "bytes": 1537,
+    "sha256": "42387E71166F3E2F1B07334F4F1652C125FA3AEAF57EAEA4387EE1AAFF740BDA"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-before-binaries.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-before-binaries.json",
+    "bytes": 137,
+    "sha256": "7AFC063E60F5642CCE8FF941F1464E4135ECFDF6613C8950CD0B22D74DF9D7CA"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-before.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-before.json",
+    "bytes": 1537,
+    "sha256": "42387E71166F3E2F1B07334F4F1652C125FA3AEAF57EAEA4387EE1AAFF740BDA"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-frozen.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-frozen.json",
+    "bytes": 16081860,
+    "sha256": "211C3966EA25DF0C7FCBC52542961E072BE2E748B91B3EE9B159C942423F43FF"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-query.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-query.json",
+    "bytes": 1175,
+    "sha256": "B7286A6964FD39D156C56ED86D888FDC00947004238A5385BC17CC5FD9522441"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-query.stderr.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-query.stderr.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-query.stdout.bin",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-query.stdout.bin",
+    "bytes": 485,
+    "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA"
+  },
+  {
+    "name": "typebox-production-metadata-first-57718f58-20261016-validation.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-metadata-first-57718f58-20261016-validation.json",
+    "bytes": 2851,
+    "sha256": "A2D02FB92F2B88D5A93BC521347E06AFD266CFED92FCC90816F8509244B894BB"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016-admission.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016-admission.json",
+    "bytes": 886,
+    "sha256": "72124BEF038DD32D47FD82024E5EB6B573CB8972AC98A3C261CF9A9A78196458"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016-after.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016-after.json",
+    "bytes": 1537,
+    "sha256": "458F516A50EEDEADFD2429798E27FDB2ECA80C3F4D7FF817ACD775720F715DCF"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016-before-binaries.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016-before-binaries.json",
+    "bytes": 137,
+    "sha256": "7AFC063E60F5642CCE8FF941F1464E4135ECFDF6613C8950CD0B22D74DF9D7CA"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016-before.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016-before.json",
+    "bytes": 1537,
+    "sha256": "458F516A50EEDEADFD2429798E27FDB2ECA80C3F4D7FF817ACD775720F715DCF"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016-frozen.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016-frozen.json",
+    "bytes": 16081856,
+    "sha256": "AFB7CE8EA8E5B4E9B5BF03A22E3413B126BAE409AD5021B2784FF616FC73A75A"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016.process.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016.process.json",
+    "bytes": 994,
+    "sha256": "F61A1BBEAD83EB3CE117793AFF6BB61C5B55F967037926513185690924626A9E"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016.stderr.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016.stderr.log",
+    "bytes": 23182,
+    "sha256": "6131129C1EA9D2578ADB562FDA6DCA823B3120DAAAA5B09C84615B4359E05173"
+  },
+  {
+    "name": "typebox-production-test-first-57718f58-20261016.stdout.log",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-production-test-first-57718f58-20261016.stdout.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "name": "typebox-root-grant-57718f58-build.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-57718f58-build.json",
+    "bytes": 586,
+    "sha256": "8426618CAE7A956C5BDCEFDBCAB31F169F51C8D3CE6C620243955AE5F1875EE6"
+  },
+  {
+    "name": "typebox-root-grant-57718f58-metadata.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-57718f58-metadata.json",
+    "bytes": 589,
+    "sha256": "65C0EA7A13B4E8C95ABA116571A5FDB58568B24C9B305B189C31314D68DE3D65"
+  },
+  {
+    "name": "typebox-root-grant-57718f58-test.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-57718f58-test.json",
+    "bytes": 585,
+    "sha256": "3B21C4A46574570CA3776FC5BF7480C3A7CEB63C29B07146F69423DBB200EE77"
+  },
+  {
+    "name": "typebox-root-grant-b851cd92-build.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-b851cd92-build.json",
+    "bytes": 586,
+    "sha256": "EB38EDE4265264FCC4068945DD419F01695EBE5BB2D401D1B76D85BF80BDB747"
+  },
+  {
+    "name": "typebox-root-grant-b851cd92-metadata.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-b851cd92-metadata.json",
+    "bytes": 589,
+    "sha256": "8AC628D1C3623DBF7D9357071C9BDE396521C4E7A3DD47F1A3105D442F6D0CF8"
+  },
+  {
+    "name": "typebox-root-grant-b851cd92-test.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-b851cd92-test.json",
+    "bytes": 585,
+    "sha256": "4FABAB405CF9F27F5B6ACC9886E939998B0AEA6BDFDEF3BBFFBF0EBB0D0C97E5"
+  },
+  {
+    "name": "typebox-root-grant-fac78bdd-build.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-fac78bdd-build.json",
+    "bytes": 586,
+    "sha256": "6A11BB90EB0D636D35F97B0DE404AC04FD9E9A5834C85CC8BACBAA26A527117B"
+  },
+  {
+    "name": "typebox-root-grant-fac78bdd-metadata.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-fac78bdd-metadata.json",
+    "bytes": 589,
+    "sha256": "69C3377AB53AEF06D042A99EB2CE8516CF591CE0336C04EA968C1CB2D57C4081"
+  },
+  {
+    "name": "typebox-root-grant-fac78bdd-test.json",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root-grant-fac78bdd-test.json",
+    "bytes": 585,
+    "sha256": "E07593EC8B27B5C3AC78C9EC8A83E5CCE44BF3B796B923F78A7E9E896FCEDC7E"
+  }
+]
