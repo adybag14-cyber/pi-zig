@@ -38,7 +38,7 @@ fn body21526(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21531 = try s.own(try js.getKey(e, v21529, v21530));
     const v21532 = try o.lookup(&s, frame, "binding21527");
     const v21533 = try s.text("exclusiveMaximum");
-    const v21534 = try s.call(v21531, v21529, &.{ v21532, v21533 });
+    const v21534 = try o.call(&s, @src(), v21531, v21529, &.{ v21532, v21533 });
     const v21536 = logical21535: {
         if (!s.truthy(v21534)) break :logical21535 v21534;
         const v21537 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21526(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21540 = try o.lookup(&s, frame, "binding21527");
         const v21541 = try s.text("exclusiveMaximum");
         const v21542 = try s.own(try js.getKey(e, v21540, v21541));
-        const v21543 = try s.call(v21539, v21537, &.{v21542});
+        const v21543 = try o.call(&s, @src(), v21539, v21537, &.{v21542});
         const v21545 = logical21544: {
             if (s.truthy(v21543)) break :logical21544 v21543;
             const v21546 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -56,7 +56,7 @@ fn body21526(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v21549 = try o.lookup(&s, frame, "binding21527");
             const v21550 = try s.text("exclusiveMaximum");
             const v21551 = try s.own(try js.getKey(e, v21549, v21550));
-            const v21552 = try s.call(v21548, v21546, &.{v21551});
+            const v21552 = try o.call(&s, @src(), v21548, v21546, &.{v21551});
             break :logical21544 v21552;
         };
         break :logical21535 v21545;

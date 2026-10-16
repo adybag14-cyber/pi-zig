@@ -39,11 +39,11 @@ fn body28914(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28922 = try o.lookup(&s, frame, "binding28916");
     const v28923 = try s.text("pattern");
     const v28924 = try s.own(try js.getKey(e, v28922, v28923));
-    const v28925 = try s.call(v28921, c.pi_js_undefined(), &.{v28924});
+    const v28925 = try o.call(&s, @src(), v28921, c.pi_js_undefined(), &.{v28924});
     try o.assign(&s, frame, "binding28920", v28925);
     const v28926 = try o.importValue(&s, graph, "type/index.mjs", "IsString");
     const v28927 = try o.lookup(&s, frame, "binding28920");
-    const v28928 = try s.call(v28926, c.pi_js_undefined(), &.{v28927});
+    const v28928 = try o.call(&s, @src(), v28926, c.pi_js_undefined(), &.{v28927});
     if (s.truthy(v28928)) {
         const v28929 = try o.importValue(&s, graph, "value/create/error.mjs", "CreateError");
         const v28930 = try o.lookup(&s, frame, "binding28916");
@@ -55,6 +55,6 @@ fn body28914(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28933 = try o.importValue(&s, graph, "value/create/from_type.mjs", "FromType");
     const v28934 = try o.lookup(&s, frame, "binding28915");
     const v28935 = try o.lookup(&s, frame, "binding28920");
-    const v28936 = try s.call(v28933, c.pi_js_undefined(), &.{ v28934, v28935 });
+    const v28936 = try o.call(&s, @src(), v28933, c.pi_js_undefined(), &.{ v28934, v28935 });
     return c.JS_DupValue(e.context, v28936);
 }

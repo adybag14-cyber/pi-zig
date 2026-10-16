@@ -51,7 +51,7 @@ fn body28077(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28081 = try s.text("IsObject");
     const v28082 = try s.own(try js.getKey(e, v28080, v28081));
     const v28083 = try o.lookup(&s, frame, "binding28078");
-    const v28084 = try s.call(v28082, v28080, &.{v28083});
+    const v28084 = try o.call(&s, @src(), v28082, v28080, &.{v28083});
     const v28086 = logical28085: {
         if (!s.truthy(v28084)) break :logical28085 v28084;
         const v28087 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -59,7 +59,7 @@ fn body28077(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v28089 = try s.own(try js.getKey(e, v28087, v28088));
         const v28090 = try o.lookup(&s, frame, "binding28078");
         const v28091 = try s.text("value");
-        const v28092 = try s.call(v28089, v28087, &.{ v28090, v28091 });
+        const v28092 = try o.call(&s, @src(), v28089, v28087, &.{ v28090, v28091 });
         break :logical28085 v28092;
     };
     return c.JS_DupValue(e.context, v28086);

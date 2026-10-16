@@ -36,7 +36,7 @@ fn constructor28517(e: *Engine, target: c.JSValue, _: []const c.JSValue, roots: 
     const v28519 = try s.text("assign");
     const v28520 = try s.own(try js.getKey(e, v28518, v28519));
     const v28521 = try o.lookup(&s, frame, "binding28509");
-    const v28522 = try s.call(v28520, v28518, &.{ receiver, v28521 });
+    const v28522 = try o.call(&s, @src(), v28520, v28518, &.{ receiver, v28521 });
     _ = v28522;
     return c.JS_DupValue(e.context, receiver);
 }
@@ -55,7 +55,7 @@ fn body28503(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28512 = try o.lookup(&s, frame, "binding28505");
     const v28513 = try s.text("instanceType");
     const v28514 = try s.own(try js.getKey(e, v28512, v28513));
-    const v28515 = try s.call(v28510, c.pi_js_undefined(), &.{ v28511, v28514 });
+    const v28515 = try o.call(&s, @src(), v28510, c.pi_js_undefined(), &.{ v28511, v28514 });
     try o.assign(&s, frame, "binding28509", v28515);
     const v28516 = try s.object();
     const v28523 = try s.own(try class.constructor(e, "", 0, v28516, constructor28517, &.{ graph, frame, c.pi_js_undefined() }));

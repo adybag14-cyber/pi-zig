@@ -46,16 +46,16 @@ fn body28192(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28197 = try s.own(try js.getKey(e, v28195, v28196));
     const v28198 = try o.lookup(&s, frame, "binding28193");
     const v28199 = try s.global("BigInt");
-    const v28200 = try s.call(v28199, c.pi_js_undefined(), &.{c.JS_NewFloat64(e.context, 0)});
-    const v28201 = try s.call(v28197, v28195, &.{ v28198, v28200 });
+    const v28200 = try o.call(&s, @src(), v28199, c.pi_js_undefined(), &.{c.JS_NewFloat64(e.context, 0)});
+    const v28201 = try o.call(&s, @src(), v28197, v28195, &.{ v28198, v28200 });
     const v28203 = conditional28202: {
         if (s.truthy(v28201)) {
             const v28204 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
-            const v28205 = try s.call(v28204, c.pi_js_undefined(), &.{c.pi_js_undefined()});
+            const v28205 = try o.call(&s, @src(), v28204, c.pi_js_undefined(), &.{c.pi_js_undefined()});
             break :conditional28202 v28205;
         } else {
             const v28206 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Fail");
-            const v28207 = try s.call(v28206, c.pi_js_undefined(), &.{});
+            const v28207 = try o.call(&s, @src(), v28206, c.pi_js_undefined(), &.{});
             break :conditional28202 v28207;
         }
     };
@@ -73,15 +73,15 @@ fn body28209(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28213 = try s.text("IsEqual");
     const v28214 = try s.own(try js.getKey(e, v28212, v28213));
     const v28215 = try o.lookup(&s, frame, "binding28210");
-    const v28216 = try s.call(v28214, v28212, &.{ v28215, o.boolean(&s, false) });
+    const v28216 = try o.call(&s, @src(), v28214, v28212, &.{ v28215, o.boolean(&s, false) });
     const v28218 = conditional28217: {
         if (s.truthy(v28216)) {
             const v28219 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
-            const v28220 = try s.call(v28219, c.pi_js_undefined(), &.{c.pi_js_undefined()});
+            const v28220 = try o.call(&s, @src(), v28219, c.pi_js_undefined(), &.{c.pi_js_undefined()});
             break :conditional28217 v28220;
         } else {
             const v28221 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Fail");
-            const v28222 = try s.call(v28221, c.pi_js_undefined(), &.{});
+            const v28222 = try o.call(&s, @src(), v28221, c.pi_js_undefined(), &.{});
             break :conditional28217 v28222;
         }
     };
@@ -99,15 +99,15 @@ fn body28224(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28228 = try s.text("IsEqual");
     const v28229 = try s.own(try js.getKey(e, v28227, v28228));
     const v28230 = try o.lookup(&s, frame, "binding28225");
-    const v28231 = try s.call(v28229, v28227, &.{ v28230, c.JS_NewFloat64(e.context, 0) });
+    const v28231 = try o.call(&s, @src(), v28229, v28227, &.{ v28230, c.JS_NewFloat64(e.context, 0) });
     const v28233 = conditional28232: {
         if (s.truthy(v28231)) {
             const v28234 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
-            const v28235 = try s.call(v28234, c.pi_js_undefined(), &.{c.pi_js_undefined()});
+            const v28235 = try o.call(&s, @src(), v28234, c.pi_js_undefined(), &.{c.pi_js_undefined()});
             break :conditional28232 v28235;
         } else {
             const v28236 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Fail");
-            const v28237 = try s.call(v28236, c.pi_js_undefined(), &.{});
+            const v28237 = try o.call(&s, @src(), v28236, c.pi_js_undefined(), &.{});
             break :conditional28232 v28237;
         }
     };
@@ -124,14 +124,14 @@ fn body28239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28246 = try o.lookup(&s, frame, "binding28240");
     const v28247 = try s.text("toLowerCase");
     const v28248 = try s.own(try js.getKey(e, v28246, v28247));
-    const v28249 = try s.call(v28248, v28246, &.{});
+    const v28249 = try o.call(&s, @src(), v28248, v28246, &.{});
     try o.assign(&s, frame, "binding28244", v28249);
     const v28250 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v28251 = try s.text("IsEqual");
     const v28252 = try s.own(try js.getKey(e, v28250, v28251));
     const v28253 = try o.lookup(&s, frame, "binding28244");
     const v28254 = try s.text("undefined");
-    const v28255 = try s.call(v28252, v28250, &.{ v28253, v28254 });
+    const v28255 = try o.call(&s, @src(), v28252, v28250, &.{ v28253, v28254 });
     const v28257 = logical28256: {
         if (s.truthy(v28255)) break :logical28256 v28255;
         const v28258 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -139,7 +139,7 @@ fn body28239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v28260 = try s.own(try js.getKey(e, v28258, v28259));
         const v28261 = try o.lookup(&s, frame, "binding28244");
         const v28262 = try s.text("null");
-        const v28263 = try s.call(v28260, v28258, &.{ v28261, v28262 });
+        const v28263 = try o.call(&s, @src(), v28260, v28258, &.{ v28261, v28262 });
         break :logical28256 v28263;
     };
     const v28265 = logical28264: {
@@ -149,7 +149,7 @@ fn body28239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v28268 = try s.own(try js.getKey(e, v28266, v28267));
         const v28269 = try o.lookup(&s, frame, "binding28240");
         const v28270 = try s.text("");
-        const v28271 = try s.call(v28268, v28266, &.{ v28269, v28270 });
+        const v28271 = try o.call(&s, @src(), v28268, v28266, &.{ v28269, v28270 });
         break :logical28264 v28271;
     };
     const v28273 = logical28272: {
@@ -159,7 +159,7 @@ fn body28239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v28276 = try s.own(try js.getKey(e, v28274, v28275));
         const v28277 = try o.lookup(&s, frame, "binding28240");
         const v28278 = try s.text("0");
-        const v28279 = try s.call(v28276, v28274, &.{ v28277, v28278 });
+        const v28279 = try o.call(&s, @src(), v28276, v28274, &.{ v28277, v28278 });
         break :logical28272 v28279;
     };
     try o.assign(&s, frame, "binding28245", v28273);
@@ -167,11 +167,11 @@ fn body28239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28282 = conditional28281: {
         if (s.truthy(v28280)) {
             const v28283 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
-            const v28284 = try s.call(v28283, c.pi_js_undefined(), &.{c.pi_js_undefined()});
+            const v28284 = try o.call(&s, @src(), v28283, c.pi_js_undefined(), &.{c.pi_js_undefined()});
             break :conditional28281 v28284;
         } else {
             const v28285 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Fail");
-            const v28286 = try s.call(v28285, c.pi_js_undefined(), &.{});
+            const v28286 = try o.call(&s, @src(), v28285, c.pi_js_undefined(), &.{});
             break :conditional28281 v28286;
         }
     };
@@ -189,75 +189,75 @@ fn body28288(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28292 = try s.text("IsBigInt");
     const v28293 = try s.own(try js.getKey(e, v28291, v28292));
     const v28294 = try o.lookup(&s, frame, "binding28289");
-    const v28295 = try s.call(v28293, v28291, &.{v28294});
+    const v28295 = try o.call(&s, @src(), v28293, v28291, &.{v28294});
     const v28297 = conditional28296: {
         if (s.truthy(v28295)) {
             const v28298 = try o.lookup(&s, frame, "binding28187");
             const v28299 = try o.lookup(&s, frame, "binding28289");
-            const v28300 = try s.call(v28298, c.pi_js_undefined(), &.{v28299});
+            const v28300 = try o.call(&s, @src(), v28298, c.pi_js_undefined(), &.{v28299});
             break :conditional28296 v28300;
         } else {
             const v28301 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
             const v28302 = try s.text("IsBoolean");
             const v28303 = try s.own(try js.getKey(e, v28301, v28302));
             const v28304 = try o.lookup(&s, frame, "binding28289");
-            const v28305 = try s.call(v28303, v28301, &.{v28304});
+            const v28305 = try o.call(&s, @src(), v28303, v28301, &.{v28304});
             const v28307 = conditional28306: {
                 if (s.truthy(v28305)) {
                     const v28308 = try o.lookup(&s, frame, "binding28188");
                     const v28309 = try o.lookup(&s, frame, "binding28289");
-                    const v28310 = try s.call(v28308, c.pi_js_undefined(), &.{v28309});
+                    const v28310 = try o.call(&s, @src(), v28308, c.pi_js_undefined(), &.{v28309});
                     break :conditional28306 v28310;
                 } else {
                     const v28311 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
                     const v28312 = try s.text("IsNumber");
                     const v28313 = try s.own(try js.getKey(e, v28311, v28312));
                     const v28314 = try o.lookup(&s, frame, "binding28289");
-                    const v28315 = try s.call(v28313, v28311, &.{v28314});
+                    const v28315 = try o.call(&s, @src(), v28313, v28311, &.{v28314});
                     const v28317 = conditional28316: {
                         if (s.truthy(v28315)) {
                             const v28318 = try o.lookup(&s, frame, "binding28189");
                             const v28319 = try o.lookup(&s, frame, "binding28289");
-                            const v28320 = try s.call(v28318, c.pi_js_undefined(), &.{v28319});
+                            const v28320 = try o.call(&s, @src(), v28318, c.pi_js_undefined(), &.{v28319});
                             break :conditional28316 v28320;
                         } else {
                             const v28321 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
                             const v28322 = try s.text("IsNull");
                             const v28323 = try s.own(try js.getKey(e, v28321, v28322));
                             const v28324 = try o.lookup(&s, frame, "binding28289");
-                            const v28325 = try s.call(v28323, v28321, &.{v28324});
+                            const v28325 = try o.call(&s, @src(), v28323, v28321, &.{v28324});
                             const v28327 = conditional28326: {
                                 if (s.truthy(v28325)) {
                                     const v28328 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
-                                    const v28329 = try s.call(v28328, c.pi_js_undefined(), &.{c.pi_js_undefined()});
+                                    const v28329 = try o.call(&s, @src(), v28328, c.pi_js_undefined(), &.{c.pi_js_undefined()});
                                     break :conditional28326 v28329;
                                 } else {
                                     const v28330 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
                                     const v28331 = try s.text("IsString");
                                     const v28332 = try s.own(try js.getKey(e, v28330, v28331));
                                     const v28333 = try o.lookup(&s, frame, "binding28289");
-                                    const v28334 = try s.call(v28332, v28330, &.{v28333});
+                                    const v28334 = try o.call(&s, @src(), v28332, v28330, &.{v28333});
                                     const v28336 = conditional28335: {
                                         if (s.truthy(v28334)) {
                                             const v28337 = try o.lookup(&s, frame, "binding28190");
                                             const v28338 = try o.lookup(&s, frame, "binding28289");
-                                            const v28339 = try s.call(v28337, c.pi_js_undefined(), &.{v28338});
+                                            const v28339 = try o.call(&s, @src(), v28337, c.pi_js_undefined(), &.{v28338});
                                             break :conditional28335 v28339;
                                         } else {
                                             const v28340 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
                                             const v28341 = try s.text("IsUndefined");
                                             const v28342 = try s.own(try js.getKey(e, v28340, v28341));
                                             const v28343 = try o.lookup(&s, frame, "binding28289");
-                                            const v28344 = try s.call(v28342, v28340, &.{v28343});
+                                            const v28344 = try o.call(&s, @src(), v28342, v28340, &.{v28343});
                                             const v28346 = conditional28345: {
                                                 if (s.truthy(v28344)) {
                                                     const v28347 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Ok");
                                                     const v28348 = try o.lookup(&s, frame, "binding28289");
-                                                    const v28349 = try s.call(v28347, c.pi_js_undefined(), &.{v28348});
+                                                    const v28349 = try o.call(&s, @src(), v28347, c.pi_js_undefined(), &.{v28348});
                                                     break :conditional28345 v28349;
                                                 } else {
                                                     const v28350 = try o.importValue(&s, graph, "value/convert/try/try_result.mjs", "Fail");
-                                                    const v28351 = try s.call(v28350, c.pi_js_undefined(), &.{});
+                                                    const v28351 = try o.call(&s, @src(), v28350, c.pi_js_undefined(), &.{});
                                                     break :conditional28345 v28351;
                                                 }
                                             };

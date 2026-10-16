@@ -41,7 +41,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29484 = try s.text("IsObject");
     const v29485 = try s.own(try js.getKey(e, v29483, v29484));
     const v29486 = try o.lookup(&s, frame, "binding29477");
-    const v29487 = try s.call(v29485, v29483, &.{v29486});
+    const v29487 = try o.call(&s, @src(), v29485, v29483, &.{v29486});
     if (s.truthy(o.boolean(&s, !s.truthy(v29487)))) {
         const v29488 = try o.lookup(&s, frame, "binding29477");
         return c.JS_DupValue(e.context, v29488);
@@ -52,7 +52,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29492 = try o.lookup(&s, frame, "binding29476");
     const v29493 = try s.text("properties");
     const v29494 = try s.own(try js.getKey(e, v29492, v29493));
-    const v29495 = try s.call(v29491, v29489, &.{v29494});
+    const v29495 = try o.call(&s, @src(), v29491, v29489, &.{v29494});
     try o.assign(&s, frame, "binding29482", v29495);
     const v29496 = try o.lookup(&s, frame, "binding29482");
     var iterator29497 = try o.iterator(e, v29496);
@@ -74,13 +74,13 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29513 = try o.lookup(&s, iteration29500, "binding29501");
         const v29514 = try o.propertyKey(&s, v29513);
         const v29515 = try s.own(try js.getKey(e, v29512, v29514));
-        const v29516 = try s.call(v29504, c.pi_js_undefined(), &.{ v29505, v29511, v29515 });
+        const v29516 = try o.call(&s, @src(), v29504, c.pi_js_undefined(), &.{ v29505, v29511, v29515 });
         try o.assign(&s, iteration29500, "binding29502", v29516);
         const v29517 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
         const v29518 = try s.text("IsUndefined");
         const v29519 = try s.own(try js.getKey(e, v29517, v29518));
         const v29520 = try o.lookup(&s, iteration29500, "binding29502");
-        const v29521 = try s.call(v29519, v29517, &.{v29520});
+        const v29521 = try o.call(&s, @src(), v29519, v29517, &.{v29520});
         const v29523 = logical29522: {
             if (!s.truthy(v29521)) break :logical29522 v29521;
             const v29524 = try o.importValue(&s, graph, "type/index.mjs", "IsOptional");
@@ -90,7 +90,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v29528 = try o.lookup(&s, iteration29500, "binding29501");
             const v29529 = try o.propertyKey(&s, v29528);
             const v29530 = try s.own(try js.getKey(e, v29527, v29529));
-            const v29531 = try s.call(v29524, c.pi_js_undefined(), &.{v29530});
+            const v29531 = try o.call(&s, @src(), v29524, c.pi_js_undefined(), &.{v29530});
             const v29533 = logical29532: {
                 if (s.truthy(v29531)) break :logical29532 v29531;
                 const v29534 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -103,7 +103,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
                 const v29541 = try o.propertyKey(&s, v29540);
                 const v29542 = try s.own(try js.getKey(e, v29539, v29541));
                 const v29543 = try s.text("default");
-                const v29544 = try s.call(v29536, v29534, &.{ v29542, v29543 });
+                const v29544 = try o.call(&s, @src(), v29536, v29534, &.{ v29542, v29543 });
                 break :logical29532 o.boolean(&s, !s.truthy(v29544));
             };
             break :logical29522 v29533;
@@ -122,7 +122,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try iterator29497.close();
     const v29550 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsAdditionalProperties");
     const v29551 = try o.lookup(&s, frame, "binding29476");
-    const v29552 = try s.call(v29550, c.pi_js_undefined(), &.{v29551});
+    const v29552 = try o.call(&s, @src(), v29550, c.pi_js_undefined(), &.{v29551});
     const v29554 = logical29553: {
         if (s.truthy(o.boolean(&s, !s.truthy(v29552)))) break :logical29553 o.boolean(&s, !s.truthy(v29552));
         const v29555 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -131,7 +131,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29558 = try o.lookup(&s, frame, "binding29476");
         const v29559 = try s.text("additionalProperties");
         const v29560 = try s.own(try js.getKey(e, v29558, v29559));
-        const v29561 = try s.call(v29557, v29555, &.{v29560});
+        const v29561 = try o.call(&s, @src(), v29557, v29555, &.{v29560});
         break :logical29553 v29561;
     };
     if (s.truthy(v29554)) {
@@ -142,7 +142,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29564 = try s.text("Keys");
     const v29565 = try s.own(try js.getKey(e, v29563, v29564));
     const v29566 = try o.lookup(&s, frame, "binding29477");
-    const v29567 = try s.call(v29565, v29563, &.{v29566});
+    const v29567 = try o.call(&s, @src(), v29565, v29563, &.{v29566});
     var iterator29568 = try o.iterator(e, v29567);
     defer iterator29568.deinit();
     errdefer iterator29568.closePreserving();
@@ -154,7 +154,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29574 = try s.text("includes");
         const v29575 = try s.own(try js.getKey(e, v29573, v29574));
         const v29576 = try o.lookup(&s, iteration29571, "binding29572");
-        const v29577 = try s.call(v29575, v29573, &.{v29576});
+        const v29577 = try o.call(&s, @src(), v29575, v29573, &.{v29576});
         if (s.truthy(v29577)) {
             continue :loop29570;
         }
@@ -170,7 +170,7 @@ fn body29474(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29587 = try o.lookup(&s, iteration29571, "binding29572");
         const v29588 = try o.propertyKey(&s, v29587);
         const v29589 = try s.own(try js.getKey(e, v29586, v29588));
-        const v29590 = try s.call(v29581, c.pi_js_undefined(), &.{ v29582, v29585, v29589 });
+        const v29590 = try o.call(&s, @src(), v29581, c.pi_js_undefined(), &.{ v29582, v29585, v29589 });
         try js.setKey(e, v29578, v29580, v29590);
     }
     try iterator29568.close();

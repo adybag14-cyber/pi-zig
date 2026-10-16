@@ -87,7 +87,7 @@ fn body30552(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30559 = try o.lookup(&s, frame, "binding30510");
     const v30560 = try o.lookup(&s, frame, "binding30511");
     const v30561 = try o.lookup(&s, frame, "binding30554");
-    const v30562 = try s.call(v30558, c.pi_js_undefined(), &.{ v30559, v30560, v30561 });
+    const v30562 = try o.call(&s, @src(), v30558, c.pi_js_undefined(), &.{ v30559, v30560, v30561 });
     return c.JS_DupValue(e.context, v30562);
 }
 fn body30552C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -113,7 +113,7 @@ fn body30503(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30532 = try s.text("2");
     const v30543 = try o.arrow(&s, "2", 2, body30533C, &.{ graph, frame });
     try o.defineKey(&s, v30517, v30532, v30543);
-    const v30544 = try s.call(v30515, v30513, &.{ v30516, v30517 });
+    const v30544 = try o.call(&s, @src(), v30515, v30513, &.{ v30516, v30517 });
     var destructure30545 = try o.iterator(e, v30544);
     defer destructure30545.deinit();
     errdefer destructure30545.closePreserving();
@@ -129,7 +129,7 @@ fn body30503(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30551 = try s.own(try js.getKey(e, v30549, v30550));
     const v30563 = try o.arrow(&s, "", 2, body30552C, &.{ graph, frame });
     const v30564 = try o.lookup(&s, frame, "binding30512");
-    const v30565 = try s.call(v30551, v30549, &.{ v30563, v30564 });
+    const v30565 = try o.call(&s, @src(), v30551, v30549, &.{ v30563, v30564 });
     return c.JS_DupValue(e.context, v30565);
 }
 fn body30503C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {

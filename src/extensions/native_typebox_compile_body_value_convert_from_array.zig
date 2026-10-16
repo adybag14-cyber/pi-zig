@@ -39,7 +39,7 @@ fn body26131(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v26138 = try s.text("items");
     const v26139 = try s.own(try js.getKey(e, v26137, v26138));
     const v26140 = try o.lookup(&s, frame, "binding26133");
-    const v26141 = try s.call(v26135, c.pi_js_undefined(), &.{ v26136, v26139, v26140 });
+    const v26141 = try o.call(&s, @src(), v26135, c.pi_js_undefined(), &.{ v26136, v26139, v26140 });
     return c.JS_DupValue(e.context, v26141);
 }
 fn body26131C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -62,7 +62,7 @@ fn body26112(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26122 = try s.text("TryArray");
     const v26123 = try s.own(try js.getKey(e, v26121, v26122));
     const v26124 = try o.lookup(&s, frame, "binding26115");
-    const v26125 = try s.call(v26123, v26121, &.{v26124});
+    const v26125 = try o.call(&s, @src(), v26123, v26121, &.{v26124});
     try o.assign(&s, frame, "binding26120", v26125);
     const v26126 = try o.lookup(&s, frame, "binding26120");
     const v26127 = try s.text("value");
@@ -70,6 +70,6 @@ fn body26112(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26129 = try s.text("map");
     const v26130 = try s.own(try js.getKey(e, v26128, v26129));
     const v26142 = try o.arrow(&s, "", 1, body26131C, &.{ graph, frame });
-    const v26143 = try s.call(v26130, v26128, &.{v26142});
+    const v26143 = try o.call(&s, @src(), v26130, v26128, &.{v26142});
     return c.JS_DupValue(e.context, v26143);
 }

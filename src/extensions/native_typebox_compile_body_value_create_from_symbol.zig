@@ -36,6 +36,6 @@ fn body28903(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28907 = if (args.len > 1) args[1] else c.pi_js_undefined();
     try o.assign(&s, frame, "binding28905", v28907);
     const v28908 = try s.global("Symbol");
-    const v28909 = try s.call(v28908, c.pi_js_undefined(), &.{});
+    const v28909 = try o.call(&s, @src(), v28908, c.pi_js_undefined(), &.{});
     return c.JS_DupValue(e.context, v28909);
 }

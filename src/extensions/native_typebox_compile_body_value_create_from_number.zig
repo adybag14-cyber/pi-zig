@@ -37,7 +37,7 @@ fn body28718(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding28720", v28722);
     const v28723 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsExclusiveMinimum");
     const v28724 = try o.lookup(&s, frame, "binding28720");
-    const v28725 = try s.call(v28723, c.pi_js_undefined(), &.{v28724});
+    const v28725 = try o.call(&s, @src(), v28723, c.pi_js_undefined(), &.{v28724});
     const v28727 = logical28726: {
         if (!s.truthy(v28725)) break :logical28726 v28725;
         const v28728 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -46,7 +46,7 @@ fn body28718(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v28731 = try o.lookup(&s, frame, "binding28720");
         const v28732 = try s.text("exclusiveMinimum");
         const v28733 = try s.own(try js.getKey(e, v28731, v28732));
-        const v28734 = try s.call(v28730, v28728, &.{v28733});
+        const v28734 = try o.call(&s, @src(), v28730, v28728, &.{v28733});
         break :logical28726 v28734;
     };
     const v28736 = conditional28735: {
@@ -59,7 +59,7 @@ fn body28718(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         } else {
             const v28741 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsMinimum");
             const v28742 = try o.lookup(&s, frame, "binding28720");
-            const v28743 = try s.call(v28741, c.pi_js_undefined(), &.{v28742});
+            const v28743 = try o.call(&s, @src(), v28741, c.pi_js_undefined(), &.{v28742});
             const v28745 = conditional28744: {
                 if (s.truthy(v28743)) {
                     const v28746 = try o.lookup(&s, frame, "binding28720");

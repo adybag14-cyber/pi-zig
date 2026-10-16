@@ -42,7 +42,7 @@ pub fn prepare(e: *Engine, graph: c.JSValue) !void {
     try o.append(&s, v30426, v30480);
     const v30494 = try o.arrow(&s, "", 3, body30481C, &.{ graph, frame });
     try o.append(&s, v30426, v30494);
-    const v30495 = try s.call(v30425, c.pi_js_undefined(), &.{v30426});
+    const v30495 = try o.call(&s, @src(), v30425, c.pi_js_undefined(), &.{v30426});
     try o.assign(&s, frame, "binding30314", v30495);
     const v30496 = try o.lookup(&s, frame, "binding30314");
     try s.put(namespace, "Parser", v30496);
@@ -70,7 +70,7 @@ fn body30316(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30324 = try o.lookup(&s, frame, "binding30317");
     const v30325 = try o.lookup(&s, frame, "binding30318");
     const v30326 = try o.lookup(&s, frame, "binding30319");
-    const v30327 = try s.call(v30323, c.pi_js_undefined(), &.{ v30324, v30325, v30326 });
+    const v30327 = try o.call(&s, @src(), v30323, c.pi_js_undefined(), &.{ v30324, v30325, v30326 });
     if (s.truthy(o.boolean(&s, !s.truthy(v30327)))) {
         const v30328 = try o.lookup(&s, frame, "binding30312");
         const v30329 = try o.lookup(&s, frame, "binding30319");
@@ -78,7 +78,7 @@ fn body30316(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v30331 = try o.lookup(&s, frame, "binding30317");
         const v30332 = try o.lookup(&s, frame, "binding30318");
         const v30333 = try o.lookup(&s, frame, "binding30319");
-        const v30334 = try s.call(v30330, c.pi_js_undefined(), &.{ v30331, v30332, v30333 });
+        const v30334 = try o.call(&s, @src(), v30330, c.pi_js_undefined(), &.{ v30331, v30332, v30333 });
         const v30335 = try o.construct(&s, v30328, &.{ v30329, v30334 });
         _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v30335));
         return js.capture(e);
@@ -153,7 +153,7 @@ fn body30338(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30368 = try s.text("2");
     const v30379 = try o.arrow(&s, "2", 2, body30369C, &.{ graph, frame });
     try o.defineKey(&s, v30353, v30368, v30379);
-    const v30380 = try s.call(v30351, v30349, &.{ v30352, v30353 });
+    const v30380 = try o.call(&s, @src(), v30351, v30349, &.{ v30352, v30353 });
     var destructure30381 = try o.iterator(e, v30380);
     defer destructure30381.deinit();
     errdefer destructure30381.closePreserving();
@@ -168,7 +168,7 @@ fn body30338(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30386 = try o.lookup(&s, frame, "binding30345");
     const v30387 = try o.lookup(&s, frame, "binding30346");
     const v30388 = try o.lookup(&s, frame, "binding30347");
-    const v30389 = try s.call(v30385, c.pi_js_undefined(), &.{ v30386, v30387, v30388 });
+    const v30389 = try o.call(&s, @src(), v30385, c.pi_js_undefined(), &.{ v30386, v30387, v30388 });
     try o.assign(&s, frame, "binding30348", v30389);
     const v30390 = try o.lookup(&s, frame, "binding30348");
     if (s.truthy(v30390)) {
@@ -178,7 +178,7 @@ fn body30338(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30392 = try o.importValue(&s, graph, "system/system.mjs", "Settings");
     const v30393 = try s.text("Get");
     const v30394 = try s.own(try js.getKey(e, v30392, v30393));
-    const v30395 = try s.call(v30394, v30392, &.{});
+    const v30395 = try o.call(&s, @src(), v30394, v30392, &.{});
     const v30396 = try s.text("correctiveParse");
     const v30397 = try s.own(try js.getKey(e, v30395, v30396));
     if (s.truthy(v30397)) {
@@ -186,7 +186,7 @@ fn body30338(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v30399 = try o.lookup(&s, frame, "binding30345");
         const v30400 = try o.lookup(&s, frame, "binding30346");
         const v30401 = try o.lookup(&s, frame, "binding30347");
-        const v30402 = try s.call(v30398, c.pi_js_undefined(), &.{ v30399, v30400, v30401 });
+        const v30402 = try o.call(&s, @src(), v30398, c.pi_js_undefined(), &.{ v30399, v30400, v30401 });
         return c.JS_DupValue(e.context, v30402);
     }
     const v30403 = try o.lookup(&s, frame, "binding30312");
@@ -195,7 +195,7 @@ fn body30338(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30406 = try o.lookup(&s, frame, "binding30345");
     const v30407 = try o.lookup(&s, frame, "binding30346");
     const v30408 = try o.lookup(&s, frame, "binding30347");
-    const v30409 = try s.call(v30405, c.pi_js_undefined(), &.{ v30406, v30407, v30408 });
+    const v30409 = try o.call(&s, @src(), v30405, c.pi_js_undefined(), &.{ v30406, v30407, v30408 });
     const v30410 = try o.construct(&s, v30403, &.{ v30404, v30409 });
     _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v30410));
     return js.capture(e);
@@ -230,7 +230,7 @@ fn body30427(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     try o.assign(&s, frame, "binding30431", v30434);
     const v30435 = try o.importValue(&s, graph, "value/clone/index.mjs", "Clone");
     const v30436 = try o.lookup(&s, frame, "binding30431");
-    const v30437 = try s.call(v30435, c.pi_js_undefined(), &.{v30436});
+    const v30437 = try o.call(&s, @src(), v30435, c.pi_js_undefined(), &.{v30436});
     return c.JS_DupValue(e.context, v30437);
 }
 fn body30427C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -253,7 +253,7 @@ fn body30439(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30448 = try o.lookup(&s, frame, "binding30441");
     const v30449 = try o.lookup(&s, frame, "binding30442");
     const v30450 = try o.lookup(&s, frame, "binding30443");
-    const v30451 = try s.call(v30447, c.pi_js_undefined(), &.{ v30448, v30449, v30450 });
+    const v30451 = try o.call(&s, @src(), v30447, c.pi_js_undefined(), &.{ v30448, v30449, v30450 });
     return c.JS_DupValue(e.context, v30451);
 }
 fn body30439C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -276,7 +276,7 @@ fn body30453(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30462 = try o.lookup(&s, frame, "binding30455");
     const v30463 = try o.lookup(&s, frame, "binding30456");
     const v30464 = try o.lookup(&s, frame, "binding30457");
-    const v30465 = try s.call(v30461, c.pi_js_undefined(), &.{ v30462, v30463, v30464 });
+    const v30465 = try o.call(&s, @src(), v30461, c.pi_js_undefined(), &.{ v30462, v30463, v30464 });
     return c.JS_DupValue(e.context, v30465);
 }
 fn body30453C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -299,7 +299,7 @@ fn body30467(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30476 = try o.lookup(&s, frame, "binding30469");
     const v30477 = try o.lookup(&s, frame, "binding30470");
     const v30478 = try o.lookup(&s, frame, "binding30471");
-    const v30479 = try s.call(v30475, c.pi_js_undefined(), &.{ v30476, v30477, v30478 });
+    const v30479 = try o.call(&s, @src(), v30475, c.pi_js_undefined(), &.{ v30476, v30477, v30478 });
     return c.JS_DupValue(e.context, v30479);
 }
 fn body30467C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -322,7 +322,7 @@ fn body30481(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v30490 = try o.lookup(&s, frame, "binding30483");
     const v30491 = try o.lookup(&s, frame, "binding30484");
     const v30492 = try o.lookup(&s, frame, "binding30485");
-    const v30493 = try s.call(v30489, c.pi_js_undefined(), &.{ v30490, v30491, v30492 });
+    const v30493 = try o.call(&s, @src(), v30489, c.pi_js_undefined(), &.{ v30490, v30491, v30492 });
     return c.JS_DupValue(e.context, v30493);
 }
 fn body30481C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {

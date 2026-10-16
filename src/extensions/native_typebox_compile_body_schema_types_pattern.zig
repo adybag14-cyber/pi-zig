@@ -38,7 +38,7 @@ fn body22062(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22067 = try s.own(try js.getKey(e, v22065, v22066));
     const v22068 = try o.lookup(&s, frame, "binding22063");
     const v22069 = try s.text("pattern");
-    const v22070 = try s.call(v22067, v22065, &.{ v22068, v22069 });
+    const v22070 = try o.call(&s, @src(), v22067, v22065, &.{ v22068, v22069 });
     const v22072 = logical22071: {
         if (!s.truthy(v22070)) break :logical22071 v22070;
         const v22073 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body22062(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22076 = try o.lookup(&s, frame, "binding22063");
         const v22077 = try s.text("pattern");
         const v22078 = try s.own(try js.getKey(e, v22076, v22077));
-        const v22079 = try s.call(v22075, v22073, &.{v22078});
+        const v22079 = try o.call(&s, @src(), v22075, v22073, &.{v22078});
         const v22081 = logical22080: {
             if (s.truthy(v22079)) break :logical22080 v22079;
             const v22082 = try o.lookup(&s, frame, "binding22063");

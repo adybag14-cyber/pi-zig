@@ -204,7 +204,7 @@ fn body1535(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v1541 = try s.text("isView");
     const v1542 = try s.own(try js.getKey(e, v1540, v1541));
     const v1543 = try o.lookup(&s, frame, "binding1536");
-    const v1544 = try s.call(v1542, v1540, &.{v1543});
+    const v1544 = try o.call(&s, @src(), v1542, v1540, &.{v1543});
     return c.JS_DupValue(e.context, v1544);
 }
 fn body1546(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {

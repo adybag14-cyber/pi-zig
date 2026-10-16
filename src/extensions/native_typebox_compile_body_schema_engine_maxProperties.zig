@@ -63,17 +63,17 @@ fn body10634(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10650 = try s.text("Keys");
     const v10651 = try s.own(try js.getKey(e, v10649, v10650));
     const v10652 = try o.lookup(&s, frame, "binding10638");
-    const v10653 = try s.call(v10651, v10649, &.{v10652});
+    const v10653 = try o.call(&s, @src(), v10651, v10649, &.{v10652});
     const v10654 = try s.text("length");
-    const v10655 = try s.call(v10648, v10646, &.{ v10653, v10654 });
+    const v10655 = try o.call(&s, @src(), v10648, v10646, &.{ v10653, v10654 });
     const v10656 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
     const v10657 = try s.text("Constant");
     const v10658 = try s.own(try js.getKey(e, v10656, v10657));
     const v10659 = try o.lookup(&s, frame, "binding10637");
     const v10660 = try s.text("maxProperties");
     const v10661 = try s.own(try js.getKey(e, v10659, v10660));
-    const v10662 = try s.call(v10658, v10656, &.{v10661});
-    const v10663 = try s.call(v10645, v10643, &.{ v10655, v10662 });
+    const v10662 = try o.call(&s, @src(), v10658, v10656, &.{v10661});
+    const v10663 = try o.call(&s, @src(), v10645, v10643, &.{ v10655, v10662 });
     return c.JS_DupValue(e.context, v10663);
 }
 fn body10665(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -97,13 +97,13 @@ fn body10665(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10678 = try s.text("Keys");
     const v10679 = try s.own(try js.getKey(e, v10677, v10678));
     const v10680 = try o.lookup(&s, frame, "binding10669");
-    const v10681 = try s.call(v10679, v10677, &.{v10680});
+    const v10681 = try o.call(&s, @src(), v10679, v10677, &.{v10680});
     const v10682 = try s.text("length");
     const v10683 = try s.own(try js.getKey(e, v10681, v10682));
     const v10684 = try o.lookup(&s, frame, "binding10668");
     const v10685 = try s.text("maxProperties");
     const v10686 = try s.own(try js.getKey(e, v10684, v10685));
-    const v10687 = try s.call(v10676, v10674, &.{ v10683, v10686 });
+    const v10687 = try o.call(&s, @src(), v10676, v10674, &.{ v10683, v10686 });
     return c.JS_DupValue(e.context, v10687);
 }
 fn body10689(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -129,7 +129,7 @@ fn body10689(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10704 = try o.lookup(&s, frame, "binding10691");
     const v10705 = try o.lookup(&s, frame, "binding10694");
     const v10706 = try o.lookup(&s, frame, "binding10695");
-    const v10707 = try s.call(v10702, c.pi_js_undefined(), &.{ v10703, v10704, v10705, v10706 });
+    const v10707 = try o.call(&s, @src(), v10702, c.pi_js_undefined(), &.{ v10703, v10704, v10705, v10706 });
     const v10709 = logical10708: {
         if (s.truthy(v10707)) break :logical10708 v10707;
         const v10710 = try o.lookup(&s, frame, "binding10691");
@@ -153,7 +153,7 @@ fn body10689(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v10725 = try s.own(try js.getKey(e, v10723, v10724));
         try o.defineKey(&s, v10721, v10722, v10725);
         try o.defineKey(&s, v10713, v10720, v10721);
-        const v10726 = try s.call(v10712, v10710, &.{v10713});
+        const v10726 = try o.call(&s, @src(), v10712, v10710, &.{v10713});
         break :logical10708 v10726;
     };
     return c.JS_DupValue(e.context, v10709);

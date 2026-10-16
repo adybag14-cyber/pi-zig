@@ -59,13 +59,13 @@ fn body7360(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
             const v7372 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
             const v7373 = try s.text("Constant");
             const v7374 = try s.own(try js.getKey(e, v7372, v7373));
-            const v7375 = try s.call(v7374, v7372, &.{o.boolean(&s, true)});
+            const v7375 = try o.call(&s, @src(), v7374, v7372, &.{o.boolean(&s, true)});
             break :conditional7370 v7375;
         } else {
             const v7376 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
             const v7377 = try s.text("Constant");
             const v7378 = try s.own(try js.getKey(e, v7376, v7377));
-            const v7379 = try s.call(v7378, v7376, &.{o.boolean(&s, false)});
+            const v7379 = try o.call(&s, @src(), v7378, v7376, &.{o.boolean(&s, false)});
             break :conditional7370 v7379;
         }
     };
@@ -111,7 +111,7 @@ fn body7392(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v7407 = try o.lookup(&s, frame, "binding7394");
     const v7408 = try o.lookup(&s, frame, "binding7397");
     const v7409 = try o.lookup(&s, frame, "binding7398");
-    const v7410 = try s.call(v7405, c.pi_js_undefined(), &.{ v7406, v7407, v7408, v7409 });
+    const v7410 = try o.call(&s, @src(), v7405, c.pi_js_undefined(), &.{ v7406, v7407, v7408, v7409 });
     const v7412 = logical7411: {
         if (s.truthy(v7410)) break :logical7411 v7410;
         const v7413 = try o.lookup(&s, frame, "binding7394");
@@ -130,7 +130,7 @@ fn body7392(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v7423 = try s.text("params");
         const v7424 = try s.object();
         try o.defineKey(&s, v7416, v7423, v7424);
-        const v7425 = try s.call(v7415, v7413, &.{v7416});
+        const v7425 = try o.call(&s, @src(), v7415, v7413, &.{v7416});
         break :logical7411 v7425;
     };
     return c.JS_DupValue(e.context, v7412);

@@ -45,7 +45,7 @@ fn body22243(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22248 = try s.own(try js.getKey(e, v22246, v22247));
     const v22249 = try o.lookup(&s, frame, "binding22244");
     const v22250 = try s.text("$recursiveAnchor");
-    const v22251 = try s.call(v22248, v22246, &.{ v22249, v22250 });
+    const v22251 = try o.call(&s, @src(), v22248, v22246, &.{ v22249, v22250 });
     const v22253 = logical22252: {
         if (!s.truthy(v22251)) break :logical22252 v22251;
         const v22254 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -54,7 +54,7 @@ fn body22243(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22257 = try o.lookup(&s, frame, "binding22244");
         const v22258 = try s.text("$recursiveAnchor");
         const v22259 = try s.own(try js.getKey(e, v22257, v22258));
-        const v22260 = try s.call(v22256, v22254, &.{v22259});
+        const v22260 = try o.call(&s, @src(), v22256, v22254, &.{v22259});
         break :logical22252 v22260;
     };
     return c.JS_DupValue(e.context, v22253);
@@ -69,7 +69,7 @@ fn body22262(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding22263", v22264);
     const v22265 = try o.lookup(&s, frame, "binding22241");
     const v22266 = try o.lookup(&s, frame, "binding22263");
-    const v22267 = try s.call(v22265, c.pi_js_undefined(), &.{v22266});
+    const v22267 = try o.call(&s, @src(), v22265, c.pi_js_undefined(), &.{v22266});
     const v22269 = logical22268: {
         if (!s.truthy(v22267)) break :logical22268 v22267;
         const v22270 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -78,7 +78,7 @@ fn body22262(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22273 = try o.lookup(&s, frame, "binding22263");
         const v22274 = try s.text("$recursiveAnchor");
         const v22275 = try s.own(try js.getKey(e, v22273, v22274));
-        const v22276 = try s.call(v22272, v22270, &.{ v22275, o.boolean(&s, true) });
+        const v22276 = try o.call(&s, @src(), v22272, v22270, &.{ v22275, o.boolean(&s, true) });
         break :logical22268 v22276;
     };
     return c.JS_DupValue(e.context, v22269);

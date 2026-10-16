@@ -39,7 +39,7 @@ fn body29414(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29420 = try s.text("IsUndefined");
     const v29421 = try s.own(try js.getKey(e, v29419, v29420));
     const v29422 = try o.lookup(&s, frame, "binding29416");
-    const v29423 = try s.call(v29421, v29419, &.{v29422});
+    const v29423 = try o.call(&s, @src(), v29421, v29419, &.{v29422});
     if (s.truthy(o.boolean(&s, !s.truthy(v29423)))) {
         const v29424 = try o.lookup(&s, frame, "binding29416");
         return c.JS_DupValue(e.context, v29424);
@@ -50,20 +50,20 @@ fn body29414(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29428 = try o.lookup(&s, frame, "binding29415");
     const v29429 = try s.text("default");
     const v29430 = try s.own(try js.getKey(e, v29428, v29429));
-    const v29431 = try s.call(v29427, v29425, &.{v29430});
+    const v29431 = try o.call(&s, @src(), v29427, v29425, &.{v29430});
     const v29433 = conditional29432: {
         if (s.truthy(v29431)) {
             const v29434 = try o.lookup(&s, frame, "binding29415");
             const v29435 = try s.text("default");
             const v29436 = try s.own(try js.getKey(e, v29434, v29435));
-            const v29437 = try s.call(v29436, v29434, &.{});
+            const v29437 = try o.call(&s, @src(), v29436, v29434, &.{});
             break :conditional29432 v29437;
         } else {
             const v29438 = try o.importValue(&s, graph, "value/clone/index.mjs", "Clone");
             const v29439 = try o.lookup(&s, frame, "binding29415");
             const v29440 = try s.text("default");
             const v29441 = try s.own(try js.getKey(e, v29439, v29440));
-            const v29442 = try s.call(v29438, c.pi_js_undefined(), &.{v29441});
+            const v29442 = try o.call(&s, @src(), v29438, c.pi_js_undefined(), &.{v29441});
             break :conditional29432 v29442;
         }
     };

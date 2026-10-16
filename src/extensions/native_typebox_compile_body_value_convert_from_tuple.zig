@@ -41,7 +41,7 @@ fn body26884(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26892 = try s.text("IsArray");
     const v26893 = try s.own(try js.getKey(e, v26891, v26892));
     const v26894 = try o.lookup(&s, frame, "binding26887");
-    const v26895 = try s.call(v26893, v26891, &.{v26894});
+    const v26895 = try o.call(&s, @src(), v26893, v26891, &.{v26894});
     if (s.truthy(o.boolean(&s, !s.truthy(v26895)))) {
         const v26896 = try o.lookup(&s, frame, "binding26887");
         return c.JS_DupValue(e.context, v26896);
@@ -60,7 +60,7 @@ fn body26884(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v26909 = try o.lookup(&s, frame, "binding26887");
         const v26910 = try s.text("length");
         const v26911 = try s.own(try js.getKey(e, v26909, v26910));
-        const v26912 = try s.call(v26903, v26901, &.{ v26908, v26911 });
+        const v26912 = try o.call(&s, @src(), v26903, v26901, &.{ v26908, v26911 });
         const v26913 = try s.own(try e.checked(c.JS_PiBinaryOperator(e.context, 4, v26900, v26912)));
         if (!s.truthy(v26913)) break :loop26898;
         {
@@ -79,7 +79,7 @@ fn body26884(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v26926 = try o.lookup(&s, frame, "binding26897");
             const v26927 = try o.propertyKey(&s, v26926);
             const v26928 = try s.own(try js.getKey(e, v26925, v26927));
-            const v26929 = try s.call(v26917, c.pi_js_undefined(), &.{ v26918, v26924, v26928 });
+            const v26929 = try o.call(&s, @src(), v26917, c.pi_js_undefined(), &.{ v26918, v26924, v26928 });
             try js.setKey(e, v26914, v26916, v26929);
         }
         const v26930 = try o.lookup(&s, frame, "binding26897");

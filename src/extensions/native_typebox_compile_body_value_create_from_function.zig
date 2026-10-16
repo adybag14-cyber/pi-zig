@@ -53,7 +53,7 @@ fn body28604(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28613 = try o.lookup(&s, frame, "binding28606");
     const v28614 = try s.text("returnType");
     const v28615 = try s.own(try js.getKey(e, v28613, v28614));
-    const v28616 = try s.call(v28611, c.pi_js_undefined(), &.{ v28612, v28615 });
+    const v28616 = try o.call(&s, @src(), v28611, c.pi_js_undefined(), &.{ v28612, v28615 });
     try o.assign(&s, frame, "binding28610", v28616);
     const v28620 = try o.arrow(&s, "", 0, body28617C, &.{ graph, frame });
     return c.JS_DupValue(e.context, v28620);

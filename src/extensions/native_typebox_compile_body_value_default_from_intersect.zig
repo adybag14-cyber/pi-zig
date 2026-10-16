@@ -40,16 +40,16 @@ fn body29447(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29458 = try o.importValue(&s, graph, "type/index.mjs", "Instantiate");
     const v29459 = try o.lookup(&s, frame, "binding29448");
     const v29460 = try o.lookup(&s, frame, "binding29449");
-    const v29461 = try s.call(v29458, c.pi_js_undefined(), &.{ v29459, v29460 });
+    const v29461 = try o.call(&s, @src(), v29458, c.pi_js_undefined(), &.{ v29459, v29460 });
     try o.assign(&s, frame, "binding29456", v29461);
     const v29462 = try o.importValue(&s, graph, "type/index.mjs", "Evaluate");
     const v29463 = try o.lookup(&s, frame, "binding29456");
-    const v29464 = try s.call(v29462, c.pi_js_undefined(), &.{v29463});
+    const v29464 = try o.call(&s, @src(), v29462, c.pi_js_undefined(), &.{v29463});
     try o.assign(&s, frame, "binding29457", v29464);
     const v29465 = try o.importValue(&s, graph, "value/default/from_type.mjs", "FromType");
     const v29466 = try o.lookup(&s, frame, "binding29448");
     const v29467 = try o.lookup(&s, frame, "binding29457");
     const v29468 = try o.lookup(&s, frame, "binding29450");
-    const v29469 = try s.call(v29465, c.pi_js_undefined(), &.{ v29466, v29467, v29468 });
+    const v29469 = try o.call(&s, @src(), v29465, c.pi_js_undefined(), &.{ v29466, v29467, v29468 });
     return c.JS_DupValue(e.context, v29469);
 }

@@ -41,7 +41,7 @@ fn body29349(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29357 = try s.text("IsArray");
     const v29358 = try s.own(try js.getKey(e, v29356, v29357));
     const v29359 = try o.lookup(&s, frame, "binding29352");
-    const v29360 = try s.call(v29358, v29356, &.{v29359});
+    const v29360 = try o.call(&s, @src(), v29358, v29356, &.{v29359});
     if (s.truthy(o.boolean(&s, !s.truthy(v29360)))) {
         const v29361 = try o.lookup(&s, frame, "binding29352");
         return c.JS_DupValue(e.context, v29361);
@@ -67,7 +67,7 @@ fn body29349(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v29379 = try o.lookup(&s, frame, "binding29362");
             const v29380 = try o.propertyKey(&s, v29379);
             const v29381 = try s.own(try js.getKey(e, v29378, v29380));
-            const v29382 = try s.call(v29373, c.pi_js_undefined(), &.{ v29374, v29377, v29381 });
+            const v29382 = try o.call(&s, @src(), v29373, c.pi_js_undefined(), &.{ v29374, v29377, v29381 });
             try js.setKey(e, v29370, v29372, v29382);
         }
         const v29383 = try o.lookup(&s, frame, "binding29362");

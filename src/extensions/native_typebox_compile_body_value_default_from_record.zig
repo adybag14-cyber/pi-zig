@@ -41,7 +41,7 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29608 = try s.text("IsObject");
     const v29609 = try s.own(try js.getKey(e, v29607, v29608));
     const v29610 = try o.lookup(&s, frame, "binding29599");
-    const v29611 = try s.call(v29609, v29607, &.{v29610});
+    const v29611 = try o.call(&s, @src(), v29609, v29607, &.{v29610});
     if (s.truthy(o.boolean(&s, !s.truthy(v29611)))) {
         const v29612 = try o.lookup(&s, frame, "binding29599");
         return c.JS_DupValue(e.context, v29612);
@@ -50,12 +50,12 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29614 = try s.global("RegExp");
     const v29615 = try o.importValue(&s, graph, "type/index.mjs", "RecordPattern");
     const v29616 = try o.lookup(&s, frame, "binding29598");
-    const v29617 = try s.call(v29615, c.pi_js_undefined(), &.{v29616});
+    const v29617 = try o.call(&s, @src(), v29615, c.pi_js_undefined(), &.{v29616});
     const v29618 = try o.construct(&s, v29614, &.{v29617});
     try o.append(&s, v29613, v29618);
     const v29619 = try o.importValue(&s, graph, "type/index.mjs", "RecordValue");
     const v29620 = try o.lookup(&s, frame, "binding29598");
-    const v29621 = try s.call(v29619, c.pi_js_undefined(), &.{v29620});
+    const v29621 = try o.call(&s, @src(), v29619, c.pi_js_undefined(), &.{v29620});
     try o.append(&s, v29613, v29621);
     var destructure29622 = try o.iterator(e, v29613);
     defer destructure29622.deinit();
@@ -69,7 +69,7 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29626 = try s.text("Keys");
     const v29627 = try s.own(try js.getKey(e, v29625, v29626));
     const v29628 = try o.lookup(&s, frame, "binding29599");
-    const v29629 = try s.call(v29627, v29625, &.{v29628});
+    const v29629 = try o.call(&s, @src(), v29627, v29625, &.{v29628});
     var iterator29630 = try o.iterator(e, v29629);
     defer iterator29630.deinit();
     errdefer iterator29630.closePreserving();
@@ -81,12 +81,12 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29636 = try s.text("test");
         const v29637 = try s.own(try js.getKey(e, v29635, v29636));
         const v29638 = try o.lookup(&s, iteration29633, "binding29634");
-        const v29639 = try s.call(v29637, v29635, &.{v29638});
+        const v29639 = try o.call(&s, @src(), v29637, v29635, &.{v29638});
         const v29641 = logical29640: {
             if (!s.truthy(v29639)) break :logical29640 v29639;
             const v29642 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsDefault");
             const v29643 = try o.lookup(&s, iteration29633, "binding29606");
-            const v29644 = try s.call(v29642, c.pi_js_undefined(), &.{v29643});
+            const v29644 = try o.call(&s, @src(), v29642, c.pi_js_undefined(), &.{v29643});
             break :logical29640 v29644;
         };
         if (s.truthy(o.boolean(&s, !s.truthy(v29641)))) {
@@ -102,13 +102,13 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29652 = try o.lookup(&s, iteration29633, "binding29634");
         const v29653 = try o.propertyKey(&s, v29652);
         const v29654 = try s.own(try js.getKey(e, v29651, v29653));
-        const v29655 = try s.call(v29648, c.pi_js_undefined(), &.{ v29649, v29650, v29654 });
+        const v29655 = try o.call(&s, @src(), v29648, c.pi_js_undefined(), &.{ v29649, v29650, v29654 });
         try js.setKey(e, v29645, v29647, v29655);
     }
     try iterator29630.close();
     const v29656 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsAdditionalProperties");
     const v29657 = try o.lookup(&s, frame, "binding29598");
-    const v29658 = try s.call(v29656, c.pi_js_undefined(), &.{v29657});
+    const v29658 = try o.call(&s, @src(), v29656, c.pi_js_undefined(), &.{v29657});
     if (s.truthy(o.boolean(&s, !s.truthy(v29658)))) {
         const v29659 = try o.lookup(&s, frame, "binding29599");
         return c.JS_DupValue(e.context, v29659);
@@ -117,7 +117,7 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29661 = try s.text("Keys");
     const v29662 = try s.own(try js.getKey(e, v29660, v29661));
     const v29663 = try o.lookup(&s, frame, "binding29599");
-    const v29664 = try s.call(v29662, v29660, &.{v29663});
+    const v29664 = try o.call(&s, @src(), v29662, v29660, &.{v29663});
     var iterator29665 = try o.iterator(e, v29664);
     defer iterator29665.deinit();
     errdefer iterator29665.closePreserving();
@@ -129,7 +129,7 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29671 = try s.text("test");
         const v29672 = try s.own(try js.getKey(e, v29670, v29671));
         const v29673 = try o.lookup(&s, iteration29668, "binding29669");
-        const v29674 = try s.call(v29672, v29670, &.{v29673});
+        const v29674 = try o.call(&s, @src(), v29672, v29670, &.{v29673});
         if (s.truthy(v29674)) {
             continue :loop29667;
         }
@@ -145,7 +145,7 @@ fn body29596(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29684 = try o.lookup(&s, iteration29668, "binding29669");
         const v29685 = try o.propertyKey(&s, v29684);
         const v29686 = try s.own(try js.getKey(e, v29683, v29685));
-        const v29687 = try s.call(v29678, c.pi_js_undefined(), &.{ v29679, v29682, v29686 });
+        const v29687 = try o.call(&s, @src(), v29678, c.pi_js_undefined(), &.{ v29679, v29682, v29686 });
         try js.setKey(e, v29675, v29677, v29687);
     }
     try iterator29665.close();

@@ -63,8 +63,8 @@ fn body10990(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v11006 = try o.lookup(&s, frame, "binding10993");
     const v11007 = try s.text("minimum");
     const v11008 = try s.own(try js.getKey(e, v11006, v11007));
-    const v11009 = try s.call(v11005, v11003, &.{v11008});
-    const v11010 = try s.call(v11001, v10999, &.{ v11002, v11009 });
+    const v11009 = try o.call(&s, @src(), v11005, v11003, &.{v11008});
+    const v11010 = try o.call(&s, @src(), v11001, v10999, &.{ v11002, v11009 });
     return c.JS_DupValue(e.context, v11010);
 }
 fn body11012(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -88,7 +88,7 @@ fn body11012(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v11025 = try o.lookup(&s, frame, "binding11015");
     const v11026 = try s.text("minimum");
     const v11027 = try s.own(try js.getKey(e, v11025, v11026));
-    const v11028 = try s.call(v11023, v11021, &.{ v11024, v11027 });
+    const v11028 = try o.call(&s, @src(), v11023, v11021, &.{ v11024, v11027 });
     return c.JS_DupValue(e.context, v11028);
 }
 fn body11030(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -114,7 +114,7 @@ fn body11030(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v11045 = try o.lookup(&s, frame, "binding11032");
     const v11046 = try o.lookup(&s, frame, "binding11035");
     const v11047 = try o.lookup(&s, frame, "binding11036");
-    const v11048 = try s.call(v11043, c.pi_js_undefined(), &.{ v11044, v11045, v11046, v11047 });
+    const v11048 = try o.call(&s, @src(), v11043, c.pi_js_undefined(), &.{ v11044, v11045, v11046, v11047 });
     const v11050 = logical11049: {
         if (s.truthy(v11048)) break :logical11049 v11048;
         const v11051 = try o.lookup(&s, frame, "binding11032");
@@ -141,7 +141,7 @@ fn body11030(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v11068 = try s.own(try js.getKey(e, v11066, v11067));
         try o.defineKey(&s, v11062, v11065, v11068);
         try o.defineKey(&s, v11054, v11061, v11062);
-        const v11069 = try s.call(v11053, v11051, &.{v11054});
+        const v11069 = try o.call(&s, @src(), v11053, v11051, &.{v11054});
         break :logical11049 v11069;
     };
     return c.JS_DupValue(e.context, v11050);

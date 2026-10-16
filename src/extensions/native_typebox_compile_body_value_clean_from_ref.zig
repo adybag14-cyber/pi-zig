@@ -44,7 +44,7 @@ fn body23712(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23723 = try o.lookup(&s, frame, "binding23714");
     const v23724 = try s.text("$ref");
     const v23725 = try s.own(try js.getKey(e, v23723, v23724));
-    const v23726 = try s.call(v23721, v23719, &.{ v23722, v23725 });
+    const v23726 = try o.call(&s, @src(), v23721, v23719, &.{ v23722, v23725 });
     const v23728 = conditional23727: {
         if (s.truthy(v23726)) {
             const v23729 = try o.importValue(&s, graph, "value/clean/from_type.mjs", "FromType");
@@ -56,7 +56,7 @@ fn body23712(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v23735 = try o.propertyKey(&s, v23734);
             const v23736 = try s.own(try js.getKey(e, v23731, v23735));
             const v23737 = try o.lookup(&s, frame, "binding23715");
-            const v23738 = try s.call(v23729, c.pi_js_undefined(), &.{ v23730, v23736, v23737 });
+            const v23738 = try o.call(&s, @src(), v23729, c.pi_js_undefined(), &.{ v23730, v23736, v23737 });
             break :conditional23727 v23738;
         } else {
             const v23739 = try o.lookup(&s, frame, "binding23715");

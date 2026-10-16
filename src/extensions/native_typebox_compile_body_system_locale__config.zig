@@ -70,7 +70,7 @@ fn body22555(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []con
     try s.put(frame, "@this", receiver);
     const v22556 = try o.lookup(&s, frame, "binding22544");
     const v22557 = try o.importValue(&s, graph, "system/locale/en_US.mjs", "en_US");
-    const v22558 = try s.call(v22556, c.pi_js_undefined(), &.{v22557});
+    const v22558 = try o.call(&s, @src(), v22556, c.pi_js_undefined(), &.{v22557});
     _ = v22558;
     return c.pi_js_undefined();
 }

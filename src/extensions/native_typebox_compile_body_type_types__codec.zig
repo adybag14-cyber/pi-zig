@@ -83,7 +83,7 @@ fn body22945(e: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JS
     _ = try o.lookup(&s, frame, "@this");
     const v22947 = try s.global("Error");
     const v22948 = try s.text("Encode not implemented");
-    const v22949 = try s.call(v22947, c.pi_js_undefined(), &.{v22948});
+    const v22949 = try o.call(&s, @src(), v22947, c.pi_js_undefined(), &.{v22948});
     _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v22949));
     return js.capture(e);
 }
@@ -103,15 +103,15 @@ fn body22931(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding22933", v22935);
     const v22936 = try o.lookup(&s, frame, "binding22920");
     const v22937 = try o.lookup(&s, frame, "binding22932");
-    const v22938 = try s.call(v22936, c.pi_js_undefined(), &.{v22937});
+    const v22938 = try o.call(&s, @src(), v22936, c.pi_js_undefined(), &.{v22937});
     const v22939 = try s.text("Decode");
     const v22940 = try s.own(try js.getKey(e, v22938, v22939));
     const v22941 = try o.lookup(&s, frame, "binding22933");
-    const v22942 = try s.call(v22940, v22938, &.{v22941});
+    const v22942 = try o.call(&s, @src(), v22940, v22938, &.{v22941});
     const v22943 = try s.text("Encode");
     const v22944 = try s.own(try js.getKey(e, v22942, v22943));
     const v22950 = try o.arrow(&s, "", 0, body22945C, &.{ graph, frame });
-    const v22951 = try s.call(v22944, v22942, &.{v22950});
+    const v22951 = try o.call(&s, @src(), v22944, v22942, &.{v22950});
     return c.JS_DupValue(e.context, v22951);
 }
 fn body22963(e: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -122,7 +122,7 @@ fn body22963(e: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JS
     _ = try o.lookup(&s, frame, "@this");
     const v22965 = try s.global("Error");
     const v22966 = try s.text("Decode not implemented");
-    const v22967 = try s.call(v22965, c.pi_js_undefined(), &.{v22966});
+    const v22967 = try o.call(&s, @src(), v22965, c.pi_js_undefined(), &.{v22966});
     _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v22967));
     return js.capture(e);
 }
@@ -142,15 +142,15 @@ fn body22953(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding22955", v22957);
     const v22958 = try o.lookup(&s, frame, "binding22920");
     const v22959 = try o.lookup(&s, frame, "binding22954");
-    const v22960 = try s.call(v22958, c.pi_js_undefined(), &.{v22959});
+    const v22960 = try o.call(&s, @src(), v22958, c.pi_js_undefined(), &.{v22959});
     const v22961 = try s.text("Decode");
     const v22962 = try s.own(try js.getKey(e, v22960, v22961));
     const v22968 = try o.arrow(&s, "", 0, body22963C, &.{ graph, frame });
-    const v22969 = try s.call(v22962, v22960, &.{v22968});
+    const v22969 = try o.call(&s, @src(), v22962, v22960, &.{v22968});
     const v22970 = try s.text("Encode");
     const v22971 = try s.own(try js.getKey(e, v22969, v22970));
     const v22972 = try o.lookup(&s, frame, "binding22955");
-    const v22973 = try s.call(v22971, v22969, &.{v22972});
+    const v22973 = try o.call(&s, @src(), v22971, v22969, &.{v22972});
     return c.JS_DupValue(e.context, v22973);
 }
 fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -163,7 +163,7 @@ fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding22976", v22977);
     const v22978 = try o.importValue(&s, graph, "type/types/schema.mjs", "IsSchema");
     const v22979 = try o.lookup(&s, frame, "binding22976");
-    const v22980 = try s.call(v22978, c.pi_js_undefined(), &.{v22979});
+    const v22980 = try o.call(&s, @src(), v22978, c.pi_js_undefined(), &.{v22979});
     const v22982 = logical22981: {
         if (!s.truthy(v22980)) break :logical22981 v22980;
         const v22983 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -171,7 +171,7 @@ fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22985 = try s.own(try js.getKey(e, v22983, v22984));
         const v22986 = try o.lookup(&s, frame, "binding22976");
         const v22987 = try s.text("~codec");
-        const v22988 = try s.call(v22985, v22983, &.{ v22986, v22987 });
+        const v22988 = try o.call(&s, @src(), v22985, v22983, &.{ v22986, v22987 });
         break :logical22981 v22988;
     };
     const v22990 = logical22989: {
@@ -183,7 +183,7 @@ fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22995 = try s.text("~codec");
         const v22996 = try o.propertyKey(&s, v22995);
         const v22997 = try s.own(try js.getKey(e, v22994, v22996));
-        const v22998 = try s.call(v22993, v22991, &.{v22997});
+        const v22998 = try o.call(&s, @src(), v22993, v22991, &.{v22997});
         break :logical22989 v22998;
     };
     const v23000 = logical22999: {
@@ -196,7 +196,7 @@ fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v23006 = try o.propertyKey(&s, v23005);
         const v23007 = try s.own(try js.getKey(e, v23004, v23006));
         const v23008 = try s.text("encode");
-        const v23009 = try s.call(v23003, v23001, &.{ v23007, v23008 });
+        const v23009 = try o.call(&s, @src(), v23003, v23001, &.{ v23007, v23008 });
         break :logical22999 v23009;
     };
     const v23011 = logical23010: {
@@ -209,7 +209,7 @@ fn body22975(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v23017 = try o.propertyKey(&s, v23016);
         const v23018 = try s.own(try js.getKey(e, v23015, v23017));
         const v23019 = try s.text("decode");
-        const v23020 = try s.call(v23014, v23012, &.{ v23018, v23019 });
+        const v23020 = try o.call(&s, @src(), v23014, v23012, &.{ v23018, v23019 });
         break :logical23010 v23020;
     };
     return c.JS_DupValue(e.context, v23011);
@@ -250,8 +250,8 @@ fn body23055(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v23065 = try s.text("decode");
     const v23066 = try s.own(try js.getKey(e, v23064, v23065));
     const v23067 = try o.lookup(&s, frame, "binding23057");
-    const v23068 = try s.call(v23066, v23064, &.{v23067});
-    const v23069 = try s.call(v23060, v23056, &.{v23068});
+    const v23068 = try o.call(&s, @src(), v23066, v23064, &.{v23067});
+    const v23069 = try o.call(&s, @src(), v23060, v23056, &.{v23068});
     return c.JS_DupValue(e.context, v23069);
 }
 fn body23055C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -274,8 +274,8 @@ fn body23078(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v23087 = try s.own(try js.getKey(e, v23085, v23086));
     const v23088 = try o.lookup(&s, frame, "binding23038");
     const v23089 = try o.lookup(&s, frame, "binding23080");
-    const v23090 = try s.call(v23088, c.pi_js_undefined(), &.{v23089});
-    const v23091 = try s.call(v23087, v23085, &.{v23090});
+    const v23090 = try o.call(&s, @src(), v23088, c.pi_js_undefined(), &.{v23089});
+    const v23091 = try o.call(&s, @src(), v23087, v23085, &.{v23090});
     return c.JS_DupValue(e.context, v23091);
 }
 fn body23078C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -295,7 +295,7 @@ fn body23037(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding23044", v23049);
     const v23050 = try o.lookup(&s, frame, "binding22923");
     const v23051 = try o.lookup(&s, frame, "binding23044");
-    const v23052 = try s.call(v23050, c.pi_js_undefined(), &.{v23051});
+    const v23052 = try o.call(&s, @src(), v23050, c.pi_js_undefined(), &.{v23051});
     const v23054 = conditional23053: {
         if (s.truthy(v23052)) {
             const v23070 = try o.arrow(&s, "", 1, body23055C, &.{ graph, frame });
@@ -309,7 +309,7 @@ fn body23037(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding23045", v23054);
     const v23073 = try o.lookup(&s, frame, "binding22923");
     const v23074 = try o.lookup(&s, frame, "binding23044");
-    const v23075 = try s.call(v23073, c.pi_js_undefined(), &.{v23074});
+    const v23075 = try o.call(&s, @src(), v23073, c.pi_js_undefined(), &.{v23074});
     const v23077 = conditional23076: {
         if (s.truthy(v23075)) {
             const v23092 = try o.arrow(&s, "", 1, body23078C, &.{ graph, frame });
@@ -338,7 +338,7 @@ fn body23037(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23106 = try o.lookup(&s, frame, "binding23047");
     try o.defineKey(&s, v23104, v23105, v23106);
     const v23107 = try s.object();
-    const v23108 = try s.call(v23101, v23099, &.{ v23103, v23104, v23107 });
+    const v23108 = try o.call(&s, @src(), v23101, v23099, &.{ v23103, v23104, v23107 });
     return c.JS_DupValue(e.context, v23108);
 }
 fn body23037C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {

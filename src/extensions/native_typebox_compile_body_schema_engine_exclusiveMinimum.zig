@@ -63,8 +63,8 @@ fn body9064(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v9080 = try o.lookup(&s, frame, "binding9067");
     const v9081 = try s.text("exclusiveMinimum");
     const v9082 = try s.own(try js.getKey(e, v9080, v9081));
-    const v9083 = try s.call(v9079, v9077, &.{v9082});
-    const v9084 = try s.call(v9075, v9073, &.{ v9076, v9083 });
+    const v9083 = try o.call(&s, @src(), v9079, v9077, &.{v9082});
+    const v9084 = try o.call(&s, @src(), v9075, v9073, &.{ v9076, v9083 });
     return c.JS_DupValue(e.context, v9084);
 }
 fn body9086(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -88,7 +88,7 @@ fn body9086(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v9099 = try o.lookup(&s, frame, "binding9089");
     const v9100 = try s.text("exclusiveMinimum");
     const v9101 = try s.own(try js.getKey(e, v9099, v9100));
-    const v9102 = try s.call(v9097, v9095, &.{ v9098, v9101 });
+    const v9102 = try o.call(&s, @src(), v9097, v9095, &.{ v9098, v9101 });
     return c.JS_DupValue(e.context, v9102);
 }
 fn body9104(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -114,7 +114,7 @@ fn body9104(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v9119 = try o.lookup(&s, frame, "binding9106");
     const v9120 = try o.lookup(&s, frame, "binding9109");
     const v9121 = try o.lookup(&s, frame, "binding9110");
-    const v9122 = try s.call(v9117, c.pi_js_undefined(), &.{ v9118, v9119, v9120, v9121 });
+    const v9122 = try o.call(&s, @src(), v9117, c.pi_js_undefined(), &.{ v9118, v9119, v9120, v9121 });
     const v9124 = logical9123: {
         if (s.truthy(v9122)) break :logical9123 v9122;
         const v9125 = try o.lookup(&s, frame, "binding9106");
@@ -141,7 +141,7 @@ fn body9104(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v9142 = try s.own(try js.getKey(e, v9140, v9141));
         try o.defineKey(&s, v9136, v9139, v9142);
         try o.defineKey(&s, v9128, v9135, v9136);
-        const v9143 = try s.call(v9127, v9125, &.{v9128});
+        const v9143 = try o.call(&s, @src(), v9127, v9125, &.{v9128});
         break :logical9123 v9143;
     };
     return c.JS_DupValue(e.context, v9124);

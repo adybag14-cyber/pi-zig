@@ -84,7 +84,7 @@ fn body221(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []co
     const v244 = try s.text("1");
     const v252 = try o.arrow(&s, "1", 1, body245C, &.{ graph, frame });
     try o.defineKey(&s, v232, v244, v252);
-    const v253 = try s.call(v230, v228, &.{ v231, v232 });
+    const v253 = try o.call(&s, @src(), v230, v228, &.{ v231, v232 });
     var destructure254 = try o.iterator(e, v253);
     defer destructure254.deinit();
     errdefer destructure254.closePreserving();

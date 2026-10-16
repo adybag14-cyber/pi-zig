@@ -38,15 +38,15 @@ fn body28660(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28669 = try o.importValue(&s, graph, "type/index.mjs", "Instantiate");
     const v28670 = try o.lookup(&s, frame, "binding28661");
     const v28671 = try o.lookup(&s, frame, "binding28662");
-    const v28672 = try s.call(v28669, c.pi_js_undefined(), &.{ v28670, v28671 });
+    const v28672 = try o.call(&s, @src(), v28669, c.pi_js_undefined(), &.{ v28670, v28671 });
     try o.assign(&s, frame, "binding28667", v28672);
     const v28673 = try o.importValue(&s, graph, "type/index.mjs", "Evaluate");
     const v28674 = try o.lookup(&s, frame, "binding28667");
-    const v28675 = try s.call(v28673, c.pi_js_undefined(), &.{v28674});
+    const v28675 = try o.call(&s, @src(), v28673, c.pi_js_undefined(), &.{v28674});
     try o.assign(&s, frame, "binding28668", v28675);
     const v28676 = try o.importValue(&s, graph, "value/create/from_type.mjs", "FromType");
     const v28677 = try o.lookup(&s, frame, "binding28661");
     const v28678 = try o.lookup(&s, frame, "binding28668");
-    const v28679 = try s.call(v28676, c.pi_js_undefined(), &.{ v28677, v28678 });
+    const v28679 = try o.call(&s, @src(), v28676, c.pi_js_undefined(), &.{ v28677, v28678 });
     return c.JS_DupValue(e.context, v28679);
 }

@@ -37,19 +37,19 @@ fn body28860(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding28862", v28866);
     const v28869 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsPattern");
     const v28870 = try o.lookup(&s, frame, "binding28862");
-    const v28871 = try s.call(v28869, c.pi_js_undefined(), &.{v28870});
+    const v28871 = try o.call(&s, @src(), v28869, c.pi_js_undefined(), &.{v28870});
     const v28873 = logical28872: {
         if (s.truthy(v28871)) break :logical28872 v28871;
         const v28874 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsFormat");
         const v28875 = try o.lookup(&s, frame, "binding28862");
-        const v28876 = try s.call(v28874, c.pi_js_undefined(), &.{v28875});
+        const v28876 = try o.call(&s, @src(), v28874, c.pi_js_undefined(), &.{v28875});
         break :logical28872 v28876;
     };
     const v28878 = logical28877: {
         if (!s.truthy(v28873)) break :logical28877 v28873;
         const v28879 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsDefault");
         const v28880 = try o.lookup(&s, frame, "binding28862");
-        const v28881 = try s.call(v28879, c.pi_js_undefined(), &.{v28880});
+        const v28881 = try o.call(&s, @src(), v28879, c.pi_js_undefined(), &.{v28880});
         break :logical28877 o.boolean(&s, !s.truthy(v28881));
     };
     try o.assign(&s, frame, "binding28867", v28878);
@@ -57,13 +57,13 @@ fn body28860(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     if (s.truthy(v28882)) {
         const v28883 = try s.global("Error");
         const v28884 = try s.text("Strings with format or pattern constraints must specify default");
-        const v28885 = try s.call(v28883, c.pi_js_undefined(), &.{v28884});
+        const v28885 = try o.call(&s, @src(), v28883, c.pi_js_undefined(), &.{v28884});
         _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v28885));
         return js.capture(e);
     }
     const v28886 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsMinLength");
     const v28887 = try o.lookup(&s, frame, "binding28862");
-    const v28888 = try s.call(v28886, c.pi_js_undefined(), &.{v28887});
+    const v28888 = try o.call(&s, @src(), v28886, c.pi_js_undefined(), &.{v28887});
     const v28890 = conditional28889: {
         if (s.truthy(v28888)) {
             const v28891 = try o.lookup(&s, frame, "binding28862");
@@ -79,6 +79,6 @@ fn body28860(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28895 = try s.text("padEnd");
     const v28896 = try s.own(try js.getKey(e, v28894, v28895));
     const v28897 = try o.lookup(&s, frame, "binding28868");
-    const v28898 = try s.call(v28896, v28894, &.{v28897});
+    const v28898 = try o.call(&s, @src(), v28896, v28894, &.{v28897});
     return c.JS_DupValue(e.context, v28898);
 }

@@ -39,7 +39,7 @@ fn body28589(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28595 = try o.lookup(&s, frame, "binding28590");
     const v28596 = try o.importValue(&s, graph, "type/index.mjs", "Evaluate");
     const v28597 = try o.lookup(&s, frame, "binding28591");
-    const v28598 = try s.call(v28596, c.pi_js_undefined(), &.{v28597});
-    const v28599 = try s.call(v28594, c.pi_js_undefined(), &.{ v28595, v28598 });
+    const v28598 = try o.call(&s, @src(), v28596, c.pi_js_undefined(), &.{v28597});
+    const v28599 = try o.call(&s, @src(), v28594, c.pi_js_undefined(), &.{ v28595, v28598 });
     return c.JS_DupValue(e.context, v28599);
 }

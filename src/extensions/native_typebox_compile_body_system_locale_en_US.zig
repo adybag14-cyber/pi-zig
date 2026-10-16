@@ -80,7 +80,7 @@ fn body22568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v22593 = try s.text("join");
             const v22594 = try s.own(try js.getKey(e, v22592, v22593));
             const v22595 = try s.text(", ");
-            const v22596 = try s.call(v22594, v22592, &.{v22595});
+            const v22596 = try o.call(&s, @src(), v22594, v22592, &.{v22595});
             const v22597 = try s.stringify(v22596);
             const v22598 = try s.concat(v22587, v22597);
             const v22599 = try s.text(" when property ");
@@ -108,7 +108,7 @@ fn body22568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v22617 = try s.text("join");
             const v22618 = try s.own(try js.getKey(e, v22616, v22617));
             const v22619 = try s.text(", ");
-            const v22620 = try s.call(v22618, v22616, &.{v22619});
+            const v22620 = try o.call(&s, @src(), v22618, v22616, &.{v22619});
             const v22621 = try s.stringify(v22620);
             const v22622 = try s.concat(v22611, v22621);
             const v22623 = try s.text(" when property ");
@@ -400,7 +400,7 @@ fn body22568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v22837 = try s.text("join");
             const v22838 = try s.own(try js.getKey(e, v22836, v22837));
             const v22839 = try s.text(", ");
-            const v22840 = try s.call(v22838, v22836, &.{v22839});
+            const v22840 = try o.call(&s, @src(), v22838, v22836, &.{v22839});
             const v22841 = try s.stringify(v22840);
             const v22842 = try s.concat(v22831, v22841);
             const v22843 = try s.text(" are invalid");
@@ -419,7 +419,7 @@ fn body22568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v22852 = try s.text("join");
             const v22853 = try s.own(try js.getKey(e, v22851, v22852));
             const v22854 = try s.text(", ");
-            const v22855 = try s.call(v22853, v22851, &.{v22854});
+            const v22855 = try o.call(&s, @src(), v22853, v22851, &.{v22854});
             const v22856 = try s.stringify(v22855);
             const v22857 = try s.concat(v22846, v22856);
             const v22858 = try s.text("");
@@ -459,7 +459,7 @@ fn body22568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
                     const v22886 = try s.text("join");
                     const v22887 = try s.own(try js.getKey(e, v22885, v22886));
                     const v22888 = try s.text(" or ");
-                    const v22889 = try s.call(v22887, v22885, &.{v22888});
+                    const v22889 = try o.call(&s, @src(), v22887, v22885, &.{v22888});
                     const v22890 = try s.stringify(v22889);
                     const v22891 = try s.concat(v22880, v22890);
                     const v22892 = try s.text("");

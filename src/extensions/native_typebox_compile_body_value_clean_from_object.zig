@@ -41,14 +41,14 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23505 = try s.text("IsObject");
     const v23506 = try s.own(try js.getKey(e, v23504, v23505));
     const v23507 = try o.lookup(&s, frame, "binding23498");
-    const v23508 = try s.call(v23506, v23504, &.{v23507});
+    const v23508 = try o.call(&s, @src(), v23506, v23504, &.{v23507});
     const v23510 = logical23509: {
         if (s.truthy(o.boolean(&s, !s.truthy(v23508)))) break :logical23509 o.boolean(&s, !s.truthy(v23508));
         const v23511 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
         const v23512 = try s.text("IsArray");
         const v23513 = try s.own(try js.getKey(e, v23511, v23512));
         const v23514 = try o.lookup(&s, frame, "binding23498");
-        const v23515 = try s.call(v23513, v23511, &.{v23514});
+        const v23515 = try o.call(&s, @src(), v23513, v23511, &.{v23514});
         break :logical23509 v23515;
     };
     if (s.truthy(v23510)) {
@@ -57,13 +57,13 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     }
     const v23517 = try o.importValue(&s, graph, "value/clean/additional.mjs", "GetAdditionalProperties");
     const v23518 = try o.lookup(&s, frame, "binding23497");
-    const v23519 = try s.call(v23517, c.pi_js_undefined(), &.{v23518});
+    const v23519 = try o.call(&s, @src(), v23517, c.pi_js_undefined(), &.{v23518});
     try o.assign(&s, frame, "binding23503", v23519);
     const v23520 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v23521 = try s.text("Keys");
     const v23522 = try s.own(try js.getKey(e, v23520, v23521));
     const v23523 = try o.lookup(&s, frame, "binding23498");
-    const v23524 = try s.call(v23522, v23520, &.{v23523});
+    const v23524 = try o.call(&s, @src(), v23522, v23520, &.{v23523});
     var iterator23525 = try o.iterator(e, v23524);
     defer iterator23525.deinit();
     errdefer iterator23525.closePreserving();
@@ -78,7 +78,7 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v23535 = try s.text("properties");
         const v23536 = try s.own(try js.getKey(e, v23534, v23535));
         const v23537 = try o.lookup(&s, iteration23528, "binding23529");
-        const v23538 = try s.call(v23533, v23531, &.{ v23536, v23537 });
+        const v23538 = try o.call(&s, @src(), v23533, v23531, &.{ v23536, v23537 });
         if (s.truthy(v23538)) {
             const v23539 = try o.lookup(&s, iteration23528, "binding23498");
             const v23540 = try o.lookup(&s, iteration23528, "binding23529");
@@ -95,7 +95,7 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v23551 = try o.lookup(&s, iteration23528, "binding23529");
             const v23552 = try o.propertyKey(&s, v23551);
             const v23553 = try s.own(try js.getKey(e, v23550, v23552));
-            const v23554 = try s.call(v23542, c.pi_js_undefined(), &.{ v23543, v23549, v23553 });
+            const v23554 = try o.call(&s, @src(), v23542, c.pi_js_undefined(), &.{ v23543, v23549, v23553 });
             try js.setKey(e, v23539, v23541, v23554);
             continue :loop23527;
         }
@@ -103,21 +103,21 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v23556 = try s.text("IsBoolean");
         const v23557 = try s.own(try js.getKey(e, v23555, v23556));
         const v23558 = try o.lookup(&s, iteration23528, "binding23503");
-        const v23559 = try s.call(v23557, v23555, &.{v23558});
+        const v23559 = try o.call(&s, @src(), v23557, v23555, &.{v23558});
         const v23561 = logical23560: {
             if (!s.truthy(v23559)) break :logical23560 v23559;
             const v23562 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
             const v23563 = try s.text("IsEqual");
             const v23564 = try s.own(try js.getKey(e, v23562, v23563));
             const v23565 = try o.lookup(&s, iteration23528, "binding23503");
-            const v23566 = try s.call(v23564, v23562, &.{ v23565, o.boolean(&s, true) });
+            const v23566 = try o.call(&s, @src(), v23564, v23562, &.{ v23565, o.boolean(&s, true) });
             break :logical23560 v23566;
         };
         const v23568 = logical23567: {
             if (s.truthy(v23561)) break :logical23567 v23561;
             const v23569 = try o.importValue(&s, graph, "type/index.mjs", "IsSchema");
             const v23570 = try o.lookup(&s, iteration23528, "binding23503");
-            const v23571 = try s.call(v23569, c.pi_js_undefined(), &.{v23570});
+            const v23571 = try o.call(&s, @src(), v23569, c.pi_js_undefined(), &.{v23570});
             const v23573 = logical23572: {
                 if (!s.truthy(v23571)) break :logical23572 v23571;
                 const v23574 = try o.importValue(&s, graph, "value/check/index.mjs", "Check");
@@ -127,7 +127,7 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
                 const v23578 = try o.lookup(&s, iteration23528, "binding23529");
                 const v23579 = try o.propertyKey(&s, v23578);
                 const v23580 = try s.own(try js.getKey(e, v23577, v23579));
-                const v23581 = try s.call(v23574, c.pi_js_undefined(), &.{ v23575, v23576, v23580 });
+                const v23581 = try o.call(&s, @src(), v23574, c.pi_js_undefined(), &.{ v23575, v23576, v23580 });
                 break :logical23572 v23581;
             };
             break :logical23567 v23573;
@@ -145,7 +145,7 @@ fn body23495(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v23590 = try o.lookup(&s, iteration23528, "binding23529");
             const v23591 = try o.propertyKey(&s, v23590);
             const v23592 = try s.own(try js.getKey(e, v23589, v23591));
-            const v23593 = try s.call(v23586, c.pi_js_undefined(), &.{ v23587, v23588, v23592 });
+            const v23593 = try o.call(&s, @src(), v23586, c.pi_js_undefined(), &.{ v23587, v23588, v23592 });
             try js.setKey(e, v23583, v23585, v23593);
             continue :loop23527;
         }

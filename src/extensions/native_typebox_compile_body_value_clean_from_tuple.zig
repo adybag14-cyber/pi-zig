@@ -41,7 +41,7 @@ fn body23744(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23754 = try s.text("IsArray");
     const v23755 = try s.own(try js.getKey(e, v23753, v23754));
     const v23756 = try o.lookup(&s, frame, "binding23747");
-    const v23757 = try s.call(v23755, v23753, &.{v23756});
+    const v23757 = try o.call(&s, @src(), v23755, v23753, &.{v23756});
     if (s.truthy(o.boolean(&s, !s.truthy(v23757)))) {
         const v23758 = try o.lookup(&s, frame, "binding23747");
         return c.JS_DupValue(e.context, v23758);
@@ -57,7 +57,7 @@ fn body23744(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23767 = try s.own(try js.getKey(e, v23765, v23766));
     const v23768 = try s.text("length");
     const v23769 = try s.own(try js.getKey(e, v23767, v23768));
-    const v23770 = try s.call(v23761, v23759, &.{ v23764, v23769 });
+    const v23770 = try o.call(&s, @src(), v23761, v23759, &.{ v23764, v23769 });
     try o.assign(&s, frame, "binding23752", v23770);
     try o.assign(&s, frame, "binding23771", c.JS_NewFloat64(e.context, 0));
     loop23772: while (true) {
@@ -81,7 +81,7 @@ fn body23744(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v23789 = try o.lookup(&s, frame, "binding23771");
             const v23790 = try o.propertyKey(&s, v23789);
             const v23791 = try s.own(try js.getKey(e, v23788, v23790));
-            const v23792 = try s.call(v23780, c.pi_js_undefined(), &.{ v23781, v23787, v23791 });
+            const v23792 = try o.call(&s, @src(), v23780, c.pi_js_undefined(), &.{ v23781, v23787, v23791 });
             try js.setKey(e, v23777, v23779, v23792);
         }
         const v23793 = try o.lookup(&s, frame, "binding23771");
@@ -95,14 +95,14 @@ fn body23744(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23799 = try s.text("length");
     const v23800 = try s.own(try js.getKey(e, v23798, v23799));
     const v23801 = try o.lookup(&s, frame, "binding23752");
-    const v23802 = try s.call(v23797, v23795, &.{ v23800, v23801 });
+    const v23802 = try o.call(&s, @src(), v23797, v23795, &.{ v23800, v23801 });
     const v23804 = conditional23803: {
         if (s.truthy(v23802)) {
             const v23805 = try o.lookup(&s, frame, "binding23747");
             const v23806 = try s.text("slice");
             const v23807 = try s.own(try js.getKey(e, v23805, v23806));
             const v23808 = try o.lookup(&s, frame, "binding23752");
-            const v23809 = try s.call(v23807, v23805, &.{ c.JS_NewFloat64(e.context, 0), v23808 });
+            const v23809 = try o.call(&s, @src(), v23807, v23805, &.{ c.JS_NewFloat64(e.context, 0), v23808 });
             break :conditional23803 v23809;
         } else {
             const v23810 = try o.lookup(&s, frame, "binding23747");

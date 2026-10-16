@@ -48,7 +48,7 @@ fn body23969(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23980 = try s.text("decode");
     const v23981 = try s.own(try js.getKey(e, v23979, v23980));
     const v23982 = try o.lookup(&s, frame, "binding23972");
-    const v23983 = try s.call(v23981, v23979, &.{v23982});
+    const v23983 = try o.call(&s, @src(), v23981, v23979, &.{v23982});
     return c.JS_DupValue(e.context, v23983);
 }
 fn body23985(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -70,7 +70,7 @@ fn body23985(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23996 = try s.text("encode");
     const v23997 = try s.own(try js.getKey(e, v23995, v23996));
     const v23998 = try o.lookup(&s, frame, "binding23988");
-    const v23999 = try s.call(v23997, v23995, &.{v23998});
+    const v23999 = try o.call(&s, @src(), v23997, v23995, &.{v23998});
     return c.JS_DupValue(e.context, v23999);
 }
 fn body24001(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -89,7 +89,7 @@ fn body24001(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding24005", v24009);
     const v24010 = try o.importValue(&s, graph, "type/index.mjs", "IsCodec");
     const v24011 = try o.lookup(&s, frame, "binding24004");
-    const v24012 = try s.call(v24010, c.pi_js_undefined(), &.{v24011});
+    const v24012 = try o.call(&s, @src(), v24010, c.pi_js_undefined(), &.{v24011});
     if (s.truthy(o.boolean(&s, !s.truthy(v24012)))) {
         const v24013 = try o.lookup(&s, frame, "binding24005");
         return c.JS_DupValue(e.context, v24013);
@@ -99,21 +99,21 @@ fn body24001(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24016 = try s.own(try js.getKey(e, v24014, v24015));
     const v24017 = try o.lookup(&s, frame, "binding24002");
     const v24018 = try s.text("Decode");
-    const v24019 = try s.call(v24016, v24014, &.{ v24017, v24018 });
+    const v24019 = try o.call(&s, @src(), v24016, v24014, &.{ v24017, v24018 });
     const v24021 = conditional24020: {
         if (s.truthy(v24019)) {
             const v24022 = try o.lookup(&s, frame, "binding23966");
             const v24023 = try o.lookup(&s, frame, "binding24003");
             const v24024 = try o.lookup(&s, frame, "binding24004");
             const v24025 = try o.lookup(&s, frame, "binding24005");
-            const v24026 = try s.call(v24022, c.pi_js_undefined(), &.{ v24023, v24024, v24025 });
+            const v24026 = try o.call(&s, @src(), v24022, c.pi_js_undefined(), &.{ v24023, v24024, v24025 });
             break :conditional24020 v24026;
         } else {
             const v24027 = try o.lookup(&s, frame, "binding23967");
             const v24028 = try o.lookup(&s, frame, "binding24003");
             const v24029 = try o.lookup(&s, frame, "binding24004");
             const v24030 = try o.lookup(&s, frame, "binding24005");
-            const v24031 = try s.call(v24027, c.pi_js_undefined(), &.{ v24028, v24029, v24030 });
+            const v24031 = try o.call(&s, @src(), v24027, c.pi_js_undefined(), &.{ v24028, v24029, v24030 });
             break :conditional24020 v24031;
         }
     };

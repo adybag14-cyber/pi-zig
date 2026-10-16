@@ -52,15 +52,15 @@ fn body24580(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24597 = try o.lookup(&s, frame, "binding24583");
     const v24598 = try s.text("$ref");
     const v24599 = try s.own(try js.getKey(e, v24597, v24598));
-    const v24600 = try s.call(v24596, c.pi_js_undefined(), &.{v24599});
+    const v24600 = try o.call(&s, @src(), v24596, c.pi_js_undefined(), &.{v24599});
     const v24601 = try o.lookup(&s, frame, "binding24584");
-    const v24602 = try s.call(v24589, c.pi_js_undefined(), &.{ v24590, v24591, v24600, v24601 });
+    const v24602 = try o.call(&s, @src(), v24589, c.pi_js_undefined(), &.{ v24590, v24591, v24600, v24601 });
     try o.assign(&s, frame, "binding24584", v24602);
     const v24603 = try o.importValue(&s, graph, "value/codec/callback.mjs", "Callback");
     const v24604 = try o.lookup(&s, frame, "binding24581");
     const v24605 = try o.lookup(&s, frame, "binding24582");
     const v24606 = try o.lookup(&s, frame, "binding24583");
     const v24607 = try o.lookup(&s, frame, "binding24584");
-    const v24608 = try s.call(v24603, c.pi_js_undefined(), &.{ v24604, v24605, v24606, v24607 });
+    const v24608 = try o.call(&s, @src(), v24603, c.pi_js_undefined(), &.{ v24604, v24605, v24606, v24607 });
     return c.JS_DupValue(e.context, v24608);
 }

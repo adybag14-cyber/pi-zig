@@ -51,14 +51,14 @@ fn body22369(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22373 = try s.text("IsObject");
     const v22374 = try s.own(try js.getKey(e, v22372, v22373));
     const v22375 = try o.lookup(&s, frame, "binding22370");
-    const v22376 = try s.call(v22374, v22372, &.{v22375});
+    const v22376 = try o.call(&s, @src(), v22374, v22372, &.{v22375});
     const v22378 = logical22377: {
         if (!s.truthy(v22376)) break :logical22377 v22376;
         const v22379 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
         const v22380 = try s.text("IsArray");
         const v22381 = try s.own(try js.getKey(e, v22379, v22380));
         const v22382 = try o.lookup(&s, frame, "binding22370");
-        const v22383 = try s.call(v22381, v22379, &.{v22382});
+        const v22383 = try o.call(&s, @src(), v22381, v22379, &.{v22382});
         break :logical22377 o.boolean(&s, !s.truthy(v22383));
     };
     return c.JS_DupValue(e.context, v22378);
@@ -75,7 +75,7 @@ fn body22385(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22389 = try s.text("IsBoolean");
     const v22390 = try s.own(try js.getKey(e, v22388, v22389));
     const v22391 = try o.lookup(&s, frame, "binding22386");
-    const v22392 = try s.call(v22390, v22388, &.{v22391});
+    const v22392 = try o.call(&s, @src(), v22390, v22388, &.{v22391});
     return c.JS_DupValue(e.context, v22392);
 }
 fn body22394(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -88,12 +88,12 @@ fn body22394(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding22395", v22396);
     const v22397 = try o.lookup(&s, frame, "binding22366");
     const v22398 = try o.lookup(&s, frame, "binding22395");
-    const v22399 = try s.call(v22397, c.pi_js_undefined(), &.{v22398});
+    const v22399 = try o.call(&s, @src(), v22397, c.pi_js_undefined(), &.{v22398});
     const v22401 = logical22400: {
         if (s.truthy(v22399)) break :logical22400 v22399;
         const v22402 = try o.lookup(&s, frame, "binding22367");
         const v22403 = try o.lookup(&s, frame, "binding22395");
-        const v22404 = try s.call(v22402, c.pi_js_undefined(), &.{v22403});
+        const v22404 = try o.call(&s, @src(), v22402, c.pi_js_undefined(), &.{v22403});
         break :logical22400 v22404;
     };
     return c.JS_DupValue(e.context, v22401);

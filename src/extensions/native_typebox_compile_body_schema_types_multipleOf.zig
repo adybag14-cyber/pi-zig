@@ -38,7 +38,7 @@ fn body21973(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21978 = try s.own(try js.getKey(e, v21976, v21977));
     const v21979 = try o.lookup(&s, frame, "binding21974");
     const v21980 = try s.text("multipleOf");
-    const v21981 = try s.call(v21978, v21976, &.{ v21979, v21980 });
+    const v21981 = try o.call(&s, @src(), v21978, v21976, &.{ v21979, v21980 });
     const v21983 = logical21982: {
         if (!s.truthy(v21981)) break :logical21982 v21981;
         const v21984 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21973(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21987 = try o.lookup(&s, frame, "binding21974");
         const v21988 = try s.text("multipleOf");
         const v21989 = try s.own(try js.getKey(e, v21987, v21988));
-        const v21990 = try s.call(v21986, v21984, &.{v21989});
+        const v21990 = try o.call(&s, @src(), v21986, v21984, &.{v21989});
         const v21992 = logical21991: {
             if (s.truthy(v21990)) break :logical21991 v21990;
             const v21993 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -56,7 +56,7 @@ fn body21973(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v21996 = try o.lookup(&s, frame, "binding21974");
             const v21997 = try s.text("multipleOf");
             const v21998 = try s.own(try js.getKey(e, v21996, v21997));
-            const v21999 = try s.call(v21995, v21993, &.{v21998});
+            const v21999 = try o.call(&s, @src(), v21995, v21993, &.{v21998});
             break :logical21991 v21999;
         };
         break :logical21982 v21992;

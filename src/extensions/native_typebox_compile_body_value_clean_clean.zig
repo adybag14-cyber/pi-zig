@@ -92,7 +92,7 @@ fn body23304(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23334 = try s.text("2");
     const v23345 = try o.arrow(&s, "2", 2, body23335C, &.{ graph, frame });
     try o.defineKey(&s, v23319, v23334, v23345);
-    const v23346 = try s.call(v23317, v23315, &.{ v23318, v23319 });
+    const v23346 = try o.call(&s, @src(), v23317, v23315, &.{ v23318, v23319 });
     var destructure23347 = try o.iterator(e, v23346);
     defer destructure23347.deinit();
     errdefer destructure23347.closePreserving();
@@ -106,14 +106,14 @@ fn body23304(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23351 = try o.importValue(&s, graph, "system/index.mjs", "Settings");
     const v23352 = try s.text("Get");
     const v23353 = try s.own(try js.getKey(e, v23351, v23352));
-    const v23354 = try s.call(v23353, v23351, &.{});
+    const v23354 = try o.call(&s, @src(), v23353, v23351, &.{});
     const v23355 = try s.text("unionPrioritySort");
     const v23356 = try s.own(try js.getKey(e, v23354, v23355));
     const v23358 = conditional23357: {
         if (s.truthy(v23356)) {
             const v23359 = try o.importValue(&s, graph, "value/shared/union_priority_sort.mjs", "UnionPrioritySort");
             const v23360 = try o.lookup(&s, frame, "binding23312");
-            const v23361 = try s.call(v23359, c.pi_js_undefined(), &.{v23360});
+            const v23361 = try o.call(&s, @src(), v23359, c.pi_js_undefined(), &.{v23360});
             break :conditional23357 v23361;
         } else {
             const v23362 = try o.lookup(&s, frame, "binding23312");
@@ -125,6 +125,6 @@ fn body23304(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23364 = try o.lookup(&s, frame, "binding23311");
     const v23365 = try o.lookup(&s, frame, "binding23314");
     const v23366 = try o.lookup(&s, frame, "binding23313");
-    const v23367 = try s.call(v23363, c.pi_js_undefined(), &.{ v23364, v23365, v23366 });
+    const v23367 = try o.call(&s, @src(), v23363, c.pi_js_undefined(), &.{ v23364, v23365, v23366 });
     return c.JS_DupValue(e.context, v23367);
 }

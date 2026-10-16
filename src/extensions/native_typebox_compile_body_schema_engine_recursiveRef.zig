@@ -57,7 +57,7 @@ fn body13217(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13229 = try s.text("RecursiveRef");
     const v13230 = try s.own(try js.getKey(e, v13228, v13229));
     const v13231 = try o.lookup(&s, frame, "binding13220");
-    const v13232 = try s.call(v13230, v13228, &.{v13231});
+    const v13232 = try o.call(&s, @src(), v13230, v13228, &.{v13231});
     const v13234 = logical13233: {
         if (!c.JS_IsNull(v13232) and !c.JS_IsUndefined(v13232)) break :logical13233 v13232;
         break :logical13233 o.boolean(&s, false);
@@ -70,7 +70,7 @@ fn body13217(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13239 = try o.lookup(&s, frame, "binding13219");
     const v13240 = try o.lookup(&s, frame, "binding13227");
     const v13241 = try o.lookup(&s, frame, "binding13221");
-    const v13242 = try s.call(v13237, v13235, &.{ v13238, v13239, v13240, v13241 });
+    const v13242 = try o.call(&s, @src(), v13237, v13235, &.{ v13238, v13239, v13240, v13241 });
     return c.JS_DupValue(e.context, v13242);
 }
 fn body13244(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -91,7 +91,7 @@ fn body13244(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13256 = try s.text("RecursiveRef");
     const v13257 = try s.own(try js.getKey(e, v13255, v13256));
     const v13258 = try o.lookup(&s, frame, "binding13247");
-    const v13259 = try s.call(v13257, v13255, &.{v13258});
+    const v13259 = try o.call(&s, @src(), v13257, v13255, &.{v13258});
     const v13261 = logical13260: {
         if (!c.JS_IsNull(v13259) and !c.JS_IsUndefined(v13259)) break :logical13260 v13259;
         break :logical13260 o.boolean(&s, false);
@@ -101,7 +101,7 @@ fn body13244(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13263 = try s.text("IsSchema");
     const v13264 = try s.own(try js.getKey(e, v13262, v13263));
     const v13265 = try o.lookup(&s, frame, "binding13254");
-    const v13266 = try s.call(v13264, v13262, &.{v13265});
+    const v13266 = try o.call(&s, @src(), v13264, v13262, &.{v13265});
     const v13268 = logical13267: {
         if (!s.truthy(v13266)) break :logical13267 v13266;
         const v13269 = try o.importValue(&s, graph, "schema/engine/schema.mjs", "CheckSchema");
@@ -109,7 +109,7 @@ fn body13244(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v13271 = try o.lookup(&s, frame, "binding13246");
         const v13272 = try o.lookup(&s, frame, "binding13254");
         const v13273 = try o.lookup(&s, frame, "binding13248");
-        const v13274 = try s.call(v13269, c.pi_js_undefined(), &.{ v13270, v13271, v13272, v13273 });
+        const v13274 = try o.call(&s, @src(), v13269, c.pi_js_undefined(), &.{ v13270, v13271, v13272, v13273 });
         break :logical13267 v13274;
     };
     return c.JS_DupValue(e.context, v13268);
@@ -136,7 +136,7 @@ fn body13276(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13292 = try s.text("RecursiveRef");
     const v13293 = try s.own(try js.getKey(e, v13291, v13292));
     const v13294 = try o.lookup(&s, frame, "binding13281");
-    const v13295 = try s.call(v13293, v13291, &.{v13294});
+    const v13295 = try o.call(&s, @src(), v13293, v13291, &.{v13294});
     const v13297 = logical13296: {
         if (!c.JS_IsNull(v13295) and !c.JS_IsUndefined(v13295)) break :logical13296 v13295;
         break :logical13296 o.boolean(&s, false);
@@ -146,7 +146,7 @@ fn body13276(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13299 = try s.text("IsSchema");
     const v13300 = try s.own(try js.getKey(e, v13298, v13299));
     const v13301 = try o.lookup(&s, frame, "binding13290");
-    const v13302 = try s.call(v13300, v13298, &.{v13301});
+    const v13302 = try o.call(&s, @src(), v13300, v13298, &.{v13301});
     const v13304 = logical13303: {
         if (!s.truthy(v13302)) break :logical13303 v13302;
         const v13305 = try o.importValue(&s, graph, "schema/engine/schema.mjs", "ErrorSchema");
@@ -156,7 +156,7 @@ fn body13276(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v13309 = try o.lookup(&s, frame, "binding13280");
         const v13310 = try o.lookup(&s, frame, "binding13290");
         const v13311 = try o.lookup(&s, frame, "binding13282");
-        const v13312 = try s.call(v13305, c.pi_js_undefined(), &.{ v13306, v13307, v13308, v13309, v13310, v13311 });
+        const v13312 = try o.call(&s, @src(), v13305, c.pi_js_undefined(), &.{ v13306, v13307, v13308, v13309, v13310, v13311 });
         break :logical13303 v13312;
     };
     return c.JS_DupValue(e.context, v13304);

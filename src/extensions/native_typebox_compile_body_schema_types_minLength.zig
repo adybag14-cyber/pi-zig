@@ -38,7 +38,7 @@ fn body21929(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21934 = try s.own(try js.getKey(e, v21932, v21933));
     const v21935 = try o.lookup(&s, frame, "binding21930");
     const v21936 = try s.text("minLength");
-    const v21937 = try s.call(v21934, v21932, &.{ v21935, v21936 });
+    const v21937 = try o.call(&s, @src(), v21934, v21932, &.{ v21935, v21936 });
     const v21939 = logical21938: {
         if (!s.truthy(v21937)) break :logical21938 v21937;
         const v21940 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21929(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21943 = try o.lookup(&s, frame, "binding21930");
         const v21944 = try s.text("minLength");
         const v21945 = try s.own(try js.getKey(e, v21943, v21944));
-        const v21946 = try s.call(v21942, v21940, &.{v21945});
+        const v21946 = try o.call(&s, @src(), v21942, v21940, &.{v21945});
         break :logical21938 v21946;
     };
     return c.JS_DupValue(e.context, v21939);

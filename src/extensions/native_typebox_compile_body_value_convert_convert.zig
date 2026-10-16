@@ -92,7 +92,7 @@ fn body26005(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26033 = try s.text("2");
     const v26044 = try o.arrow(&s, "2", 2, body26034C, &.{ graph, frame });
     try o.defineKey(&s, v26018, v26033, v26044);
-    const v26045 = try s.call(v26016, v26014, &.{ v26017, v26018 });
+    const v26045 = try o.call(&s, @src(), v26016, v26014, &.{ v26017, v26018 });
     var destructure26046 = try o.iterator(e, v26045);
     defer destructure26046.deinit();
     errdefer destructure26046.closePreserving();
@@ -107,6 +107,6 @@ fn body26005(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26051 = try o.lookup(&s, frame, "binding26011");
     const v26052 = try o.lookup(&s, frame, "binding26012");
     const v26053 = try o.lookup(&s, frame, "binding26013");
-    const v26054 = try s.call(v26050, c.pi_js_undefined(), &.{ v26051, v26052, v26053 });
+    const v26054 = try o.call(&s, @src(), v26050, c.pi_js_undefined(), &.{ v26051, v26052, v26053 });
     return c.JS_DupValue(e.context, v26054);
 }

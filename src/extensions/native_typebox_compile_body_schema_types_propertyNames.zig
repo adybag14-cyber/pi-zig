@@ -38,7 +38,7 @@ fn body22213(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22218 = try s.own(try js.getKey(e, v22216, v22217));
     const v22219 = try o.lookup(&s, frame, "binding22214");
     const v22220 = try s.text("propertyNames");
-    const v22221 = try s.call(v22218, v22216, &.{ v22219, v22220 });
+    const v22221 = try o.call(&s, @src(), v22218, v22216, &.{ v22219, v22220 });
     const v22223 = logical22222: {
         if (!s.truthy(v22221)) break :logical22222 v22221;
         const v22224 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,14 +47,14 @@ fn body22213(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22227 = try o.lookup(&s, frame, "binding22214");
         const v22228 = try s.text("propertyNames");
         const v22229 = try s.own(try js.getKey(e, v22227, v22228));
-        const v22230 = try s.call(v22226, v22224, &.{v22229});
+        const v22230 = try o.call(&s, @src(), v22226, v22224, &.{v22229});
         const v22232 = logical22231: {
             if (s.truthy(v22230)) break :logical22231 v22230;
             const v22233 = try o.importValue(&s, graph, "schema/types/schema.mjs", "IsSchema");
             const v22234 = try o.lookup(&s, frame, "binding22214");
             const v22235 = try s.text("propertyNames");
             const v22236 = try s.own(try js.getKey(e, v22234, v22235));
-            const v22237 = try s.call(v22233, c.pi_js_undefined(), &.{v22236});
+            const v22237 = try o.call(&s, @src(), v22233, c.pi_js_undefined(), &.{v22236});
             break :logical22231 v22237;
         };
         break :logical22222 v22232;

@@ -59,7 +59,7 @@ fn body28824(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28833 = try o.lookup(&s, frame, "binding28826");
     const v28834 = try s.text("$ref");
     const v28835 = try s.own(try js.getKey(e, v28833, v28834));
-    const v28836 = try s.call(v28831, v28829, &.{ v28832, v28835 });
+    const v28836 = try o.call(&s, @src(), v28831, v28829, &.{ v28832, v28835 });
     const v28838 = conditional28837: {
         if (s.truthy(v28836)) {
             const v28839 = try o.importValue(&s, graph, "value/create/from_type.mjs", "FromType");
@@ -70,11 +70,11 @@ fn body28824(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v28844 = try s.own(try js.getKey(e, v28842, v28843));
             const v28845 = try o.propertyKey(&s, v28844);
             const v28846 = try s.own(try js.getKey(e, v28841, v28845));
-            const v28847 = try s.call(v28839, c.pi_js_undefined(), &.{ v28840, v28846 });
+            const v28847 = try o.call(&s, @src(), v28839, c.pi_js_undefined(), &.{ v28840, v28846 });
             break :conditional28837 v28847;
         } else {
             const v28854 = try o.arrow(&s, "", 0, body28848C, &.{ graph, frame });
-            const v28855 = try s.call(v28854, c.pi_js_undefined(), &.{});
+            const v28855 = try o.call(&s, @src(), v28854, c.pi_js_undefined(), &.{});
             break :conditional28837 v28855;
         }
     };

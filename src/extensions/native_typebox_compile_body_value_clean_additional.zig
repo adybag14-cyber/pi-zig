@@ -38,7 +38,7 @@ fn body23283(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23290 = try s.own(try js.getKey(e, v23288, v23289));
     const v23291 = try o.lookup(&s, frame, "binding23284");
     const v23292 = try s.text("additionalProperties");
-    const v23293 = try s.call(v23290, v23288, &.{ v23291, v23292 });
+    const v23293 = try o.call(&s, @src(), v23290, v23288, &.{ v23291, v23292 });
     const v23295 = conditional23294: {
         if (s.truthy(v23293)) {
             const v23296 = try o.lookup(&s, frame, "binding23284");

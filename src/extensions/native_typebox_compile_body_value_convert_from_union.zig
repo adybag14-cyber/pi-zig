@@ -37,7 +37,7 @@ fn body27224(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v27229 = try o.lookup(&s, frame, "binding27207");
     const v27230 = try o.lookup(&s, frame, "binding27226");
     const v27231 = try o.lookup(&s, frame, "binding27209");
-    const v27232 = try s.call(v27228, c.pi_js_undefined(), &.{ v27229, v27230, v27231 });
+    const v27232 = try o.call(&s, @src(), v27228, c.pi_js_undefined(), &.{ v27229, v27230, v27231 });
     return c.JS_DupValue(e.context, v27232);
 }
 fn body27224C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -57,8 +57,8 @@ fn body27242(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v27248 = try o.lookup(&s, frame, "binding27244");
     const v27249 = try o.importValue(&s, graph, "value/clone/index.mjs", "Clone");
     const v27250 = try o.lookup(&s, frame, "binding27209");
-    const v27251 = try s.call(v27249, c.pi_js_undefined(), &.{v27250});
-    const v27252 = try s.call(v27246, c.pi_js_undefined(), &.{ v27247, v27248, v27251 });
+    const v27251 = try o.call(&s, @src(), v27249, c.pi_js_undefined(), &.{v27250});
+    const v27252 = try o.call(&s, @src(), v27246, c.pi_js_undefined(), &.{ v27247, v27248, v27251 });
     return c.JS_DupValue(e.context, v27252);
 }
 fn body27242C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -77,7 +77,7 @@ fn body27258(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v27263 = try o.lookup(&s, frame, "binding27207");
     const v27264 = try o.lookup(&s, frame, "binding27208");
     const v27265 = try o.lookup(&s, frame, "binding27260");
-    const v27266 = try s.call(v27262, c.pi_js_undefined(), &.{ v27263, v27264, v27265 });
+    const v27266 = try o.call(&s, @src(), v27262, c.pi_js_undefined(), &.{ v27263, v27264, v27265 });
     return c.JS_DupValue(e.context, v27266);
 }
 fn body27258C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -102,7 +102,7 @@ fn body27206(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v27222 = try s.text("some");
     const v27223 = try s.own(try js.getKey(e, v27221, v27222));
     const v27233 = try o.arrow(&s, "", 1, body27224C, &.{ graph, frame });
-    const v27234 = try s.call(v27223, v27221, &.{v27233});
+    const v27234 = try o.call(&s, @src(), v27223, v27221, &.{v27233});
     try o.assign(&s, frame, "binding27216", v27234);
     const v27235 = try o.lookup(&s, frame, "binding27216");
     if (s.truthy(v27235)) {
@@ -115,19 +115,19 @@ fn body27206(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v27240 = try s.text("map");
     const v27241 = try s.own(try js.getKey(e, v27239, v27240));
     const v27253 = try o.arrow(&s, "", 1, body27242C, &.{ graph, frame });
-    const v27254 = try s.call(v27241, v27239, &.{v27253});
+    const v27254 = try o.call(&s, @src(), v27241, v27239, &.{v27253});
     try o.assign(&s, frame, "binding27217", v27254);
     const v27255 = try o.lookup(&s, frame, "binding27217");
     const v27256 = try s.text("find");
     const v27257 = try s.own(try js.getKey(e, v27255, v27256));
     const v27267 = try o.arrow(&s, "", 1, body27258C, &.{ graph, frame });
-    const v27268 = try s.call(v27257, v27255, &.{v27267});
+    const v27268 = try o.call(&s, @src(), v27257, v27255, &.{v27267});
     try o.assign(&s, frame, "binding27218", v27268);
     const v27269 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v27270 = try s.text("IsUndefined");
     const v27271 = try s.own(try js.getKey(e, v27269, v27270));
     const v27272 = try o.lookup(&s, frame, "binding27218");
-    const v27273 = try s.call(v27271, v27269, &.{v27272});
+    const v27273 = try o.call(&s, @src(), v27271, v27269, &.{v27272});
     const v27275 = conditional27274: {
         if (s.truthy(v27273)) {
             const v27276 = try o.lookup(&s, frame, "binding27209");

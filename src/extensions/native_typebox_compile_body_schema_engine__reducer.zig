@@ -49,8 +49,8 @@ fn body4492(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v4509 = try s.own(try js.getKey(e, v4507, v4508));
     const v4510 = try s.text("CheckContext");
     const v4511 = try s.array();
-    const v4512 = try s.call(v4509, v4507, &.{ v4510, v4511 });
-    const v4513 = try s.call(v4500, v4498, &.{ v4506, v4512 });
+    const v4512 = try o.call(&s, @src(), v4509, v4507, &.{ v4510, v4511 });
+    const v4513 = try o.call(&s, @src(), v4500, v4498, &.{ v4506, v4512 });
     return c.JS_DupValue(e.context, v4513);
 }
 fn body4492C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -90,8 +90,8 @@ fn body4519(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v4544 = try o.lookup(&s, frame, "binding4464");
     const v4545 = try o.lookup(&s, frame, "binding4521");
     const v4546 = try o.lookup(&s, frame, "binding4466");
-    const v4547 = try s.call(v4542, c.pi_js_undefined(), &.{ v4543, v4544, v4545, v4546 });
-    const v4548 = try s.call(v4539, v4537, &.{ v4540, v4547 });
+    const v4547 = try o.call(&s, @src(), v4542, c.pi_js_undefined(), &.{ v4543, v4544, v4545, v4546 });
+    const v4548 = try o.call(&s, @src(), v4539, v4537, &.{ v4540, v4547 });
     const v4549 = try s.array();
     const v4550 = try s.text("context_");
     const v4551 = try o.lookup(&s, frame, "binding4522");
@@ -100,8 +100,8 @@ fn body4519(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v4554 = try s.text("");
     const v4555 = try s.concat(v4553, v4554);
     try o.append(&s, v4549, v4555);
-    const v4556 = try s.call(v4536, v4534, &.{ v4548, v4549 });
-    const v4557 = try s.call(v4527, v4525, &.{ v4533, v4556 });
+    const v4556 = try o.call(&s, @src(), v4536, v4534, &.{ v4548, v4549 });
+    const v4557 = try o.call(&s, @src(), v4527, v4525, &.{ v4533, v4556 });
     return c.JS_DupValue(e.context, v4557);
 }
 fn body4519C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -135,7 +135,7 @@ fn body4563(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v4583 = try s.own(try js.getKey(e, v4581, v4582));
     const v4584 = try s.text("results");
     const v4585 = try s.text("push");
-    const v4586 = try s.call(v4583, v4581, &.{ v4584, v4585 });
+    const v4586 = try o.call(&s, @src(), v4583, v4581, &.{ v4584, v4585 });
     const v4587 = try s.array();
     const v4588 = try s.text("context_");
     const v4589 = try o.lookup(&s, frame, "binding4566");
@@ -144,8 +144,8 @@ fn body4563(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v4592 = try s.text("");
     const v4593 = try s.concat(v4591, v4592);
     try o.append(&s, v4587, v4593);
-    const v4594 = try s.call(v4580, v4578, &.{ v4586, v4587 });
-    const v4595 = try s.call(v4571, v4569, &.{ v4577, v4594 });
+    const v4594 = try o.call(&s, @src(), v4580, v4578, &.{ v4586, v4587 });
+    const v4595 = try o.call(&s, @src(), v4571, v4569, &.{ v4577, v4594 });
     return c.JS_DupValue(e.context, v4595);
 }
 fn body4563C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -173,25 +173,25 @@ fn body4462(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4485 = try s.own(try js.getKey(e, v4483, v4484));
     const v4486 = try s.text("results");
     const v4487 = try s.text("[]");
-    const v4488 = try s.call(v4485, v4483, &.{ v4486, v4487 });
+    const v4488 = try o.call(&s, @src(), v4485, v4483, &.{ v4486, v4487 });
     try o.assign(&s, frame, "binding4478", v4488);
     const v4489 = try o.lookup(&s, frame, "binding4465");
     const v4490 = try s.text("map");
     const v4491 = try s.own(try js.getKey(e, v4489, v4490));
     const v4514 = try o.arrow(&s, "", 2, body4492C, &.{ graph, frame });
-    const v4515 = try s.call(v4491, v4489, &.{v4514});
+    const v4515 = try o.call(&s, @src(), v4491, v4489, &.{v4514});
     try o.assign(&s, frame, "binding4479", v4515);
     const v4516 = try o.lookup(&s, frame, "binding4465");
     const v4517 = try s.text("map");
     const v4518 = try s.own(try js.getKey(e, v4516, v4517));
     const v4558 = try o.arrow(&s, "", 2, body4519C, &.{ graph, frame });
-    const v4559 = try s.call(v4518, v4516, &.{v4558});
+    const v4559 = try o.call(&s, @src(), v4518, v4516, &.{v4558});
     try o.assign(&s, frame, "binding4480", v4559);
     const v4560 = try o.lookup(&s, frame, "binding4465");
     const v4561 = try s.text("map");
     const v4562 = try s.own(try js.getKey(e, v4560, v4561));
     const v4596 = try o.arrow(&s, "", 2, body4563C, &.{ graph, frame });
-    const v4597 = try s.call(v4562, v4560, &.{v4596});
+    const v4597 = try o.call(&s, @src(), v4562, v4560, &.{v4596});
     try o.assign(&s, frame, "binding4481", v4597);
     const v4598 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
     const v4599 = try s.text("Return");
@@ -204,9 +204,9 @@ fn body4462(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4606 = try s.text("Merge");
     const v4607 = try s.own(try js.getKey(e, v4605, v4606));
     const v4608 = try s.text("results");
-    const v4609 = try s.call(v4607, v4605, &.{v4608});
-    const v4610 = try s.call(v4603, v4601, &.{ v4604, v4609 });
-    const v4611 = try s.call(v4600, v4598, &.{v4610});
+    const v4609 = try o.call(&s, @src(), v4607, v4605, &.{v4608});
+    const v4610 = try o.call(&s, @src(), v4603, v4601, &.{ v4604, v4609 });
+    const v4611 = try o.call(&s, @src(), v4600, v4598, &.{v4610});
     try o.assign(&s, frame, "binding4482", v4611);
     const v4612 = try o.importValue(&s, graph, "guard/index.mjs", "EmitGuard");
     const v4613 = try s.text("Call");
@@ -229,9 +229,9 @@ fn body4462(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     try o.spreadArray(&s, v4622, v4626);
     const v4627 = try o.lookup(&s, frame, "binding4482");
     try o.append(&s, v4622, v4627);
-    const v4628 = try s.call(v4621, v4619, &.{v4622});
-    const v4629 = try s.call(v4617, v4615, &.{ v4618, v4628 });
+    const v4628 = try o.call(&s, @src(), v4621, v4619, &.{v4622});
+    const v4629 = try o.call(&s, @src(), v4617, v4615, &.{ v4618, v4628 });
     const v4630 = try s.array();
-    const v4631 = try s.call(v4614, v4612, &.{ v4629, v4630 });
+    const v4631 = try o.call(&s, @src(), v4614, v4612, &.{ v4629, v4630 });
     return c.JS_DupValue(e.context, v4631);
 }

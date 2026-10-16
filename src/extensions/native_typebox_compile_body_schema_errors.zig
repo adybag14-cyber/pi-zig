@@ -87,7 +87,7 @@ fn body18039(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v18045 = try s.text("message");
     const v18046 = try o.lookup(&s, frame, "binding17972");
     const v18047 = try o.lookup(&s, frame, "binding18041");
-    const v18048 = try s.call(v18046, c.pi_js_undefined(), &.{v18047});
+    const v18048 = try o.call(&s, @src(), v18046, c.pi_js_undefined(), &.{v18047});
     try o.defineKey(&s, v18043, v18045, v18048);
     return c.JS_DupValue(e.context, v18043);
 }
@@ -114,7 +114,7 @@ fn body17953(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v17993 = try s.text("2");
     const v18004 = try o.arrow(&s, "2", 2, body17994C, &.{ graph, frame });
     try o.defineKey(&s, v17978, v17993, v18004);
-    const v18005 = try s.call(v17976, v17974, &.{ v17977, v17978 });
+    const v18005 = try o.call(&s, @src(), v17976, v17974, &.{ v17977, v17978 });
     var destructure18006 = try o.iterator(e, v18005);
     defer destructure18006.deinit();
     errdefer destructure18006.closePreserving();
@@ -146,21 +146,21 @@ fn body17953(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v18026 = try s.text("");
     const v18027 = try o.lookup(&s, frame, "binding17966");
     const v18028 = try o.lookup(&s, frame, "binding17967");
-    const v18029 = try s.call(v18022, v18020, &.{ v18023, v18024, v18025, v18026, v18027, v18028 });
+    const v18029 = try o.call(&s, @src(), v18022, v18020, &.{ v18023, v18024, v18025, v18026, v18027, v18028 });
     try o.assign(&s, frame, "binding17970", v18029);
     const v18030 = try o.lookup(&s, frame, "binding17969");
     const v18031 = try s.text("GetErrors");
     const v18032 = try s.own(try js.getKey(e, v18030, v18031));
-    const v18033 = try s.call(v18032, v18030, &.{});
+    const v18033 = try o.call(&s, @src(), v18032, v18030, &.{});
     try o.assign(&s, frame, "binding17971", v18033);
     const v18034 = try o.importValue(&s, graph, "system/locale/_config.mjs", "Get");
-    const v18035 = try s.call(v18034, c.pi_js_undefined(), &.{});
+    const v18035 = try o.call(&s, @src(), v18034, c.pi_js_undefined(), &.{});
     try o.assign(&s, frame, "binding17972", v18035);
     const v18036 = try o.lookup(&s, frame, "binding17971");
     const v18037 = try s.text("map");
     const v18038 = try s.own(try js.getKey(e, v18036, v18037));
     const v18049 = try o.arrow(&s, "", 1, body18039C, &.{ graph, frame });
-    const v18050 = try s.call(v18038, v18036, &.{v18049});
+    const v18050 = try o.call(&s, @src(), v18038, v18036, &.{v18049});
     try o.assign(&s, frame, "binding17973", v18050);
     const v18051 = try s.array();
     const v18052 = try o.lookup(&s, frame, "binding17970");

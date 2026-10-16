@@ -5,6 +5,12 @@ const js = @import("native_js_values.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const c = js.c;
 const Engine = js.Engine;
+pub fn call(s: *Scope, comptime site: std.builtin.SourceLocation, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    if (!c.JS_IsFunction(s.engine.context, function)) {
+        std.debug.print("Actual TypeBox non-callable at {s}:{d} {s}; undefined={any} null={any} receiver_class={d} argc={d}\n", .{ site.file, site.line, site.fn_name, c.JS_IsUndefined(function), c.JS_IsNull(function), if (c.JS_IsObject(receiver)) c.JS_GetClassID(receiver) else 0, args.len });
+    }
+    return s.call(function, receiver, args);
+}
 pub fn boolean(s: *Scope, value: bool) c.JSValue {
     return c.pi_js_bool(s.engine.context, @intFromBool(value));
 }

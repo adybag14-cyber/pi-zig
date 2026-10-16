@@ -38,7 +38,7 @@ fn body22283(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22288 = try s.own(try js.getKey(e, v22286, v22287));
     const v22289 = try o.lookup(&s, frame, "binding22284");
     const v22290 = try s.text("$recursiveRef");
-    const v22291 = try s.call(v22288, v22286, &.{ v22289, v22290 });
+    const v22291 = try o.call(&s, @src(), v22288, v22286, &.{ v22289, v22290 });
     const v22293 = logical22292: {
         if (!s.truthy(v22291)) break :logical22292 v22291;
         const v22294 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body22283(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v22297 = try o.lookup(&s, frame, "binding22284");
         const v22298 = try s.text("$recursiveRef");
         const v22299 = try s.own(try js.getKey(e, v22297, v22298));
-        const v22300 = try s.call(v22296, v22294, &.{v22299});
+        const v22300 = try o.call(&s, @src(), v22296, v22294, &.{v22299});
         break :logical22292 v22300;
     };
     return c.JS_DupValue(e.context, v22293);

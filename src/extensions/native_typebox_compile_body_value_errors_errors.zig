@@ -92,7 +92,7 @@ fn body30239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30271 = try s.text("2");
     const v30282 = try o.arrow(&s, "2", 2, body30272C, &.{ graph, frame });
     try o.defineKey(&s, v30256, v30271, v30282);
-    const v30283 = try s.call(v30254, v30252, &.{ v30255, v30256 });
+    const v30283 = try o.call(&s, @src(), v30254, v30252, &.{ v30255, v30256 });
     var destructure30284 = try o.iterator(e, v30283);
     defer destructure30284.deinit();
     errdefer destructure30284.closePreserving();
@@ -107,7 +107,7 @@ fn body30239(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v30289 = try o.lookup(&s, frame, "binding30247");
     const v30290 = try o.lookup(&s, frame, "binding30248");
     const v30291 = try o.lookup(&s, frame, "binding30249");
-    const v30292 = try s.call(v30288, c.pi_js_undefined(), &.{ v30289, v30290, v30291 });
+    const v30292 = try o.call(&s, @src(), v30288, c.pi_js_undefined(), &.{ v30289, v30290, v30291 });
     var destructure30293 = try o.iterator(e, v30292);
     defer destructure30293.deinit();
     errdefer destructure30293.closePreserving();

@@ -43,7 +43,7 @@ fn body28954(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v28965 = try o.lookup(&s, frame, "binding28957");
     const v28966 = try o.propertyKey(&s, v28965);
     const v28967 = try s.own(try js.getKey(e, v28964, v28966));
-    const v28968 = try s.call(v28960, c.pi_js_undefined(), &.{ v28961, v28967 });
+    const v28968 = try o.call(&s, @src(), v28960, c.pi_js_undefined(), &.{ v28961, v28967 });
     return c.JS_DupValue(e.context, v28968);
 }
 fn body28954C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -70,6 +70,6 @@ fn body28941(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28953 = try s.own(try js.getKey(e, v28951, v28952));
     try o.defineKey(&s, v28949, v28950, v28953);
     const v28969 = try o.arrow(&s, "", 2, body28954C, &.{ graph, frame });
-    const v28970 = try s.call(v28948, v28946, &.{ v28949, v28969 });
+    const v28970 = try o.call(&s, @src(), v28948, v28946, &.{ v28949, v28969 });
     return c.JS_DupValue(e.context, v28970);
 }

@@ -43,11 +43,11 @@ fn body29257(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29267 = try s.own(try js.getKey(e, v29265, v29266));
     const v29268 = try s.text("length");
     const v29269 = try s.own(try js.getKey(e, v29267, v29268));
-    const v29270 = try s.call(v29264, v29262, &.{ v29269, c.JS_NewFloat64(e.context, 0) });
+    const v29270 = try o.call(&s, @src(), v29264, v29262, &.{ v29269, c.JS_NewFloat64(e.context, 0) });
     if (s.truthy(v29270)) {
         const v29271 = try s.global("Error");
         const v29272 = try s.text("Unable to create Union with no variants");
-        const v29273 = try s.call(v29271, c.pi_js_undefined(), &.{v29272});
+        const v29273 = try o.call(&s, @src(), v29271, c.pi_js_undefined(), &.{v29272});
         _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v29273));
         return js.capture(e);
     }
@@ -58,6 +58,6 @@ fn body29257(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v29278 = try s.own(try js.getKey(e, v29276, v29277));
     const v29279 = try o.propertyKey(&s, c.JS_NewFloat64(e.context, 0));
     const v29280 = try s.own(try js.getKey(e, v29278, v29279));
-    const v29281 = try s.call(v29274, c.pi_js_undefined(), &.{ v29275, v29280 });
+    const v29281 = try o.call(&s, @src(), v29274, c.pi_js_undefined(), &.{ v29275, v29280 });
     return c.JS_DupValue(e.context, v29281);
 }

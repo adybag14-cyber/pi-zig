@@ -41,13 +41,13 @@ fn body26177(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26187 = try s.text("TryBoolean");
     const v26188 = try s.own(try js.getKey(e, v26186, v26187));
     const v26189 = try o.lookup(&s, frame, "binding26180");
-    const v26190 = try s.call(v26188, v26186, &.{v26189});
+    const v26190 = try o.call(&s, @src(), v26188, v26186, &.{v26189});
     try o.assign(&s, frame, "binding26185", v26190);
     const v26191 = try o.importValue(&s, graph, "value/convert/try/index.mjs", "Try");
     const v26192 = try s.text("IsOk");
     const v26193 = try s.own(try js.getKey(e, v26191, v26192));
     const v26194 = try o.lookup(&s, frame, "binding26185");
-    const v26195 = try s.call(v26193, v26191, &.{v26194});
+    const v26195 = try o.call(&s, @src(), v26193, v26191, &.{v26194});
     const v26197 = conditional26196: {
         if (s.truthy(v26195)) {
             const v26198 = try o.lookup(&s, frame, "binding26185");

@@ -100,7 +100,7 @@ fn body23134(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23164 = try s.text("2");
     const v23175 = try o.arrow(&s, "2", 2, body23165C, &.{ graph, frame });
     try o.defineKey(&s, v23149, v23164, v23175);
-    const v23176 = try s.call(v23147, v23145, &.{ v23148, v23149 });
+    const v23176 = try o.call(&s, @src(), v23147, v23145, &.{ v23148, v23149 });
     var destructure23177 = try o.iterator(e, v23176);
     defer destructure23177.deinit();
     errdefer destructure23177.closePreserving();
@@ -115,7 +115,7 @@ fn body23134(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23182 = try o.lookup(&s, frame, "binding23141");
     const v23183 = try o.lookup(&s, frame, "binding23142");
     const v23184 = try o.lookup(&s, frame, "binding23143");
-    const v23185 = try s.call(v23181, c.pi_js_undefined(), &.{ v23182, v23183, v23184 });
+    const v23185 = try o.call(&s, @src(), v23181, c.pi_js_undefined(), &.{ v23182, v23183, v23184 });
     try o.assign(&s, frame, "binding23144", v23185);
     const v23186 = try o.lookup(&s, frame, "binding23144");
     if (s.truthy(o.boolean(&s, !s.truthy(v23186)))) {
@@ -126,7 +126,7 @@ fn body23134(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v23191 = try o.lookup(&s, frame, "binding23141");
         const v23192 = try o.lookup(&s, frame, "binding23142");
         const v23193 = try o.lookup(&s, frame, "binding23143");
-        const v23194 = try s.call(v23190, c.pi_js_undefined(), &.{ v23191, v23192, v23193 });
+        const v23194 = try o.call(&s, @src(), v23190, c.pi_js_undefined(), &.{ v23191, v23192, v23193 });
         const v23195 = try o.construct(&s, v23187, &.{ v23188, v23189, v23194 });
         _ = c.JS_Throw(e.context, c.JS_DupValue(e.context, v23195));
         return js.capture(e);
@@ -170,7 +170,7 @@ fn constructor23200(e: *Engine, target: c.JSValue, args: []const c.JSValue, root
     try o.defineKey(&s, v23212, v23222, o.boolean(&s, false));
     const v23223 = try s.text("enumerable");
     try o.defineKey(&s, v23212, v23223, o.boolean(&s, false));
-    const v23224 = try s.call(v23210, v23208, &.{ receiver, v23211, v23212 });
+    const v23224 = try o.call(&s, @src(), v23210, v23208, &.{ receiver, v23211, v23212 });
     _ = v23224;
     return c.JS_DupValue(e.context, receiver);
 }

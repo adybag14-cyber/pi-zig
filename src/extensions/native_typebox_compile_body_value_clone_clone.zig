@@ -35,6 +35,6 @@ fn body23957(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding23958", v23959);
     const v23960 = try o.importValue(&s, graph, "system/memory/clone.mjs", "Clone");
     const v23961 = try o.lookup(&s, frame, "binding23958");
-    const v23962 = try s.call(v23960, c.pi_js_undefined(), &.{v23961});
+    const v23962 = try o.call(&s, @src(), v23960, c.pi_js_undefined(), &.{v23961});
     return c.JS_DupValue(e.context, v23962);
 }

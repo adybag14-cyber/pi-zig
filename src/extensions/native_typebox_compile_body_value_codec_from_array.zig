@@ -47,7 +47,7 @@ fn body24452(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24462 = try s.text("IsArray");
     const v24463 = try s.own(try js.getKey(e, v24461, v24462));
     const v24464 = try o.lookup(&s, frame, "binding24456");
-    const v24465 = try s.call(v24463, v24461, &.{v24464});
+    const v24465 = try o.call(&s, @src(), v24463, v24461, &.{v24464});
     if (s.truthy(o.boolean(&s, !s.truthy(v24465)))) {
         const v24466 = try o.lookup(&s, frame, "binding24456");
         return c.JS_DupValue(e.context, v24466);
@@ -74,7 +74,7 @@ fn body24452(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v24485 = try o.lookup(&s, frame, "binding24467");
             const v24486 = try o.propertyKey(&s, v24485);
             const v24487 = try s.own(try js.getKey(e, v24484, v24486));
-            const v24488 = try s.call(v24478, c.pi_js_undefined(), &.{ v24479, v24480, v24483, v24487 });
+            const v24488 = try o.call(&s, @src(), v24478, c.pi_js_undefined(), &.{ v24479, v24480, v24483, v24487 });
             try js.setKey(e, v24475, v24477, v24488);
         }
         const v24489 = try o.lookup(&s, frame, "binding24467");
@@ -86,7 +86,7 @@ fn body24452(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24493 = try o.lookup(&s, frame, "binding24454");
     const v24494 = try o.lookup(&s, frame, "binding24455");
     const v24495 = try o.lookup(&s, frame, "binding24456");
-    const v24496 = try s.call(v24491, c.pi_js_undefined(), &.{ v24492, v24493, v24494, v24495 });
+    const v24496 = try o.call(&s, @src(), v24491, c.pi_js_undefined(), &.{ v24492, v24493, v24494, v24495 });
     return c.JS_DupValue(e.context, v24496);
 }
 fn body24498(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -108,13 +108,13 @@ fn body24498(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24511 = try o.lookup(&s, frame, "binding24500");
     const v24512 = try o.lookup(&s, frame, "binding24501");
     const v24513 = try o.lookup(&s, frame, "binding24502");
-    const v24514 = try s.call(v24509, c.pi_js_undefined(), &.{ v24510, v24511, v24512, v24513 });
+    const v24514 = try o.call(&s, @src(), v24509, c.pi_js_undefined(), &.{ v24510, v24511, v24512, v24513 });
     try o.assign(&s, frame, "binding24508", v24514);
     const v24515 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v24516 = try s.text("IsArray");
     const v24517 = try s.own(try js.getKey(e, v24515, v24516));
     const v24518 = try o.lookup(&s, frame, "binding24508");
-    const v24519 = try s.call(v24517, v24515, &.{v24518});
+    const v24519 = try o.call(&s, @src(), v24517, v24515, &.{v24518});
     if (s.truthy(o.boolean(&s, !s.truthy(v24519)))) {
         const v24520 = try o.lookup(&s, frame, "binding24508");
         return c.JS_DupValue(e.context, v24520);
@@ -141,7 +141,7 @@ fn body24498(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v24539 = try o.lookup(&s, frame, "binding24521");
             const v24540 = try o.propertyKey(&s, v24539);
             const v24541 = try s.own(try js.getKey(e, v24538, v24540));
-            const v24542 = try s.call(v24532, c.pi_js_undefined(), &.{ v24533, v24534, v24537, v24541 });
+            const v24542 = try o.call(&s, @src(), v24532, c.pi_js_undefined(), &.{ v24533, v24534, v24537, v24541 });
             try js.setKey(e, v24529, v24531, v24542);
         }
         const v24543 = try o.lookup(&s, frame, "binding24521");
@@ -170,7 +170,7 @@ fn body24547(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v24558 = try s.own(try js.getKey(e, v24556, v24557));
     const v24559 = try o.lookup(&s, frame, "binding24548");
     const v24560 = try s.text("Decode");
-    const v24561 = try s.call(v24558, v24556, &.{ v24559, v24560 });
+    const v24561 = try o.call(&s, @src(), v24558, v24556, &.{ v24559, v24560 });
     const v24563 = conditional24562: {
         if (s.truthy(v24561)) {
             const v24564 = try o.lookup(&s, frame, "binding24449");
@@ -178,7 +178,7 @@ fn body24547(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v24566 = try o.lookup(&s, frame, "binding24549");
             const v24567 = try o.lookup(&s, frame, "binding24550");
             const v24568 = try o.lookup(&s, frame, "binding24551");
-            const v24569 = try s.call(v24564, c.pi_js_undefined(), &.{ v24565, v24566, v24567, v24568 });
+            const v24569 = try o.call(&s, @src(), v24564, c.pi_js_undefined(), &.{ v24565, v24566, v24567, v24568 });
             break :conditional24562 v24569;
         } else {
             const v24570 = try o.lookup(&s, frame, "binding24450");
@@ -186,7 +186,7 @@ fn body24547(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v24572 = try o.lookup(&s, frame, "binding24549");
             const v24573 = try o.lookup(&s, frame, "binding24550");
             const v24574 = try o.lookup(&s, frame, "binding24551");
-            const v24575 = try s.call(v24570, c.pi_js_undefined(), &.{ v24571, v24572, v24573, v24574 });
+            const v24575 = try o.call(&s, @src(), v24570, c.pi_js_undefined(), &.{ v24571, v24572, v24573, v24574 });
             break :conditional24562 v24575;
         }
     };

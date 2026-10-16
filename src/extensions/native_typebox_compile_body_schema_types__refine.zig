@@ -37,7 +37,7 @@ fn body20998(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v21003 = try s.text("IsObject");
     const v21004 = try s.own(try js.getKey(e, v21002, v21003));
     const v21005 = try o.lookup(&s, frame, "binding21000");
-    const v21006 = try s.call(v21004, v21002, &.{v21005});
+    const v21006 = try o.call(&s, @src(), v21004, v21002, &.{v21005});
     const v21008 = logical21007: {
         if (!s.truthy(v21006)) break :logical21007 v21006;
         const v21009 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -45,7 +45,7 @@ fn body20998(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
         const v21011 = try s.own(try js.getKey(e, v21009, v21010));
         const v21012 = try o.lookup(&s, frame, "binding21000");
         const v21013 = try s.text("check");
-        const v21014 = try s.call(v21011, v21009, &.{ v21012, v21013 });
+        const v21014 = try o.call(&s, @src(), v21011, v21009, &.{ v21012, v21013 });
         break :logical21007 v21014;
     };
     const v21016 = logical21015: {
@@ -55,7 +55,7 @@ fn body20998(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
         const v21019 = try s.own(try js.getKey(e, v21017, v21018));
         const v21020 = try o.lookup(&s, frame, "binding21000");
         const v21021 = try s.text("error");
-        const v21022 = try s.call(v21019, v21017, &.{ v21020, v21021 });
+        const v21022 = try o.call(&s, @src(), v21019, v21017, &.{ v21020, v21021 });
         break :logical21015 v21022;
     };
     const v21024 = logical21023: {
@@ -66,7 +66,7 @@ fn body20998(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
         const v21028 = try o.lookup(&s, frame, "binding21000");
         const v21029 = try s.text("check");
         const v21030 = try s.own(try js.getKey(e, v21028, v21029));
-        const v21031 = try s.call(v21027, v21025, &.{v21030});
+        const v21031 = try o.call(&s, @src(), v21027, v21025, &.{v21030});
         break :logical21023 v21031;
     };
     const v21033 = logical21032: {
@@ -77,7 +77,7 @@ fn body20998(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
         const v21037 = try o.lookup(&s, frame, "binding21000");
         const v21038 = try s.text("error");
         const v21039 = try s.own(try js.getKey(e, v21037, v21038));
-        const v21040 = try s.call(v21036, v21034, &.{v21039});
+        const v21040 = try o.call(&s, @src(), v21036, v21034, &.{v21039});
         break :logical21032 v21040;
     };
     return c.JS_DupValue(e.context, v21033);
@@ -99,7 +99,7 @@ fn body20970(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v20975 = try s.own(try js.getKey(e, v20973, v20974));
     const v20976 = try o.lookup(&s, frame, "binding20971");
     const v20977 = try s.text("~refine");
-    const v20978 = try s.call(v20975, v20973, &.{ v20976, v20977 });
+    const v20978 = try o.call(&s, @src(), v20975, v20973, &.{ v20976, v20977 });
     const v20980 = logical20979: {
         if (!s.truthy(v20978)) break :logical20979 v20978;
         const v20981 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -109,7 +109,7 @@ fn body20970(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v20985 = try s.text("~refine");
         const v20986 = try o.propertyKey(&s, v20985);
         const v20987 = try s.own(try js.getKey(e, v20984, v20986));
-        const v20988 = try s.call(v20983, v20981, &.{v20987});
+        const v20988 = try o.call(&s, @src(), v20983, v20981, &.{v20987});
         break :logical20979 v20988;
     };
     const v20990 = logical20989: {
@@ -122,7 +122,7 @@ fn body20970(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v20996 = try o.propertyKey(&s, v20995);
         const v20997 = try s.own(try js.getKey(e, v20994, v20996));
         const v21041 = try o.arrow(&s, "", 1, body20998C, &.{ graph, frame });
-        const v21042 = try s.call(v20993, v20991, &.{ v20997, c.JS_NewFloat64(e.context, 0), v21041 });
+        const v21042 = try o.call(&s, @src(), v20993, v20991, &.{ v20997, c.JS_NewFloat64(e.context, 0), v21041 });
         break :logical20989 v21042;
     };
     return c.JS_DupValue(e.context, v20990);

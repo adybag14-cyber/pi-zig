@@ -54,7 +54,7 @@ fn body19133(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v19143 = try o.lookup(&s, frame, "binding19134");
     const v19144 = try o.lookup(&s, frame, "binding19135");
     const v19145 = try o.lookup(&s, frame, "binding19136");
-    const v19146 = try s.call(v19142, c.pi_js_undefined(), &.{ v19143, v19144, v19145 });
+    const v19146 = try o.call(&s, @src(), v19142, c.pi_js_undefined(), &.{ v19143, v19144, v19145 });
     try o.assign(&s, frame, "binding19141", v19146);
     const v19147 = try o.lookup(&s, frame, "binding19130");
     const v19148 = try o.lookup(&s, frame, "binding19135");
@@ -133,7 +133,7 @@ fn body19155(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v19183 = try s.text("2");
     const v19194 = try o.arrow(&s, "2", 2, body19184C, &.{ graph, frame });
     try o.defineKey(&s, v19168, v19183, v19194);
-    const v19195 = try s.call(v19166, v19164, &.{ v19167, v19168 });
+    const v19195 = try o.call(&s, @src(), v19166, v19164, &.{ v19167, v19168 });
     var destructure19196 = try o.iterator(e, v19195);
     defer destructure19196.deinit();
     errdefer destructure19196.closePreserving();
@@ -148,7 +148,7 @@ fn body19155(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v19201 = try o.lookup(&s, frame, "binding19161");
     const v19202 = try o.lookup(&s, frame, "binding19162");
     const v19203 = try o.lookup(&s, frame, "binding19163");
-    const v19204 = try s.call(v19200, c.pi_js_undefined(), &.{ v19201, v19202, v19203 });
+    const v19204 = try o.call(&s, @src(), v19200, c.pi_js_undefined(), &.{ v19201, v19202, v19203 });
     if (s.truthy(v19204)) {
         const v19205 = try o.lookup(&s, frame, "binding19163");
         return c.JS_DupValue(e.context, v19205);
@@ -157,7 +157,7 @@ fn body19155(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v19207 = try o.lookup(&s, frame, "binding19161");
     const v19208 = try o.lookup(&s, frame, "binding19162");
     const v19209 = try o.lookup(&s, frame, "binding19163");
-    const v19210 = try s.call(v19206, c.pi_js_undefined(), &.{ v19207, v19208, v19209 });
+    const v19210 = try o.call(&s, @src(), v19206, c.pi_js_undefined(), &.{ v19207, v19208, v19209 });
     _ = v19210;
     return c.pi_js_undefined();
 }

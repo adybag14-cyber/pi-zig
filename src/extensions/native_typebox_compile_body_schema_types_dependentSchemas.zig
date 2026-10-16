@@ -35,7 +35,7 @@ fn body21427(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     try o.assign(&s, frame, "binding21429", v21430);
     const v21431 = try o.importValue(&s, graph, "schema/types/schema.mjs", "IsSchema");
     const v21432 = try o.lookup(&s, frame, "binding21429");
-    const v21433 = try s.call(v21431, c.pi_js_undefined(), &.{v21432});
+    const v21433 = try o.call(&s, @src(), v21431, c.pi_js_undefined(), &.{v21432});
     return c.JS_DupValue(e.context, v21433);
 }
 fn body21427C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -55,7 +55,7 @@ fn body21398(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21403 = try s.own(try js.getKey(e, v21401, v21402));
     const v21404 = try o.lookup(&s, frame, "binding21399");
     const v21405 = try s.text("dependentSchemas");
-    const v21406 = try s.call(v21403, v21401, &.{ v21404, v21405 });
+    const v21406 = try o.call(&s, @src(), v21403, v21401, &.{ v21404, v21405 });
     const v21408 = logical21407: {
         if (!s.truthy(v21406)) break :logical21407 v21406;
         const v21409 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -64,7 +64,7 @@ fn body21398(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21412 = try o.lookup(&s, frame, "binding21399");
         const v21413 = try s.text("dependentSchemas");
         const v21414 = try s.own(try js.getKey(e, v21412, v21413));
-        const v21415 = try s.call(v21411, v21409, &.{v21414});
+        const v21415 = try o.call(&s, @src(), v21411, v21409, &.{v21414});
         break :logical21407 v21415;
     };
     const v21417 = logical21416: {
@@ -75,11 +75,11 @@ fn body21398(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21421 = try o.lookup(&s, frame, "binding21399");
         const v21422 = try s.text("dependentSchemas");
         const v21423 = try s.own(try js.getKey(e, v21421, v21422));
-        const v21424 = try s.call(v21420, v21418, &.{v21423});
+        const v21424 = try o.call(&s, @src(), v21420, v21418, &.{v21423});
         const v21425 = try s.text("every");
         const v21426 = try s.own(try js.getKey(e, v21424, v21425));
         const v21434 = try o.arrow(&s, "", 1, body21427C, &.{ graph, frame });
-        const v21435 = try s.call(v21426, v21424, &.{v21434});
+        const v21435 = try o.call(&s, @src(), v21426, v21424, &.{v21434});
         break :logical21416 v21435;
     };
     return c.JS_DupValue(e.context, v21417);

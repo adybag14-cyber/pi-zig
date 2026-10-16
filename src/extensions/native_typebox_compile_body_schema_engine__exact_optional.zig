@@ -53,13 +53,13 @@ fn body4110(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4116 = try s.text("includes");
     const v4117 = try s.own(try js.getKey(e, v4115, v4116));
     const v4118 = try o.lookup(&s, frame, "binding4112");
-    const v4119 = try s.call(v4117, v4115, &.{v4118});
+    const v4119 = try o.call(&s, @src(), v4117, v4115, &.{v4118});
     const v4121 = logical4120: {
         if (s.truthy(v4119)) break :logical4120 v4119;
         const v4122 = try o.importValue(&s, graph, "system/settings/index.mjs", "Settings");
         const v4123 = try s.text("Get");
         const v4124 = try s.own(try js.getKey(e, v4122, v4123));
-        const v4125 = try s.call(v4124, v4122, &.{});
+        const v4125 = try o.call(&s, @src(), v4124, v4122, &.{});
         const v4126 = try s.text("exactOptionalPropertyTypes");
         const v4127 = try s.own(try js.getKey(e, v4125, v4126));
         break :logical4120 v4127;
@@ -84,8 +84,8 @@ fn body4129(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4139 = try s.own(try js.getKey(e, v4137, v4138));
     const v4140 = try o.lookup(&s, frame, "binding4130");
     const v4141 = try o.lookup(&s, frame, "binding4131");
-    const v4142 = try s.call(v4139, v4137, &.{ v4140, v4141 });
-    const v4143 = try s.call(v4136, v4134, &.{v4142});
+    const v4142 = try o.call(&s, @src(), v4139, v4137, &.{ v4140, v4141 });
+    const v4143 = try o.call(&s, @src(), v4136, v4134, &.{v4142});
     return c.JS_DupValue(e.context, v4143);
 }
 fn body4145(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -105,6 +105,6 @@ fn body4145(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4154 = try o.lookup(&s, frame, "binding4147");
     const v4155 = try o.propertyKey(&s, v4154);
     const v4156 = try s.own(try js.getKey(e, v4153, v4155));
-    const v4157 = try s.call(v4152, v4150, &.{v4156});
+    const v4157 = try o.call(&s, @src(), v4152, v4150, &.{v4156});
     return c.JS_DupValue(e.context, v4157);
 }

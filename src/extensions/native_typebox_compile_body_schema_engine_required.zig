@@ -55,8 +55,8 @@ fn body13610(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v13619 = try s.text("Constant");
     const v13620 = try s.own(try js.getKey(e, v13618, v13619));
     const v13621 = try o.lookup(&s, frame, "binding13612");
-    const v13622 = try s.call(v13620, v13618, &.{v13621});
-    const v13623 = try s.call(v13616, v13614, &.{ v13617, v13622 });
+    const v13622 = try o.call(&s, @src(), v13620, v13618, &.{v13621});
+    const v13623 = try o.call(&s, @src(), v13616, v13614, &.{ v13617, v13622 });
     return c.JS_DupValue(e.context, v13623);
 }
 fn body13610C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -86,8 +86,8 @@ fn body13593(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13608 = try s.text("map");
     const v13609 = try s.own(try js.getKey(e, v13607, v13608));
     const v13624 = try o.arrow(&s, "", 1, body13610C, &.{ graph, frame });
-    const v13625 = try s.call(v13609, v13607, &.{v13624});
-    const v13626 = try s.call(v13604, v13602, &.{v13625});
+    const v13625 = try o.call(&s, @src(), v13609, v13607, &.{v13624});
+    const v13626 = try o.call(&s, @src(), v13604, v13602, &.{v13625});
     return c.JS_DupValue(e.context, v13626);
 }
 fn body13643(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -103,7 +103,7 @@ fn body13643(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v13649 = try s.own(try js.getKey(e, v13647, v13648));
     const v13650 = try o.lookup(&s, frame, "binding13632");
     const v13651 = try o.lookup(&s, frame, "binding13645");
-    const v13652 = try s.call(v13649, v13647, &.{ v13650, v13651 });
+    const v13652 = try o.call(&s, @src(), v13649, v13647, &.{ v13650, v13651 });
     return c.JS_DupValue(e.context, v13652);
 }
 fn body13643C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -131,7 +131,7 @@ fn body13628(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13641 = try s.text("required");
     const v13642 = try s.own(try js.getKey(e, v13640, v13641));
     const v13653 = try o.arrow(&s, "", 1, body13643C, &.{ graph, frame });
-    const v13654 = try s.call(v13639, v13637, &.{ v13642, c.JS_NewFloat64(e.context, 0), v13653 });
+    const v13654 = try o.call(&s, @src(), v13639, v13637, &.{ v13642, c.JS_NewFloat64(e.context, 0), v13653 });
     return c.JS_DupValue(e.context, v13654);
 }
 fn body13680(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -147,7 +147,7 @@ fn body13680(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v13688 = try s.own(try js.getKey(e, v13686, v13687));
     const v13689 = try o.lookup(&s, frame, "binding13662");
     const v13690 = try o.lookup(&s, frame, "binding13682");
-    const v13691 = try s.call(v13688, v13686, &.{ v13689, v13690 });
+    const v13691 = try o.call(&s, @src(), v13688, v13686, &.{ v13689, v13690 });
     try o.assign(&s, frame, "binding13685", v13691);
     const v13692 = try o.lookup(&s, frame, "binding13685");
     if (s.truthy(o.boolean(&s, !s.truthy(v13692)))) {
@@ -155,7 +155,7 @@ fn body13680(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
         const v13694 = try s.text("push");
         const v13695 = try s.own(try js.getKey(e, v13693, v13694));
         const v13696 = try o.lookup(&s, frame, "binding13682");
-        const v13697 = try s.call(v13695, v13693, &.{v13696});
+        const v13697 = try o.call(&s, @src(), v13695, v13693, &.{v13696});
         _ = v13697;
     }
     const v13698 = try o.lookup(&s, frame, "binding13685");
@@ -192,7 +192,7 @@ fn body13656(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v13678 = try s.text("required");
     const v13679 = try s.own(try js.getKey(e, v13677, v13678));
     const v13699 = try o.arrow(&s, "", 1, body13680C, &.{ graph, frame });
-    const v13700 = try s.call(v13676, v13674, &.{ v13679, c.JS_NewFloat64(e.context, 0), v13699 });
+    const v13700 = try o.call(&s, @src(), v13676, v13674, &.{ v13679, c.JS_NewFloat64(e.context, 0), v13699 });
     try o.assign(&s, frame, "binding13672", v13700);
     const v13701 = try o.lookup(&s, frame, "binding13672");
     const v13703 = logical13702: {
@@ -216,7 +216,7 @@ fn body13656(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v13717 = try o.lookup(&s, frame, "binding13671");
         try o.defineKey(&s, v13715, v13716, v13717);
         try o.defineKey(&s, v13707, v13714, v13715);
-        const v13718 = try s.call(v13706, v13704, &.{v13707});
+        const v13718 = try o.call(&s, @src(), v13706, v13704, &.{v13707});
         break :logical13702 v13718;
     };
     return c.JS_DupValue(e.context, v13703);

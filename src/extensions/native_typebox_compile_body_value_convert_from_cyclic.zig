@@ -49,8 +49,8 @@ fn body26206(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26220 = try o.lookup(&s, frame, "binding26208");
     const v26221 = try s.text("$ref");
     const v26222 = try s.own(try js.getKey(e, v26220, v26221));
-    const v26223 = try s.call(v26219, c.pi_js_undefined(), &.{v26222});
+    const v26223 = try o.call(&s, @src(), v26219, c.pi_js_undefined(), &.{v26222});
     const v26224 = try o.lookup(&s, frame, "binding26209");
-    const v26225 = try s.call(v26213, c.pi_js_undefined(), &.{ v26214, v26223, v26224 });
+    const v26225 = try o.call(&s, @src(), v26213, c.pi_js_undefined(), &.{ v26214, v26223, v26224 });
     return c.JS_DupValue(e.context, v26225);
 }

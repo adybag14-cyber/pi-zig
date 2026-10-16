@@ -140,7 +140,7 @@ fn body4818(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
             const v4846 = try s.text("has");
             const v4847 = try s.own(try js.getKey(e, v4845, v4846));
             const v4848 = try o.lookup(&s, frame, "binding4819");
-            const v4849 = try s.call(v4847, v4845, &.{v4848});
+            const v4849 = try o.call(&s, @src(), v4847, v4845, &.{v4848});
             break :conditional4838 o.boolean(&s, !s.truthy(v4849));
         }
     };
@@ -166,7 +166,7 @@ fn body4818(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
                     const v4863 = try s.text("call");
                     const v4864 = try s.own(try js.getKey(e, v4862, v4863));
                     const v4865 = try o.lookup(&s, frame, "binding4819");
-                    const v4866 = try s.call(v4864, v4862, &.{v4865});
+                    const v4866 = try o.call(&s, @src(), v4864, v4862, &.{v4865});
                     break :conditional4860 v4866;
                 } else {
                     const v4867 = try o.lookup(&s, frame, "binding4822");
@@ -181,7 +181,7 @@ fn body4818(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
                             const v4874 = try s.text("get");
                             const v4875 = try s.own(try js.getKey(e, v4873, v4874));
                             const v4876 = try o.lookup(&s, frame, "binding4819");
-                            const v4877 = try s.call(v4875, v4873, &.{v4876});
+                            const v4877 = try o.call(&s, @src(), v4875, v4873, &.{v4876});
                             break :conditional4868 v4877;
                         }
                     };
@@ -207,7 +207,7 @@ fn constructor4880(e: *Engine, target: c.JSValue, args: []const c.JSValue, roots
     const v4885 = try o.lookup(&s, frame, "binding4796");
     const v4886 = try s.text("add");
     const v4887 = try s.own(try js.getKey(e, v4885, v4886));
-    const v4888 = try s.call(v4887, v4885, &.{receiver});
+    const v4888 = try o.call(&s, @src(), v4887, v4885, &.{receiver});
     _ = v4888;
     const v4889 = try s.text("context");
     const v4890 = try o.lookup(&s, frame, "binding4881");
@@ -256,12 +256,12 @@ fn body4913(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
     const v4915 = try o.lookup(&s, frame, "binding4796");
     const v4916 = try s.text("m");
     const v4917 = try o.lookup(&s, frame, "binding4799");
-    const v4918 = try s.call(v4914, c.pi_js_undefined(), &.{ receiver, v4915, v4916, v4917 });
+    const v4918 = try o.call(&s, @src(), v4914, c.pi_js_undefined(), &.{ receiver, v4915, v4916, v4917 });
     const v4919 = try s.text("call");
     const v4920 = try s.own(try js.getKey(e, v4918, v4919));
     const v4921 = try s.text("ids");
     const v4922 = try s.own(try js.getKey(e, receiver, v4921));
-    const v4923 = try s.call(v4920, v4918, &.{ receiver, v4922 });
+    const v4923 = try o.call(&s, @src(), v4920, v4918, &.{ receiver, v4922 });
     return c.JS_DupValue(e.context, v4923);
 }
 fn body4913C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -280,7 +280,7 @@ fn body4925(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4931 = try s.text("IsSchemaObject");
     const v4932 = try s.own(try js.getKey(e, v4930, v4931));
     const v4933 = try o.lookup(&s, frame, "binding4926");
-    const v4934 = try s.call(v4932, v4930, &.{v4933});
+    const v4934 = try o.call(&s, @src(), v4932, v4930, &.{v4933});
     if (s.truthy(o.boolean(&s, !s.truthy(v4934)))) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -288,59 +288,59 @@ fn body4925(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4936 = try s.text("IsId");
     const v4937 = try s.own(try js.getKey(e, v4935, v4936));
     const v4938 = try o.lookup(&s, frame, "binding4926");
-    const v4939 = try s.call(v4937, v4935, &.{v4938});
+    const v4939 = try o.call(&s, @src(), v4937, v4935, &.{v4938});
     if (s.truthy(v4939)) {
         const v4940 = try o.lookup(&s, frame, "binding4795");
         const v4941 = try o.lookup(&s, frame, "binding4796");
         const v4942 = try s.text("m");
         const v4943 = try o.lookup(&s, frame, "binding4807");
-        const v4944 = try s.call(v4940, c.pi_js_undefined(), &.{ receiver, v4941, v4942, v4943 });
+        const v4944 = try o.call(&s, @src(), v4940, c.pi_js_undefined(), &.{ receiver, v4941, v4942, v4943 });
         const v4945 = try s.text("call");
         const v4946 = try s.own(try js.getKey(e, v4944, v4945));
         const v4947 = try o.lookup(&s, frame, "binding4926");
-        const v4948 = try s.call(v4946, v4944, &.{ receiver, v4947 });
+        const v4948 = try o.call(&s, @src(), v4946, v4944, &.{ receiver, v4947 });
         _ = v4948;
     }
     const v4949 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v4950 = try s.text("IsAnchor");
     const v4951 = try s.own(try js.getKey(e, v4949, v4950));
     const v4952 = try o.lookup(&s, frame, "binding4926");
-    const v4953 = try s.call(v4951, v4949, &.{v4952});
+    const v4953 = try o.call(&s, @src(), v4951, v4949, &.{v4952});
     if (s.truthy(v4953)) {
         const v4954 = try s.text("anchors");
         const v4955 = try s.own(try js.getKey(e, receiver, v4954));
         const v4956 = try s.text("push");
         const v4957 = try s.own(try js.getKey(e, v4955, v4956));
         const v4958 = try o.lookup(&s, frame, "binding4926");
-        const v4959 = try s.call(v4957, v4955, &.{v4958});
+        const v4959 = try o.call(&s, @src(), v4957, v4955, &.{v4958});
         _ = v4959;
     }
     const v4960 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v4961 = try s.text("IsRecursiveAnchorTrue");
     const v4962 = try s.own(try js.getKey(e, v4960, v4961));
     const v4963 = try o.lookup(&s, frame, "binding4926");
-    const v4964 = try s.call(v4962, v4960, &.{v4963});
+    const v4964 = try o.call(&s, @src(), v4962, v4960, &.{v4963});
     if (s.truthy(v4964)) {
         const v4965 = try s.text("recursiveAnchors");
         const v4966 = try s.own(try js.getKey(e, receiver, v4965));
         const v4967 = try s.text("push");
         const v4968 = try s.own(try js.getKey(e, v4966, v4967));
         const v4969 = try o.lookup(&s, frame, "binding4926");
-        const v4970 = try s.call(v4968, v4966, &.{v4969});
+        const v4970 = try o.call(&s, @src(), v4968, v4966, &.{v4969});
         _ = v4970;
     }
     const v4971 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v4972 = try s.text("IsDynamicAnchor");
     const v4973 = try s.own(try js.getKey(e, v4971, v4972));
     const v4974 = try o.lookup(&s, frame, "binding4926");
-    const v4975 = try s.call(v4973, v4971, &.{v4974});
+    const v4975 = try o.call(&s, @src(), v4973, v4971, &.{v4974});
     if (s.truthy(v4975)) {
         const v4976 = try s.text("dynamicAnchors");
         const v4977 = try s.own(try js.getKey(e, receiver, v4976));
         const v4978 = try s.text("push");
         const v4979 = try s.own(try js.getKey(e, v4977, v4978));
         const v4980 = try o.lookup(&s, frame, "binding4926");
-        const v4981 = try s.call(v4979, v4977, &.{v4980});
+        const v4981 = try o.call(&s, @src(), v4979, v4977, &.{v4980});
         _ = v4981;
     }
     const v4982 = try s.text("retrievedResources");
@@ -348,7 +348,7 @@ fn body4925(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4984 = try s.text("get");
     const v4985 = try s.own(try js.getKey(e, v4983, v4984));
     const v4986 = try o.lookup(&s, frame, "binding4926");
-    const v4987 = try s.call(v4985, v4983, &.{v4986});
+    const v4987 = try o.call(&s, @src(), v4985, v4983, &.{v4986});
     try o.assign(&s, frame, "binding4929", v4987);
     const v4988 = try o.lookup(&s, frame, "binding4929");
     if (s.truthy(v4988)) {
@@ -379,7 +379,7 @@ fn body4925(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5010 = try s.text("length");
         const v5011 = try s.own(try js.getKey(e, v5009, v5010));
         try o.defineKey(&s, v4993, v5007, v5011);
-        const v5012 = try s.call(v4992, v4990, &.{v4993});
+        const v5012 = try o.call(&s, @src(), v4992, v4990, &.{v4993});
         _ = v5012;
     }
     return c.pi_js_undefined();
@@ -400,7 +400,7 @@ fn body5014(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5018 = try s.text("IsSchemaObject");
     const v5019 = try s.own(try js.getKey(e, v5017, v5018));
     const v5020 = try o.lookup(&s, frame, "binding5015");
-    const v5021 = try s.call(v5019, v5017, &.{v5020});
+    const v5021 = try o.call(&s, @src(), v5019, v5017, &.{v5020});
     if (s.truthy(o.boolean(&s, !s.truthy(v5021)))) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -408,56 +408,56 @@ fn body5014(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5023 = try s.text("IsId");
     const v5024 = try s.own(try js.getKey(e, v5022, v5023));
     const v5025 = try o.lookup(&s, frame, "binding5015");
-    const v5026 = try s.call(v5024, v5022, &.{v5025});
+    const v5026 = try o.call(&s, @src(), v5024, v5022, &.{v5025});
     if (s.truthy(v5026)) {
         const v5027 = try o.lookup(&s, frame, "binding4795");
         const v5028 = try o.lookup(&s, frame, "binding4796");
         const v5029 = try s.text("m");
         const v5030 = try o.lookup(&s, frame, "binding4808");
-        const v5031 = try s.call(v5027, c.pi_js_undefined(), &.{ receiver, v5028, v5029, v5030 });
+        const v5031 = try o.call(&s, @src(), v5027, c.pi_js_undefined(), &.{ receiver, v5028, v5029, v5030 });
         const v5032 = try s.text("call");
         const v5033 = try s.own(try js.getKey(e, v5031, v5032));
         const v5034 = try o.lookup(&s, frame, "binding5015");
-        const v5035 = try s.call(v5033, v5031, &.{ receiver, v5034 });
+        const v5035 = try o.call(&s, @src(), v5033, v5031, &.{ receiver, v5034 });
         _ = v5035;
     }
     const v5036 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v5037 = try s.text("IsAnchor");
     const v5038 = try s.own(try js.getKey(e, v5036, v5037));
     const v5039 = try o.lookup(&s, frame, "binding5015");
-    const v5040 = try s.call(v5038, v5036, &.{v5039});
+    const v5040 = try o.call(&s, @src(), v5038, v5036, &.{v5039});
     if (s.truthy(v5040)) {
         const v5041 = try s.text("anchors");
         const v5042 = try s.own(try js.getKey(e, receiver, v5041));
         const v5043 = try s.text("pop");
         const v5044 = try s.own(try js.getKey(e, v5042, v5043));
-        const v5045 = try s.call(v5044, v5042, &.{});
+        const v5045 = try o.call(&s, @src(), v5044, v5042, &.{});
         _ = v5045;
     }
     const v5046 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v5047 = try s.text("IsRecursiveAnchorTrue");
     const v5048 = try s.own(try js.getKey(e, v5046, v5047));
     const v5049 = try o.lookup(&s, frame, "binding5015");
-    const v5050 = try s.call(v5048, v5046, &.{v5049});
+    const v5050 = try o.call(&s, @src(), v5048, v5046, &.{v5049});
     if (s.truthy(v5050)) {
         const v5051 = try s.text("recursiveAnchors");
         const v5052 = try s.own(try js.getKey(e, receiver, v5051));
         const v5053 = try s.text("pop");
         const v5054 = try s.own(try js.getKey(e, v5052, v5053));
-        const v5055 = try s.call(v5054, v5052, &.{});
+        const v5055 = try o.call(&s, @src(), v5054, v5052, &.{});
         _ = v5055;
     }
     const v5056 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v5057 = try s.text("IsDynamicAnchor");
     const v5058 = try s.own(try js.getKey(e, v5056, v5057));
     const v5059 = try o.lookup(&s, frame, "binding5015");
-    const v5060 = try s.call(v5058, v5056, &.{v5059});
+    const v5060 = try o.call(&s, @src(), v5058, v5056, &.{v5059});
     if (s.truthy(v5060)) {
         const v5061 = try s.text("dynamicAnchors");
         const v5062 = try s.own(try js.getKey(e, receiver, v5061));
         const v5063 = try s.text("pop");
         const v5064 = try s.own(try js.getKey(e, v5062, v5063));
-        const v5065 = try s.call(v5064, v5062, &.{});
+        const v5065 = try o.call(&s, @src(), v5064, v5062, &.{});
         _ = v5065;
     }
     const v5066 = try s.text("retrievedResources");
@@ -465,24 +465,24 @@ fn body5014(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5068 = try s.text("has");
     const v5069 = try s.own(try js.getKey(e, v5067, v5068));
     const v5070 = try o.lookup(&s, frame, "binding5015");
-    const v5071 = try s.call(v5069, v5067, &.{v5070});
+    const v5071 = try o.call(&s, @src(), v5069, v5067, &.{v5070});
     if (s.truthy(v5071)) {
         const v5072 = try s.text("retrievedFrames");
         const v5073 = try s.own(try js.getKey(e, receiver, v5072));
         const v5074 = try s.text("pop");
         const v5075 = try s.own(try js.getKey(e, v5073, v5074));
-        const v5076 = try s.call(v5075, v5073, &.{});
+        const v5076 = try o.call(&s, @src(), v5075, v5073, &.{});
         _ = v5076;
     }
     const v5077 = try o.lookup(&s, frame, "binding4795");
     const v5078 = try o.lookup(&s, frame, "binding4796");
     const v5079 = try s.text("m");
     const v5080 = try o.lookup(&s, frame, "binding4810");
-    const v5081 = try s.call(v5077, c.pi_js_undefined(), &.{ receiver, v5078, v5079, v5080 });
+    const v5081 = try o.call(&s, @src(), v5077, c.pi_js_undefined(), &.{ receiver, v5078, v5079, v5080 });
     const v5082 = try s.text("call");
     const v5083 = try s.own(try js.getKey(e, v5081, v5082));
     const v5084 = try o.lookup(&s, frame, "binding5015");
-    const v5085 = try s.call(v5083, v5081, &.{ receiver, v5084 });
+    const v5085 = try o.call(&s, @src(), v5083, v5081, &.{ receiver, v5084 });
     _ = v5085;
     return c.pi_js_undefined();
 }
@@ -505,22 +505,22 @@ fn body5087(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5096 = try o.lookup(&s, frame, "binding4796");
     const v5097 = try s.text("m");
     const v5098 = try o.lookup(&s, frame, "binding4797");
-    const v5099 = try s.call(v5095, c.pi_js_undefined(), &.{ receiver, v5096, v5097, v5098 });
+    const v5099 = try o.call(&s, @src(), v5095, c.pi_js_undefined(), &.{ receiver, v5096, v5097, v5098 });
     const v5100 = try s.text("call");
     const v5101 = try s.own(try js.getKey(e, v5099, v5100));
-    const v5102 = try s.call(v5101, v5099, &.{receiver});
+    const v5102 = try o.call(&s, @src(), v5101, v5099, &.{receiver});
     const v5103 = try o.lookup(&s, frame, "binding5088");
-    const v5104 = try s.call(v5094, v5092, &.{ v5102, v5103 });
+    const v5104 = try o.call(&s, @src(), v5094, v5092, &.{ v5102, v5103 });
     try o.assign(&s, frame, "binding5091", v5104);
     const v5105 = try o.lookup(&s, frame, "binding4795");
     const v5106 = try o.lookup(&s, frame, "binding4796");
     const v5107 = try s.text("m");
     const v5108 = try o.lookup(&s, frame, "binding4798");
-    const v5109 = try s.call(v5105, c.pi_js_undefined(), &.{ receiver, v5106, v5107, v5108 });
+    const v5109 = try o.call(&s, @src(), v5105, c.pi_js_undefined(), &.{ receiver, v5106, v5107, v5108 });
     const v5110 = try s.text("call");
     const v5111 = try s.own(try js.getKey(e, v5109, v5110));
     const v5112 = try o.lookup(&s, frame, "binding5091");
-    const v5113 = try s.call(v5111, v5109, &.{ receiver, v5112 });
+    const v5113 = try o.call(&s, @src(), v5111, v5109, &.{ receiver, v5112 });
     _ = v5113;
     const v5114 = try o.lookup(&s, frame, "binding5091");
     const v5115 = try s.text("schema");
@@ -546,12 +546,12 @@ fn body5118(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5127 = try o.lookup(&s, frame, "binding4796");
     const v5128 = try s.text("m");
     const v5129 = try o.lookup(&s, frame, "binding4797");
-    const v5130 = try s.call(v5126, c.pi_js_undefined(), &.{ receiver, v5127, v5128, v5129 });
+    const v5130 = try o.call(&s, @src(), v5126, c.pi_js_undefined(), &.{ receiver, v5127, v5128, v5129 });
     const v5131 = try s.text("call");
     const v5132 = try s.own(try js.getKey(e, v5130, v5131));
-    const v5133 = try s.call(v5132, v5130, &.{receiver});
+    const v5133 = try o.call(&s, @src(), v5132, v5130, &.{receiver});
     const v5134 = try o.lookup(&s, frame, "binding5119");
-    const v5135 = try s.call(v5125, v5123, &.{ v5133, v5134 });
+    const v5135 = try o.call(&s, @src(), v5125, v5123, &.{ v5133, v5134 });
     try o.assign(&s, frame, "binding5122", v5135);
     const v5136 = try o.lookup(&s, frame, "binding5122");
     if (s.truthy(v5136)) {
@@ -581,12 +581,12 @@ fn body5140(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5149 = try o.lookup(&s, frame, "binding4796");
     const v5150 = try s.text("m");
     const v5151 = try o.lookup(&s, frame, "binding4797");
-    const v5152 = try s.call(v5148, c.pi_js_undefined(), &.{ receiver, v5149, v5150, v5151 });
+    const v5152 = try o.call(&s, @src(), v5148, c.pi_js_undefined(), &.{ receiver, v5149, v5150, v5151 });
     const v5153 = try s.text("call");
     const v5154 = try s.own(try js.getKey(e, v5152, v5153));
-    const v5155 = try s.call(v5154, v5152, &.{receiver});
+    const v5155 = try o.call(&s, @src(), v5154, v5152, &.{receiver});
     const v5156 = try o.lookup(&s, frame, "binding5141");
-    const v5157 = try s.call(v5147, v5145, &.{ v5155, v5156 });
+    const v5157 = try o.call(&s, @src(), v5147, v5145, &.{ v5155, v5156 });
     try o.assign(&s, frame, "binding5144", v5157);
     const v5158 = try o.lookup(&s, frame, "binding5144");
     if (s.truthy(v5158)) {
@@ -625,35 +625,35 @@ fn body5164(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
     const v5177 = try o.lookup(&s, frame, "binding4796");
     const v5178 = try s.text("m");
     const v5179 = try o.lookup(&s, frame, "binding4802");
-    const v5180 = try s.call(v5176, c.pi_js_undefined(), &.{ receiver, v5177, v5178, v5179 });
+    const v5180 = try o.call(&s, @src(), v5176, c.pi_js_undefined(), &.{ receiver, v5177, v5178, v5179 });
     const v5181 = try s.text("call");
     const v5182 = try s.own(try js.getKey(e, v5180, v5181));
-    const v5183 = try s.call(v5182, v5180, &.{receiver});
+    const v5183 = try o.call(&s, @src(), v5182, v5180, &.{receiver});
     try o.defineKey(&s, v5165, v5175, v5183);
     const v5184 = try s.text("lexicalBase");
     const v5185 = try s.text("LexicalBaseURL");
     const v5186 = try s.own(try js.getKey(e, receiver, v5185));
-    const v5187 = try s.call(v5186, receiver, &.{});
+    const v5187 = try o.call(&s, @src(), v5186, receiver, &.{});
     try o.defineKey(&s, v5165, v5184, v5187);
     const v5188 = try s.text("referenceBase");
     const v5189 = try o.lookup(&s, frame, "binding4795");
     const v5190 = try o.lookup(&s, frame, "binding4796");
     const v5191 = try s.text("m");
     const v5192 = try o.lookup(&s, frame, "binding4801");
-    const v5193 = try s.call(v5189, c.pi_js_undefined(), &.{ receiver, v5190, v5191, v5192 });
+    const v5193 = try o.call(&s, @src(), v5189, c.pi_js_undefined(), &.{ receiver, v5190, v5191, v5192 });
     const v5194 = try s.text("call");
     const v5195 = try s.own(try js.getKey(e, v5193, v5194));
-    const v5196 = try s.call(v5195, v5193, &.{receiver});
+    const v5196 = try o.call(&s, @src(), v5195, v5193, &.{receiver});
     try o.defineKey(&s, v5165, v5188, v5196);
     const v5197 = try s.text("resourceBase");
     const v5198 = try o.lookup(&s, frame, "binding4795");
     const v5199 = try o.lookup(&s, frame, "binding4796");
     const v5200 = try s.text("m");
     const v5201 = try o.lookup(&s, frame, "binding4800");
-    const v5202 = try s.call(v5198, c.pi_js_undefined(), &.{ receiver, v5199, v5200, v5201 });
+    const v5202 = try o.call(&s, @src(), v5198, c.pi_js_undefined(), &.{ receiver, v5199, v5200, v5201 });
     const v5203 = try s.text("call");
     const v5204 = try s.own(try js.getKey(e, v5202, v5203));
-    const v5205 = try s.call(v5204, v5202, &.{receiver});
+    const v5205 = try o.call(&s, @src(), v5204, v5202, &.{receiver});
     try o.defineKey(&s, v5165, v5197, v5205);
     const v5206 = try s.text("recursiveAnchors");
     const v5207 = try s.text("recursiveAnchors");
@@ -686,7 +686,7 @@ fn body5219(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5225 = try o.lookup(&s, frame, "binding5220");
     const v5226 = try s.text("schema");
     const v5227 = try s.own(try js.getKey(e, v5225, v5226));
-    const v5228 = try s.call(v5224, v5222, &.{v5227});
+    const v5228 = try o.call(&s, @src(), v5224, v5222, &.{v5227});
     if (s.truthy(o.boolean(&s, !s.truthy(v5228)))) {
         const v5229 = try s.text("pendingResource");
         try js.setKey(e, receiver, v5229, o.boolean(&s, true));
@@ -698,13 +698,13 @@ fn body5219(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5233 = try o.lookup(&s, frame, "binding5220");
     const v5234 = try s.text("resolvedResource");
     const v5235 = try s.own(try js.getKey(e, v5233, v5234));
-    const v5236 = try s.call(v5232, v5230, &.{v5235});
+    const v5236 = try o.call(&s, @src(), v5232, v5230, &.{v5235});
     if (s.truthy(o.boolean(&s, !s.truthy(v5236)))) {
         const v5237 = try o.lookup(&s, frame, "binding4795");
         const v5238 = try o.lookup(&s, frame, "binding4796");
         const v5239 = try s.text("m");
         const v5240 = try o.lookup(&s, frame, "binding4809");
-        const v5241 = try s.call(v5237, c.pi_js_undefined(), &.{ receiver, v5238, v5239, v5240 });
+        const v5241 = try o.call(&s, @src(), v5237, c.pi_js_undefined(), &.{ receiver, v5238, v5239, v5240 });
         const v5242 = try s.text("call");
         const v5243 = try s.own(try js.getKey(e, v5241, v5242));
         const v5244 = try o.lookup(&s, frame, "binding5220");
@@ -717,7 +717,7 @@ fn body5219(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5251 = try s.own(try js.getKey(e, v5249, v5250));
         const v5252 = try s.text("resource");
         const v5253 = try s.own(try js.getKey(e, v5251, v5252));
-        const v5254 = try s.call(v5243, v5241, &.{ receiver, v5248, v5253 });
+        const v5254 = try o.call(&s, @src(), v5243, v5241, &.{ receiver, v5248, v5253 });
         _ = v5254;
     }
     const v5255 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -726,7 +726,7 @@ fn body5219(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5258 = try o.lookup(&s, frame, "binding5220");
     const v5259 = try s.text("retrievedResource");
     const v5260 = try s.own(try js.getKey(e, v5258, v5259));
-    const v5261 = try s.call(v5257, v5255, &.{v5260});
+    const v5261 = try o.call(&s, @src(), v5257, v5255, &.{v5260});
     if (s.truthy(o.boolean(&s, !s.truthy(v5261)))) {
         const v5262 = try s.text("retrievedResources");
         const v5263 = try s.own(try js.getKey(e, receiver, v5262));
@@ -752,7 +752,7 @@ fn body5219(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5282 = try s.text("root");
         const v5283 = try s.own(try js.getKey(e, v5281, v5282));
         try o.defineKey(&s, v5271, v5278, v5283);
-        const v5284 = try s.call(v5265, v5263, &.{ v5270, v5271 });
+        const v5284 = try o.call(&s, @src(), v5265, v5263, &.{ v5270, v5271 });
         _ = v5284;
     }
     return c.pi_js_undefined();
@@ -825,7 +825,7 @@ fn body5286(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
             const v5323 = try o.lookup(&s, frame, "binding5292");
             const v5324 = try s.text("idDepth");
             const v5325 = try s.own(try js.getKey(e, v5323, v5324));
-            const v5326 = try s.call(v5322, v5320, &.{v5325});
+            const v5326 = try o.call(&s, @src(), v5322, v5320, &.{v5325});
             break :conditional5318 v5326;
         } else {
             const v5327 = try o.lookup(&s, frame, "binding5287");
@@ -838,7 +838,7 @@ fn body5286(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5330 = try s.own(try js.getKey(e, v5328, v5329));
     const v5343 = try o.arrow(&s, "", 2, body5331C, &.{ graph, frame });
     const v5344 = try o.lookup(&s, frame, "binding5293");
-    const v5345 = try s.call(v5330, v5328, &.{ v5343, v5344 });
+    const v5345 = try o.call(&s, @src(), v5330, v5328, &.{ v5343, v5344 });
     const v5346 = try s.text("href");
     const v5347 = try s.own(try js.getKey(e, v5345, v5346));
     return c.JS_DupValue(e.context, v5347);
@@ -887,12 +887,12 @@ fn body5349(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
         const v5363 = try o.lookup(&s, frame, "binding4796");
         const v5364 = try s.text("m");
         const v5365 = try o.lookup(&s, frame, "binding4799");
-        const v5366 = try s.call(v5362, c.pi_js_undefined(), &.{ receiver, v5363, v5364, v5365 });
+        const v5366 = try o.call(&s, @src(), v5362, c.pi_js_undefined(), &.{ receiver, v5363, v5364, v5365 });
         const v5367 = try s.text("call");
         const v5368 = try s.own(try js.getKey(e, v5366, v5367));
         const v5369 = try s.text("resourceIds");
         const v5370 = try s.own(try js.getKey(e, receiver, v5369));
-        const v5371 = try s.call(v5368, v5366, &.{ receiver, v5370 });
+        const v5371 = try o.call(&s, @src(), v5368, v5366, &.{ receiver, v5370 });
         return c.JS_DupValue(e.context, v5371);
     }
     const v5372 = try s.text("resourceIds");
@@ -902,7 +902,7 @@ fn body5349(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
     const v5376 = try o.lookup(&s, frame, "binding5351");
     const v5377 = try s.text("resourceDepth");
     const v5378 = try s.own(try js.getKey(e, v5376, v5377));
-    const v5379 = try s.call(v5375, v5373, &.{v5378});
+    const v5379 = try o.call(&s, @src(), v5375, v5373, &.{v5378});
     const v5380 = try s.text("reduce");
     const v5381 = try s.own(try js.getKey(e, v5379, v5380));
     const v5394 = try o.arrow(&s, "", 2, body5382C, &.{ graph, frame });
@@ -911,7 +911,7 @@ fn body5349(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
     const v5397 = try s.text("base");
     const v5398 = try s.own(try js.getKey(e, v5396, v5397));
     const v5399 = try o.construct(&s, v5395, &.{v5398});
-    const v5400 = try s.call(v5381, v5379, &.{ v5394, v5399 });
+    const v5400 = try o.call(&s, @src(), v5381, v5379, &.{ v5394, v5399 });
     const v5401 = try s.text("href");
     const v5402 = try s.own(try js.getKey(e, v5400, v5401));
     return c.JS_DupValue(e.context, v5402);
@@ -932,10 +932,10 @@ fn body5404(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
         const v5413 = try o.lookup(&s, frame, "binding4796");
         const v5414 = try s.text("m");
         const v5415 = try o.lookup(&s, frame, "binding4800");
-        const v5416 = try s.call(v5412, c.pi_js_undefined(), &.{ receiver, v5413, v5414, v5415 });
+        const v5416 = try o.call(&s, @src(), v5412, c.pi_js_undefined(), &.{ receiver, v5413, v5414, v5415 });
         const v5417 = try s.text("call");
         const v5418 = try s.own(try js.getKey(e, v5416, v5417));
-        const v5419 = try s.call(v5418, v5416, &.{receiver});
+        const v5419 = try o.call(&s, @src(), v5418, v5416, &.{receiver});
         return c.JS_DupValue(e.context, v5419);
     }
     const v5420 = try s.text("ids");
@@ -960,23 +960,23 @@ fn body5404(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []cons
         const v5438 = try o.lookup(&s, frame, "binding5406");
         const v5439 = try s.text("$id");
         const v5440 = try s.own(try js.getKey(e, v5438, v5439));
-        const v5441 = try s.call(v5437, v5435, &.{v5440});
+        const v5441 = try o.call(&s, @src(), v5437, v5435, &.{v5440});
         break :logical5430 o.boolean(&s, !s.truthy(v5441));
     };
     if (s.truthy(v5431)) {
         const v5442 = try s.text("LexicalBaseURL");
         const v5443 = try s.own(try js.getKey(e, receiver, v5442));
-        const v5444 = try s.call(v5443, receiver, &.{});
+        const v5444 = try o.call(&s, @src(), v5443, receiver, &.{});
         return c.JS_DupValue(e.context, v5444);
     }
     const v5445 = try o.lookup(&s, frame, "binding4795");
     const v5446 = try o.lookup(&s, frame, "binding4796");
     const v5447 = try s.text("m");
     const v5448 = try o.lookup(&s, frame, "binding4800");
-    const v5449 = try s.call(v5445, c.pi_js_undefined(), &.{ receiver, v5446, v5447, v5448 });
+    const v5449 = try o.call(&s, @src(), v5445, c.pi_js_undefined(), &.{ receiver, v5446, v5447, v5448 });
     const v5450 = try s.text("call");
     const v5451 = try s.own(try js.getKey(e, v5449, v5450));
-    const v5452 = try s.call(v5451, v5449, &.{receiver});
+    const v5452 = try o.call(&s, @src(), v5451, v5449, &.{receiver});
     return c.JS_DupValue(e.context, v5452);
 }
 fn body5454(e: *Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -1063,11 +1063,11 @@ fn body5514(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v5519 = try o.lookup(&s, frame, "binding4796");
     const v5520 = try s.text("m");
     const v5521 = try o.lookup(&s, frame, "binding4805");
-    const v5522 = try s.call(v5518, c.pi_js_undefined(), &.{ v5515, v5519, v5520, v5521 });
+    const v5522 = try o.call(&s, @src(), v5518, c.pi_js_undefined(), &.{ v5515, v5519, v5520, v5521 });
     const v5523 = try s.text("call");
     const v5524 = try s.own(try js.getKey(e, v5522, v5523));
     const v5525 = try o.lookup(&s, frame, "binding5516");
-    const v5526 = try s.call(v5524, v5522, &.{ v5515, v5525, o.boolean(&s, false) });
+    const v5526 = try o.call(&s, @src(), v5524, v5522, &.{ v5515, v5525, o.boolean(&s, false) });
     return c.JS_DupValue(e.context, v5526);
 }
 fn body5514C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -1086,7 +1086,7 @@ fn body5508(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5512 = try s.text("forEach");
     const v5513 = try s.own(try js.getKey(e, v5511, v5512));
     const v5527 = try o.arrow(&s, "", 1, body5514C, &.{ graph, frame });
-    const v5528 = try s.call(v5513, v5511, &.{v5527});
+    const v5528 = try o.call(&s, @src(), v5513, v5511, &.{v5527});
     _ = v5528;
     return c.pi_js_undefined();
 }
@@ -1102,11 +1102,11 @@ fn body5536(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.
     const v5541 = try o.lookup(&s, frame, "binding4796");
     const v5542 = try s.text("m");
     const v5543 = try o.lookup(&s, frame, "binding4806");
-    const v5544 = try s.call(v5540, c.pi_js_undefined(), &.{ v5537, v5541, v5542, v5543 });
+    const v5544 = try o.call(&s, @src(), v5540, c.pi_js_undefined(), &.{ v5537, v5541, v5542, v5543 });
     const v5545 = try s.text("call");
     const v5546 = try s.own(try js.getKey(e, v5544, v5545));
     const v5547 = try o.lookup(&s, frame, "binding5538");
-    const v5548 = try s.call(v5546, v5544, &.{ v5537, v5547, o.boolean(&s, false) });
+    const v5548 = try o.call(&s, @src(), v5546, v5544, &.{ v5537, v5547, o.boolean(&s, false) });
     return c.JS_DupValue(e.context, v5548);
 }
 fn body5536C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -1125,7 +1125,7 @@ fn body5530(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5534 = try s.text("forEach");
     const v5535 = try s.own(try js.getKey(e, v5533, v5534));
     const v5549 = try o.arrow(&s, "", 1, body5536C, &.{ graph, frame });
-    const v5550 = try s.call(v5535, v5533, &.{v5549});
+    const v5550 = try o.call(&s, @src(), v5535, v5533, &.{v5549});
     _ = v5550;
     return c.pi_js_undefined();
 }
@@ -1147,7 +1147,7 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5561 = try s.text("IsSchemaBoolean");
     const v5562 = try s.own(try js.getKey(e, v5560, v5561));
     const v5563 = try o.lookup(&s, frame, "binding5553");
-    const v5564 = try s.call(v5562, v5560, &.{v5563});
+    const v5564 = try o.call(&s, @src(), v5562, v5560, &.{v5563});
     if (s.truthy(v5564)) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -1155,24 +1155,24 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5566 = try s.text("IsArray");
     const v5567 = try s.own(try js.getKey(e, v5565, v5566));
     const v5568 = try o.lookup(&s, frame, "binding5553");
-    const v5569 = try s.call(v5567, v5565, &.{v5568});
+    const v5569 = try o.call(&s, @src(), v5567, v5565, &.{v5568});
     if (s.truthy(v5569)) {
         const v5570 = try o.lookup(&s, frame, "binding4795");
         const v5571 = try o.lookup(&s, frame, "binding4796");
         const v5572 = try s.text("m");
         const v5573 = try o.lookup(&s, frame, "binding4803");
-        const v5574 = try s.call(v5570, c.pi_js_undefined(), &.{ receiver, v5571, v5572, v5573 });
+        const v5574 = try o.call(&s, @src(), v5570, c.pi_js_undefined(), &.{ receiver, v5571, v5572, v5573 });
         const v5575 = try s.text("call");
         const v5576 = try s.own(try js.getKey(e, v5574, v5575));
         const v5577 = try o.lookup(&s, frame, "binding5553");
-        const v5578 = try s.call(v5576, v5574, &.{ receiver, v5577 });
+        const v5578 = try o.call(&s, @src(), v5576, v5574, &.{ receiver, v5577 });
         return c.JS_DupValue(e.context, v5578);
     }
     const v5579 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v5580 = try s.text("IsSchemaObject");
     const v5581 = try s.own(try js.getKey(e, v5579, v5580));
     const v5582 = try o.lookup(&s, frame, "binding5553");
-    const v5583 = try s.call(v5581, v5579, &.{v5582});
+    const v5583 = try o.call(&s, @src(), v5581, v5579, &.{v5582});
     if (s.truthy(o.boolean(&s, !s.truthy(v5583)))) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -1185,7 +1185,7 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5589 = try s.text("IsId");
         const v5590 = try s.own(try js.getKey(e, v5588, v5589));
         const v5591 = try o.lookup(&s, frame, "binding5559");
-        const v5592 = try s.call(v5590, v5588, &.{v5591});
+        const v5592 = try o.call(&s, @src(), v5590, v5588, &.{v5591});
         break :logical5586 v5592;
     };
     if (s.truthy(v5587)) {
@@ -1198,7 +1198,7 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5597 = try s.text("IsDynamicAnchor");
         const v5598 = try s.own(try js.getKey(e, v5596, v5597));
         const v5599 = try o.lookup(&s, frame, "binding5559");
-        const v5600 = try s.call(v5598, v5596, &.{v5599});
+        const v5600 = try o.call(&s, @src(), v5598, v5596, &.{v5599});
         break :logical5594 v5600;
     };
     if (s.truthy(v5595)) {
@@ -1207,14 +1207,14 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5603 = try s.text("push");
         const v5604 = try s.own(try js.getKey(e, v5602, v5603));
         const v5605 = try o.lookup(&s, frame, "binding5559");
-        const v5606 = try s.call(v5604, v5602, &.{v5605});
+        const v5606 = try o.call(&s, @src(), v5604, v5602, &.{v5605});
         _ = v5606;
     }
     const v5607 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v5608 = try s.text("Keys");
     const v5609 = try s.own(try js.getKey(e, v5607, v5608));
     const v5610 = try o.lookup(&s, frame, "binding5559");
-    const v5611 = try s.call(v5609, v5607, &.{v5610});
+    const v5611 = try o.call(&s, @src(), v5609, v5607, &.{v5610});
     var iterator5612 = try o.iterator(e, v5611);
     defer iterator5612.deinit();
     errdefer iterator5612.closePreserving();
@@ -1226,14 +1226,14 @@ fn body5552(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5618 = try o.lookup(&s, iteration5615, "binding4796");
         const v5619 = try s.text("m");
         const v5620 = try o.lookup(&s, iteration5615, "binding4805");
-        const v5621 = try s.call(v5617, c.pi_js_undefined(), &.{ receiver, v5618, v5619, v5620 });
+        const v5621 = try o.call(&s, @src(), v5617, c.pi_js_undefined(), &.{ receiver, v5618, v5619, v5620 });
         const v5622 = try s.text("call");
         const v5623 = try s.own(try js.getKey(e, v5621, v5622));
         const v5624 = try o.lookup(&s, iteration5615, "binding5559");
         const v5625 = try o.lookup(&s, iteration5615, "binding5616");
         const v5626 = try o.propertyKey(&s, v5625);
         const v5627 = try s.own(try js.getKey(e, v5624, v5626));
-        const v5628 = try s.call(v5623, v5621, &.{ receiver, v5627, o.boolean(&s, false) });
+        const v5628 = try o.call(&s, @src(), v5623, v5621, &.{ receiver, v5627, o.boolean(&s, false) });
         _ = v5628;
     }
     try iterator5612.close();
@@ -1257,7 +1257,7 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5639 = try s.text("IsSchemaBoolean");
     const v5640 = try s.own(try js.getKey(e, v5638, v5639));
     const v5641 = try o.lookup(&s, frame, "binding5631");
-    const v5642 = try s.call(v5640, v5638, &.{v5641});
+    const v5642 = try o.call(&s, @src(), v5640, v5638, &.{v5641});
     if (s.truthy(v5642)) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -1265,24 +1265,24 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5644 = try s.text("IsArray");
     const v5645 = try s.own(try js.getKey(e, v5643, v5644));
     const v5646 = try o.lookup(&s, frame, "binding5631");
-    const v5647 = try s.call(v5645, v5643, &.{v5646});
+    const v5647 = try o.call(&s, @src(), v5645, v5643, &.{v5646});
     if (s.truthy(v5647)) {
         const v5648 = try o.lookup(&s, frame, "binding4795");
         const v5649 = try o.lookup(&s, frame, "binding4796");
         const v5650 = try s.text("m");
         const v5651 = try o.lookup(&s, frame, "binding4804");
-        const v5652 = try s.call(v5648, c.pi_js_undefined(), &.{ receiver, v5649, v5650, v5651 });
+        const v5652 = try o.call(&s, @src(), v5648, c.pi_js_undefined(), &.{ receiver, v5649, v5650, v5651 });
         const v5653 = try s.text("call");
         const v5654 = try s.own(try js.getKey(e, v5652, v5653));
         const v5655 = try o.lookup(&s, frame, "binding5631");
-        const v5656 = try s.call(v5654, v5652, &.{ receiver, v5655 });
+        const v5656 = try o.call(&s, @src(), v5654, v5652, &.{ receiver, v5655 });
         return c.JS_DupValue(e.context, v5656);
     }
     const v5657 = try o.importValue(&s, graph, "schema/types/index.mjs", "*");
     const v5658 = try s.text("IsSchemaObject");
     const v5659 = try s.own(try js.getKey(e, v5657, v5658));
     const v5660 = try o.lookup(&s, frame, "binding5631");
-    const v5661 = try s.call(v5659, v5657, &.{v5660});
+    const v5661 = try o.call(&s, @src(), v5659, v5657, &.{v5660});
     if (s.truthy(o.boolean(&s, !s.truthy(v5661)))) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -1295,7 +1295,7 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5667 = try s.text("IsId");
         const v5668 = try s.own(try js.getKey(e, v5666, v5667));
         const v5669 = try o.lookup(&s, frame, "binding5637");
-        const v5670 = try s.call(v5668, v5666, &.{v5669});
+        const v5670 = try o.call(&s, @src(), v5668, v5666, &.{v5669});
         break :logical5664 v5670;
     };
     if (s.truthy(v5665)) {
@@ -1308,7 +1308,7 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5675 = try s.text("IsDynamicAnchor");
         const v5676 = try s.own(try js.getKey(e, v5674, v5675));
         const v5677 = try o.lookup(&s, frame, "binding5637");
-        const v5678 = try s.call(v5676, v5674, &.{v5677});
+        const v5678 = try o.call(&s, @src(), v5676, v5674, &.{v5677});
         break :logical5672 v5678;
     };
     if (s.truthy(v5673)) {
@@ -1316,14 +1316,14 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5680 = try s.own(try js.getKey(e, receiver, v5679));
         const v5681 = try s.text("pop");
         const v5682 = try s.own(try js.getKey(e, v5680, v5681));
-        const v5683 = try s.call(v5682, v5680, &.{});
+        const v5683 = try o.call(&s, @src(), v5682, v5680, &.{});
         _ = v5683;
     }
     const v5684 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v5685 = try s.text("Keys");
     const v5686 = try s.own(try js.getKey(e, v5684, v5685));
     const v5687 = try o.lookup(&s, frame, "binding5637");
-    const v5688 = try s.call(v5686, v5684, &.{v5687});
+    const v5688 = try o.call(&s, @src(), v5686, v5684, &.{v5687});
     var iterator5689 = try o.iterator(e, v5688);
     defer iterator5689.deinit();
     errdefer iterator5689.closePreserving();
@@ -1335,14 +1335,14 @@ fn body5630(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5695 = try o.lookup(&s, iteration5692, "binding4796");
         const v5696 = try s.text("m");
         const v5697 = try o.lookup(&s, iteration5692, "binding4806");
-        const v5698 = try s.call(v5694, c.pi_js_undefined(), &.{ receiver, v5695, v5696, v5697 });
+        const v5698 = try o.call(&s, @src(), v5694, c.pi_js_undefined(), &.{ receiver, v5695, v5696, v5697 });
         const v5699 = try s.text("call");
         const v5700 = try s.own(try js.getKey(e, v5698, v5699));
         const v5701 = try o.lookup(&s, iteration5692, "binding5637");
         const v5702 = try o.lookup(&s, iteration5692, "binding5693");
         const v5703 = try o.propertyKey(&s, v5702);
         const v5704 = try s.own(try js.getKey(e, v5701, v5703));
-        const v5705 = try s.call(v5700, v5698, &.{ receiver, v5704, o.boolean(&s, false) });
+        const v5705 = try o.call(&s, @src(), v5700, v5698, &.{ receiver, v5704, o.boolean(&s, false) });
         _ = v5705;
     }
     try iterator5689.close();
@@ -1361,7 +1361,7 @@ fn body5707(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5714 = try s.text("push");
     const v5715 = try s.own(try js.getKey(e, v5713, v5714));
     const v5716 = try o.lookup(&s, frame, "binding5708");
-    const v5717 = try s.call(v5715, v5713, &.{v5716});
+    const v5717 = try o.call(&s, @src(), v5715, v5713, &.{v5716});
     _ = v5717;
     const v5718 = try s.text("pendingResource");
     const v5719 = try s.own(try js.getKey(e, receiver, v5718));
@@ -1376,18 +1376,18 @@ fn body5707(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5724 = try s.text("push");
         const v5725 = try s.own(try js.getKey(e, v5723, v5724));
         const v5726 = try o.lookup(&s, frame, "binding5708");
-        const v5727 = try s.call(v5725, v5723, &.{v5726});
+        const v5727 = try o.call(&s, @src(), v5725, v5723, &.{v5726});
         _ = v5727;
     }
     const v5728 = try o.lookup(&s, frame, "binding4795");
     const v5729 = try o.lookup(&s, frame, "binding4796");
     const v5730 = try s.text("m");
     const v5731 = try o.lookup(&s, frame, "binding4805");
-    const v5732 = try s.call(v5728, c.pi_js_undefined(), &.{ receiver, v5729, v5730, v5731 });
+    const v5732 = try o.call(&s, @src(), v5728, c.pi_js_undefined(), &.{ receiver, v5729, v5730, v5731 });
     const v5733 = try s.text("call");
     const v5734 = try s.own(try js.getKey(e, v5732, v5733));
     const v5735 = try o.lookup(&s, frame, "binding5708");
-    const v5736 = try s.call(v5734, v5732, &.{ receiver, v5735, o.boolean(&s, true) });
+    const v5736 = try o.call(&s, @src(), v5734, v5732, &.{ receiver, v5735, o.boolean(&s, true) });
     _ = v5736;
     return c.pi_js_undefined();
 }
@@ -1403,7 +1403,7 @@ fn body5738(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5744 = try s.own(try js.getKey(e, receiver, v5743));
     const v5745 = try s.text("pop");
     const v5746 = try s.own(try js.getKey(e, v5744, v5745));
-    const v5747 = try s.call(v5746, v5744, &.{});
+    const v5747 = try o.call(&s, @src(), v5746, v5744, &.{});
     _ = v5747;
     const v5748 = try s.text("resourceIds");
     const v5749 = try s.own(try js.getKey(e, receiver, v5748));
@@ -1425,7 +1425,7 @@ fn body5738(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5765 = try o.propertyKey(&s, v5764);
         const v5766 = try s.own(try js.getKey(e, v5759, v5765));
         const v5767 = try o.lookup(&s, frame, "binding5739");
-        const v5768 = try s.call(v5757, v5755, &.{ v5766, v5767 });
+        const v5768 = try o.call(&s, @src(), v5757, v5755, &.{ v5766, v5767 });
         break :logical5753 v5768;
     };
     try o.assign(&s, frame, "binding5742", v5754);
@@ -1435,18 +1435,18 @@ fn body5738(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
         const v5771 = try s.own(try js.getKey(e, receiver, v5770));
         const v5772 = try s.text("pop");
         const v5773 = try s.own(try js.getKey(e, v5771, v5772));
-        const v5774 = try s.call(v5773, v5771, &.{});
+        const v5774 = try o.call(&s, @src(), v5773, v5771, &.{});
         _ = v5774;
     }
     const v5775 = try o.lookup(&s, frame, "binding4795");
     const v5776 = try o.lookup(&s, frame, "binding4796");
     const v5777 = try s.text("m");
     const v5778 = try o.lookup(&s, frame, "binding4806");
-    const v5779 = try s.call(v5775, c.pi_js_undefined(), &.{ receiver, v5776, v5777, v5778 });
+    const v5779 = try o.call(&s, @src(), v5775, c.pi_js_undefined(), &.{ receiver, v5776, v5777, v5778 });
     const v5780 = try s.text("call");
     const v5781 = try s.own(try js.getKey(e, v5779, v5780));
     const v5782 = try o.lookup(&s, frame, "binding5739");
-    const v5783 = try s.call(v5781, v5779, &.{ receiver, v5782, o.boolean(&s, true) });
+    const v5783 = try o.call(&s, @src(), v5781, v5779, &.{ receiver, v5782, o.boolean(&s, true) });
     _ = v5783;
     return c.pi_js_undefined();
 }
@@ -1464,11 +1464,11 @@ fn body5785(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5791 = try o.lookup(&s, frame, "binding4796");
     const v5792 = try s.text("m");
     const v5793 = try o.lookup(&s, frame, "binding4807");
-    const v5794 = try s.call(v5790, c.pi_js_undefined(), &.{ receiver, v5791, v5792, v5793 });
+    const v5794 = try o.call(&s, @src(), v5790, c.pi_js_undefined(), &.{ receiver, v5791, v5792, v5793 });
     const v5795 = try s.text("call");
     const v5796 = try s.own(try js.getKey(e, v5794, v5795));
     const v5797 = try o.lookup(&s, frame, "binding5787");
-    const v5798 = try s.call(v5796, v5794, &.{ receiver, v5797 });
+    const v5798 = try o.call(&s, @src(), v5796, v5794, &.{ receiver, v5797 });
     _ = v5798;
     const v5799 = try s.text("resolvedResources");
     const v5800 = try s.own(try js.getKey(e, receiver, v5799));
@@ -1476,7 +1476,7 @@ fn body5785(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5802 = try s.own(try js.getKey(e, v5800, v5801));
     const v5803 = try o.lookup(&s, frame, "binding5786");
     const v5804 = try o.lookup(&s, frame, "binding5787");
-    const v5805 = try s.call(v5802, v5800, &.{ v5803, v5804 });
+    const v5805 = try o.call(&s, @src(), v5802, v5800, &.{ v5803, v5804 });
     _ = v5805;
     return c.pi_js_undefined();
 }
@@ -1493,7 +1493,7 @@ fn body5807(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5814 = try s.text("has");
     const v5815 = try s.own(try js.getKey(e, v5813, v5814));
     const v5816 = try o.lookup(&s, frame, "binding5808");
-    const v5817 = try s.call(v5815, v5813, &.{v5816});
+    const v5817 = try o.call(&s, @src(), v5815, v5813, &.{v5816});
     if (s.truthy(o.boolean(&s, !s.truthy(v5817)))) {
         return c.JS_DupValue(e.context, c.pi_js_undefined());
     }
@@ -1502,24 +1502,24 @@ fn body5807(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v5820 = try s.text("get");
     const v5821 = try s.own(try js.getKey(e, v5819, v5820));
     const v5822 = try o.lookup(&s, frame, "binding5808");
-    const v5823 = try s.call(v5821, v5819, &.{v5822});
+    const v5823 = try o.call(&s, @src(), v5821, v5819, &.{v5822});
     try o.assign(&s, frame, "binding5811", v5823);
     const v5824 = try o.lookup(&s, frame, "binding4795");
     const v5825 = try o.lookup(&s, frame, "binding4796");
     const v5826 = try s.text("m");
     const v5827 = try o.lookup(&s, frame, "binding4808");
-    const v5828 = try s.call(v5824, c.pi_js_undefined(), &.{ receiver, v5825, v5826, v5827 });
+    const v5828 = try o.call(&s, @src(), v5824, c.pi_js_undefined(), &.{ receiver, v5825, v5826, v5827 });
     const v5829 = try s.text("call");
     const v5830 = try s.own(try js.getKey(e, v5828, v5829));
     const v5831 = try o.lookup(&s, frame, "binding5811");
-    const v5832 = try s.call(v5830, v5828, &.{ receiver, v5831 });
+    const v5832 = try o.call(&s, @src(), v5830, v5828, &.{ receiver, v5831 });
     _ = v5832;
     const v5833 = try s.text("resolvedResources");
     const v5834 = try s.own(try js.getKey(e, receiver, v5833));
     const v5835 = try s.text("delete");
     const v5836 = try s.own(try js.getKey(e, v5834, v5835));
     const v5837 = try o.lookup(&s, frame, "binding5808");
-    const v5838 = try s.call(v5836, v5834, &.{v5837});
+    const v5838 = try o.call(&s, @src(), v5836, v5834, &.{v5837});
     _ = v5838;
     return c.pi_js_undefined();
 }

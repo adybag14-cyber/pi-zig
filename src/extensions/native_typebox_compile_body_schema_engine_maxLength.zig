@@ -63,8 +63,8 @@ fn body10546(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10562 = try o.lookup(&s, frame, "binding10549");
     const v10563 = try s.text("maxLength");
     const v10564 = try s.own(try js.getKey(e, v10562, v10563));
-    const v10565 = try s.call(v10561, v10559, &.{v10564});
-    const v10566 = try s.call(v10557, v10555, &.{ v10558, v10565 });
+    const v10565 = try o.call(&s, @src(), v10561, v10559, &.{v10564});
+    const v10566 = try o.call(&s, @src(), v10557, v10555, &.{ v10558, v10565 });
     return c.JS_DupValue(e.context, v10566);
 }
 fn body10568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -88,7 +88,7 @@ fn body10568(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10581 = try o.lookup(&s, frame, "binding10571");
     const v10582 = try s.text("maxLength");
     const v10583 = try s.own(try js.getKey(e, v10581, v10582));
-    const v10584 = try s.call(v10579, v10577, &.{ v10580, v10583 });
+    const v10584 = try o.call(&s, @src(), v10579, v10577, &.{ v10580, v10583 });
     return c.JS_DupValue(e.context, v10584);
 }
 fn body10586(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -114,7 +114,7 @@ fn body10586(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v10601 = try o.lookup(&s, frame, "binding10588");
     const v10602 = try o.lookup(&s, frame, "binding10591");
     const v10603 = try o.lookup(&s, frame, "binding10592");
-    const v10604 = try s.call(v10599, c.pi_js_undefined(), &.{ v10600, v10601, v10602, v10603 });
+    const v10604 = try o.call(&s, @src(), v10599, c.pi_js_undefined(), &.{ v10600, v10601, v10602, v10603 });
     const v10606 = logical10605: {
         if (s.truthy(v10604)) break :logical10605 v10604;
         const v10607 = try o.lookup(&s, frame, "binding10588");
@@ -138,7 +138,7 @@ fn body10586(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v10622 = try s.own(try js.getKey(e, v10620, v10621));
         try o.defineKey(&s, v10618, v10619, v10622);
         try o.defineKey(&s, v10610, v10617, v10618);
-        const v10623 = try s.call(v10609, v10607, &.{v10610});
+        const v10623 = try o.call(&s, @src(), v10609, v10607, &.{v10610});
         break :logical10605 v10623;
     };
     return c.JS_DupValue(e.context, v10606);

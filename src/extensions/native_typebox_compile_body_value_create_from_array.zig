@@ -36,7 +36,7 @@ fn body28446(e: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JS
     const v28450 = try o.lookup(&s, frame, "binding28415");
     const v28451 = try s.text("items");
     const v28452 = try s.own(try js.getKey(e, v28450, v28451));
-    const v28453 = try s.call(v28448, c.pi_js_undefined(), &.{ v28449, v28452 });
+    const v28453 = try o.call(&s, @src(), v28448, c.pi_js_undefined(), &.{ v28449, v28452 });
     return c.JS_DupValue(e.context, v28453);
 }
 fn body28446C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -55,12 +55,12 @@ fn body28413(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding28415", v28418);
     const v28420 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsUniqueItems");
     const v28421 = try o.lookup(&s, frame, "binding28415");
-    const v28422 = try s.call(v28420, c.pi_js_undefined(), &.{v28421});
+    const v28422 = try o.call(&s, @src(), v28420, c.pi_js_undefined(), &.{v28421});
     const v28424 = logical28423: {
         if (!s.truthy(v28422)) break :logical28423 v28422;
         const v28425 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsDefault");
         const v28426 = try o.lookup(&s, frame, "binding28415");
-        const v28427 = try s.call(v28425, c.pi_js_undefined(), &.{v28426});
+        const v28427 = try o.call(&s, @src(), v28425, c.pi_js_undefined(), &.{v28426});
         break :logical28423 o.boolean(&s, !s.truthy(v28427));
     };
     if (s.truthy(v28424)) {
@@ -73,7 +73,7 @@ fn body28413(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     }
     const v28432 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsMinItems");
     const v28433 = try o.lookup(&s, frame, "binding28415");
-    const v28434 = try s.call(v28432, c.pi_js_undefined(), &.{v28433});
+    const v28434 = try o.call(&s, @src(), v28432, c.pi_js_undefined(), &.{v28433});
     const v28436 = conditional28435: {
         if (s.truthy(v28434)) {
             const v28437 = try o.lookup(&s, frame, "binding28415");
@@ -93,6 +93,6 @@ fn body28413(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28445 = try o.lookup(&s, frame, "binding28419");
     try o.defineKey(&s, v28443, v28444, v28445);
     const v28454 = try o.arrow(&s, "", 0, body28446C, &.{ graph, frame });
-    const v28455 = try s.call(v28442, v28440, &.{ v28443, v28454 });
+    const v28455 = try o.call(&s, @src(), v28442, v28440, &.{ v28443, v28454 });
     return c.JS_DupValue(e.context, v28455);
 }

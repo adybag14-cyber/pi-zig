@@ -52,14 +52,14 @@ fn body29913(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v29931 = try o.lookup(&s, iteration29926, "binding29927");
         const v29932 = try o.importValue(&s, graph, "value/clone/index.mjs", "Clone");
         const v29933 = try o.lookup(&s, iteration29926, "binding29916");
-        const v29934 = try s.call(v29932, c.pi_js_undefined(), &.{v29933});
-        const v29935 = try s.call(v29929, c.pi_js_undefined(), &.{ v29930, v29931, v29934 });
+        const v29934 = try o.call(&s, @src(), v29932, c.pi_js_undefined(), &.{v29933});
+        const v29935 = try o.call(&s, @src(), v29929, c.pi_js_undefined(), &.{ v29930, v29931, v29934 });
         try o.assign(&s, iteration29926, "binding29928", v29935);
         const v29936 = try o.importValue(&s, graph, "value/check/index.mjs", "Check");
         const v29937 = try o.lookup(&s, iteration29926, "binding29914");
         const v29938 = try o.lookup(&s, iteration29926, "binding29927");
         const v29939 = try o.lookup(&s, iteration29926, "binding29928");
-        const v29940 = try s.call(v29936, c.pi_js_undefined(), &.{ v29937, v29938, v29939 });
+        const v29940 = try o.call(&s, @src(), v29936, c.pi_js_undefined(), &.{ v29937, v29938, v29939 });
         if (s.truthy(v29940)) {
             const v29941 = try o.lookup(&s, iteration29926, "binding29928");
             try iterator29923.close();

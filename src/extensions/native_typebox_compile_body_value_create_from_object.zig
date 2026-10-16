@@ -48,7 +48,7 @@ fn body28776(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v28791 = try o.lookup(&s, frame, "binding28779");
     const v28792 = try o.propertyKey(&s, v28791);
     const v28793 = try s.own(try js.getKey(e, v28790, v28792));
-    const v28794 = try s.call(v28786, c.pi_js_undefined(), &.{ v28787, v28793 });
+    const v28794 = try o.call(&s, @src(), v28786, c.pi_js_undefined(), &.{ v28787, v28793 });
     try o.defineKey(&s, v28782, v28785, v28794);
     return c.JS_DupValue(e.context, v28782);
 }
@@ -72,7 +72,7 @@ fn body28753(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28763 = try o.lookup(&s, frame, "binding28755");
     const v28764 = try s.text("required");
     const v28765 = try s.own(try js.getKey(e, v28763, v28764));
-    const v28766 = try s.call(v28762, v28760, &.{v28765});
+    const v28766 = try o.call(&s, @src(), v28762, v28760, &.{v28765});
     const v28768 = conditional28767: {
         if (s.truthy(v28766)) {
             const v28769 = try s.array();
@@ -90,6 +90,6 @@ fn body28753(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28775 = try s.own(try js.getKey(e, v28773, v28774));
     const v28795 = try o.arrow(&s, "", 2, body28776C, &.{ graph, frame });
     const v28796 = try s.object();
-    const v28797 = try s.call(v28775, v28773, &.{ v28795, v28796 });
+    const v28797 = try o.call(&s, @src(), v28775, v28773, &.{ v28795, v28796 });
     return c.JS_DupValue(e.context, v28797);
 }

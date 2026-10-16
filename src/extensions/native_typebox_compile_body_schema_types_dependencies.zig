@@ -37,7 +37,7 @@ fn body21321(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v21326 = try s.text("IsString");
     const v21327 = try s.own(try js.getKey(e, v21325, v21326));
     const v21328 = try o.lookup(&s, frame, "binding21323");
-    const v21329 = try s.call(v21327, v21325, &.{v21328});
+    const v21329 = try o.call(&s, @src(), v21327, v21325, &.{v21328});
     return c.JS_DupValue(e.context, v21329);
 }
 fn body21321C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -54,21 +54,21 @@ fn body21302(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     try o.assign(&s, frame, "binding21304", v21305);
     const v21306 = try o.importValue(&s, graph, "schema/types/schema.mjs", "IsSchema");
     const v21307 = try o.lookup(&s, frame, "binding21304");
-    const v21308 = try s.call(v21306, c.pi_js_undefined(), &.{v21307});
+    const v21308 = try o.call(&s, @src(), v21306, c.pi_js_undefined(), &.{v21307});
     const v21310 = logical21309: {
         if (s.truthy(v21308)) break :logical21309 v21308;
         const v21311 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
         const v21312 = try s.text("IsArray");
         const v21313 = try s.own(try js.getKey(e, v21311, v21312));
         const v21314 = try o.lookup(&s, frame, "binding21304");
-        const v21315 = try s.call(v21313, v21311, &.{v21314});
+        const v21315 = try o.call(&s, @src(), v21313, v21311, &.{v21314});
         const v21317 = logical21316: {
             if (!s.truthy(v21315)) break :logical21316 v21315;
             const v21318 = try o.lookup(&s, frame, "binding21304");
             const v21319 = try s.text("every");
             const v21320 = try s.own(try js.getKey(e, v21318, v21319));
             const v21330 = try o.arrow(&s, "", 1, body21321C, &.{ graph, frame });
-            const v21331 = try s.call(v21320, v21318, &.{v21330});
+            const v21331 = try o.call(&s, @src(), v21320, v21318, &.{v21330});
             break :logical21316 v21331;
         };
         break :logical21309 v21317;
@@ -92,7 +92,7 @@ fn body21273(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21278 = try s.own(try js.getKey(e, v21276, v21277));
     const v21279 = try o.lookup(&s, frame, "binding21274");
     const v21280 = try s.text("dependencies");
-    const v21281 = try s.call(v21278, v21276, &.{ v21279, v21280 });
+    const v21281 = try o.call(&s, @src(), v21278, v21276, &.{ v21279, v21280 });
     const v21283 = logical21282: {
         if (!s.truthy(v21281)) break :logical21282 v21281;
         const v21284 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -101,7 +101,7 @@ fn body21273(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21287 = try o.lookup(&s, frame, "binding21274");
         const v21288 = try s.text("dependencies");
         const v21289 = try s.own(try js.getKey(e, v21287, v21288));
-        const v21290 = try s.call(v21286, v21284, &.{v21289});
+        const v21290 = try o.call(&s, @src(), v21286, v21284, &.{v21289});
         break :logical21282 v21290;
     };
     const v21292 = logical21291: {
@@ -112,11 +112,11 @@ fn body21273(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21296 = try o.lookup(&s, frame, "binding21274");
         const v21297 = try s.text("dependencies");
         const v21298 = try s.own(try js.getKey(e, v21296, v21297));
-        const v21299 = try s.call(v21295, v21293, &.{v21298});
+        const v21299 = try o.call(&s, @src(), v21295, v21293, &.{v21298});
         const v21300 = try s.text("every");
         const v21301 = try s.own(try js.getKey(e, v21299, v21300));
         const v21332 = try o.arrow(&s, "", 1, body21302C, &.{ graph, frame });
-        const v21333 = try s.call(v21301, v21299, &.{v21332});
+        const v21333 = try o.call(&s, @src(), v21301, v21299, &.{v21332});
         break :logical21291 v21333;
     };
     return c.JS_DupValue(e.context, v21292);

@@ -38,14 +38,14 @@ fn body22482(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v22487 = try s.own(try js.getKey(e, v22485, v22486));
     const v22488 = try o.lookup(&s, frame, "binding22483");
     const v22489 = try s.text("unevaluatedItems");
-    const v22490 = try s.call(v22487, v22485, &.{ v22488, v22489 });
+    const v22490 = try o.call(&s, @src(), v22487, v22485, &.{ v22488, v22489 });
     const v22492 = logical22491: {
         if (!s.truthy(v22490)) break :logical22491 v22490;
         const v22493 = try o.importValue(&s, graph, "schema/types/schema.mjs", "IsSchema");
         const v22494 = try o.lookup(&s, frame, "binding22483");
         const v22495 = try s.text("unevaluatedItems");
         const v22496 = try s.own(try js.getKey(e, v22494, v22495));
-        const v22497 = try s.call(v22493, c.pi_js_undefined(), &.{v22496});
+        const v22497 = try o.call(&s, @src(), v22493, c.pi_js_undefined(), &.{v22496});
         break :logical22491 v22497;
     };
     return c.JS_DupValue(e.context, v22492);

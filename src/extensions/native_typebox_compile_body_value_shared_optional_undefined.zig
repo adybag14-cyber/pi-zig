@@ -39,7 +39,7 @@ fn body31664(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding31667", v31670);
     const v31671 = try o.importValue(&s, graph, "type/index.mjs", "IsOptional");
     const v31672 = try o.lookup(&s, frame, "binding31665");
-    const v31673 = try s.call(v31671, c.pi_js_undefined(), &.{v31672});
+    const v31673 = try o.call(&s, @src(), v31671, c.pi_js_undefined(), &.{v31672});
     const v31675 = logical31674: {
         if (!s.truthy(v31673)) break :logical31674 v31673;
         const v31676 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -49,7 +49,7 @@ fn body31664(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v31680 = try o.lookup(&s, frame, "binding31666");
         const v31681 = try o.propertyKey(&s, v31680);
         const v31682 = try s.own(try js.getKey(e, v31679, v31681));
-        const v31683 = try s.call(v31678, v31676, &.{v31682});
+        const v31683 = try o.call(&s, @src(), v31678, v31676, &.{v31682});
         break :logical31674 v31683;
     };
     return c.JS_DupValue(e.context, v31675);

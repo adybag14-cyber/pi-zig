@@ -38,6 +38,6 @@ fn body21218(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21223 = try s.own(try js.getKey(e, v21221, v21222));
     const v21224 = try o.lookup(&s, frame, "binding21219");
     const v21225 = try s.text("default");
-    const v21226 = try s.call(v21223, v21221, &.{ v21224, v21225 });
+    const v21226 = try o.call(&s, @src(), v21223, v21221, &.{ v21224, v21225 });
     return c.JS_DupValue(e.context, v21226);
 }

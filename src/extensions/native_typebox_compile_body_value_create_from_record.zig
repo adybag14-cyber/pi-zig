@@ -37,12 +37,12 @@ fn body28802(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     try o.assign(&s, frame, "binding28804", v28806);
     const v28807 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsMinProperties");
     const v28808 = try o.lookup(&s, frame, "binding28804");
-    const v28809 = try s.call(v28807, c.pi_js_undefined(), &.{v28808});
+    const v28809 = try o.call(&s, @src(), v28807, c.pi_js_undefined(), &.{v28808});
     const v28811 = logical28810: {
         if (!s.truthy(v28809)) break :logical28810 v28809;
         const v28812 = try o.importValue(&s, graph, "schema/types/index.mjs", "IsDefault");
         const v28813 = try o.lookup(&s, frame, "binding28804");
-        const v28814 = try s.call(v28812, c.pi_js_undefined(), &.{v28813});
+        const v28814 = try o.call(&s, @src(), v28812, c.pi_js_undefined(), &.{v28813});
         break :logical28810 o.boolean(&s, !s.truthy(v28814));
     };
     if (s.truthy(v28811)) {

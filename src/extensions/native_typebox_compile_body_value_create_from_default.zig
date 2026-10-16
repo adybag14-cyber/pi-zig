@@ -41,14 +41,14 @@ fn body28549(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v28557 = try o.lookup(&s, frame, "binding28551");
     const v28558 = try s.text("default");
     const v28559 = try s.own(try js.getKey(e, v28557, v28558));
-    const v28560 = try s.call(v28556, v28554, &.{v28559});
+    const v28560 = try o.call(&s, @src(), v28556, v28554, &.{v28559});
     const v28562 = conditional28561: {
         if (s.truthy(v28560)) {
             const v28563 = try o.lookup(&s, frame, "binding28551");
             const v28564 = try s.text("default");
             const v28565 = try s.own(try js.getKey(e, v28563, v28564));
             const v28566 = try o.lookup(&s, frame, "binding28551");
-            const v28567 = try s.call(v28565, v28563, &.{v28566});
+            const v28567 = try o.call(&s, @src(), v28565, v28563, &.{v28566});
             break :conditional28561 v28567;
         } else {
             const v28568 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -57,14 +57,14 @@ fn body28549(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v28571 = try o.lookup(&s, frame, "binding28551");
             const v28572 = try s.text("default");
             const v28573 = try s.own(try js.getKey(e, v28571, v28572));
-            const v28574 = try s.call(v28570, v28568, &.{v28573});
+            const v28574 = try o.call(&s, @src(), v28570, v28568, &.{v28573});
             const v28576 = conditional28575: {
                 if (s.truthy(v28574)) {
                     const v28577 = try o.importValue(&s, graph, "value/clone/index.mjs", "Clone");
                     const v28578 = try o.lookup(&s, frame, "binding28551");
                     const v28579 = try s.text("default");
                     const v28580 = try s.own(try js.getKey(e, v28578, v28579));
-                    const v28581 = try s.call(v28577, c.pi_js_undefined(), &.{v28580});
+                    const v28581 = try o.call(&s, @src(), v28577, c.pi_js_undefined(), &.{v28580});
                     break :conditional28575 v28581;
                 } else {
                     const v28582 = try o.lookup(&s, frame, "binding28551");

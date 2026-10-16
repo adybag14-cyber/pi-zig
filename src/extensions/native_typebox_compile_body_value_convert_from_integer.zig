@@ -41,13 +41,13 @@ fn body26248(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26258 = try s.text("TryNumber");
     const v26259 = try s.own(try js.getKey(e, v26257, v26258));
     const v26260 = try o.lookup(&s, frame, "binding26251");
-    const v26261 = try s.call(v26259, v26257, &.{v26260});
+    const v26261 = try o.call(&s, @src(), v26259, v26257, &.{v26260});
     try o.assign(&s, frame, "binding26256", v26261);
     const v26262 = try o.importValue(&s, graph, "value/convert/try/index.mjs", "Try");
     const v26263 = try s.text("IsOk");
     const v26264 = try s.own(try js.getKey(e, v26262, v26263));
     const v26265 = try o.lookup(&s, frame, "binding26256");
-    const v26266 = try s.call(v26264, v26262, &.{v26265});
+    const v26266 = try o.call(&s, @src(), v26264, v26262, &.{v26265});
     const v26268 = conditional26267: {
         if (s.truthy(v26266)) {
             const v26269 = try s.global("Math");
@@ -56,7 +56,7 @@ fn body26248(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v26272 = try o.lookup(&s, frame, "binding26256");
             const v26273 = try s.text("value");
             const v26274 = try s.own(try js.getKey(e, v26272, v26273));
-            const v26275 = try s.call(v26271, v26269, &.{v26274});
+            const v26275 = try o.call(&s, @src(), v26271, v26269, &.{v26274});
             break :conditional26267 v26275;
         } else {
             const v26276 = try o.lookup(&s, frame, "binding26251");

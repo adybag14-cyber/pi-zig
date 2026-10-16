@@ -47,7 +47,7 @@ fn body25261(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v25271 = try s.text("IsArray");
     const v25272 = try s.own(try js.getKey(e, v25270, v25271));
     const v25273 = try o.lookup(&s, frame, "binding25265");
-    const v25274 = try s.call(v25272, v25270, &.{v25273});
+    const v25274 = try o.call(&s, @src(), v25272, v25270, &.{v25273});
     if (s.truthy(o.boolean(&s, !s.truthy(v25274)))) {
         const v25275 = try o.lookup(&s, frame, "binding25265");
         return c.JS_DupValue(e.context, v25275);
@@ -66,7 +66,7 @@ fn body25261(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v25288 = try o.lookup(&s, frame, "binding25265");
         const v25289 = try s.text("length");
         const v25290 = try s.own(try js.getKey(e, v25288, v25289));
-        const v25291 = try s.call(v25282, v25280, &.{ v25287, v25290 });
+        const v25291 = try o.call(&s, @src(), v25282, v25280, &.{ v25287, v25290 });
         const v25292 = try s.own(try e.checked(c.JS_PiBinaryOperator(e.context, 4, v25279, v25291)));
         if (!s.truthy(v25292)) break :loop25277;
         {
@@ -86,7 +86,7 @@ fn body25261(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v25306 = try o.lookup(&s, frame, "binding25276");
             const v25307 = try o.propertyKey(&s, v25306);
             const v25308 = try s.own(try js.getKey(e, v25305, v25307));
-            const v25309 = try s.call(v25296, c.pi_js_undefined(), &.{ v25297, v25298, v25304, v25308 });
+            const v25309 = try o.call(&s, @src(), v25296, c.pi_js_undefined(), &.{ v25297, v25298, v25304, v25308 });
             try js.setKey(e, v25293, v25295, v25309);
         }
         const v25310 = try o.lookup(&s, frame, "binding25276");
@@ -98,7 +98,7 @@ fn body25261(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v25314 = try o.lookup(&s, frame, "binding25263");
     const v25315 = try o.lookup(&s, frame, "binding25264");
     const v25316 = try o.lookup(&s, frame, "binding25265");
-    const v25317 = try s.call(v25312, c.pi_js_undefined(), &.{ v25313, v25314, v25315, v25316 });
+    const v25317 = try o.call(&s, @src(), v25312, c.pi_js_undefined(), &.{ v25313, v25314, v25315, v25316 });
     return c.JS_DupValue(e.context, v25317);
 }
 fn body25319(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -120,13 +120,13 @@ fn body25319(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v25332 = try o.lookup(&s, frame, "binding25321");
     const v25333 = try o.lookup(&s, frame, "binding25322");
     const v25334 = try o.lookup(&s, frame, "binding25323");
-    const v25335 = try s.call(v25330, c.pi_js_undefined(), &.{ v25331, v25332, v25333, v25334 });
+    const v25335 = try o.call(&s, @src(), v25330, c.pi_js_undefined(), &.{ v25331, v25332, v25333, v25334 });
     try o.assign(&s, frame, "binding25329", v25335);
     const v25336 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
     const v25337 = try s.text("IsArray");
     const v25338 = try s.own(try js.getKey(e, v25336, v25337));
     const v25339 = try o.lookup(&s, frame, "binding25329");
-    const v25340 = try s.call(v25338, v25336, &.{v25339});
+    const v25340 = try o.call(&s, @src(), v25338, v25336, &.{v25339});
     if (s.truthy(o.boolean(&s, !s.truthy(v25340)))) {
         const v25341 = try o.lookup(&s, frame, "binding25323");
         return c.JS_DupValue(e.context, v25341);
@@ -145,7 +145,7 @@ fn body25319(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v25354 = try o.lookup(&s, frame, "binding25329");
         const v25355 = try s.text("length");
         const v25356 = try s.own(try js.getKey(e, v25354, v25355));
-        const v25357 = try s.call(v25348, v25346, &.{ v25353, v25356 });
+        const v25357 = try o.call(&s, @src(), v25348, v25346, &.{ v25353, v25356 });
         const v25358 = try s.own(try e.checked(c.JS_PiBinaryOperator(e.context, 4, v25345, v25357)));
         if (!s.truthy(v25358)) break :loop25343;
         {
@@ -165,7 +165,7 @@ fn body25319(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v25372 = try o.lookup(&s, frame, "binding25342");
             const v25373 = try o.propertyKey(&s, v25372);
             const v25374 = try s.own(try js.getKey(e, v25371, v25373));
-            const v25375 = try s.call(v25362, c.pi_js_undefined(), &.{ v25363, v25364, v25370, v25374 });
+            const v25375 = try o.call(&s, @src(), v25362, c.pi_js_undefined(), &.{ v25363, v25364, v25370, v25374 });
             try js.setKey(e, v25359, v25361, v25375);
         }
         const v25376 = try o.lookup(&s, frame, "binding25342");
@@ -194,7 +194,7 @@ fn body25380(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v25391 = try s.own(try js.getKey(e, v25389, v25390));
     const v25392 = try o.lookup(&s, frame, "binding25381");
     const v25393 = try s.text("Decode");
-    const v25394 = try s.call(v25391, v25389, &.{ v25392, v25393 });
+    const v25394 = try o.call(&s, @src(), v25391, v25389, &.{ v25392, v25393 });
     const v25396 = conditional25395: {
         if (s.truthy(v25394)) {
             const v25397 = try o.lookup(&s, frame, "binding25258");
@@ -202,7 +202,7 @@ fn body25380(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v25399 = try o.lookup(&s, frame, "binding25382");
             const v25400 = try o.lookup(&s, frame, "binding25383");
             const v25401 = try o.lookup(&s, frame, "binding25384");
-            const v25402 = try s.call(v25397, c.pi_js_undefined(), &.{ v25398, v25399, v25400, v25401 });
+            const v25402 = try o.call(&s, @src(), v25397, c.pi_js_undefined(), &.{ v25398, v25399, v25400, v25401 });
             break :conditional25395 v25402;
         } else {
             const v25403 = try o.lookup(&s, frame, "binding25259");
@@ -210,7 +210,7 @@ fn body25380(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v25405 = try o.lookup(&s, frame, "binding25382");
             const v25406 = try o.lookup(&s, frame, "binding25383");
             const v25407 = try o.lookup(&s, frame, "binding25384");
-            const v25408 = try s.call(v25403, c.pi_js_undefined(), &.{ v25404, v25405, v25406, v25407 });
+            const v25408 = try o.call(&s, @src(), v25403, c.pi_js_undefined(), &.{ v25404, v25405, v25406, v25407 });
             break :conditional25395 v25408;
         }
     };

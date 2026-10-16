@@ -39,7 +39,7 @@ fn body23388(e: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c
     const v23395 = try s.text("items");
     const v23396 = try s.own(try js.getKey(e, v23394, v23395));
     const v23397 = try o.lookup(&s, frame, "binding23390");
-    const v23398 = try s.call(v23392, c.pi_js_undefined(), &.{ v23393, v23396, v23397 });
+    const v23398 = try o.call(&s, @src(), v23392, c.pi_js_undefined(), &.{ v23393, v23396, v23397 });
     return c.JS_DupValue(e.context, v23398);
 }
 fn body23388C(ctx: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -62,7 +62,7 @@ fn body23372(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23380 = try s.text("IsArray");
     const v23381 = try s.own(try js.getKey(e, v23379, v23380));
     const v23382 = try o.lookup(&s, frame, "binding23375");
-    const v23383 = try s.call(v23381, v23379, &.{v23382});
+    const v23383 = try o.call(&s, @src(), v23381, v23379, &.{v23382});
     if (s.truthy(o.boolean(&s, !s.truthy(v23383)))) {
         const v23384 = try o.lookup(&s, frame, "binding23375");
         return c.JS_DupValue(e.context, v23384);
@@ -71,6 +71,6 @@ fn body23372(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23386 = try s.text("map");
     const v23387 = try s.own(try js.getKey(e, v23385, v23386));
     const v23399 = try o.arrow(&s, "", 1, body23388C, &.{ graph, frame });
-    const v23400 = try s.call(v23387, v23385, &.{v23399});
+    const v23400 = try o.call(&s, @src(), v23387, v23385, &.{v23399});
     return c.JS_DupValue(e.context, v23400);
 }

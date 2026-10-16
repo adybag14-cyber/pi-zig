@@ -38,7 +38,7 @@ fn body21788(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21793 = try s.own(try js.getKey(e, v21791, v21792));
     const v21794 = try o.lookup(&s, frame, "binding21789");
     const v21795 = try s.text("maxItems");
-    const v21796 = try s.call(v21793, v21791, &.{ v21794, v21795 });
+    const v21796 = try o.call(&s, @src(), v21793, v21791, &.{ v21794, v21795 });
     const v21798 = logical21797: {
         if (!s.truthy(v21796)) break :logical21797 v21796;
         const v21799 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21788(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21802 = try o.lookup(&s, frame, "binding21789");
         const v21803 = try s.text("maxItems");
         const v21804 = try s.own(try js.getKey(e, v21802, v21803));
-        const v21805 = try s.call(v21801, v21799, &.{v21804});
+        const v21805 = try o.call(&s, @src(), v21801, v21799, &.{v21804});
         break :logical21797 v21805;
     };
     return c.JS_DupValue(e.context, v21798);

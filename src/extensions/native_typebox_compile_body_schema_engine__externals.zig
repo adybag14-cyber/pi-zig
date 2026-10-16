@@ -72,7 +72,7 @@ fn body4169(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []c
     const v4187 = try s.text("push");
     const v4188 = try s.own(try js.getKey(e, v4186, v4187));
     const v4189 = try o.lookup(&s, frame, "binding4170");
-    const v4190 = try s.call(v4188, v4186, &.{v4189});
+    const v4190 = try o.call(&s, @src(), v4188, v4186, &.{v4189});
     _ = v4190;
     const v4191 = try o.lookup(&s, frame, "binding4173");
     return c.JS_DupValue(e.context, v4191);

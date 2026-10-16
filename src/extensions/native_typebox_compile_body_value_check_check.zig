@@ -92,7 +92,7 @@ fn body23229(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23257 = try s.text("2");
     const v23268 = try o.arrow(&s, "2", 2, body23258C, &.{ graph, frame });
     try o.defineKey(&s, v23242, v23257, v23268);
-    const v23269 = try s.call(v23240, v23238, &.{ v23241, v23242 });
+    const v23269 = try o.call(&s, @src(), v23240, v23238, &.{ v23241, v23242 });
     var destructure23270 = try o.iterator(e, v23269);
     defer destructure23270.deinit();
     errdefer destructure23270.closePreserving();
@@ -107,6 +107,6 @@ fn body23229(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v23275 = try o.lookup(&s, frame, "binding23235");
     const v23276 = try o.lookup(&s, frame, "binding23236");
     const v23277 = try o.lookup(&s, frame, "binding23237");
-    const v23278 = try s.call(v23274, c.pi_js_undefined(), &.{ v23275, v23276, v23277 });
+    const v23278 = try o.call(&s, @src(), v23274, c.pi_js_undefined(), &.{ v23275, v23276, v23277 });
     return c.JS_DupValue(e.context, v23278);
 }

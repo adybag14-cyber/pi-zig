@@ -43,7 +43,7 @@ fn body26059(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v26071 = try s.text("Keys");
     const v26072 = try s.own(try js.getKey(e, v26070, v26071));
     const v26073 = try o.lookup(&s, frame, "binding26063");
-    const v26074 = try s.call(v26072, v26070, &.{v26073});
+    const v26074 = try o.call(&s, @src(), v26072, v26070, &.{v26073});
     try o.assign(&s, frame, "binding26069", v26074);
     const v26075 = try o.lookup(&s, frame, "binding26061");
     var iterator26076 = try o.iterator(e, v26075);
@@ -72,7 +72,7 @@ fn body26059(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v26092 = try s.text("test");
             const v26093 = try s.own(try js.getKey(e, v26091, v26092));
             const v26094 = try o.lookup(&s, iteration26089, "binding26090");
-            const v26095 = try s.call(v26093, v26091, &.{v26094});
+            const v26095 = try o.call(&s, @src(), v26093, v26091, &.{v26094});
             if (s.truthy(o.boolean(&s, !s.truthy(v26095)))) {
                 const v26096 = try o.lookup(&s, iteration26089, "binding26063");
                 const v26097 = try o.lookup(&s, iteration26089, "binding26090");
@@ -84,7 +84,7 @@ fn body26059(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
                 const v26103 = try o.lookup(&s, iteration26089, "binding26090");
                 const v26104 = try o.propertyKey(&s, v26103);
                 const v26105 = try s.own(try js.getKey(e, v26102, v26104));
-                const v26106 = try s.call(v26099, c.pi_js_undefined(), &.{ v26100, v26101, v26105 });
+                const v26106 = try o.call(&s, @src(), v26099, c.pi_js_undefined(), &.{ v26100, v26101, v26105 });
                 try js.setKey(e, v26096, v26098, v26106);
             }
         }

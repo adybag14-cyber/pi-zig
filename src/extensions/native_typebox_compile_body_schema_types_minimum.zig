@@ -38,7 +38,7 @@ fn body21876(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21881 = try s.own(try js.getKey(e, v21879, v21880));
     const v21882 = try o.lookup(&s, frame, "binding21877");
     const v21883 = try s.text("minimum");
-    const v21884 = try s.call(v21881, v21879, &.{ v21882, v21883 });
+    const v21884 = try o.call(&s, @src(), v21881, v21879, &.{ v21882, v21883 });
     const v21886 = logical21885: {
         if (!s.truthy(v21884)) break :logical21885 v21884;
         const v21887 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21876(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21890 = try o.lookup(&s, frame, "binding21877");
         const v21891 = try s.text("minimum");
         const v21892 = try s.own(try js.getKey(e, v21890, v21891));
-        const v21893 = try s.call(v21889, v21887, &.{v21892});
+        const v21893 = try o.call(&s, @src(), v21889, v21887, &.{v21892});
         const v21895 = logical21894: {
             if (s.truthy(v21893)) break :logical21894 v21893;
             const v21896 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -56,7 +56,7 @@ fn body21876(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
             const v21899 = try o.lookup(&s, frame, "binding21877");
             const v21900 = try s.text("minimum");
             const v21901 = try s.own(try js.getKey(e, v21899, v21900));
-            const v21902 = try s.call(v21898, v21896, &.{v21901});
+            const v21902 = try o.call(&s, @src(), v21898, v21896, &.{v21901});
             break :logical21894 v21902;
         };
         break :logical21885 v21895;

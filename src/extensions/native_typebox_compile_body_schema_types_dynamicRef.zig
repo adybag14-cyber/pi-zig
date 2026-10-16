@@ -38,7 +38,7 @@ fn body21462(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
     const v21467 = try s.own(try js.getKey(e, v21465, v21466));
     const v21468 = try o.lookup(&s, frame, "binding21463");
     const v21469 = try s.text("$dynamicRef");
-    const v21470 = try s.call(v21467, v21465, &.{ v21468, v21469 });
+    const v21470 = try o.call(&s, @src(), v21467, v21465, &.{ v21468, v21469 });
     const v21472 = logical21471: {
         if (!s.truthy(v21470)) break :logical21471 v21470;
         const v21473 = try o.importValue(&s, graph, "guard/index.mjs", "Guard");
@@ -47,7 +47,7 @@ fn body21462(e: *Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []
         const v21476 = try o.lookup(&s, frame, "binding21463");
         const v21477 = try s.text("$dynamicRef");
         const v21478 = try s.own(try js.getKey(e, v21476, v21477));
-        const v21479 = try s.call(v21475, v21473, &.{v21478});
+        const v21479 = try o.call(&s, @src(), v21475, v21473, &.{v21478});
         break :logical21471 v21479;
     };
     return c.JS_DupValue(e.context, v21472);
