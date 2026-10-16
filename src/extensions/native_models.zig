@@ -320,14 +320,17 @@ fn populateModule(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try put(engine, cache, "models_error_prototype", try get(engine, models_error, "prototype"));
     try put(engine, cache, "models_error_constructor", c.JS_DupValue(engine.context, models_error));
     try put(engine, exports, "ModelsError", c.JS_DupValue(engine.context, models_error));
-    const Create = struct {
-        fn call(host: *engine_mod.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            return create(host, roots[0], if (args.len > 0) args[0] else c.pi_js_undefined());
-        }
-    };
-    try put(engine, exports, "createModels", try @import("native_node_function.zig").create(engine, "createModels", 1, Create.call, &.{cache}));
     const operations = try @import("native_ai_model_operations.zig").create(engine, models_error);
     defer engine.freeValue(operations);
+    try put(engine, cache, "model_operations", c.JS_DupValue(engine.context, operations));
+    const known_types = try engine.checked(c.JS_NewObject(engine.context));
+    defer engine.freeValue(known_types);
+    inline for (.{ "chat", "image", "classifier" }) |name| try put(engine, known_types, name, c.JS_NewBool(engine.context, true));
+    try put(engine, cache, "known_model_types", c.JS_DupValue(engine.context, known_types));
+    const get_model_type = try get(engine, operations, "getModelType");
+    defer engine.freeValue(get_model_type);
+    try put(engine, cache, "has_known_model_type", try @import("native_ai_models_known_types.zig").create(engine, get_model_type, known_types));
+    try put(engine, exports, "createModels", try @import("native_ai_models_assembly.zig").create(engine, exports, operations, cache));
     inline for (.{ "getModelType", "isModelType" }) |name| try put(engine, exports, name, try get(engine, operations, name));
     try @import("native_provider_factory.zig").install(engine, exports, cache);
     engine.native_ai_model_operations_namespace = c.JS_DupValue(engine.context, operations);

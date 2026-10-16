@@ -1769,6 +1769,18 @@ pub fn build(b: *std.Build) void {
     openai_full58_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-openai-full58", "Compile original Source58 actual API Models Kimi graph and complete raw wire diagnostics").dependOn(&openai_full58_tests.step);
     b.step("test-native-ai-openai-full58", "Compare all original58 snapshots raw request bytes headers deep JSON and image split").dependOn(&b.addRunArtifact(openai_full58_tests).step);
+    const actual_provider_factories_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_factories_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual provider factories"}, .use_llvm = use_llvm });
+    linkQuickJs(b, actual_provider_factories_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(actual_provider_factories_tests.root_module, sqlite_lib_dir, sqlite_library);
+    actual_provider_factories_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-actual-provider-factories", "Compile actual provider factory Source92 qualification independently of runtime").dependOn(&actual_provider_factories_tests.step);
+    b.step("test-native-actual-provider-factories", "Replay genuine Source92 over actual Models providers APIs and wrappers").dependOn(&b.addRunArtifact(actual_provider_factories_tests).step);
+    const actual_models_class_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_models_class_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual Models class"}, .use_llvm = use_llvm });
+    linkQuickJs(b, actual_models_class_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(actual_models_class_tests.root_module, sqlite_lib_dir, sqlite_library);
+    actual_models_class_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-actual-models-class", "Compile original Source18 over actual ordinary Models class").dependOn(&actual_models_class_tests.step);
+    b.step("test-native-actual-models-class", "Replay original Source18 ordinary Models receivers and promises").dependOn(&b.addRunArtifact(actual_models_class_tests).step);
     const strict_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_constrained_sampling_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native constrained sampling"}, .use_llvm = use_llvm });
     linkQuickJs(b, strict_schema_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(strict_schema_tests.root_module, sqlite_lib_dir, sqlite_library);

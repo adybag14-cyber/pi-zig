@@ -90,6 +90,7 @@ pub const Engine = struct {
     native_ai_env_keys: ?c.JSValue = null,
     native_ai_compat_exports: ?c.JSValue = null,
     native_ai_models_namespace: ?c.JSValue = null,
+    native_ai_auth_abort_namespace: ?c.JSValue = null,
     native_models_core_namespace: ?c.JSValue = null,
     native_ai_model_operations_namespace: ?c.JSValue = null,
     native_ai_provider_factories_namespace: ?c.JSValue = null,
@@ -335,6 +336,7 @@ pub const Engine = struct {
         if (self.native_ai_env_keys) |value| self.freeValue(value);
         if (self.native_ai_compat_exports) |value| self.freeValue(value);
         if (self.native_ai_models_namespace) |value| self.freeValue(value);
+        if (self.native_ai_auth_abort_namespace) |value| self.freeValue(value);
         if (self.native_models_core_namespace) |value| self.freeValue(value);
         if (self.native_ai_model_operations_namespace) |value| self.freeValue(value);
         if (self.native_ai_provider_factories_namespace) |value| self.freeValue(value);
