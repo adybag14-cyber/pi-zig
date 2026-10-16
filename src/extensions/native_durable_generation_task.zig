@@ -144,6 +144,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     }
     if (stage == 5) {
         const runtime = try scope.get(state, "runtime");
+        try put(engine, state, "settings", try scope.get(runtime, "settings"));
         const ref = try scope.get(value, "model");
         var intrinsics = try captured(&scope, state);
         if (c.JS_IsUndefined(ref)) return failNoModel(engine, &intrinsics, runtime, try scope.get(state, "context"), try scope.get(state, "liveToken"), ref);
@@ -184,7 +185,8 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         if (c.JS_IsUndefined(try scope.get(checkpoint, "compacted"))) {
             var window: f64 = 0;
             if (c.JS_ToFloat64(engine.context, &window, try scope.get(try scope.get(state, "model"), "contextWindow")) < 0) return js.capture(engine);
-            threshold = try thresholdCompaction(engine, view, entries, window, try scope.get(try scope.get(runtime, "settings"), "compaction"));
+            const policy = try scope.own(try @import("native_durable_compaction_policy.zig").resolve(engine, try scope.get(state, "settings"), try scope.get(state, "modelRef")));
+            threshold = try thresholdCompaction(engine, view, entries, window, policy);
         }
         if (threshold) |selected| try put(engine, state, "threshold", try scope.text(@tagName(selected)));
         var data = [_]c.JSValue{state};
@@ -372,7 +374,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     if (stage == 25) return classifiedErrorOutcome(engine, state);
     if (stage == 26) {
         const runtime = try scope.get(state, "runtime");
-        const policy = try scope.get(try scope.get(runtime, "settings"), "compaction");
+        const policy = try scope.get(state, "errorCompaction");
         var keep: f64 = 0;
         if (c.JS_ToFloat64(engine.context, &keep, try scope.get(policy, "keepRecentTokens")) < 0) return js.capture(engine);
         if (try @import("native_durable_compaction_text.zig").selectCut(engine, value, keep) == null) return classifyError(engine, state);
@@ -629,7 +631,7 @@ fn preparedCheckpoint(engine: *Engine, state: c.JSValue) !c.JSValue {
     if (!c.JS_IsUndefined(compacted)) try put(engine, request, "compacted", compacted);
     try put(engine, request, "model", try scope.get(state, "modelRef"));
     try put(engine, request, "thinkingLevel", try scope.get(try scope.get(state, "agent"), "thinkingLevel"));
-    try put(engine, request, "streamOptions", try scope.get(try scope.get(runtime, "settings"), "stream"));
+    try put(engine, request, "streamOptions", try scope.get(try scope.get(state, "settings"), "stream"));
     try put(engine, request, "cutoff", cutoff);
     const next = try vm.object(engine);
     errdefer engine.freeValue(next);
@@ -721,10 +723,19 @@ fn classifyError(engine: *Engine, state: c.JSValue) !c.JSValue {
     const runtime = try scope.get(state, "runtime");
     const message = try scope.get(state, "message");
     const request_value = try scope.get(state, "request");
-    const settings = try scope.get(runtime, "settings");
+    var settings = try scope.get(state, "errorSettings");
+    var compaction = try scope.get(state, "errorCompaction");
+    if (c.JS_IsUndefined(settings)) {
+        settings = try scope.get(runtime, "settings");
+        try put(engine, state, "errorSettings", settings);
+    }
     const overflow = try @import("native_durable_generation_overflow.zig").errorOverflow(engine, message);
+    if (c.JS_IsUndefined(compaction)) {
+        compaction = try scope.own(try @import("native_durable_compaction_policy.zig").resolve(engine, settings, try scope.get(request_value, "model")));
+        try put(engine, state, "errorCompaction", compaction);
+    }
     try put(engine, state, "overflow", c.pi_js_bool(engine.context, @intFromBool(overflow)));
-    if (overflow and c.JS_IsUndefined(try scope.get(request_value, "compacted")) and c.JS_ToBool(engine.context, try scope.get(try scope.get(settings, "compaction"), "enabled")) != 0 and c.JS_IsUndefined(try scope.get(state, "overflowChecked"))) {
+    if (overflow and c.JS_IsUndefined(try scope.get(request_value, "compacted")) and c.JS_ToBool(engine.context, try scope.get(compaction, "enabled")) != 0 and c.JS_IsUndefined(try scope.get(state, "overflowChecked"))) {
         try put(engine, state, "overflowChecked", c.pi_js_bool(engine.context, 1));
         const options = try scope.own(try vm.object(engine));
         try put(engine, options, "at", try scope.get(request_value, "cutoff"));

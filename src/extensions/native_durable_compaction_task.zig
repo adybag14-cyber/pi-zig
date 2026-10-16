@@ -118,6 +118,7 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
     }
     if (stage == 4) {
         const runtime = try scope.get(state, "runtime");
+        const settings = try scope.get(runtime, "settings");
         const ref = try scope.get(value, "model");
         if (c.JS_IsUndefined(ref)) return failNoModel(engine, state, ref);
         const models = try scope.get(runtime, "models");
@@ -126,13 +127,14 @@ fn advance(engine: *Engine, state: c.JSValue, value: c.JSValue, rejected: bool, 
         try put(engine, state, "agent", value);
         try put(engine, state, "model", model);
         try put(engine, state, "modelRef", ref);
+        try put(engine, state, "settings", settings);
+        try put(engine, state, "policy", try scope.own(try @import("native_durable_compaction_policy.zig").resolve(engine, settings, ref)));
         const pending = try scope.invoke(runtime, "context", &.{ try scope.get(runtime, "conversationId"), try scope.get(state, "context") });
         return wait(engine, state, pending, 5);
     }
     if (stage == 5) {
         const runtime = try scope.get(state, "runtime");
-        const settings = try scope.get(runtime, "settings");
-        const policy = try scope.get(settings, "compaction");
+        const policy = try scope.get(state, "policy");
         var keep: f64 = 0;
         if (c.JS_ToFloat64(engine.context, &keep, try scope.get(policy, "keepRecentTokens")) < 0) return js.capture(engine);
         const cut = try @import("native_durable_compaction_text.zig").selectCut(engine, value, keep);
@@ -305,8 +307,8 @@ fn pinRequest(engine: *Engine, state: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const runtime = try scope.get(state, "runtime");
-    const settings = try scope.get(runtime, "settings");
-    const policy = try scope.get(settings, "compaction");
+    const settings = try scope.get(state, "settings");
+    const policy = try scope.get(state, "policy");
     const model = try scope.get(state, "model");
     const agent = try scope.get(state, "agent");
     var reserve: f64 = 0;

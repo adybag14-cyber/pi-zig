@@ -1,0 +1,26 @@
+import {Harness,MemoryStorage,createRegistry,UserEntry,AssistantEntry,LiveDoc,defineTool,defineExtension} from '@earendil-works/pi-durable';
+import {Type} from '@earendil-works/pi-ai';
+const rows=[];
+const usage={input:400,output:400,cacheRead:0,cacheWrite:0,totalTokens:800,cost:{input:0,output:0,cacheRead:0,cacheWrite:0,total:0}};
+function answer(text,stopReason='stop'){return {role:'assistant',provider:'p',model:'m',api:'faux',content:[{type:'text',text}],stopReason,usage,timestamp:2};}
+for(const scenario of ['threshold-match','threshold-other','overflow-enable','summary-sizing','terminate-false','terminate-true']){
+ let requests=0;const summaries=[],reports=[],registry=createRegistry(),isTool=scenario.startsWith('terminate');
+ if(isTool)registry.install(defineExtension({name:'controls',tools:[defineTool({name:'keep',description:'control',parameters:Type.Object({}),execute:async()=>({output:[],control:{terminate:scenario==='terminate-true'}})})]}));
+ const settings={compaction:{enabled:false,reserveTokens:0,keepRecentTokens:100000,backgroundTokens:0,modelOverrides:{}}};
+ if(scenario.startsWith('threshold'))settings.compaction={enabled:true,reserveTokens:0,keepRecentTokens:0,backgroundTokens:0,modelOverrides:{[scenario==='threshold-match'?'p/m':'p/other']:{reserveTokens:300}}};
+ if(scenario==='overflow-enable')settings.compaction.modelOverrides={'p/m':{enabled:true,keepRecentTokens:0,reserveTokens:500}};
+ if(scenario==='summary-sizing')settings.compaction.modelOverrides={'p/m':{keepRecentTokens:150,reserveTokens:500}};
+ const models={getModel:()=>({id:'m',provider:'p',api:'faux',maxTokens:900,contextWindow:scenario.startsWith('threshold')?1000:100000}),streamSimple:()=>{requests++;let response=answer('answer');if(scenario==='overflow-enable'&&requests===1)response={...answer('', 'error'),errorMessage:'prompt is too long: 250000 tokens > 200000 maximum'};if(isTool&&requests===1)response={...answer('', 'toolUse'),content:[{type:'toolCall',name:'keep',id:'c1',arguments:{}}]};return{async*[Symbol.asyncIterator](){},result:async()=>response}},completeSimple:async(model,context,options)=>{summaries.push({maxTokens:options.maxTokens,cacheRetention:options.cacheRetention,reasoning:options.reasoning,roles:context.messages.map(message=>message.role)});return answer('summary')}};
+ const harness=await Harness.open(new MemoryStorage(),{registry,models,settings,onReport:error=>reports.push(String(error))},{});
+ try{
+  const root=await harness.root({},{agent:{model:{provider:'p',modelId:'m'}}});
+  if(!isTool)await root.commit(async tx=>{for(let n=1;n<=3;n++){await tx.appendEntry(UserEntry,root.id,{model:[{role:'user',content:'u'+n+' '+'x'.repeat(797),timestamp:n}]});await tx.appendEntry(AssistantEntry,root.id,{model:[answer('a'+n)]})}},{});
+  let status;
+  if(scenario==='summary-sizing'){const task=await harness.waitForTask(await root.compact(undefined,{}),{});status=task.state.outcome.status;}
+  else status=(await(await root.submit({type:'input',content:'next'},{})).wait({})).status;
+  const view=await root.context({});
+  rows.push({scenario,status,requests,summaries,reports,context:view.messages.map(message=>({role:message.role,text:(typeof message.content==='string'?message.content:message.content.filter(block=>block.type==='text').map(block=>block.text).join('|')).slice(0,35)})),live:await harness.snapshot(LiveDoc,root.id,{})});
+ }finally{await harness.close({})}
+}
+globalThis.upstream0fbPublicRows=rows;
+globalThis.upstream0fbPublicComplete=true;

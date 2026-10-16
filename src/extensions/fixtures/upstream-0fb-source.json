@@ -1,0 +1,481 @@
+{
+  "sourceHead": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "programs": [
+    {
+      "name": "policy",
+      "inputSha256": "35cdc946f6170a05f6ffafa4a3343beea40d64650820eb92adbde0763b434582",
+      "cases": 17,
+      "rows": [
+        {
+          "name": "defaults",
+          "policy": {
+            "enabled": true,
+            "reserveTokens": 100,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 300
+          }
+        },
+        {
+          "name": "partial-zero-false",
+          "policy": {
+            "enabled": false,
+            "reserveTokens": 0,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 300
+          }
+        },
+        {
+          "name": "different-exact-model",
+          "policy": {
+            "enabled": true,
+            "reserveTokens": 100,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 300
+          }
+        },
+        {
+          "name": "null-entry",
+          "policy": {
+            "enabled": true,
+            "reserveTokens": 100,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 300
+          }
+        },
+        {
+          "name": "inherited-entry",
+          "policy": {
+            "enabled": true,
+            "reserveTokens": 100,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 0
+          }
+        },
+        {
+          "name": "policy-getter-order",
+          "policy": {
+            "enabled": true,
+            "reserveTokens": 5,
+            "keepRecentTokens": 200,
+            "backgroundTokens": 300
+          },
+          "trace": [
+            "compaction",
+            "overrides",
+            "base-enabled",
+            "base-reserve",
+            "base-keep",
+            "base-background",
+            "extra",
+            "symbol",
+            "provider",
+            "provider-string",
+            "modelId",
+            "override-reserve"
+          ]
+        },
+        {
+          "name": "throwing-rest",
+          "same": true,
+          "trace": [
+            "overrides",
+            "throw"
+          ]
+        },
+        {
+          "name": "retry:request to https://oauth2.googleapis.com/token failed, reason:",
+          "retryable": true
+        },
+        {
+          "name": "retry:request to https://oauth2.googleapis.com/token failed, reason: connect ECONNREFUSED 127.0.0.1:9",
+          "retryable": true
+        },
+        {
+          "name": "retry:REQUEST TO https://example.test/ FAILED, REASON:",
+          "retryable": true
+        },
+        {
+          "name": "retry:request to  failed, reason:",
+          "retryable": false
+        },
+        {
+          "name": "retry:request to https://example.test/ failed reason:",
+          "retryable": false
+        },
+        {
+          "name": "retry:request to https://example.test/\tfailed, reason:",
+          "retryable": false
+        },
+        {
+          "name": "retry:request to https://example.test/  failed, reason:",
+          "retryable": false
+        },
+        {
+          "name": "retry:request to https://example.test/ failed, reason: billing exhausted",
+          "retryable": false
+        },
+        {
+          "name": "retry:request to https://example.test/ failed, reason: quota exceeded",
+          "retryable": false
+        },
+        {
+          "name": "retry:The service is temporarily unavailable",
+          "retryable": true
+        }
+      ]
+    },
+    {
+      "name": "public",
+      "inputSha256": "6b2d8fde2e69464d53529402344e96483ce00251b885cfdbb851ffdf68f67ad3",
+      "cases": 6,
+      "rows": [
+        {
+          "scenario": "threshold-match",
+          "status": "done",
+          "requests": 1,
+          "summaries": [
+            {
+              "maxTokens": 240,
+              "cacheRetention": "none",
+              "roles": [
+                "system",
+                "user"
+              ]
+            }
+          ],
+          "reports": [],
+          "context": [
+            {
+              "role": "system",
+              "text": ""
+            },
+            {
+              "role": "user",
+              "text": "The conversation history before thi"
+            },
+            {
+              "role": "user",
+              "text": "next"
+            },
+            {
+              "role": "assistant",
+              "text": "answer"
+            }
+          ],
+          "live": {}
+        },
+        {
+          "scenario": "threshold-other",
+          "status": "done",
+          "requests": 1,
+          "summaries": [],
+          "reports": [],
+          "context": [
+            {
+              "role": "user",
+              "text": "u1 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            },
+            {
+              "role": "assistant",
+              "text": "a1"
+            },
+            {
+              "role": "user",
+              "text": "u2 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            },
+            {
+              "role": "assistant",
+              "text": "a2"
+            },
+            {
+              "role": "user",
+              "text": "u3 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            },
+            {
+              "role": "assistant",
+              "text": "a3"
+            },
+            {
+              "role": "user",
+              "text": "next"
+            },
+            {
+              "role": "assistant",
+              "text": "answer"
+            }
+          ],
+          "live": {}
+        },
+        {
+          "scenario": "overflow-enable",
+          "status": "done",
+          "requests": 2,
+          "summaries": [
+            {
+              "maxTokens": 400,
+              "cacheRetention": "none",
+              "roles": [
+                "system",
+                "user"
+              ]
+            }
+          ],
+          "reports": [],
+          "context": [
+            {
+              "role": "system",
+              "text": ""
+            },
+            {
+              "role": "user",
+              "text": "The conversation history before thi"
+            },
+            {
+              "role": "user",
+              "text": "next"
+            },
+            {
+              "role": "assistant",
+              "text": "answer"
+            }
+          ],
+          "live": {}
+        },
+        {
+          "scenario": "summary-sizing",
+          "status": "completed",
+          "requests": 0,
+          "summaries": [
+            {
+              "maxTokens": 400,
+              "cacheRetention": "none",
+              "roles": [
+                "system",
+                "user"
+              ]
+            }
+          ],
+          "reports": [],
+          "context": [
+            {
+              "role": "user",
+              "text": "The conversation history before thi"
+            },
+            {
+              "role": "user",
+              "text": "u3 xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+            },
+            {
+              "role": "assistant",
+              "text": "a3"
+            }
+          ],
+          "live": {}
+        },
+        {
+          "scenario": "terminate-false",
+          "status": "done",
+          "requests": 2,
+          "summaries": [],
+          "reports": [],
+          "context": [
+            {
+              "role": "system",
+              "text": ""
+            },
+            {
+              "role": "user",
+              "text": "next"
+            },
+            {
+              "role": "assistant",
+              "text": ""
+            },
+            {
+              "role": "toolResult",
+              "text": ""
+            },
+            {
+              "role": "assistant",
+              "text": "answer"
+            }
+          ],
+          "live": {}
+        },
+        {
+          "scenario": "terminate-true",
+          "status": "done",
+          "requests": 1,
+          "summaries": [],
+          "reports": [],
+          "context": [
+            {
+              "role": "system",
+              "text": ""
+            },
+            {
+              "role": "user",
+              "text": "next"
+            },
+            {
+              "role": "assistant",
+              "text": ""
+            },
+            {
+              "role": "toolResult",
+              "text": ""
+            }
+          ],
+          "live": {}
+        }
+      ]
+    },
+    {
+      "name": "select",
+      "inputSha256": "52ef0868ccdda613215f6ee2bd717562c12cad65b14520e703c8d8586afcabb4",
+      "cases": 4,
+      "rows": [
+        {
+          "scenario": "select-default",
+          "trace": [
+            "agent",
+            "settings",
+            "context",
+            "beforeCompact",
+            {
+              "firstKept": 3,
+              "entries": [
+                1,
+                2
+              ]
+            },
+            "commit",
+            {
+              "status": "running",
+              "checkpoint": {
+                "phase": "summarize",
+                "attempt": 1,
+                "model": {
+                  "provider": "p",
+                  "modelId": "m"
+                },
+                "thinkingLevel": "off",
+                "streamOptions": {
+                  "temperature": 0.2
+                },
+                "maxTokens": 80,
+                "tail": 4,
+                "firstKept": 3
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "select-override",
+          "trace": [
+            "agent",
+            "settings",
+            "context",
+            "beforeCompact",
+            {
+              "firstKept": 3,
+              "entries": [
+                1,
+                2
+              ]
+            },
+            "commit",
+            {
+              "status": "running",
+              "checkpoint": {
+                "phase": "summarize",
+                "attempt": 1,
+                "model": {
+                  "provider": "p",
+                  "modelId": "m"
+                },
+                "thinkingLevel": "off",
+                "streamOptions": {
+                  "temperature": 0.2
+                },
+                "maxTokens": 400,
+                "tail": 4,
+                "firstKept": 3
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "select-pinned-across-context-hook",
+          "trace": [
+            "agent",
+            "settings",
+            "context",
+            "beforeCompact",
+            {
+              "firstKept": 3,
+              "entries": [
+                1,
+                2
+              ]
+            },
+            "commit",
+            {
+              "status": "running",
+              "checkpoint": {
+                "phase": "summarize",
+                "attempt": 1,
+                "model": {
+                  "provider": "p",
+                  "modelId": "m"
+                },
+                "thinkingLevel": "off",
+                "streamOptions": {
+                  "temperature": 0.2
+                },
+                "maxTokens": 400,
+                "tail": 4,
+                "firstKept": 3
+              }
+            }
+          ]
+        },
+        {
+          "scenario": "select-other-model",
+          "trace": [
+            "agent",
+            "settings",
+            "context",
+            "beforeCompact",
+            {
+              "firstKept": 3,
+              "entries": [
+                1,
+                2
+              ]
+            },
+            "commit",
+            {
+              "status": "running",
+              "checkpoint": {
+                "phase": "summarize",
+                "attempt": 1,
+                "model": {
+                  "provider": "p",
+                  "modelId": "m"
+                },
+                "thinkingLevel": "off",
+                "streamOptions": {
+                  "temperature": 0.2
+                },
+                "maxTokens": 80,
+                "tail": 4,
+                "firstKept": 3
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
