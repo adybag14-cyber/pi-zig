@@ -1,0 +1,17 @@
+{
+  "status": "minimal_engine_integration_api_seam_proposal_only",
+  "base": "cd0b9bb27eadc8a0fe6e56b58d193fc1065e28aa",
+  "inspected_root": "25427e035cbfe572892d641d09ca38bb1d43fe17",
+  "reviewed_c_prototype": "24424bbf5c9bb1cb5a5380a01fef50d0bffceb3b",
+  "independent_static_review": "closed_no_additional_concrete_blocker_in_reviewed_scope",
+  "plan_sha256": "48547AAB9231D1AE1F086EBA4E3660988958623BC526BDDAB8FFD0FBBD373B56",
+  "critical_missing_seam": "optional_exact_origin_graph_normalizer_before_runtime_global_normalization",
+  "proposed_new_c_api": "JS_PiNewPrivateModuleGraph2 optional_normalizer; no_authoring_or_execution_authorized",
+  "engine_source_authored": false,
+  "c_authored": false,
+  "default_selected": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "context_pinned_resource_gap": true,
+  "source53_44_15_48_39_preserved": true
+}
