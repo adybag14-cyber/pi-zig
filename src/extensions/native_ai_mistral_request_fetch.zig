@@ -45,17 +45,17 @@ fn fill(scope: *Scope, owner: c.JSValue, headers: c.JSValue, payload: c.JSValue)
     try scope.put(init, "signal", try scope.get(try scope.get(owner, "combined"), "signal"));
     try scope.put(owner, "init", init);
 }
-pub fn openPrepared(engine: *v.em.Engine, owner: c.JSValue, before_read: c.JSValue) !c.JSValue {
+pub fn openPrepared(engine: *v.em.Engine, owner: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const reader = try scope.own(try @import("native_ai_mistral_fetch.zig").open(engine, try scope.get(owner, "fetch"), try scope.get(owner, "url"), try scope.get(owner, "init"), try scope.get(owner, "options"), before_read));
+    const reader = try scope.own(try @import("native_ai_mistral_fetch.zig").open(engine, try scope.get(owner, "fetch"), try scope.get(owner, "url"), try scope.get(owner, "init"), try scope.get(owner, "options")));
     try scope.put(owner, "reader", reader);
     const pending = try flow.create(engine, owner);
     defer engine.freeValue(pending.owner);
     defer engine.freeValue(pending.promise);
     const output = try scope.object();
     try scope.put(output, "ready", pending.promise);
-    inline for (.{ "events", "cancel", "close" }) |key| try scope.put(output, key, try scope.get(reader, key));
+    inline for (.{ "events", "cancel", "close", "body", "signal" }) |key| try scope.put(output, key, try scope.get(reader, key));
     try wait(&scope, pending.owner, try scope.get(reader, "ready"), .headers);
     return c.JS_DupValue(engine.context, output);
 }

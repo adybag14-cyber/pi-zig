@@ -20,10 +20,8 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind) !c.JSValue {
     }
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    if (kind != .mistral) {
-        const interfaces = try @import("native_web_platform.zig").prepare(&scope);
-        try @import("native_web_response.zig").install(engine, interfaces);
-    }
+    const interfaces = try @import("native_web_platform.zig").prepare(&scope);
+    if (kind != .mistral) try @import("native_web_response.zig").install(engine, interfaces);
     const dependencies = try scope.own(try @import("native_ai_openai_dependencies.zig").create(engine));
     try scope.put(dependencies, "text", try scope.own(try @import("native_ai_text.zig").create(engine)));
     try scope.put(dependencies, "counter", c.JS_NewInt32(engine.context, 0));
@@ -255,17 +253,8 @@ fn open(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
         const prepared = try request.prepare(scope, try scope.get(owner, "model"), try scope.get(owner, "payload"), try scope.get(owner, "apiKey"), options);
         try scope.put(owner, "mistralPrepared", prepared);
         if (!c.JS_IsUndefined(try scope.get(prepared, "fetch"))) {
-            const BeforeRead = struct {
-                fn call(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-                    var row: Scope = .{ .engine = host };
-                    defer row.deinit();
-                    try @import("native_ai_mistral_sse.zig").start(&row, roots[0]);
-                    return c.pi_js_undefined();
-                }
-            };
-            const before = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 0, BeforeRead.call, &.{owner}));
             try scope.put(owner, "mistralCustom", c.pi_js_bool(engine.context, 1));
-            const transport = try scope.own(try request.openPrepared(engine, prepared, before));
+            const transport = try scope.own(try request.openPrepared(engine, prepared));
             try scope.put(owner, "http", transport);
             try scope.put(owner, "iterator", try scope.get(transport, "events"));
             return wait(scope, owner, try scope.get(transport, "ready"), .custom_response, kind);
@@ -337,7 +326,11 @@ fn next(scope: *Scope, owner: c.JSValue, comptime kind: Kind) !void {
     try wait(scope, owner, try scope.invoke(try scope.get(owner, "iterator"), "next", &.{}), .next, kind);
 }
 fn activateMistral(scope: *Scope, owner: c.JSValue) !void {
-    const iterator = try scope.own(try @import("native_ai_mistral_generator.zig").create(scope.engine, try scope.get(owner, "iterator"), try scope.get(owner, "http"), owner, try scope.get(owner, "mistralBodySignal"), scope.truthy(try scope.get(owner, "mistralCustom"))));
+    const transport = try scope.get(owner, "http");
+    const custom = scope.truthy(try scope.get(owner, "mistralCustom"));
+    const body = if (custom) try scope.invoke(transport, "body", &.{}) else try scope.own(try @import("native_web_byte_source.zig").fromEvents(scope.engine, try scope.get(owner, "iterator"), .{ .cancel = try scope.get(transport, "cancel") }));
+    const signal = if (custom) try scope.invoke(transport, "signal", &.{}) else try scope.get(owner, "mistralBodySignal");
+    const iterator = try scope.own(try @import("native_ai_mistral_generator.zig").create(scope.engine, body, owner, signal));
     try scope.put(owner, "iterator", iterator);
     try scope.put(owner, "mistralEvents", c.pi_js_bool(scope.engine.context, 1));
 }
