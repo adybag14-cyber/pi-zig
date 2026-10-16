@@ -1,0 +1,724 @@
+{
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "runtime": "v24.14.0",
+  "count": 60,
+  "rows": [
+    {
+      "name": "method-shapes",
+      "value": {
+        "publishProviderModels": {
+          "name": "publishProviderModels",
+          "length": 4,
+          "async": false,
+          "ownPrototype": false
+        },
+        "runProviderRefreshPhase": {
+          "name": "runProviderRefreshPhase",
+          "length": 6,
+          "async": true,
+          "ownPrototype": false
+        },
+        "refresh": {
+          "name": "refresh",
+          "length": 0,
+          "async": true,
+          "ownPrototype": false
+        },
+        "resolveRefreshCredential": {
+          "name": "resolveRefreshCredential",
+          "length": 3,
+          "async": true,
+          "ownPrototype": false
+        }
+      }
+    },
+    {
+      "name": "publication-update-only-receiver",
+      "value": {
+        "value": true,
+        "called": true,
+        "chains": 0
+      }
+    },
+    {
+      "name": "publication-persist-before-update",
+      "value": {
+        "value": true,
+        "events": [
+          [
+            "write",
+            "p",
+            "owned",
+            true
+          ],
+          "update"
+        ]
+      }
+    },
+    {
+      "name": "publication-delete-before-update",
+      "value": {
+        "value": true,
+        "events": [
+          [
+            "delete",
+            "p",
+            true
+          ],
+          "update"
+        ]
+      }
+    },
+    {
+      "name": "publication-stale-generation",
+      "error": {
+        "name": "AbortError",
+        "code": 20,
+        "message": "This operation was aborted",
+        "raw": false,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-already-aborted-raw",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-store-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-update-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-sequential-same-provider",
+      "value": {
+        "before": [
+          "write1"
+        ],
+        "events": [
+          "write1",
+          "update1",
+          "write2",
+          "update2"
+        ],
+        "values": [
+          true,
+          true
+        ],
+        "chains": 0
+      }
+    },
+    {
+      "name": "publication-independent-providers",
+      "value": {
+        "before": [
+          "a",
+          "b"
+        ],
+        "secondValue": true,
+        "firstValue": true
+      }
+    },
+    {
+      "name": "publication-cancel-keeps-store-observed",
+      "value": {
+        "same": true,
+        "events": [
+          "write"
+        ],
+        "chains": 0
+      }
+    },
+    {
+      "name": "publication-generation-changes-after-store",
+      "value": {
+        "value": false,
+        "updated": false
+      }
+    },
+    {
+      "name": "publication-failed-tail-does-not-poison-next",
+      "value": {
+        "value": true,
+        "n": 2,
+        "chains": 0
+      }
+    },
+    {
+      "name": "publication-live-persist-getter-order",
+      "value": [
+        "persist",
+        "persist",
+        "get-write",
+        "persist",
+        [
+          "write",
+          true,
+          "p",
+          true,
+          0
+        ],
+        "update-get",
+        [
+          "update-call",
+          true
+        ]
+      ]
+    },
+    {
+      "name": "publication-genuine-structured-clone",
+      "value": {
+        "different": true,
+        "date": 123,
+        "map": 1,
+        "cycle": true
+      }
+    },
+    {
+      "name": "phase-cache-clone-filter-force",
+      "value": {
+        "ids": [
+          "chat",
+          "image",
+          "classifier"
+        ],
+        "clone": true,
+        "original": 5,
+        "network": false,
+        "signal": true
+      }
+    },
+    {
+      "name": "phase-network-context-receiver",
+      "value": {
+        "receiver": true,
+        "credential": true,
+        "force": true,
+        "network": true,
+        "base": "https://owned.invalid"
+      }
+    },
+    {
+      "name": "phase-publish-live-provider-id",
+      "error": {
+        "name": "TypeError",
+        "message": "this.modelsStore.read is not a function",
+        "raw": false,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "phase-read-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "phase-refresh-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "phase-method-get-before-context-clone",
+      "value": [
+        "get-read",
+        "id",
+        [
+          "read",
+          true,
+          "p"
+        ],
+        "get-refresh",
+        "base-url",
+        [
+          "refresh",
+          true,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "refresh-empty-original-class",
+      "value": {
+        "aborted": false,
+        "errors": []
+      }
+    },
+    {
+      "name": "refresh-caller-aborted",
+      "value": {
+        "aborted": true,
+        "errors": []
+      }
+    },
+    {
+      "name": "refresh-offline-cache-before-auth",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          "credential",
+          "cache",
+          [
+            "phase",
+            false
+          ]
+        ],
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-network-two-phases",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          [
+            "phase",
+            false,
+            null,
+            null
+          ],
+          [
+            "auth",
+            true,
+            true
+          ],
+          [
+            "phase",
+            true,
+            true,
+            "api_key"
+          ]
+        ],
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-unconfigured-skips-network",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          false
+        ]
+      }
+    },
+    {
+      "name": "refresh-selected-static-unknown",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          "b"
+        ],
+        "generations": [
+          [
+            "a",
+            1
+          ],
+          [
+            "b",
+            2
+          ],
+          [
+            "static",
+            1
+          ]
+        ]
+      }
+    },
+    {
+      "name": "refresh-concurrent-providers",
+      "value": {
+        "before": [
+          "a",
+          "b"
+        ],
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-cache-restored-before-credential-error",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": [
+            {
+              "id": "p",
+              "name": "ModelsError",
+              "code": "auth",
+              "message": "Credential store read failed for p: [object Object]",
+              "raw": false,
+              "causeRaw": true
+            }
+          ]
+        },
+        "events": [
+          false
+        ],
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-native-error-preserved",
+      "value": {
+        "same": true,
+        "result": {
+          "aborted": false,
+          "errors": [
+            {
+              "id": "p",
+              "name": "Error",
+              "message": "owned error",
+              "raw": false,
+              "causeRaw": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "refresh-raw-provider-error-wrapped-canonical",
+      "value": {
+        "canonical": true,
+        "result": {
+          "aborted": false,
+          "errors": [
+            {
+              "id": "p",
+              "name": "ModelsError",
+              "code": "model_source",
+              "message": "Model refresh failed for p: [object Object]",
+              "raw": false,
+              "causeRaw": true
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "refresh-caller-cancel-late-operation-observed",
+      "value": {
+        "result": {
+          "aborted": true,
+          "errors": []
+        },
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-superseded-provider-operation",
+      "value": {
+        "second": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          false
+        ],
+        "controllers": 0
+      }
+    },
+    {
+      "name": "refresh-throw-undefined-credential",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "events": [
+          false,
+          true
+        ]
+      }
+    },
+    {
+      "name": "refresh-option-method-evaluation-order",
+      "value": {
+        "calls": [
+          "allowNetwork",
+          "signal",
+          "providers",
+          "providers",
+          [
+            "phase",
+            false
+          ]
+        ],
+        "result": {
+          "aborted": false,
+          "errors": []
+        }
+      }
+    },
+    {
+      "name": "credential-valid-oauth-identity",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "credential-oauth-without-method"
+    },
+    {
+      "name": "credential-expired-oauth-aborted"
+    },
+    {
+      "name": "credential-api-key-resolution-identity",
+      "value": {
+        "flags": {
+          "receiver": true,
+          "ctx": true,
+          "stored": true,
+          "signal": true
+        },
+        "value": {
+          "type": "api_key",
+          "key": "new",
+          "env": {
+            "OWNED": "yes"
+          }
+        },
+        "env": true
+      }
+    },
+    {
+      "name": "credential-api-key-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-no-persist-second-generation-check",
+      "value": {
+        "value": false,
+        "calls": [
+          "persist",
+          "persist"
+        ]
+      }
+    },
+    {
+      "name": "publication-null-persist-get-once",
+      "value": {
+        "value": true,
+        "calls": [
+          "persist",
+          "delete",
+          "update"
+        ]
+      }
+    },
+    {
+      "name": "publication-update-getter-after-current-check",
+      "value": {
+        "value": true,
+        "calls": [
+          "get-update",
+          true
+        ]
+      }
+    },
+    {
+      "name": "publication-persist-getter-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "publication-update-noncallable-rejects",
+      "error": {
+        "name": "TypeError",
+        "message": "publication.update is not a function",
+        "raw": false,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "phase-base-url-getter-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "phase-clone-failure-before-provider-call",
+      "value": {
+        "called": false,
+        "name": "DataCloneError"
+      }
+    },
+    {
+      "name": "phase-unknown-type-nullish-defaults",
+      "value": [
+        "null",
+        "undefined"
+      ]
+    },
+    {
+      "name": "refresh-begin-throw-outside-provider-catch",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "refresh-controller-signal-throw-before-finally",
+      "value": {
+        "same": true,
+        "deletes": 0
+      }
+    },
+    {
+      "name": "refresh-finally-raw-rejection",
+      "error": {
+        "raw": true,
+        "causeRaw": false
+      }
+    },
+    {
+      "name": "refresh-guest-oom-lookalike-is-provider-error",
+      "value": {
+        "same": true,
+        "result": {
+          "aborted": false,
+          "errors": [
+            {
+              "id": "p",
+              "name": "InternalError",
+              "message": "out of memory",
+              "raw": false,
+              "causeRaw": false
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "refresh-replacement-controller-retained",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "retained": true
+      }
+    },
+    {
+      "name": "refresh-selected-empty-still-reads-provider-methods",
+      "value": {
+        "result": {
+          "aborted": false,
+          "errors": []
+        },
+        "calls": [
+          "refreshModels"
+        ]
+      }
+    },
+    {
+      "name": "credential-api-key-missing-handler"
+    },
+    {
+      "name": "credential-api-key-live-getter-order",
+      "value": {
+        "calls": [
+          "type",
+          "auth",
+          "apiKey",
+          "type",
+          "resolve",
+          [
+            "call",
+            true,
+            true
+          ],
+          "result-key",
+          "result-env"
+        ],
+        "value": {
+          "type": "api_key",
+          "key": "owned"
+        }
+      }
+    },
+    {
+      "name": "credential-expired-oauth-shared-mutation",
+      "value": {
+        "same": true,
+        "events": [
+          [
+            "modify",
+            "p",
+            true
+          ],
+          [
+            "refresh",
+            true,
+            true
+          ],
+          [
+            "persist",
+            true
+          ]
+        ]
+      }
+    },
+    {
+      "name": "credential-expired-oauth-lock-sees-fresh",
+      "value": {
+        "same": true
+      }
+    },
+    {
+      "name": "credential-api-key-falsy-result"
+    },
+    {
+      "name": "refresh-cache-failure-replaces-credential-error",
+      "value": {
+        "cache": true,
+        "result": {
+          "aborted": false,
+          "errors": [
+            {
+              "id": "p",
+              "name": "Error",
+              "message": "cache failed",
+              "raw": false,
+              "causeRaw": false
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
