@@ -1,0 +1,48 @@
+{
+  "status": "private_module_graph_review_corrections_source_only_unrun",
+  "parent": "2137483e8b08e29ba67664e871d2b1ae0b843874",
+  "corrections": [
+    "private_to_shared_final_attributes_equality_after_optional_initial_assignment",
+    "private_normalizer_pending_exception_returns_before_selector_reentry",
+    "explicit_compile_input_NUL_terminator_host_contract"
+  ],
+  "prepared_test_count": 15,
+  "prepared_tests": [
+    "test \"private live dynamic caches preserve old and first late factory policy\" {",
+    "test \"private exact nested import meta and attribute snapshot survive same physical name\" {",
+    "test \"private loader foreign pointer rejects without dereferencing controlled address\" {",
+    "test \"private failed link preserves unrelated earlier compiled definition\" {",
+    "test \"private evaluated failure keeps escaped nested import meta closure alive\" {",
+    "test \"private static indirect cycle resolves current graph before old physical modules\" {",
+    "test \"private parallel dynamic top level await evaluates dependency once\" {",
+    "test \"private attribute capture preserves original guest getter throw before selector\" {",
+    "test \"private selector native allocation exact identity survives negative and success with pending reason\" {",
+    "test \"shared bytecode serialization stays byte identical and private definitions reject\" {",
+    "test \"private pending dynamic job cancels through actual context runtime teardown\" {",
+    "test \"private foreign context capability rejects before dereferencing graph fields\" {",
+    "test \"private to shared callback cannot return same physical definition with wrong attributes\" {",
+    "test \"private callback normalizer and loaders preserve exact pending native reason on null and successful returns\" {",
+    "test \"closest shared bytecode called by private module retains shared import domain\" {"
+  ],
+  "c_sha256": "E9911C6ED2B146768C765B80B91466160245D521D2BD8F80AC22AA9716E97C64",
+  "header_sha256": "61F50A35FB85DA7A942F0B1AB5B322A1CB54543C363532A2AE1B242DB8569892",
+  "test_sha256": "C8295B5A72914705B6C3A6483D632C0743E71244659EB88F47D77E8323D7D07B",
+  "callback_controls": "normalizer/private_loader/shared_loader each NULL and successful return with exact pending native reason; selector existing negative/success cases retained",
+  "additional_controls": [
+    "shared_wrong_attributes_rejected_and_old_definition_still_evaluates",
+    "closest_shared_bytecode_called_by_private_retains_shared_domain",
+    "origin_attribute_snapshot_rejects_direct_write"
+  ],
+  "unproven": [
+    "prepared_tests_not_formatted_AST_checked_compiled_or_executed",
+    "queue_teardown_test_is_cancellation_not_anchor_only_context_survival",
+    "exhaustive_C_allocation_position_and_ownership_counter_qualification_pending",
+    "production_graph_GC_resource_policy_pending",
+    "missing_Source_kind_eval_alias_failure_edges_remain_unobserved"
+  ],
+  "graph0": "normalizer_pending_guard_and_shared_final_attribute_validation_opt_in_only",
+  "engine_changed": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "default_selected": false
+}
