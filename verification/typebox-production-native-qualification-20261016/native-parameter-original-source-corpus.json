@@ -1,0 +1,136 @@
+{
+  "scope": "static original emitter source inspection only; not native admission execution",
+  "package_version": "1.3.27",
+  "package_sha256": "C59DDFD977CE941F1E8EE8B0A0B14396C332FA27CC5FA6FA165227FFD5A3992F",
+  "scalar_names": [
+    "_",
+    "refinement",
+    "context",
+    "value",
+    "element",
+    "index"
+  ],
+  "unique_form": "var_${index++}, initially index = 0",
+  "unique_source_sha256": "F203B28367F9641ABBC749871F75DC34A3F12988A6E2C86ADD7DCCFCDC7B24BE",
+  "tuple_form": "two distinct Unique() identifiers",
+  "tuple_sources": [
+    "build/schema/engine/patternProperties.mjs",
+    "build/schema/engine/unevaluatedProperties.mjs"
+  ],
+  "files": [
+    {
+      "path": "build/schema/engine/additionalProperties.mjs",
+      "sha256": "DA9AF19920A65AD02E8127A62AD8951519A2D685650F107C8B0C2945CD15214E",
+      "calls": [
+        "78:    const result = E.Every(E.Keys(value), E.Constant(0), [key, _index], guarded);"
+      ]
+    },
+    {
+      "path": "build/schema/engine/additionalItems.mjs",
+      "sha256": "B3F9294F5BF65AC6B6CFFBB555F73191DEE818FF62E1DE7B58D520B314043D9F",
+      "calls": [
+        "20:    return E.Every(value, E.Constant(0), [item, index], E.Or(isLength, E.And(isSchema, addIndex)));",
+        "26:    return E.Every(value, E.Constant(0), [item, index], E.Or(isLength, isSchema));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/contains.mjs",
+      "sha256": "09CB2C76FC2827D939DE587F6E11D4C7E47E4992C839229938198A83DA8DD501",
+      "calls": [
+        "18:    const isSome = E.SomeAll(value, [item, index], E.And(BuildSchema(stack, context, schema.contains, item), context.AddIndex(index)));",
+        "24:    const isSome = E.Some(value, [item, '_'], BuildSchema(stack, context, schema.contains, item));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/items.mjs",
+      "sha256": "8094313B44D3B5C08E2B3266B6251AA9C2C887ADA25334182BB4D6C00BDF9ED3",
+      "calls": [
+        "49:    return E.Every(value, E.Constant(offset), ['element', 'index'], E.And(isSchema, addIndex));",
+        "54:    return E.Every(value, E.Constant(offset), ['element', 'index'], isSchema);"
+      ]
+    },
+    {
+      "path": "build/schema/engine/maxContains.mjs",
+      "sha256": "D850B7EE71B791682507E507FA45DB931F0E85BF8A07B8530C527639A4825304",
+      "calls": [
+        "19:    const count = E.Counted(value, [item, '_'], BuildSchema(stack, context, schema.contains, item));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/minContains.mjs",
+      "sha256": "AC012AD898799DE433458D20C55C50D605CB1F95C756BE5824EA378754A04883",
+      "calls": [
+        "17:    const count = E.Counted(value, [item, index], E.And(BuildSchema(stack, context, schema.contains, item), context.AddIndex(index)));",
+        "22:    const count = E.Counted(value, [item, '_'], BuildSchema(stack, context, schema.contains, item));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/oneOf.mjs",
+      "sha256": "914BC672E9B1C755BF373F6E318EF8C63231BF8684870C49DD49C2D5E78CF979",
+      "calls": [
+        "16:    const count = E.Counted(results, [result, '_'], E.IsEqual(result, E.Constant(true)));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/patternProperties.mjs",
+      "sha256": "3AA84F0717F614FF30D6988AFA7B7A58E9D2A08091D98625C480DB72EB6D7349",
+      "calls": [
+        "18:        return E.Every(E.Entries(value), E.Constant(0), [`[${key}, ${prop}]`, '_'], guarded);"
+      ]
+    },
+    {
+      "path": "build/schema/engine/propertyNames.mjs",
+      "sha256": "FB9949AF4C2EFD50A99CF260B4F712E23E27459103D5E3B6414F701B7F72A3DE",
+      "calls": [
+        "10:    return E.Every(E.Keys(value), E.Constant(0), [key, _index], BuildSchema(stack, context, schema.propertyNames, key));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/ref.mjs",
+      "sha256": "5760B5D7324855B13ACB45EAAE95CF761DB066EA5FBFD9644972F8DA4D352C59",
+      "calls": [
+        "11:    const interior = E.ArrowFunction(['context', 'value'], Functions.CreateFunction(stack, context, target, 'value'));",
+        "12:    const exterior = E.ArrowFunction(['context', 'value'], E.Statements(["
+      ]
+    },
+    {
+      "path": "build/schema/engine/unevaluatedProperties.mjs",
+      "sha256": "EC5A286C25458B32E0BDB468EC5AE471D968534160B946E58B9C2AE361158834",
+      "calls": [
+        "15:    const isEvery = E.Every(E.Entries(value), E.Constant(0), [`[${key}, ${prop}]`, '_'], E.Or(hasKey, E.And(isSchema, addKey)));",
+        "16:    return E.Call(E.ArrowFunction(['context'], E.Statements(["
+      ]
+    },
+    {
+      "path": "build/schema/engine/unevaluatedItems.mjs",
+      "sha256": "4F4E3F18F173D351882CFC64CBDAC2DADEBB08104A4AC4F87FE5B00AC3D72D60",
+      "calls": [
+        "15:    const isEvery = E.Every(value, E.Constant(0), [item, index], E.And(E.Or(hasIndex, isSchema), addIndex));",
+        "16:    return E.Call(E.ArrowFunction(['context'], E.Statements(["
+      ]
+    },
+    {
+      "path": "build/schema/engine/_functions.mjs",
+      "sha256": "6609B9B23900BEB5C33195FA13873FBC62B704824DF1D5B791778FCCAD5766A4",
+      "calls": [
+        "37:        ? E.ConstDeclaration(`check_${name}`, E.ArrowFunction(['context', 'value'], expression))",
+        "38:        : E.ConstDeclaration(`check_${name}`, E.ArrowFunction(['value'], expression));"
+      ]
+    },
+    {
+      "path": "build/schema/engine/_reducer.mjs",
+      "sha256": "0FBF041B8C105A8AB419A741DFABD06758A275AE1A2600BD1D7973FD28F3AECE",
+      "calls": [
+        "41:    const condition_n = schemas.map((schema, index) => E.ConstDeclaration(`condition_${index}`, E.Call(E.ArrowFunction(['context'], BuildSchema(stack, context, schema, value)), [`context_${index}`])));",
+        "44:    return E.Call(E.ArrowFunction([], E.Statements([results, ...context_n, ...condition_n, ...checks, returns])), []);"
+      ]
+    },
+    {
+      "path": "build/schema/engine/_refine.mjs",
+      "sha256": "7B9AF294E8CC3ED8CD3FF3426F2A448F2E8867955F80C6363384274116BA7088",
+      "calls": [
+        "9:    return E.Every(refinements, E.Constant(0), ['refinement', '_'], E.Call(E.Member('refinement', 'check'), [value]));"
+      ]
+    }
+  ]
+}
