@@ -44,7 +44,18 @@ fn method(engine: *em.Engine, kind: Method, roots: [*c]c.JSValue, args: []const 
     }
     return c.pi_js_undefined();
 }
-fn safeHandler(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: body.native.Completion, input: c.JSValue) !body.native.Action {
+fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation);
+}
+fn safeHandler(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: body.native.Completion, input: c.JSValue) !body.native.Action {
+    const generation = engine.native_allocation_generation;
+    return safeHandlerBody(engine, receiver, args, roots, state, completion, input) catch |err| {
+        try trustedBoundary(engine, err, generation);
+        return body.failureSince(engine, err, generation);
+    };
+}
+fn safeHandlerBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: body.native.Completion, input: c.JSValue) !body.native.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const generation = engine.native_allocation_generation;
@@ -52,7 +63,7 @@ fn safeHandler(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots:
         const job = try body.init(&scope, state);
         try scope.put(job, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
         const value = scope.call(roots[1], c.pi_js_undefined(), &.{if (args.len > 0) args[0] else c.pi_js_undefined()}) catch |err| {
-            if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+            try trustedBoundary(engine, err, generation);
             const reason = try scope.own(flow.reason(engine, err));
             try caught(&scope, roots[0], reason);
             return .{ .returned = c.pi_js_undefined() };
