@@ -1786,6 +1786,12 @@ pub fn build(b: *std.Build) void {
     openai_full58_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-openai-full58", "Compile original Source58 actual API Models Kimi graph and complete raw wire diagnostics").dependOn(&openai_full58_tests.step);
     b.step("test-native-ai-openai-full58", "Compare all original58 snapshots raw request bytes headers deep JSON and image split").dependOn(&b.addRunArtifact(openai_full58_tests).step);
+    const actual_models_qualification_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_actual_models_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native actual Models", "native actual provider factories", "native actual credential store", "shared recorder", "native async rejected allocation" }, .use_llvm = use_llvm });
+    linkQuickJs(b, actual_models_qualification_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(actual_models_qualification_tests.root_module, sqlite_lib_dir, sqlite_library);
+    actual_models_qualification_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-actual-models-qualification", "Compile one Root-bound actual Models Source18 auth69 refresh60 factory92 credential20 and ownership artifact").dependOn(&actual_models_qualification_tests.step);
+    b.step("test-native-actual-models-qualification", "Run actual Models original observations and shared native allocation boundaries").dependOn(&b.addRunArtifact(actual_models_qualification_tests).step);
     const actual_provider_factories_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_provider_factories_source_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native actual provider factories"}, .use_llvm = use_llvm });
     linkQuickJs(b, actual_provider_factories_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(actual_provider_factories_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -1,0 +1,52 @@
+{
+  "runtimeDrift": 0,
+  "sourceIndependentPidAbsent": true,
+  "sourceHead": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "nodeDrift": 0,
+  "sourceCandidateHead": "f3377e120cd74d953b155ebd6117fe3338db63f1",
+  "nativeQualified": false,
+  "sourceCases": 20,
+  "rootGrant": "LIGHT6",
+  "sourcePid": 31428,
+  "sourceExitCode": 0,
+  "fullPiQualified": false,
+  "artifacts": [
+    {
+      "path": "src/extensions/fixtures/credential-store-4954-cases.input.txt",
+      "sha256": "3592C9B423CB5B95D120A705C9236A3341254DC8BC0FB58618B016F55DAE40DF"
+    },
+    {
+      "path": "src/extensions/fixtures/credential-store-4954-source.json",
+      "sha256": "4FFB509F9C4F8FFD30B46B65E41B7C1D6E83113CBFBE3E3C912FFE9DFA2C6AD9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\credential-store-4954-source20-first-20261016-admission.json",
+      "sha256": "D870EA795A14DEE383418C03F4410C40C707D543EE9799C5B55E8CACA80D5362"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\credential-store-4954-source20-first-20261016-output.json",
+      "sha256": "0ABDD8984822F16802773FD2275A7F81BCE8C5CA7011F3C037F5C96E8FE95893"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\credential-store-4954-source20-first-20261016-posthash.json",
+      "sha256": "782E692F61D7F722253D6C249D95AF775C3E93772A38EACCE677BDBB93182CAE"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\credential-store-4954-source20-first-20261016-validation.json",
+      "sha256": "1CDE4DC05C0A6FB2C7FD2A962D4EE6E3C43094CA8D5C1B507C084B73F93B7B22"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\credential-store-4954-source20-first-20261016.json",
+      "sha256": "495B437CD0501E7F6DC304FE097354B2173A1B80D9B9AB30CBA04F41AAEE803B"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-native-models-auth-methods-20261016\\verification\\credential-store-4954-source20-20261016\\source4954-modules-31428-0-20261015.jsonl",
+      "sha256": "8ACD4BF8E8F6A503AFEE4E1B22E551815471E1F5686C578B2B1226C44B8FE3AD"
+    }
+  ],
+  "sourcePackageVersion": "1.3.0",
+  "compilerDrift": 0,
+  "referenceDrift": 0,
+  "candidateDrift": 0,
+  "historicalAbsences": 84
+}

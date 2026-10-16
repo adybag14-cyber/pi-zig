@@ -1,0 +1,42 @@
+[
+  {
+    "path": "src/extensions/fixtures/models-class-4954-source.json",
+    "sha256": "9441AC8EE1F656351942F1EA138D4111C8ECF1777BBBD09AF8CCCE53128F99F4"
+  },
+  {
+    "path": "src/extensions/fixtures/models-auth-4954-source.json",
+    "sha256": "E39FB5C271DC7C96587BB52B054263A29D7031FECC7EED6E91E724D0A0BD48FD"
+  },
+  {
+    "path": "src/extensions/fixtures/ai-models-refresh-4954.json",
+    "sha256": "D77AB7B2C9918C55E2DEAFAC8ABC9C7917095467EFBC7A4382FFD5A811B30331"
+  },
+  {
+    "path": "src/extensions/fixtures/provider-factories-models-4954-source.json",
+    "sha256": "B120871154FA2D13AD4D176D4519FABDFC06592B8B49A729A2849B48F078D669"
+  },
+  {
+    "path": "src/extensions/fixtures/credential-store-4954-source.json",
+    "sha256": "4FFB509F9C4F8FFD30B46B65E41B7C1D6E83113CBFBE3E3C912FFE9DFA2C6AD9"
+  },
+  {
+    "path": "src/extensions/native_ai_models_class_fixture.mjs",
+    "sha256": "BB8B990E71EABC91E9BC1C0CE9C2FAA2D4546AD83F042208C3F851040E360D7A"
+  },
+  {
+    "path": "src/extensions/fixtures/models-auth-4954-cases.input.txt",
+    "sha256": "663B4F76E1A4BE837D9BD43673794FC20FDE1F3A0DDD2BB25F8F6CE0D78F8615"
+  },
+  {
+    "path": "src/extensions/fixtures/ai-models-refresh-4954.input.txt",
+    "sha256": "21B756F905BFB0B22C636C666294AC6EE20E3270CD8DF6D2CDB1218EEEEBA313"
+  },
+  {
+    "path": "src/extensions/native_ai_provider_factories_fixture.mjs",
+    "sha256": "E135B9AC20DC64A251078C6532DDA9E65A4F462CF5565C58855EADECDCEF7CAC"
+  },
+  {
+    "path": "src/extensions/fixtures/credential-store-4954-cases.input.txt",
+    "sha256": "3592C9B423CB5B95D120A705C9236A3341254DC8BC0FB58618B016F55DAE40DF"
+  }
+]
