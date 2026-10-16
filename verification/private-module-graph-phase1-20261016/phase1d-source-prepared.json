@@ -1,0 +1,17 @@
+{
+  "status": "phase1d_scoped_link_failure_accounting_source_only",
+  "prior": "5db5b8534a07366a7a8072c2b0fe3c8cb16692be",
+  "change": "eachsuccessfulprivatecompile recordsimmutableoriginlistsegment; create/linkfailurequarantinesonlynewunevaluatedsegment; evaluatedfailuremarksrootfailedwithoutteardown",
+  "preserved": [
+    "olderunrelatedprivatecompileddefinitions",
+    "shared0definitions",
+    "evaluatedescapedclosures",
+    "exactpendingfailure"
+  ],
+  "foreign_private_eval": "capabilitycontextmembershipchecked",
+  "c_sha256": "688C8A8B79E68E665521AFF48C9D5EBB93CB34D6C182A4A1DE99AB809ABB368A",
+  "compiler_or_runtime_executed": false,
+  "engine_changed": false,
+  "tests_prepared": false,
+  "default_selected": false
+}
