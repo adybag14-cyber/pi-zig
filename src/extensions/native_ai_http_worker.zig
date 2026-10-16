@@ -63,6 +63,7 @@ pub const Input = struct {
     proxy_url: ?[]const u8 = null,
     timeout_ms: ?u64 = null,
     headers_timeout_only: bool = false,
+    redirect_behavior: ?std.http.Client.Request.RedirectBehavior = null,
     method: std.http.Method = .POST,
     framing: Framing = .sse,
     /// Bytes-only opt-in for genuine fetch/SDK readers: preserve binary bodies
@@ -78,6 +79,7 @@ const OwnedInput = struct {
     proxy_url: ?[]u8,
     timeout_ms: ?u64,
     headers_timeout_only: bool,
+    redirect_behavior: ?std.http.Client.Request.RedirectBehavior,
     method: std.http.Method,
     framing: Framing,
     stream_error_bytes: bool,
@@ -103,7 +105,7 @@ const OwnedInput = struct {
             destination.* = .{ .name = name, .value = try a.dupe(u8, source.value) };
             count += 1;
         }
-        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .headers_timeout_only = input.headers_timeout_only, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
+        return .{ .url = url, .payload = payload, .headers = headers, .proxy_url = proxy_url, .timeout_ms = input.timeout_ms, .headers_timeout_only = input.headers_timeout_only, .redirect_behavior = input.redirect_behavior, .method = input.method, .framing = input.framing, .stream_error_bytes = input.stream_error_bytes and input.framing == .bytes, .prepare = input.prepare, .prepare_data = try a.dupe(u8, input.prepare_data) };
     }
     fn deinit(self: OwnedInput) void {
         a.free(self.url);
@@ -251,7 +253,7 @@ pub const Worker = struct {
         defer client.deinit();
         _ = try proxy.configureClient(&client, arena.allocator(), url, .{ .setting = self.input.proxy_url });
         const payload: ?[]const u8 = if ((self.input.method == .GET or self.input.method == .HEAD) and self.input.payload.len == 0) null else self.input.payload;
-        const fetch_options: std.http.Client.FetchOptions = .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer };
+        const fetch_options: std.http.Client.FetchOptions = .{ .location = .{ .url = url }, .method = self.input.method, .payload = payload, .extra_headers = headers, .keep_alive = false, .response_writer = &self.writer, .redirect_behavior = self.input.redirect_behavior };
         const observer: fetch.HeadObserver = .{ .context = self, .callback = observeHead };
         _ = if (self.input.headers_timeout_only) try fetch.fetchHeadersControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer) else try fetch.fetchControlledObserved(&client, fetch_options, timeout_ms, &self.abort_flag, observer);
         if (self.writer.end != 0) {

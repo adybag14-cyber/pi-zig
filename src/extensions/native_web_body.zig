@@ -8,8 +8,9 @@ const idl = @import("native_web_idl.zig");
 const flow = @import("native_agent_async.zig");
 const collector = @import("native_body_collect.zig");
 const web = @import("native_headers_webidl.zig");
-const blob = @import("native_web_blob.zig");
 const form = @import("native_web_form_data.zig");
+const mime_parser = @import("native_web_mime.zig");
+const multipart = @import("native_web_multipart.zig");
 const c = em.c;
 const cache_key = "\x00native-web-Body";
 pub const Streams = struct {
@@ -82,10 +83,29 @@ pub fn streamConstructor(scope: *Scope) !c.JSValue {
     return scope.own(c.JS_DupValue(scope.engine.context, rootOf(try ownerOf(scope.engine)).streams.constructor));
 }
 pub fn closeController(scope: *Scope, controller: c.JSValue) !void {
-    const root = rootOf(try ownerOf(scope.engine));
-    return root.streams.close_controller(scope, root.streams.bindings, controller);
+    try require(scope.engine);
+    scope.engine.native_exception_diagnostics_suppressed += 1;
+    defer scope.engine.native_exception_diagnostics_suppressed -= 1;
+    sourceClose(scope, controller) catch |err| {
+        if (err != error.JavaScriptException) return err;
+        const reason = try scope.own(c.JS_DupValue(scope.engine.context, scope.engine.captured_exception orelse return err));
+        const message = try scope.get(reason, "message");
+        const already_closed = scope.truthy(try scope.invoke(message, "includes", &.{try scope.text("Controller is already closed")})) or scope.truthy(try scope.invoke(message, "includes", &.{try scope.text("ReadableStream is already closed")}));
+        if (!already_closed) return err;
+        if (scope.engine.captured_exception) |captured| {
+            scope.engine.captured_exception = null;
+            scope.engine.freeValue(captured);
+        }
+    };
+}
+fn sourceClose(scope: *Scope, controller: c.JSValue) !void {
+    _ = try scope.invoke(controller, "close", &.{});
+    const request = try scope.get(controller, "byobRequest");
+    if (!c.JS_IsNull(request) and !c.JS_IsUndefined(request)) _ = try scope.invoke(request, "respond", &.{c.JS_NewInt32(scope.engine.context, 0)});
 }
 fn responseCollected(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) anyerror!c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (args.len == 0) return c.pi_js_undefined();
@@ -134,8 +154,8 @@ fn closeJob(context: ?*c.JSContext, _: c_int, captures: [*c]c.JSValue) callconv(
     const engine = em.Engine.fromContext(context.?);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const root = rootOf(captures[0]);
-    root.streams.close_controller(&scope, root.streams.bindings, captures[1]) catch |err| return fail(engine, err);
+    _ = captures[0];
+    closeController(&scope, captures[1]) catch |err| return fail(engine, err);
     return c.pi_js_undefined();
 }
 fn byteStream(scope: *Scope) !struct { stream: c.JSValue, controller: c.JSValue } {
@@ -165,15 +185,18 @@ fn copiedBytes(scope: *Scope, input: c.JSValue) !c.JSValue {
     return bytes;
 }
 pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JSValue, keepalive: bool) !Body {
+    scope.engine.native_exception_diagnostics_suppressed += 1;
+    defer scope.engine.native_exception_diagnostics_suppressed -= 1;
     const owner = try ownerOf(scope.engine);
     const root = rootOf(owner);
     var source = c.pi_js_null();
     var length = c.pi_js_null();
     var content_type = c.pi_js_null();
+    var multipart_parts: ?c.JSValue = null;
     const readable = try interfaces.is(scope, interfaces.readable, converted);
     const is_blob = !readable and try interfaces.is(scope, interfaces.blob, converted);
     var controller = c.pi_js_undefined();
-    const stream = if (readable) converted else if (is_blob) try scope.invoke(converted, "stream", &.{}) else built: {
+    var stream = if (readable) converted else if (is_blob) try scope.invoke(converted, "stream", &.{}) else built: {
         const pair = try byteStream(scope);
         controller = pair.controller;
         break :built pair.stream;
@@ -187,7 +210,11 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
     } else if (c.JS_IsArrayBuffer(converted) or c.JS_IsDataView(converted) or c.JS_GetTypedArrayType(converted) >= 0) {
         source = try copiedBytes(scope, converted);
     } else if (try interfaces.is(scope, interfaces.form_data, converted)) {
-        return error.NativeWebMultipartEncodingUnavailable;
+        const encoded = try multipart.encode(scope, converted, root.encoder);
+        source = converted;
+        length = encoded.length;
+        content_type = encoded.content_type;
+        multipart_parts = encoded.parts;
     } else if (is_blob) {
         source = converted;
         length = try scope.get(converted, "size");
@@ -199,7 +226,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
         if (c.JS_IsFunction(scope.engine.context, iterator)) {
             if (keepalive) try web.typeError(scope, try scope.text("keepalive"), null);
             if (try disturbed(scope, converted) or scope.truthy(try scope.get(converted, "locked"))) try web.typeError(scope, try scope.text("Response body object should not be disturbed or locked"), null);
-            if (!readable) return error.NativeWebAsyncIterableBodyUnavailable;
+            if (!readable) stream = try scope.own(try @import("native_web_iterable_source.zig").fromIterable(scope.engine, converted));
         } else if (!readable) return error.NativeWebBodyInitUnconverted;
     }
     if (c.JS_IsString(source) or c.JS_GetTypedArrayType(source) == c.JS_TYPED_ARRAY_UINT8) {
@@ -211,7 +238,7 @@ pub fn extract(scope: *Scope, interfaces: *const idl.Interfaces, converted: c.JS
         }
         var captures = [_]c.JSValue{ owner, controller };
         if (c.JS_EnqueueJob(scope.engine.context, closeJob, captures.len, &captures) < 0) return js.capture(scope.engine);
-    }
+    } else if (multipart_parts) |parts| try multipart.start(scope, parts, stream, controller);
     return .{ .stream = try scope.own(c.JS_DupValue(scope.engine.context, stream)), .source = try scope.own(c.JS_DupValue(scope.engine.context, source)), .length = try scope.own(c.JS_DupValue(scope.engine.context, length)), .content_type = try scope.own(c.JS_DupValue(scope.engine.context, content_type)) };
 }
 pub fn clone(scope: *Scope, body: Body) !Clone {
@@ -219,18 +246,26 @@ pub fn clone(scope: *Scope, body: Body) !Clone {
     return .{ .original_stream = try web.index(scope, pair, 0), .copy = .{ .stream = try web.index(scope, pair, 1), .source = try scope.own(c.JS_DupValue(scope.engine.context, body.source)), .length = try scope.own(c.JS_DupValue(scope.engine.context, body.length)), .content_type = try scope.own(c.JS_DupValue(scope.engine.context, body.content_type)) } };
 }
 fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSValue {
-    if (mode == .bytes or mode == .array_buffer or mode == .text) return bytes;
+    if (mode == .bytes or mode == .array_buffer) {
+        const copied = try scope.own(try js.builtin(scope.engine, "Uint8Array", &.{bytes}));
+        return if (mode == .bytes) copied else scope.get(copied, "buffer");
+    }
+    if (mode == .text) return bytes;
     if (mode == .json) return scope.invoke(try scope.global("JSON"), "parse", &.{bytes});
     var size: usize = 0;
     const raw = c.JS_GetUint8Array(scope.engine.context, &size, bytes);
     if (raw == null and c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
     if (mode == .blob) {
-        const mime_type = if (c.JS_IsNull(mime) or c.JS_IsUndefined(mime)) try scope.text("") else mime;
-        return scope.own(try blob.fromBytes(scope.engine, if (size == 0) &.{} else raw[0..size], mime_type));
+        const mime_type = if (try mime_parser.extract(scope, mime)) |record| try mime_parser.serialize(scope, record) else try scope.text("");
+        const parts = try scope.array();
+        try scope.index(parts, 0, bytes);
+        const options = try scope.object();
+        try scope.set(options, "type", mime_type);
+        return scope.own(try js.builtin(scope.engine, "Blob", &.{ parts, options }));
     }
-    const content_type = if (c.JS_IsNull(mime) or c.JS_IsUndefined(mime)) try scope.text("") else try scope.stringify(mime);
-    const lowered = try scope.invoke(content_type, "toLowerCase", &.{});
-    if (scope.truthy(try scope.invoke(lowered, "startsWith", &.{try scope.text("application/x-www-form-urlencoded")}))) {
+    const parsed_mime = try mime_parser.extract(scope, mime);
+    const essence = if (parsed_mime) |record| try scope.get(record, "essence") else c.pi_js_null();
+    if (scope.equal(essence, try scope.text("application/x-www-form-urlencoded"))) {
         const decoded = try @import("binary_encoding.zig").decode(scope.engine.gpa, if (size == 0) &.{} else raw[0..size], .utf8);
         defer scope.engine.gpa.free(decoded);
         var pairs = try @import("url_search_params.zig").parse(scope.engine.gpa, decoded);
@@ -239,7 +274,7 @@ fn convert(scope: *Scope, bytes: c.JSValue, mode: Mode, mime: c.JSValue) !c.JSVa
         for (pairs.items) |pair| try form.appendEntry(scope, result, try scope.text(pair.name), try scope.text(pair.value));
         return result;
     }
-    if (scope.truthy(try scope.invoke(lowered, "startsWith", &.{try scope.text("multipart/form-data")}))) return error.NativeWebMultipartParsingUnavailable;
+    if (scope.equal(essence, try scope.text("multipart/form-data"))) return multipart.parse(scope, if (size == 0) &.{} else raw[0..size], parsed_mime.?);
     try web.typeError(scope, try scope.text("Content-Type was not one of \"multipart/form-data\" or \"application/x-www-form-urlencoded\"."), null);
 }
 fn complete(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
@@ -252,6 +287,8 @@ fn complete(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bo
     try flow.settle(engine, owner, false, result);
 }
 pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const pending = try flow.create(engine, c.pi_js_undefined());
@@ -271,7 +308,6 @@ pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.
         };
         const collected = scope.own(collector.collect(engine, reader, .{ .mode = switch (mode) {
             .text, .json => .text,
-            .array_buffer => .array_buffer,
             else => .bytes,
         } }) catch |err| {
             try flow.rejectError(engine, pending.owner, err);
@@ -284,7 +320,6 @@ pub fn consume(engine: *em.Engine, body: ?Body, mode: Mode, mime: c.JSValue) !c.
     } else {
         const empty = switch (mode) {
             .text, .json => try scope.text(""),
-            .array_buffer => try scope.own(try engine.checked(c.JS_NewArrayBufferCopy(engine.context, null, 0))),
             else => try scope.own(try engine.checked(c.JS_NewUint8ArrayCopy(engine.context, null, 0))),
         };
         const result = convert(&scope, empty, mode, mime) catch |err| {

@@ -23,6 +23,14 @@ The portable computational highlighter proof from `239098cf4bfc1ce5e9f4d28e35d03
 
 These component results apply to their exact tested source and captured inputs. Merging their files does not qualify this combined branch or transfer earlier six-profile results to the new head. Original failed attempts and raw terminal receipts remain retained.
 
+## Resume integration, 16 October 2026
+
+The direct upstream main ref is now `0fbdbd3f8ab1876ac260c0f08226a400759323b8`, four commits after the pinned `4954d760` reference. The latest release remains `v1.3.0`. The new changes include retry classification and per-model compaction policy; their native implementation and new reference qualification are in progress. Existing reference snapshots remain immutable and retain their original source scope.
+
+The Request/fetch composition from tested source `884d47104dfabd4ef1f5a564568e4cd04a600f60` is now integrated. Its published evidence is `7e89e838851da41885c586c5c5b8acdaf7ccf52b`: complete Fetch39 plus real response-body abort/EOF/error ownership, Request55 and selected operation allocation failures, multipart Source3 and selected allocation failures, and Headers189 regressions passed on that exact Windows Debug candidate. Uploads in this scope are buffered finite bodies; arbitrary concurrent streaming upload is not qualified. The complete Body176 replay remains a separate gate. This merge preserves the newer shared HTTP preparation hooks, native callable receiver semantics, Immediate/check scheduling and reviewed QuickJS vendor bytes; the combined integration requires fresh native gates.
+
+The paused Source88 proof tooling has been replaced by PowerShell 7 verification and freezing. Original Python files and the old Python-calling owner are retained byte-for-byte as historical `.txt` data. No historical observation or receipt was rewritten.
+
 The nine-flow OAuth graph at `341032147bcfe06edd3d5720612c3586e9d8885b` is also integrated as source, including its actual Response/Body/readable dependency and captured loader/flow fixtures. Whole-graph native qualification remains pending. The QuickJS change is only the independently reviewed additive 42-line C and four-line header borrowed-view helper, retaining the newer native generator. Combined vendor hashes are C `12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D` and header `F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062`. The merged Engine retains both Immediate phase scheduling and the separate ChatGPT callback pump; this combined Engine still needs its own native gates.
 
 ## Remaining integration boundaries

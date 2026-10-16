@@ -1,0 +1,227 @@
+[
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-authorities.json",
+    "bytes": 1758,
+    "sha256": "ed4c51ab3c67a574132a4be22ebfc67f5fad45a1428d349521d2c1794e80daac"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-candidate.json",
+    "bytes": 1312508,
+    "sha256": "8f54c8a9fa6a7b82d3afd0b12e52109883d535a26594419d1438a773bdc40e58"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-controls.json",
+    "bytes": 1284,
+    "sha256": "af2cb14fb4f6d89af1b3a48100e2674305e8aba5b7585c28e3a6d42535ea593d"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-frozen.json",
+    "bytes": 2307,
+    "sha256": "3d4eddae46d4ce0d654b670545cd09f0effe5d2bf941b9ae154ffc2b4868a60a"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-preflight-negative.json",
+    "bytes": 643,
+    "sha256": "917e7f7112a05c9a0752bd335586e389add68ef2e294de32626d865b60149750"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-first-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-admission.json",
+    "bytes": 1795,
+    "sha256": "238f00c8004e566d94762a843bf1eaa34060d1da8cc250a1cfa07b75213ff90e"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-after.json",
+    "bytes": 1217,
+    "sha256": "bf08e8cf328f89149e4b0ad71c355ca2fbad7523cbdad74bf9b431bd0e26b825"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-authorities.json",
+    "bytes": 2191,
+    "sha256": "ac57c6fb457050b10e94584b4871fb4db894af7e99c0a72fb5a1d70b4a27393f"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-before.json",
+    "bytes": 1217,
+    "sha256": "bf08e8cf328f89149e4b0ad71c355ca2fbad7523cbdad74bf9b431bd0e26b825"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-candidate.json",
+    "bytes": 1312948,
+    "sha256": "9e296a052a0ed933b18635662e873f31d6c7b8c49b0665649eb067e677426bd5"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-controls.json",
+    "bytes": 1724,
+    "sha256": "1640e427d2b4ea571dfa406ad2f39b189486866c267e25aaf3e2541fbe645db3"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-frozen.json",
+    "bytes": 2317,
+    "sha256": "919688ec554a033c953d372787d32b8617da73adb698ab12febdf1d28b6e476f"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-launch-intent.json",
+    "bytes": 678,
+    "sha256": "50803e0bce03b8acaf67da2160b59873e557a0a1feb50830dd620cc3e09633bb"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015.process.json",
+    "bytes": 925,
+    "sha256": "85244b9ab59ad9e465a609dea49c8f8da2bff6f10e2f35bd7079ad7ef319bf71"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015.stderr.log",
+    "bytes": 13215,
+    "sha256": "9cdfe35613a2feddc4a0272d9a33f3c7be7cc84f462836799bffc6a71cdeffe5"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-build-second-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-admission.json",
+    "bytes": 15603,
+    "sha256": "4e0b36c4981306296909dbc68938949bd5b4484072d945a9b63d5c9dacd3e610"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-after.json",
+    "bytes": 1207,
+    "sha256": "a91647a1fd9e5773bca48798985bd0d3f971677ee4285776c7838cd3980df2e0"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-authorities.json",
+    "bytes": 2191,
+    "sha256": "ac57c6fb457050b10e94584b4871fb4db894af7e99c0a72fb5a1d70b4a27393f"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-before.json",
+    "bytes": 1207,
+    "sha256": "a91647a1fd9e5773bca48798985bd0d3f971677ee4285776c7838cd3980df2e0"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-candidate.json",
+    "bytes": 1312948,
+    "sha256": "9e296a052a0ed933b18635662e873f31d6c7b8c49b0665649eb067e677426bd5"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-controls.json",
+    "bytes": 1724,
+    "sha256": "1640e427d2b4ea571dfa406ad2f39b189486866c267e25aaf3e2541fbe645db3"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-frozen.json",
+    "bytes": 2297,
+    "sha256": "138708b67a2ff855d22eb5dffe153350484dfe3438084541e4a0d2f1759ca52d"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-launch-intent.json",
+    "bytes": 677,
+    "sha256": "7b7bac3036035603e40ecfb14503110f4e8349fd8855dfb50324b50283ab5c23"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "ce7d170f3dde340cb94aa29c228b83e2e9d3aba2b62615474af3bce67c581018"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015-vendor.json",
+    "bytes": 266334,
+    "sha256": "59e03b0f3f4cb0c988de0267bce05102f2e088d23bd41e404af75d2272eadfac"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015.process.json",
+    "bytes": 922,
+    "sha256": "210d26d8275f97d6f23c61d7f411a8e21a0eb50d52e3c755e2bb991b0d22b961"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015.stderr.log",
+    "bytes": 14884,
+    "sha256": "2a3bc9e8667afa06d9b7937700ae6ca8ee1943aa83bb6f41484add184b0a27d9"
+  },
+  {
+    "path": "dependency-receipts/web-body-dependencies-debug-test-first-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-first-20261015-controls.json",
+    "bytes": 1425,
+    "sha256": "83859c0c7c11a3cbe37175561f5d2344a94a7aa3e7556f73d43541e78847383d"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-first-20261015-frozen.json",
+    "bytes": 281,
+    "sha256": "76307107fa229df6eb5339f6c1719355b34012ebff392d841f1bf572d0db186a"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-first-20261015-plumbing-negative.json",
+    "bytes": 260,
+    "sha256": "d179ca36135e64091068a4bd03084006f0557603ace3dfb4cc439dbf5946706d"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-admission.json",
+    "bytes": 240,
+    "sha256": "a32da9d8e0b2e188297593e5c6996c507ab8c2544e761312dbfad092002bd5c9"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-after.json",
+    "bytes": 38,
+    "sha256": "404c26b2cd689191e77e09f4c72c8311403261d374671f14c319d01227a1d0ca"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-before.json",
+    "bytes": 38,
+    "sha256": "404c26b2cd689191e77e09f4c72c8311403261d374671f14c319d01227a1d0ca"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-controls.json",
+    "bytes": 1425,
+    "sha256": "8a5f70dd98483155f4d6c31d60b57587c88302d30331b681fbd42626fd28cc21"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-frozen.json",
+    "bytes": 282,
+    "sha256": "f125f48c2640d6d921256786b3d44439b0a40aa7f21f32a91c20b4495277b1f9"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015-output.json",
+    "bytes": 287203,
+    "sha256": "5cae3e18f9d30c16f5e1e5541ee42c6f866674e2d38f69642d9018150cc3effb"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015.json",
+    "bytes": 1275,
+    "sha256": "c29285c2518a9a6a9e1324e99279539daa7880e88b896a83d372d296dfa148bd"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015.stderr.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "path": "dependency-receipts/web-body-node-builtin-inventory-second-20261015.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

@@ -420,6 +420,19 @@ fn failAll(self: *State, reason: c.JSValue) void {
         c.JS_PromiseMarkAsHandled(e.context, writer.closed.promise);
     }
 }
+/// Pipe host-allocation failure retirement. Genuine native brand/state only;
+/// valid-stream cleanup never allocates host Scope roots or replacement errors.
+/// This wrapper is source-only pending the separate pending-pipe/GPA gate.
+pub fn retireAfterHostFailureNative(e: *Engine, value: c.JSValue, reason: c.JSValue) !void {
+    if (!try isWritableStream(e, value)) return invalidThis(e, .stream);
+    const self = streamState(value);
+    if (self.status == .closed) return;
+    const retained_stream = c.JS_DupValue(e.context, value);
+    defer e.freeValue(retained_stream);
+    const retained_reason = c.JS_DupValue(e.context, reason);
+    defer e.freeValue(retained_reason);
+    failAll(self, retained_reason);
+}
 fn continuation(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const self = streamState(roots[0]);
     continueAlgorithm(roots[0], self, if (argc > 0) argv[0] else c.pi_js_undefined(), @mod(magic, 2) != 0, @enumFromInt(@divTrunc(magic, 2))) catch |err| {

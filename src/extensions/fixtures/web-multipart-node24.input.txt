@@ -1,0 +1,8 @@
+const bodyRows=[];
+const bodyError=e=>({name:e?.name,message:e?.message,code:e?.code,typeError:e instanceof TypeError,cause:e?.cause?{name:e.cause.name,message:e.cause.message,code:e.cause.code}:undefined});
+const bodyRecord=async(name,run)=>{try{bodyRows.push({name,value:await run()})}catch(e){bodyRows.push({name,error:bodyError(e)})}};
+const responseShape=r=>({status:r.status,statusText:r.statusText,ok:r.ok,type:r.type,url:r.url,redirected:r.redirected,headers:[...r.headers],actualHeaders:r.headers instanceof Headers,body:r.body===null?null:{actualStream:r.body instanceof ReadableStream,locked:r.body.locked},bodyUsed:r.bodyUsed,tag:Object.prototype.toString.call(r),actualResponse:r instanceof Response});
+await bodyRecord('Response form urlencoded roundtrip',async()=>{const r=new Response('a=hello+world&a=%C3%A9',{headers:{'Content-Type':'application/x-www-form-urlencoded'}});return{entries:[...await r.formData()],shape:responseShape(r)}});
+await bodyRecord('Response FormData actual multipart roundtrip',async()=>{const fd=new FormData();fd.append('a','one');fd.append('a','é');fd.append('file',new File(['owned bytes'],'sample.txt',{type:'text/plain'}));const r=new Response(fd),type=r.headers.get('content-type'),parsed=await r.formData(),entries=[];for(const[k,v]of parsed)entries.push([k,typeof v==='string'?v:{name:v.name,type:v.type,size:v.size,text:await v.text()}]);return{actualMultipart:type.startsWith('multipart/form-data; boundary='),entries,bodyUsed:r.bodyUsed}});
+await bodyRecord('Response formData unsupported type',()=>new Response('plain').formData());
+globalThis.webMultipartRows=bodyRows;
