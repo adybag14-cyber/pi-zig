@@ -2378,6 +2378,14 @@ pub fn build(b: *std.Build) void {
     const typebox_production_run = b.addRunArtifact(typebox_production_tests);
     typebox_production_run.has_side_effects = true;
     b.step("test-native-typebox-production-source", "Replay actual compiler and provider schemas through the shared native TypeBox graph").dependOn(&typebox_production_run.step);
+    const typebox_gpa_module = b.createModule(.{ .root_source_file = b.path("src/native_typebox_compile_production_gpa_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, typebox_gpa_module, quickjs, sqlite_lib_dir);
+    typebox_gpa_module.addImport("catalog_tool", catalog_tool);
+    const typebox_gpa_tests = b.addTest(.{ .root_module = typebox_gpa_module, .use_llvm = use_llvm, .filters = &.{"TypeBox scoped GPA "} });
+    b.step("build-native-typebox-production-gpa", "Compile selected genuine TypeBox Compile Check host-GPA failure checks separately").dependOn(&b.addInstallArtifact(typebox_gpa_tests, .{ .dest_sub_path = "typebox-production-gpa.exe" }).step);
+    const typebox_gpa_run = b.addRunArtifact(typebox_gpa_tests);
+    typebox_gpa_run.has_side_effects = true;
+    b.step("test-native-typebox-production-gpa", "Exercise five selected Compile Check host-GPA failures; C malloc remains unknown").dependOn(&typebox_gpa_run.step);
     const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
     headers_source_module.addImport("catalog_tool", catalog_tool);

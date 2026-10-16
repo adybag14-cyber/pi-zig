@@ -9,6 +9,18 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     c.JS_RunGC(e.runtime);
     return c.pi_js_undefined();
 }
+fn observeDepth(e: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    if (args.len != 2) return error.InvalidTypeBoxDepthObservation;
+    var s: Scope = .{ .engine = e };
+    defer s.deinit();
+    const json = try s.global("JSON");
+    const actual = try e.toString(try s.invoke(json, "stringify", &.{args[0]}));
+    defer e.gpa.free(actual);
+    const expected = try e.toString(try s.invoke(json, "stringify", &.{args[1]}));
+    defer e.gpa.free(expected);
+    std.debug.print("TYPEBOX_OPERATOR_DEPTH_OBSERVATION index=391 actual={s} expected={s}\n", .{ actual, expected });
+    return c.pi_js_undefined();
+}
 fn readBefore(e: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: @import("extensions/native_typebox_operators_runtime.zig").Scope = .{ .engine = e };
     defer s.deinit();
@@ -96,8 +108,9 @@ test "actual TypeBox generic operators match complete genuine Source396 on share
     try s.put(global, "gc", try s.own(try e.checked(c.JS_NewCFunction(e.context, gc, "gc", 0))));
     try s.put(global, "TypeBoxOperatorGraph", actual);
     try s.put(global, "TypeBoxOperatorSource", source);
+    try s.put(global, "nativeTypeBoxDepthObservation", try s.own(try @import("extensions/native_node_function.zig").create(e, "observeTypeBoxDepthRow", 2, observeDepth, &.{})));
     const pending = try s.own(e.evalModule(@embedFile("extensions/fixtures/typebox-operators-production.input.txt") ++
-        \\const expected=TypeBoxOperatorSource.rows,actual=TypeBoxOperatorRows;if(TypeBoxOperatorSource.version!=='1.3.27'||TypeBoxOperatorSource.cases!==396||expected.length!==396||actual.length!==396)throw Error('actual TypeBox operator Source396 scope');for(let index=0;index<396;index++){if(JSON.stringify(expected[index])!==JSON.stringify(actual[index]))throw Error(JSON.stringify({scope:'actual shared TypeBox operators',index,expected:expected[index],actual:actual[index]}))}export const pass=true;
+        \\const expected=TypeBoxOperatorSource.rows,actual=TypeBoxOperatorRows;if(TypeBoxOperatorSource.version!=='1.3.27'||TypeBoxOperatorSource.cases!==396||expected.length!==396||actual.length!==396)throw Error('actual TypeBox operator Source396 scope');nativeTypeBoxDepthObservation(actual[391],expected[391]);for(let index=0;index<396;index++){if(JSON.stringify(expected[index])!==JSON.stringify(actual[index]))throw Error(JSON.stringify({scope:'actual shared TypeBox operators',index,expected:expected[index],actual:actual[index]}))}export const pass=true;
     , "actual-typebox-operators-source396-shared.mjs") catch |err| {
         std.debug.print("Actual TypeBox Source396 replay: {s}\n", .{e.last_error orelse "no diagnostic"});
         return err;
