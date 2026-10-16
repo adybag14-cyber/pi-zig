@@ -1,0 +1,37 @@
+{
+  "status": "source_only_unexecuted_context_control_successor",
+  "base": "ae342bba772d73d597da7b795aeafa6693f92edf",
+  "product_c_unchanged": true,
+  "product_h_unchanged": true,
+  "review": "async_c_review_resume closed ae342 C/H; distinct VM context and execution marker control requested",
+  "executed_jobs": 0,
+  "prepared_test_declarations": 7,
+  "actual_compiled_metadata_count": null,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/native_dynamic_import_graph0_test.zig",
+      "bytes": 17726,
+      "sha256": "591DA797550844630E5289D1CA2C767FE34DDB450EDA264B74EC9F7BDABC0D91"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DYNAMIC-IMPORT-GRAPH0-IMPLEMENTATION.md",
+      "bytes": 4150,
+      "sha256": "7C5F4CCA09920669029AED29B6BD070B4E422E2B7D2965495EC62AABE3B0CBBF"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/dynamic-import-graph0-source-manifest.json",
+      "bytes": 1806,
+      "sha256": "6940FBC4B28BD35C287987E218121F237FA5E36FA7E886CBF8127362393A7918"
+    }
+  ]
+}

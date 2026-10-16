@@ -22,7 +22,7 @@ must keep its context valid until execution/cleanup. No module-token GC claim,
 private graph identity, opaque graph handle, filename alias or ABI serialization
 change is introduced.
 
-Six prepared raw-ABI controls in src/native_dynamic_import_graph0_test.zig use
+Seven prepared raw-ABI controls in src/native_dynamic_import_graph0_test.zig use
 actual lazy C-module export getters, the public Promise.prototype.then getter,
 actual queued jobs, registered source modules, TLA, and the real loader
 normalizer. They cover ordering before initialization, a throwing public then
@@ -30,6 +30,12 @@ getter with the import still queued, no/foreign ambient-frame explicit base,
 GC after releasing caller-owned string references, distinct import Promises
 and concurrent canonical namespace, ordinary coercion/module rejection identity,
 noncoercing basename admission, and normal host-owned pending-job teardown.
+The seventh control adds a distinct host-owned JSContext, a loader compiling
+the actual module in its callback context, and public execution-context hooks:
+set marker A, enqueue, set marker B, release A's caller owner, GC, then require
+the first job/hook to carry A and the foreign context. Module/global realm
+markers prove execution in that foreign realm. Both contexts remain host-owned
+through all job/value cleanup. This does not claim the raw job ctx owns itself.
 The JS used here is test input executed by the linked C VM. It does not implement
 the production import operation or stand in for actual SDK getter controls.
 The prospective build snippet is unselected; actual compiled metadata count is

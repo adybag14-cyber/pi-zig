@@ -211,3 +211,96 @@ test "queued Graph0 import primitive basename admission and host owned queue tea
     // Normal host-owned teardown cancels the queued job. No early release of
     // its raw context pointer and no independent context-pin claim is made.
 }
+
+const ContextProbe = struct {
+    foreign: *c.JSContext,
+    marker_a: c.JSValue, // Borrowed only from the queued job after caller release.
+    before: usize = 0,
+    after: usize = 0,
+    exact: bool = true,
+};
+fn contextHook(context: ?*c.JSContext, before: bool, marker: c.JSValue, hook_data: ?*anyopaque) callconv(.c) void {
+    const probe: *ContextProbe = @ptrCast(@alignCast(hook_data.?));
+    probe.exact = probe.exact and context == probe.foreign and c.JS_IsStrictEqual(context, marker, probe.marker_a);
+    if (before) probe.before += 1 else probe.after += 1;
+}
+fn realmLoader(context: ?*c.JSContext, name: [*c]const u8, _: ?*anyopaque) callconv(.c) ?*c.JSModuleDef {
+    if (!std.mem.eql(u8, std.mem.span(name), "C:/realm/dep.mjs")) {
+        _ = c.JS_ThrowReferenceError(context, "unexpected realm module");
+        return null;
+    }
+    const source = "globalThis.executions++;export const value=globalThis.realmMarker;";
+    const compiled = c.JS_Eval(context, source.ptr, source.len, name, c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
+    if (c.JS_IsException(compiled)) return null;
+    defer c.JS_FreeValue(context, compiled);
+    return c.pi_js_module(compiled);
+}
+
+test "queued Graph0 import captures distinct VM context and enqueue execution marker through GC" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const foreign = c.JS_NewContext(engine.runtime) orelse return error.OutOfMemory;
+    // Both host-owned contexts stay alive through all job and value cleanup.
+    defer c.JS_FreeContext(foreign);
+    c.JS_SetModuleLoaderFunc(engine.runtime, null, realmLoader, null);
+    const primary_setup = try eval(engine, "globalThis.realmMarker=11;globalThis.executions=0;");
+    defer engine.freeValue(primary_setup);
+    const foreign_source = "globalThis.realmMarker=77;globalThis.executions=0;";
+    const foreign_setup = c.JS_Eval(foreign, foreign_source.ptr, foreign_source.len, "C:/realm/setup.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer c.JS_FreeValue(foreign, foreign_setup);
+    try std.testing.expect(!c.JS_IsException(foreign_setup));
+    const marker_a = c.JS_NewObject(foreign);
+    if (c.JS_IsException(marker_a)) return error.OutOfMemory;
+    var marker_a_owned = true;
+    defer if (marker_a_owned) c.JS_FreeValue(foreign, marker_a);
+    var probe: ContextProbe = .{ .foreign = foreign, .marker_a = marker_a };
+    c.JS_SetExecutionContextHook(engine.runtime, contextHook, &probe);
+    defer c.JS_SetExecutionContextHook(engine.runtime, null, null);
+    c.JS_SetExecutionContext(engine.runtime, marker_a);
+    defer c.JS_SetExecutionContext(engine.runtime, c.pi_js_undefined());
+    const raw = queued: {
+        const base = c.JS_NewString(foreign, "C:/realm/loader.js");
+        if (c.JS_IsException(base)) return error.OutOfMemory;
+        defer c.JS_FreeValue(foreign, base);
+        const specifier = c.JS_NewString(foreign, "C:/realm/dep.mjs");
+        if (c.JS_IsException(specifier)) return error.OutOfMemory;
+        defer c.JS_FreeValue(foreign, specifier);
+        break :queued c.JS_PiDynamicImportGraph0(foreign, base, specifier);
+    };
+    defer c.JS_FreeValue(foreign, raw);
+    try std.testing.expect(!c.JS_IsException(raw));
+    c.JS_FreeValue(foreign, marker_a);
+    marker_a_owned = false;
+    const marker_b = c.JS_NewObject(engine.context);
+    if (c.JS_IsException(marker_b)) return error.OutOfMemory;
+    c.JS_SetExecutionContext(engine.runtime, marker_b);
+    engine.freeValue(marker_b);
+    // marker_a has no host/ambient owner. The queued entry must retain it.
+    c.JS_RunGC(engine.runtime);
+    try std.testing.expect(c.JS_GetPendingJobContext(engine.runtime) == foreign);
+    var job_context: ?*c.JSContext = null;
+    const status = c.JS_ExecutePendingJob(engine.runtime, &job_context);
+    try std.testing.expect(status > 0 and job_context == foreign);
+    try std.testing.expect(!c.JS_HasException(foreign));
+    try std.testing.expectEqual(@as(usize, 1), probe.before);
+    try std.testing.expectEqual(@as(usize, 1), probe.after);
+    try std.testing.expect(probe.exact);
+    // The core hook supplies captured metadata; ambient marker activation is
+    // host policy. Only this first import job is required to carry marker_a.
+    c.JS_SetExecutionContextHook(engine.runtime, null, null);
+    c.JS_SetExecutionContext(engine.runtime, c.pi_js_undefined());
+    try pump(engine);
+    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(foreign, raw));
+    const namespace = c.JS_PromiseResult(foreign, raw);
+    defer c.JS_FreeValue(foreign, namespace);
+    const value = c.JS_GetPropertyStr(foreign, namespace, "value");
+    defer c.JS_FreeValue(foreign, value);
+    var number: i32 = undefined;
+    if (c.JS_ToInt32(foreign, &number, value) < 0) return error.JavaScriptException;
+    try std.testing.expectEqual(@as(i32, 77), number);
+    const assertion = "executions===1 && realmMarker===77";
+    const foreign_check = c.JS_Eval(foreign, assertion.ptr, assertion.len, "C:/realm/check.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer c.JS_FreeValue(foreign, foreign_check);
+    try std.testing.expect(!c.JS_IsException(foreign_check) and c.JS_ToBool(foreign, foreign_check) == 1);
+    try check(engine, "executions===0 && realmMarker===11");
+}
