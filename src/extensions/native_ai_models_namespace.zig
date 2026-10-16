@@ -1,4 +1,4 @@
-//! Actual models.ts runtime exports over the existing native configurable core.
+//! Actual models.ts exports over the ordinary native ModelsImpl composition.
 //! One lexical module instance retains error/store constructors and callbacks.
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
@@ -16,17 +16,16 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const operation_exports = engine.native_ai_model_operations_namespace.?;
     inline for (.{ "getModelType", "isModelType" }) |name| try s.put(module_exports, name, try s.get(operation_exports, name));
     const Narrow = struct {
-        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+        fn call(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             var local: Scope = .{ .engine = host };
             defer local.deinit();
             const model = if (args.len > 0) args[0] else c.pi_js_undefined();
             const api = if (args.len > 1) args[1] else c.pi_js_undefined();
-            const raw = try local.get(model, "type");
-            const kind = if (v.nullish(raw)) try local.text("chat") else raw;
-            return c.JS_NewBool(host.context, (try v.eq(&local, kind, "chat")) and local.equal(try local.get(model, "api"), api));
+            const chat = try local.call(roots[0], c.pi_js_undefined(), &.{ model, try local.text("chat") });
+            return c.JS_NewBool(host.context, local.truthy(chat) and local.equal(try local.get(model, "api"), api));
         }
     };
-    try s.put(module_exports, "hasApi", try s.own(try functions.create(engine, "hasApi", 2, Narrow.call, &.{})));
+    try s.put(module_exports, "hasApi", try s.own(try functions.create(engine, "hasApi", 2, Narrow.call, &.{try s.get(operation_exports, "isModelType")})));
     try s.put(module_exports, "calculateCost", try s.own(try @import("native_ai_cost.zig").create(engine)));
     const utilities = try s.own(try @import("native_ai_model_values.zig").bindings(engine));
     inline for (.{ "getSupportedThinkingLevels", "clampThinkingLevel", "modelsAreEqual" }) |name| try s.put(module_exports, name, try s.get(utilities, name));
