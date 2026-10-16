@@ -84,12 +84,18 @@ test "replacement and identical cross directory basenames keep real file identit
     if (builtin.os.tag == .windows) try std.testing.expectEqual(@as(u64, 0), directory_stat.size);
 }
 
-test "file revision follows a real symlink when the host permits creating one" {
+test "file revision follows a real symlink or matches the genuine Source host denial" {
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     try create(tmp.dir, "target", "symlink target");
     tmp.dir.symLink(std.testing.io, "target", "link", .{}) catch |err| switch (err) {
-        error.AccessDenied, error.PermissionDenied => return error.SkipZigTest,
+        error.AccessDenied, error.PermissionDenied => {
+            const captured = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/file-revision-source-4954.json"), .{});
+            defer captured.deinit();
+            try std.testing.expectEqualStrings("host-denied-creation", captured.value.object.get("symlink").?.object.get("status").?.string);
+            try std.testing.expectEqualStrings("EPERM", captured.value.object.get("symlink").?.object.get("code").?.string);
+            return;
+        },
         else => return err,
     };
     const target = try absolute(tmp.dir, "target");
@@ -127,8 +133,8 @@ test "native revisions equal actual Source bigint stat strings on six retained p
     try std.testing.expectEqual(@as(usize, 6), files.len);
     var present: usize = 0;
     for (files) |file| {
-        std.Io.Dir.cwd().access(std.testing.io, file.object.get("path").?.string, .{}) catch |err| switch (err) {
-            error.FileNotFound => continue,
+        _ = file_stat.read(std.testing.allocator, file.object.get("path").?.string) catch |err| switch (err) {
+            error.FileStatOpenFailed, error.FileStatFailed => continue,
             else => return err,
         };
         present += 1;
@@ -138,16 +144,34 @@ test "native revisions equal actual Source bigint stat strings on six retained p
     // their identity; report that as a skipped test instead of a native pass.
     if (present == 0) return error.SkipZigTest;
     try std.testing.expectEqual(files.len, present);
+    const em = @import("extensions/engine.zig");
+    const c = em.c;
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    try std.testing.expect(c.JS_IsUndefined(try revision.getFileRevision(engine, c.JS_NewInt32(engine.context, 42))));
     for (files) |file| {
         const path = file.object.get("path").?.string;
-        const actual = (try revision.revisionAlloc(std.testing.allocator, path)) orelse return error.SourcePhysicalFixtureStatFailed;
+        const argument = try engine.checked(c.JS_NewStringLen(engine.context, path.ptr, path.len));
+        defer engine.freeValue(argument);
+        const result = try revision.getFileRevision(engine, argument);
+        defer engine.freeValue(result);
+        try std.testing.expect(c.JS_IsString(result));
+        const actual = try engine.toString(result);
         defer std.testing.allocator.free(actual);
         try std.testing.expectEqualStrings(file.object.get("revision").?.string, actual);
-        const bytes = try std.Io.Dir.cwd().readFileAlloc(std.testing.io, path, std.testing.allocator, .limited(1024 * 1024));
+        // std.Io's Win32 absolute-path conversion follows ordinary Win32
+        // trimming. Preserve the exact original Source filename when reading
+        // the physical content, including its trailing U+0020.
+        const physical_path = if (builtin.os.tag == .windows) try std.fmt.allocPrint(std.testing.allocator, "\\\\?\\{s}", .{path}) else try std.testing.allocator.dupe(u8, path);
+        defer std.testing.allocator.free(physical_path);
+        const bytes = try std.Io.Dir.cwd().readFileAlloc(std.testing.io, physical_path, std.testing.allocator, .limited(1024 * 1024));
         defer std.testing.allocator.free(bytes);
         var digest: [32]u8 = undefined;
         std.crypto.hash.sha2.Sha256.hash(bytes, &digest, .{});
         const hex = std.fmt.bytesToHex(digest, .lower);
         try std.testing.expectEqualStrings(file.object.get("sha256").?.string, &hex);
+        if (builtin.os.tag == .windows and std.mem.endsWith(u8, path, " ")) {
+            try std.testing.expectEqual(null, try revision.revisionAlloc(std.testing.allocator, std.mem.trimEnd(u8, path, " ")));
+        }
     }
 }

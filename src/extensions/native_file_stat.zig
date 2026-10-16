@@ -51,7 +51,9 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
         extern "kernel32" fn GetFileInformationByHandleEx(w.HANDLE, c_int, *anyopaque, u32) callconv(.winapi) i32;
         extern "kernel32" fn CloseHandle(w.HANDLE) callconv(.winapi) i32;
     };
-    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, path);
+    const namespaced = try windowsNamespacedPath(gpa, path);
+    defer gpa.free(namespaced);
+    const wide = try std.unicode.wtf8ToWtf16LeAllocZ(gpa, namespaced);
     defer gpa.free(wide);
     // libuv's stat path preparation removes one trailing slash except the
     // drive root. Keep this distinct from resolvePath/normalizePath.
@@ -75,6 +77,35 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
         .mtime_ns = windowsNanoseconds(basic.modification),
         .ctime_ns = windowsNanoseconds(basic.change),
     };
+}
+
+/// Node's fs binding applies path.toNamespacedPath before libuv's stat call.
+/// Lexical resolution must preserve trailing spaces/dots: GetFullPathNameW
+/// on the user's complete path would silently trim a different filename.
+/// Only use it to obtain the real current directory (including drive-relative
+/// directories), then resolve the supplied components without Win32 trimming.
+fn windowsNamespacedPath(gpa: std.mem.Allocator, path: []const u8) ![]u8 {
+    if (path.len == 0 or std.mem.startsWith(u8, path, "\\\\?\\") or std.mem.startsWith(u8, path, "\\\\.\\")) return gpa.dupe(u8, path);
+    const Native = struct {
+        extern "kernel32" fn GetFullPathNameW([*:0]const u16, u32, [*]u16, ?*?[*]u16) callconv(.winapi) u32;
+    };
+    var current: [std.os.windows.PATH_MAX_WIDE:0]u16 = undefined;
+    var drive_directory = [_:0]u16{ '.', 0, 0, 0 };
+    const drive_relative = path.len >= 2 and std.ascii.isAlphabetic(path[0]) and path[1] == ':' and (path.len == 2 or (path[2] != '\\' and path[2] != '/'));
+    if (drive_relative) {
+        drive_directory[0] = path[0];
+        drive_directory[1] = ':';
+        drive_directory[2] = '.';
+    }
+    const count = Native.GetFullPathNameW(&drive_directory, current.len, &current, null);
+    if (count == 0 or count >= current.len) return error.FileStatPathResolutionFailed;
+    const cwd = try std.unicode.wtf16LeToWtf8Alloc(gpa, current[0..count]);
+    defer gpa.free(cwd);
+    const absolute = try std.fs.path.resolveWindows(gpa, &.{ cwd, path });
+    defer gpa.free(absolute);
+    if (absolute.len >= 3 and absolute[1] == ':' and absolute[2] == '\\') return std.fmt.allocPrint(gpa, "\\\\?\\{s}", .{absolute});
+    if (std.mem.startsWith(u8, absolute, "\\\\") and absolute.len > 2 and absolute[2] != '?' and absolute[2] != '.') return std.fmt.allocPrint(gpa, "\\\\?\\UNC\\{s}", .{absolute[2..]});
+    return gpa.dupe(u8, path);
 }
 
 fn windowsNanoseconds(ticks: i64) i128 {

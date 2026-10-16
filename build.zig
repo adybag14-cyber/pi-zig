@@ -2032,6 +2032,19 @@ pub fn build(b: *std.Build) void {
     const sdk_settings_run = b.addRunArtifact(sdk_settings_tests);
     b.step("test-sdk-settings-ownership", "Exercise SDK settings persistence and ownership against Source").dependOn(&sdk_settings_run.step);
     test_step.dependOn(&sdk_settings_run.step);
+    const file_revision_module = b.createModule(.{ .root_source_file = b.path("src/native_file_revision_test.zig"), .target = target, .optimize = optimize });
+    file_revision_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, file_revision_module, quickjs, sqlite_lib_dir);
+    linkSqlite(file_revision_module, sqlite_lib_dir, sqlite_library);
+    const file_revision_tests = b.addTest(.{
+        .root_module = file_revision_module,
+        .filters = &.{ "file revision", "replacement and identical cross directory", "private allocation failures remain", "native revisions equal actual Source" },
+        .use_llvm = use_llvm,
+    });
+    b.step("build-native-file-revision", "Compile and install the six focused native file revision tests").dependOn(&b.addInstallArtifact(file_revision_tests, .{}).step);
+    const file_revision_run = b.addRunArtifact(file_revision_tests);
+    file_revision_run.has_side_effects = true;
+    b.step("test-native-file-revision", "Compare real native metadata, allocation failures and retained Source physical revisions").dependOn(&file_revision_run.step);
     const sdk_session_manager_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_manager_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK session manager"},
