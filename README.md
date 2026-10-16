@@ -1,7 +1,7 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch. The reviewed upstream target
-is `4954d760504c11df9b2cbdc040346107b6a8153d` (package version 1.3.0), newer
+is `0fbdbd3f8ab1876ac260c0f08226a400759323b8` (package version 1.3.0), newer
 than [the v1.3.0 release](https://github.com/earendil-works/pi/releases/tag/v1.3.0).
 Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
 linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
@@ -9,8 +9,9 @@ is part of the native runtime migration.
 
 The checked-in official FFA3 catalog contains 1,705 models across 42 providers:
 1,608 chat, 59 image and 38 classifier entries. Its source provenance remains
-the independently qualified ae7 catalog input; the later reviewed 4954 change
-leaves all package runtime bodies and the catalog pin unchanged. The checked-in
+the independently qualified ae7 catalog input. The reviewed 4954 and 0fb changes
+leave the catalog pin unchanged; 0fb adds retry classification and per-model
+compaction behavior whose native qualification is in progress. The checked-in
 CLI and extension API identity remain 1.1.0 pending the complete migration.
 Full Pi 1.x parity and release
 certification remain incomplete, and production extension discovery retains its
