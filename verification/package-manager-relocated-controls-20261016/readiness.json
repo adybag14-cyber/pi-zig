@@ -1,0 +1,70 @@
+{
+  "status": "source_only_targeted_controls_and_prospective_paths_prepared_unexecuted",
+  "base": "50bb35864b442aa85d27cb644732108079af39ac",
+  "workspace": "C:\\Users\\adyba\\pi-zig\\worktrees\\package-manager",
+  "prospective_source": "C:\\Users\\adyba\\pi-zig\\upstream\\pi",
+  "prospective_source_head": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "source_head_verified_read_only": true,
+  "git_source_sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+  "package_manager_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+  "original_runtime_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+  "original_runtime_records": 31064,
+  "required_original_node_records": 1774,
+  "required_original_node_version": "v24.14.0",
+  "runtime_recovery_status_observed": "recovery_pending",
+  "retained_archive_LRU_file_available_on_read_only_check": false,
+  "full_authority_complete": false,
+  "historical_manifests_observations_runners_unchanged": true,
+  "local_checked_helper_preserved": true,
+  "main_checked_SDK_fix_9939d010_ancestry_verified": true,
+  "prepared_raw_key_cases": [
+    "set_tail",
+    "remove_previous",
+    "remove_next"
+  ],
+  "prepared_weak_finalizer_rows": 2,
+  "prepared_native_test_declarations": 1,
+  "source_expected_present": false,
+  "source_execution": false,
+  "source_generator_execution": false,
+  "zig_format": false,
+  "zig_ast": false,
+  "compile": false,
+  "native_execution": false,
+  "allocator_qualification": false,
+  "source_hook_qualification": false,
+  "main_changed": false,
+  "shared_SDK_Engine_C_changed": false,
+  "default_selected": false,
+  "full_pi_qualification": false,
+  "files": [
+    {
+      "path": "src/extensions/native_hosted_git_lru.zig",
+      "sha256": "1AF9F186C6C30DD33CCFB7C0EF250CFD4EDF40C62CA26987FB40543907DFDDD8"
+    },
+    {
+      "path": "src/extensions/native_hosted_git_lru_test.zig",
+      "sha256": "149D00CA40D416C48F2A717EBDA425E489E9E265759A9CAC94EC1CF0B0EE6AA9"
+    },
+    {
+      "path": "src/extensions/fixtures/git-host-map-key-order-4dd.input.mjs",
+      "sha256": "FED3EF294130D285FF6074AF9016ED667432F94DFCB3D730173107E50D5D063D"
+    },
+    {
+      "path": "src/extensions/fixtures/git-host-map-return-retirement-4dd.input.mjs",
+      "sha256": "B0345A101DE8D204D69117C0A38A2B77F701FFF2B24FB7FE4E0E29DC3CA77457"
+    },
+    {
+      "path": "verification/package-manager-relocated-controls-20261016/reference-gate.mjs",
+      "sha256": "E9A7BF3C9A56E3F06DC4A0522BF20296FAE33FAD650647AE871B5AD41B374D51"
+    },
+    {
+      "path": "verification/package-manager-relocated-controls-20261016/capture-git-source.mjs",
+      "sha256": "EB7CC1C741FA820EFB2DF55DA5CDB42251556F2264152B4224A277310215CA50"
+    },
+    {
+      "path": "verification/package-manager-relocated-controls-20261016/README.md",
+      "sha256": "54412AC6C84EEFFA3CE6F3DD734A729C3336F45980428167C1C13C408CD5D13F"
+    }
+  ]
+}
