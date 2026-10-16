@@ -1,0 +1,54 @@
+{
+  "status": "source_only_bounded_git_candidate_not_qualified",
+  "base": "a8e795961410f327fd67945c1883f2e46563199b",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "source_sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+  "hosted_version": "9.0.3",
+  "lru_version": "11.4.0",
+  "negative_results_cached": false,
+  "successful_cache_limit": 1000,
+  "inputs": [
+    "actual node:url default module object",
+    "actual hosted projection namespace for Pi parser"
+  ],
+  "known_open_surface": [
+    "GitHost constructor Object.assign full argument shape",
+    "GitHost full prototype and template API",
+    "broader arbitrary dependency-global/prototype instrumentation"
+  ],
+  "source_expected_present": false,
+  "source_execution": false,
+  "zig_format": false,
+  "zig_ast": false,
+  "compile": false,
+  "native_execution": false,
+  "allocator_qualification": false,
+  "assembly_default_selected": false,
+  "full_pi_qualification": false,
+  "files": [
+    {
+      "path": "src/extensions/native_sdk_git_source.zig",
+      "sha256": "B28B0D054DAF187FE37B9B8635B79211242411A93F0558E9EB2561B2FE019CD0"
+    },
+    {
+      "path": "src/extensions/native_hosted_git_projection.zig",
+      "sha256": "60D84359903E4B2BB36C878F8615BE718ABA620FCDF2BE3A2EBFF374623AD13D"
+    },
+    {
+      "path": "src/extensions/fixtures/git-source-hosted-0fb.input.mjs",
+      "sha256": "D011BC7661DD98F5B3AB89FD19189526271B1703B0D0BF9E92606D1D4A77FF80"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-pattern-callers-0fb.input.mjs",
+      "sha256": "722D7FD3EF4C21B9ADB9EC021DDB0CD9A80E1FA9574872B096743FCF92C163CF"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/capture-git-source-prepared.mjs",
+      "sha256": "98A2F50D4B115CFC9442DEE87B7DD0B38F37F8CAF3BCD36BFA293AB4749A61CC"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/git-hosted-sourceonly-plan.md",
+      "sha256": "D35EC2652299BD6E7B7A0ED7722796ACD4DE6530FC22CB86FD7EAD014E29AFDD"
+    }
+  ]
+}
