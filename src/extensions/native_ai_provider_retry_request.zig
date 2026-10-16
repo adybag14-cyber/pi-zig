@@ -28,9 +28,7 @@ fn retryBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []c
     if (completion == .rejected) {
         var generation: u64 = 0;
         if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
-        const tagged = c.pi_js_native_allocation_error_generation(value);
-        const distance = tagged -% generation;
-        if (tagged != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation) return .{ .thrown = c.JS_DupValue(engine.context, value) };
+        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, value, generation);
     }
     if (scope.truthy(try scope.get(owner, "sleeping"))) {
         if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };

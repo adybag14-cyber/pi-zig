@@ -1786,6 +1786,12 @@ pub fn build(b: *std.Build) void {
     actual_models_class_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-actual-models-class", "Compile original Source18 over actual ordinary Models class").dependOn(&actual_models_class_tests.step);
     b.step("test-native-actual-models-class", "Replay original Source18 ordinary Models receivers and promises").dependOn(&b.addRunArtifact(actual_models_class_tests).step);
+    const async_rejected_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_rejected_allocation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async rejected allocation"}, .use_llvm = use_llvm });
+    linkQuickJs(b, async_rejected_allocation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(async_rejected_allocation_tests.root_module, sqlite_lib_dir, sqlite_library);
+    async_rejected_allocation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-async-rejected-allocation", "Compile explicit rejected native allocation boundary ownership checks").dependOn(&async_rejected_allocation_tests.step);
+    b.step("test-native-async-rejected-allocation", "Check original OOM identity historical tags user lookalikes u64 wrap and real resumed job escape").dependOn(&b.addRunArtifact(async_rejected_allocation_tests).step);
     const strict_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_constrained_sampling_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native constrained sampling"}, .use_llvm = use_llvm });
     linkQuickJs(b, strict_schema_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(strict_schema_tests.root_module, sqlite_lib_dir, sqlite_library);

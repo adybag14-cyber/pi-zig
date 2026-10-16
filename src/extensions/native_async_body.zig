@@ -45,5 +45,23 @@ pub fn failure(engine: *v.em.Engine, err: anyerror) !native.Action {
     // which marks its exact native OOM reason uncatchable. A .thrown action
     // would instead turn it into an ordinary guest rejection.
     if (err == error.OutOfMemory) return error.OutOfMemory;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
+    };
     return .{ .thrown = flow.reason(engine, err) };
+}
+
+/// A rejected value is trusted only when its private allocation tag was born
+/// inside the caller's explicit host boundary. Preserve Engine's unsigned wrap
+/// rule and rethrow that exact value; never allocate a replacement error.
+/// Historical or guest lookalike reasons return normally to Source's catch.
+pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boundary_generation: u64) !void {
+    const tagged = c.pi_js_native_allocation_error_generation(reason);
+    const distance = tagged -% boundary_generation;
+    if (tagged == 0 or distance == 0 or distance > engine.native_allocation_generation -% boundary_generation) return;
+    c.JS_SetUncatchableError(engine.context, reason);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+    unreachable;
 }
