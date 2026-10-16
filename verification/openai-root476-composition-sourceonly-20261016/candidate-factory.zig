@@ -76,7 +76,11 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
     return c.JS_DupValue(engine.context, outer);
 }
 fn streamBody(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, input: c.JSValue) !asynchronous.Action {
-    return streamBodyValue(engine, roots[0], slot, completion, input) catch |err| return async_body.failure(engine, err);
+    const generation = engine.native_allocation_generation;
+    return streamBodyValue(engine, roots[0], slot, completion, input) catch |err| {
+        try escapeFatal(engine, err, generation);
+        return async_body.failure(engine, err);
+    };
 }
 fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, input: c.JSValue) !asynchronous.Action {
     var scope: Scope = .{ .engine = engine };
@@ -90,7 +94,8 @@ fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, com
         defer engine.freeValue(created.owner);
         try scope.put(owner, "decoder", created.namespace);
         try scope.put(owner, "decoderState", created.owner);
-        setup(&scope, owner) catch |err| try failError(&scope, owner, err);
+        const setup_generation = engine.native_allocation_generation;
+        setup(&scope, owner) catch |err| try failError(&scope, owner, err, setup_generation);
     } else {
         const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
         if (completion == .rejected) {
@@ -102,9 +107,13 @@ fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, com
         if (completion == .rejected) {
             if (stage == .closed) try applyFailure(&scope, owner, try scope.get(owner, "closeReason")) else {
                 if (stage == .next) try scope.put(owner, "iteratorActive", c.JS_NewBool(engine.context, false));
-                fail(&scope, owner, input) catch |err| try failError(&scope, owner, err);
+                const fail_generation = engine.native_allocation_generation;
+                fail(&scope, owner, input) catch |err| try failError(&scope, owner, err, fail_generation);
             }
-        } else advance(&scope, owner, input, stage) catch |err| try failError(&scope, owner, err);
+        } else {
+            const advance_generation = engine.native_allocation_generation;
+            advance(&scope, owner, input, stage) catch |err| try failError(&scope, owner, err, advance_generation);
+        }
     }
     return async_body.action(&scope, owner);
 }
@@ -146,11 +155,15 @@ fn wait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
 fn aborted(scope: *Scope, owner: c.JSValue) !bool {
     return scope.truthy(try v.optional(scope, try v.optional(scope, try scope.get(owner, "options"), "signal"), "aborted"));
 }
-fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
+fn escapeFatal(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!void {
     if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (scope.engine.captured_exception) |reason| {
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        try async_body.rethrowRecognizedAllocation(engine, reason, generation);
         if (c.JS_IsUncatchableError(reason)) return err;
     };
+}
+fn failError(scope: *Scope, owner: c.JSValue, err: anyerror, generation: u64) anyerror!void {
+    try escapeFatal(scope.engine, err, generation);
     const reason = flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
@@ -160,11 +173,7 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
     return fail(scope, owner, reason);
 }
 fn discardCloseError(scope: *Scope, raw_err: anyerror, generation: u64) anyerror!void {
-    if (raw_err == error.OutOfMemory) return raw_err;
-    if (raw_err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
-        try async_body.rethrowRecognizedAllocation(scope.engine, value, generation);
-        if (c.JS_IsUncatchableError(value)) return raw_err;
-    };
+    try escapeFatal(scope.engine, raw_err, generation);
     if (scope.engine.captured_exception) |value| {
         scope.engine.captured_exception = null;
         scope.engine.freeValue(value);
@@ -197,9 +206,8 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
 fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     const generation = scope.engine.native_allocation_generation;
     _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |raw_err| {
-        const err = scope.engine.nativeAllocationError(raw_err, generation);
-        if (err == error.OutOfMemory) return err;
-        const failure = flow.reason(scope.engine, err);
+        try escapeFatal(scope.engine, raw_err, generation);
+        const failure = flow.reason(scope.engine, raw_err);
         defer scope.engine.freeValue(failure);
         try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), failure);
         try async_body.reject(scope, owner, failure);

@@ -140,10 +140,10 @@ index 0000000000000000000000000000000000000000..f88ad462ee1927df20233fce2fac95d2
 +}
 diff --git a/src/extensions/native_ai_openai_client_options.zig b/src/extensions/native_ai_openai_client_options.zig
 new file mode 100644
-index 0000000000000000000000000000000000000000..95263ace6bd4011b4011c89f99c20a3b491168ba
+index 0000000000000000000000000000000000000000..00d0a2babcbad6008f6de6abe109a3cf2b69e738
 --- /dev/null
 +++ b/src/extensions/native_ai_openai_client_options.zig
-@@ -0,0 +1,104 @@
+@@ -0,0 +1,109 @@
 +//! Accessed pinned OpenAI6.40 constructor/default option behavior for Pi's
 +//! createClient call. This private record is not a substitute public SDK class.
 +const v = @import("native_ai_provider_values.zig");
@@ -188,7 +188,12 @@ index 0000000000000000000000000000000000000000..95263ace6bd4011b4011c89f99c20a3b
 +}
 +pub fn capture(engine: *v.em.Engine, provided: Provided) !c.JSValue {
 +    const generation = engine.native_allocation_generation;
-+    return captureValues(engine, provided) catch |err| return engine.nativeAllocationError(err, generation);
++    return captureValues(engine, provided) catch |err| {
++        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
++            try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
++        };
++        return err;
++    };
 +}
 +fn captureValues(engine: *v.em.Engine, provided: Provided) !c.JSValue {
 +    try initialize(engine);
@@ -249,7 +254,7 @@ index 0000000000000000000000000000000000000000..95263ace6bd4011b4011c89f99c20a3b
 +    return c.JS_DupValue(engine.context, result);
 +}
 diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native_ai_openai_factory.zig
-index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50c6036393 100644
+index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..3014105210a06f488c64e13750184b3c0954d258 100644
 --- a/src/extensions/native_ai_openai_factory.zig
 +++ b/src/extensions/native_ai_openai_factory.zig
 @@ -1,19 +1,20 @@
@@ -301,7 +306,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
  fn hasHeader(scope: *Scope, headers: c.JSValue, expected: []const u8) !bool {
      if (!scope.truthy(headers)) return false;
      var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{headers}));
-@@ -79,29 +63,51 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
+@@ -79,29 +63,60 @@ fn stream(engine: *v.em.Engine, dependencies: c.JSValue, args: []const c.JSValue
      const outer = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null)));
      const compat = try scope.own(try @import("native_ai_openai_compat_options.zig").resolve(engine, args[0]));
      const context = try scope.own(try @import("native_ai_provider_transcript.zig").resolve(engine, args[1], scope.truthy(try scope.get(compat, "supportsMidConvoSystemMessages"))));
@@ -333,7 +338,11 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
      return c.JS_DupValue(engine.context, outer);
  }
 +fn streamBody(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, input: c.JSValue) !asynchronous.Action {
-+    return streamBodyValue(engine, roots[0], slot, completion, input) catch |err| return async_body.failure(engine, err);
++    const generation = engine.native_allocation_generation;
++    return streamBodyValue(engine, roots[0], slot, completion, input) catch |err| {
++        try escapeFatal(engine, err, generation);
++        return async_body.failure(engine, err);
++    };
 +}
 +fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, input: c.JSValue) !asynchronous.Action {
 +    var scope: Scope = .{ .engine = engine };
@@ -347,7 +356,8 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
 +        defer engine.freeValue(created.owner);
 +        try scope.put(owner, "decoder", created.namespace);
 +        try scope.put(owner, "decoderState", created.owner);
-+        setup(&scope, owner) catch |err| try failError(&scope, owner, err);
++        const setup_generation = engine.native_allocation_generation;
++        setup(&scope, owner) catch |err| try failError(&scope, owner, err, setup_generation);
 +    } else {
 +        const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
 +        if (completion == .rejected) {
@@ -359,16 +369,20 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
 +        if (completion == .rejected) {
 +            if (stage == .closed) try applyFailure(&scope, owner, try scope.get(owner, "closeReason")) else {
 +                if (stage == .next) try scope.put(owner, "iteratorActive", c.JS_NewBool(engine.context, false));
-+                fail(&scope, owner, input) catch |err| try failError(&scope, owner, err);
++                const fail_generation = engine.native_allocation_generation;
++                fail(&scope, owner, input) catch |err| try failError(&scope, owner, err, fail_generation);
 +            }
-+        } else advance(&scope, owner, input, stage) catch |err| try failError(&scope, owner, err);
++        } else {
++            const advance_generation = engine.native_allocation_generation;
++            advance(&scope, owner, input, stage) catch |err| try failError(&scope, owner, err, advance_generation);
++        }
 +    }
 +    return async_body.action(&scope, owner);
 +}
  fn setup(scope: *Scope, owner: c.JSValue) !void {
      const options = try scope.get(owner, "options");
      try scope.put(owner, "apiKey", try apiKey(scope, try scope.get(owner, "model"), options));
-@@ -112,10 +118,18 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
+@@ -112,10 +127,18 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
      try @import("native_ai_openai_decode.zig").configure(scope.engine, try scope.get(owner, "decoderState"), compat, properties);
      const retention = try request.cacheRetention(scope, options);
      try scope.put(owner, "retention", retention);
@@ -391,7 +405,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
      const params = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), options, try scope.get(owner, "compat"), retention, properties, try scope.get(try scope.get(owner, "agent"), "simple")));
      try scope.put(owner, "payload", params);
      try wait(scope, owner, try hook(scope, owner, "onPayload", params), .payload);
-@@ -126,33 +140,17 @@ fn hook(scope: *Scope, owner: c.JSValue, key: [*:0]const u8, value: c.JSValue) !
+@@ -126,33 +149,21 @@ fn hook(scope: *Scope, owner: c.JSValue, key: [*:0]const u8, value: c.JSValue) !
      return if (v.nullish(callback)) c.pi_js_undefined() else scope.call(callback, options, &.{ value, try scope.get(owner, "model") });
  }
  fn wait(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
@@ -423,24 +437,25 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
  fn aborted(scope: *Scope, owner: c.JSValue) !bool {
      return scope.truthy(try v.optional(scope, try v.optional(scope, try scope.get(owner, "options"), "signal"), "aborted"));
  }
- fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
+-fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
++fn escapeFatal(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!void {
 +    if (err == error.OutOfMemory) return err;
-+    if (err == error.JavaScriptException) if (scope.engine.captured_exception) |reason| {
++    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
++        try async_body.rethrowRecognizedAllocation(engine, reason, generation);
 +        if (c.JS_IsUncatchableError(reason)) return err;
 +    };
++}
++fn failError(scope: *Scope, owner: c.JSValue, err: anyerror, generation: u64) anyerror!void {
++    try escapeFatal(scope.engine, err, generation);
      const reason = flow.reason(scope.engine, err);
      defer scope.engine.freeValue(reason);
      if (scope.engine.captured_exception) |captured| {
-@@ -161,23 +159,34 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
+@@ -161,23 +172,30 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
      }
      return fail(scope, owner, reason);
  }
 +fn discardCloseError(scope: *Scope, raw_err: anyerror, generation: u64) anyerror!void {
-+    if (raw_err == error.OutOfMemory) return raw_err;
-+    if (raw_err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
-+        try async_body.rethrowRecognizedAllocation(scope.engine, value, generation);
-+        if (c.JS_IsUncatchableError(value)) return raw_err;
-+    };
++    try escapeFatal(scope.engine, raw_err, generation);
 +    if (scope.engine.captured_exception) |value| {
 +        scope.engine.captured_exception = null;
 +        scope.engine.freeValue(value);
@@ -474,7 +489,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
                  return applyFailure(scope, owner, reason);
              };
              return wait(scope, owner, result, .closed);
-@@ -186,39 +195,19 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
+@@ -186,39 +204,18 @@ fn fail(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
      return applyFailure(scope, owner, reason);
  }
  fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
@@ -482,9 +497,10 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
 -    if (!v.nullish(transport)) _ = try scope.invoke(transport, "cancel", &.{});
      const generation = scope.engine.native_allocation_generation;
      _ = scope.invoke(try scope.get(owner, "decoder"), "fail", &.{ reason, c.pi_js_bool(scope.engine.context, @intFromBool(try aborted(scope, owner))) }) catch |raw_err| {
-         const err = scope.engine.nativeAllocationError(raw_err, generation);
-+        if (err == error.OutOfMemory) return err;
-         const failure = flow.reason(scope.engine, err);
+-        const err = scope.engine.nativeAllocationError(raw_err, generation);
+-        const failure = flow.reason(scope.engine, err);
++        try escapeFatal(scope.engine, raw_err, generation);
++        const failure = flow.reason(scope.engine, raw_err);
          defer scope.engine.freeValue(failure);
          try @import("native_stream.zig").reject(scope.engine, try scope.get(owner, "stream"), failure);
 -        try flow.rejectError(scope.engine, owner, err);
@@ -492,7 +508,8 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
          return;
      };
 -    try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
--}
++    try async_body.resolve(scope, owner, c.pi_js_undefined());
+ }
 -fn mergeHeaders(scope: *Scope, target: c.JSValue, source: c.JSValue) !void {
 -    if (v.nullish(source)) return;
 -    var rows = try v.iterator(scope, try scope.invoke(try scope.global("Object"), "entries", &.{source}));
@@ -503,8 +520,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
 -        const name = try scope.invoke(try v.at(scope, entry, 0), "toLowerCase", &.{});
 -        try v.js.setKey(scope.engine, target, name, try v.at(scope, entry, 1));
 -    }
-+    try async_body.resolve(scope, owner, c.pi_js_undefined());
- }
+-}
 -fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
 -    const result = try scope.object();
 -    try scope.put(result, "accept", try scope.text("application/json"));
@@ -518,7 +534,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
      const defaults = try scope.object();
      try scope.put(defaults, "User-Agent", try @import("native_ai_user_agent.zig").runtime(scope));
      const model = try scope.get(owner, "model");
-@@ -254,8 +243,6 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
+@@ -254,8 +251,6 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
              }
          }
      }
@@ -527,7 +543,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
      const compat = try scope.get(owner, "compat");
      if (scope.truthy(session) and scope.truthy(try scope.get(compat, "sendSessionAffinityHeaders"))) {
          if (try v.eq(scope, try scope.get(compat, "sessionAffinityFormat"), "openrouter")) try scope.put(defaults, "x-session-id", session) else {
-@@ -264,96 +251,80 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
+@@ -264,96 +259,80 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
              try scope.put(defaults, "x-session-affinity", session);
          }
      }
@@ -667,7 +683,7 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
              try scope.put(owner, "chunk", frame);
              try wait(scope, owner, try hook(scope, owner, "onProviderStreamEvent", frame), .chunk);
          },
-@@ -361,155 +332,6 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
+@@ -361,155 +340,6 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !voi
              _ = try scope.invoke(try scope.get(owner, "decoder"), "push", &.{try scope.get(owner, "chunk")});
              try next(scope, owner);
          },
@@ -825,10 +841,10 @@ index ff78d1acdf2c5e0aa384965ee2c2bb14192d30f7..32ab80f35d917850faefc8ff9ba50f50
 -}
 diff --git a/src/extensions/native_ai_openai_sdk_headers.zig b/src/extensions/native_ai_openai_sdk_headers.zig
 new file mode 100644
-index 0000000000000000000000000000000000000000..c6602c5dc33ffab2f1b34362906abb19df04c4b3
+index 0000000000000000000000000000000000000000..c59c9a23bde9ac912bf27942302c053b287f5928
 --- /dev/null
 +++ b/src/extensions/native_ai_openai_sdk_headers.zig
-@@ -0,0 +1,111 @@
+@@ -0,0 +1,121 @@
 +//! Pinned OpenAI6.40 internal/headers merge for this native client's actual
 +//! non-branded HeadersLike sources. Produces real Headers plus null tombstones;
 +//! no runtime identity is inferred or generated here.
@@ -859,7 +875,12 @@ index 0000000000000000000000000000000000000000..c6602c5dc33ffab2f1b34362906abb19
 +}
 +pub fn build(engine: *v.em.Engine, sources: []const c.JSValue) !Built {
 +    const generation = engine.native_allocation_generation;
-+    return buildPlain(engine, sources) catch |err| return engine.nativeAllocationError(err, generation);
++    return buildPlain(engine, sources) catch |err| {
++        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
++            try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
++        };
++        return err;
++    };
 +}
 +fn buildPlain(engine: *v.em.Engine, sources: []const c.JSValue) !Built {
 +    const layers = try engine.gpa.alloc(Layer, sources.len);
@@ -871,7 +892,12 @@ index 0000000000000000000000000000000000000000..c6602c5dc33ffab2f1b34362906abb19
 +/// its tombstones when layering it after SDK/auth defaults at request time.
 +pub fn buildMixed(engine: *v.em.Engine, sources: []const Layer) !Built {
 +    const generation = engine.native_allocation_generation;
-+    return buildValues(engine, sources) catch |err| return engine.nativeAllocationError(err, generation);
++    return buildValues(engine, sources) catch |err| {
++        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
++            try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
++        };
++        return err;
++    };
 +}
 +fn buildValues(engine: *v.em.Engine, sources: []const Layer) !Built {
 +    var scope: Scope = .{ .engine = engine };
@@ -942,10 +968,10 @@ index 0000000000000000000000000000000000000000..c6602c5dc33ffab2f1b34362906abb19
 +}
 diff --git a/src/extensions/native_ai_openai_sdk_readable.zig b/src/extensions/native_ai_openai_sdk_readable.zig
 new file mode 100644
-index 0000000000000000000000000000000000000000..8753693f2e489c7803d2d7cbfc2a4a93b5284647
+index 0000000000000000000000000000000000000000..80ee754e4dde04f071573b7ad61fd8a94731bc1a
 --- /dev/null
 +++ b/src/extensions/native_ai_openai_sdk_readable.zig
-@@ -0,0 +1,88 @@
+@@ -0,0 +1,122 @@
 +//! Actual OpenAI6.40 ReadableStreamToAsyncIterable shim. The fallback's two
 +//! async methods own genuine AF Await boundaries; existing async iterables pass
 +//! through unchanged, preserving their live iterator protocol.
@@ -994,13 +1020,10 @@ index 0000000000000000000000000000000000000000..8753693f2e489c7803d2d7cbfc2a4a93
 +    defer scope.deinit();
 +    const reader = roots[0];
 +    if (completion == .start) {
-+        af.replaceState(engine, slot, try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation)));
++        const generation = engine.native_allocation_generation;
++        af.replaceState(engine, slot, try engine.checked(c.JS_NewBigUint64(engine.context, generation)));
 +        const pending = scope.invoke(reader, "read", &.{}) catch |err| {
-+            if (err == error.OutOfMemory) return err;
-+            const failure = try body.failure(engine, err);
-+            errdefer switch (failure) { inline else => |value| engine.freeValue(value) };
-+            _ = try scope.invoke(reader, "releaseLock", &.{});
-+            return failure;
++            return readFailure(&scope, reader, err, generation);
 +        };
 +        return .{ .awaited = c.JS_DupValue(engine.context, pending) };
 +    }
@@ -1008,19 +1031,56 @@ index 0000000000000000000000000000000000000000..8753693f2e489c7803d2d7cbfc2a4a93
 +        var generation: u64 = 0;
 +        if (c.JS_ToBigUint64(engine.context, &generation, slot.*) < 0) return v.js.capture(engine);
 +        try body.rethrowRecognizedAllocation(engine, input, generation);
-+        _ = try scope.invoke(reader, "releaseLock", &.{});
++        try releaseAfterFailure(&scope, reader);
 +        return .{ .thrown = c.JS_DupValue(engine.context, input) };
 +    }
-+    if (scope.truthy(try v.optional(&scope, input, "done"))) _ = try scope.invoke(reader, "releaseLock", &.{});
-+    return .{ .returned = c.JS_DupValue(engine.context, input) };
++    const generation = engine.native_allocation_generation;
++    return fulfilledNext(&scope, reader, input) catch |err| {
++        return readFailure(&scope, reader, err, generation);
++    };
++}
++fn readFailure(scope: *Scope, reader: c.JSValue, err: anyerror, generation: u64) anyerror!af.Action {
++    try escapeFatal(scope, err, generation);
++    const failure = try body.failure(scope.engine, err);
++    errdefer switch (failure) { inline else => |value| scope.engine.freeValue(value) };
++    // Source catches read, the done getter and normal-path releaseLock.
++    // Keep the original owned reason while catch cleanup may replace it.
++    if (scope.engine.captured_exception) |captured| {
++        scope.engine.captured_exception = null;
++        scope.engine.freeValue(captured);
++    }
++    try releaseAfterFailure(scope, reader);
++    return failure;
++}
++fn releaseAfterFailure(scope: *Scope, reader: c.JSValue) anyerror!void {
++    const generation = scope.engine.native_allocation_generation;
++    _ = scope.invoke(reader, "releaseLock", &.{}) catch |err| {
++        try escapeFatal(scope, err, generation);
++        return err;
++    };
++}
++fn escapeFatal(scope: *Scope, err: anyerror, generation: u64) anyerror!void {
++    if (err == error.OutOfMemory) return err;
++    if (err == error.JavaScriptException) if (scope.engine.captured_exception) |reason| {
++        try body.rethrowRecognizedAllocation(scope.engine, reason, generation);
++        if (c.JS_IsUncatchableError(reason)) return err;
++    };
++}
++fn fulfilledNext(scope: *Scope, reader: c.JSValue, input: c.JSValue) anyerror!af.Action {
++    if (scope.truthy(try v.optional(scope, input, "done"))) _ = try scope.invoke(reader, "releaseLock", &.{});
++    return .{ .returned = c.JS_DupValue(scope.engine.context, input) };
 +}
 +fn close(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
 +    var scope: Scope = .{ .engine = engine };
 +    defer scope.deinit();
 +    if (completion == .start) {
-+        af.replaceState(engine, slot, try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation)));
-+        const pending = try scope.invoke(roots[0], "cancel", &.{});
-+        _ = try scope.invoke(roots[0], "releaseLock", &.{});
++        const generation = engine.native_allocation_generation;
++        af.replaceState(engine, slot, try engine.checked(c.JS_NewBigUint64(engine.context, generation)));
++        const pending = scope.invoke(roots[0], "cancel", &.{}) catch |err| {
++            try escapeFatal(&scope, err, generation);
++            return err;
++        };
++        try releaseAfterFailure(&scope, roots[0]);
 +        return .{ .awaited = c.JS_DupValue(engine.context, pending) };
 +    }
 +    if (completion == .rejected) {
@@ -1036,10 +1096,10 @@ index 0000000000000000000000000000000000000000..8753693f2e489c7803d2d7cbfc2a4a93
 +}
 diff --git a/src/extensions/native_ai_openai_sdk_request.zig b/src/extensions/native_ai_openai_sdk_request.zig
 new file mode 100644
-index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579980925a1
+index 0000000000000000000000000000000000000000..4e680bb5d186950f8cf1e42612dd91f8602ee2e0
 --- /dev/null
 +++ b/src/extensions/native_ai_openai_sdk_request.zig
-@@ -0,0 +1,536 @@
+@@ -0,0 +1,554 @@
 +//! Selected pinned SDK6.40 chat request route. Every async source function
 +//! below is a genuine AF body; the private client record is not a public SDK
 +//! class. JSON chat payloads and maxRetries0 are the accessed Pi58 route.
@@ -1074,10 +1134,21 @@ index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579
 +    try body.wait(scope, job, value, stage);
 +    return body.action(scope, job);
 +}
++fn escapeFatal(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!void {
++    if (err == error.OutOfMemory) return err;
++    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
++        try body.rethrowRecognizedAllocation(engine, reason, generation);
++        if (c.JS_IsUncatchableError(reason)) return err;
++    };
++}
 +fn invoke(scope: *Scope, client: c.JSValue, comptime kind: Kind, args: []const c.JSValue) anyerror!c.JSValue {
 +    const Adapter = struct {
 +        fn run(engine: *v.em.Engine, _: c.JSValue, values: []const c.JSValue, roots: []const c.JSValue, slot: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
-+            return dispatch(engine, roots[0], kind, values, slot, completion, input) catch |err| return body.failure(engine, err);
++            const generation_start = engine.native_allocation_generation;
++            return dispatch(engine, roots[0], kind, values, slot, completion, input) catch |err| {
++                try escapeFatal(engine, err, generation_start);
++                return body.failure(engine, err);
++            };
 +        }
 +    };
 +    const length: c_int = switch (kind) { .callApiKey, .parseBody, .withResponse => 0, .prepareRequest, .defaultParseResponse => 2, .makeRequest => 3, .fetchWithTimeout, .fetchWithAuth => 4, else => 1 };
@@ -1199,12 +1270,14 @@ index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579
 +    if (c.JS_IsObject(value) and !c.JS_IsFunction(scope.engine.context, value)) {
 +        const foreign_start = scope.engine.native_allocation_generation;
 +        const foreign = castForeign(scope, value) catch |err| missing: {
++            try escapeFatal(scope.engine, err, foreign_start);
 +            try @import("native_ai_partial_json.zig").discard(scope.engine, err, foreign_start);
 +            break :missing null;
 +        };
 +        if (foreign) |error_value| return error_value;
 +        const start = scope.engine.native_allocation_generation;
 +        const text = scope.invoke(try scope.global("JSON"), "stringify", &.{value}) catch |err| {
++            try escapeFatal(scope.engine, err, start);
 +            try @import("native_ai_partial_json.zig").discard(scope.engine, err, start);
 +            return scope.own(try v.js.builtin(scope.engine, "Error", &.{value}));
 +        };
@@ -1250,7 +1323,9 @@ index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579
 +            if (stage == 0) {
 +                const key = try scope.get(client, "constructorApiKey");
 +                if (!c.JS_IsFunction(engine.context, key)) return owned(&scope, c.JS_NewBool(engine.context, false));
++                const key_generation = engine.native_allocation_generation;
 +                const token = scope.call(key, c.pi_js_undefined(), &.{}) catch |err| {
++                    try escapeFatal(engine, err, key_generation);
 +                    const failure = try body.failure(engine, err);
 +                    const reason = switch (failure) { .thrown => |value| value, else => unreachable };
 +                    defer engine.freeValue(reason);
@@ -1395,7 +1470,9 @@ index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579
 +                if (scope.truthy(method)) try scope.put(fetch_options, "method", try scope.invoke(method, "toUpperCase", &.{}));
 +                // Deliberately use the captured function's live .call property,
 +                // with undefined as thisArg, exactly as primary fetchWithTimeout.
++                const fetch_generation = engine.native_allocation_generation;
 +                const fetched = scope.invoke(try scope.get(client, "fetch"), "call", &.{ c.pi_js_undefined(), argument(args, 0), fetch_options }) catch |err| {
++                    try escapeFatal(engine, err, fetch_generation);
 +                    const action = try body.failure(engine, err);
 +                    errdefer switch (action) { inline else => |value| engine.freeValue(value) };
 +                    _ = try scope.call(try scope.global("clearTimeout"), c.pi_js_undefined(), &.{timeout});
@@ -1541,6 +1618,7 @@ index 0000000000000000000000000000000000000000..45c6ec1c2cdb6b9fe15097c3fd38f579
 +            const response = try scope.get(job, "response");
 +            const start = engine.native_allocation_generation;
 +            const parsed = scope.invoke(try scope.global("JSON"), "parse", &.{input}) catch |err| missing: {
++                try escapeFatal(engine, err, start);
 +                try @import("native_ai_partial_json.zig").discard(engine, err, start);
 +                break :missing c.pi_js_undefined();
 +            };
