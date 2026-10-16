@@ -10,6 +10,7 @@ pub const wait_failed = 0xffffffff;
 pub const error_io_pending = 997;
 pub const error_operation_aborted = 995;
 pub const error_broken_pipe = 109;
+pub const error_pipe_not_connected = 233;
 pub const error_not_found = 1168;
 pub const error_more_data = 234;
 pub const duplicate_same_access = 2;
@@ -21,6 +22,7 @@ pub const create_unicode_environment = 0x00000400;
 pub const extended_startupinfo_present = 0x00080000;
 pub const create_no_window = 0x08000000;
 pub const attribute_handle_list = 0x00020002;
+pub const attribute_job_list = 0x0002000d;
 pub const startf_use_std_handles = 0x00000100;
 pub const generic_read = 0x80000000;
 pub const generic_write = 0x40000000;
@@ -129,6 +131,18 @@ pub const FindData = extern struct {
     name: [260]u16,
     alternate: [14]u16,
 };
+pub const ProcessEntry = extern struct {
+    size: u32,
+    usage: u32,
+    pid: u32,
+    default_heap: usize,
+    module: u32,
+    threads: u32,
+    parent_pid: u32,
+    priority: i32,
+    flags: u32,
+    executable: [260]u16,
+};
 
 pub extern "kernel32" fn GetLastError() callconv(.winapi) u32;
 pub extern "kernel32" fn CloseHandle(H) callconv(.winapi) B;
@@ -142,7 +156,6 @@ pub extern "kernel32" fn SetHandleInformation(H, u32, u32) callconv(.winapi) B;
 pub extern "kernel32" fn CreateJobObjectW(?*const Security, ?[*:0]const u16) callconv(.winapi) ?H;
 pub extern "kernel32" fn SetInformationJobObject(H, u32, *const anyopaque, u32) callconv(.winapi) B;
 pub extern "kernel32" fn QueryInformationJobObject(H, u32, *anyopaque, u32, ?*u32) callconv(.winapi) B;
-pub extern "kernel32" fn AssignProcessToJobObject(H, H) callconv(.winapi) B;
 pub extern "kernel32" fn IsProcessInJob(H, ?H, *B) callconv(.winapi) B;
 pub extern "kernel32" fn TerminateJobObject(H, u32) callconv(.winapi) B;
 pub extern "kernel32" fn CreateIoCompletionPort(H, ?H, usize, u32) callconv(.winapi) ?H;
@@ -158,7 +171,6 @@ pub extern "kernel32" fn GetExitCodeProcess(H, *u32) callconv(.winapi) B;
 pub extern "kernel32" fn OpenProcess(u32, B, u32) callconv(.winapi) ?H;
 pub extern "kernel32" fn DuplicateHandle(H, H, H, *H, u32, B, u32) callconv(.winapi) B;
 pub extern "kernel32" fn ResumeThread(H) callconv(.winapi) u32;
-pub extern "kernel32" fn TerminateProcess(H, u32) callconv(.winapi) B;
 pub extern "kernel32" fn WaitForSingleObject(H, u32) callconv(.winapi) u32;
 pub extern "kernel32" fn WaitForMultipleObjects(u32, [*]const H, B, u32) callconv(.winapi) u32;
 pub extern "kernel32" fn CreateEventW(?*const Security, B, B, ?[*:0]const u16) callconv(.winapi) ?H;
@@ -176,6 +188,9 @@ pub extern "kernel32" fn FindFirstFileW([*:0]const u16, *FindData) callconv(.win
 pub extern "kernel32" fn FindNextFileW(H, *FindData) callconv(.winapi) B;
 pub extern "kernel32" fn FindClose(H) callconv(.winapi) B;
 pub extern "kernel32" fn CreateDirectoryW([*:0]const u16, ?*const Security) callconv(.winapi) B;
+pub extern "kernel32" fn CreateToolhelp32Snapshot(u32, u32) callconv(.winapi) H;
+pub extern "kernel32" fn Process32FirstW(H, *ProcessEntry) callconv(.winapi) B;
+pub extern "kernel32" fn Process32NextW(H, *ProcessEntry) callconv(.winapi) B;
 pub extern "kernel32" fn DeviceIoControl(H, u32, ?*const anyopaque, u32, ?*anyopaque, u32, *u32, ?*Overlapped) callconv(.winapi) B;
 pub extern "kernel32" fn GetCommandLineW() callconv(.winapi) [*:0]u16;
 pub extern "kernel32" fn CompareStringOrdinal([*]const u16, i32, [*]const u16, i32, B) callconv(.winapi) i32;
@@ -184,6 +199,7 @@ pub extern "kernel32" fn LocalFree(?H) callconv(.winapi) ?H;
 pub extern "kernel32" fn CreateNamedPipeW([*:0]const u16, u32, u32, u32, u32, u32, u32, ?*const Security) callconv(.winapi) H;
 pub extern "kernel32" fn ConnectNamedPipe(H, ?*Overlapped) callconv(.winapi) B;
 pub extern "kernel32" fn GetNamedPipeClientProcessId(H, *u32) callconv(.winapi) B;
+pub extern "kernel32" fn GetNamedPipeServerProcessId(H, *u32) callconv(.winapi) B;
 pub extern "advapi32" fn OpenProcessToken(H, u32, *H) callconv(.winapi) B;
 pub extern "advapi32" fn GetTokenInformation(H, u32, *anyopaque, u32, *u32) callconv(.winapi) B;
 pub extern "advapi32" fn ConvertSidToStringSidW(*anyopaque, *?[*:0]u16) callconv(.winapi) B;
@@ -201,4 +217,5 @@ comptime {
         @offsetOf(ProcessList, "pids") != 8 or @sizeOf(MemoryStatus) != 64)
         @compileError("Win32 ABI layout mismatch");
     if (@sizeOf(FindData) != 592) @compileError("FindData ABI layout mismatch");
+    if (@sizeOf(ProcessEntry) != 568) @compileError("ProcessEntry ABI layout mismatch");
 }

@@ -25,6 +25,7 @@ pub const Job = struct {
     completion_key: usize,
     queried_limits: bool,
     termination_requested: bool = false,
+    worker_assigned: bool = false,
 
     pub fn create(completion_key: usize) !Job {
         if (completion_key == 0) return error.InvalidCompletionKey;

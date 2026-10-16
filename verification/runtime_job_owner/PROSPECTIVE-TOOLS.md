@@ -7,6 +7,17 @@ must enumerate the npm subtree and compare all its expected files/reparse points
 then check node.exe separately. Do not falsely require the entire nodejs parent
 to contain only those historical files or silently absorb today's extras.
 
+Root subsequently released additional original full Node authority:
+`evidence/typebox-heap-scope-args-static-second49d-20261016-frozen.json`,
+SHA35F1F2B0F12BF79C06B47AE2BA8C485EF10A7714BE3F129772E3BA1BBB97B927,
+property node_complete (1,838 rows). Read-only manifest comparison confirmed all
+1,774 older rows have identical paths/hashes, with64 additional launcher/Corepack
+files. This separate authority does not rewrite the1774 manifest or restore the
+runtime. Native tools.zig now provides a mandatory full1838 file/inventory check
+for future admission. Actual1838 tool files were not rehashed during source
+authoring; the helper remains uncompiled/unexecuted. Prefix selection still
+requires the separately reviewed private resolver/wrapper decision below.
+
 The original 19cb build:offline shell graph uses npm run, tsc, shx and node.
 It builds chord/tui/telemetry/codemode/mcp, ai offline, durable/env/agent, then
 coding-agent unbundled and its esbuild bundle. The bundle invokes esbuild's exact
@@ -46,3 +57,9 @@ Record that distinction, inventory the private directory exactly and require ful
 original output hashes. Review npm/.bin resolution and actual child launch APIs
 before acceptance. No private PATH directory, copied Node or installed wrapper
 has been created by this source proposal. Root review remains required.
+
+The concrete uninstalled forwarding source is npm.cmd.source in this leaf.
+Native tools.zig checks the exact private two-file inventory, the separately
+reviewed cmd.exe hash, original Node bytes, and a Root-reviewed wrapper hash.
+The installer/composition is not implemented or admitted yet. This source file
+is not on PATH and was never invoked.

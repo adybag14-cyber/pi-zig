@@ -6,6 +6,7 @@ const kernel_process = @import("process.zig");
 const Guid = extern struct { a: u32, b: u16, c: u16, d: [8]u8 };
 const Object = extern struct { vtable: [*]const *const anyopaque };
 const Variant = extern struct { kind: u16, reserved: [3]u16, data: [16]u8 align(8) };
+comptime { if (@sizeOf(Guid) != 16 or @sizeOf(Variant) != 24) @compileError("COM ABI layout mismatch"); }
 const locator_class: Guid = .{ .a = 0x4590f811, .b = 0x1d3a, .c = 0x11d0, .d = .{ 0x89, 0x1f, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24 } };
 const locator_interface: Guid = .{ .a = 0xdc12a687, .b = 0x737f, .c = 0x11cf, .d = .{ 0x88, 0x4d, 0x00, 0xaa, 0x00, 0x4b, 0x2e, 0x24 } };
 extern "ole32" fn CoInitializeEx(?*anyopaque, u32) callconv(.winapi) i32;
@@ -44,14 +45,20 @@ pub const Request = struct {
     completed: std.atomic.Value(bool) = .init(false),
     thread: ?w.H = null,
     started_ms: u64 = 0,
+    completed_ms: u64 = 0,
+    attempted: bool = false,
 
     pub fn start(self: *Request) !void {
-        if (self.pid == 0 or self.thread != null) return error.InvalidMetadataRequest;
+        if (self.pid == 0 or self.thread != null or self.attempted) return error.InvalidMetadataRequest;
+        self.attempted = true; // one shot, including a failed CreateThread
         self.started_ms = w.GetTickCount64();
         self.thread = w.CreateThread(null, 1024 * 1024, run, self, 0, null) orelse return error.MetadataThreadFailed;
     }
     pub fn poll(self: *const Request) union(enum) { pending, ready, timeout } {
-        if (self.completed.load(.acquire)) return .ready;
+        if (self.completed.load(.acquire)) {
+            if (self.completed_ms - self.started_ms >= 2000) return .timeout;
+            return .ready;
+        }
         if (w.GetTickCount64() - self.started_ms >= 2000) return .timeout;
         return .pending;
     }
@@ -67,6 +74,7 @@ pub const Request = struct {
     fn run(raw: ?*anyopaque) callconv(.winapi) u32 {
         const self: *Request = @ptrCast(@alignCast(raw.?));
         probe(self.pid, &self.result) catch |err| { self.first_error = err; };
+        self.completed_ms = w.GetTickCount64();
         self.completed.store(true, .release);
         return 0;
     }

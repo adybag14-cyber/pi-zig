@@ -72,6 +72,7 @@ pub const Pinned = struct {
     handle: ?w.H,
     id: w.FileId,
     size: u64,
+    digest_attempted: bool = false,
     pub fn open(allocator: std.mem.Allocator, path: []const u8) !Pinned {
         try requirePhysicalAncestors(allocator, path);
         const handle = try openLeaf(allocator, path, w.generic_read, w.open_existing, 0);
@@ -84,8 +85,12 @@ pub const Pinned = struct {
         if (w.GetFileSizeEx(handle, &size) == 0 or size < 0) return error.FileSizeUnverifiable;
         return .{ .handle = handle, .id = id, .size = @intCast(size) };
     }
-    pub fn digest(self: *const Pinned, comptime Hasher: type) ![Hasher.digest_length]u8 {
+    /// One shot: ReadFile consumes the synchronous pointer. Retain the pin for
+    /// identity/locking, or open a new verified pin for another digest.
+    pub fn digest(self: *Pinned, comptime Hasher: type) ![Hasher.digest_length]u8 {
         const handle = self.handle orelse return error.PinnedFileClosed;
+        if (self.digest_attempted) return error.PinnedDigestAlreadyAttempted;
+        self.digest_attempted = true;
         var state = Hasher.init(.{});
         var buffer: [65536]u8 = undefined;
         var total: u64 = 0;

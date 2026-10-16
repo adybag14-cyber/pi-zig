@@ -108,14 +108,17 @@ pub const Capture = struct {
             .reading => switch (self.read.poll()) {
                 .pending => {},
                 .failed => |cause| {
-                    if (cause == w.error_broken_pipe) self.state = .eof else {
+                    if (cause == w.error_broken_pipe or cause == w.error_pipe_not_connected) self.state = .eof else {
                         self.first_error = self.first_error orelse error.OutputReadFailed;
                         self.state = .failed;
                     }
                 },
                 .complete => |count| {
                     if (count == 0) {
-                        self.state = .eof;
+                        // A peer zero-length WriteFile can complete a pipe read
+                        // with zero bytes without disconnecting. Rearm; only a
+                        // broken/disconnected completion establishes pipe EOF.
+                        self.state = .idle;
                         return;
                     }
                     if (count > self.buffer.len) return error.OutputReadCountInvalid;

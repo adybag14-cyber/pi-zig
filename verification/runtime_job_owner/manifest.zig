@@ -41,7 +41,8 @@ pub const Manifest = struct {
         if (self.entries.count() != count) return error.ManifestCountMismatch;
         return self;
     }
-    fn add(self: *Manifest, relative: []const u8, sha: []const u8) !void {
+    /// Call only with rows from an already control-hashed immutable manifest.
+    pub fn add(self: *Manifest, relative: []const u8, sha: []const u8) !void {
         try files.relative(relative);
         if (sha.len != 64) return error.InvalidManifestHash;
         var hash: files.Hash = undefined;
