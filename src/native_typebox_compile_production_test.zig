@@ -10,23 +10,25 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     return c.pi_js_undefined();
 }
 fn readBefore(e: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = e };
+    var s: @import("extensions/native_typebox_operators_runtime.zig").Scope = .{ .engine = e };
     defer s.deinit();
     return c.JS_DupValue(e.context, try @import("extensions/native_typebox_operators_runtime.zig").get(&s, roots[0], "m0_Before"));
 }
-fn lexicalOrderControl(e: *em.Engine, s: *Scope) !void {
+fn lexicalOrderControl(e: *em.Engine) !void {
     const rt = @import("extensions/native_typebox_operators_runtime.zig");
-    const env = try rt.environment(s, c.pi_js_null());
-    try rt.declare(s, env, "m0_Before");
-    const global = try s.own(c.JS_GetGlobalObject(e.context));
-    try s.put(global, "nativeTypeBoxReadBefore", try s.own(try @import("extensions/native_node_function.zig").create(e, "readBefore", 0, readBefore, &.{env})));
-    const pending = try s.own(try e.evalModule(
+    var scope: rt.Scope = .{ .engine = e };
+    defer scope.deinit();
+    const env = try rt.environment(&scope, c.pi_js_null());
+    try rt.declare(&scope, env, "m0_Before");
+    const global = try scope.own(c.JS_GetGlobalObject(e.context));
+    try scope.put(global, "nativeTypeBoxReadBefore", try scope.own(try @import("extensions/native_node_function.zig").create(e, "readBefore", 0, readBefore, &.{env})));
+    const pending = try scope.own(try e.evalModule(
         \\let guest,native;try{Before}catch(error){guest={reference:error instanceof ReferenceError,name:error.name}}const Before=1;try{nativeTypeBoxReadBefore()}catch(error){native={reference:error instanceof ReferenceError,name:error.name}}if(JSON.stringify(guest)!==JSON.stringify(native)||!native?.reference)throw Error(JSON.stringify({scope:'actual guest and native module TDZ',guest,native}));export const pass=true;
     , "actual-typebox-native-lexical-tdz.mjs"));
-    _ = try s.own(try e.awaitValue(pending));
-    try rt.bind(s, env, "m0_Before", c.JS_NewInt32(e.context, 1));
-    const initialized = try s.own(try e.evalModule("if(nativeTypeBoxReadBefore()!==1)throw Error('native module lexical initialization');export const pass=true;", "actual-typebox-native-lexical-initialized.mjs"));
-    _ = try s.own(try e.awaitValue(initialized));
+    _ = try scope.own(try e.awaitValue(pending));
+    try rt.bind(&scope, env, "m0_Before", c.JS_NewInt32(e.context, 1));
+    const initialized = try scope.own(try e.evalModule("if(nativeTypeBoxReadBefore()!==1)throw Error('native module lexical initialization');export const pass=true;", "actual-typebox-native-lexical-initialized.mjs"));
+    _ = try scope.own(try e.awaitValue(initialized));
 }
 pub fn graph(e: *em.Engine) !c.JSValue {
     return @import("extensions/native_typebox_production_graph.zig").create(e) catch |err| {
@@ -81,7 +83,7 @@ test "actual TypeBox generic operators match complete genuine Source396 on share
     defer e.deinit();
     var s: Scope = .{ .engine = e };
     defer s.deinit();
-    try lexicalOrderControl(e, &s);
+    try lexicalOrderControl(e);
     const bytes = @embedFile("extensions/fixtures/typebox-operators-production.expected.json");
     const source = try s.own(try e.checked(c.JS_ParseJSON(e.context, bytes.ptr, bytes.len, "genuine-typebox-operators-source396.json")));
     const actual = try s.own(try graph(e));
