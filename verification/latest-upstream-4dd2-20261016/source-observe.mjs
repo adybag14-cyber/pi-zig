@@ -6,6 +6,7 @@ import { createHash } from 'node:crypto';
 import { threadId } from 'node:worker_threads';
 
 const evidence = 'C:/Users/adyba/pi-zig-latest-4dd2-models-20261016/verification/latest-upstream-4dd2-20261016/';
+const records = 'C:/Users/adyba/pi-zig-update-evidence-20261003/latest-upstream-4dd2b149-audit-20261016/';
 const root = realpathSync('C:/Users/adyba/pi-upstream-source-4dd2b149-20261016');
 const old = realpathSync('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012');
 const evidenceRoot = realpathSync(evidence);
@@ -19,7 +20,7 @@ if (!process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST) throw Error('Exact latest4dd
 for (const row of JSON.parse(readFileSync(process.env.PI_SOURCE_ORACLE_CONTROL_MANIFEST))) frozen.set(realpathSync(row.path), row.sha256.toLowerCase());
 const seen = new Set();
 function record(row) {
-  appendFileSync(join(evidence, `source4dd2-modules-${process.pid}-${threadId}-20261016.jsonl`), JSON.stringify(row) + '\n');
+  appendFileSync(join(records, `source4dd2-modules-${process.pid}-${threadId}-20261016.jsonl`), JSON.stringify(row) + '\n');
 }
 function select(value) {
   if (typeof value === 'string') return value;
