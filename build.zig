@@ -1560,6 +1560,12 @@ pub fn build(b: *std.Build) void {
     session_control_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-control", "Compare original session cancellation idle disposal modes and shared resource cleanup with complete owner graphs").dependOn(&b.addRunArtifact(session_control_tests).step);
     b.step("build-native-sdk-session-control", "Compile ordinary session cancellation and disposal separately from runtime deadlines").dependOn(&session_control_tests.step);
+    const node_crypto_hash_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_crypto_hash_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native node crypto SHA256"}, .use_llvm = use_llvm });
+    linkQuickJs(b, node_crypto_hash_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(node_crypto_hash_tests.root_module, sqlite_lib_dir, sqlite_library);
+    node_crypto_hash_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-crypto-sha256", "Compile real SHA256 createHash dependency independently").dependOn(&node_crypto_hash_tests.step);
+    b.step("test-native-node-crypto-sha256", "Compare actual Node SHA256 package observations and native state ownership").dependOn(&b.addRunArtifact(node_crypto_hash_tests).step);
     const idle_settlement_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_idle_settlement_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native idle settlement"}, .use_llvm = use_llvm });
     linkQuickJs(b, idle_settlement_identity_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(idle_settlement_identity_tests.root_module, sqlite_lib_dir, sqlite_library);

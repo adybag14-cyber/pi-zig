@@ -1,0 +1,22 @@
+// Prepared actual pinned Node subject capture; not executed by this checkpoint.
+import crypto from 'node:crypto';
+import {readFileSync,writeFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {dirname,resolve,sep} from 'node:path';
+const inputPath=fileURLToPath(new URL('../../src/extensions/fixtures/node-crypto-sha256-package.input.txt',import.meta.url));
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const executableSha256=sha(readFileSync(process.execPath));
+if(process.version!=='v24.14.0'||executableSha256!=='63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088')throw Error('Exact pinned original Windows Node24.14.0 required');
+if(!process.argv[2])throw Error('Explicit owned raw output is required');
+const outputPath=resolve(process.argv[2]);
+const evidence=resolve(dirname(fileURLToPath(import.meta.url)),'../../../../evidence');
+if(!outputPath.startsWith(evidence+sep))throw Error('Raw original output must stay inside owned evidence');
+const input=readFileSync(inputPath,'utf8'),inputSha256=sha(input);
+const controls=JSON.parse(readFileSync(new URL('source-only-controls.json',import.meta.url)));
+if(inputSha256!==controls.input_sha256.toLowerCase()||controls.case_ids.length!==58)throw Error('Exact prepared input/ordered IDs required');
+globalThis.nativeNodeCryptoSubject=crypto;
+await(new Function('return(async()=>{'+input+'\n})()'))();
+const observed=globalThis.nativeNodeCryptoObservation;
+if(observed?.count!==58||observed.rows.length!==58||new Set(observed.rows.map(row=>row.name)).size!==58)throw Error('Exact original58 subject census required');
+for(let i=0;i<58;i++)if(observed.rows[i].name!==controls.case_ids[i])throw Error('Original ordered subject ID mismatch');
+writeFileSync(outputPath,JSON.stringify({subject:'actual node:crypto SHA256 PackageManager dependency',runtime:{version:process.version,pid:process.pid,execPath:process.execPath,executableSha256},inputSha256,...observed},null,2)+'\n');
