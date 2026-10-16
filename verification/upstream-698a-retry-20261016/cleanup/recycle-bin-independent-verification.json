@@ -1,0 +1,26 @@
+[
+  {
+    "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\global-cache",
+    "metadata_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$I8RDD86",
+    "metadata_sha256": "11155D1417678CF65612728D5D177B156B5095E0DC14609719DA239AB12B7234",
+    "payload_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$R8RDD86",
+    "payload_present": true,
+    "source_absent": true
+  },
+  {
+    "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\cache",
+    "metadata_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$IPNNN34",
+    "metadata_sha256": "95A60C257225F9DE701631A05C51C9BEB41F8B38C429D0D7D8C9F1FD0737BF00",
+    "payload_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$RPNNN34",
+    "payload_present": true,
+    "source_absent": true
+  },
+  {
+    "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\out",
+    "metadata_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$IZ5XHJQ",
+    "metadata_sha256": "EDF3675D6A20A195976B078F7EFD74ACA65D0379FCA518D95930916D0618CA05",
+    "payload_path": "C:\\$Recycle.Bin\\S-1-5-21-3004657890-2489194128-3445687263-1001\\$RZ5XHJQ",
+    "payload_present": true,
+    "source_absent": true
+  }
+]

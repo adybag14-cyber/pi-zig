@@ -124,6 +124,20 @@ The ten original-source controls are prepared with no expected output yet;
 original compiler/schema/operator inputs and goldens remain unchanged. Neither
 the indexed repair nor the separate operator-stack generator work is qualified.
 
+Four factory exports are now migrated from prototype tagging and flow-owned
+outer Promises to genuine native AsyncFunction bodies through reviewed source
+`98902b9a`. The seven Source Await boundaries, original internally captured
+factory call, live getter order and ordinary/fatal exception ownership are
+preserved. Nine additional programs are prepared and unrun. The actual default
+assembly caller and complete positive construction remain pending.
+
+The focused START/resumed C qualification on separate source `55f65f6a` passed
+all fifteen actual metadata-selected entries. Its complete sealed proof is now
+retained in `verification/tla-focused-proof-20261016`; see
+`docs/tla-focused-qualification-20261016.md` for exact hashes and scope. Broader C
+regression execution precedes Root C intake; this does not qualify the combined
+integration or complete native-body resolving behavior.
+
 ## Remaining integration boundaries
 
 The production SDK factory requires actual default ModelRuntime creation, ModelConfig/store classes, provider factories, authentication, resource-loader lifecycle and ordinary AgentSession collaborators. The existing synthetic builtin seeding path is insufficient for default-path parity. The new factory module remains unselected until these real inputs and their native comparisons are complete.
