@@ -1,0 +1,102 @@
+[
+  {
+    "path": "Run-SdkAsyncBrandSource-20261016.ps1",
+    "sha256": "686E2C380377130249F558CB0B4C99B4F3510E31FEE216E27718C79CFFA2633A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\Run-SdkAsyncBrandSource-20261016.ps1"
+  },
+  {
+    "path": "Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+    "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1"
+  },
+  {
+    "path": "sdk-async-brand-probe-inventory-20261016.json",
+    "sha256": "41233F237C843D875F14364FF36B7C8A0690B70E660BDB59001FD9D62A2A4236",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-probe-inventory-20261016.json"
+  },
+  {
+    "path": "sdk-async-brand-prelaunch-seal-20261016.json",
+    "sha256": "69700FE971926F9C5EC5E0AC6C28169351390B331D19DFCFEFB7BF2D728A2A94",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-prelaunch-seal-20261016.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016.json",
+    "sha256": "9D9F7D4AF7CFCB0FF373958839A5F1E745B2C490BDD3FBEF03141411BB6D9F73",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016.stdout.log",
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016.stdout.log"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016.stderr.log",
+    "sha256": "8FA7E825122084AB9944FE1F695610AFBC2733B422B71031A4B7384CC4485932",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016.stderr.log"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016-admission.json",
+    "sha256": "7F095CF212C31A8909CC455751071BD431F4CDBA27415D02F55D4BABC5E43585",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016-admission.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016-controls-before.json",
+    "sha256": "7BFD9E22DDA69EB7C81041818D397262ECFA0400F3F0F56FAAED5FD64FC66A3A",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016-controls-before.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016-posthash.json",
+    "sha256": "9946B200F42980511E10A227E7C18F86E9B6A0B600733A7AA79F8322B80A82AE",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016-posthash.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016-validation.json",
+    "sha256": "D9A51027F7421CC70591255F59414D830CD1F8447EF2966A335FAF236EF4488E",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016-validation.json"
+  },
+  {
+    "path": "sdk-async-brand-source-first-20261016-output.json",
+    "sha256": "D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-source-first-20261016-output.json"
+  },
+  {
+    "path": "source4954-observe-20261015.mjs",
+    "sha256": "020361966FEA906D9AA07F380F705F1DF6755852CCDC5F9A65BDB75580A7E8A3",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-observe-20261015.mjs"
+  },
+  {
+    "path": "source4954-preparation-readiness-20261015.json",
+    "sha256": "0EDB3EA87CF7AE1FF8B51A02A1D3698DC610BA23F66257D60AA5C788557E82D7",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-preparation-readiness-20261015.json"
+  },
+  {
+    "path": "source4954-dependency-contract-audit-20261015.json",
+    "sha256": "5E33C04D23181DDAF1D0330651730524CE0EFD6643FD1490F54EF1EFF5ECD745",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-dependency-contract-audit-20261015.json"
+  },
+  {
+    "path": "observed-modules.jsonl",
+    "sha256": "EF3F33038EDC9D6B4F3E550C271FE1743BDAA8CA9D908692CA179D794446A108",
+    "original_path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-22264-0-20261015.jsonl"
+  },
+  {
+    "path": "frozen-inventories.zip",
+    "sha256": "8CC56982C2CA96196989AA43E955DB1E022BBE499F37F397AA4377AA3CA77E57",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "frozen-inventories.index.json",
+    "sha256": "81DFDA7E9063B0C2C500F9D389ABF6F57D2DC92518BFF6233DEE43C8F1E7487F",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "observed-modules.zip",
+    "sha256": "849656B1699DEC1E191ABE0A75AD1854BA8043E0A5A5640AC850220832DB11FD",
+    "original_path": "packaged original bytes/index"
+  },
+  {
+    "path": "observed-modules.index.json",
+    "sha256": "FAED719FB01DC24BC691FDD876536F16158F195F8AB14C1D85AF60D475371A42",
+    "original_path": "packaged original bytes/index"
+  }
+]

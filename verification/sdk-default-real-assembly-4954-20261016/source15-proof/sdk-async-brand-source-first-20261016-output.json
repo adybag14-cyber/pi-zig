@@ -1,0 +1,1158 @@
+{
+  "authority": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "brandAuthority": "actual node:util.types.isAsyncFunction",
+  "packageRootOverride": "C:\\Users\\adyba\\pi-upstream-source-4954d76-20261015\\packages\\coding-agent",
+  "packageSha256": "83c3bb7619f590c213cc96a24216eb29a819a3ef6dc548607cc037ed276e8dc5",
+  "packageVersion": "1.3.0",
+  "typeboxVersion": "1.3.27",
+  "typeboxPackageSha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
+  "inputSha256": "481ccbc3e99325da870e22a28565f40e8633690f1a7d5a6f4c01ff8b2a69a840",
+  "modules": {
+    "core/model-runtime.ts": "ba6db976a8947167cb867eded70dfa96475182a3723ce2c7c9a88db5afeab756",
+    "core/agent-session-runtime.ts": "b163ce35d2b6e3ba1fc080c0674044a3f1cd9faec93cc2ed015e31b69780bf4a",
+    "core/model-config.ts": "9f2cf2de7b8dd503ca4bc68119163c1d9bc8a3bf16caccfb1207e55b6e1cd97e",
+    "core/models-store.ts": "9a93afb3ad9123e59cb61606e77d431b38bbeb3063afc0e2974341109f23db02"
+  },
+  "cases": 15,
+  "rows": [
+    {
+      "name": "prototype-tag-negative-control",
+      "value": {
+        "tag": "[object AsyncFunction]",
+        "async": false
+      }
+    },
+    {
+      "name": "actual-class-brand-ModelRuntime",
+      "value": {
+        "constructor": {
+          "name": "ModelRuntime",
+          "length": 6,
+          "async": false,
+          "ownPrototype": true
+        },
+        "members": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "ModelRuntime",
+              "length": 6,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "configureRadiusProviders",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "configureRadiusProviders",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "providerIds",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "providerIds",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "recomposeProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "recomposeProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "composeProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "composeProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "rebuildProviders",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "rebuildProviders",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "updateModelSnapshot",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "updateModelSnapshot",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "runAvailabilityRefresh",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "runAvailabilityRefresh",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "queueAvailabilityRefresh",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "queueAvailabilityRefresh",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "refreshProviderAvailability",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "refreshProviderAvailability",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getProviders",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getProviders",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getModels",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getModels",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getModel",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getModel",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getModelsOfType",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getModelsOfType",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getModelOfType",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getModelOfType",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAllModels",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAllModels",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAvailableOfType",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAvailableOfType",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAllAvailable",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAllAvailable",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "checkAuth",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "checkAuth",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAvailable",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAvailable",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAvailableSnapshot",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAvailableSnapshot",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getError",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getError",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getRegisteredProviderConfig",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getRegisteredProviderConfig",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getRegisteredProviderIds",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getRegisteredProviderIds",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getRegisteredNativeProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getRegisteredNativeProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getCompatibilityRequestConfig",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getCompatibilityRequestConfig",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "isUsingOAuth",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "isUsingOAuth",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "isUsingSubscription",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "isUsingSubscription",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "hasConfiguredAuth",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "hasConfiguredAuth",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getAuth",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getAuth",
+              "length": 1,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "enqueueCredentialOperation",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "enqueueCredentialOperation",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "synchronizeCredentialState",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "synchronizeCredentialState",
+              "length": 4,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "setRuntimeApiKey",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "setRuntimeApiKey",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "removeRuntimeApiKey",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "removeRuntimeApiKey",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "listCredentials",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "listCredentials",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getProviderAuthStatus",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getProviderAuthStatus",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "prepareRequest",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "prepareRequest",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "stream",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "stream",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "complete",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "complete",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "streamSimple",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "streamSimple",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "completeSimple",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "completeSimple",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "streamDeferred",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "streamDeferred",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "fetchDeferred",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "fetchDeferred",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "cancelDeferred",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "cancelDeferred",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "generateImages",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "generateImages",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "classify",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "classify",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "login",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "login",
+              "length": 4,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "logout",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "logout",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "refresh",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "refresh",
+              "length": 0,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "registerNativeProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "registerNativeProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "markProvisionallyConfigured",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "markProvisionallyConfigured",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "registerProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "registerProvider",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "unregisterProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "unregisterProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "registerVirtualModel",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "registerVirtualModel",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "unregisterVirtualModel",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "unregisterVirtualModel",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "resolveModel",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "resolveModel",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getPhysicalModel",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getPhysicalModel",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-class-brand-ModelConfig",
+      "value": {
+        "constructor": {
+          "name": "ModelConfig",
+          "length": 2,
+          "async": false,
+          "ownPrototype": true
+        },
+        "members": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "ModelConfig",
+              "length": 2,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "getProvider",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getProvider",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getProviderIds",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getProviderIds",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "getError",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "getError",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-class-brand-InMemoryCodingAgentModelsStore",
+      "value": {
+        "constructor": {
+          "name": "InMemoryCodingAgentModelsStore",
+          "length": 0,
+          "async": false,
+          "ownPrototype": true
+        },
+        "members": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "InMemoryCodingAgentModelsStore",
+              "length": 0,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "read",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "read",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "write",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "write",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "delete",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "delete",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-class-brand-FileModelsStore",
+      "value": {
+        "constructor": {
+          "name": "FileModelsStore",
+          "length": 0,
+          "async": false,
+          "ownPrototype": true
+        },
+        "members": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "FileModelsStore",
+              "length": 0,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "parse",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "parse",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "updateReadState",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "updateReadState",
+              "length": 3,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "reloadFromStorage",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "reloadFromStorage",
+              "length": 2,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "readLatest",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "readLatest",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "read",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "read",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "write",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "write",
+              "length": 3,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "delete",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "delete",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-class-brand-AgentSessionRuntime",
+      "value": {
+        "constructor": {
+          "name": "AgentSessionRuntime",
+          "length": 3,
+          "async": false,
+          "ownPrototype": true
+        },
+        "members": [
+          {
+            "name": "constructor",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "AgentSessionRuntime",
+              "length": 3,
+              "async": false,
+              "ownPrototype": true
+            }
+          },
+          {
+            "name": "services",
+            "enumerable": false,
+            "kind": "get",
+            "function": {
+              "name": "get services",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "session",
+            "enumerable": false,
+            "kind": "get",
+            "function": {
+              "name": "get session",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "cwd",
+            "enumerable": false,
+            "kind": "get",
+            "function": {
+              "name": "get cwd",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "diagnostics",
+            "enumerable": false,
+            "kind": "get",
+            "function": {
+              "name": "get diagnostics",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "modelFallbackMessage",
+            "enumerable": false,
+            "kind": "get",
+            "function": {
+              "name": "get modelFallbackMessage",
+              "length": 0,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "setRebindSession",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "setRebindSession",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "setBeforeSessionInvalidate",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "setBeforeSessionInvalidate",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "emitBeforeSwitch",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "emitBeforeSwitch",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "emitBeforeFork",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "emitBeforeFork",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "teardownCurrent",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "teardownCurrent",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "apply",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "apply",
+              "length": 1,
+              "async": false,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "finishSessionReplacement",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "finishSessionReplacement",
+              "length": 1,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "switchSession",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "switchSession",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "newSession",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "newSession",
+              "length": 1,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "fork",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "fork",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "importFromJsonl",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "importFromJsonl",
+              "length": 2,
+              "async": true,
+              "ownPrototype": false
+            }
+          },
+          {
+            "name": "dispose",
+            "enumerable": false,
+            "kind": "value",
+            "function": {
+              "name": "dispose",
+              "length": 0,
+              "async": true,
+              "ownPrototype": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "actual-static-brand-ModelRuntime-create",
+      "value": {
+        "name": "create",
+        "length": 0,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "name": "actual-static-brand-ModelConfig-load",
+      "value": {
+        "name": "load",
+        "length": 1,
+        "async": true,
+        "ownPrototype": false
+      }
+    },
+    {
+      "name": "actual-memory-async-order",
+      "value": [
+        "clone",
+        "after-write-call",
+        "write-then",
+        "queued",
+        "after-write-await",
+        "clone",
+        "after-read-call",
+        "after-read-await"
+      ]
+    },
+    {
+      "name": "actual-memory-raw-rejection",
+      "value": true
+    },
+    {
+      "name": "actual-async-nonconstructor-ModelConfig.load",
+      "value": true
+    },
+    {
+      "name": "actual-async-nonconstructor-Memory.read",
+      "value": true
+    },
+    {
+      "name": "actual-async-nonconstructor-File.readLatest",
+      "value": true
+    },
+    {
+      "name": "actual-async-nonconstructor-Runtime.getAuth",
+      "value": true
+    },
+    {
+      "name": "actual-async-nonconstructor-Session.dispose",
+      "value": true
+    }
+  ]
+}

@@ -129,3 +129,27 @@ its weak runtime-owner registry uses a private GC-marked module without Engine
 edits. All54 scoped Zig files passed pinned0.16 formatting and AST checks before
 the Source44 seal. No semantic native compilation or execution followed, and
 default select remains uncalled.
+
+Genuine **Source15** async-brand controls captured candidate
+`57b2a460339be829e87d217f01449fabf977349d`. Actual Node PID22264 exited0;
+all15 ordered rows passed with zero full posthash/path/control drift and84
+explicit absences. The freeze retained candidate8454, Source1970, deps31064,
+Node1774 and compiler19546 files. The packet contains20 indexed payloads,
+four frozen inventories and1338 original observed module bodies, including668
+TypeBox modules. Expected SHA256:
+`D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5`.
+`Validate-Source15Proof.ps1` verifies the retained packet, actual Node terminal
+receipt, original module bytes, real node:util.types.isAsyncFunction authority
+and the ordinary-function prototype-tag negative control. Source53 and44 remain
+unchanged historical captures. This Source15 corpus only mutates memory.
+
+The prepared migration routes actual ModelConfig.load, coding-agent stores,
+ModelRuntime/create and AgentSessionRuntime async bodies through the genuine
+native AsyncFunction primitive. Each action describes one Await, raw return or
+throw; synchronous delegates remain synchronous. The native comparator checks
+the intrinsic JS_IsAsyncFunction brand and real class metadata, raw abort
+identity, construct rejection and memory clone/microtask order. No synthetic
+ModelRuntime collaborator is created for these controls. Migration formatting,
+AST, semantic compilation and native execution have not run during Root's
+serial native lease. The primitive's separate26-case qualification does not
+qualify these callers, stores, runtime composition or default selection.

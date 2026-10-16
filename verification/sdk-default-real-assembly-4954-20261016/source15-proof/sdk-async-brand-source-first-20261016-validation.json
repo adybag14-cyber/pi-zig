@@ -1,0 +1,16 @@
+{
+  "status": "genuine_source_capture_qualified",
+  "candidate": "57b2a460339be829e87d217f01449fabf977349d",
+  "cases": 15,
+  "attempt": "first",
+  "source_pid": 22264,
+  "source_exit": 0,
+  "full_posthash_drift": 0,
+  "observed_typebox_modules": 668,
+  "module_log": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source4954-modules-22264-0-20261015.jsonl",
+  "module_log_sha256": "EF3F33038EDC9D6B4F3E550C271FE1743BDAA8CA9D908692CA179D794446A108",
+  "output_sha256": "D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5",
+  "expected_still_absent": true,
+  "native_qualified": false,
+  "completed_utc": "2026-10-16T11:43:47.3748344+00:00"
+}

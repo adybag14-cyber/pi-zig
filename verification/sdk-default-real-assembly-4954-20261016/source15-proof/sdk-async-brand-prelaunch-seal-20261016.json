@@ -1,0 +1,36 @@
+{
+  "candidate": "57b2a460339be829e87d217f01449fabf977349d",
+  "clean": true,
+  "cases": 15,
+  "controls": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\Run-SdkAsyncBrandSource-20261016.ps1",
+      "sha256": "686E2C380377130249F558CB0B4C99B4F3510E31FEE216E27718C79CFFA2633A"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\Invoke-OwnedModelsPersistenceSource-20261015.ps1",
+      "sha256": "AC10347BFF180375BB84E7A6983C2C75536196BF79109C4AB344010C44ABCE45"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\sdk-async-brand-source15-20261016\\sdk-async-brand-probe-inventory-20261016.json",
+      "sha256": "41233F237C843D875F14364FF36B7C8A0690B70E660BDB59001FD9D62A2A4236"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\verification\\sdk-default-real-assembly-4954-20261016\\capture-sdk-async-brand.mjs",
+      "sha256": "2FB30C3BA104334D08DB1B1C5D064630AE46089885993F01E4B0E80DFB8C66D9"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-sdk-default-real-assembly-20261016\\src\\extensions\\fixtures\\sdk-async-brand-4954.input.mjs",
+      "sha256": "481CCBC3E99325DA870E22A28565F40E8633690F1A7D5A6F4C01FF8B2A69A840"
+    }
+  ],
+  "source": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "actual_brand": "node:util.types.isAsyncFunction",
+  "actual_subjects": "original Source ModelRuntime/ModelConfig/FileStore/InMemoryStore/AgentSessionRuntime constructors; no stand-ins",
+  "typebox_version": "1.3.27",
+  "actual_package": "1.3.0 explicitSourcePI_PACKAGE_DIR",
+  "slot": "Root LIGHT7",
+  "native_qualification": false,
+  "native_migration_fmt_ast": false,
+  "sealed_utc": "2026-10-16T11:42:42.7591819+00:00"
+}
