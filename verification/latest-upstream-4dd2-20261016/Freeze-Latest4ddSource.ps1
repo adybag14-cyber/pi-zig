@@ -8,6 +8,15 @@ $ErrorActionPreference='Stop'
 $taskCandidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 $taskEvidence='C:\Users\adyba\pi-zig-update-evidence-20261003'
 $taskSource='C:\Users\adyba\pi-upstream-source-4dd2b149-20261016'
+$taskDependencyLink=Join-Path $taskSource 'node_modules'
+$taskDependencyTarget='C:\Users\adyba\pi-upstream-runtime-19cb534-20261012\node_modules'
+function Check-DependencyLink {
+    $taskItem=Get-Item -LiteralPath $taskDependencyLink -Force
+    if($taskItem.LinkType -cne 'Junction' -or @($taskItem.Target).Count -ne 1){throw 'Expected owned Source dependency junction'}
+    $taskTarget=[IO.Path]::GetFullPath([string]$taskItem.Target)
+    if($taskTarget -ine $taskDependencyTarget){throw 'Source dependency junction target changed'}
+    return @{path=$taskDependencyLink;target=$taskTarget;link_type=$taskItem.LinkType}
+}
 function Read-Rows([string]$Path){
     $taskDocument=Get-Content -LiteralPath $Path -Raw|ConvertFrom-Json
     if($taskDocument.inputs){return @($taskDocument.inputs)}
@@ -25,6 +34,7 @@ $taskActualHead=(& git -C $taskCandidate rev-parse HEAD).Trim()
 if($LASTEXITCODE -ne 0 -or $taskActualHead -cne $CandidateHead){throw 'Exact candidate HEAD mismatch'}
 if((& git -C $taskCandidate status --porcelain).Count){throw 'Candidate must be clean before full freeze'}
 if((& git -C $taskSource rev-parse HEAD).Trim() -cne '4dd2b149d155d7369de16ea4dc77c84e9f5ffb24'){throw 'Official latest source HEAD mismatch'}
+$taskActualLink=Check-DependencyLink
 if($Phase -eq 'before'){
     if(Test-Path -LiteralPath $OutputManifest){throw 'Refuse to overwrite an existing before freeze'}
     $taskSpecs=@(
@@ -63,10 +73,11 @@ if($Phase -eq 'before'){
         @{relative=$_.relative;runtime=$_.runtime;source=([string]$_.source).Replace('pi-upstream-source-4954d76-20261015','pi-upstream-source-4dd2b149-20261016')}
     })
     if($taskAbsences.Count -ne 84){throw 'Exact inherited absence84 inventory mismatch'}
-    $taskFrozen=@{candidate_head=$CandidateHead;source_head='4dd2b149d155d7369de16ea4dc77c84e9f5ffb24';groups=$taskGroups;absences=$taskAbsences}
+    $taskFrozen=@{candidate_head=$CandidateHead;source_head='4dd2b149d155d7369de16ea4dc77c84e9f5ffb24';groups=$taskGroups;absences=$taskAbsences;dependency_link=$taskActualLink}
 }else{
     $taskFrozen=Get-Content -LiteralPath $OutputManifest -Raw|ConvertFrom-Json
     if($taskFrozen.candidate_head -cne $CandidateHead){throw 'Frozen candidate identity mismatch'}
+    if($taskFrozen.dependency_link.path -cne $taskActualLink.path -or $taskFrozen.dependency_link.target -ine $taskActualLink.target -or $taskFrozen.dependency_link.link_type -cne $taskActualLink.link_type){throw 'Frozen dependency path/target mismatch'}
 }
 $taskFailures=0
 $taskResults=@(foreach($taskGroup in $taskFrozen.groups){
@@ -76,7 +87,7 @@ $taskResults=@(foreach($taskGroup in $taskFrozen.groups){
 })
 $taskPresent=@(foreach($taskAbsent in $taskFrozen.absences){foreach($taskPath in @($taskAbsent.runtime,$taskAbsent.source)){if(Test-Path -LiteralPath $taskPath){$taskPath}}})
 $taskFailures+=$taskPresent.Count
-@{phase=$Phase;candidate_head=$CandidateHead;groups=$taskResults;absence_inventory=@($taskFrozen.absences).Count;unexpected_present=$taskPresent;failures=$taskFailures;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 12|Set-Content -LiteralPath $Receipt -Encoding utf8NoBOM
+@{phase=$Phase;candidate_head=$CandidateHead;dependency_link=$taskActualLink;groups=$taskResults;absence_inventory=@($taskFrozen.absences).Count;unexpected_present=$taskPresent;failures=$taskFailures;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 12|Set-Content -LiteralPath $Receipt -Encoding utf8NoBOM
 if($taskFailures){throw "Full $Phase freeze failed: $taskFailures"}
 if($Phase -eq 'before'){
     $taskFrozen|ConvertTo-Json -Depth 12|Set-Content -LiteralPath $OutputManifest -Encoding utf8NoBOM
