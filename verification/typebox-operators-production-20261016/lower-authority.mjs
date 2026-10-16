@@ -2,11 +2,29 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import {parse} from 'file:///C:/Users/adyba/AppData/Roaming/npm/node_modules/wrangler/node_modules/acorn/dist/acorn.mjs';
-const root='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/build';
+import {pathToFileURL,fileURLToPath} from 'node:url';
+import {outlineCallPreparations,usesNativeName} from './outline-call-setup.mjs';
+import {checkCallSetupAuthoring} from './outline-call-setup.test.mjs';
+// The existing owner sends this only after retained-handle/live-argv verification.
+if(process.argv[3]==='--owned-start'&&fs.readFileSync(0,'utf8')!=='TYPEBOX_STATIC_AUTHORING_OWNED_START\n')throw Error('Static authoring owned-start token required');
+if(process.argv[3]!=='--owned-start'||!process.argv[4])throw Error('Owned start and resolved workspace descriptor required');
+const workspace=JSON.parse(fs.readFileSync(process.argv[4],'utf8'));
+const samePath=(left,right)=>path.resolve(left).toLowerCase()===path.resolve(right).toLowerCase();
+if(workspace.schema!==1||!['static_authoring','static_package_authoring'].includes(workspace.mode)||!samePath(workspace.candidate_root,fileURLToPath(new URL('../../',import.meta.url)))||!samePath(workspace.output_directory,process.argv[2]))throw Error('Static authoring workspace descriptor mismatch');
+if(workspace.mode==='static_package_authoring'&&(!workspace.source_package_root||workspace.input_authority!=='source_package_only'||workspace.runtime_restoration_claim!==false))throw Error('Explicit source-only package authority required');
+const setupAuthoringControls=checkCallSetupAuthoring();
+if(crypto.createHash('sha256').update(fs.readFileSync(workspace.acorn_entry)).digest('hex').toUpperCase()!==workspace.acorn_entry_sha256)throw Error('Sealed Acorn entry drift');
+const {parse}=await import(pathToFileURL(workspace.acorn_entry));
+const root=workspace.mode==='static_package_authoring'?path.join(workspace.source_package_root,'build'):path.join(workspace.runtime,'node_modules/typebox/build');
 const packageBytes=fs.readFileSync(path.join(root,'../package.json'));
+// Prospective relocated runs only write four explicitly granted fresh staged files.
+const outputDirectory=path.resolve(process.argv[2]);
+const outputNames=new Set(['reachable-closure.json','lowering-map.json','initialization-order.json','native_typebox_operators_production.zig']);
+function writeOutput(relative,bytes){const name=path.basename(relative);if(!outputNames.has(name))throw Error('Unapproved staged output');fs.writeFileSync(path.join(outputDirectory,name),bytes,{flag:'wx'})}
 if(JSON.parse(packageBytes).version!=='1.3.27'||crypto.createHash('sha256').update(packageBytes).digest('hex')!=='c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f')throw Error('Pinned TypeBox package drift');
-parse(fs.readFileSync(new URL('../../src/extensions/fixtures/typebox-operators-production.input.txt',import.meta.url),'utf8'),{ecmaVersion:'latest',sourceType:'script'});
+const inputBytes=fs.readFileSync(workspace.input_path);
+if(crypto.createHash('sha256').update(inputBytes).digest('hex').toUpperCase()!==workspace.input_sha256)throw Error('Sealed original input drift');
+parse(inputBytes.toString('utf8'),{ecmaVersion:'latest',sourceType:'script'});
 const external=new Map([
  ['system/memory/index.mjs','memory'],['system/settings/index.mjs','settings'],
  ['type/engine/evaluate/evaluate.mjs','evaluation'],
@@ -15,7 +33,7 @@ const modules=new Map(),bindings=new Map(),chosen=new Map(),namespaces=new Map()
 function relative(from,to){return path.posix.normalize(path.posix.join(path.posix.dirname(from),to))}
 function moduleOf(file){
  if(modules.has(file))return modules.get(file);
- const source=fs.readFileSync(path.join(root,file),'utf8'),ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
+ const source=fs.readFileSync(path.join(root,file),'utf8');if(source.includes('__TYPEBOX_NATIVE_ARG_')||source.includes('__TYPEBOX_NATIVE_SETUP_'))throw Error('Reserved static frame marker in authority');const ast=parse(source,{ecmaVersion:'latest',sourceType:'module'});
  const m={file,source,ast,id:modules.size,local:new Map(),exports:new Map(),stars:[]};modules.set(file,m);
  const add=(name,node,init)=>{const b={id:`m${m.id}_${name}`,name,node,init,module:m};m.local.set(name,b);bindings.set(b.id,b)};
  for(const stmt0 of ast.body){const stmt=stmt0.type==='ExportNamedDeclaration'&&stmt0.declaration?stmt0.declaration:stmt0;
@@ -75,16 +93,28 @@ for(const file of fs.readdirSync(path.join(root,'type/action')).filter(f=>f.ends
 const kinds={},operators={},examples={};
 for(const b of chosen.values())if(!b.external)walk(b.init??b.node,n=>{kinds[n.type]=(kinds[n.type]??0)+1;examples[n.type]??={file:b.module.file,text:b.module.source.slice(n.start,n.end).slice(0,160)};if(n.operator)operators[n.operator]=(operators[n.operator]??0)+1});
 const report={version:'1.3.27',packageSha256:crypto.createHash('sha256').update(packageBytes).digest('hex'),modules:[...new Set([...chosen.values()].filter(b=>!b.external).map(b=>b.module.file))].map(file=>{const m=moduleOf(file);return{file,sha256:crypto.createHash('sha256').update(m.source).digest('hex')}}),declarations:chosen.size,publicRoots:[...publicRoots.keys()],syntax:kinds,operators,examples,externalBindings:[...chosen.values()].filter(b=>b.external)};
-fs.writeFileSync(new URL('./reachable-closure.json',import.meta.url),JSON.stringify(report,null,2)+'\n');
+writeOutput('./reachable-closure.json',JSON.stringify(report,null,2)+'\n');
 console.log(JSON.stringify({modules:report.modules.length,declarations:report.declarations,syntax:kinds,operators},null,2));
 
 // Lower into ordinary compiled Zig callbacks. The output contains native
 // operations and literals, never an AST/source blob for runtime interpretation.
-const functions=[],functionIds=new WeakMap(),branchHelpers=[];let serial=0;
+const functions=[],functionIds=new WeakMap(),branchHelpers=[],argumentFrames=new Map();let serial=0;
+const setupModules=new Set(['type/engine/instantiate.mjs','type/engine/call/instantiate.mjs']);
+function nativeUnit(kind,id,ctx,body){return{kind,id,owner:ctx.argumentFrame.key,source:ctx.module.file,scoped:ctx.scopedSetup,lines:ctx.lines,regions:ctx.callRegions,flags:{receiver:/\breceiver\b/.test(body),args:/\bargs\b/.test(body),env:/\benv\b/.test(body)}}}
+function optionalCallee(node){let optional=false;walk(node,part=>{if(part.type==='ChainExpression'||part.optional)optional=true});return optional}
 const q=value=>JSON.stringify(value).replace(/\\u([0-9a-fA-F]{4})/g,'\\u{$1}').replace(/\\b/g,'\\x08').replace(/\\f/g,'\\x0c');
 const fresh=prefix=>`${prefix}_${serial++}`;
 const line=(ctx,text)=>ctx.lines.push(text);
 function value(ctx,expression){const name=`native_values[${ctx.slots.count++}]`;line(ctx,`${name} = ${expression};`);return name}
+function argumentFrame(key){const frame={key,count:0,ranges:[],base:0};argumentFrames.set(key,frame);return frame}
+function argumentMarker(frame,index){return `__TYPEBOX_NATIVE_ARG_${frame.key}_${index}__`}
+function argumentsSlice(ctx,args){
+ if(args.length===0)return '&.{}';
+ const frame=ctx.argumentFrame,start=frame.count;frame.count+=args.length;
+ frame.ranges.push({start,count:args.length});
+ args.forEach((arg,index)=>line(ctx,`native_values[${argumentMarker(frame,start+index)}] = ${arg};`));
+ return `native_values[${argumentMarker(frame,start)}..${argumentMarker(frame,start+args.length)}]`;
+}
 function discard(ctx,result){if(/^[A-Za-z0-9_]+$/.test(result)&&(ctx.lines.join('\n').match(new RegExp('\\b'+result+'\\b','g'))??[]).length===1)line(ctx,`_ = ${result};`)}
 function names(pattern,out=new Set()){if(!pattern)return out;if(pattern.type==='Identifier')out.add(pattern.name);else if(pattern.type==='ArrayPattern')for(const e of pattern.elements)names(e,out);else if(pattern.type==='AssignmentPattern')names(pattern.left,out);else if(pattern.type==='RestElement')names(pattern.argument,out);else throw Error('Pattern '+pattern.type);return out}
 function localsOf(node){const result=new Set();for(const p of node.params??[])names(p,result);function visit(n){if(!n||typeof n!=='object')return;if(n!==node&&(n.type==='FunctionDeclaration'||n.type==='FunctionExpression'||n.type==='ArrowFunctionExpression')){if(n.type==='FunctionDeclaration')result.add(n.id.name);return}if(n.type==='VariableDeclarator')names(n.id,result);for(const v of Object.values(n))if(Array.isArray(v))v.forEach(visit);else if(v&&typeof v==='object')visit(v)}visit(node.body);return result}
@@ -105,7 +135,7 @@ function bindPattern(ctx,pattern,input){
 function compileFunction(node,module,inferred='',ancestors=new Set()){
  if(functionIds.has(node))return functionIds.get(node);
  const id=functions.length;functionIds.set(node,id);functions.push(null);
- const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],receiver:'receiver',slots:{count:0}};
+ const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],receiver:'receiver',slots:{count:0},argumentFrame:argumentFrame(`f${id}`),scopedSetup:setupModules.has(module.file),callRegions:[]};
  for(let i=0;i<node.params.length;i++){const p=node.params[i];const input=value(ctx,p.type==='RestElement'?`try rt.rest(s, args, ${i})`:`rt.argument(args, ${i})`);bindPattern(ctx,p,input)}
  if(node.body.type==='BlockStatement'){statement(ctx,node.body);if(!returns(node.body))line(ctx,'return c.pi_js_undefined();')}
  else {const output=expr(ctx,node.body);line(ctx,`return c.JS_DupValue(engine.context, ${output});`)}
@@ -113,10 +143,11 @@ function compileFunction(node,module,inferred='',ancestors=new Set()){
  const length=node.params.findIndex(p=>p.type==='AssignmentPattern'||p.type==='RestElement');
  const body=ctx.lines.join('\n'),usesReceiver=/\breceiver\b/.test(body),usesArgs=/\bargs\b/.test(body);
  const arrow=node.type==='ArrowFunctionExpression';
- functions[id]={id,node,module,name:sourceName,length:length<0?node.params.length:length,arrow,body,usesReceiver,usesArgs,slots:ctx.slots.count};return id;
+ ctx.argumentFrame.base=ctx.slots.count;
+ functions[id]={id,node,module,name:sourceName,length:length<0?node.params.length:length,arrow,body,usesReceiver,usesArgs,usesEnv:/\benv\b/.test(body),unit:nativeUnit('callback',id,ctx,body),slots:ctx.slots.count+ctx.argumentFrame.count,originalSlots:ctx.slots.count,argumentSlots:ctx.argumentFrame.count,argumentSlices:ctx.argumentFrame.ranges.map(range=>({start:ctx.slots.count+range.start,count:range.count}))};return id;
 }
 function branchFunction(ctx,node){
- const id=branchHelpers.length,helper={...ctx,lines:[],receiver:'receiver'};branchHelpers.push(null);
+ const id=branchHelpers.length,helper={...ctx,lines:[],callRegions:[],receiver:'receiver'};branchHelpers.push(null);
  const conditional=node.type==='ConditionalExpression';
  const left=expr(helper,conditional?node.test:node.left);
  const condition=conditional?`s.truthy(${left})`:node.operator==='&&'?`s.truthy(${left})`:node.operator==='||'?`!s.truthy(${left})`:`rt.nullish(${left})`;
@@ -127,7 +158,7 @@ function branchFunction(ctx,node){
  }
  line(helper,`if (${condition}) {`);complete(conditional?node.consequent:node.right);line(helper,'} else {');
  if(conditional)complete(node.alternate);else line(helper,`return .{ .value = ${left} };`);
- line(helper,'}');branchHelpers[id]={body:helper.lines.join('\n'),source:ctx.module.file,start:node.start,end:node.end};return id;
+ line(helper,'}');const body=helper.lines.join('\n');branchHelpers[id]={body,unit:nativeUnit('branch',id,helper,body),source:ctx.module.file,start:node.start,end:node.end};return id;
 }
 function functionValue(ctx,node,inferred=''){
  const id=compileFunction(node,ctx.module,inferred,ctx.locals),f=functions[id];
@@ -146,7 +177,7 @@ function expr(ctx,node,inferred=''){
   case 'Identifier':return node.name==='undefined'?'c.pi_js_undefined()':value(ctx,`try rt.get(s, env, ${q(nameOf(ctx,node.name))})`);
   case 'Literal':
    if(node.regex)return value(ctx,`try rt.regexp(s, ${q(node.regex.pattern)}, ${q(node.regex.flags)})`);
-   if(node.bigint)return value(ctx,`try rt.invoke(s, engine.intrinsic_bigint_constructor, c.pi_js_undefined(), &.{try s.text(${q(node.bigint)})})`);
+   if(node.bigint){const args=argumentsSlice(ctx,[`try s.text(${q(node.bigint)})`]);return value(ctx,`try rt.invoke(s, engine.intrinsic_bigint_constructor, c.pi_js_undefined(), ${args})`)}
    if(node.value===null)return 'c.pi_js_null()';
    if(typeof node.value==='boolean')return `c.pi_js_bool(engine.context, ${+node.value})`;
    if(typeof node.value==='number')return `c.JS_NewFloat64(engine.context, ${Object.is(node.value,-0)?'-0.0':JSON.stringify(node.value)})`;
@@ -158,15 +189,19 @@ function expr(ctx,node,inferred=''){
    const m=member(ctx,node);return value(ctx,`try rt.key(s, ${m.object}, ${m.key})`);
   }
   case 'CallExpression':case 'NewExpression':{
+   const region=ctx.scopedSetup&&!node.optional&&!optionalCallee(node.callee)&&!node.arguments.some(arg=>arg.type==='SpreadElement')?{start:ctx.lines.length,sourceStart:node.start,sourceEnd:node.end,sourceHash:crypto.createHash('sha256').update(ctx.module.source.slice(node.start,node.end)).digest('hex'),construct:node.type==='NewExpression'}:null;
    let callable,receiver='c.pi_js_undefined()';
    if(node.callee.type==='MemberExpression'&&!(node.callee.object.type==='Identifier'&&!ctx.locals.has(node.callee.object.name)&&local(ctx.module,node.callee.object.name)?.namespace)){const m=member(ctx,node.callee);receiver=m.object;callable=value(ctx,`try rt.key(s, ${m.object}, ${m.key})`)}else callable=expr(ctx,node.callee);
+   if(region){region.calleeEnd=ctx.lines.length;region.callable=callable;region.callReceiver=receiver}
    const optional=node.optional;let output;
    if(optional){output=fresh('optional');line(ctx,`var ${output} = c.pi_js_undefined();`);line(ctx,`if (!rt.nullish(${callable})) {`)}
    let result;
    if(node.arguments.some(a=>a.type==='SpreadElement')){
     if(node.type==='NewExpression')throw Error('New spread');const array=value(ctx,'try s.array()');for(const a of node.arguments){const input=expr(ctx,a.type==='SpreadElement'?a.argument:a);line(ctx,`try rt.${a.type==='SpreadElement'?'spreadArray':'append'}(s, ${array}, ${input});`)}result=`try rt.invokeSpread(s, ${callable}, ${receiver}, ${array})`;
-   }else{const args=node.arguments.map(a=>expr(ctx,a));result=node.type==='NewExpression'?`try rt.construct(s, ${callable}, &.{${args.join(', ')}})`:`try rt.invoke(s, ${callable}, ${receiver}, &.{${args.join(', ')}})`}
-   if(optional){line(ctx,`${output} = ${result};`);line(ctx,'}');return output}return value(ctx,result);
+   }else{const args=argumentsSlice(ctx,node.arguments.map(a=>expr(ctx,a)));if(region)region.arguments=args;result=node.type==='NewExpression'?`try rt.construct(s, ${callable}, ${args})`:`try rt.invoke(s, ${callable}, ${receiver}, ${args})`}
+   if(optional){line(ctx,`${output} = ${result};`);line(ctx,'}');return output}
+   if(region){region.end=ctx.lines.length;region.callLine=ctx.lines.length;region.resultSlot=value(ctx,result);ctx.callRegions.push(region);return region.resultSlot}
+   return value(ctx,result);
   }
   case 'ChainExpression':return expr(ctx,node.expression);
   case 'ArrayExpression':{
@@ -216,13 +251,13 @@ function statement(ctx,node){
   }
   case 'TryStatement':{
    if(node.handler||!returns(node.block)||returns(node.finalizer))throw Error('Unexpected try control shape');
-   const id=tryHelpers.length,helper={...ctx,lines:[]};tryHelpers.push(null);statement(helper,node.block);tryHelpers[id]={body:helper.lines.join('\n')};
+   const id=tryHelpers.length,helper={...ctx,lines:[],callRegions:[]};tryHelpers.push(null);statement(helper,node.block);const body=helper.lines.join('\n');tryHelpers[id]={body,unit:nativeUnit('try',id,helper,body)};
    const result=fresh('completion');line(ctx,`const ${result} = try_block_${id}(s, env, ${ctx.receiver}, native_values);`);line(ctx,`errdefer if (${result}) |returned| engine.freeValue(returned) else |_| {};`);statement(ctx,node.finalizer);line(ctx,`return ${result};`);return;
   }
   default:throw Error('Unlowered statement '+node.type+' in '+ctx.module.file);
  }
 }
-const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()',slots:{count:0}};
+const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()',slots:{count:0},argumentFrame:argumentFrame('initializer'),scopedSetup:false,callRegions:[]};
 for(const b of chosen.values())if(!b.external&&(b.init||b.node.type==='ClassDeclaration'))line(initialize,`try rt.declare(s, env, ${q(b.id)});`);
 for(const b of chosen.values()){
  if(b.external){const operations=['EvaluateTemplateLiteral','EvaluateEnum','EvaluateIntersect','EvaluateType','EvaluateUnion','EvaluateDependent','EvaluateUnionFast'];const lengths=[1,1,1,1,1,3,1];
@@ -243,23 +278,36 @@ function initializeModule(file){if(initialized.has(file)||external.has(file)||!m
  }
 }
 for(const b of chosen.values())if(!b.external)initializeModule(b.module.file);
+initialize.argumentFrame.base=initialize.slots.count;
+const frozenLowering={serial,callbacks:functions.length,branches:branchHelpers.length,tries:tryHelpers.length,identities:JSON.stringify(functions.map(f=>({id:f.id,name:f.name,length:f.length,arrow:f.arrow,usesReceiver:f.usesReceiver,usesArgs:f.usesArgs,usesEnv:f.usesEnv,originalSlots:f.originalSlots,argumentSlots:f.argumentSlots,argumentSlices:f.argumentSlices})))};
+if(functions.filter(f=>f.unit.scoped).length!==24)throw Error('Measured setup scope must remain exactly24 callbacks');
+const setupUnits=[...functions.map(f=>f.unit),...tryHelpers.map(h=>h.unit),...branchHelpers.map(h=>h.unit)];
+const bodyIdentity=()=>JSON.stringify(setupUnits.map(unit=>({kind:unit.kind,id:unit.id,owner:unit.owner,flags:unit.flags,bodySha256:crypto.createHash('sha256').update(unit.lines.join('\n')).digest('hex')})));
+const frozenBodies=bodyIdentity();
+const outlined=outlineCallPreparations(setupUnits,argumentFrames,['runBranch',...functions.map(f=>`f_${f.id}`),...tryHelpers.map((_,id)=>`try_block_${id}`),...branchHelpers.map((_,id)=>`branch_${id}`)]);
+if(serial!==frozenLowering.serial||functions.length!==frozenLowering.callbacks||branchHelpers.length!==frozenLowering.branches||tryHelpers.length!==frozenLowering.tries||bodyIdentity()!==frozenBodies||JSON.stringify(functions.map(f=>({id:f.id,name:f.name,length:f.length,arrow:f.arrow,usesReceiver:f.usesReceiver,usesArgs:f.usesArgs,usesEnv:f.usesEnv,originalSlots:f.originalSlots,argumentSlots:f.argumentSlots,argumentSlices:f.argumentSlices})))!==frozenLowering.identities)throw Error('Outlining changed original lowering identity');
+if(initialize.argumentFrame.descriptorCount!==0)throw Error('Setup descriptors escaped the selected callback scope');
+for(const f of functions){const descriptors=argumentFrames.get(`f${f.id}`).descriptorCount;if(!f.unit.scoped&&descriptors)throw Error('Setup descriptors escaped the24 measured callbacks');f.slots+=descriptors}
 const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\nconst BranchResult = union(enum) { value: c.JSValue, jump: usize };\nconst BranchHelper = *const fn (*rt.Scope, c.JSValue, c.JSValue, []c.JSValue) anyerror!BranchResult;\n';
 let native=prelude;
 for(const f of functions){
- native+=`fn f_${f.id}(engine: *rt.Engine, ${f.usesReceiver&&!f.arrow?'receiver':'_'}: c.JSValue, ${f.usesArgs?'args':'_'}: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\n${/\benv\b/.test(f.body)?'const env':'_'} = try rt.environment(s, roots[0]);\n`;
- if(f.arrow&&f.usesReceiver)native+='const receiver = roots[1];\n';if(f.slots)native+=`const native_values = try engine.gpa.alloc(c.JSValue, ${f.slots});\ndefer engine.gpa.free(native_values);\n`;native+=f.body+'\n}\n';
+ native+=`fn f_${f.id}(engine: *rt.Engine, ${f.usesReceiver&&!f.arrow?'receiver':'_'}: c.JSValue, ${f.usesArgs?'args':'_'}: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {\nconst s = try engine.gpa.create(rt.Scope);\ns.* = .{ .engine = engine };\ndefer { s.deinit(); engine.gpa.destroy(s); }\n${f.usesEnv?'const env':'_'} = try rt.environment(s, roots[0]);\n`;
+ if(f.arrow&&f.usesReceiver)native+='const receiver = roots[1];\n';if(f.slots)native+=`const native_values = try engine.gpa.alloc(c.JSValue, ${f.slots});\ndefer engine.gpa.free(native_values);\n`;native+=(f.unit.emittedBody??f.body)+'\n}\n';
 }
-for(let i=0;i<tryHelpers.length;i++){const h=tryHelpers[i];native+=`fn try_block_${i}(s: *rt.Scope, env: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {\nconst engine = s.engine;\n${h.body}\n}\n`}
-for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i];native+=`fn branch_${i}(s: *rt.Scope, ${/\benv\b/.test(h.body)?'env':'_'}: c.JSValue, ${/\breceiver\b/.test(h.body)?'receiver':'_'}: c.JSValue, ${/\bnative_values\b/.test(h.body)?'native_values':'_'}: []c.JSValue) anyerror!BranchResult {\n${/\bengine\b/.test(h.body)?'const engine = s.engine;\n':''}${h.body}\n}\n`}
+for(let i=0;i<tryHelpers.length;i++){const h=tryHelpers[i],body=h.unit.emittedBody??h.body,needsEngine=h.unit.emittedBody!==undefined?usesNativeName(body,'engine'):true;native+=`fn try_block_${i}(s: *rt.Scope, env: c.JSValue, ${h.unit.flags.receiver?'receiver':'_'}: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {\n${needsEngine?'const engine = s.engine;\n':''}${body}\n}\n`}
+for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i],body=h.unit.emittedBody??h.body,needsEngine=h.unit.emittedBody!==undefined?usesNativeName(body,'engine'):/\bengine\b/.test(h.body);native+=`fn branch_${i}(s: *rt.Scope, ${h.unit.flags.env?'env':'_'}: c.JSValue, ${h.unit.flags.receiver?'receiver':'_'}: c.JSValue, ${/\bnative_values\b/.test(h.body)?'native_values':'_'}: []c.JSValue) anyerror!BranchResult {\n${needsEngine?'const engine = s.engine;\n':''}${body}\n}\n`}
 native+='const branch_helpers = [_]BranchHelper { '+branchHelpers.map((_,i)=>`branch_${i}`).join(', ')+' };\n';
 native+='fn runBranch(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue, initial: usize) anyerror!c.JSValue {\nvar next = initial;\nwhile (true) {\nconst result = try branch_helpers[next](s, env, receiver, native_values);\nswitch (result) { .jump => |child| next = child, .value => |value| return value }\n}\n}\n';
-native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nvar scope: rt.Scope = .{ .engine = engine };\ndefer scope.deinit();\nconst s = &scope;\nconst env = try rt.environment(s, c.pi_js_null());\n'+`const native_values = try engine.gpa.alloc(c.JSValue, ${initialize.slots.count});\ndefer engine.gpa.free(native_values);\n`+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
+native+=outlined.native;
+native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nconst s = try engine.gpa.create(rt.Scope);\ns.* = .{ .engine = engine };\ndefer { s.deinit(); engine.gpa.destroy(s); }\nconst env = try rt.environment(s, c.pi_js_null());\n'+`const native_values = try engine.gpa.alloc(c.JSValue, ${initialize.slots.count+initialize.argumentFrame.count});\ndefer engine.gpa.free(native_values);\n`+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
 for(const [name,b] of publicRoots)native+=`try s.put(namespace, ${q(name)}, try rt.get(s, env, ${q(b.id)}));\n`;
 native+='return c.JS_DupValue(engine.context, namespace);\n}\n';
 native+='pub fn install(engine: *rt.Engine, type_builder: c.JSValue, graph: c.JSValue) !void {\nconst namespace = try create(engine, graph);\ndefer engine.freeValue(namespace);\ntry @import("native_js_values.zig").spreadInto(engine, type_builder, namespace);\n}\n';
-const nativePath=new URL('../../src/extensions/native_typebox_operators_production.zig',import.meta.url);
-fs.writeFileSync(nativePath,native);
-fs.writeFileSync(new URL('./lowering-map.json',import.meta.url),JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,heapOperandSlots:f.slots})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,iterativeJumpChained:true}))},null,2)+'\n');
+native=native.replace(/__TYPEBOX_NATIVE_ARG_(f\d+|initializer)_(\d+)__/g,(_,key,index)=>{const frame=argumentFrames.get(key),offset=Number(index);if(!frame||offset>frame.count)throw Error('Invalid static argument offset');return String(frame.base+offset)});
+native=native.replace(/__TYPEBOX_NATIVE_SETUP_(f\d+)_(\d+)__/g,(_,key,index)=>{const frame=argumentFrames.get(key),offset=Number(index);if(!frame||offset>=frame.descriptorCount)throw Error('Invalid setup descriptor offset');return String(frame.base+frame.count+offset)});
+if(native.includes('__TYPEBOX_NATIVE_ARG_')||native.includes('__TYPEBOX_NATIVE_SETUP_'))throw Error('Unresolved static frame offset');
+writeOutput('../../src/extensions/native_typebox_operators_production.zig',native);
+writeOutput('./lowering-map.json',JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,originalUsesReceiver:f.usesReceiver,originalUsesArgs:f.usesArgs,originalUsesEnv:f.usesEnv,heapOperandSlots:f.slots,originalOperandSlots:f.originalSlots,appendedArgumentSlots:f.argumentSlots,callArgumentSlices:f.argumentSlices,setupDescriptorSlots:argumentFrames.get(`f${f.id}`).descriptorCount,setupDescriptors:argumentFrames.get(`f${f.id}`).descriptors.map(item=>({...item,start:f.originalSlots+f.argumentSlots+item.offset}))})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',callbackScopeStorage:'GPA-owned original Scope; existing tracing and callback lifetime preserved',callArgumentStorage:'Disjoint appended argument area after original operand slots; borrowed pre-evaluated values',callSetup:{selectedModules:[...setupModules],selectedCallbacks:24,originalFreshSerial:frozenLowering.serial,identityFrozen:true,helpers:outlined.provenance},initializerOriginalOperandSlots:initialize.slots.count,initializerHeapOperandSlots:initialize.slots.count+initialize.argumentFrame.count,initializerArgumentSlices:initialize.argumentFrame.ranges.map(range=>({start:initialize.slots.count+range.start,count:range.count})),branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,iterativeJumpChained:true}))},null,2)+'\n');
 for(const file of new Set(initializationOrder.map(row=>row.module))){const selected=initializationOrder.filter(row=>row.module===file);for(let index=1;index<selected.length;index++)if(selected[index-1].start>=selected[index].start)throw Error('Original declaration order regression '+file)}
-fs.writeFileSync(new URL('./initialization-order.json',import.meta.url),JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
-console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));
+writeOutput('./initialization-order.json',JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
+console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,setupHelpers:outlined.provenance.length,setupAuthoringControls,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));

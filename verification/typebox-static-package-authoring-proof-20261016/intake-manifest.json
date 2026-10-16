@@ -1,0 +1,70 @@
+{
+  "schema": 1,
+  "scope": "Source-only tooling virtual patch and exact generated-copy plan; no Main edits or jobs",
+  "main_base": "2a36a0d847aa8b2455f30c838f288fdd06317f1f",
+  "authoring_head": "9f41c90034d098a5a6c421a22171025ea86b5f01",
+  "tools_patch": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-main2a36-tools-only-9f41c900-20261016.patch",
+  "tools_patch_sha256": "5C80822BA0A505B8A4A45F90F3AFC5F5D1CE4BD15C837209D0881C2C7CAE32BF",
+  "tools": [
+    {
+      "path": "verification/typebox-operators-production-20261016/lower-authority.mjs",
+      "operation": "replace",
+      "expected_before_sha256": "F4DD33FE862B09EEFDD824E4ECBB6BB562B26BF12BD23C5B5239D88C1B63185C",
+      "after_sha256": "C608B8979DBC8C3D61D723D73BCE049199E304CAB127B3AF39A44FC4226F345C"
+    },
+    {
+      "path": "verification/typebox-operators-production-20261016/outline-call-setup.mjs",
+      "operation": "add",
+      "expected_before_sha256": null,
+      "after_sha256": "8F32672D834F4D63740622C0F1E29C3BC13DE893F41D5787F6004DED09FEFA27"
+    },
+    {
+      "path": "verification/typebox-operators-production-20261016/outline-call-setup.test.mjs",
+      "operation": "add",
+      "expected_before_sha256": null,
+      "after_sha256": "9B7B80E4DACF47D9505D688D1EE5DB09BD93E3C611427128E4EFF1932676CE2C"
+    },
+    {
+      "path": "verification/typebox-production-native-qualification-20261016/Run-OwnedStaticPackageAuthoring.ps1",
+      "operation": "add",
+      "expected_before_sha256": null,
+      "after_sha256": "7049991E10FD9338CB9A2E4EBDF865CFD610A7F3C8D22F611FE8827F983C60A5"
+    }
+  ],
+  "generated_root_owned_copy": [
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-package-authoring-20261016\\staged\\native_typebox_operators_production.zig",
+      "destination_relative": "src/extensions/native_typebox_operators_production.zig",
+      "sha256": "BF583CCD1D6A92A4FED0D7D4ED17422FDFBE0E7B261444A65D3C287FBB3F3FB1",
+      "included_in_tools_patch": false
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-package-authoring-20261016\\staged\\lowering-map.json",
+      "destination_relative": "verification/typebox-operators-production-20261016/lowering-map.json",
+      "sha256": "F1D8A2DD5B19745DACD6F092A0F06C19373CED6DAAE65493BFA93828AA225A2B",
+      "included_in_tools_patch": false
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-package-authoring-20261016\\staged\\initialization-order.json",
+      "destination_relative": "verification/typebox-operators-production-20261016/initialization-order.json",
+      "sha256": "C4BB3782E6353A073B34842E8D64BCE12E0C318476D69E4F6106DC8BEF9667ED",
+      "included_in_tools_patch": false
+    },
+    {
+      "source": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-package-authoring-20261016\\staged\\reachable-closure.json",
+      "destination_relative": "verification/typebox-operators-production-20261016/reachable-closure.json",
+      "sha256": "4E718CCE679A362BCC74A02F6FA717A61240619FA6D1B83BB394706476DC4F93",
+      "included_in_tools_patch": false
+    }
+  ],
+  "independent_acceptance_sha256": "466EE4FBE21B155C16B24FFD4C804549A6CB0FADD435CFD6F33820ECC54F5EFB",
+  "git_apply_check_on_base": "passed read-only",
+  "plan": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-main2a36-tools-intake-plan-20261016.md",
+  "plan_sha256": "084EC61A791EA92A2B5204C5084AE9A13745EB5C6A8224FA167D5232F41647A8",
+  "legacy_callers_changed": false,
+  "Engine_C_fixtures_goldens_changed": false,
+  "runtime_restoration_claim": false,
+  "native_claim": false,
+  "jobs_started": 0,
+  "observed_utc": "2026-10-16T21:46:50.9851604+00:00"
+}
