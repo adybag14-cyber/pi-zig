@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "native_executed": false,
+  "native_compiled": false,
+  "full_pi_qualified": false,
+  "source_cases": 80,
+  "expected_sha256": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2",
+  "expected_accepted_only_after_terminal0_and_full_posthash0": true
+}

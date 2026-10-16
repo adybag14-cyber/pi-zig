@@ -1,0 +1,40 @@
+{
+  "status": "genuine_typebox_operator_double_source_qualified",
+  "captured_candidate": "3ed99011a6f53a7ffb1392fac759ffdf0b0b843b",
+  "version": "1.3.27",
+  "cases": 396,
+  "double_capture_rows_exact": true,
+  "both_actual_terminals_passed": true,
+  "all_full_posthash_and_path_drift": 0,
+  "historical_absence_contracts": 84,
+  "expected_published_only_after_both_terminal_and_agreement": true,
+  "expected_sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+  "input_sha256": "37ceeac103c70bf1c587f03caa11c5ee4ec0a6ae414222d8653116e94db5c9aa",
+  "closure_sha256": "4e718cce679a362bcc74a02f6fa717a61240619fa6d1b83bb394706476dc4f93",
+  "package_sha256": "c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f",
+  "captures": [
+    {
+      "attempt": "first",
+      "pid": 73412,
+      "created_utc": "2026-10-15T23:46:38.538496Z",
+      "validation_sha256": "54D76DCF5BB043C4F47C775A761E892D1AACBC9827A84866E087740EDCFE55A2",
+      "process_sha256": "998FE3900EB0B73951CC307F504CF58754E503C04D464F20C6EFDC82BDFB24BC",
+      "posthash_sha256": "26F33F3723ED0B82B180AA5972A8DD2FD904C370378B1556B4E02760F3CD21C1",
+      "output_sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C"
+    },
+    {
+      "attempt": "second",
+      "pid": 77848,
+      "created_utc": "2026-10-15T23:49:23.7353894Z",
+      "validation_sha256": "82024603FDA90CE41061116D3865C707874BC95959D0E67AB8F7C7A3A01C85E6",
+      "process_sha256": "1291650B3B6D0DA78784D5B097011EE662915430197C7D41534231D9238000AE",
+      "posthash_sha256": "9B6F8B166317094B9433CEC6CDF7BF9A45D3A08BD705E10BA3644695BF1DA7B4",
+      "output_sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C"
+    }
+  ],
+  "native_compiled": false,
+  "native_qualified": false,
+  "full_HOST_GPA": false,
+  "C_malloc_exhaustive": false,
+  "completed_utc": "2026-10-15T23:51:18.4566054+00:00"
+}

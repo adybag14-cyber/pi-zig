@@ -1,0 +1,26 @@
+{
+  "status": "actual_original_shared_module_identity_verified",
+  "source_pid": 74660,
+  "source_output_sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+  "actual_observed_modules": 672,
+  "actual_typebox_physical_modules": 668,
+  "typebox_module_origin_drift": 0,
+  "exact_official_entrypoints": 3,
+  "type_partial_shares_system_settings": true,
+  "type_partial_shares_system_metrics": true,
+  "partial_frozen_when_system_settings_enabled": true,
+  "partial_enumerable_kind_when_system_settings_enabled": true,
+  "partial_metrics": {
+    "assign": 0,
+    "create": 1,
+    "clone": 3,
+    "discard": 0,
+    "update": 3
+  },
+  "cross_model_compat_cost_identity": true,
+  "model_input_enum_array_identity": true,
+  "model_thinking_enum_array_identity": true,
+  "source_rerun": false,
+  "native_execution": false,
+  "verified_utc": "2026-10-15T23:28:27.0925914+00:00"
+}

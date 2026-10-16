@@ -2222,6 +2222,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-web-fetch", "Compile complete genuine Fetch39 real peer comparison").dependOn(&fetch_source_tests.step);
     const fetch_source_run = b.addRunArtifact(fetch_source_tests);
     b.step("test-native-web-fetch", "Replay all39 unchanged fetch rows against real native Request Response stream and HTTP").dependOn(&fetch_source_run.step);
+    const typebox_production_module = b.createModule(.{ .root_source_file = b.path("src/native_typebox_compile_production_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, typebox_production_module, quickjs, sqlite_lib_dir);
+    typebox_production_module.addImport("catalog_tool", catalog_tool);
+    const typebox_production_tests = b.addTest(.{ .root_module = typebox_production_module, .use_llvm = use_llvm });
+    b.step("build-native-typebox-production-source", "Compile the shared production TypeBox graph and actual Source80 and Source52 replays").dependOn(&typebox_production_tests.step);
+    const typebox_production_run = b.addRunArtifact(typebox_production_tests);
+    b.step("test-native-typebox-production-source", "Replay actual compiler and provider schemas through the shared native TypeBox graph").dependOn(&typebox_production_run.step);
     const headers_source_module = b.createModule(.{ .root_source_file = b.path("src/native_headers_source_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, headers_source_module, quickjs, sqlite_lib_dir);
     headers_source_module.addImport("catalog_tool", catalog_tool);

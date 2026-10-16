@@ -1,0 +1,11 @@
+{
+  "sourceExecution": "NOT RUN",
+  "astErrors": 0,
+  "formatErrors": 0,
+  "semanticCompile": "NOT RUN",
+  "zig": "0.16.0",
+  "files": 277,
+  "nativeExecution": "NOT RUN",
+  "checkedUtc": "2026-10-15T23:56:11.3115425+00:00",
+  "nativeIrGetterOrderSuccessor": "Native IR delta fmt/AST0; Source80 input/capture syntax0; no semantic compile or execution"
+}
