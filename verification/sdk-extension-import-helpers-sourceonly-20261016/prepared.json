@@ -106,8 +106,8 @@
     },
     {
       "path": "src/extensions/native_sdk_extension_loader_assembly.zig",
-      "sha256": "E647C99533EEACBFEDC8CF83A174C7E89248BB53D18525D5A145479F332021E1",
-      "bytes": 2844
+      "sha256": "01CA1B3C8664755512C8F598183AD361BB891A01BD9200392E53410CDF4F361B",
+      "bytes": 2971
     },
     {
       "path": "src/native_sdk_extension_import_helpers_controls.zig",
