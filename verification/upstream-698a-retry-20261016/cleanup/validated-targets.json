@@ -1,0 +1,23 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\cache",
+    "files": 13,
+    "bytes": 31990285.0,
+    "reparse_points": 0,
+    "live_dependencies": 0
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\global-cache",
+    "files": 826,
+    "bytes": 44492814.0,
+    "reparse_points": 0,
+    "live_dependencies": 0
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\out",
+    "files": 2,
+    "bytes": 5278720.0,
+    "reparse_points": 0,
+    "live_dependencies": 0
+  }
+]

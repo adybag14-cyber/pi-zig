@@ -1,0 +1,20 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\cache",
+    "action": "Sent to Windows Recycle Bin",
+    "source_absent": true,
+    "verified_utc": "2026-10-16T18:04:21.2964252+00:00"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\global-cache",
+    "action": "Sent to Windows Recycle Bin",
+    "source_absent": true,
+    "verified_utc": "2026-10-16T18:04:21.7334154+00:00"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-root-20261016\\out",
+    "action": "Sent to Windows Recycle Bin",
+    "source_absent": true,
+    "verified_utc": "2026-10-16T18:04:21.9999721+00:00"
+  }
+]

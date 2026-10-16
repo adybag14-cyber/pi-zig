@@ -1,0 +1,6 @@
+{
+  "verified_utc": "2026-10-16T18:03:37.5220994+00:00",
+  "commit": "54bf469c4cf7aa0b194bd01d51e02ec11d1b9c44",
+  "published_zip_sha256": "D5871B2851214977D3DEAF4F9C844C589F53EA007EDACF7AD5560EEF6218344C",
+  "scope": "Only standalone retry build caches/output eligible; original proof and retained executable bytes remain archived on GitHub"
+}
