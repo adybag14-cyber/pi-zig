@@ -6,8 +6,8 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const flow = @import("native_sdk_async_actions.zig");
 const functions = @import("native_node_function.zig");
 const class = @import("native_class.zig");
 const c = em.c;
@@ -103,8 +103,7 @@ pub fn create(engine: *em.Engine, actual_imports: c.JSValue, graph: c.JSValue) !
         const function = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, getter, name, if (index == 0) 1 else 0, index)));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
-    const load = try scope.own(try functions.create(engine, "load", 1, begin, &.{bindings}));
-    if (c.JS_SetPrototype(engine.context, load, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
+    const load = try scope.own(try flow.native.createResumable(engine, "load", 1, loadBody, &.{bindings}));
     if (c.JS_DefinePropertyValueStr(engine.context, ctor, "load", c.JS_DupValue(engine.context, load), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     const result = try scope.object();
     try scope.put(result, "ModelConfig", ctor);
@@ -146,12 +145,14 @@ fn newConfig(scope: *Scope, bindings: c.JSValue, providers: c.JSValue, failure: 
 fn emptyConfig(scope: *Scope, bindings: c.JSValue, failure: c.JSValue) !c.JSValue {
     return newConfig(scope, bindings, try scope.own(try js.builtin(scope.engine, "Map", &.{})), failure);
 }
-fn begin(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    start(engine, pending.owner, roots[0], arg(args, 0)) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+fn loadBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and c.pi_js_native_allocation_error_generation(input) != 0) return error.OutOfMemory;
+    if (completion == .start) {
+        const owner = try flow.body.init(&scope, state);
+        start(engine, owner, roots[0], arg(args, 0)) catch |err| try flow.rejectError(engine, owner, err);
+    } else loaded(engine, state.*, input, completion == .rejected, 0) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, path: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -159,7 +160,9 @@ fn start(engine: *em.Engine, owner: c.JSValue, bindings: c.JSValue, path: c.JSVa
     try scope.put(owner, "bindings", bindings);
     if (!scope.truthy(path)) return flow.settle(engine, owner, false, try emptyConfig(&scope, bindings, c.pi_js_undefined()));
     try scope.put(owner, "path", try imported(&scope, bindings, "normalizePath", &.{path}));
+    const generation = engine.native_allocation_generation;
     const pending = imported(&scope, bindings, "readFile", &.{ try scope.get(owner, "path"), try scope.text("utf-8") }) catch |err| {
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
         return readFailure(engine, owner, try scope.own(flow.reason(engine, err)));
     };
     try flow.wait(loaded, engine, owner, pending, 0);
@@ -194,7 +197,9 @@ fn loadedBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const bindings = try scope.get(owner, "bindings");
+    const generation = engine.native_allocation_generation;
     const parsed = parse(&scope, bindings, content) catch |err| {
+        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
         const reason = try scope.own(flow.reason(engine, err));
         return flow.settle(engine, owner, false, try failureConfig(&scope, owner, "Failed to parse models.json: ", reason));
     };

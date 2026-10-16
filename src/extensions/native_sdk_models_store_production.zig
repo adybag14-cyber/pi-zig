@@ -6,8 +6,8 @@ const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const Scope = @import("native_models_stream_scope.zig").Scope;
+const flow = @import("native_sdk_async_actions.zig");
 const functions = @import("native_node_function.zig");
 const class = @import("native_class.zig");
 const c = em.c;
@@ -33,9 +33,6 @@ fn check(scope: *Scope, options: c.JSValue) !void {
 fn clone(scope: *Scope, value: c.JSValue) !c.JSValue {
     return scope.call(try scope.global("structuredClone"), c.pi_js_undefined(), &.{value});
 }
-fn asynchronous(scope: *Scope, function: c.JSValue) !void {
-    if (c.JS_SetPrototype(scope.engine.context, function, try scope.own(try scope.engine.checked(c.JS_GetAsyncFunctionPrototype(scope.engine.context)))) < 0) return js.capture(scope.engine);
-}
 pub fn create(engine: *em.Engine, actual_imports: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -54,8 +51,8 @@ pub fn create(engine: *em.Engine, actual_imports: c.JSValue) !c.JSValue {
             const method: Method = @enumFromInt(field.value);
             if (index == 0 and method != .read and method != .write and method != .delete) continue;
             const length: c_int = if (method == .write or method == .updateReadState) 3 else if (method == .parse) 1 else 2;
-            const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, if (index == 0) memoryDispatch else fileDispatch, field.name, length, field.value, 1, @constCast((&[_]c.JSValue{bindings}).ptr))));
-            if (method != .parse and method != .updateReadState and method != .reloadFromStorage) try asynchronous(&scope, function);
+            const captures = [_]c.JSValue{ bindings, c.JS_NewInt32(engine.context, field.value) };
+            const function = try scope.own(if (index == 0) try flow.native.create(engine, field.name, length, memoryAsync, &captures) else if (method != .parse and method != .updateReadState and method != .reloadFromStorage) try flow.native.createResumable(engine, field.name, length, fileBody, &captures) else try engine.checked(c.JS_NewCFunctionData2(engine.context, fileDispatch, field.name, length, field.value, captures.len, @constCast(&captures))));
             if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
         }
         try scope.put(output, name, constructor);
@@ -94,18 +91,9 @@ fn fileConstruct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue,
     }
     return c.JS_DupValue(engine.context, self);
 }
-fn memoryDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return memoryBegin(engine, receiver, @enumFromInt(magic), if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
-}
-fn memoryBegin(engine: *em.Engine, receiver: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, receiver);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    memoryBody(engine, pending.owner, receiver, method, args) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn memoryBody(engine: *em.Engine, owner: c.JSValue, receiver: c.JSValue, method: Method, args: []const c.JSValue) !void {
+fn memoryAsync(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var method_id: i32 = undefined; if (c.JS_ToInt32(engine.context, &method_id, roots[1]) < 0) return js.capture(engine);
+    const method: Method = @enumFromInt(method_id);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     try check(&scope, arg(args, if (method == .write) 2 else 1));
@@ -124,13 +112,13 @@ fn memoryBody(engine: *em.Engine, owner: c.JSValue, receiver: c.JSValue, method:
         .delete => _ = try scope.invoke(try scope.get(receiver, "entries"), "delete", &.{arg(args, 0)}),
         else => unreachable,
     }
-    try flow.settle(engine, owner, false, result);
+    return c.JS_DupValue(engine.context, result);
 }
 fn fileDispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     const method: Method = @enumFromInt(magic);
     const args = if (argc > 0) argv[0..@intCast(argc)] else &.{};
-    return (if (method == .parse or method == .updateReadState or method == .reloadFromStorage) fileSync(engine, receiver, roots[0], method, args) else fileBegin(engine, receiver, roots[0], method, args)) catch |err| sdk.fail(engine, err);
+    return fileSync(engine, receiver, roots[0], method, args) catch |err| sdk.fail(engine, err);
 }
 fn fileSync(engine: *em.Engine, receiver: c.JSValue, bindings: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -145,21 +133,16 @@ fn fileSync(engine: *em.Engine, receiver: c.JSValue, bindings: c.JSValue, method
         .reloadFromStorage => {
             const storage = try scope.get(receiver, "storage");
             const with_lock = try scope.get(storage, "withLockAsync");
-            const callback = try scope.own(try functions.createArrow(engine, "", 1, reloadCallback, &.{ receiver, bindings, arg(args, 0) }));
-            try asynchronous(&scope, callback);
+            const callback = try scope.own(try flow.native.createArrow(engine, "", 1, reloadCallback, &.{ receiver, bindings, arg(args, 0) }, receiver));
             return c.JS_DupValue(engine.context, try scope.call(with_lock, storage, &.{ callback, arg(args, 1) }));
         },
         else => unreachable,
     }
 }
 fn reloadCallback(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, roots[0]);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    reloadBody(engine, pending.owner, arg(args, 0), roots) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    return reloadBody(engine, arg(args, 0), roots);
 }
-fn reloadBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue, roots: []const c.JSValue) !void {
+fn reloadBody(engine: *em.Engine, content: c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const data = try scope.invoke(roots[0], "parse", &.{content});
@@ -167,14 +150,20 @@ fn reloadBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue, roots: [
     _ = try scope.call(update, roots[0], &.{ roots[2], data, try imported(&scope, roots[1], "getFileRevision", &.{try scope.get(roots[0], "path")}) });
     const result = try scope.object();
     try scope.put(result, "result", data);
-    try flow.settle(engine, owner, false, result);
+    return c.JS_DupValue(engine.context, result);
 }
-fn fileBegin(engine: *em.Engine, receiver: c.JSValue, bindings: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, receiver);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    fileStart(engine, pending.owner, receiver, bindings, method, args) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+fn fileBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: flow.native.Completion, input: c.JSValue) !flow.native.Action {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    if (completion == .rejected and c.pi_js_native_allocation_error_generation(input) != 0) {
+        if (try flow.body.stage(&scope, state.*) == @intFromEnum(Stage.raced)) finishReader(&scope, state.*) catch {};
+        return error.OutOfMemory;
+    }
+    if (completion == .start) {
+        const owner = try flow.body.init(&scope, state);
+        var method_id: i32 = undefined; if (c.JS_ToInt32(engine.context, &method_id, roots[1]) < 0) return js.capture(engine);
+        fileStart(engine, owner, receiver, roots[0], @enumFromInt(method_id), args) catch |err| try flow.rejectError(engine, owner, err);
+    } else continueFile(engine, state.*, input, completion == .rejected, try flow.body.stage(&scope, state.*)) catch |err| try flow.rejectError(engine, state.*, err);
+    return flow.body.action(&scope, state.*);
 }
 fn fileStart(engine: *em.Engine, owner: c.JSValue, receiver: c.JSValue, bindings: c.JSValue, method: Method, args: []const c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -190,8 +179,7 @@ fn fileStart(engine: *em.Engine, owner: c.JSValue, receiver: c.JSValue, bindings
     try scope.put(owner, "delete", c.pi_js_bool(engine.context, @intFromBool(method == .delete)));
     const storage = try scope.get(receiver, "storage");
     const with_lock = try scope.get(storage, "withLockAsync");
-    const callback = try scope.own(try functions.createArrow(engine, "", 1, mutationCallback, &.{owner}));
-    try asynchronous(&scope, callback);
+    const callback = try scope.own(try flow.native.createArrow(engine, "", 1, mutationCallback, &.{owner}, receiver));
     return flow.wait(continueFile, engine, owner, try scope.call(with_lock, storage, &.{ callback, try scope.get(owner, "options") }), @intFromEnum(Stage.mutation));
 }
 fn startLatest(engine: *em.Engine, owner: c.JSValue, state: c.JSValue) !void {
@@ -250,13 +238,9 @@ fn finishReader(scope: *Scope, owner: c.JSValue) !void {
     }
 }
 fn mutationCallback(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, roots[0]);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    mutationBody(engine, pending.owner, roots[0], arg(args, 0)) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    return mutationBody(engine, roots[0], arg(args, 0));
 }
-fn mutationBody(engine: *em.Engine, promise: c.JSValue, owner: c.JSValue, content: c.JSValue) !void {
+fn mutationBody(engine: *em.Engine, owner: c.JSValue, content: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const current = try scope.invoke(try scope.get(owner, "self"), "parse", &.{content});
@@ -272,7 +256,7 @@ fn mutationBody(engine: *em.Engine, promise: c.JSValue, owner: c.JSValue, conten
     const result = try scope.object();
     try scope.put(result, "result", c.pi_js_undefined());
     try scope.put(result, "next", try scope.invoke(try scope.global("JSON"), "stringify", &.{ current, c.pi_js_null(), c.JS_NewInt32(engine.context, 2) }));
-    try flow.settle(engine, promise, false, result);
+    return c.JS_DupValue(engine.context, result);
 }
 fn continueFile(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
     finishFile(engine, owner, value, rejected, @enumFromInt(raw)) catch |err| try flow.rejectError(engine, owner, err);

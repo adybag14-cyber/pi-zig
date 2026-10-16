@@ -1,0 +1,45 @@
+{
+  "status": "genuine_sdk_async_config_stores_source_only",
+  "primitive_origin": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+  "primitive_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+  "recorder_origin": "2af5978b26ab1c20ef60fffb9580855a489fd002",
+  "recorder_sha256": "0C42582EB42281C36B7A836B7BBEDB55B19E1304BB6B58EC5C2EDA1F645F89F4",
+  "modules": [
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "0C42582EB42281C36B7A836B7BBEDB55B19E1304BB6B58EC5C2EDA1F645F89F4"
+    },
+    {
+      "path": "src/extensions/native_sdk_async_actions.zig",
+      "sha256": "C0DF22EB0B0B668DD9BD6DCD9268F19864EBCB4562497DDE74B1F9B50CC2C992"
+    },
+    {
+      "path": "src/extensions/native_sdk_model_config_production.zig",
+      "sha256": "B928F167F9273A9345B2D8F09BBB2A6F39581BF7FFCFD51EAC13A9876C1A48D0"
+    },
+    {
+      "path": "src/extensions/native_sdk_models_store_production.zig",
+      "sha256": "EFD1FA00CB72DD1D84E1AC5222ABF78ACFC141F2307A947B74110E824D10E596"
+    }
+  ],
+  "actual_methods": [
+    "ModelConfig.load",
+    "InMemoryCodingAgentModelsStore.read/write/delete",
+    "FileModelsStore.readLatest/read/write/delete",
+    "FileModelsStore.reload/write/delete callbacks"
+  ],
+  "whole_function_promises_removed": true,
+  "prototype_only_async_branding_removed": true,
+  "single_primitive_actions": true,
+  "trusted_host_oom": "propagated to qualified primitive fail path; raw guest reasons unchanged",
+  "native_compiled": false,
+  "native_qualified": false,
+  "fmt_ast": "not run for this migration while Root native serial slot is active",
+  "source53_expected_sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C",
+  "source44_expected_sha256": "94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3",
+  "default_selected": false
+}
