@@ -8,7 +8,7 @@
     "vendor/quickjs/quickjs.h"
   ],
   "planned_new_test": "src/native_private_module_graph_test.zig",
-  "spec_sha256": "A9DDDC9D99DBE54DD02E14526A6A5D2F143A67D2DBD68F68D3813B137BF580EE",
+  "spec_sha256": "DF1C90A626977B773C8150FBCC109295F808612904E2427FB7FD21FA79BFA889",
   "engine_changed": false,
   "c_changed": false,
   "compiler_or_runtime_executed": false,
