@@ -13,7 +13,10 @@ directory chain, plus StartupProfileData-NonInteractive (87,736 bytes), before
 the supervisor's previous blanket existing-run check. The old evidence is not
 adopted or changed; future attempts require a fresh run ID.
 
-The launcher now claims the fresh directory before starting PowerShell. New-Item
+The launcher first acquires its exact journal with exclusive New-Item, before any
+owner receipt or journal-mutating finally. A simultaneous loser exits at that gate
+and cannot overwrite the winner's receipts. It then claims the fresh run before
+starting PowerShell. New-Item
 without Force refuses an existing/raced directory. The claim file is created with
 FileMode.CreateNew, exclusive sharing and flushed before close. It binds schema,
 scope, run ID/path, candidate, exact grant SHA, fresh nonce, full launcher identity,

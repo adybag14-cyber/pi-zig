@@ -9,7 +9,9 @@ $runs=Join-Path $workspace.evidence 'retry698a-runtime-free-captures';$run=Asser
 $journal=$run+'.launcher'
 if((Test-Path -LiteralPath $run) -or (Test-Path -LiteralPath $journal)){throw 'Refuse any original run/launcher replay'}
 [void][IO.Directory]::CreateDirectory($runs)
-[void][IO.Directory]::CreateDirectory($journal)
+# Acquire the journal before writing any owner receipt or entering its finally.
+# A simultaneous loser must not overwrite the winner's self/terminal evidence.
+New-Item -ItemType Directory -Path $journal -ErrorAction Stop|Out-Null
 $context=New-S160Context $run 'launcher' $journal
 $self=Convert-S160Identity (Get-S160Live $PID)
 if(!$self){throw 'External launcher self identity required before any child'}
