@@ -46,7 +46,12 @@ pub fn importValue(s: *Scope, graph: c.JSValue, module: [*:0]const u8, name: [*:
     const modules = try s.get(graph, "modules");
     const namespace = try s.get(modules, module);
     if (std.mem.eql(u8, std.mem.span(name), "*")) return namespace;
-    return s.get(namespace, name);
+    const value = try s.get(namespace, name);
+    if (c.JS_IsUndefined(value)) {
+        std.debug.print("Missing actual TypeBox export {s}:{s}\n", .{ module, name });
+        return error.NativeTypeBoxModuleExportUnavailable;
+    }
+    return value;
 }
 pub fn defineKey(s: *Scope, target: c.JSValue, key: c.JSValue, value: c.JSValue) !void {
     const atom = try js.atom(s.engine, key);
