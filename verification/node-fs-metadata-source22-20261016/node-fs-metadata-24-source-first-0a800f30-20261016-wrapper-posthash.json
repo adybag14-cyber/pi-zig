@@ -1,0 +1,22 @@
+{
+  "candidate_head": "0a800f30353c2562254e8e1783e0b2a6c4fce79a",
+  "failure": null,
+  "absence_records": 84,
+  "absence_drift": 0,
+  "candidate_inventory_drift": 0,
+  "compiler_inventory_drift": 0,
+  "source_inventory_drift": 0,
+  "dependencies_inventory_drift": 0,
+  "node_inventory_drift": 0,
+  "candidate_files": 5742,
+  "candidate_drift": 0,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "source_files": 1967,
+  "source_drift": 0,
+  "dependencies_files": 31064,
+  "dependencies_drift": 0,
+  "node_files": 1774,
+  "node_drift": 0,
+  "completed_utc": "2026-10-16T09:50:25.4589218+00:00"
+}

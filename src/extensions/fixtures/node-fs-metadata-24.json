@@ -1,0 +1,946 @@
+{
+  "nodeVersion": "24.14.0",
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "inputSha256": "e4e2a717158ccef322280ae6c4aa94d5aa0afa1e5fb0bb04a5e0a1208321790e",
+  "cases": 22,
+  "scope": "Actual pinned Node24.14 filesystem stat/Stats/realpath behavior required by genuine Pi Source33 parsers. Builtin JS implementation text is separate primary-source guidance, outside caller rows; native function source-text identity is not claimed. No complete Node filesystem or native metadata qualification is inferred.",
+  "implementationSources": {
+    "stat": "function statSync(path, options = { bigint: false, throwIfNoEntry: true }) {\r\n  const stats = binding.stat(\r\n    getValidatedPath(path),\r\n    options.bigint,\r\n    undefined,\r\n    options.throwIfNoEntry,\r\n  );\r\n  if (stats === undefined) {\r\n    return undefined;\r\n  }\r\n  return getStatsFromBinding(stats);\r\n}",
+    "realpath": "function realpathSync(p, options) {\r\n  options = getOptions(options);\r\n  p = toPathIfFileURL(p);\r\n  if (typeof p !== 'string') {\r\n    p += '';\r\n  }\r\n  validatePath(p);\r\n  p = pathModule.resolve(p);\r\n\r\n  const cache = options[realpathCacheKey];\r\n  const maybeCachedResult = cache?.get(p);\r\n  if (maybeCachedResult) {\r\n    return maybeCachedResult;\r\n  }\r\n\r\n  const seenLinks = new SafeMap();\r\n  const knownHard = new SafeSet();\r\n  const original = p;\r\n\r\n  // Current character position in p\r\n  let pos;\r\n  // The partial path so far, including a trailing slash if any\r\n  let current;\r\n  // The partial path without a trailing slash (except when pointing at a root)\r\n  let base;\r\n  // The partial path scanned in the previous round, with slash\r\n  let previous;\r\n\r\n  // Skip over roots\r\n  current = base = splitRoot(p);\r\n  pos = current.length;\r\n\r\n  // On windows, check that the root exists. On unix there is no need.\r\n  if (isWindows) {\r\n    const out = binding.lstat(base, false, undefined, true /* throwIfNoEntry */);\r\n    if (out === undefined) {\r\n      return;\r\n    }\r\n    knownHard.add(base);\r\n  }\r\n\r\n  // Walk down the path, swapping out linked path parts for their real\r\n  // values\r\n  // NB: p.length changes.\r\n  while (pos < p.length) {\r\n    // find the next part\r\n    const result = nextPart(p, pos);\r\n    previous = current;\r\n    if (result === -1) {\r\n      const last = StringPrototypeSlice(p, pos);\r\n      current += last;\r\n      base = previous + last;\r\n      pos = p.length;\r\n    } else {\r\n      current += StringPrototypeSlice(p, pos, result + 1);\r\n      base = previous + StringPrototypeSlice(p, pos, result);\r\n      pos = result + 1;\r\n    }\r\n\r\n    // Continue if not a symlink, break if a pipe/socket\r\n    if (knownHard.has(base) || cache?.get(base) === base) {\r\n      if (isFileType(statValues, S_IFIFO) ||\r\n          isFileType(statValues, S_IFSOCK)) {\r\n        break;\r\n      }\r\n      continue;\r\n    }\r\n\r\n    let resolvedLink;\r\n    const maybeCachedResolved = cache?.get(base);\r\n    if (maybeCachedResolved) {\r\n      resolvedLink = maybeCachedResolved;\r\n    } else {\r\n      // Use stats array directly to avoid creating an fs.Stats instance just\r\n      // for our internal use.\r\n\r\n      const stats = binding.lstat(base, true, undefined, true /* throwIfNoEntry */);\r\n      if (stats === undefined) {\r\n        return;\r\n      }\r\n\r\n      if (!isFileType(stats, S_IFLNK)) {\r\n        knownHard.add(base);\r\n        cache?.set(base, base);\r\n        continue;\r\n      }\r\n\r\n      // Read the link if it wasn't read before\r\n      // dev/ino always return 0 on windows, so skip the check.\r\n      let linkTarget = null;\r\n      let id;\r\n      if (!isWindows) {\r\n        const dev = BigIntPrototypeToString(stats[0], 32);\r\n        const ino = BigIntPrototypeToString(stats[7], 32);\r\n        id = `${dev}:${ino}`;\r\n        if (seenLinks.has(id)) {\r\n          linkTarget = seenLinks.get(id);\r\n        }\r\n      }\r\n      if (linkTarget === null) {\r\n        binding.stat(base, false, undefined, true);\r\n        linkTarget = binding.readlink(base, undefined);\r\n      }\r\n      resolvedLink = pathModule.resolve(previous, linkTarget);\r\n\r\n      cache?.set(base, resolvedLink);\r\n      if (!isWindows) seenLinks.set(id, linkTarget);\r\n    }\r\n\r\n    // Resolve the link, then start over\r\n    p = pathModule.resolve(resolvedLink, StringPrototypeSlice(p, pos));\r\n\r\n    // Skip over roots\r\n    current = base = splitRoot(p);\r\n    pos = current.length;\r\n\r\n    // On windows, check that the root exists. On unix there is no need.\r\n    if (isWindows && !knownHard.has(base)) {\r\n      const out = binding.lstat(base, false, undefined, true /* throwIfNoEntry */);\r\n      if (out === undefined) {\r\n        return;\r\n      }\r\n      knownHard.add(base);\r\n    }\r\n  }\r\n\r\n  cache?.set(original, p);\r\n  return encodeRealpathResult(p, options);\r\n}",
+    "nativeRealpath": "(path, options) => {\r\n  options = getOptions(options);\r\n  return binding.realpath(\r\n    getValidatedPath(path),\r\n    options.encoding,\r\n  );\r\n}",
+    "method": "function() {\r\n  return this._checkModeProperty(S_IFREG);\r\n}",
+    "check": "function(property) {\r\n  if (isWindows && (property === S_IFIFO || property === S_IFBLK ||\r\n    property === S_IFSOCK)) {\r\n    return false;  // Some types are not available on Windows\r\n  }\r\n  return (this.mode & S_IFMT) === property;\r\n}",
+    "constructor": "function deprecated(...args) {\r\n    if (!process.noDeprecation) {\r\n      emitDeprecationWarning();\r\n    }\r\n    if (new.target) {\r\n      return ReflectConstruct(fn, args, new.target);\r\n    }\r\n    return ReflectApply(fn, this, args);\r\n  }"
+  },
+  "rows": [
+    {
+      "case": "actual-stat-exports-and-prototypes",
+      "stat": {
+        "name": "statSync",
+        "length": 1,
+        "ownPrototype": true
+      },
+      "realpath": {
+        "name": "realpathSync",
+        "length": 2,
+        "ownPrototype": true
+      },
+      "nativeRealpath": {
+        "name": "",
+        "length": 2,
+        "ownPrototype": false
+      },
+      "constructor": {
+        "name": "deprecated",
+        "length": 14,
+        "ownPrototype": true
+      },
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "Stats",
+            "length": 14,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "atime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "mtime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "ctime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "birthtime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "_checkModeProperty",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 1,
+            "ownPrototype": true
+          }
+        }
+      ],
+      "base": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "StatsBase",
+            "length": 10,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isFile",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isBlockDevice",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isCharacterDevice",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isSymbolicLink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isFIFO",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isSocket",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        }
+      ],
+      "samePrototype": true
+    },
+    {
+      "case": "actual-file-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs"
+        ],
+        "types": {
+          "dev": "number",
+          "mode": "number",
+          "nlink": "number",
+          "uid": "number",
+          "gid": "number",
+          "rdev": "number",
+          "blksize": "number",
+          "ino": "number",
+          "size": "number",
+          "blocks": "number",
+          "atimeMs": "number",
+          "mtimeMs": "number",
+          "ctimeMs": "number",
+          "birthtimeMs": "number"
+        },
+        "size": 6,
+        "methods": {
+          "isFile": true,
+          "isDirectory": false,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "number"
+      }
+    },
+    {
+      "case": "actual-directory-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs"
+        ],
+        "types": {
+          "dev": "number",
+          "mode": "number",
+          "nlink": "number",
+          "uid": "number",
+          "gid": "number",
+          "rdev": "number",
+          "blksize": "number",
+          "ino": "number",
+          "size": "number",
+          "blocks": "number",
+          "atimeMs": "number",
+          "mtimeMs": "number",
+          "ctimeMs": "number",
+          "birthtimeMs": "number"
+        },
+        "size": 0,
+        "methods": {
+          "isFile": false,
+          "isDirectory": true,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          false,
+          false,
+          false,
+          true
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "number"
+      }
+    },
+    {
+      "case": "actual-unicode-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs"
+        ],
+        "types": {
+          "dev": "number",
+          "mode": "number",
+          "nlink": "number",
+          "uid": "number",
+          "gid": "number",
+          "rdev": "number",
+          "blksize": "number",
+          "ino": "number",
+          "size": "number",
+          "blocks": "number",
+          "atimeMs": "number",
+          "mtimeMs": "number",
+          "ctimeMs": "number",
+          "birthtimeMs": "number"
+        },
+        "size": 6,
+        "methods": {
+          "isFile": true,
+          "isDirectory": false,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          false,
+          false,
+          false,
+          false
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "number"
+      }
+    },
+    {
+      "case": "actual-buffer-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs"
+        ],
+        "types": {
+          "dev": "number",
+          "mode": "number",
+          "nlink": "number",
+          "uid": "number",
+          "gid": "number",
+          "rdev": "number",
+          "blksize": "number",
+          "ino": "number",
+          "size": "number",
+          "blocks": "number",
+          "atimeMs": "number",
+          "mtimeMs": "number",
+          "ctimeMs": "number",
+          "birthtimeMs": "number"
+        },
+        "size": 6,
+        "methods": {
+          "isFile": true,
+          "isDirectory": false,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "number"
+      }
+    },
+    {
+      "case": "actual-file-url-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs"
+        ],
+        "types": {
+          "dev": "number",
+          "mode": "number",
+          "nlink": "number",
+          "uid": "number",
+          "gid": "number",
+          "rdev": "number",
+          "blksize": "number",
+          "ino": "number",
+          "size": "number",
+          "blocks": "number",
+          "atimeMs": "number",
+          "mtimeMs": "number",
+          "ctimeMs": "number",
+          "birthtimeMs": "number"
+        },
+        "size": 6,
+        "methods": {
+          "isFile": true,
+          "isDirectory": false,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          false,
+          true,
+          true,
+          true
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "number"
+      }
+    },
+    {
+      "case": "actual-missing-stat-error",
+      "name": "Error",
+      "message": "ENOENT: no such file or directory, stat '<fixture>/metadata/missing/file'",
+      "code": "ENOENT",
+      "errno": -4058,
+      "syscall": "stat",
+      "path": "<fixture>/metadata/missing/file",
+      "own": [
+        "message",
+        "errno",
+        "code",
+        "syscall",
+        "path"
+      ]
+    },
+    {
+      "case": "actual-missing-stat-no-entry",
+      "undefined": true
+    },
+    {
+      "case": "actual-realpath-file",
+      "value": "<fixture>/metadata/plain.txt"
+    },
+    {
+      "case": "actual-realpath-dotdot",
+      "value": "<fixture>/metadata/plain.txt"
+    },
+    {
+      "case": "actual-realpath-buffer-input",
+      "value": "<fixture>/metadata/plain.txt"
+    },
+    {
+      "case": "actual-realpath-url-input",
+      "value": "<fixture>/metadata/plain.txt"
+    },
+    {
+      "case": "actual-realpath-buffer-output",
+      "buffer": true,
+      "value": "<fixture>/metadata/Ω.txt"
+    },
+    {
+      "case": "actual-realpath-native",
+      "value": "<fixture>/metadata/plain.txt"
+    },
+    {
+      "case": "actual-realpath-missing-error",
+      "name": "Error",
+      "message": "ENOENT: no such file or directory, lstat '<fixture>/metadata/missing'",
+      "code": "ENOENT",
+      "errno": -4058,
+      "syscall": "lstat",
+      "path": "<fixture>/metadata/missing",
+      "own": [
+        "message",
+        "errno",
+        "code",
+        "syscall",
+        "path"
+      ]
+    },
+    {
+      "case": "actual-stat-nul-error",
+      "name": "TypeError",
+      "message": "The argument 'path' must be a string, Uint8Array, or URL without null bytes. Received '<fixture>/metadata...",
+      "code": "ERR_INVALID_ARG_VALUE",
+      "own": [
+        "code",
+        "message"
+      ]
+    },
+    {
+      "case": "actual-realpath-nul-error",
+      "name": "TypeError",
+      "message": "The argument 'path' must be a string, Uint8Array, or URL without null bytes. Received '<fixture>/metadata...",
+      "code": "ERR_INVALID_ARG_VALUE",
+      "own": [
+        "code",
+        "message"
+      ]
+    },
+    {
+      "case": "actual-options-raw-error:stat",
+      "same": true,
+      "log": [
+        "get"
+      ]
+    },
+    {
+      "case": "actual-options-raw-error:realpath",
+      "same": true,
+      "log": [
+        "get"
+      ]
+    },
+    {
+      "case": "actual-stats-borrowed-check-delegation",
+      "value": "custom-result",
+      "log": [
+        {
+          "value": 32768,
+          "receiver": true
+        }
+      ],
+      "rawMode": true
+    },
+    {
+      "case": "actual-bigint-stat",
+      "value": {
+        "keys": [
+          "dev",
+          "mode",
+          "nlink",
+          "uid",
+          "gid",
+          "rdev",
+          "blksize",
+          "ino",
+          "size",
+          "blocks",
+          "atimeMs",
+          "mtimeMs",
+          "ctimeMs",
+          "birthtimeMs",
+          "atimeNs",
+          "mtimeNs",
+          "ctimeNs",
+          "birthtimeNs"
+        ],
+        "types": {
+          "dev": "bigint",
+          "mode": "bigint",
+          "nlink": "bigint",
+          "uid": "bigint",
+          "gid": "bigint",
+          "rdev": "bigint",
+          "blksize": "bigint",
+          "ino": "bigint",
+          "size": "bigint",
+          "blocks": "bigint",
+          "atimeMs": "bigint",
+          "mtimeMs": "bigint",
+          "ctimeMs": "bigint",
+          "birthtimeMs": "bigint",
+          "atimeNs": "bigint",
+          "mtimeNs": "bigint",
+          "ctimeNs": "bigint",
+          "birthtimeNs": "bigint"
+        },
+        "size": "6n",
+        "methods": {
+          "isFile": true,
+          "isDirectory": false,
+          "isSymbolicLink": false,
+          "isFIFO": false,
+          "isSocket": false,
+          "isBlockDevice": false,
+          "isCharacterDevice": false
+        },
+        "dateTypes": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "dateMsMatch": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "timesFinite": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "modeType": "bigint"
+      },
+      "keys": [
+        "dev",
+        "mode",
+        "nlink",
+        "uid",
+        "gid",
+        "rdev",
+        "blksize",
+        "ino",
+        "size",
+        "blocks",
+        "atimeMs",
+        "mtimeMs",
+        "ctimeMs",
+        "birthtimeMs",
+        "atimeNs",
+        "mtimeNs",
+        "ctimeNs",
+        "birthtimeNs"
+      ],
+      "nanosecondTypes": [
+        "bigint",
+        "bigint",
+        "bigint",
+        "bigint"
+      ],
+      "prototype": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "BigIntStats",
+            "length": 14,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "atime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "mtime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "ctime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "birthtime",
+          "enumerable": true,
+          "configurable": true,
+          "value": "undefined",
+          "get": {
+            "name": "get",
+            "length": 0,
+            "ownPrototype": false
+          },
+          "set": {
+            "name": "set",
+            "length": 1,
+            "ownPrototype": false
+          }
+        },
+        {
+          "key": "_checkModeProperty",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 1,
+            "ownPrototype": true
+          }
+        }
+      ],
+      "base": [
+        {
+          "key": "constructor",
+          "enumerable": false,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "StatsBase",
+            "length": 10,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isDirectory",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isFile",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isBlockDevice",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isCharacterDevice",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isSymbolicLink",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isFIFO",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        },
+        {
+          "key": "isSocket",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": {
+            "name": "",
+            "length": 0,
+            "ownPrototype": true
+          }
+        }
+      ]
+    },
+    {
+      "case": "actual-invalid-path-no-coercion",
+      "value": {
+        "name": "TypeError",
+        "message": "The \"path\" argument must be of type string or an instance of Buffer or URL. Received an instance of Object",
+        "code": "ERR_INVALID_ARG_TYPE",
+        "own": [
+          "code",
+          "message"
+        ]
+      },
+      "log": []
+    }
+  ]
+}

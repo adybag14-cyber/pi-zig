@@ -1,0 +1,12 @@
+{
+  "status": "admitted",
+  "fixture_files": 31,
+  "observed_utc": "2026-10-16T09:49:06.4544429+00:00",
+  "free_kib": 13769780,
+  "ambient_files": 3,
+  "outer_seconds": 300,
+  "required_kib": 2097152,
+  "root_slot_grant": "LIGHT3-root-resume-20261016",
+  "ambient_absences": 39,
+  "heap_mb": 256
+}

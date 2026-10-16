@@ -1,0 +1,32 @@
+{
+  "completed_utc": "2026-10-16T09:49:50.2157370+00:00",
+  "control_files": 43,
+  "absent_drift": [],
+  "control_manifest_drift": false,
+  "historical_absences": 84,
+  "fixture_root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\node-fs-metadata-assets-first-0a800f30-43dbcd8a32a44d1388a352b3c7223448",
+  "manifests": [
+    {
+      "drift": 0,
+      "changed": [],
+      "files": 1967,
+      "name": "source"
+    },
+    {
+      "drift": 0,
+      "changed": [],
+      "files": 31064,
+      "name": "dependencies"
+    },
+    {
+      "drift": 0,
+      "changed": [],
+      "files": 1774,
+      "name": "node_tools"
+    }
+  ],
+  "fixture_files": 31,
+  "ambient_absences": 39,
+  "control_drift": [],
+  "ambient_tree_drift": []
+}
