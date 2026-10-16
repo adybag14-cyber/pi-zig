@@ -6,10 +6,10 @@ diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native
      return fail(scope, owner, reason);
  }
 +fn discardCloseError(scope: *Scope, raw_err: anyerror, generation: u64) anyerror!void {
-+    const err = scope.engine.nativeAllocationError(raw_err, generation);
-+    if (err == error.OutOfMemory) return err;
-+    if (err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
-+        if (c.JS_IsUncatchableError(value)) return err;
++    if (raw_err == error.OutOfMemory) return raw_err;
++    if (raw_err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
++        try async_body.rethrowRecognizedAllocation(scope.engine, value, generation);
++        if (c.JS_IsUncatchableError(value)) return raw_err;
 +    };
 +    if (scope.engine.captured_exception) |value| {
 +        scope.engine.captured_exception = null;
