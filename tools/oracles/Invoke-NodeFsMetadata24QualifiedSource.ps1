@@ -19,6 +19,7 @@ function Rows($paths){@($paths|Sort-Object -Unique|ForEach-Object{[ordered]@{pat
 function Drift($rows){@($rows|Where-Object{!(Test-Path -LiteralPath $_.path -PathType Leaf)-or(Get-FileHash -LiteralPath $_.path).Hash-ine$_.sha256})}
 function Inventory-Drift($rows,$paths){@(Compare-Object @($rows|ForEach-Object path|Sort-Object) @($paths|Sort-Object)).Count}
 function Assert-Candidate {if((& git -c gc.auto=0 -c maintenance.auto=false -C $taskPrivate rev-parse HEAD).Trim()-cne$CandidateHead-or@(& git -c gc.auto=0 -c maintenance.auto=false -C $taskPrivate status --porcelain).Count){throw 'Exact clean candidate required'}}
+function Absence-Drift {@($taskAbsences|Where-Object{(Test-Path -LiteralPath (Join-Path $taskSource $_))-or(Test-Path -LiteralPath (Join-Path $taskRuntime $_))}).Count}
 Assert-Candidate
 if(Test-Path -LiteralPath "$taskPrefix-prehash.json"){throw 'Fresh immutable wrapper attempt required'}
 $taskFrozen=[ordered]@{
@@ -29,6 +30,9 @@ $taskFrozen=[ordered]@{
  node=@(Get-Content -LiteralPath (Join-Path $taskEvidence 'root-current8a-npm-tools-before.json') -Raw|ConvertFrom-Json)
 }
 if($taskFrozen.compiler.Count-ne19546-or$taskFrozen.source.Count-ne1967-or$taskFrozen.dependencies.Count-ne31064-or$taskFrozen.node.Count-ne1774){throw 'Full frozen universes required'}
+$taskAudit=Get-Content -LiteralPath (Join-Path $taskEvidence 'source5ab-dependency-contract-audit-20261015.json') -Raw|ConvertFrom-Json
+$taskAbsences=@($taskAudit.pins|Where-Object status -eq 'platform_optional_absent'|ForEach-Object path)+@($taskAudit.mismatches|ForEach-Object path)
+if($taskAbsences.Count-ne84-or(Absence-Drift)){throw 'Exactly84 historical absences required'}
 foreach($set in $taskFrozen.Values){if(@(Drift $set).Count){throw 'Full reference prehash drift'}}
 if((Inventory-Drift $taskFrozen.source (Source-Paths $taskSource))-or(Inventory-Drift $taskFrozen.dependencies (Dependency-Paths))-or(Inventory-Drift $taskFrozen.node (Node-Paths))){throw 'Full reference inventory drift'}
 $taskFrozen|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskPrefix-prehash.json" -Encoding utf8NoBOM
@@ -40,7 +44,7 @@ try {
 }catch{$taskFailure=$_.Exception.Message}
 finally {
  $null=$taskSemaphore.Release();$taskSemaphore.Dispose()
- $taskPost=[ordered]@{candidate_head=$CandidateHead;failure=$taskFailure;candidate_inventory_drift=Inventory-Drift $taskFrozen.candidate (Candidate-Paths);compiler_inventory_drift=Inventory-Drift $taskFrozen.compiler (Compiler-Paths);source_inventory_drift=Inventory-Drift $taskFrozen.source (Source-Paths $taskSource);dependencies_inventory_drift=Inventory-Drift $taskFrozen.dependencies (Dependency-Paths);node_inventory_drift=Inventory-Drift $taskFrozen.node (Node-Paths)}
+ $taskPost=[ordered]@{candidate_head=$CandidateHead;failure=$taskFailure;absence_records=84;absence_drift=Absence-Drift;candidate_inventory_drift=Inventory-Drift $taskFrozen.candidate (Candidate-Paths);compiler_inventory_drift=Inventory-Drift $taskFrozen.compiler (Compiler-Paths);source_inventory_drift=Inventory-Drift $taskFrozen.source (Source-Paths $taskSource);dependencies_inventory_drift=Inventory-Drift $taskFrozen.dependencies (Dependency-Paths);node_inventory_drift=Inventory-Drift $taskFrozen.node (Node-Paths)}
  foreach($pair in $taskFrozen.GetEnumerator()){$taskPost[$pair.Key+'_files']=$pair.Value.Count;$taskPost[$pair.Key+'_drift']=@(Drift $pair.Value).Count}
  $taskPost.completed_utc=[DateTimeOffset]::UtcNow.ToString('o')
  $taskPost|ConvertTo-Json -Depth 7|Set-Content -LiteralPath "$taskPrefix-posthash.json" -Encoding utf8NoBOM
