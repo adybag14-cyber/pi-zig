@@ -43,6 +43,8 @@ test "package named catch owns old reason while same-object callback throw survi
     engine.native_exception_diagnostics_suppressed += 1;
     try ordinary(engine);
     const original = (try caught.take(engine, error.JavaScriptException, engine.native_allocation_generation)) orelse return error.MissingOrdinaryReason;
+    var original_owned = true;
+    defer if (original_owned) engine.freeValue(original);
     try std.testing.expect(engine.captured_exception == null);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -53,6 +55,7 @@ test "package named catch owns old reason while same-object callback throw survi
     try same(engine, original, engine.captured_exception orelse return error.MissingNewCapture);
     // End only the old catch binding. No identity-based deferred slot clearing.
     engine.freeValue(original);
+    original_owned = false;
     try std.testing.expect(engine.captured_exception != null);
     const retained = try js.global(engine, "packageSameReason");
     defer engine.freeValue(retained);

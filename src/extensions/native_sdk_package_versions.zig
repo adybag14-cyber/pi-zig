@@ -42,6 +42,9 @@ fn fallbackTarget(s: *Scope, manager: c.JSValue, job: c.JSValue, path: c.JSValue
 }
 fn failure(s: *Scope, manager: c.JSValue, job: c.JSValue, reason: c.JSValue) !af.Action {
     const mode = try integer(s, job, "catchMode"); if (mode == 0) return .{ .thrown = c.JS_DupValue(s.engine.context, reason) }; try trusted(s, job, reason);
+    return recover(s, manager, job, mode);
+}
+fn recover(s: *Scope, manager: c.JSValue, job: c.JSValue, mode: i32) !af.Action {
     return switch (mode) { 1 => .{ .returned = c.pi_js_bool(s.engine.context, 1) }, 2 => .{ .returned = c.pi_js_bool(s.engine.context, 0) }, 3 => .{ .returned = c.pi_js_undefined() }, 4 => fallbackTarget(s, manager, job, try s.get(job, "path")), else => error.InvalidPackageVersionCatchMode };
 }
 fn target(s: *Scope, ref: c.JSValue, head: c.JSValue, branch: c.JSValue, fallback: bool) !c.JSValue {
@@ -102,8 +105,11 @@ fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots:
     var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine);
     return evaluate(&s, manager, args, roots[0], job, @enumFromInt(raw), completion, input) catch |err| {
         if (err == error.OutOfMemory) return err;
-        if (try integer(&s, job, "catchMode") == 0) return err;
+        const mode = try integer(&s, job, "catchMode"); if (mode == 0) return err;
         var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(job, "boundary")) < 0) return v.js.capture(engine);
-        const reason = (try package_catch.take(engine, err, boundary)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return failure(&s, manager, job, reason);
+        // These Source catches have no binding. Retire the unused reason
+        // before mode 4 can invoke the real fallback callback.
+        try package_catch.ignore(engine, err, boundary);
+        return recover(&s, manager, job, mode);
     };
 }
