@@ -351,7 +351,7 @@ fn normalizedGoogleToolId(gpa: std.mem.Allocator, id: []const u8) ![]u8 {
 
 fn writeGoogleFunctionResponsePart(gpa: std.mem.Allocator, w: *std.Io.Writer, msg: ai.ChatMessage, model_id: []const u8, include_image: bool) !void {
     const has_image = msg.hasImages();
-    const response_text = if (msg.content.len > 0) msg.content else if (has_image) "(see attached image)" else "";
+    const response_text = if (@import("tool_output_text.zig").hasText(msg.content)) msg.content else if (has_image) "(see attached image)" else "";
     try w.writeAll("{\"functionResponse\":{\"name\":");
     try std.json.Stringify.value(msg.tool_name orelse msg.tool_call_id orelse "tool", .{}, w);
     if (requiresToolCallId(model_id)) {

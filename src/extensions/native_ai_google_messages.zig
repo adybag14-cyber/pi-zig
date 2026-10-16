@@ -117,9 +117,10 @@ pub fn convert(engine: *v.em.Engine, model: c.JSValue, context: c.JSValue) !c.JS
                 if (try v.eq(&row, try row.get(block, "type"), "text")) _ = try row.invoke(texts, "push", &.{try row.get(block, "text")}) else if (supports_images and try v.eq(&row, try row.get(block, "type"), "image")) _ = try row.invoke(images, "push", &.{try image(&row, block)});
             }
             const text_result = try row.invoke(texts, "join", &.{try row.text("\n")});
+            const has_text = try row.positive(try row.get(try row.invoke(text_result, "trim", &.{}), "length"));
             const has_images = try v.length(&row, images) > 0;
             const response = try row.object();
-            try row.put(response, if (row.truthy(try row.get(message, "isError"))) "error" else "output", if (try v.length(&row, text_result) > 0) try v.sanitize(&row, text_result) else try row.text(if (has_images) "(see attached image)" else ""));
+            try row.put(response, if (row.truthy(try row.get(message, "isError"))) "error" else "output", if (has_text) try v.sanitize(&row, text_result) else try row.text(if (has_images) "(see attached image)" else ""));
             const call = try row.object();
             try row.put(call, "name", try row.get(message, "toolName"));
             try row.put(call, "response", response);
