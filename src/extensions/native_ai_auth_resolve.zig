@@ -7,6 +7,7 @@ const c = v.c;
 const functions = @import("native_node_function.zig");
 const flow = @import("native_agent_async.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
+const cache_key = "\x00actual-auth-resolve-namespace";
 const Stage = enum(c_int) { read, read_helper, api, refreshed, derived, modified, refresh_callback, overlay_env };
 fn arg(args: []const c.JSValue, i: usize) c.JSValue {
     return if (i < args.len) args[i] else c.pi_js_undefined();
@@ -48,6 +49,7 @@ fn failWrapped(s: *Scope, job: c.JSValue, code: []const u8, prefix: []const u8, 
 /// The public ModelsError export is the exact supplied canonical constructor.
 /// operationSignal/raceWithAbortSignal come from ONE shared actual abort module.
 pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
+    if (engine.native_module_values.get(cache_key)) |cached| return c.JS_DupValue(engine.context, cached);
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const captured = try s.object();
@@ -64,6 +66,11 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     if (c.JS_SetPrototype(engine.context, refresh, prototype) < 0) return v.js.capture(engine);
     try s.put(exports, "refreshStoredOAuthCredential", refresh);
     try s.put(exports, "ModelsError", try s.get(captured, "ModelsError"));
+    const retained = c.JS_DupValue(engine.context, exports);
+    engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| {
+        engine.freeValue(retained);
+        return err;
+    };
     return c.JS_DupValue(engine.context, exports);
 }
 fn resolveProviderAuth(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
