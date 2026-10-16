@@ -9,10 +9,10 @@ const json = @import("mcp/protocol.zig").json;
 
 test "native filesystem metadata equals all22 actual Node Source callers on retained physical files" {
     if (builtin.os.tag != .windows) return error.SkipZigTest;
-    const qualification = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("../verification/node-fs-metadata-source22-20261016/qualification.json"), .{});
+    const qualification = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, @embedFile("extensions/fixtures/node-fs-metadata-source22-qualification.json"), .{});
     defer qualification.deinit();
     const root = qualification.value.object.get("physical_fixture_root").?.string;
-    var controls = try json.Owned.parse(std.testing.allocator, @embedFile("../verification/node-fs-metadata-source22-20261016/node-fs-metadata-24-source-first-0a800f30-20261016-controls-before.json"));
+    var controls = try json.Owned.parse(std.testing.allocator, @embedFile("extensions/fixtures/node-fs-metadata-source22-controls.json"));
     defer controls.deinit();
     var physical_count: usize = 0;
     for (controls.value.array.items) |row| {

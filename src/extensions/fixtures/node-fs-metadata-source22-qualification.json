@@ -1,0 +1,14 @@
+{
+  "status": "source_qualified",
+  "candidate_head": "0a800f30353c2562254e8e1783e0b2a6c4fce79a",
+  "node_version": "24.14.0",
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "cases": 22,
+  "physical_fixture_root": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\node-fs-metadata-assets-first-0a800f30-43dbcd8a32a44d1388a352b3c7223448",
+  "fixture_files": 31,
+  "expected_sha256": "62B7518C5F9E649C366E8D135C8F536910D75DFC0A8F4AA9A65F81335F5B1E89",
+  "full_wrapper_prehash": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\node-fs-metadata-24-source-first-0a800f30-20261016-wrapper-prehash.json",
+  "full_wrapper_prehash_sha256": "B4F34FE000AF999B2D6F6C364D96730984374CD404B7EE15ACCDD42D74819F79",
+  "native_qualified": false,
+  "scope": "Actual pinned Node24 FS metadata callers. Pi5ab reference frozen; no latest4954 claim."
+}
