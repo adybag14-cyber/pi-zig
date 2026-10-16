@@ -6,6 +6,8 @@ const Scope = v.Scope;
 const c = v.c;
 const functions = @import("native_node_function.zig");
 const flow = @import("native_agent_async.zig");
+const body = @import("native_async_body.zig");
+const native = body.native;
 pub const Kind = enum { readCredential, checkProviderAuth, checkAuth, getAuthenticatedProviders, getAvailable, getAvailableOfType, getAllAvailable, getAuth, login, logout, applyAuth };
 const Stage = enum(c_int) { read, checked, fallback, check_read, authenticated_read, authenticated_check, authenticated_all, available, available_type, auth, apply, transformed, login, login_barrier, login_mutation, logout };
 
@@ -27,23 +29,19 @@ fn signalOptions(s: *Scope, signal: c.JSValue) !c.JSValue {
     return out;
 }
 fn awaitValue(s: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void {
-    try flow.wait(continued, s.engine, job, value, @intFromEnum(stage));
+    try body.wait(s, job, value, @intFromEnum(stage));
 }
 fn resolve(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
-    try flow.settle(s.engine, job, false, value);
+    try body.resolve(s, job, value);
 }
 fn reject(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
-    try flow.settle(s.engine, job, true, value);
+    try body.reject(s, job, value);
 }
 fn arrow(s: *Scope, callback: functions.Callback, arity: c_int, roots: []const c.JSValue, is_async: bool) !c.JSValue {
-    const out = try s.own(try functions.createArrow(s.engine, "", arity, callback, roots));
-    // Current creation seam retains metadata only. Native qualification requires
-    // the canonical real async-function seam to replace this factory operation.
-    if (is_async) {
-        const proto = try s.own(try s.engine.checked(c.JS_GetAsyncFunctionPrototype(s.engine.context)));
-        if (c.JS_SetPrototype(s.engine.context, out, proto) < 0) return v.js.capture(s.engine);
-    }
-    return out;
+    return s.own(if (is_async)
+        try native.createArrow(s.engine, "", arity, callback, roots, c.pi_js_undefined())
+    else
+        try functions.createArrow(s.engine, "", arity, callback, roots));
 }
 pub fn length(comptime kind: Kind) c_int {
     return switch (kind) {
@@ -72,34 +70,46 @@ pub fn create(engine: *v.em.Engine, comptime kind: Kind, imports: c.JSValue) !c.
         fn call(host: *v.em.Engine, self: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             return dispatch(host, kind, roots[0], self, args);
         }
+        fn advanceBody(host: *v.em.Engine, self: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+            return runBody(host, kind, roots[0], self, args, c.pi_js_undefined(), state, completion, input);
+        }
     };
-    const out = try s.own(try functions.createMethod(engine, @tagName(kind), length(kind), Adapter.call, &.{captured}));
-    if (asynchronous(kind)) {
-        const proto = try s.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-        if (c.JS_SetPrototype(engine.context, out, proto) < 0) return v.js.capture(engine);
-    }
+    const out = try s.own(if (asynchronous(kind))
+        try native.createResumable(engine, @tagName(kind), length(kind), Adapter.advanceBody, &.{captured})
+    else
+        try functions.createMethod(engine, @tagName(kind), length(kind), Adapter.call, &.{captured}));
     return c.JS_DupValue(engine.context, out);
 }
 pub fn dispatch(engine: *v.em.Engine, kind: Kind, imports: c.JSValue, self: c.JSValue, args: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const regular = kind == .checkAuth or kind == .getAvailable or kind == .getAllAvailable;
     // Source regular public methods evaluate operationSignal before entering
     // their async IIFE. A throwing options.signal getter throws synchronously.
-    const signal = if (regular) try operationSignal(&s, imports, arg(args, 1)) else c.pi_js_undefined();
-    const pending = try flow.create(engine, self);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const job = pending.owner;
-    try ownArg(&s, job, "imports", imports);
-    try ownArg(&s, job, "self", self);
-    try ownArg(&s, job, "signal", signal);
-    try s.put(job, "kind", c.JS_NewInt32(engine.context, @intFromEnum(kind)));
-    inline for (.{ "a", "b", "d", "e" }, 0..) |name, index| try ownArg(&s, job, name, arg(args, index));
-    start(&s, job, kind) catch |err| try flow.rejectError(engine, job, err);
-    if (!regular) return pending.promise;
-    defer engine.freeValue(pending.promise);
-    return c.JS_DupValue(engine.context, try imported(&s, imports, "raceWithAbortSignal", &.{ pending.promise, signal }));
+    const signal = try operationSignal(&s, imports, arg(args, 1));
+    const Iife = struct {
+        fn advanceBody(host: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+            var raw: i32 = 0;
+            if (c.JS_ToInt32(host.context, &raw, roots[3]) < 0) return v.js.capture(host);
+            return runBody(host, @enumFromInt(raw), roots[0], roots[1], roots[4..], roots[2], state, completion, input);
+        }
+    };
+    const inner = try s.own(try native.createResumableArrow(engine, "", 0, Iife.advanceBody, &.{ imports, self, signal, c.JS_NewInt32(engine.context, @intFromEnum(kind)), arg(args, 0), arg(args, 1), arg(args, 2), arg(args, 3) }, c.pi_js_undefined()));
+    const promise = try s.call(inner, c.pi_js_undefined(), &.{});
+    return c.JS_DupValue(engine.context, try imported(&s, imports, "raceWithAbortSignal", &.{ promise, signal }));
+}
+fn runBody(engine: *v.em.Engine, kind: Kind, imports: c.JSValue, self: c.JSValue, args: []const c.JSValue, signal: c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        try ownArg(&s, job, "imports", imports);
+        try ownArg(&s, job, "self", self);
+        try ownArg(&s, job, "signal", signal);
+        try s.put(job, "kind", c.JS_NewInt32(engine.context, @intFromEnum(kind)));
+        inline for (.{ "a", "b", "d", "e" }, 0..) |name, index| try ownArg(&s, job, name, arg(args, index));
+        start(&s, job, kind) catch |err| return body.failure(engine, err);
+    } else continued(engine, state.*, input, completion == .rejected, try body.stage(&s, state.*)) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 fn modelsError(s: *Scope, job: c.JSValue, code: []const u8, prefix: []const u8, id: c.JSValue, cause: ?c.JSValue) !c.JSValue {
     const message = try s.concat(try s.text(prefix), try s.stringify(id));
@@ -182,7 +192,7 @@ fn start(s: *Scope, job: c.JSValue, kind: Kind) !void {
             } else try s.invoke(self, "getProviders", &.{});
             const promise = try s.global("Promise");
             const all = try s.get(promise, "all");
-            const mapped = try s.invoke(providers, "map", &.{try arrow(s, authenticated, 1, &.{job}, true)});
+            const mapped = try s.invoke(providers, "map", &.{try s.own(try native.createResumableArrow(s.engine, "", 1, authenticated, &.{job}, c.pi_js_undefined()))});
             try awaitValue(s, job, try s.call(all, promise, &.{mapped}), .authenticated_all);
         },
         .getAvailable, .getAllAvailable => {
@@ -258,16 +268,16 @@ fn logoutStart(s: *Scope, job: c.JSValue, id: c.JSValue, signal: c.JSValue) !voi
 fn defined(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return c.pi_js_bool(engine.context, @intFromBool(!c.JS_IsUndefined(arg(args, 0))));
 }
-fn authenticated(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn authenticated(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    try s.put(pending.owner, "parent", roots[0]);
-    try s.put(pending.owner, "provider", arg(args, 0));
-    authenticatedStart(&s, pending.owner) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        try s.put(job, "parent", roots[0]);
+        try s.put(job, "provider", arg(args, 0));
+        authenticatedStart(&s, job) catch |err| return body.failure(engine, err);
+    } else continued(engine, state.*, input, completion == .rejected, try body.stage(&s, state.*)) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 fn authenticatedStart(s: *Scope, job: c.JSValue) !void {
     const parent = try s.get(job, "parent");
@@ -484,17 +494,11 @@ fn startedExecutor(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, 
 fn mutationCallback(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    mutationCallbackBody(&s, roots[0], pending.owner) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn mutationCallbackBody(s: *Scope, job: c.JSValue, pending: c.JSValue) !void {
-    try s.set(job, "mutationStarted", c.pi_js_bool(s.engine.context, 1));
+    const job = roots[0];
+    try s.set(job, "mutationStarted", c.pi_js_bool(engine.context, 1));
     const callback = try s.get(job, "markMutationStarted");
     if (!v.nullish(callback)) _ = try s.call(callback, c.pi_js_undefined(), &.{});
-    try resolve(s, pending, try s.get(job, "credential"));
+    return c.JS_DupValue(engine.context, try s.get(job, "credential"));
 }
 fn onAbort(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };

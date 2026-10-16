@@ -6,6 +6,8 @@ const Scope = v.Scope;
 const c = v.c;
 const functions = @import("native_node_function.zig");
 const flow = @import("native_agent_async.zig");
+const body = @import("native_async_body.zig");
+const native = body.native;
 const arithmetic = @import("native_image_arithmetic.zig");
 const cache_key = "\x00actual-auth-resolve-namespace";
 const Stage = enum(c_int) { read, read_helper, api, refreshed, derived, modified, refresh_callback, overlay_env };
@@ -16,21 +18,17 @@ fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.
     return s.call(try s.get(imports, name), c.pi_js_undefined(), args);
 }
 fn wait(s: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void {
-    try flow.wait(continued, s.engine, job, value, @intFromEnum(stage));
+    try body.wait(s, job, value, @intFromEnum(stage));
 }
 fn resolve(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
-    try flow.settle(s.engine, job, false, value);
+    try body.resolve(s, job, value);
 }
 fn reject(s: *Scope, job: c.JSValue, value: c.JSValue) !void {
-    try flow.settle(s.engine, job, true, value);
+    try body.reject(s, job, value);
 }
 fn arrow(s: *Scope, callback: functions.Callback, arity: c_int, roots: []const c.JSValue, is_async: bool) !c.JSValue {
-    const out = try s.own(try functions.createArrow(s.engine, "", arity, callback, roots));
-    if (is_async) {
-        const prototype = try s.own(try s.engine.checked(c.JS_GetAsyncFunctionPrototype(s.engine.context)));
-        if (c.JS_SetPrototype(s.engine.context, out, prototype) < 0) return v.js.capture(s.engine);
-    }
-    return out;
+    if (is_async) return error.ResumableNativeAsyncBodyRequired;
+    return s.own(try functions.createArrow(s.engine, "", arity, callback, roots));
 }
 fn errorValue(s: *Scope, job: c.JSValue, code: []const u8, prefix: []const u8, cause: ?c.JSValue) !c.JSValue {
     const message = try s.concat(try s.text(prefix), try s.stringify(try s.get(job, "id")));
@@ -61,9 +59,7 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     }
     const exports = try s.object();
     try s.put(exports, "resolveProviderAuth", try s.own(try functions.create(engine, "resolveProviderAuth", 4, resolveProviderAuth, &.{captured})));
-    const refresh = try s.own(try functions.createMethod(engine, "refreshStoredOAuthCredential", 5, refreshStoredOAuthCredential, &.{captured}));
-    const prototype = try s.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, refresh, prototype) < 0) return v.js.capture(engine);
+    const refresh = try s.own(try native.createResumable(engine, "refreshStoredOAuthCredential", 5, refreshStoredOAuthCredential, &.{captured}));
     try s.put(exports, "refreshStoredOAuthCredential", refresh);
     try s.put(exports, "ModelsError", try s.get(captured, "ModelsError"));
     const retained = c.JS_DupValue(engine.context, exports);
@@ -80,24 +76,32 @@ fn resolveProviderAuth(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSVal
     const signal = try imported(&s, imports, "operationSignal", &.{try v.optional(&s, arg(args, 3), "signal")});
     // The lexical race callee is evaluated before starting the inner async body.
     const race = try s.get(imports, "raceWithAbortSignal");
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    defer engine.freeValue(pending.promise);
-    const job = pending.owner;
-    try s.put(job, "imports", imports);
-    try s.put(job, "signal", signal);
-    inline for (.{ "provider", "credentials", "authContext", "overrides" }, 0..) |name, index| try s.put(job, name, arg(args, index));
-    beginResolve(&s, job) catch |err| try flow.rejectError(engine, job, err);
-    return c.JS_DupValue(engine.context, try s.call(race, c.pi_js_undefined(), &.{ pending.promise, signal }));
+    const inner = try s.own(try native.createResumable(engine, "resolveProviderAuthWithSignal", 5, resolveWithSignal, &.{imports}));
+    const promise = try s.call(inner, c.pi_js_undefined(), &.{ arg(args, 0), arg(args, 1), arg(args, 2), arg(args, 3), signal });
+    return c.JS_DupValue(engine.context, try s.call(race, c.pi_js_undefined(), &.{ promise, signal }));
 }
-fn overlayEnv(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn advanceBody(s: *Scope, state: c.JSValue, completion: native.Completion, input: c.JSValue) !void {
+    try continued(s.engine, state, input, completion == .rejected, try body.stage(s, state));
+}
+fn resolveWithSignal(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    overlayEnvBody(&s, pending.owner, arg(args, 0), roots) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        try s.put(job, "imports", roots[0]);
+        inline for (.{ "provider", "credentials", "authContext", "overrides", "signal" }, 0..) |name, index| try s.put(job, name, arg(args, index));
+        beginResolve(&s, job) catch |err| return body.failure(engine, err);
+    } else advanceBody(&s, state.*, completion, input) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
+}
+fn overlayEnv(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        overlayEnvBody(&s, job, arg(args, 0), roots) catch |err| return body.failure(engine, err);
+    } else advanceBody(&s, state.*, completion, input) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 fn overlayEnvBody(s: *Scope, job: c.JSValue, name: c.JSValue, roots: []const c.JSValue) !void {
     const local = try s.own(try v.js.getKey(s.engine, roots[1], name));
@@ -111,7 +115,7 @@ fn overlayFile(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, root
 }
 fn overlay(s: *Scope, base: c.JSValue, env: c.JSValue) !c.JSValue {
     const out = try s.object();
-    try s.put(out, "env", try arrow(s, overlayEnv, 1, &.{ base, env }, true));
+    try s.put(out, "env", try s.own(try native.createResumableArrow(s.engine, "env", 1, overlayEnv, &.{ base, env }, c.pi_js_undefined())));
     try s.put(out, "fileExists", try arrow(s, overlayFile, 1, &.{base}, false));
     return out;
 }
@@ -136,19 +140,26 @@ fn beginResolve(s: *Scope, job: c.JSValue) !void {
     const store = try s.get(job, "credentials");
     const id = try s.get(provider, "id");
     try s.put(job, "id", id);
-    // readCredential is an async helper that is itself awaited by the caller.
-    // Keep both Promise boundaries; collapsing them changes reaction ordering.
-    const pending = try flow.create(s.engine, c.pi_js_undefined());
-    defer s.engine.freeValue(pending.owner);
-    defer s.engine.freeValue(pending.promise);
-    try s.put(pending.owner, "imports", try s.get(job, "imports"));
-    try s.put(pending.owner, "id", id);
+    const helper = try s.own(try native.createResumable(s.engine, "readCredential", 3, readCredentialBody, &.{try s.get(job, "imports")}));
+    try wait(s, job, try s.call(helper, c.pi_js_undefined(), &.{ store, id, signal }), .read);
+}
+fn readCredentialBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const s = &scope;
+    if (completion != .start) {
+        advanceBody(s, state.*, completion, input) catch |err| return body.failure(engine, err);
+        return body.action(s, state.*);
+    }
+    const job = try body.init(s, state);
+    try s.put(job, "imports", roots[0]);
+    try s.put(job, "id", arg(args, 1));
     const generation = s.engine.native_allocation_generation;
-    readStart(s, pending.owner, store, id, signal) catch |err| {
+    readStart(s, job, arg(args, 0), arg(args, 1), arg(args, 2)) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) != null) return err;
-        try failWrapped(s, pending.owner, "auth", "Credential store read failed for ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "auth", "Credential store read failed for ", try s.own(flow.reason(s.engine, err)));
     };
-    try wait(s, job, pending.promise, .read);
+    return body.action(s, job);
 }
 fn readStart(s: *Scope, job: c.JSValue, store: c.JSValue, id: c.JSValue, signal: c.JSValue) !void {
     const read = try s.get(store, "read");
@@ -190,28 +201,45 @@ fn afterRead(s: *Scope, job: c.JSValue, stored: c.JSValue) !void {
     try resolve(s, job, c.pi_js_undefined());
 }
 fn apiResolve(s: *Scope, job: c.JSValue, api: c.JSValue, credential: c.JSValue) !void {
-    const pending = try flow.create(s.engine, c.pi_js_undefined());
-    defer s.engine.freeValue(pending.owner);
-    defer s.engine.freeValue(pending.promise);
-    inline for (.{ "imports", "id", "requestAuthContext", "signal" }) |name| try s.put(pending.owner, name, try s.get(job, name));
+    const helper = try s.own(try native.createResumable(s.engine, "resolveApiKey", 5, apiBody, &.{try s.get(job, "imports")}));
+    try resolve(s, job, try s.call(helper, c.pi_js_undefined(), &.{ try s.get(job, "requestAuthContext"), api, try s.get(job, "id"), credential, try s.get(job, "signal") }));
+}
+fn apiBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const s = &scope;
+    if (completion != .start) {
+        advanceBody(s, state.*, completion, input) catch |err| return body.failure(engine, err);
+        return body.action(s, state.*);
+    }
+    const job = try body.init(s, state);
+    try s.put(job, "imports", roots[0]);
+    try s.put(job, "requestAuthContext", arg(args, 0));
+    try s.put(job, "id", arg(args, 2));
+    try s.put(job, "signal", arg(args, 4));
     const generation = s.engine.native_allocation_generation;
-    apiStart(s, pending.owner, api, credential) catch |err| {
+    apiStart(s, job, arg(args, 1), arg(args, 3)) catch |err| {
         if (s.engine.nativeAllocationError(err, generation) != null) return err;
-        try failWrapped(s, pending.owner, "auth", "API key auth failed for provider ", try s.own(flow.reason(s.engine, err)));
+        try failWrapped(s, job, "auth", "API key auth failed for provider ", try s.own(flow.reason(s.engine, err)));
     };
-    try resolve(s, job, pending.promise);
+    return body.action(s, job);
 }
 fn storedOAuth(s: *Scope, imports: c.JSValue, store: c.JSValue, id: c.JSValue, oauth: c.JSValue, stored: c.JSValue, signal: c.JSValue, minimum: c.JSValue) !c.JSValue {
-    const pending = try flow.create(s.engine, c.pi_js_undefined());
-    defer s.engine.freeValue(pending.owner);
-    errdefer s.engine.freeValue(pending.promise);
-    const job = pending.owner;
-    try s.put(job, "imports", imports);
-    try s.put(job, "id", id);
-    try s.put(job, "oauth", oauth);
-    try s.put(job, "minimumRequested", minimum);
-    storedOAuthStart(s, job, store, stored, signal, minimum) catch |err| try flow.rejectError(s.engine, job, err);
-    return pending.promise;
+    const helper = try s.own(try native.createResumable(s.engine, "resolveStoredOAuth", 6, storedOAuthBody, &.{imports}));
+    return c.JS_DupValue(s.engine.context, try s.call(helper, c.pi_js_undefined(), &.{ store, id, oauth, stored, signal, minimum }));
+}
+fn storedOAuthBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        try s.put(job, "imports", roots[0]);
+        try s.put(job, "id", arg(args, 1));
+        try s.put(job, "oauth", arg(args, 2));
+        try s.put(job, "minimumRequested", arg(args, 5));
+        storedOAuthStart(&s, job, arg(args, 0), arg(args, 3), arg(args, 4), arg(args, 5)) catch |err| return body.failure(engine, err);
+    } else advanceBody(&s, state.*, completion, input) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 fn storedOAuthStart(s: *Scope, job: c.JSValue, store: c.JSValue, stored: c.JSValue, signal: c.JSValue, minimum: c.JSValue) !void {
     const floor = try s.invoke(try s.global("Math"), "max", &.{ c.JS_NewInt32(s.engine.context, 300000), if (v.nullish(minimum)) c.JS_NewInt32(s.engine.context, 0) else minimum });
@@ -252,19 +280,22 @@ fn deriveStart(s: *Scope, job: c.JSValue, credential: c.JSValue) !void {
     try s.put(job, "result", try s.object());
     try wait(s, job, try s.invoke(try s.get(job, "oauth"), "toAuth", &.{credential}), .derived);
 }
-fn refreshStoredOAuthCredential(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    return beginRefresh(engine, roots[0], args);
+fn refreshStoredOAuthCredential(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        try s.put(job, "imports", roots[0]);
+        inline for (.{ "credentials", "id", "oauth", "needsRefresh", "signal" }, 0..) |name, i| try s.put(job, name, arg(args, i));
+        refreshStart(&s, job) catch |err| return body.failure(engine, err);
+    } else advanceBody(&s, state.*, completion, input) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 pub fn beginRefresh(engine: *v.em.Engine, imports: c.JSValue, args: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    try s.put(pending.owner, "imports", imports);
-    inline for (.{ "credentials", "id", "oauth", "needsRefresh", "signal" }, 0..) |name, i| try s.put(pending.owner, name, arg(args, i));
-    refreshStart(&s, pending.owner) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    const exports = try s.own(try create(engine, imports));
+    return c.JS_DupValue(engine.context, try s.call(try s.get(exports, "refreshStoredOAuthCredential"), c.pi_js_undefined(), args));
 }
 fn cancelLock(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine };
@@ -300,23 +331,23 @@ fn modifyStart(s: *Scope, job: c.JSValue) !void {
     const store = try s.get(job, "credentials");
     const method = try s.get(store, "modify");
     const id = try s.get(job, "id");
-    const callback = try arrow(s, refreshMutation, 1, &.{job}, true);
+    const callback = try s.own(try native.createResumableArrow(s.engine, "", 1, refreshMutation, &.{job}, c.pi_js_undefined()));
     const options = try s.object();
     try s.put(options, "signal", try s.get(try s.get(job, "lockWait"), "signal"));
     try wait(s, job, try s.call(method, store, &.{ id, callback, options }), .modified);
 }
-fn refreshMutation(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn refreshMutation(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const parent = roots[0];
-    try s.put(pending.owner, "parent", parent);
-    try s.put(pending.owner, "imports", try s.get(parent, "imports"));
-    try s.put(pending.owner, "id", try s.get(parent, "id"));
-    refreshMutationBody(&s, pending.owner, arg(args, 0)) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    if (completion == .start) {
+        const job = try body.init(&s, state);
+        const parent = roots[0];
+        try s.put(job, "parent", parent);
+        try s.put(job, "imports", try s.get(parent, "imports"));
+        try s.put(job, "id", try s.get(parent, "id"));
+        refreshMutationBody(&s, job, arg(args, 0)) catch |err| return body.failure(engine, err);
+    } else advanceBody(&s, state.*, completion, input) catch |err| return body.failure(engine, err);
+    return body.action(&s, state.*);
 }
 fn refreshMutationBody(s: *Scope, job: c.JSValue, current: c.JSValue) !void {
     const parent = try s.get(job, "parent");
