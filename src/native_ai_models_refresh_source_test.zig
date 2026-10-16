@@ -70,7 +70,8 @@ test "native actual Models publication retains queued work through collection" {
 test "native actual Models refresh releases every failed host allocation without swallowed failures" {
     const Probe = struct {
         fn run(gpa: std.mem.Allocator) !void {
-            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
+            var progress: em.ProgressProbe = .{};
+            const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000, .progress_probe = &progress });
             defer engine.deinit();
             try install(engine);
             const generation = engine.native_allocation_generation;
@@ -82,7 +83,17 @@ test "native actual Models refresh releases every failed host allocation without
                 \\const entry=await store.read('p');if(entry.self!==entry||entry.models[0].id!=='owned')throw Error('persistence failed');
                 \\m.setProvider({id:'failed',getModels(){return []},async refreshModels(){throw {ordinary:true}}});const failed=await m.refresh({providers:['failed'],allowNetwork:false});if(failed.errors.get('failed')?.code!=='model_source')throw Error('source failure catch failed');
                 \\delete globalThis.refreshAllocationUpdated;export const proof=true;
-            , "models-refresh-owned-allocations.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+            , "models-refresh-owned-allocations.mjs") catch |err| {
+                const classified = engine.nativeAllocationError(err, generation);
+                if (classified != error.OutOfMemory) {
+                    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));
+                    const captured_tag = if (engine.captured_exception) |reason| c.pi_js_native_allocation_error_generation(reason) else 0;
+                    const retained_tag = if (engine.native_allocation_exception) |reason| c.pi_js_native_allocation_error_generation(reason) else 0;
+                    std.debug.print("MODELS_REFRESH_ALLOCATION_FAILURE fail_index={d} alloc_index={d} induced={any} error={s} boundary={d} current={d} captured_tag={d} retained_tag={d} pending_jobs={any} job_attempts={d} empty_polls={d}\n", .{ failing.fail_index, failing.alloc_index, failing.has_induced_failure, @errorName(classified), generation, engine.native_allocation_generation, captured_tag, retained_tag, c.JS_IsJobPending(engine.runtime), progress.job_attempts, progress.empty_job_polls });
+                    std.debug.dumpStackTrace(failing.getStackTrace());
+                }
+                return classified;
+            };
             engine.freeValue(module);
             c.JS_RunGC(engine.runtime);
             const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(gpa.ptr));

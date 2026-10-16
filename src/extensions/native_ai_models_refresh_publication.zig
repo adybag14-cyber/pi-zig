@@ -129,6 +129,13 @@ pub fn phaseBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValu
         const id = try scope.get(arg(args, 0), "id");
         const options = try scope.object();
         try scope.put(options, "signal", arg(args, 5));
+        // Native calls have no bytecode source expression for the VM's error
+        // diagnostic. Preserve this actual Source callee label, after all
+        // arguments have been evaluated, while leaving getter throws intact.
+        if (!c.JS_IsFunction(engine.context, read)) {
+            _ = try engine.checked(c.JS_ThrowTypeError(engine.context, "this.modelsStore.read is not a function"));
+            unreachable;
+        }
         return awaitAt(&scope, owner, try scope.call(read, store, &.{ id, options }), 0);
     }
     if (completion == .rejected) return thrown(engine, input);
