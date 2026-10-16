@@ -7,10 +7,10 @@ const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const flow = @import("native_agent_async.zig");
+const helpers = @import("native_sdk_session_hook_helpers.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Hook = enum(c_int) { beforeTool, afterTool, next, request, boundary, hidden, forced, legacyNext };
-const Helper = enum(c_int) { before, after, compact, dispatchBoundary };
 const Installer = enum(c_int) { tool, next, request, boundary, hidden, forced };
 const names = [_][:0]const u8{ "_installAgentToolHooks", "_installAgentNextTurnRefresh", "_installAgentRequestProjection", "_installAgentBoundaryHooks", "_installHiddenDeclarationsProjection", "_installAgentForcedPromptProjection" };
 const dependency_names = .{ "normalizeToolResultImages", "convertToLlm", "getVirtualModelState", "shouldCompact", "estimateProjectedContextTokens" };
@@ -30,13 +30,10 @@ pub fn installWithDependencies(engine: *em.Engine, prototype: c.JSValue, depende
         const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, installerCallback, name, 0, @intCast(index), roots.len, &roots));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
-    inline for (.{ "_beforeToolCall", "_afterToolCall", "_compactBeforeNextAssistantResponse", "_dispatchTurnEndBoundary" }, 0..) |name, index| {
-        const function = try engine.checked(c.JS_NewCFunctionData2(engine.context, helperCallback, name, if (index == 2) 1 else 2, @intCast(index), roots.len, &roots));
+    inline for (std.meta.fields(helpers.Kind)) |field| {
+        const function = try helpers.create(engine, @enumFromInt(field.value), dependencies);
         defer engine.freeValue(function);
-        const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-        defer engine.freeValue(parent);
-        if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
-        if (c.JS_DefinePropertyValueStr(engine.context, prototype, name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+        if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
 }
 pub fn attachWithDependencies(engine: *em.Engine, session: c.JSValue, dependencies: c.JSValue) !void {
@@ -92,10 +89,6 @@ fn hookCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.J
     if (hook == .beforeTool or hook == .afterTool) return js.invoke(engine, roots[0], if (hook == .beforeTool) "_beforeToolCall" else "_afterToolCall", &.{first}) catch |err| sdk.fail(engine, err);
     return begin(engine, roots[0], roots[1], roots[2], first, second, hook) catch |err| sdk.fail(engine, err);
 }
-fn helperCallback(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return beginHelper(engine, receiver, roots[0], if (argc > 0) args[0] else c.pi_js_undefined(), if (argc > 1) args[1] else c.pi_js_undefined(), @enumFromInt(magic)) catch |err| sdk.fail(engine, err);
-}
 fn is(scope: *Scope, value: c.JSValue, expected: []const u8) !bool {
     return scope.equal(value, try scope.text(expected));
 }
@@ -116,7 +109,7 @@ fn begin(engine: *em.Engine, session: c.JSValue, previous: c.JSValue, dependenci
 fn prepareOwner(engine: *em.Engine, owner: c.JSValue, previous: c.JSValue, dependencies: c.JSValue, input: c.JSValue, signal: c.JSValue) !void {
     inline for (.{ "previous", "dependencies", "input", "signal" }, .{ previous, dependencies, input, signal }) |key, value| try sdk.put(engine, owner, key, c.JS_DupValue(engine.context, value));
 }
-const Stage = enum(c_int) { transformHidden, transformForced, compactNext, previousNext, boundaryExtension, boundaryPrevious, preparedPrevious, repreparedPrevious, preparedRequest, routedRequest, compactRequest, repreparedRequest, helperBefore, helperAfter, helperNormalize, helperCompact, helperBoundary, toolBefore };
+const Stage = enum(c_int) { transformHidden, transformForced, compactNext, previousNext, boundaryExtension, boundaryPrevious, preparedPrevious, repreparedPrevious, preparedRequest, routedRequest, compactRequest, repreparedRequest, helperBefore };
 fn wait(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
     try flow.wait(advance, engine, owner, value, @intFromEnum(stage));
 }
@@ -154,7 +147,6 @@ fn start(engine: *em.Engine, owner: c.JSValue, hook: Hook) !void {
     }
 }
 fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, magic: c_int) !void {
-    if (rejected and magic == @intFromEnum(Stage.toolBefore)) return rejectBefore(engine, owner, value);
     if (rejected) return flow.settle(engine, owner, true, value);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -198,26 +190,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: boo
         .routedRequest => try requestRouted(engine, owner, value),
         .compactRequest => try prepareRequest(engine, owner, true),
         .repreparedRequest => try finishRequest(engine, owner, true),
-        .helperBefore, .toolBefore => try finish(engine, owner, value),
-        .helperAfter => {
-            try scope.put(owner, "hookResult", value);
-            try normalizeResult(engine, owner);
-        },
-        .helperNormalize => try finish(engine, owner, try normalizedResult(&scope, owner, value)),
-        .helperCompact => {
-            const context = try scope.own(try js.spread(engine, try scope.get(owner, "input")));
-            try scope.put(context, "messages", try scope.get(try scope.invoke(try scope.get(session, "sessionManager"), "buildSessionProjection", &.{}), "messages"));
-            try finish(engine, owner, context);
-        },
-        .helperBoundary => {
-            _ = try scope.invoke(session, "_commitBoundaryDrafts", &.{try scope.get(value, "entries")});
-            const requested = try scope.get(value, "continue");
-            if (scope.truthy(requested) and !scope.truthy(try scope.get(try scope.invoke(session, "_buildBoundaryContext", &.{ try scope.array(), try scope.text("turn_end") }), "canContinue"))) {
-                _ = try scope.invoke(session, "_reportInvalidBoundaryContinuation", &.{try scope.text("turn_end")});
-                return finish(engine, owner, c.pi_js_bool(engine.context, 0));
-            }
-            try finish(engine, owner, requested);
-        },
+        .helperBefore => try finish(engine, owner, value),
     }
 }
 fn hidden(scope: *Scope, session: c.JSValue, messages: c.JSValue) !c.JSValue {
@@ -451,166 +424,6 @@ fn finishRequest(engine: *em.Engine, owner: c.JSValue, routed: bool) !void {
     const selection = if (routed) try scope.get(owner, "route") else owner;
     inline for (.{ "model", "thinkingLevel" }) |name| try scope.put(result, name, try scope.get(selection, name));
     try finish(engine, owner, result);
-}
-fn beginHelper(engine: *em.Engine, session: c.JSValue, dependencies: c.JSValue, input: c.JSValue, second: c.JSValue, helper: Helper) !c.JSValue {
-    const pending = try flow.create(engine, session);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    prepareOwner(engine, pending.owner, c.pi_js_undefined(), dependencies, input, second) catch |err| {
-        try flow.rejectError(engine, pending.owner, err);
-        return pending.promise;
-    };
-    helperStart(engine, pending.owner, helper) catch |err| {
-        const caught = try sdk.get(engine, pending.owner, "toolCallTry");
-        defer engine.freeValue(caught);
-        if (helper == .before and c.JS_ToBool(engine.context, caught) == 1) {
-            const reason = flow.reason(engine, err);
-            defer engine.freeValue(reason);
-            try rejectBefore(engine, pending.owner, reason);
-        } else try flow.rejectError(engine, pending.owner, err);
-    };
-    return pending.promise;
-}
-fn helperStart(engine: *em.Engine, owner: c.JSValue, helper: Helper) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const session = try scope.get(owner, "agent");
-    const input = try scope.get(owner, "input");
-    const second = try scope.get(owner, "signal");
-    switch (helper) {
-        .before, .after => {
-            // Parameter destructuring precedes the body and handler lookup.
-            const call = try scope.get(input, "toolCall");
-            const args = try scope.get(input, "args");
-            var tool_result = c.pi_js_undefined();
-            var is_error = c.pi_js_undefined();
-            if (helper == .after) {
-                tool_result = try scope.get(input, "result");
-                is_error = try scope.get(input, "isError");
-                try scope.put(owner, "result", tool_result);
-                try scope.put(owner, "isError", is_error);
-            }
-            const runner = try scope.get(session, "_extensionRunner");
-            const before = helper == .before;
-            const has = scope.truthy(try scope.invoke(runner, "hasHandlers", &.{try scope.text(if (before) "tool_call" else "tool_result")}));
-            if (before and !has) return finish(engine, owner, c.pi_js_undefined());
-            var result = c.pi_js_undefined();
-            if (has) {
-                if (before) try scope.put(owner, "toolCallTry", c.pi_js_bool(engine.context, 1));
-                const event = try scope.object();
-                try scope.put(event, "type", try scope.text(if (before) "tool_call" else "tool_result"));
-                try scope.put(event, "toolName", try scope.get(call, "name"));
-                try scope.put(event, "toolCallId", try scope.get(call, "id"));
-                if (scope.truthy(second)) try scope.put(event, "parentToolCallId", second);
-                try scope.put(event, "input", args);
-                if (!before) {
-                    inline for (.{ "content", "details" }) |name| try scope.put(event, name, try scope.get(tool_result, name));
-                    const structured = try scope.get(tool_result, "structuredContent");
-                    if (!c.JS_IsUndefined(structured)) try scope.put(event, "structuredContent", structured);
-                    try scope.put(event, "isError", is_error);
-                    try scope.put(event, "usage", try scope.get(tool_result, "usage"));
-                }
-                result = try scope.invoke(runner, if (before) "emitToolCall" else "emitToolResult", &.{event});
-            }
-            try wait(engine, owner, result, if (before) .toolBefore else .helperAfter);
-        },
-        .compact => {
-            const projection = try scope.invoke(try scope.get(session, "sessionManager"), "buildSessionProjection", &.{});
-            const model = try scope.get(session, "model");
-            if (scope.truthy(model) and !try @import("native_sdk_virtual.zig").isVirtual(engine, model) and scope.truthy(try scope.invoke(session, "_exceedsCompactionThreshold", &.{ model, projection }))) return wait(engine, owner, try scope.invoke(session, "_runAutoCompaction", &.{ try scope.text("threshold"), c.pi_js_bool(engine.context, 0) }), .helperCompact);
-            const result = try scope.own(try js.spread(engine, input));
-            try scope.put(result, "messages", try scope.get(projection, "messages"));
-            try finish(engine, owner, result);
-        },
-        .dispatchBoundary => try dispatchBoundary(engine, owner),
-    }
-}
-fn rejectBefore(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const error_constructor = try scope.global("Error");
-    const instance = c.JS_IsInstanceOf(engine.context, reason, error_constructor);
-    if (instance < 0) return js.capture(engine);
-    if (instance != 0) return flow.settle(engine, owner, true, reason);
-    const message = try scope.concat(try scope.text("Extension failed, blocking execution: "), try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{reason}));
-    const replacement = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, error_constructor, 1, @constCast(&message))));
-    try flow.settle(engine, owner, true, replacement);
-}
-fn normalizeResult(engine: *em.Engine, owner: c.JSValue) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const session = try scope.get(owner, "agent");
-    const hook = try scope.get(owner, "hookResult");
-    const result = try scope.get(owner, "result");
-    const hook_content = if (temp.nullish(hook)) c.pi_js_undefined() else try scope.get(hook, "content");
-    const result_content = try scope.get(result, "content");
-    const content = if (!temp.nullish(hook_content)) hook_content else if (!temp.nullish(result_content)) result_content else try scope.array();
-    try scope.put(owner, "content", content);
-    const limits_model = try scope.invoke(session, "_limitsModel", &.{});
-    const limits = if (temp.nullish(limits_model)) c.pi_js_undefined() else try scope.get(limits_model, "inputLimits");
-    const images = if (temp.nullish(limits)) c.pi_js_undefined() else try scope.get(limits, "images");
-    const resize = if (temp.nullish(images)) c.pi_js_undefined() else try scope.get(images, "resize");
-    const options = try scope.object();
-    try scope.put(options, "autoResizeImages", try scope.invoke(try scope.get(session, "settingsManager"), "getImageAutoResize", &.{}));
-    if (scope.truthy(resize)) try scope.put(options, "resizeOptions", resize);
-    try wait(engine, owner, try dependency(&scope, owner, "normalizeToolResultImages", &.{ content, options }), .helperNormalize);
-}
-fn normalizedResult(scope: *Scope, owner: c.JSValue, content: c.JSValue) !c.JSValue {
-    const hook = try scope.get(owner, "hookResult");
-    if (!scope.truthy(hook) and scope.equal(content, try scope.get(owner, "content"))) return c.pi_js_undefined();
-    const original = try scope.get(owner, "result");
-    const result = try scope.object();
-    try scope.put(result, "content", content);
-    try scope.put(result, "details", if (temp.nullish(hook)) c.pi_js_undefined() else try scope.get(hook, "details"));
-    try scope.put(result, "structuredContent", try scope.get(if (scope.truthy(hook)) hook else original, "structuredContent"));
-    try scope.put(result, "isError", try preparedField(scope, hook, "isError", try scope.get(owner, "isError")));
-    try scope.put(result, "usage", if (temp.nullish(hook)) c.pi_js_undefined() else try scope.get(hook, "usage"));
-    return result;
-}
-fn dispatchBoundary(engine: *em.Engine, owner: c.JSValue) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const session = try scope.get(owner, "agent");
-    const message = try scope.get(owner, "input");
-    const results = try scope.get(owner, "signal");
-    const stop = try scope.get(message, "stopReason");
-    const outcome = try scope.text(if (try is(&scope, stop, "aborted")) "aborted" else if (try is(&scope, stop, "error")) "error" else "completed");
-    try scope.set(session, "_lastActivityOutcome", outcome);
-    const entry = try scope.invoke(session, "_findPersistedMessageEntryId", &.{message});
-    const runner = try scope.get(session, "_extensionRunner");
-    if (!scope.truthy(try scope.invoke(runner, "hasHandlers", &.{try scope.text("turn_end")}))) return finish(engine, owner, c.pi_js_bool(engine.context, 0));
-    if (!scope.truthy(entry)) {
-        const error_event = try scope.object();
-        try scope.put(error_event, "extensionPath", try scope.text("<boundary>"));
-        try scope.put(error_event, "event", try scope.text("turn_end"));
-        try scope.put(error_event, "error", try scope.text("turn_end could not resolve the persisted assistant entry ID"));
-        _ = try scope.invoke(runner, "emitError", &.{error_event});
-        return finish(engine, owner, c.pi_js_bool(engine.context, 0));
-    }
-    const ids = try scope.array();
-    for (0..try sdk.length(engine, results)) |index| {
-        const result = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, results, @intCast(index))));
-        const id = try scope.invoke(session, "_findPersistedMessageEntryId", &.{result});
-        if (scope.truthy(id)) _ = try scope.invoke(ids, "push", &.{id});
-    }
-    const event = try scope.object();
-    try scope.put(event, "type", try scope.text("turn_end"));
-    try scope.put(event, "turnIndex", try scope.get(session, "_turnIndex"));
-    try scope.put(event, "message", message);
-    try scope.put(event, "toolResults", results);
-    try scope.put(event, "messageEntryId", entry);
-    try scope.put(event, "toolResultEntryIds", ids);
-    try scope.put(event, "outcome", outcome);
-    var roots = [_]c.JSValue{session};
-    const builder = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, boundaryContext, "", 1, 0, roots.len, &roots)));
-    try wait(engine, owner, try scope.invoke(runner, "emitBoundary", &.{ event, builder }), .helperBoundary);
-}
-fn boundaryContext(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const result = scope.invoke(roots[0], "_buildBoundaryContext", &.{ if (argc > 0) args[0] else c.pi_js_undefined(), scope.text("turn_end") catch |err| return sdk.fail(engine, err) }) catch |err| return sdk.fail(engine, err);
-    return c.JS_DupValue(engine.context, result);
 }
 pub fn combineUsage(engine: *em.Engine, first: c.JSValue, second: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

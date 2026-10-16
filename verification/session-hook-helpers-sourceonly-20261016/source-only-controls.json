@@ -1,0 +1,328 @@
+{
+  "base": "7cd5153e093da160c3c21bb8ad8c143d05426747",
+  "source_head": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "source_file_sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+  "method_equivalences": [
+    {
+      "method": "_beforeToolCall",
+      "exact_utf8_method_bytes_equal": true,
+      "historical_source_path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "historical_sha256": "D87CD7303CD427F907A51A43A0F3AA13EB9730350451F8C7A1A170AB657E07EF",
+      "current_sha256": "D87CD7303CD427F907A51A43A0F3AA13EB9730350451F8C7A1A170AB657E07EF",
+      "source_start_line": 659,
+      "await_lines": [
+        669
+      ]
+    },
+    {
+      "method": "_afterToolCall",
+      "exact_utf8_method_bytes_equal": true,
+      "historical_source_path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "historical_sha256": "8B120F7442854B1612804AF33C6C9307F02B1013B71E1A82E5425D9359C4EC57",
+      "current_sha256": "8B120F7442854B1612804AF33C6C9307F02B1013B71E1A82E5425D9359C4EC57",
+      "source_start_line": 685,
+      "await_lines": [
+        691,
+        708
+      ]
+    },
+    {
+      "method": "_compactBeforeNextAssistantResponse",
+      "exact_utf8_method_bytes_equal": true,
+      "historical_source_path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "historical_sha256": "22BA1D1B8DD12AC54650C7FF9D01CF05E528746E9BFA4C9D5096249659247125",
+      "current_sha256": "22BA1D1B8DD12AC54650C7FF9D01CF05E528746E9BFA4C9D5096249659247125",
+      "source_start_line": 777,
+      "await_lines": [
+        784
+      ]
+    },
+    {
+      "method": "_dispatchTurnEndBoundary",
+      "exact_utf8_method_bytes_equal": true,
+      "historical_source_path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "historical_sha256": "789D4ECACFF302C594AD2710790072C7FFDD60D19B1490C7871CF0A2FEBDA704",
+      "current_sha256": "789D4ECACFF302C594AD2710790072C7FFDD60D19B1490C7871CF0A2FEBDA704",
+      "source_start_line": 847,
+      "await_lines": [
+        867
+      ]
+    }
+  ],
+  "unchanged_unselected_native_functions": [
+    {
+      "name": "validateDependencies",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "A286D99E78549B0A2693C56D242B210EA545C0FF4E51AFB478B90E22C80DD7B0"
+    },
+    {
+      "name": "attachWithDependencies",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "3F1BEB4B346E8D93F9EA662525B59FB46374731DC1FE5EAEA7898799BD139FF9"
+    },
+    {
+      "name": "installerCallback",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "A7FCCCDF5C80ECCF2284EF63765D5B78D8B37973E7304652AAC5AC2B3C2DC902"
+    },
+    {
+      "name": "callbackValue",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "C1E99E99B09E8FE9645DDDE4494944BE332AD5EDD31581C83EA8FEE50C98D946"
+    },
+    {
+      "name": "installHook",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "7A17F1ADD3699F04BBC776B08793209246BFE2F60C638B0F5697014E3FCC196C"
+    },
+    {
+      "name": "hookCallback",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "C648FEF0FE5D934D8D051A88B15C4BFA13615DC14F24EBFFFE913E3DC09B22A7"
+    },
+    {
+      "name": "is",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "B585FB1EB5737E81D004991A6B620901D0E0005C26162ABE5C26526FD3FC7D1F"
+    },
+    {
+      "name": "dependency",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "5C5572F78E76315FA8AEF512173AC59C79C368BE957540AC27AC12DAF7083DE8"
+    },
+    {
+      "name": "begin",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "FAA51861B2557BE71958876C7012AAE4EE9D4D16E8371C23F53C7DD441B3D118"
+    },
+    {
+      "name": "prepareOwner",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "A1519B32D245968A8655D2720D1C91D0BA560FC34C303279BD82FC0776D42991"
+    },
+    {
+      "name": "wait",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "C37A65540AAD1CD1744AE4FD538795145C6955B5CA0E817CB9959A6237B03B95"
+    },
+    {
+      "name": "finish",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "AD1E0F94AE85D2BD69B577F001134E71191B7760CC22EA336711C5547C56932E"
+    },
+    {
+      "name": "start",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "6B6729A1840BE9D0C898DF6C13410E14E06030F2D62C2AB7B2D3481007010423"
+    },
+    {
+      "name": "hidden",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "E5A00D9A6C69A783980D7F4F5A4EDBAED610896B0B8FBD3178E83773D1C2449F"
+    },
+    {
+      "name": "hiddenMapper",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "605FFD116EA8B56D5023E2EE17F1AAD4DB3E3DF8CB546741E6278198A85152C7"
+    },
+    {
+      "name": "hiddenMessage",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "1938275F6FEF13693C569977B8C996E8640EEBAB46EB0333CA1E953A348EB231"
+    },
+    {
+      "name": "toolChangesRest",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "15270497DC253980D003F9C0430F5F434045DCC7A72857BD5871E446F3722FFC"
+    },
+    {
+      "name": "visibleTool",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "46A31CA5500CCC34E2DC4327CA9A8AE5E529B173A0A655370F584BC3B6CDD051"
+    },
+    {
+      "name": "forced",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "3596EB4DC9468D5A2948FC2FB75D07B24D5FD440081C42C9E92AF9FD19367F31"
+    },
+    {
+      "name": "notSystem",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "6F83F2230EB76C29599F430E76A811A161FA535D06F6A9548D9D4B495C754ADD"
+    },
+    {
+      "name": "nextSnapshot",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "F0D63425E5050F7BE24512CAEE9EBADCED50E5664F424A8A011298CF8DCF9CD9"
+    },
+    {
+      "name": "prepareRequest",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "762C5C01EFB69C0173BE2A40A7A9D53034D14739DDE6E597DC3AB481F84C881E"
+    },
+    {
+      "name": "preparedField",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "94EBF4E5AE65D6227BC4E84D4B26DD0C1A7F5524B74FD09993D7B30A7F9CDA18"
+    },
+    {
+      "name": "stateField",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "FD5380CBCF22ABD7A5362130E465AB23601903E06259443ED95DFFC362A71241"
+    },
+    {
+      "name": "selectedField",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "2A25146D4E02CFF6E05E9A9CFBDFCADAB8A8E743179AD1EF5ABB3093AA2867BA"
+    },
+    {
+      "name": "requestPrepared",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "2AE0B0A57E6AC9F78FCEDCCA107C597EFDDC4C28B13122F42EBBB291A9E475CF"
+    },
+    {
+      "name": "requestRouted",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "BC2FE17F8B891DFB6F8BD64DC87EBBA27937BF294F92159DF07CAC90F8DB862A"
+    },
+    {
+      "name": "finishRequest",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "0C2B1E4F6A6465858AE3D13D8CD81C3DCDF89CF163B4E7042236DDBEB566436D"
+    },
+    {
+      "name": "combineUsage",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "030434EB78761A0F07783F2EB785EB4F997562AD41027BCF4085F6CF2D22A9BC"
+    },
+    {
+      "name": "sumField",
+      "unchanged_normalized_lf_bytes": true,
+      "sha256": "405433230B129D80440FE54118275A8C43F6E77AA90787B9E3B5135E011E915E"
+    }
+  ],
+  "frozen_controls": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "unchanged_from_base": true,
+      "git_blob": "4a51bb042ca626f9814e5c5c6e26ea1ed03586b1",
+      "sha256": "33DFB18C9A930D3967A089DF0B28B65AF88B7665B7ADD725AED30FCB8F046FD2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "unchanged_from_base": true,
+      "git_blob": "7a680107291245d9476f3d4516ed08c236f27b44",
+      "sha256": "E3189DA8F918993FB567D07DF32E91CECD12C6666D9E9B1D68A6C65A15CEC37E"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "unchanged_from_base": true,
+      "git_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "unchanged_from_base": true,
+      "git_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "unchanged_from_base": true,
+      "git_blob": "c220c7537a481f4bd13f8b7b3c755ab0d18a38c2",
+      "sha256": "86945EA3AD9C8DD3CD369C1C233CF6364C4DC2909F8C7132F104723523A92317"
+    },
+    {
+      "path": "src/extensions/native_agent_async.zig",
+      "unchanged_from_base": true,
+      "git_blob": "b389d2ce336d333f0adb97b95fac08a57a0eb921",
+      "sha256": "417EE313A8A36B74B8A25131675DA7F8D8F1EA1EC4A971DFDF975CD9982FE696"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "unchanged_from_base": true,
+      "git_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "unchanged_from_base": true,
+      "git_blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_production.zig",
+      "unchanged_from_base": true,
+      "git_blob": "f6c5cac4376f523d59ec236b8df93d5b8c761859",
+      "sha256": "1C5EB940BCC91CB0D546A62C94BF5EC4187EFF3C9CE11C88A6B4E463EA2E0165"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_construct.zig",
+      "unchanged_from_base": true,
+      "git_blob": "5ea846b400fb698f24deb82a8b92373402a0bb28",
+      "sha256": "71DB8D26D02F8BC441838346D79EADB530BC0090B27DEB2F96F785CF57964420"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_declaration_order.zig",
+      "unchanged_from_base": true,
+      "git_blob": "9406d2590b9746d64de449c556658d0907893548",
+      "sha256": "61262B796AF972FD24C45A90783EAB23D694F8B751A7930A98E46A13C6880E17"
+    },
+    {
+      "path": "src/extensions/native_sdk_tool_result_images.zig",
+      "unchanged_from_base": true,
+      "git_blob": "2d8513bbf9ceebfd98608e5a09bcb0d225b3ea67",
+      "sha256": "DB19B71D28B4BF5504FDE4894E0982A4EEFC2D83B5320F57F6F1AF8409B64739"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-hooks-19cb.json",
+      "unchanged_from_base": true,
+      "git_blob": "130db0e9a6ac1284f51c1ae7d048fae039b22636",
+      "sha256": "FF880F9F453E7917531D9AD55BA8340198827E6E2081F0D78703D05517C9ABB0"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-hooks-19cb.input.txt",
+      "unchanged_from_base": true,
+      "git_blob": "3f81469091994cc8e9e94454300400750b8cade9",
+      "sha256": "14B1A72E17FF536AA14B38FCB048821A97D378BBA69160584E4EF16F9695329F"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-callable-hooks-19cb.json",
+      "unchanged_from_base": true,
+      "git_blob": "1b11829fd0c03ecf00de592ff54b3a5877f4fec4",
+      "sha256": "ACABDD4FB2AAFC705A15F24A1F83B3CBD9B84A51CDAD005016FCF11193F10997"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-callable-hooks-19cb.input.txt",
+      "unchanged_from_base": true,
+      "git_blob": "6bdf7cfdbd0c2885ab52012982c9309380383f4c",
+      "sha256": "4706D97BCA24E44E9F7CCBFB68615A1828181F7289C832240CEB8225A6316CF3"
+    },
+    {
+      "path": "src/native_sdk_session_events_test.zig",
+      "unchanged_from_base": true,
+      "git_blob": "e95a4607a67bc5b1a4afaea45f71015ad3c95b48",
+      "sha256": "96E0860D8E99A07F0C6EE37B806DF00676CC6BD004A62E63ECD8D4FFB927D9F8"
+    },
+    {
+      "path": "src/native_sdk_session_queries_test.zig",
+      "unchanged_from_base": true,
+      "git_blob": "e113ff53dab06d895c2faa9c3911e00bd734bbd2",
+      "sha256": "53833F7E1C964532F3BFE79067A075B3068DC8166F915F923EF3CAD46C42A0FD"
+    }
+  ],
+  "zig_invocations": 0,
+  "node_invocations": 0,
+  "source_capture_invocations": 0,
+  "native_compile_invocations": 0,
+  "native_runtime_invocations": 0,
+  "direct_positive_after_and_compact_source_capture_gap": true,
+  "native_qualified": false,
+  "full_factory_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false
+}
