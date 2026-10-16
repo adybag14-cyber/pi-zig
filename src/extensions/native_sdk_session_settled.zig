@@ -18,18 +18,26 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
 fn body(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     const generation = engine.native_allocation_generation;
     return resumeBody(engine, receiver, state, completion, input) catch |err| {
-        const classified = engine.nativeAllocationError(err, generation);
-        if (classified == error.OutOfMemory) {
+        if (err == error.OutOfMemory) {
             // Execute an entered Source finally without manufacturing a guest
             // reason or allowing a cleanup failure to consume the fatal OOM.
             if (!c.JS_IsUndefined(state.*)) unwindFinally(engine, state.*, null) catch {};
             return error.OutOfMemory;
         }
-        if (classified != error.JavaScriptException or c.JS_IsUndefined(state.*)) return async_body.failure(engine, classified);
+        if (err != error.JavaScriptException) return async_body.failureSince(engine, err, generation);
         if (engine.captured_exception) |reason| {
-            if (c.JS_IsUncatchableError(reason)) return async_body.failure(engine, classified);
             const retained = c.JS_DupValue(engine.context, reason);
             defer engine.freeValue(retained);
+            // Mark/rethrow a fresh tagged reason before host classification
+            // could erase its identity. Keep that exact value across finally.
+            trustedBoundary(engine, err, generation) catch |fatal| {
+                if (fatal != error.JavaScriptException) return fatal;
+                return fatalFinally(engine, state.*, retained);
+            };
+            // Historical private tags stay historical, but an already fatal
+            // VM reason must not enter the ordinary Source failure path.
+            if (c.JS_IsUncatchableError(retained)) return fatalFinally(engine, state.*, retained);
+            if (c.JS_IsUndefined(state.*)) return .{ .thrown = c.JS_DupValue(engine.context, retained) };
             try rejectReason(engine, state.*, retained);
             var scope: Scope = .{ .engine = engine };
             defer scope.deinit();
@@ -37,6 +45,25 @@ fn body(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []cons
         }
         return error.ActualCapturedSettlementExceptionRequired;
     };
+}
+fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        try async_body.rethrowRecognizedAllocation(engine, reason, generation);
+    };
+}
+fn throwFatal(engine: *em.Engine, reason: c.JSValue) !void {
+    // Only the recognized fresh or preexisting-uncatchable path calls here.
+    c.JS_SetUncatchableError(engine.context, reason);
+    _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+    unreachable;
+}
+fn fatalFinally(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !native.Action {
+    const retained = c.JS_DupValue(engine.context, reason);
+    defer engine.freeValue(retained);
+    if (!c.JS_IsUndefined(owner)) unwindFinally(engine, owner, retained) catch {};
+    try throwFatal(engine, retained);
+    unreachable;
 }
 fn resumeBody(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var scope: Scope = .{ .engine = engine };
@@ -48,6 +75,12 @@ fn resumeBody(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, comple
         try scope.put(owner, "nativeGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
         try initialize(engine, owner);
     } else {
+        if (completion == .rejected) {
+            var boundary: u64 = 0;
+            if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
+            try async_body.rethrowRecognizedAllocation(engine, input, boundary);
+            if (c.JS_IsUncatchableError(input)) try throwFatal(engine, input);
+        }
         try advance(engine, state.*, input, completion == .rejected, try async_body.stage(&scope, state.*));
     }
     return async_body.action(&scope, state.*);
@@ -150,27 +183,53 @@ fn unwindFinally(engine: *em.Engine, owner: c.JSValue, reason: ?c.JSValue) !void
             defer iterator.deinit();
             const previous = engine.captured_exception;
             engine.captured_exception = if (reason) |value| c.JS_DupValue(engine.context, value) else null;
+            var preserve_fatal_capture = false;
             defer {
-                if (engine.captured_exception) |value| engine.freeValue(value);
-                engine.captured_exception = previous;
+                if (preserve_fatal_capture) {
+                    // A newly fatal close reason owns the current capture.
+                    // Release the saved primary capture instead of replacing it.
+                    if (previous) |value| engine.freeValue(value);
+                } else {
+                    if (engine.captured_exception) |value| engine.freeValue(value);
+                    engine.captured_exception = previous;
+                }
             }
             const generation = engine.native_allocation_generation;
             iterator.close() catch |err| {
-                const classified = engine.nativeAllocationError(err, generation);
-                if (classified == error.OutOfMemory) return error.OutOfMemory;
-                if (classified != error.JavaScriptException) return classified;
+                trustedBoundary(engine, err, generation) catch |fatal| {
+                    if (fatal == error.OutOfMemory) {
+                        // The deferred-actions finally still attempts idle
+                        // resolution; the original direct native union wins.
+                        const ignored = js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{}) catch return error.OutOfMemory;
+                        engine.freeValue(ignored);
+                        return error.OutOfMemory;
+                    }
+                    if (fatal != error.JavaScriptException) return fatal;
+                    preserve_fatal_capture = true;
+                    return closeFatalAfterIdle(engine, receiver, engine.captured_exception orelse return error.ActualFatalCloseReasonRequired);
+                };
+                if (err != error.JavaScriptException) return err;
+                if (engine.captured_exception) |failure| if (c.JS_IsUncatchableError(failure)) {
+                    preserve_fatal_capture = true;
+                    return closeFatalAfterIdle(engine, receiver, failure);
+                };
             };
         }
         const ignored = try js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{});
         engine.freeValue(ignored);
     }
 }
+fn closeFatalAfterIdle(engine: *em.Engine, receiver: c.JSValue, reason: c.JSValue) !void {
+    const retained = c.JS_DupValue(engine.context, reason);
+    defer engine.freeValue(retained);
+    if (js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{})) |ignored| {
+        engine.freeValue(ignored);
+    } else |_| {}
+    try throwFatal(engine, retained);
+}
 fn rejectReason(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
     try unwindFinally(engine, owner, reason);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    var generation: u64 = 0;
-    if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "nativeGeneration")) < 0) return js.capture(engine);
-    try async_body.rethrowRecognizedAllocation(engine, reason, generation);
     try async_body.reject(&scope, owner, reason);
 }

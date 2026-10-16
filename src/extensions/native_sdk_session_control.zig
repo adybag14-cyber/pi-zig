@@ -20,7 +20,10 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
             const Adapter = struct {
                 fn body(host: *em.Engine, session: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
                     const generation = host.native_allocation_generation;
-                    return asyncBody(host, session, method, state, completion, input) catch |err| async_body.failureSince(host, err, generation);
+                    return asyncBody(host, session, method, state, completion, input) catch |err| {
+                        try trustedBoundary(host, err, generation);
+                        return async_body.failureSince(host, err, generation);
+                    };
                 }
             };
             const function = try native.createResumable(engine, field.name, 0, Adapter.body, &.{});
@@ -168,6 +171,12 @@ fn dispose(scope: *Scope, session: c.JSValue, cleanup: c.JSValue) !void {
 fn disposeAbort(scope: *Scope, session: c.JSValue) !void {
     inline for (.{ "abortRetry", "abortCompaction", "abortBranchSummary", "abortBash" }) |name| _ = try scope.invoke(session, name, &.{});
     _ = try scope.invoke(try scope.get(session, "agent"), "abort", &.{});
+}
+fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        try async_body.rethrowRecognizedAllocation(engine, reason, generation);
+    };
 }
 fn asyncBody(engine: *em.Engine, session: c.JSValue, method: Method, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     var scope: Scope = .{ .engine = engine };
