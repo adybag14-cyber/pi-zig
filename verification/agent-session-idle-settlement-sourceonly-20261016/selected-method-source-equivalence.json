@@ -1,0 +1,26 @@
+[
+  {
+    "method": "abort",
+    "historical_source_path": "C:\\Users\\adyba\\pi-upstream-contract-e6220e1-20261013\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "exact_utf8_method_bytes_equal": true,
+    "historical_sha256": "CBFDE211CB397829D9E39F0005B565F3CD5212CF9864993CC5D50FD1757AC837",
+    "current_sha256": "CBFDE211CB397829D9E39F0005B565F3CD5212CF9864993CC5D50FD1757AC837"
+  },
+  {
+    "method": "waitForIdle",
+    "historical_source_path": "C:\\Users\\adyba\\pi-upstream-contract-e6220e1-20261013\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "exact_utf8_method_bytes_equal": true,
+    "historical_sha256": "6B145442F03C175598823B56954A8CF4224E634C9007F31173D311D94FC943E0",
+    "current_sha256": "6B145442F03C175598823B56954A8CF4224E634C9007F31173D311D94FC943E0"
+  },
+  {
+    "method": "_emitAgentSettled",
+    "historical_source_path": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "current_source_path": "C:\\Users\\adyba\\pi-upstream-source-0fbdbd3-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+    "exact_utf8_method_bytes_equal": true,
+    "historical_sha256": "6356FD700348796742C559AD347470AA65794401DA4DD13AC7996830BCCB012F",
+    "current_sha256": "6356FD700348796742C559AD347470AA65794401DA4DD13AC7996830BCCB012F"
+  }
+]

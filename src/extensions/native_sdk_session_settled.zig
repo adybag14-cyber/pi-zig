@@ -5,28 +5,94 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const async_body = @import("native_async_body.zig");
+const native = async_body.native;
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 
 pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
-    const method = try engine.checked(c.JS_NewCFunction(engine.context, start, "_emitAgentSettled", 0));
+    const method = try native.createResumable(engine, "_emitAgentSettled", 0, body, &.{});
     defer engine.freeValue(method);
-    const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-    defer engine.freeValue(parent);
-    if (c.JS_SetPrototype(engine.context, method, parent) < 0) return js.capture(engine);
     if (c.JS_DefinePropertyValueStr(engine.context, exports, "_emitAgentSettled", c.JS_DupValue(engine.context, method), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
-fn start(context: ?*c.JSContext, receiver: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return begin(engine, receiver) catch |err| sdk.fail(engine, err);
+fn body(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    const generation = engine.native_allocation_generation;
+    return bodyWithSourceCatch(engine, receiver, state, completion, input) catch |err| {
+        // This wrapper includes failures raised from the Source catch/finally
+        // adaptation itself, not only failures from resumeBody.
+        try trustedBoundary(engine, err, generation);
+        return async_body.failureSince(engine, err, generation);
+    };
 }
-fn begin(engine: *em.Engine, receiver: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, receiver);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    initialize(engine, pending.owner) catch |err| try failOperation(engine, pending.owner, err);
-    return pending.promise;
+fn bodyWithSourceCatch(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    const generation = engine.native_allocation_generation;
+    return resumeBody(engine, receiver, state, completion, input) catch |err| {
+        if (err == error.OutOfMemory) {
+            // Execute an entered Source finally without manufacturing a guest
+            // reason or allowing a cleanup failure to consume the fatal OOM.
+            if (!c.JS_IsUndefined(state.*)) unwindFinally(engine, state.*, null) catch {};
+            return error.OutOfMemory;
+        }
+        if (err != error.JavaScriptException) return async_body.failureSince(engine, err, generation);
+        if (engine.captured_exception) |reason| {
+            const retained = c.JS_DupValue(engine.context, reason);
+            defer engine.freeValue(retained);
+            // Mark/rethrow a fresh tagged reason before host classification
+            // could erase its identity. Keep that exact value across finally.
+            trustedBoundary(engine, err, generation) catch |fatal| {
+                if (fatal != error.JavaScriptException) return fatal;
+                return fatalFinally(engine, state.*, retained);
+            };
+            // Historical private tags stay historical, but an already fatal
+            // VM reason must not enter the ordinary Source failure path.
+            if (c.JS_IsUncatchableError(retained)) return fatalFinally(engine, state.*, retained);
+            if (c.JS_IsUndefined(state.*)) return .{ .thrown = c.JS_DupValue(engine.context, retained) };
+            try rejectReason(engine, state.*, retained);
+            var scope: Scope = .{ .engine = engine };
+            defer scope.deinit();
+            return async_body.action(&scope, state.*);
+        }
+        return error.ActualCapturedSettlementExceptionRequired;
+    };
+}
+fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        try async_body.rethrowRecognizedAllocation(engine, reason, generation);
+    };
+}
+fn throwFatal(engine: *em.Engine, reason: c.JSValue) !void {
+    // Only the recognized fresh or preexisting-uncatchable path calls here.
+    c.JS_SetUncatchableError(engine.context, reason);
+    _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+    unreachable;
+}
+fn fatalFinally(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !native.Action {
+    const retained = c.JS_DupValue(engine.context, reason);
+    defer engine.freeValue(retained);
+    if (!c.JS_IsUndefined(owner)) unwindFinally(engine, owner, retained) catch {};
+    try throwFatal(engine, retained);
+    unreachable;
+}
+fn resumeBody(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    if (completion == .start) {
+        const generation = engine.native_allocation_generation;
+        const owner = try async_body.init(&scope, state);
+        try scope.put(owner, "agent", receiver);
+        try scope.put(owner, "nativeGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
+        try initialize(engine, owner);
+    } else {
+        if (completion == .rejected) {
+            var boundary: u64 = 0;
+            if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
+            try async_body.rethrowRecognizedAllocation(engine, input, boundary);
+            if (c.JS_IsUncatchableError(input)) try throwFatal(engine, input);
+        }
+        try advance(engine, state.*, input, completion == .rejected, try async_body.stage(&scope, state.*));
+    }
+    return async_body.action(&scope, state.*);
 }
 fn initialize(engine: *em.Engine, owner: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -42,16 +108,13 @@ fn initialize(engine: *em.Engine, owner: c.JSValue) !void {
     const emit = try scope.get(runner, "emit");
     const event = try settledEvent(&scope, owner);
     const result = try scope.call(emit, runner, &.{event});
-    try flow.wait(continuation, engine, owner, result, 0);
+    try async_body.wait(&scope, owner, result, 0);
 }
 fn settledEvent(scope: *Scope, owner: c.JSValue) !c.JSValue {
     const event = try scope.object();
     try scope.put(event, "type", try scope.text("agent_settled"));
     try scope.put(event, "aborted", try scope.get(owner, "aborted"));
     return event;
-}
-fn continuation(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    advance(engine, owner, value, rejected, stage) catch |err| try failOperation(engine, owner, err);
 }
 fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
     if (rejected) return rejectReason(engine, owner, value);
@@ -66,7 +129,7 @@ fn advance(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: boo
     const actions = try scope.invoke(try scope.get(receiver, "_deferredSettledActions"), "splice", &.{c.JS_NewInt32(engine.context, 0)});
     if (!try scope.positive(try scope.get(actions, "length"))) {
         _ = try scope.invoke(receiver, "_resolveIdleWaitIfIdle", &.{});
-        return flow.settle(engine, owner, false, c.pi_js_undefined());
+        return async_body.resolve(&scope, owner, c.pi_js_undefined());
     }
     try scope.put(owner, "actionsTry", c.pi_js_bool(engine.context, 1));
     const symbol = try scope.own(try engine.checked(JS_GetIteratorSymbol(engine.context)));
@@ -96,21 +159,20 @@ fn nextAction(engine: *em.Engine, owner: c.JSValue) !void {
         defer engine.freeValue(callback);
         const result = try js.call(engine, callback, c.pi_js_undefined(), &.{});
         defer engine.freeValue(result);
-        return flow.wait(continuation, engine, owner, result, 1);
+        var scope: Scope = .{ .engine = engine };
+        defer scope.deinit();
+        return async_body.wait(&scope, owner, result, 1);
     }
     try sdk.put(engine, owner, "actionsTry", c.pi_js_bool(engine.context, 0));
     const receiver = try sdk.get(engine, owner, "agent");
     defer engine.freeValue(receiver);
     const ignored = try js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{});
     engine.freeValue(ignored);
-    try flow.settle(engine, owner, false, c.pi_js_undefined());
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try async_body.resolve(&scope, owner, c.pi_js_undefined());
 }
-fn failOperation(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
-    const reason = flow.reason(engine, err);
-    defer engine.freeValue(reason);
-    try rejectReason(engine, owner, reason);
-}
-fn rejectReason(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
+fn unwindFinally(engine: *em.Engine, owner: c.JSValue, reason: ?c.JSValue) !void {
     const receiver = try sdk.get(engine, owner, "agent");
     defer engine.freeValue(receiver);
     const emitting = try sdk.get(engine, owner, "emittingTry");
@@ -129,13 +191,54 @@ fn rejectReason(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
             var iterator = try restored(engine, owner);
             defer iterator.deinit();
             const previous = engine.captured_exception;
-            engine.captured_exception = c.JS_DupValue(engine.context, reason);
-            iterator.closePreserving();
-            if (engine.captured_exception) |value| engine.freeValue(value);
-            engine.captured_exception = previous;
+            engine.captured_exception = if (reason) |value| c.JS_DupValue(engine.context, value) else null;
+            var preserve_fatal_capture = false;
+            defer {
+                if (preserve_fatal_capture) {
+                    // A newly fatal close reason owns the current capture.
+                    // Release the saved primary capture instead of replacing it.
+                    if (previous) |value| engine.freeValue(value);
+                } else {
+                    if (engine.captured_exception) |value| engine.freeValue(value);
+                    engine.captured_exception = previous;
+                }
+            }
+            const generation = engine.native_allocation_generation;
+            iterator.close() catch |err| {
+                trustedBoundary(engine, err, generation) catch |fatal| {
+                    if (fatal == error.OutOfMemory) {
+                        // The deferred-actions finally still attempts idle
+                        // resolution; the original direct native union wins.
+                        const ignored = js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{}) catch return error.OutOfMemory;
+                        engine.freeValue(ignored);
+                        return error.OutOfMemory;
+                    }
+                    if (fatal != error.JavaScriptException) return fatal;
+                    preserve_fatal_capture = true;
+                    return closeFatalAfterIdle(engine, receiver, engine.captured_exception orelse return error.ActualFatalCloseReasonRequired);
+                };
+                if (err != error.JavaScriptException) return err;
+                if (engine.captured_exception) |failure| if (c.JS_IsUncatchableError(failure)) {
+                    preserve_fatal_capture = true;
+                    return closeFatalAfterIdle(engine, receiver, failure);
+                };
+            };
         }
         const ignored = try js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{});
         engine.freeValue(ignored);
     }
-    try flow.settle(engine, owner, true, reason);
+}
+fn closeFatalAfterIdle(engine: *em.Engine, receiver: c.JSValue, reason: c.JSValue) !void {
+    const retained = c.JS_DupValue(engine.context, reason);
+    defer engine.freeValue(retained);
+    if (js.invoke(engine, receiver, "_resolveIdleWaitIfIdle", &.{})) |ignored| {
+        engine.freeValue(ignored);
+    } else |_| {}
+    try throwFatal(engine, retained);
+}
+fn rejectReason(engine: *em.Engine, owner: c.JSValue, reason: c.JSValue) !void {
+    try unwindFinally(engine, owner, reason);
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    try async_body.reject(&scope, owner, reason);
 }
