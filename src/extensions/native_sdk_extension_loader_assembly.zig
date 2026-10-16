@@ -18,6 +18,7 @@ pub const Inputs = struct {
     is_typescript_source_runtime: bool,
 };
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
+    if (!c.JS_IsFunction(engine.context, inputs.lazy_modules.dynamic_import)) return error.RequiredGenuineQueuedDynamicImport;
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const module_url = try s.get(inputs.import_meta, "url");
     const filename_value = try s.call(try s.get(inputs.url, "fileURLToPath"), c.pi_js_undefined(), &.{module_url});
