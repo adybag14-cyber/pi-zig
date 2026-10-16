@@ -1,0 +1,13 @@
+{
+  "source_head": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "source_tree": "495eca20433379a8cdd995e53c31278d72886c2b",
+  "source_files": 1970,
+  "source_manifest_sha256": "A6B766687452772E58C7B5637DD181DCE263EA4687F02B696710B51DEB0D78A4",
+  "node_files": 1774,
+  "node_manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+  "node_current_drift": 0,
+  "runtime_imports": 0,
+  "type_only_import": "import type { AssistantMessage } from \"../types.ts\";",
+  "runtime_dependencies_required": false,
+  "source_native_jobs_started": 0
+}

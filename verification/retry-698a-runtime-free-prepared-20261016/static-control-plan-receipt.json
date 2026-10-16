@@ -1,0 +1,29 @@
+{
+  "source_files": 1970,
+  "node_files": 1774,
+  "module_files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\guarded-start-fence.mjs",
+      "sha256": "52CF3483E149FC2F86063871C6F8CAC4C0FEED129B9DCCBF2F4F576F67A91A38"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\capture-retry-698a.mjs",
+      "sha256": "3FBE305D241DD1DCC38B4E63BF7D1F298926EAE3BF74CEFB208740336410D410"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\retry-698a-classifier.input.mjs",
+      "sha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016\\packages\\ai\\src\\utils\\retry.ts",
+      "sha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448"
+    }
+  ],
+  "cases": 160,
+  "runtime_dependencies": 0,
+  "exception_granted": false,
+  "node_started": false,
+  "global_runtime_status": "recovery_pending",
+  "global_jobs_held": true,
+  "parser_errors": 0
+}
