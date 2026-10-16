@@ -5,7 +5,7 @@ const std = @import("std");
 // Refreshing either normalized data or its original-file manifest requires a
 // new reviewed group census. Stale declarations fail before publication.
 pub const normalized_source_sha256 = "ae489e497f78c88566dc7fd50bb5ae34a359550c3ba81d50d0d3b2e3a11852db";
-pub const builtin_manifest_sha256 = "05a7f9b7d8fc9a28018f38c6ebbb4b0321e3c3685fd6bed191730d5b32d9e60af";
+pub const builtin_manifest_sha256 = "05a7f9b7d8fc9a28018f38c6ebb4b0321e3c3685fd6bed191730d5b32d9e60af";
 pub const source_provider_count: usize = 42;
 pub const source_model_count: usize = 1705;
 pub const Entry = struct { provider: []const u8, apis: []const []const u8 };
