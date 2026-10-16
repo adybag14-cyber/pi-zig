@@ -1,0 +1,607 @@
+{
+  "status": "passed",
+  "zip_bytes": 34977202,
+  "zip_sha256": "5C4BAC477D36545D2451B85101C70A2546D59778285EFEE2099CACE49D37E4CD",
+  "manifest_sha256": "AA543854CE45D36AAE8318172FC393970DB0E5FE6D28246FC12DA532B839DE9B",
+  "payload_count": 98,
+  "zip_count": 99,
+  "decompression_hash_drift": 0,
+  "verified": [
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/before.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/commands.json",
+      "bytes": 1342,
+      "sha256": "E2F1BCDF95BB1C9F7D82689805CE265929EBDB9614398FF79AF9584A2C62448B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile-absence.json",
+      "bytes": 2897,
+      "sha256": "1904A8D49657DF8A3B935E5E86C36F7A526AEC149BFB5DB4D029B9101052A424",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile-admission.json",
+      "bytes": 580,
+      "sha256": "567880748A8DA214F752F4A84F8689B4AFBD7428A469CBC3F05A7EC5AEDFEFE5",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile-after-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile-after.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile-before.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile.json",
+      "bytes": 2005,
+      "sha256": "6DDE9183185F64E3E2D4B6E13B9C769577EACF2487C5AED569BBBABFEE0ED00E",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile.stderr.log",
+      "bytes": 13952,
+      "sha256": "8F33DCF197AE0AF5C5DC88086054961DA9DB8310A257DCAB5B23523D9E0D45B6",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/final-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/final.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-absence.json",
+      "bytes": 1938,
+      "sha256": "46E1B9E1283FBB49B54240C69288D02C63CD46E3B74F4BEFB371400670A9ECF3",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-admission.json",
+      "bytes": 583,
+      "sha256": "5FCA989D582B0D9B24513B82ADF6E08549EE5521DC75F94878B0E73F08F8D117",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-after-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-after.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-before-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata-before.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata.json",
+      "bytes": 1107,
+      "sha256": "3DADDF1D4BF7235E04A3BF948BBE6C5288C904C09A17B4773213E91B4C3BFFB8",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/metadata.stdout.bin",
+      "bytes": 485,
+      "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/result.json",
+      "bytes": 18809,
+      "sha256": "B7DF451710BB8443F25168F7C24E56B7B8E002C7A999F654AF7A9405A18B177B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-absence.json",
+      "bytes": 2862,
+      "sha256": "3FF4AFDBFEDF78D2E5D3434BB47D1A7E4731C2DE2937E3E482FCAFE87D5437BC",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-admission.json",
+      "bytes": 580,
+      "sha256": "9B6A5FBE5E2C731E7B90B71452A591EC298EEF6F9F8291E3B45FF71506BDFFDC",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-after-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-after.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-before-artifacts.json",
+      "bytes": 1090,
+      "sha256": "4869B18A8E8D4912D6AEA3D967F4A677B01F39CE6FF05D3C7CBCBA67DED2B29A",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-before.json",
+      "bytes": 13799601,
+      "sha256": "F77B0C042CDF26D8F7145C1CF7FF31D48BA7D4B83EEB68F971806EAD40A88E2C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime-raw-frame-observation.json",
+      "bytes": 823,
+      "sha256": "3F59D897A96B66BB7F62F3BAB40B6A50FC08EBE0C878AE5EAF1CD23B3F92339F",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime.json",
+      "bytes": 1108,
+      "sha256": "B2DA6ECF82CFB34B51459072E1B93E38193001D64012539A6971B2BEA2CBDC66",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime.results.json",
+      "bytes": 799,
+      "sha256": "972E20E99D32A3708CDFD545702D683D67782B4A3DB3E7E1A0D0CD340C43F2A4",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime.stderr.log",
+      "bytes": 5385,
+      "sha256": "898E643AE2435A554C0394F28C87A7EB4D4956E67768FB8596118C0387A37F42",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/runtime.stdout.bin",
+      "bytes": 126,
+      "sha256": "7FCF4D1558F76C8A120DB11F43293CBE717C635926381F1FED1181C62A299D7C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-first38a8-20261016/selected-tests.json",
+      "bytes": 807,
+      "sha256": "29344077F13D5357FF32D520F39013873BF0483D90E5038DF21E8B2E865AE793",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-prepared-20261016/Run-TypeBoxComponent.ps1",
+      "bytes": 22803,
+      "sha256": "035814034151697CFC0182ECCDA37A411C665AC471CF9AD9C584727EF3012E1B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-prepared-20261016/root-typebox38a8-20261016-223949.json",
+      "bytes": 1994,
+      "sha256": "18764B2DBB05EC91B9E9996976A084F0C9EAEC92C0FF801EA1ADED65DEE06575",
+      "match": true
+    },
+    {
+      "member": "main/tools/workspace/Resolve-PiZigWorkspace.ps1",
+      "bytes": 1299,
+      "sha256": "163E0872FC8CA7C9FAA37949E4F4787CDAE7C5103313894BAE26B0312ACF8BF9",
+      "match": true
+    },
+    {
+      "member": ".pi-zig-workspace.json",
+      "bytes": 817,
+      "sha256": "D551DA72833FA330C8365A625E4FDD6D2693456BAC5333C080E9657D1E38DFBF",
+      "match": true
+    },
+    {
+      "member": "path-relocations.json",
+      "bytes": 109801,
+      "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5",
+      "match": true
+    },
+    {
+      "member": "evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "match": true
+    },
+    {
+      "member": "evidence/typebox-package-authoring-independent-acceptance-20261016.json",
+      "bytes": 11638,
+      "sha256": "466EE4FBE21B155C16B24FFD4C804549A6CB0FADD435CFD6F33820ECC54F5EFB",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/tools/ci/native_qualification_ci.ps1",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/before.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/commands.json",
+      "bytes": 1342,
+      "sha256": "C429BF3674CE7576CCABC638B3564C35D252C0B464C4C055F4AD9795D6CE133F",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile-absence.json",
+      "bytes": 2897,
+      "sha256": "BCBCDE8753D1FF4FAAAFD9D830279676F8267D7B67B49E8C85B513D9E17E4023",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile-admission.json",
+      "bytes": 580,
+      "sha256": "49F429CB2766BE43A174F575B8E553CF2B409D63386C0AE71BEDC90A8B881C80",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile-after-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile-after.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile-before.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile.json",
+      "bytes": 2005,
+      "sha256": "30AE3C5924F969A3706024F6210944EE1FF08D2FD751B21D10911A52CFE8394C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile.stderr.log",
+      "bytes": 13932,
+      "sha256": "FEF801F0020C1284CEF2D37C58B55DD44F6F98F5C27BCA324BDAE1D9AD9701D3",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/final-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/final.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-absence.json",
+      "bytes": 1939,
+      "sha256": "48BD7E8D775F5506805463A2184CCA76AAFD3E62A6F3BD70BD8B25784C36DE70",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-admission.json",
+      "bytes": 581,
+      "sha256": "0AB346A276C42969F20AF6F3B7134E4BC40CC0EFE300FCB82E00A2E56FCDCB21",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-after-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-after.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-before-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata-before.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata.json",
+      "bytes": 1107,
+      "sha256": "CF1A692111A2E276B581D03502A9E640B3C7CC1BBF645B94390842196E7CE552",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/metadata.stdout.bin",
+      "bytes": 485,
+      "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/result.json",
+      "bytes": 18812,
+      "sha256": "06378EB6EDF22486A9CE1F9C7C4F735E255A4CB7D3727E3D131F03294DA2CB8C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-absence.json",
+      "bytes": 2861,
+      "sha256": "F32EEC3D0604DD17D22B043E46CD01220FDE215C7AC177A35412F34605380C9C",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-admission.json",
+      "bytes": 579,
+      "sha256": "C59F8C68CAB20AC4C26C76F88156061207F13EFE5B9FE722750D673EE9222662",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-after-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-after.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-before-artifacts.json",
+      "bytes": 1339,
+      "sha256": "D6D17CDE78FC87D98D368AD5682FA8908433FAD8713A9713FA9C8739BBDEB23B",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-before.json",
+      "bytes": 13799615,
+      "sha256": "1B1160E3B4CEFB2E9F21DA3950362B18AA4AA6FE3F3DC6E8B805EB63CBD33606",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime-raw-frame-observation.json",
+      "bytes": 823,
+      "sha256": "70D3395A5DA3AF4F4A767C393C37A19F39A2F770062DF0D17FFE822534F0AF18",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime.json",
+      "bytes": 1108,
+      "sha256": "DF5DAADD33DEF11B2C2F512A49A7FD257ACA9749964A9323759CD130F9977B16",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime.results.json",
+      "bytes": 798,
+      "sha256": "A096C304E1B9B14BFD12916EAC8E5C6C07BE188C7734FC832651FE8073C4C6F0",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime.stderr.log",
+      "bytes": 2966,
+      "sha256": "E27AA2EA07C30C139EBA8C662F5429565404A822E2AECA6ABFFEC332B3DA983D",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/runtime.stdout.bin",
+      "bytes": 126,
+      "sha256": "5BAFAEDFD9E39E2D1533672243DE898F99CD541874B587B0963888E6AA01C7FD",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-second1f9-20261017/selected-tests.json",
+      "bytes": 807,
+      "sha256": "B2FDFE8B35D0153A5E7C5E0BC824F17A63BC9E3EBE7E65BD524DA3D8C5C51E93",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-v2-prepared-20261017/Run-TypeBoxComponentV2.ps1",
+      "bytes": 23852,
+      "sha256": "902F085CC607209973AFF8E1B2682FE0E0FE5EE3744081709104482798E33ABD",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-v2-prepared-20261017/root-typebox1f9-20261016-232647.json",
+      "bytes": 2340,
+      "sha256": "6B5F8B653A408B20240B32E6370DBA2204DCD7951AB04415F4B307A2BCD127C8",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-prepared-20261016/grant.skeleton.json",
+      "bytes": 1908,
+      "sha256": "5967EBADDCB33BF695A258D3FB21BE90B6F9E22010A16B89F0D2707AED8168D0",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-v2-prepared-20261017/grant.skeleton.json",
+      "bytes": 2255,
+      "sha256": "AED154EF4C37C32FFCF47570DD6EE0C441BF17F825F76E0E02485F53C1F469C2",
+      "match": true
+    },
+    {
+      "member": "evidence/root-typebox-component-v2-independent-async-review-20261017/review.json",
+      "bytes": 3509,
+      "sha256": "C66C9DEE526F103633B127AA6FFA410DD0B596549DCE8D5440AA297225E19A92",
+      "match": true
+    },
+    {
+      "member": "evidence/typebox-two-run-independent-async-review-20261017/Audit-TypeBox.ps1",
+      "bytes": 11458,
+      "sha256": "75E76CFEEB08A4E153AFB5C043A29279721D5F435B670E89E17535A4DD8EF018",
+      "match": true
+    },
+    {
+      "member": "evidence/typebox-two-run-independent-async-review-20261017/audit.json",
+      "bytes": 22105,
+      "sha256": "568A4BC1A483200689C56CC7FB8CFADF193204C9390CEA264CBEE899C2B8A3A8",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/native_typebox_compile_production_test.zig",
+      "bytes": 8014,
+      "sha256": "194F848EEF6FBB27D4AE5A9E17015EAA1893A5930929AE0AF1856EBE108E128F",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/native_typebox_compile_ir.zig",
+      "bytes": 32231,
+      "sha256": "BBBC4E2CD596F3BCC17DC5F1449EBF24118D54F8E295F31A594F704918B5D655",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/native_typebox_operators_production.zig",
+      "bytes": 2775728,
+      "sha256": "BF583CCD1D6A92A4FED0D7D4ED17422FDFBE0E7B261444A65D3C287FBB3F3FB1",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/vendor/quickjs/quickjs.c",
+      "bytes": 2218664,
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/vendor/quickjs/quickjs.h",
+      "bytes": 75537,
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/typebox-compile-production.input.mjs",
+      "bytes": 13930,
+      "sha256": "B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/typebox-compile-production.json",
+      "bytes": 41564,
+      "sha256": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/ai-model-schemas-partial-4954.input.mjs",
+      "bytes": 11489,
+      "sha256": "EB4619FFE139943A7227B61D4A793A2B0D24C22F7C1037784AF066E17C7C9B34",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/ai-model-schemas-partial-4954.json",
+      "bytes": 966953,
+      "sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/typebox-operators-production.input.txt",
+      "bytes": 15690,
+      "sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA",
+      "match": true
+    },
+    {
+      "member": "worktrees/root-typebox-qualification/src/extensions/fixtures/typebox-operators-production.expected.json",
+      "bytes": 476883,
+      "sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+      "match": true
+    },
+    {
+      "member": "evidence/typebox-two-run-public-proof-prepared-20261017/README.md",
+      "bytes": 3178,
+      "sha256": "7078D627F28EA80792EDDF9089640A54945F189087DC846CAF68E2059E507041",
+      "match": true
+    },
+    {
+      "member": "evidence/typebox-two-run-public-proof-prepared-20261017/Package-TypeBox.ps1",
+      "bytes": 8717,
+      "sha256": "2CB9681DE1A353A9AE581CCD9EA8CAE11B49B1E5C57EDA1A400D1839BB601227",
+      "match": true
+    },
+    {
+      "member": "member-manifest.json",
+      "bytes": 40571,
+      "sha256": "AA543854CE45D36AAE8318172FC393970DB0E5FE6D28246FC12DA532B839DE9B",
+      "match": true
+    }
+  ],
+  "published": false,
+  "new_native_or_node_jobs": 0
+}
