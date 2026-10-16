@@ -2245,6 +2245,13 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-web-fetch", "Compile complete genuine Fetch39 real peer comparison").dependOn(&fetch_source_tests.step);
     const fetch_source_run = b.addRunArtifact(fetch_source_tests);
     b.step("test-native-web-fetch", "Replay all39 unchanged fetch rows against real native Request Response stream and HTTP").dependOn(&fetch_source_run.step);
+    const body_full_module = b.createModule(.{ .root_source_file = b.path("src/native_web_body_full_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, body_full_module, quickjs, sqlite_lib_dir);
+    body_full_module.addImport("catalog_tool", catalog_tool);
+    const body_full_tests = b.addTest(.{ .root_module = body_full_module, .use_llvm = use_llvm, .filters = &.{"Web Body176 complete "} });
+    b.step("build-native-web-body-full", "Compile complete immutable genuine Node24 Body176 graph comparison").dependOn(&body_full_tests.step);
+    const body_full_run = b.addRunArtifact(body_full_tests);
+    b.step("test-native-web-body-full", "Replay all176 original constructor descriptor body signal and GC observations").dependOn(&body_full_run.step);
     const typebox_production_module = b.createModule(.{ .root_source_file = b.path("src/native_typebox_compile_production_test.zig"), .target = target, .optimize = optimize });
     linkQuickJs(b, typebox_production_module, quickjs, sqlite_lib_dir);
     typebox_production_module.addImport("catalog_tool", catalog_tool);
