@@ -94,6 +94,7 @@ fn captureValues(engine: *v.em.Engine, provided: Provided) !c.JSValue {
         try scope.put(result, "headersPrepared", c.JS_NewBool(engine.context, false));
     }
     // The SDK commits these fields only after the optional constructor merge.
+    try scope.put(result, "constructorApiKey", api_key);
     try scope.put(result, "apiKey", if (c.JS_IsString(api_key)) api_key else c.pi_js_null());
     try scope.put(result, "adminAPIKey", admin);
     try scope.put(result, "organization", organization);

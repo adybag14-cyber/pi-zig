@@ -1,0 +1,52 @@
+{
+  "status": "source_only_unexecuted",
+  "base": "5866905951bcc8a2da7aae9f4b5010392524e361",
+  "actual_sdk": "6.40.0",
+  "primary_files": [
+    {
+      "file": "client.mjs",
+      "sha256": "45B54E0C0A779A8B284CC8BCFB41A0A0F1817EAC32D9CC585FF71875B62AEB6B",
+      "bytes": 36154
+    },
+    {
+      "file": "core/api-promise.mjs",
+      "sha256": "E8DEE9489C9F99B58749F021AEA2F367DC3EC802927608F1DBCAE2D8B65C94BB",
+      "bytes": 3078
+    },
+    {
+      "file": "internal/parse.mjs",
+      "sha256": "A79745D365C6C0D258C0793BF44B23ECE19A6DFE0AB0C82AA565175F06A359B8",
+      "bytes": 2509
+    },
+    {
+      "file": "internal/shims.mjs",
+      "sha256": "0EEB939EE18F8DF00273D819FFE94D84FA2C3E990485902C4C94A108669FFAEA",
+      "bytes": 3125
+    },
+    {
+      "file": "internal/errors.mjs",
+      "sha256": "E55A1C32B718E503BF3BC174FECE0E14FECD6881C288F1FD186283A720C44F34",
+      "bytes": 1375
+    },
+    {
+      "file": "core/streaming.mjs",
+      "sha256": "6EA8902E35B980775B9BF0EFFBA19EC4F09AC57030D9ED339C7AF861682F6D31",
+      "bytes": 10603
+    },
+    {
+      "file": "internal/headers.mjs",
+      "sha256": "CFE8E16C485C42F58182A701BE897DB98E7A52F0A98A40D16D142FD7F200DA0F",
+      "bytes": 2528
+    },
+    {
+      "file": "internal/utils/log.mjs",
+      "sha256": "69A97A0F32E3D5B0707E222D54C04AAD9BE2388E58B82C9E9B1624DB07312AD0",
+      "bytes": 2687
+    }
+  ],
+  "qualified_af_helper_sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+  "native_c_dependency": "Root qualified d010 C33DF/H E318 packet required; own tree C unchanged",
+  "source273_capture_duplicated": false,
+  "expected_source_output_exists": false,
+  "native_qualified": false
+}

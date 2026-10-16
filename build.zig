@@ -1810,6 +1810,12 @@ pub fn build(b: *std.Build) void {
     openai_tool_output4dd_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-openai-tool-output4dd", "Compile latest tool-output whitespace and live trim coercion controls").dependOn(&openai_tool_output4dd_tests.step);
     b.step("test-native-ai-openai-tool-output4dd", "Check tool placeholders original text live trim order and raw throws").dependOn(&b.addRunArtifact(openai_tool_output4dd_tests).step);
+    const openai_async_fetch_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_async_fetch_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI genuine API and SDK async route"}, .use_llvm = use_llvm });
+    linkQuickJs(b, openai_async_fetch_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(openai_async_fetch_tests.root_module, sqlite_lib_dir, sqlite_library);
+    openai_async_fetch_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-openai-async-fetch", "Compile genuine OpenAI IIFE SDK awaits and captured fetch controls").dependOn(&openai_async_fetch_tests.step);
+    b.step("test-native-ai-openai-async-fetch", "Check synchronous public streams private SDK await route and custom fetch identity").dependOn(&b.addRunArtifact(openai_async_fetch_tests).step);
     const strict_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_constrained_sampling_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native constrained sampling"}, .use_llvm = use_llvm });
     linkQuickJs(b, strict_schema_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(strict_schema_tests.root_module, sqlite_lib_dir, sqlite_library);

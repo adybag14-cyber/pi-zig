@@ -1,0 +1,70 @@
+// Authored guest controls for the actual native factory/private SDK route.
+// No transport implementation, public SDK proxy, Source trace or golden here.
+const descriptor=Object.getOwnPropertyDescriptor(globalThis,'process'),fetchDescriptor=Object.getOwnPropertyDescriptor(globalThis,'fetch');
+Object.defineProperty(globalThis,'process',{configurable:true,value:{env:{OPENAI_ADMIN_KEY:'',OPENAI_ORG_ID:'',OPENAI_PROJECT_ID:'',OPENAI_WEBHOOK_SECRET:'',OPENAI_LOG:'',OPENAI_CUSTOM_HEADERS:''}}});
+export const observations=[];
+const model={id:'fixture-model',name:'fixture',api:'openai-completions',provider:'openai',baseUrl:'http://127.0.0.1:1/v1',reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:0,cacheWrite:0},contextWindow:32000,maxTokens:4096};
+const context={messages:[{role:'user',content:'fixture-owned-input',timestamp:1}]};
+const wire='data: '+JSON.stringify({id:'fixture-response',model:'fixture-served',choices:[{index:0,delta:{content:'fixture answer'},finish_reason:'stop'}]})+'\n\ndata: [DONE]\n\n';
+function response(){return new Response(wire,{status:200,headers:{'content-type':'text/event-stream','x-fixture':'owned','x-request-id':'fixture-request-id'}})}
+try{
+ for(const globalDefault of [false,true]){
+  const trace=[],caller=new AbortController();let used=0,capturedInit,originalResponse;
+  const value={toString(){trace.push('header coercion');return 'fixture-after-payload'}};
+  function fetcher(url,init){if(this!==undefined)throw Error('Fetch receiver must be undefined');used++;capturedInit=init;trace.push('fetch');if(url!=='http://127.0.0.1:1/v1/chat/completions'||init.method!=='POST'||!(init.headers instanceof Headers)||init.headers.get('x-fixture')!=='fixture-after-payload'||init.headers.get('x-stainless-retry-count')!=='0'||init.signal===caller.signal)throw Error('Actual SDK fetch input');const body=JSON.parse(init.body);if(body.model!=='fixture-replaced')throw Error('Payload replacement lost');originalResponse=response();return Promise.resolve(originalResponse)}
+  Object.defineProperty(fetcher,'call',{configurable:true,get(){trace.push('fetch.call getter');return Function.prototype.call}});
+  Object.defineProperty(globalThis,'fetch',{configurable:true,value:globalDefault?fetcher:function(){throw Error('Explicit fetch precedence')}});
+  const options={apiKey:'fixture-key',headers:{'X-Fixture':value},fetch:globalDefault?undefined:fetcher,signal:caller.signal,maxRetries:0,onPayload(payload){trace.push('payload');Object.defineProperty(globalThis,'fetch',{configurable:true,value:function(){throw Error('Default fetch must remain captured')}});options.fetch=function(){throw Error('Provided fetch must remain captured')};return {...payload,model:'fixture-replaced'}},onResponse(observed){trace.push('response');if(observed.status!==200||observed.headers['x-fixture']!=='owned')throw Error('Response callback projection')},onProviderStreamEvent(){trace.push('chunk')}};
+  const stream=nativeAsyncOpenAI.stream(model,context,options);trace.push('returned');if(stream instanceof Promise||!trace.includes('payload')||trace.includes('fetch'))throw Error('Synchronous public stream and real first Await');
+  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();
+  if(used!==1||result.content[0]?.text!=='fixture answer'||result.errorMessage||trace.indexOf('header coercion')<trace.indexOf('payload')||trace.indexOf('fetch.call getter')<trace.indexOf('header coercion')||trace.indexOf('chunk')<trace.indexOf('response'))throw Error('Async route result/order');
+  observations.push({case:globalDefault?'captured global fetch':'captured explicit fetch',trace,events,resultText:result.content[0].text,request:JSON.parse(capturedInit.body),headers:[...capturedInit.headers]});
+ }
+ for(const fallback of [false,true]){
+  const trace=[],res=response(),bytes=res.body;let requestResponse;
+  if(fallback)Object.defineProperty(bytes,Symbol.asyncIterator,{configurable:true,value:undefined});
+  const originalGetReader=bytes.getReader;
+  Object.defineProperty(bytes,'getReader',{configurable:true,value:function(...args){trace.push('getReader');return Reflect.apply(originalGetReader,this,args)}});
+  const fetched=function(){requestResponse=res;return res};
+  const stream=nativeAsyncOpenAI.stream(model,context,{apiKey:'fixture-key',fetch:fetched,maxRetries:0,onResponse(){trace.push('response');if(bytes.locked)throw Error('Body acquired before onResponse')},onProviderStreamEvent(){trace.push('chunk')}});
+  for await(const event of stream){void event}const result=await stream.result();if(requestResponse!==res||result.errorMessage||result.content[0]?.text!=='fixture answer'||trace.includes('getReader')&&trace.indexOf('getReader')<trace.indexOf('response'))throw Error('Actual response body iterator route');
+  observations.push({case:fallback?'reader fallback genuine async methods':'actual stream async iterator',trace,resultText:result.content[0].text,locked:bytes.locked});
+ }
+ for(const boundary of ['header','fetch','fetch.call']){
+  const raw=new Error('fixture-owned-'+boundary),trace=[];
+  function fetched(){trace.push('fetch');if(boundary==='fetch')throw raw;return response()}
+  if(boundary==='fetch.call')Object.defineProperty(fetched,'call',{get(){throw raw}});
+  const header={toString(){trace.push('header');if(boundary==='header')throw raw;return 'owned'}};
+  const pending=nativePrivateSDKRequest({apiKey:'fixture-key',baseURL:model.baseUrl,fetch:fetched,defaultHeaders:{'X-Fixture':header}},{model:'fixture-model',stream:true},{});
+  let caught;try{await pending}catch(error){caught=error}if(boundary==='header'?caught!==raw:caught?.cause!==raw)throw Error('Raw header/fetch reason '+boundary);
+  observations.push({case:boundary,trace,rawSame:boundary==='header'?caught===raw:caught.cause===raw,message:caught.message});
+ }
+ for(const timeout of [undefined,null,-1,.5,'1']){
+  let calls=0;const req={};if(timeout!==undefined)req.timeout=timeout;
+  const fetched=function(){calls++;return response()};let failure,result;
+  try{result=await nativePrivateSDKRequest({apiKey:'fixture-key',baseURL:model.baseUrl,fetch:fetched,defaultHeaders:{}},{model:'fixture-model',stream:true},req)}catch(error){failure=error}
+  if(timeout===undefined){if(failure||calls!==1||result.request_id!=='fixture-request-id')throw Error('Default timeout and withResponse identity');for await(const chunk of result.data){void chunk}}
+  else if(calls!==0||failure?.message!==(timeout===-1?'timeout must be a positive integer':'timeout must be an integer'))throw Error('Timeout validation before fetch');
+  observations.push({case:'timeout',timeout:String(timeout),calls,error:failure?.message});
+ }
+ {
+  const raw=new Error('fixture-inside-IIFE-setup'),trace=[];
+  const bad={...model,get headers(){trace.push('model.headers');throw raw}};
+  const stream=nativeAsyncOpenAI.stream(bad,context,{apiKey:'fixture-key',fetch(){throw Error('Setup failure must skip fetch')},onPayload(){throw Error('Setup failure must skip payload')}});
+  if(stream instanceof Promise||trace.join(',')!=='model.headers')throw Error('IIFE setup remains synchronous until first Await');
+  const events=[];for await(const event of stream)events.push(event.type);const result=await stream.result();if(result.errorMessage!==raw.message||events.at(-1)!=='error')throw Error('Setup throw belongs inside IIFE try');
+  observations.push({case:'IIFE setup catch',trace,events,error:result.errorMessage});
+ }
+ {
+  const raw=new Error('fixture-outside-IIFE-normalization');let seen;
+  try{nativeAsyncOpenAI.stream({...model,get compat(){throw raw}},context,{apiKey:'fixture-key'})}catch(error){seen=error}
+  if(seen!==raw)throw Error('Public normalization raw failure must remain synchronous');observations.push({case:'outside IIFE normalization',rawSame:seen===raw});
+ }
+ {
+  const raw=new Error('fixture-api-key-provider');let used=0;
+  const good=await nativePrivateSDKRequest({apiKey:async()=>{used++;return 'fixture-async-key'},baseURL:model.baseUrl,defaultHeaders:{},fetch(url,init){if(init.headers.get('authorization')!=='Bearer fixture-async-key')throw Error('Async key before headers');return response()}},{model:'fixture-model',stream:true},{});
+  for await(const chunk of good.data){void chunk}if(used!==1)throw Error('Actual key Await boundary');
+  let failure;try{await nativePrivateSDKRequest({apiKey:async()=>{throw raw},baseURL:model.baseUrl,defaultHeaders:{},fetch(){throw Error('Failed key must skip fetch')}},{model:'fixture-model',stream:true},{})}catch(error){failure=error}
+  if(failure?.cause!==raw||failure.message!=="Failed to get token from 'apiKey' function: "+raw.message)throw Error('Actual key catch cause');observations.push({case:'genuine async api key',used,rawSame:failure.cause===raw});
+ }
+}finally{if(descriptor)Object.defineProperty(globalThis,'process',descriptor);else delete globalThis.process;if(fetchDescriptor)Object.defineProperty(globalThis,'fetch',fetchDescriptor);else delete globalThis.fetch}
