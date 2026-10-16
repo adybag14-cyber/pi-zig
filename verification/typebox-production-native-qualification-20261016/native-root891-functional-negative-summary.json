@@ -1,0 +1,349 @@
+{
+  "native_candidate_head": "8914333638959bcdcb52e59a0e997291da6f2e7a",
+  "root_base": "642016544a0861a871708c0204731857d2a58ab9",
+  "status": "terminal_functional_negative",
+  "native_C_baseline": "inherited exact Root642 C9; no C/header or guard changes in this candidate",
+  "build": {
+    "full_posthash_drift": 0,
+    "phase": "build",
+    "candidate_head": "8914333638959bcdcb52e59a0e997291da6f2e7a",
+    "completed_utc": "2026-10-16T16:39:07.4961297+01:00",
+    "source_replays": [
+      80,
+      52,
+      396
+    ],
+    "full_pi_qualified": false,
+    "suite": "functional",
+    "binary": {
+      "path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.pdb",
+      "pdb_sha256": "12BED5854FED784DEC4C21E83449AB8604F99BADAFA0C5064D41DF09F534039E",
+      "installed_path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\zig-out\\bin\\test.exe",
+      "sha256": "48AAB44400F1F8C840AF022C93561642882C0738A9B53FBE7A9C08F824B3D13E"
+    },
+    "metadata": null,
+    "status": "passed"
+  },
+  "metadata": {
+    "status": "passed",
+    "full_posthash_drift": 0,
+    "binary": {
+      "path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+      "pdb_path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.pdb",
+      "pdb_sha256": "12BED5854FED784DEC4C21E83449AB8604F99BADAFA0C5064D41DF09F534039E",
+      "installed_path": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\zig-out\\bin\\test.exe",
+      "sha256": "48AAB44400F1F8C840AF022C93561642882C0738A9B53FBE7A9C08F824B3D13E"
+    },
+    "full_pi_qualified": false,
+    "source_replays": [
+      80,
+      52,
+      396
+    ],
+    "metadata": {
+      "binary_sha256": "48AAB44400F1F8C840AF022C93561642882C0738A9B53FBE7A9C08F824B3D13E",
+      "binary": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+      "tests": [
+        "native_typebox_compile_production_test.test.actual TypeBox Compile Validator matches complete genuine Source80",
+        "native_typebox_compile_production_test.test.actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph",
+        "native_typebox_compile_production_test.test.actual TypeBox generic operators match complete genuine Source396 on shared compiler graph",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "version": "0.16.0",
+      "owner": [
+        {},
+        {
+          "executable": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+          "executable_sha256": "48AAB44400F1F8C840AF022C93561642882C0738A9B53FBE7A9C08F824B3D13E",
+          "arguments": [
+            "--listen=-"
+          ],
+          "working_directory": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016",
+          "pid": 76088,
+          "retained_handle": 2412,
+          "created_utc": "2026-10-16T15:40:54.187029Z",
+          "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+          "timeout_seconds": 30,
+          "status": "passed",
+          "live_identity": {
+            "created_utc": "2026-10-16T15:40:54.187029Z",
+            "pid": 76088,
+            "command_line": "\"C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe\" --listen=-",
+            "executable": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+            "command_line_method": "Win32_Process.CommandLine"
+          },
+          "exit_code": 0,
+          "completed_utc": "2026-10-16T16:40:54.5540767+01:00"
+        }
+      ],
+      "method": "Actual Zig0.16 metadata query and clean exit; no unit run request"
+    },
+    "completed_utc": "2026-10-16T16:41:28.1078013+01:00",
+    "candidate_head": "8914333638959bcdcb52e59a0e997291da6f2e7a",
+    "phase": "metadata",
+    "suite": "functional"
+  },
+  "runtime": {
+    "pid": 45744,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+    "argv": [
+      "build",
+      "test-native-typebox-production-source",
+      "-Doptimize=Debug",
+      "-Duse-llvm=true",
+      "-j1",
+      "--test-timeout",
+      "120s",
+      "--summary",
+      "all"
+    ],
+    "live_command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build test-native-typebox-production-source -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all",
+    "created_utc": "2026-10-16T15:42:25.7418992Z",
+    "launched_utc": "2026-10-16T16:42:25.7405453+01:00",
+    "working_directory": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016",
+    "outer_seconds": 300,
+    "settle_seconds": 10,
+    "status": "failed",
+    "exit_code": 1,
+    "completed_utc": "2026-10-16T16:42:39.3423153+01:00"
+  },
+  "tests_passed": 2,
+  "tests_failed": 2,
+  "source52_complete_pass": true,
+  "source80_first_mismatch": {
+    "index": 52,
+    "expected": {
+      "name": "schema-prefix-items",
+      "value": {
+        "check": true,
+        "errors": [],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (value.every((element, index) => (index < 2) || (typeof element === \"boolean\")) && ((value.length <= 0 || typeof value[0] === \"string\") && (value.length <= 1 || Number.isFinite(value[1])))))); return (value) => { return check_0(value) }"
+      }
+    },
+    "actual": {
+      "name": "schema-prefix-items",
+      "value": {
+        "check": false,
+        "errors": [],
+        "code": "const check_0 = ((value) => (Array.isArray(value) && (value.every((element, index) => (index < 2) || (typeof element === \"boolean\")) && ((value.length <= 0 || typeof value[0] === \"string\") && (value.length <= 1 || Number.isFinite(value[1])))))); return (value) => { return check_0(value) }"
+      }
+    }
+  },
+  "source396_first_mismatch": {
+    "scope": "actual shared TypeBox operators",
+    "index": 391,
+    "expected": {
+      "name": "generic-default-instantiation-limit-recovery",
+      "value": [
+        {
+          "key": "0",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "name",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Error"
+            },
+            {
+              "key": "message",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Type instantiation is excessively deep and possibly infinite"
+            }
+          ]
+        },
+        {
+          "key": "1",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "type",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "string"
+            },
+            {
+              "key": "const",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "recovered"
+            },
+            {
+              "key": "~kind",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "value": "Literal"
+            }
+          ]
+        },
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "value": 2
+        }
+      ],
+      "metrics": {
+        "assign": 129,
+        "create": 792,
+        "clone": 0,
+        "discard": 0,
+        "update": 0
+      }
+    },
+    "actual": {
+      "name": "generic-default-instantiation-limit-recovery",
+      "value": [
+        {
+          "key": "0",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "name",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "RangeError"
+            },
+            {
+              "key": "message",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Maximum call stack size exceeded"
+            }
+          ]
+        },
+        {
+          "key": "1",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "type",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "string"
+            },
+            {
+              "key": "const",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "recovered"
+            },
+            {
+              "key": "~kind",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "value": "Literal"
+            }
+          ]
+        },
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "value": 2
+        }
+      ],
+      "metrics": {
+        "assign": 19,
+        "create": 132,
+        "clone": 0,
+        "discard": 0,
+        "update": 0
+      }
+    }
+  },
+  "full_freeze_phases": [
+    {
+      "base": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-build-first891-20261016",
+      "checks": 21,
+      "drift": [],
+      "absence": {
+        "observed_utc": "2026-10-16T16:39:05.2960533+01:00",
+        "owned_roots": [
+          {
+            "receipt": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-build-first891-20261016.process.json",
+            "pid": 63444,
+            "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+            "created_utc": "2026-10-16T15:34:48.2497912Z",
+            "terminal_status": "passed",
+            "pid_present": 0,
+            "remaining": []
+          }
+        ],
+        "global_native": [],
+        "scope": "Fresh root PID absence and global native process snapshot; no cancellation is performed"
+      }
+    },
+    {
+      "base": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-metadata-first891-20261016",
+      "checks": 21,
+      "drift": [],
+      "absence": {
+        "observed_utc": "2026-10-16T16:41:28.1048915+01:00",
+        "owned_roots": [
+          {
+            "receipt": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-metadata-first891-20261016-query.json",
+            "pid": 76088,
+            "executable": "C:\\Users\\adyba\\pi-zig-typebox-root642-native-qualification-20261016\\.zig-cache\\o\\471592b42257c9567cb8ebd608cb7b1f\\test.exe",
+            "created_utc": "2026-10-16T15:40:54.187029Z",
+            "terminal_status": "passed",
+            "pid_present": 0,
+            "remaining": []
+          }
+        ],
+        "global_native": [],
+        "scope": "Fresh root PID absence and global native process snapshot; no cancellation is performed"
+      }
+    },
+    {
+      "base": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-test-first891-20261016",
+      "checks": 21,
+      "drift": [],
+      "absence": {
+        "observed_utc": "2026-10-16T16:43:12.9257604+01:00",
+        "owned_roots": [
+          {
+            "receipt": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\typebox-root642-functional-test-first891-20261016.process.json",
+            "pid": 45744,
+            "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+            "created_utc": "2026-10-16T15:42:25.7418992Z",
+            "terminal_status": "failed",
+            "pid_present": 0,
+            "remaining": []
+          }
+        ],
+        "global_native": [],
+        "scope": "Fresh root PID absence and global native process snapshot; no cancellation is performed"
+      }
+    }
+  ],
+  "GPA_executed": false,
+  "no_generated_checker_evaluation": true,
+  "no_guard_raise": true,
+  "full_pi_qualified": false,
+  "slot_released_to_root": true,
+  "full_post_nonzero_checks": 0
+}
