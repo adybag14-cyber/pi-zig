@@ -2,8 +2,9 @@
 // No source implementation, expected capture, transport adapter or golden.
 export async function observeOpenAIConsumerClose(api) {
  const rows=[],model={id:'fixture-model',name:'fixture',api:'openai-completions',provider:'openai',baseUrl:'http://127.0.0.1:1/v1',reasoning:false,input:['text'],cost:{input:1,output:2,cacheRead:0,cacheWrite:0},contextWindow:32000,maxTokens:4096},context={messages:[{role:'user',content:'fixture',timestamp:1}]};
- const processDescriptor=Object.getOwnPropertyDescriptor(globalThis,'process');
- Object.defineProperty(globalThis,'process',{configurable:true,value:{env:{OPENAI_ADMIN_KEY:'',OPENAI_ORG_ID:'',OPENAI_PROJECT_ID:'',OPENAI_WEBHOOK_SECRET:'',OPENAI_LOG:'',OPENAI_CUSTOM_HEADERS:''}}});
+ const processDescriptor=Object.getOwnPropertyDescriptor(globalThis,'process'),originalProcess=globalThis.process,ownedProcess=Object.create(originalProcess??null);
+ Object.defineProperty(ownedProcess,'env',{value:{OPENAI_ADMIN_KEY:'',OPENAI_ORG_ID:'',OPENAI_PROJECT_ID:'',OPENAI_WEBHOOK_SECRET:'',OPENAI_LOG:'',OPENAI_CUSTOM_HEADERS:''}});
+ Object.defineProperty(globalThis,'process',{configurable:true,value:ownedProcess});
  try {
   async function run(stepMode,bodyMode,closeMode,held=false) {
    const name=[stepMode,bodyMode,closeMode,held?'held':''].filter(Boolean).join('/'),trace=[],snapshots=[];

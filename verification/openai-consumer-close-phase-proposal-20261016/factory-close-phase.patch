@@ -1,7 +1,22 @@
 diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native_ai_openai_factory.zig
 --- a/src/extensions/native_ai_openai_factory.zig
 +++ b/src/extensions/native_ai_openai_factory.zig
-@@ -158,26 +158,33 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
+@@ -92,11 +92,12 @@ fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, completion: asynchronous.Completion, input: c.JSValue) !asynchronous.Action {
+         setup(&scope, owner) catch |err| try failError(&scope, owner, err);
+     } else {
++        const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
+         if (completion == .rejected) {
+             var generation: u64 = 0;
+-            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
++            const boundary: [*:0]const u8 = if (stage == .closed) "closeGeneration" else "generation";
++            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, boundary)) < 0) return v.js.capture(engine);
+             try async_body.rethrowRecognizedAllocation(engine, input, generation);
+         }
+-        const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
+         if (completion == .rejected) {
+             if (stage == .closed) try applyFailure(&scope, owner, try scope.get(owner, "closeReason")) else {
+                 if (stage == .next) try scope.put(owner, "iteratorActive", c.JS_NewBool(engine.context, false));
+@@ -158,26 +159,34 @@ fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
      }
      return fail(scope, owner, reason);
  }
@@ -33,6 +48,7 @@ diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native
          };
          if (!v.nullish(close)) {
 +            const call_generation = scope.engine.native_allocation_generation;
++            try scope.put(owner, "closeGeneration", try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, call_generation))));
              const result = scope.call(close, iterator, &.{}) catch |err| {
 -                if (err == error.OutOfMemory) return err;
 -                if (err == error.JavaScriptException) if (scope.engine.captured_exception) |value| {
@@ -46,7 +62,7 @@ diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native
                  return applyFailure(scope, owner, reason);
              };
              return wait(scope, owner, result, .closed);
-@@ -263,6 +270,9 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
+@@ -263,6 +272,9 @@ fn open(scope: *Scope, owner: c.JSValue) !void {
      try wait(scope, owner, try scope.call(retry, c.pi_js_undefined(), &.{ request_callback, retry_options }), .ready);
  }
  fn next(scope: *Scope, owner: c.JSValue) !void {
@@ -56,7 +72,7 @@ diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native
      try wait(scope, owner, try scope.call(try scope.get(owner, "nextMethod"), try scope.get(owner, "iterator"), &.{}), .next);
  }
  fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
-@@ -302,7 +312,6 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
+@@ -302,7 +314,6 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
              if (!c.JS_IsObject(iterator)) return v.js.typeError(scope.engine, "Async iterator is not an object");
              try scope.put(owner, "iterator", iterator);
              try scope.put(owner, "nextMethod", try scope.get(iterator, "next"));
@@ -64,7 +80,7 @@ diff --git a/src/extensions/native_ai_openai_factory.zig b/src/extensions/native
              try next(scope, owner);
          },
          .next => {
-@@ -313,6 +322,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
+@@ -313,6 +324,7 @@ fn advance(scope: *Scope, owner: c.JSValue, value: c.JSValue, stage: Stage) !void {
                  return async_body.resolve(scope, owner, c.pi_js_undefined());
              }
              const frame = try scope.get(value, "value");
