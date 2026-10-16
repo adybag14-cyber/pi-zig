@@ -30,7 +30,9 @@ try{
   await import(pathToFileURL(input).href);
   const rows=globalThis.ActualSdkRuntimeHelperRows;if(!Array.isArray(rows)||rows.length!==44)throw Error('Actual Source44 probe universe incomplete');
   const packageBytes=await readFile(source+'package.json');const pkg=JSON.parse(packageBytes);
-  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',packageMetadataAuthority:source+'package.json',packageSha256:createHash('sha256').update(packageBytes).digest('hex'),packageName:pkg.name,packageVersion:pkg.version,packageRootOverride:source,inputSha256:createHash('sha256').update(inputBytes).digest('hex'),modules:pins,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
+  const typeboxBytes=await readFile('C:/Users/adyba/pi-upstream-runtime-19cb534-20261012/node_modules/typebox/package.json');
+  const typeboxSha=createHash('sha256').update(typeboxBytes).digest('hex');if(typeboxSha!=='c59ddfd977ce941f1e8ee8b0a0b14396c332fa27cc5fa6fa165227ffd5a3992f'||JSON.parse(typeboxBytes).version!=='1.3.27')throw Error('Pinned actual TypeBox metadata drift');
+  await writeFile(output,JSON.stringify({authority:'4954d760504c11df9b2cbdc040346107b6a8153d',packageMetadataAuthority:source+'package.json',packageSha256:createHash('sha256').update(packageBytes).digest('hex'),packageName:pkg.name,packageVersion:pkg.version,packageRootOverride:source,typeboxVersion:'1.3.27',typeboxPackageSha256:typeboxSha,inputSha256:createHash('sha256').update(inputBytes).digest('hex'),modules:pins,cases:rows.length,rows},null,2)+'\n',{flag:'wx'});
 }finally{
   delete globalThis.ActualSdkRuntimeHelpers;delete globalThis.ActualSdkRuntimeHelperDir;delete globalThis.ActualSdkRuntimeHelperRows;
   await writeFile(output+'.physical-after.json',JSON.stringify({directory,inventory:await inventory()},null,2)+'\n',{flag:'wx'});
