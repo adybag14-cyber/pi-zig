@@ -8,6 +8,10 @@ jobs or alter any accepted273 caller/expected/proof bytes.
 The original7b2762 preparation was held after independent ownership review. Read
 `OWNERSHIP-SUCCESSOR.md` for the corrected launch registration, strict identity
 conflicts, full launch-record union and Root's narrow already-terminal Git policy.
+The first ccf attempt is a preserved pre-Git/Node grant negative. Read
+`STARTUP-CLAIM-SUCCESSOR.md` for the atomic launcher claim and exact startup state
+required by the current supervisor; the blanket existing-run rejection is retained
+at launcher entry and replaced only by strict claim validation in the supervisor.
 
 ## Entry points and bounded ownership
 
@@ -58,6 +62,8 @@ file with exactly these fields: schema1, authorized=true,
 manual_fresh_16gib=true, scope=`runtime-free-source160-only`, run_id,
 candidate_head, source_head, node_sha256, owner_sha256, issued_utc, expires_utc,
 grant_id and tool_sha256. Grant lifetime and initial age must be at most300s.
+Capture one timestamp for issued_utc and derive expires_utc from that same value.
+Separate clock calls can exceed the strict duration by microseconds and are denied.
 The tool map must contain exactly all ten named entries from the current template.
 
 After a positive before seal, the controller writes

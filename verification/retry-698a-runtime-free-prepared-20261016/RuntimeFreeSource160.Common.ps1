@@ -18,6 +18,47 @@ function Read-S160SettledJson([string]$Path,[DateTimeOffset]$Until){
     }while($true)
 }
 function Get-S160Sha([string]$Path){(Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash}
+function Get-S160StartupPolicy {
+    @{directories=@('profile','temp','profile\AppData','profile\AppData\Local','profile\AppData\Local\Microsoft','profile\AppData\Local\Microsoft\PowerShell');file='profile\AppData\Local\Microsoft\PowerShell\StartupProfileData-NonInteractive';max_file_bytes=1MB}
+}
+function Write-S160CreateNewJson([string]$Path,$Value){
+    $bytes=[Text.UTF8Encoding]::new($false).GetBytes((ConvertTo-Json -InputObject $Value -Depth 30))
+    $stream=[IO.File]::Open($Path,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+    try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}
+}
+function New-S160LaunchClaim([string]$Run,[string]$RunId,[string]$CandidateHead,[string]$GrantPath,$Launcher){
+    Assert-S160Contained $Run (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
+    if(Test-Path -LiteralPath $Run){throw 'Launcher claim refuses every existing run'}
+    # New-Item without Force fails if another claimant wins the directory race.
+    New-Item -ItemType Directory -Path $Run -ErrorAction Stop|Out-Null
+    $policy=Get-S160StartupPolicy;$path=Join-Path $Run 'launcher-claim.json'
+    $claim=[ordered]@{schema=1;scope='Source160LauncherClaim';run_id=$RunId;run=$Run;candidate_head=$CandidateHead;grant_sha256=Get-S160Sha $GrantPath;nonce=[Guid]::NewGuid().ToString('N');launcher_identity=$Launcher;created_utc=[DateTimeOffset]::UtcNow.ToString('o');allowed_startup_directories=$policy.directories;allowed_startup_file=$policy.file;max_startup_file_bytes=$policy.max_file_bytes}
+    Write-S160CreateNewJson $path $claim
+    @{path=$path;sha256=Get-S160Sha $path;claim=$claim}
+}
+function Accept-S160LaunchClaim([string]$Run,[string]$RunId,[string]$CandidateHead,[string]$GrantPath,[string]$ClaimPath,[string]$ClaimSha256,$Self){
+    Assert-S160Contained $Run (Join-Path (Get-S160Workspace).evidence 'retry698a-runtime-free-captures')|Out-Null
+    if($ClaimPath -cne (Join-Path $Run 'launcher-claim.json') -or (Get-S160Sha $ClaimPath) -cne $ClaimSha256){throw 'Exact sealed launcher claim required'}
+    $claim=Read-S160Json $ClaimPath;$policy=Get-S160StartupPolicy;$grant=Read-S160Json $GrantPath
+    $fields=@('schema','scope','run_id','run','candidate_head','grant_sha256','nonce','launcher_identity','created_utc','allowed_startup_directories','allowed_startup_file','max_startup_file_bytes')
+    if(@($claim.PSObject.Properties.Name|Where-Object {$_ -notin $fields}).Count -or $claim.schema -ne 1 -or $claim.scope -cne 'Source160LauncherClaim' -or $claim.run_id -cne $RunId -or $claim.run -cne $Run -or $claim.candidate_head -cne $CandidateHead -or $claim.grant_sha256 -cne (Get-S160Sha $GrantPath) -or $claim.nonce -cnotmatch '^[a-f0-9]{32}$' -or ([DateTimeOffset]$claim.created_utc) -lt ([DateTimeOffset]$grant.issued_utc) -or ([DateTimeOffset]$claim.created_utc) -gt [DateTimeOffset]::UtcNow -or ([DateTimeOffset]$claim.created_utc) -ge ([DateTimeOffset]$grant.expires_utc) -or (@($claim.allowed_startup_directories) -join [char]0) -cne ($policy.directories -join [char]0) -or $claim.allowed_startup_file -cne $policy.file -or $claim.max_startup_file_bytes -ne $policy.max_file_bytes){throw 'Launcher claim identity/policy mismatch'}
+    if(!$Self -or ([DateTimeOffset]$Self.created_utc).UtcDateTime -lt ([DateTimeOffset]$claim.created_utc).UtcDateTime.AddMilliseconds(-1) -or [int]$Self.parent_pid -ne [int]$claim.launcher_identity.pid -or !(Test-S160Same $claim.launcher_identity (Get-S160Live ([int]$claim.launcher_identity.pid)))){throw 'Claim launcher is not exact live supervisor parent'}
+    $rows=[Collections.Generic.List[object]]::new();$pending=[Collections.Generic.Stack[string]]::new();$pending.Push($Run)
+    while($pending.Count){foreach($item in @(Get-ChildItem -LiteralPath $pending.Pop() -Force)){
+        if($item.Attributes -band [IO.FileAttributes]::ReparsePoint){throw 'Startup claim rejects reparse state'}
+        $relative=$item.FullName.Substring($Run.Length+1)
+        if($item.PSIsContainer){if($relative -cnotin $policy.directories){throw 'Unapproved existing startup directory'};$pending.Push($item.FullName);$rows.Add(@{relative=$relative;directory=$true})}
+        else{
+            if($relative -cne 'launcher-claim.json' -and $relative -cne $policy.file){throw 'Existing run file is not exact claimed startup state'}
+            if($relative -ceq $policy.file -and $item.Length -gt $policy.max_file_bytes){throw 'Startup profile data exceeds reviewed bound'}
+            $rows.Add(@{relative=$relative;directory=$false;bytes=$item.Length;sha256=Get-S160Sha $item.FullName})
+        }
+    }}
+    $accepted=Join-Path $Run 'supervisor-claim-accepted.json'
+    # Exclusive creation is the replay fence, including simultaneous invocations.
+    Write-S160CreateNewJson $accepted @{run_id=$RunId;candidate_head=$CandidateHead;claim_sha256=$ClaimSha256;claim_nonce=$claim.nonce;grant_sha256=$claim.grant_sha256;supervisor_identity=$Self;launcher_identity=$claim.launcher_identity;startup_state=$rows.ToArray();mutable_owned_profile_data=$policy.file;accepted_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    @{claim_path=$ClaimPath;claim_sha256=$ClaimSha256;acceptance_path=$accepted;acceptance_sha256=Get-S160Sha $accepted}
+}
 function Assert-S160Contained([string]$Path,[string]$Root){
     $full=[IO.Path]::GetFullPath($Path);$base=[IO.Path]::GetFullPath($Root).TrimEnd('\')
     if($full -ine $base -and !$full.StartsWith($base+'\',[StringComparison]::OrdinalIgnoreCase)){throw 'Path escaped exact owned root'}

@@ -4,7 +4,7 @@ $workspace=Get-S160Workspace
 Assert-S160Contained $RootGrant $workspace.evidence|Out-Null
 $grant=Read-S160Json $RootGrant;$now=[DateTimeOffset]::UtcNow
 $supervisor=Join-Path $PSScriptRoot 'Run-RuntimeFreeSource160.ps1'
-if($grant.authorized -isnot [bool] -or !$grant.authorized -or $grant.manual_fresh_16gib -isnot [bool] -or !$grant.manual_fresh_16gib -or $grant.scope -cne 'runtime-free-source160-only' -or $grant.run_id -cne $RunId -or $grant.candidate_head -cne $CandidateHead -or $grant.tool_sha256.'Start-RuntimeFreeSource160.ps1' -cne (Get-S160Sha $PSCommandPath) -or $grant.tool_sha256.'Run-RuntimeFreeSource160.ps1' -cne (Get-S160Sha $supervisor) -or ([DateTimeOffset]$grant.issued_utc) -gt $now -or ($now-([DateTimeOffset]$grant.issued_utc)).TotalSeconds -gt 300 -or ([DateTimeOffset]$grant.expires_utc) -le $now){throw 'Exact fresh Root launcher grant required; no child started'}
+if($grant.authorized -isnot [bool] -or !$grant.authorized -or $grant.manual_fresh_16gib -isnot [bool] -or !$grant.manual_fresh_16gib -or $grant.scope -cne 'runtime-free-source160-only' -or $grant.run_id -cne $RunId -or $grant.candidate_head -cne $CandidateHead -or $grant.tool_sha256.'Start-RuntimeFreeSource160.ps1' -cne (Get-S160Sha $PSCommandPath) -or $grant.tool_sha256.'Run-RuntimeFreeSource160.ps1' -cne (Get-S160Sha $supervisor) -or ([DateTimeOffset]$grant.issued_utc) -gt $now -or ($now-([DateTimeOffset]$grant.issued_utc)).TotalSeconds -gt 300 -or ([DateTimeOffset]$grant.expires_utc) -le $now -or (([DateTimeOffset]$grant.expires_utc)-([DateTimeOffset]$grant.issued_utc)).TotalSeconds -gt 300){throw 'Exact fresh Root launcher grant required; no child started'}
 $runs=Join-Path $workspace.evidence 'retry698a-runtime-free-captures';$run=Assert-S160Contained (Join-Path $runs $RunId) $runs
 $journal=$run+'.launcher'
 if((Test-Path -LiteralPath $run) -or (Test-Path -LiteralPath $journal)){throw 'Refuse any original run/launcher replay'}
@@ -16,7 +16,8 @@ if(!$self){throw 'External launcher self identity required before any child'}
 Write-S160Json (Join-Path $journal 'launcher-self.json') $self
 $child=$null;$failure=$null
 try{
-    $child=Start-S160Process $context 'supervisor' $s160Pwsh @('-NoLogo','-NoProfile','-NonInteractive','-File',$supervisor,'-CandidateHead',$CandidateHead,'-RunId',$RunId,'-RootGrant',$RootGrant)
+    $claim=New-S160LaunchClaim $run $RunId $CandidateHead $RootGrant $self
+    $child=Start-S160Process $context 'supervisor' $s160Pwsh @('-NoLogo','-NoProfile','-NonInteractive','-File',$supervisor,'-CandidateHead',$CandidateHead,'-RunId',$RunId,'-RootGrant',$RootGrant,'-LaunchClaim',$claim.path,'-LaunchClaimSha256',$claim.sha256)
     # Common wait observes descendants during the wait, not merely on timeout.
     Wait-S160Process $context $child 1340|Out-Null
 }catch{$failure=$_.Exception.Message}finally{

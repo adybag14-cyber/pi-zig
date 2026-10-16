@@ -46,6 +46,7 @@ if($Phase -eq 'artifact'){
 }
 try{
     foreach($root in @($task.source,$task.candidate,$task.run)){Assert-S160Contained $root $task.container|Out-Null}
+    if((Get-S160Sha $task.launcher_claim) -cne $task.launcher_claim_sha256 -or (Get-S160Sha $task.launcher_claim_acceptance) -cne $task.launcher_claim_acceptance_sha256){$failures.Add('Sealed launcher claim/acceptance changed')}
     if(Test-Path -LiteralPath (Join-Path $task.source 'node_modules')){$failures.Add('Source node_modules unexpectedly present')}
     try{
         if((Invoke-S160Git $task.source @('rev-parse','HEAD') $context) -cne $task.source_head -or (Invoke-S160Git $task.source @('rev-parse','HEAD^{tree}') $context) -cne $task.source_tree){$failures.Add('Source698 HEAD/tree changed')}
@@ -67,7 +68,7 @@ try{
         if($Phase -ne 'before'){$failures.Add('Original before baseline absent; current full inventory retained without before-proof claim')}
         if(Test-Path -LiteralPath $baselinePath){throw 'Refuse original full freeze overwrite'}
         $candidateRows=@(foreach($relative in $candidateRelative){$path=Join-Path $task.candidate $relative;Assert-S160Contained $path $task.candidate|Out-Null;@{path=$path;sha256=Get-S160Sha $path}})
-        $controlRows=@(foreach($path in @($Config,$task.source_manifest,$task.node_manifest,$task.owner_copy,$task.initial_grant,$task.workspace_metadata,$task.relocation_map,$task.workspace_resolver)) {@{path=$path;sha256=Get-S160Sha $path}})
+        $controlRows=@(foreach($path in @($Config,$task.source_manifest,$task.node_manifest,$task.owner_copy,$task.initial_grant,$task.workspace_metadata,$task.relocation_map,$task.workspace_resolver,$task.launcher_claim,$task.launcher_claim_acceptance)) {@{path=$path;sha256=Get-S160Sha $path}})
         $baseline=@{candidate_head=$task.candidate_head;source_head=$task.source_head;source_tree=$task.source_tree;candidate_relative=$candidateRelative;groups=@(@{name='source1970';rows=$sourceRows},@{name='node1774';rows=$nodeRows},@{name='candidate';rows=$candidateRows},@{name='controls';rows=$controlRows},@{name='accepted273';rows=@($task.old273_pins)});runtime_manifest_required=$false;runtime_read_permitted=$false}
         Write-S160Json $(if($Phase -eq 'before'){$baselinePath}else{Join-Path $task.run 'recovery-current-manifest.json'}) $baseline
         if(Test-Path -LiteralPath $task.output){$failures.Add('Source160 output was already present before launch')}

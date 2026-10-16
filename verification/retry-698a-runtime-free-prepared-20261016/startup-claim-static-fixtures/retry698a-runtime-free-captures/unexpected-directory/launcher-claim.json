@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "scope": "Source160LauncherClaim",
+  "run_id": "unexpected-directory",
+  "run": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\startup-claim-static-fixtures\\retry698a-runtime-free-captures\\unexpected-directory",
+  "candidate_head": "0000000000000000000000000000000000000000",
+  "grant_sha256": "D404A4CCDE56DB5FDA7C9AE2257E2E8BCB7773379B5A54D0EF5581F58315A112",
+  "nonce": "8b1467b61d0748cda474d6ecfd461824",
+  "launcher_identity": {
+    "executable": "C:\\owned-mock\\pwsh.exe",
+    "command_line": "owned mock launcher only",
+    "parent_pid": 2121,
+    "created_utc": "2026-10-16T19:51:38.8886461+00:00",
+    "pid": 4242
+  },
+  "created_utc": "2026-10-16T19:51:49.1501432+00:00",
+  "allowed_startup_directories": [
+    "profile",
+    "temp",
+    "profile\\AppData",
+    "profile\\AppData\\Local",
+    "profile\\AppData\\Local\\Microsoft",
+    "profile\\AppData\\Local\\Microsoft\\PowerShell"
+  ],
+  "allowed_startup_file": "profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+  "max_startup_file_bytes": 1048576
+}

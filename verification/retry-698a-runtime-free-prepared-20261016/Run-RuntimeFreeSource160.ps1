@@ -1,4 +1,4 @@
-param([Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{40}$')][string]$CandidateHead,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9-]{1,70}$')][string]$RunId,[Parameter(Mandatory)][string]$RootGrant)
+param([Parameter(Mandatory)][ValidatePattern('^[0-9a-f]{40}$')][string]$CandidateHead,[Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9-]{1,70}$')][string]$RunId,[Parameter(Mandatory)][string]$RootGrant,[Parameter(Mandatory)][string]$LaunchClaim,[Parameter(Mandatory)][ValidatePattern('^[A-F0-9]{64}$')][string]$LaunchClaimSha256)
 . (Join-Path $PSScriptRoot 'RuntimeFreeSource160.Common.ps1')
 $workspace=Get-S160Workspace
 $candidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
@@ -17,7 +17,8 @@ foreach($name in $toolNames){if($grant.tool_sha256.$name -cne $tools[$name]){thr
 $resolved=& (Join-Path $PSScriptRoot 'Resolve-RuntimeFreeSource160Controls.ps1') -RunId $RunId
 if((Get-S160Sha $resolved.owner) -cne $s160OwnerSha -or (Get-S160Sha $s160Node) -cne $resolved.node_sha256){throw 'Owner/Node authority changed'}
 $run=Assert-S160Contained $resolved.config_template.run (Join-Path $workspace.evidence 'retry698a-runtime-free-captures')
-if(Test-Path -LiteralPath $run){throw 'Refuse any run-directory replay'}
+$startupSelf=Convert-S160Identity (Get-S160Live $PID)
+$acceptedClaim=Accept-S160LaunchClaim $run $RunId $CandidateHead $RootGrant $LaunchClaim $LaunchClaimSha256 $startupSelf
 $free=(Get-CimInstance Win32_OperatingSystem -OperationTimeoutSec 3).FreePhysicalMemory
 if($free -lt 16MB){throw 'Initial automatic fresh16GiB admission denied'}
 foreach($directory in @($run,(Join-Path $run 'profile'),(Join-Path $run 'profile/agent'),(Join-Path $run 'temp'),(Join-Path $run 'admission'))){[void][IO.Directory]::CreateDirectory($directory)}
@@ -41,6 +42,7 @@ $config=[ordered]@{
     guard=(Join-Path $PSScriptRoot 'guarded-start-fence.mjs');driver=$resolved.driver;capture_control_root=$PSScriptRoot;capture_caller_root=(Split-Path -Parent $resolved.driver);case_ids=(Join-Path $PSScriptRoot 'ordered-source160-case-ids.json');
     owner_copy=(Join-Path $run 'Invoke-OwnedModelsClassSource-20261016.ps1');owner_invocation=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160OriginalOwner.ps1');seal_script=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160Seal.ps1');
     workspace_metadata=(Join-Path $workspace.Container '.pi-zig-workspace.json');relocation_map=$workspace.path_relocations;workspace_resolver=(Join-Path $workspace.main 'tools/workspace/Resolve-PiZigWorkspace.ps1');initial_grant=(Join-Path $run 'initial-root-grant.json');
+    launcher_claim=$acceptedClaim.claim_path;launcher_claim_sha256=$acceptedClaim.claim_sha256;launcher_claim_acceptance=$acceptedClaim.acceptance_path;launcher_claim_acceptance_sha256=$acceptedClaim.acceptance_sha256;
     old273_pins=$pins;expected160_absences=@((Join-Path $candidate 'src/extensions/fixtures/ai-retry698-classifier.expected.json'),(Join-Path $PSScriptRoot 'source160.expected.json'));
     tool_sha256=$tools;controller_seconds=960;supervisor_seconds=1260;hash_phase_seconds=180;artifact_seconds=60;node_seconds=300;settle_seconds=10;original_owner_hard_seconds=330;admission_seconds=120;heap_mb=256
 }

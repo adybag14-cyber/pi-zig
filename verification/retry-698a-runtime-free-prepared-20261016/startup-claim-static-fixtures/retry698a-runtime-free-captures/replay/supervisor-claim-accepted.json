@@ -1,0 +1,59 @@
+{
+  "candidate_head": "0000000000000000000000000000000000000000",
+  "accepted_utc": "2026-10-16T19:51:49.1049044+00:00",
+  "claim_sha256": "F58FE9099128994C9441DDD4C942BD8DE8579AFE9BBDC9E8FEB473E8B4CF77EA",
+  "startup_state": [
+    {
+      "directory": true,
+      "relative": "profile"
+    },
+    {
+      "directory": true,
+      "relative": "temp"
+    },
+    {
+      "relative": "launcher-claim.json",
+      "bytes": 1133,
+      "sha256": "F58FE9099128994C9441DDD4C942BD8DE8579AFE9BBDC9E8FEB473E8B4CF77EA",
+      "directory": false
+    },
+    {
+      "directory": true,
+      "relative": "profile\\AppData"
+    },
+    {
+      "directory": true,
+      "relative": "profile\\AppData\\Local"
+    },
+    {
+      "directory": true,
+      "relative": "profile\\AppData\\Local\\Microsoft"
+    },
+    {
+      "directory": true,
+      "relative": "profile\\AppData\\Local\\Microsoft\\PowerShell"
+    },
+    {
+      "relative": "profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+      "bytes": 4,
+      "sha256": "9F64A747E1B97F131FABB6B447296C9B6F0201E79FB3C5356E6C77E89B6A806A",
+      "directory": false
+    }
+  ],
+  "launcher_identity": {
+    "executable": "C:\\owned-mock\\pwsh.exe",
+    "command_line": "owned mock launcher only",
+    "parent_pid": 2121,
+    "created_utc": "2026-10-16T20:51:38.8886461+01:00",
+    "pid": 4242
+  },
+  "supervisor_identity": {
+    "parent_pid": 4242,
+    "created_utc": "2026-10-16T19:51:49.0718907+00:00",
+    "pid": 4343
+  },
+  "mutable_owned_profile_data": "profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+  "run_id": "replay",
+  "claim_nonce": "27b0e91cded64a808edc57b5ca1b493a",
+  "grant_sha256": "D404A4CCDE56DB5FDA7C9AE2257E2E8BCB7773379B5A54D0EF5581F58315A112"
+}
