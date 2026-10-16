@@ -2,10 +2,10 @@
 //! pattern functions must be concrete native Source implementations; absent
 //! helpers are rejected rather than replaced by empty resource arrays.
 const v = @import("native_ai_provider_values.zig");
+const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
-const body = @import("native_async_body.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 pub const Inputs = struct { paths: c.JSValue, filesystem: c.JSValue, helpers: c.JSValue };
 pub const methods = .{ "collectPackageResources", "collectDefaultResources", "applyPackageFilter", "applyPackageDeltaFilter", "collectManifestFiles", "addManifestEntries", "collectFilesFromManifestEntries", "resolveLocalEntries", "collectFilesFromPaths", "resolveLocalExtensionSource" };
@@ -115,7 +115,7 @@ fn localEntries(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const
     const files = try s.invoke(manager, "collectFilesFromPaths", &.{ paths, arg(args, 1) }); const enabled = try imported(s, imports, "applyPatterns", &.{ files, patterns, arg(args, 4) });
     try add(s, manager, files, arg(args, 2), arg(args, 3), enabled, null);
 }
-fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void { if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation); }
+
 fn fromPath(s: *Scope, imports: c.JSValue, files: c.JSValue, path: c.JSValue, kind: c.JSValue) !void {
     const stat = try imported(s, imports, "statSync", &.{path}); if (s.truthy(try s.invoke(stat, "isFile", &.{}))) try v.js.push(s.engine, files, path) else if (s.truthy(try s.invoke(stat, "isDirectory", &.{}))) {
         const push = try s.get(files, "push");
@@ -125,7 +125,7 @@ fn fromPath(s: *Scope, imports: c.JSValue, files: c.JSValue, path: c.JSValue, ki
 fn fromPaths(s: *Scope, imports: c.JSValue, paths: c.JSValue, kind: c.JSValue) !c.JSValue {
     const files = try s.array(); var iterator = try v.iterator(s, paths); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |path| {
         defer s.engine.freeValue(path); if (!try exists(s, imports, path)) continue; const generation = s.engine.native_allocation_generation;
-        fromPath(s, imports, files, path, kind) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; };
+        fromPath(s, imports, files, path, kind) catch |err| { try package_catch.ignore(s.engine, err, generation); };
     }
     return files;
 }
@@ -136,7 +136,7 @@ fn localSourceInner(s: *Scope, manager: c.JSValue, imports: c.JSValue, resolved:
 }
 fn localSource(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.JSValue) !void {
     const resolve = try s.get(manager, "resolvePathFromBase"); const resolved = try s.call(resolve, manager, &.{ try s.get(arg(args, 0), "path"), arg(args, 4) }); if (!try exists(s, imports, resolved)) return;
-    const generation = s.engine.native_allocation_generation; localSourceInner(s, manager, imports, resolved, args) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; };
+    const generation = s.engine.native_allocation_generation; localSourceInner(s, manager, imports, resolved, args) catch |err| { try package_catch.ignore(s.engine, err, generation); };
 }
 fn method(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const imports = roots[0];

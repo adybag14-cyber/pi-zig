@@ -1,0 +1,73 @@
+{
+  "status": "source_only_catch_lifetime_correction_unqualified",
+  "base": "22bec1ffb8bf718a7f0b05b33cb7574a10bd2917",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "class_declarations": 98,
+  "async_class_methods": 33,
+  "historical_prepared_cases": 50,
+  "supplemental_prepared_source_rows": 4,
+  "prepared_native_test_declarations": 4,
+  "engine_changed": false,
+  "shared_flow_changed": false,
+  "transport_changed": false,
+  "source_changed": false,
+  "goldens_changed": false,
+  "source_execution": false,
+  "native_execution": false,
+  "zig_format": false,
+  "zig_ast": false,
+  "compile": false,
+  "allocator_qualification": false,
+  "default_wiring_qualification": false,
+  "full_pi_qualification": false,
+  "files": [
+    {
+      "path": "src/extensions/native_sdk_package_catch.zig",
+      "sha256": "D758DCF5D31250C261EC52895F5EC0F9BC3C1FBEEE18409092C16EEFAE6B8777"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_catch_test.zig",
+      "sha256": "44FBC7DD8C8464E4AC66C8D3D2EDC7274C8F490E9380A58B0D17129D0A17277D"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-catch-lifetime-0fb.input.mjs",
+      "sha256": "DA948BFB9C164A905EADE7731364BA69BB33F6B82DB82BE638279DD5D0B73282"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/dependency-pins.json",
+      "sha256": "0DE3D43861133CA3BFDA73A59FD35AF9C95D9A449BF63BE5D89B13731421F6DE"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_accumulator.zig",
+      "sha256": "E6C9B80C483F27A2E4A92EF592B5078029640417F79E3352A4A519791312726A"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_discovery.zig",
+      "sha256": "696C448CDD99EBAA7F374CD128ACDC679FAC989106605E586FABAB6F160DA3BF"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_resources.zig",
+      "sha256": "B49CECC86C349C607E444F4B5C62C8AE588C185864024BF63800B6794A86600A"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_storage.zig",
+      "sha256": "AD235CB751C182A65D1ACDFAD7B72170EF5B60C5DCAC1C07D56C7EDD12F9C8F4"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_settings.zig",
+      "sha256": "7A013DC9BE7BEF70BF2794CB9A4AC5AB991E701DF7249B3E47908F8699FCEF43"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_install.zig",
+      "sha256": "673CA184706C1CBE06902D25A93F36F3B0FC879471B4B6581A1A87864B85A7D1"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_versions.zig",
+      "sha256": "FA001E3CDE15EB244F898908B118B55D3557E2FDA6D73994601C882198C89408"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_git.zig",
+      "sha256": "E941DF7CFEB8F1AB326723EC4CBB5C863DE1D7BC074C864C41E27A7460AD0E60"
+    }
+  ]
+}

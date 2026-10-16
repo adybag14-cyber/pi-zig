@@ -1,6 +1,7 @@
 //! Actual npm/Git version and update-target probes. All command responses and
 //! semver decisions come from the real transport and required semver imports.
 const v = @import("native_ai_provider_values.zig");
+const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
 const c = v.c;
 const body = @import("native_async_body.zig");
@@ -27,8 +28,8 @@ fn stage(s: *Scope, job: c.JSValue, value: i32) !void { try s.put(job, "stage", 
 fn integer(s: *Scope, object: c.JSValue, key: [*:0]const u8) !i32 { var result: i32 = 0; if (c.JS_ToInt32(s.engine.context, &result, try s.get(object, key)) < 0) return v.js.capture(s.engine); return result; }
 fn catching(s: *Scope, job: c.JSValue, mode: i32) !void { try s.put(job, "catchMode", c.JS_NewInt32(s.engine.context, mode)); try s.put(job, "boundary", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, s.engine.native_allocation_generation)))); }
 fn wait(s: *Scope, job: c.JSValue, next: i32, pending: c.JSValue) !af.Action { try stage(s, job, next); return .{ .awaited = c.JS_DupValue(s.engine.context, pending) }; }
-fn trusted(s: *Scope, job: c.JSValue, reason: c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(s.engine); try body.rethrowRecognizedAllocation(s.engine, reason, generation); }
-fn catchBoundary(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, roots[0]) < 0) return v.js.capture(engine); try body.rethrowRecognizedAllocation(engine, arg(args, 0), generation); }
+fn trusted(s: *Scope, job: c.JSValue, reason: c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(s.engine); try package_catch.guard(s.engine, reason, generation); }
+fn catchBoundary(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, roots[0]) < 0) return v.js.capture(engine); try package_catch.guard(engine, arg(args, 0), generation); }
 fn empty(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { try catchBoundary(engine, args, roots); return engine.checked(c.JS_NewString(engine.context, "")); }
 fn noop(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { try catchBoundary(engine, args, roots); return c.pi_js_undefined(); }
 fn validVersion(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { if (!c.JS_IsString(arg(args, 0))) return c.pi_js_bool(engine.context, 0); var s: Scope = .{ .engine = engine }; defer s.deinit(); return c.pi_js_bool(engine.context, @intFromBool(try @import("native_image_arithmetic.zig").compare(engine, .greater, try s.get(arg(args, 0), "length"), c.JS_NewInt32(engine.context, 0)))); }
@@ -100,10 +101,9 @@ fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots:
     if (completion == .rejected) return failure(&s, manager, job, input);
     var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine);
     return evaluate(&s, manager, args, roots[0], job, @enumFromInt(raw), completion, input) catch |err| {
+        if (err == error.OutOfMemory) return err;
         if (try integer(&s, job, "catchMode") == 0) return err;
         var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(job, "boundary")) < 0) return v.js.capture(engine);
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, boundary);
-        const classified = engine.nativeAllocationError(err, boundary); if (classified == error.OutOfMemory) return classified;
-        const reason = try s.own(@import("native_agent_async.zig").reason(engine, classified)); return failure(&s, manager, job, reason);
+        const reason = (try package_catch.take(engine, err, boundary)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return failure(&s, manager, job, reason);
     };
 }

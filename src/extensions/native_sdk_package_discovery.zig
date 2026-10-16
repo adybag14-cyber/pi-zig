@@ -3,10 +3,10 @@
 //! is no silent depth truncation or substitute ignore/glob implementation.
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
+const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
-const body = @import("native_async_body.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 pub const Inputs = struct { paths: c.JSValue, filesystem: c.JSValue, ignore: c.JSValue, read_pi_manifest: c.JSValue, homedir: c.JSValue, process: c.JSValue };
 const Method = enum(i32) { prefixIgnorePattern, addIgnoreRules, collectFiles, collectSkillEntries, collectAutoSkillEntries, findGitRepoRoot, collectAncestorAgentsSkillDirs, collectAutoPromptEntries, collectAutoThemeEntries, resolveExtensionEntries, collectAutoExtensionEntries, collectResourceFiles, expandPackageGlob, getHomeDir, getExtensionTempFolder };
@@ -36,7 +36,7 @@ fn exists(s: *Scope, imports: c.JSValue, path: c.JSValue) !bool { return s.truth
 fn starts(s: *Scope, value: c.JSValue, prefix: []const u8) !bool { return s.truthy(try s.invoke(value, "startsWith", &.{try s.text(prefix)})); }
 fn posix(s: *Scope, imports: c.JSValue, path: c.JSValue) !c.JSValue { return s.invoke(try s.invoke(path, "split", &.{try s.get(imports, "sep")}), "join", &.{try s.text("/")}); }
 fn dirents(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue { const options = try s.object(); try s.put(options, "withFileTypes", c.pi_js_bool(s.engine.context, 1)); return imported(s, imports, "readdirSync", &.{ dir, options }); }
-fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void { if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation); }
+
 const LinkFlags = struct { directory: c.JSValue, file: c.JSValue };
 fn linkFlags(s: *Scope, imports: c.JSValue, path: c.JSValue, with_directory: bool) !LinkFlags {
     const stat = try imported(s, imports, "statSync", &.{path});
@@ -75,14 +75,14 @@ fn ruleFile(s: *Scope, imports: c.JSValue, matcher: c.JSValue, path: c.JSValue, 
 }
 fn rules(s: *Scope, imports: c.JSValue, matcher: c.JSValue, dir: c.JSValue, root: c.JSValue) !void {
     const relative = try imported(s, imports, "relative", &.{ root, dir }); const prefix = if (s.truthy(relative)) try s.concat(try posix(s, imports, relative), try s.text("/")) else try s.text("");
-    inline for (.{ ".gitignore", ".ignore", ".fdignore" }) |filename| { const path = try imported(s, imports, "join", &.{ dir, try s.text(filename) }); if (!try exists(s, imports, path)) continue; const generation = s.engine.native_allocation_generation; ruleFile(s, imports, matcher, path, prefix) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; }; }
+    inline for (.{ ".gitignore", ".ignore", ".fdignore" }) |filename| { const path = try imported(s, imports, "join", &.{ dir, try s.text(filename) }); if (!try exists(s, imports, path)) continue; const generation = s.engine.native_allocation_generation; ruleFile(s, imports, matcher, path, prefix) catch |err| { try package_catch.ignore(s.engine, err, generation); }; }
 }
 fn filesInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, pattern: c.JSValue, skip_modules: c.JSValue, matcher: c.JSValue, root: c.JSValue, files: c.JSValue) !void {
     var iterator = try v.iterator(s, try dirents(s, imports, dir)); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |entry| {
         defer s.engine.freeValue(entry); if (try starts(s, try s.get(entry, "name"), ".")) continue; if (s.truthy(skip_modules) and try v.eq(s, try s.get(entry, "name"), "node_modules")) continue;
         const path = try imported(s, imports, "join", &.{ dir, try s.get(entry, "name") }); var is_dir = try s.invoke(entry, "isDirectory", &.{}); var is_file = try s.invoke(entry, "isFile", &.{});
         if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) {
-            const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; continue; }; is_dir = flags.directory; is_file = flags.file;
+            const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try package_catch.ignore(s.engine, err, generation); continue; }; is_dir = flags.directory; is_file = flags.file;
         }
         const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ root, path })); const ignore_path = if (s.truthy(is_dir)) try s.concat(try s.stringify(rel), try s.text("/")) else rel;
         if (s.truthy(try s.invoke(matcher, "ignores", &.{ignore_path}))) continue;
@@ -92,17 +92,17 @@ fn filesInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, pattern: c.JSValue,
 fn files(s: *Scope, imports: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const result = try s.array(); const dir = arg(args, 0); if (!try exists(s, imports, dir)) return result;
     const root = if (v.nullish(arg(args, 4))) dir else arg(args, 4); const matcher = if (v.nullish(arg(args, 3))) try imported(s, imports, "ignore", &.{}) else arg(args, 3); const skip = if (c.JS_IsUndefined(arg(args, 2))) c.pi_js_bool(s.engine.context, 1) else arg(args, 2);
-    try rules(s, imports, matcher, dir, root); const generation = s.engine.native_allocation_generation; filesInner(s, imports, dir, arg(args, 1), skip, matcher, root, result) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; }; return result;
+    try rules(s, imports, matcher, dir, root); const generation = s.engine.native_allocation_generation; filesInner(s, imports, dir, arg(args, 1), skip, matcher, root, result) catch |err| { try package_catch.ignore(s.engine, err, generation); }; return result;
 }
 fn skillsInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, mode: c.JSValue, matcher: c.JSValue, root: c.JSValue, result: c.JSValue) !void {
     const entries = try dirents(s, imports, dir); var first = try v.iterator(s, entries); defer first.deinit(); errdefer first.closePreserving(); while (try first.next()) |entry| {
         defer s.engine.freeValue(entry); if (!try v.eq(s, try s.get(entry, "name"), "SKILL.md")) continue; const path = try imported(s, imports, "join", &.{ dir, try s.get(entry, "name") }); var is_file = try s.invoke(entry, "isFile", &.{});
-        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, false) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; continue; }; is_file = flags.file; }
+        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, false) catch |err| { try package_catch.ignore(s.engine, err, generation); continue; }; is_file = flags.file; }
         const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ root, path })); if (s.truthy(is_file) and !s.truthy(try s.invoke(matcher, "ignores", &.{rel}))) { try v.js.push(s.engine, result, path); return; }
     }
     var iterator = try v.iterator(s, entries); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |entry| {
         defer s.engine.freeValue(entry); if (try starts(s, try s.get(entry, "name"), ".") or try v.eq(s, try s.get(entry, "name"), "node_modules")) continue; const path = try imported(s, imports, "join", &.{ dir, try s.get(entry, "name") }); var is_dir = try s.invoke(entry, "isDirectory", &.{}); var is_file = try s.invoke(entry, "isFile", &.{});
-        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; continue; }; is_dir = flags.directory; is_file = flags.file; }
+        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try package_catch.ignore(s.engine, err, generation); continue; }; is_dir = flags.directory; is_file = flags.file; }
         const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ root, path })); const include = s.truthy(is_file) and s.truthy(try s.invoke(try s.get(entry, "name"), "endsWith", &.{try s.text(".md")})) and !s.truthy(try s.invoke(matcher, "ignores", &.{rel})) and ((try v.eq(s, mode, "pi") and s.equal(dir, root)) or (try v.eq(s, mode, "agents") and !s.equal(dir, root)));
         if (include) { try v.js.push(s.engine, result, path); continue; } if (!s.truthy(is_dir)) continue;
         if (s.truthy(try s.invoke(matcher, "ignores", &.{try s.concat(try s.stringify(rel), try s.text("/"))}))) continue;
@@ -111,19 +111,19 @@ fn skillsInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, mode: c.JSValue, m
 }
 fn skills(s: *Scope, imports: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const result = try s.array(); const dir = arg(args, 0); if (!try exists(s, imports, dir)) return result; const root = if (v.nullish(arg(args, 3))) dir else arg(args, 3); const matcher = if (v.nullish(arg(args, 2))) try imported(s, imports, "ignore", &.{}) else arg(args, 2);
-    try rules(s, imports, matcher, dir, root); const generation = s.engine.native_allocation_generation; skillsInner(s, imports, dir, arg(args, 1), matcher, root, result) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; }; return result;
+    try rules(s, imports, matcher, dir, root); const generation = s.engine.native_allocation_generation; skillsInner(s, imports, dir, arg(args, 1), matcher, root, result) catch |err| { try package_catch.ignore(s.engine, err, generation); }; return result;
 }
 fn simpleInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, matcher: c.JSValue, result: c.JSValue, extension: []const u8) !void {
     var iterator = try v.iterator(s, try dirents(s, imports, dir)); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |entry| {
         defer s.engine.freeValue(entry); if (try starts(s, try s.get(entry, "name"), ".") or try v.eq(s, try s.get(entry, "name"), "node_modules")) continue; const path = try imported(s, imports, "join", &.{ dir, try s.get(entry, "name") }); var is_file = try s.invoke(entry, "isFile", &.{});
-        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, false) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; continue; }; is_file = flags.file; }
+        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, false) catch |err| { try package_catch.ignore(s.engine, err, generation); continue; }; is_file = flags.file; }
         const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ dir, path })); if (s.truthy(try s.invoke(matcher, "ignores", &.{rel}))) continue;
         if (s.truthy(is_file) and s.truthy(try s.invoke(try s.get(entry, "name"), "endsWith", &.{try s.text(extension)}))) try v.js.push(s.engine, result, path);
     }
 }
 fn simple(s: *Scope, imports: c.JSValue, dir: c.JSValue, extension: []const u8) !c.JSValue {
     const result = try s.array(); if (!try exists(s, imports, dir)) return result; const matcher = try imported(s, imports, "ignore", &.{}); try rules(s, imports, matcher, dir, dir);
-    const generation = s.engine.native_allocation_generation; simpleInner(s, imports, dir, matcher, result, extension) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; }; return result;
+    const generation = s.engine.native_allocation_generation; simpleInner(s, imports, dir, matcher, result, extension) catch |err| { try package_catch.ignore(s.engine, err, generation); }; return result;
 }
 fn extensionEntries(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue {
     const package_path = try imported(s, imports, "join", &.{ dir, try s.text("package.json") });
@@ -137,14 +137,14 @@ fn extensionEntries(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue {
 fn extensionsInner(s: *Scope, imports: c.JSValue, dir: c.JSValue, matcher: c.JSValue, result: c.JSValue) !void {
     var iterator = try v.iterator(s, try dirents(s, imports, dir)); defer iterator.deinit(); errdefer iterator.closePreserving(); while (try iterator.next()) |entry| {
         defer s.engine.freeValue(entry); if (try starts(s, try s.get(entry, "name"), ".") or try v.eq(s, try s.get(entry, "name"), "node_modules")) continue; const path = try imported(s, imports, "join", &.{ dir, try s.get(entry, "name") }); var is_dir = try s.invoke(entry, "isDirectory", &.{}); var is_file = try s.invoke(entry, "isFile", &.{});
-        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; continue; }; is_dir = flags.directory; is_file = flags.file; }
+        if (s.truthy(try s.invoke(entry, "isSymbolicLink", &.{}))) { const generation = s.engine.native_allocation_generation; const flags = linkFlags(s, imports, path, true) catch |err| { try package_catch.ignore(s.engine, err, generation); continue; }; is_dir = flags.directory; is_file = flags.file; }
         const rel = try posix(s, imports, try imported(s, imports, "relative", &.{ dir, path })); const ignored = if (s.truthy(is_dir)) try s.concat(try s.stringify(rel), try s.text("/")) else rel; if (s.truthy(try s.invoke(matcher, "ignores", &.{ignored}))) continue;
         if (s.truthy(is_file) and (s.truthy(try s.invoke(try s.get(entry, "name"), "endsWith", &.{try s.text(".ts")})) or s.truthy(try s.invoke(try s.get(entry, "name"), "endsWith", &.{try s.text(".js")})))) try v.js.push(s.engine, result, path) else if (s.truthy(is_dir)) { const resolved = try imported(s, imports, "resolveExtensionEntries", &.{path}); if (s.truthy(resolved)) { const push = try s.get(result, "push"); try pushSpread(s, result, push, resolved); } }
     }
 }
 fn extensions(s: *Scope, imports: c.JSValue, dir: c.JSValue) !c.JSValue {
     const result = try s.array(); if (!try exists(s, imports, dir)) return result; const root_entries = try imported(s, imports, "resolveExtensionEntries", &.{dir}); if (s.truthy(root_entries)) return root_entries;
-    const matcher = try imported(s, imports, "ignore", &.{}); try rules(s, imports, matcher, dir, dir); const generation = s.engine.native_allocation_generation; extensionsInner(s, imports, dir, matcher, result) catch |err| { try trustedBoundary(s.engine, err, generation); const failure = s.engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; }; return result;
+    const matcher = try imported(s, imports, "ignore", &.{}); try rules(s, imports, matcher, dir, dir); const generation = s.engine.native_allocation_generation; extensionsInner(s, imports, dir, matcher, result) catch |err| { try package_catch.ignore(s.engine, err, generation); }; return result;
 }
 fn gitRoot(s: *Scope, imports: c.JSValue, start: c.JSValue) !c.JSValue { var dir = try imported(s, imports, "resolve", &.{start}); while (true) { if (try exists(s, imports, try imported(s, imports, "join", &.{ dir, try s.text(".git") }))) return dir; const parent = try imported(s, imports, "dirname", &.{dir}); if (s.equal(parent, dir)) return c.pi_js_null(); dir = parent; } }
 fn ancestors(s: *Scope, imports: c.JSValue, start: c.JSValue) !c.JSValue {

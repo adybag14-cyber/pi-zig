@@ -2,6 +2,7 @@
 //! Git/npm transports and managed paths; no repository or command success is
 //! synthesized. This file is source-only until the owner admits real fixtures.
 const v = @import("native_ai_provider_values.zig");
+const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
 const c = v.c;
 const body = @import("native_async_body.zig");
@@ -27,8 +28,8 @@ fn wait(s: *Scope, job: c.JSValue, next: i32, pending: c.JSValue) !af.Action { t
 fn command(s: *Scope, manager: c.JSValue, values: c.JSValue, path: ?c.JSValue, capture: bool) !c.JSValue { const run_command = try s.get(manager, if (capture) "runCommandCapture" else "runCommand"); return if (path) |dir| s.call(run_command, manager, &.{ try s.text("git"), values, try cwd(s, dir, capture) }) else s.call(run_command, manager, &.{ try s.text("git"), values }); }
 fn dependencyInstall(s: *Scope, manager: c.JSValue, path: c.JSValue) !c.JSValue { const run_npm = try s.get(manager, "runNpmCommand"); return s.call(run_npm, manager, &.{ try s.invoke(manager, "getGitDependencyInstallArgs", &.{}), try cwd(s, path, false) }); }
 fn boundary(s: *Scope, job: c.JSValue) !void { try s.put(job, "boundary", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, s.engine.native_allocation_generation)))); }
-fn trusted(s: *Scope, job: c.JSValue, reason: c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(s.engine); try body.rethrowRecognizedAllocation(s.engine, reason, generation); }
-fn ignoreRepair(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, roots[0]) < 0) return v.js.capture(engine); try body.rethrowRecognizedAllocation(engine, arg(args, 0), generation); return c.pi_js_undefined(); }
+fn trusted(s: *Scope, job: c.JSValue, reason: c.JSValue) !void { var generation: u64 = 0; if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(s.engine); try package_catch.guard(s.engine, reason, generation); }
+fn ignoreRepair(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, roots[0]) < 0) return v.js.capture(engine); try package_catch.guard(engine, arg(args, 0), generation); return c.pi_js_undefined(); }
 fn failClean(s: *Scope, manager: c.JSValue, job: c.JSValue, path: c.JSValue, reason: c.JSValue) !af.Action {
     try trusted(s, job, reason); try s.put(job, "originalReason", reason); try s.put(job, "stage", c.JS_NewInt32(s.engine.context, 11));
     const generation = s.engine.native_allocation_generation; const pending = try s.invoke(manager, "repairMissingGitDependencies", &.{path}); const marker = try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation)));
@@ -79,9 +80,9 @@ fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots:
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const kind: Method = @enumFromInt(raw); const imports = roots[0]; const job = if (completion == .start) try body.init(&s, state) else state.*;
     if (completion == .rejected) { if (kind == .cleanAndInstallGitDependencies and try stage(&s, job) == 10) return failClean(&s, manager, job, arg(args, 0), input); if (kind == .installGit and s.truthy(try s.get(job, "cloneTry"))) return failClone(&s, manager, imports, job, input); return .{ .thrown = c.JS_DupValue(engine.context, input) }; }
     return evaluate(&s, manager, imports, args, job, kind, completion, input) catch |err| {
+        if (err == error.OutOfMemory) return err;
         const clean = kind == .cleanAndInstallGitDependencies and try stage(&s, job) == 10; const clone = kind == .installGit and s.truthy(try s.get(job, "cloneTry")); if (!clean and !clone) return err;
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try trusted(&s, job, reason);
-        var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(engine); const classified = engine.nativeAllocationError(err, generation); if (classified == error.OutOfMemory) return classified;
-        const reason = try s.own(@import("native_agent_async.zig").reason(engine, classified)); return if (clean) failClean(&s, manager, job, arg(args, 0), reason) else failClone(&s, manager, imports, job, reason);
+        var generation: u64 = 0; if (c.JS_ToBigUint64(engine.context, &generation, try s.get(job, "boundary")) < 0) return v.js.capture(engine);
+        const reason = (try package_catch.take(engine, err, generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return if (clean) failClean(&s, manager, job, arg(args, 0), reason) else failClone(&s, manager, imports, job, reason);
     };
 }

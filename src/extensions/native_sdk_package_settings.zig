@@ -1,6 +1,7 @@
 //! Actual source/settings matching, listing and progress methods. Parsing,
 //! paths, SettingsManager and installed-file checks remain live real imports.
 const v = @import("native_ai_provider_values.zig");
+const package_catch = @import("native_sdk_package_catch.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
@@ -146,21 +147,19 @@ fn emitEvent(s: *Scope, manager: c.JSValue, kind: []const u8, action: c.JSValue,
     const emit_progress = try s.get(manager, "emitProgress");
     _ = try s.call(emit_progress, manager, &.{try event(s, kind, action, source, message)});
 }
-fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation);
-}
+
 fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
         try emitEvent(&s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
         const job = try body.init(&s, state); const generation = engine.native_allocation_generation;
         try s.put(job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
-        const pending = s.call(arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| { try trustedBoundary(engine, err, generation); const failure = engine.nativeAllocationError(err, generation); if (failure == error.OutOfMemory) return failure; const reason = try s.own(@import("native_agent_async.zig").reason(engine, failure)); return progressError(&s, manager, args, reason); };
+        const pending = s.call(arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| { const reason = (try package_catch.take(engine, err, generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return progressError(&s, manager, args, reason); };
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }
     var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(state.*, "generation")) < 0) return v.js.capture(engine);
-    if (completion == .rejected) { try body.rethrowRecognizedAllocation(engine, input, boundary); return progressError(&s, manager, args, input); }
+    if (completion == .rejected) { try package_catch.guard(engine, input, boundary); return progressError(&s, manager, args, input); }
     const complete_generation = engine.native_allocation_generation;
-    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| { try trustedBoundary(engine, err, complete_generation); const failure = engine.nativeAllocationError(err, complete_generation); if (failure == error.OutOfMemory) return failure; const reason = try s.own(@import("native_agent_async.zig").reason(engine, failure)); return progressError(&s, manager, args, reason); };
+    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| { const reason = (try package_catch.take(engine, err, complete_generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return progressError(&s, manager, args, reason); };
     return .{ .returned = c.pi_js_undefined() };
 }
