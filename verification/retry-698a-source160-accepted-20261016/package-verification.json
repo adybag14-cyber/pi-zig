@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "zip_sha256": "403AAEF040ECF7E1CEC18991257DC8CCC4FDB92BF3041D10AABBD48FDC8B2C06",
+  "zip_bytes": 1132625,
+  "member_manifest_sha256": "18E095CE0EBD3E3104175F57CF4C3162839E84E58770B7EBCF673D1658702455",
+  "decompressed_members_verified": 168,
+  "member_drift": 0,
+  "original_manifest_members": 152,
+  "acceptance_sha256": "13664E1B5BD9C9114E44F315687D9D3B7B7DD4DC664C5CABAC23C48B13651C35",
+  "addendum_sha256": "AD27EDD3B577B625868E3EF57AFCCF7EDCBFC95BE55A18F785560DD3B3A9E903",
+  "original_files_modified": false,
+  "new_jobs_launched": false,
+  "published": false,
+  "verified_utc": "2026-10-16T22:27:02.6670251+00:00"
+}

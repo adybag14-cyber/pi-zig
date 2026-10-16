@@ -24,5 +24,9 @@ Native compilation, metadata and execution of these new tests are pending.
 The build step installs the test artifact for bounded metadata and runtime
 qualification; it also imports the catalog module used by the current Engine
 graph. These two build-wiring additions extend the preserved prepared snippet.
-Raw capture and launcher proof packaging is pending alongside the accepted
-receipt; original local evidence remains preserved.
+The raw capture, launcher, watcher and audit packet is retained in
+`raw-proof.zip`, SHA256
+`403AAEF040ECF7E1CEC18991257DC8CCC4FDB92BF3041D10AABBD48FDC8B2C06`.
+All 168 decompressed members passed length/hash verification; the member
+manifest and separate verification receipt preserve that audit. Original local
+evidence remains unchanged.

@@ -1,0 +1,1359 @@
+{
+  "schema": 1,
+  "kind": "genuine_runtime_free_Source160_raw_proof_publication_packet",
+  "candidate_head": "81ec9d38837bff76f55bcf2f7c538548609e62c9",
+  "source_head": "698a2d23b86a5045dd54554354a5e0cb7e466795",
+  "cases": 160,
+  "original_manifest_members": 152,
+  "complete_run_and_launcher_included": true,
+  "watcher_files": 4,
+  "observed_module_input_copies": 4,
+  "profile_binary_included_only_because_original_manifest_member": true,
+  "excluded_unmanifested_binaries_caches_profiles": true,
+  "expected_created": false,
+  "native_replay_executed": false,
+  "runtime_recovery_claimed": false,
+  "global_hold_lifted": false,
+  "published": false,
+  "self_entry": "member-manifest.json",
+  "self_excluded_from_member_list_to_avoid_hash_cycle": true,
+  "members": [
+    {
+      "bytes": 94254,
+      "kind": "independent_audit",
+      "entry": "independent-audit/acceptance.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-independent-async-review-20261016\\acceptance.json",
+      "sha256": "13664E1B5BD9C9114E44F315687D9D3B7B7DD4DC664C5CABAC23C48B13651C35",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 5181,
+      "kind": "independent_audit",
+      "entry": "independent-audit/addendum.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-independent-async-review-20261016\\addendum.json",
+      "sha256": "AD27EDD3B577B625868E3EF57AFCCF7EDCBFC95BE55A18F785560DD3B3A9E903",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 21007,
+      "kind": "independent_audit",
+      "entry": "independent-audit/Audit-Source160.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-independent-async-review-20261016\\Audit-Source160.ps1",
+      "sha256": "ECC87852CC0A5502929849D61F2D4039327604E861AC33F6DEE40075C66038E3",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1041,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-33020.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-33020.json",
+      "sha256": "E1F80EBEEB5728D69000419444134D337DCF880B064034761271FF500B01927C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1032,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-48424.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-48424.json",
+      "sha256": "CC1D200C94A3724055FB002645B2D29829358C7BA5977A38AC9E57403A45E2EB",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1038,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-71220.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-71220.json",
+      "sha256": "B60C1285C9ED1BD08086BCC3474219A5833E4D4A2984F43EC4F00CFF5CA8B357",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1032,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-78928.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-78928.json",
+      "sha256": "1665B002652C40B5200854DAC441CB1FB7EFF911EDA61429B597C5A41D532FE1",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1032,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-82028.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-82028.json",
+      "sha256": "A027CC6E216C4FF4F9BB5450B431B67174DCBA599210767BBD9800CB0C560959",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1024,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/bootstrap-9304.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\bootstrap-9304.json",
+      "sha256": "2BFA7BD28601328AC1C88122A95E3A59FEC55A4487DBB5679E2A2D76CA1B4108",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 77417,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/launcher-descendants-absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\launcher-descendants-absence.json",
+      "sha256": "4DF1FBB86F925B118DE4081B8970FCCF8F72B8CD8C4329B3AF95D00AF27A0278",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 3802,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/launcher-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\launcher-identities.json",
+      "sha256": "E6CC4A87FC5C6659DAD9A701DFD166A553D32544364306797FF31CBE3F766770",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1227,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/launcher-partial-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\launcher-partial-identities.json",
+      "sha256": "A1D827584003E2933947D987CF824ADE65B38FF155F0AA207C45EBF5472D70C9",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2387,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/launcher-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\launcher-self.json",
+      "sha256": "F3D883DE2B7835523C5DF4CD1AFF2ACD830B4D8699D4DA4B0B9C99308CEB6ACC",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 5567,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/launcher-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\launcher-terminal.json",
+      "sha256": "B6ECB65B53CA2DB87B3BFB11AF4422612FCB00F5A577D44B6916553D1E159B28",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 3118,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/supervisor-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor-launch.json",
+      "sha256": "9434381808E59406C98A442E83F658D1841A6E2E694EDB165FD620E00539F809",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/supervisor-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor-reservation.json",
+      "sha256": "ABFF7871286F40C037335F7A9F1A4040065B8578156A183E073CA0C4D11522B4",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2476,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/supervisor-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor-terminal.json",
+      "sha256": "08CDBDB51A49C915E32D56555CE1D06BA99D36CA3659BD1EA60DB19FC7F29AC3",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/supervisor.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "launcher/supervisor.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726.launcher\\supervisor.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2035,
+      "kind": "exact_observed_module_input_copy",
+      "entry": "observed-modules/capture-retry-698a.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\capture-retry-698a.mjs",
+      "sha256": "3FBE305D241DD1DCC38B4E63BF7D1F298926EAE3BF74CEFB208740336410D410",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 7073,
+      "kind": "exact_observed_module_input_copy",
+      "entry": "observed-modules/guarded-start-fence.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-runtime-free-prepared-20261016\\guarded-start-fence.mjs",
+      "sha256": "C7420CF25640DFFB96B29B91AF30D09DD84CE7851E715DAED71574DBC64EE8D9",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4970,
+      "kind": "exact_observed_module_input_copy",
+      "entry": "observed-modules/retry-698a-classifier.input.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\latest-reference\\verification\\retry-698a-successor-prepared-20261016\\retry-698a-classifier.input.mjs",
+      "sha256": "84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 10345,
+      "kind": "exact_observed_module_input_copy",
+      "entry": "observed-modules/retry.ts",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\698a2d23-20261016\\packages\\ai\\src\\utils\\retry.ts",
+      "sha256": "D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 5977,
+      "kind": "packaging_source",
+      "entry": "Package-Source160.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-public-proof-prepared-20261016\\Package-Source160.ps1",
+      "sha256": "F438AE9A779C446949050FE7A9F0B9261D7F04D61B95EB6BA413357A2341FC2C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2003,
+      "kind": "publication_scope",
+      "entry": "README.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-public-proof-prepared-20261016\\README.md",
+      "sha256": "5849B19F92DBCD257F8800F94EB97F669139DB86D9F97F9B3CC3A2B1B6E51051",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 512,
+      "kind": "original_external_manifest_member",
+      "entry": "run/admission/source160.approval.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\admission\\source160.approval.json",
+      "sha256": "16FDA8FD0B29BC1CCEBA41F022077ADBA06124AF34FECB291AA102F58473175A",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 341,
+      "kind": "original_external_manifest_member",
+      "entry": "run/admission/source160.request.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\admission\\source160.request.json",
+      "sha256": "46930BEC9F97E2E92BC41A99E605A818FE496EC5905EC2E4B905A0AAC8245B18",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 331,
+      "kind": "original_external_manifest_member",
+      "entry": "run/admission/source160.reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\admission\\source160.reservation.json",
+      "sha256": "93A2846D720D67B0ECAA5F900FCB5DB0451DCD20DDEA50B8701537944281BCBF",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2427,
+      "kind": "original_external_manifest_member",
+      "entry": "run/artifact-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact-launch.json",
+      "sha256": "F6140436F8C6D5AE64671C3B5BE1819494E4AE13C69D1645D91F9212ED528FED",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/artifact-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact-reservation.json",
+      "sha256": "D85507F7CCC83925E6C0CAED4CC5E165B1AB5E2BADF0FDC56FCD491395AFEE75",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2000,
+      "kind": "original_external_manifest_member",
+      "entry": "run/artifact-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact-terminal.json",
+      "sha256": "0B2B18D780AE8A48E1DE65AB8372596B9B3AED3713E7BDD3DE0F3A7616BDBF93",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/artifact.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/artifact.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\artifact.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2357,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before-full-seal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before-full-seal.json",
+      "sha256": "67E95FE4D6BFB0E20E53997598147D0917E221538D0911DC08A3C2DBB394CA0C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2421,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before-launch.json",
+      "sha256": "10D21D3C1B09D8CB1F27AE36A442CFC5E61CE9C68FAF9BDAE640C24E03A527CB",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before-reservation.json",
+      "sha256": "5C94B735D26CFA12E5FC588F046386E32197AED7649EE301877E4CD97DB89159",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1994,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before-terminal.json",
+      "sha256": "70E8533790AED33912A44DCC6604EAE8E55A4DCC30B3F66007E2B8F3AEFCCA2D",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/before.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\before.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 34190,
+      "kind": "original_external_manifest_member",
+      "entry": "run/capture-artifact-manifest.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-artifact-manifest.json",
+      "sha256": "980E8D96945C0F4C63D24BA479EA6D5B260D810E3C15F0E148406D754F28DF8C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 9220,
+      "kind": "original_external_manifest_member",
+      "entry": "run/capture-config.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\capture-config.json",
+      "sha256": "6D798FC1AAE7654A789C052BE4A4916D4834E84938BDE3AA29E5B74CBEFDA047",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 9951,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-descendants-absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-descendants-absence.json",
+      "sha256": "6D5E8BFB9047D57C4112D0C934A8DE8829F562DF1D0F29F453573263D0E8B562",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4942,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-identities.json",
+      "sha256": "FA35A05DB8445FFCEBE8524BF2D932F274FFFE156A67BCE697BF71871CCB2F74",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2374,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-launch.json",
+      "sha256": "B5505ABAF27AF91FC26FBCA16D283FAC3332852A2FECC6C71E1153A33E8893D9",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 8505,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-outcome.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-outcome.json",
+      "sha256": "2CC3AAD6A3B9DC90C155F69FEA7FD62CBF9D1BE685D3AE40A9CA3FE76310FF5E",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4500,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-partial-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-partial-identities.json",
+      "sha256": "94840833CDA83476507AC30081687BED740CD8D4150117503A48D5A4163E0AE5",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-reservation.json",
+      "sha256": "AED20D5B6ADAF582994055C3FE8C7EEE484C49FD6AB4F93D60879AD570B5C285",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 639,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-self.json",
+      "sha256": "48F83B64D3A00B55DBC0FB22DFD8EBB1DB5FD012F653E3DF6FF5933937F6537A",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1960,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller-terminal.json",
+      "sha256": "D336F62C24371C8AACDDA5E2FA39249CB110FD59FF3FC1CAFA2C2524BFE9EB6A",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/controller.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\controller.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 80012,
+      "kind": "original_external_manifest_member",
+      "entry": "run/external-absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\external-absence.json",
+      "sha256": "CE0EEA56F979C50761B196776630A489DC09668C5F7BE61F86D8387DD20E50AD",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 42576,
+      "kind": "terminal_file_created_after_original_snapshot",
+      "entry": "run/external-artifact-manifest.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\external-artifact-manifest.json",
+      "sha256": "7CF4AC4EC9330468CF7B33DC9A5C704EE35609D318C4569525214B4195E2B1CC",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 5663,
+      "kind": "terminal_file_created_after_original_snapshot",
+      "entry": "run/external-handoff.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\external-handoff.json",
+      "sha256": "A39CBA3FE1243C6F65229F77787D9791887A807F255AE0AE41C455A3E6C4A756",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 5139722,
+      "kind": "original_external_manifest_member",
+      "entry": "run/full-before-manifest.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\full-before-manifest.json",
+      "sha256": "D4D330EAA5601AA2B215D406E4943370657F58C3CFB475C6C01D46EF452DEB47",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 261,
+      "kind": "original_external_manifest_member",
+      "entry": "run/initial-admission.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\initial-admission.json",
+      "sha256": "9273C38DBB6B33429CD6A6C4C407D398B3999CF99D5C63994186CFA69E692042",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1772,
+      "kind": "original_external_manifest_member",
+      "entry": "run/initial-root-grant.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\initial-root-grant.json",
+      "sha256": "2048B99CBDAAB51240BD7670763CA5FD9137B4C0DE4852E52966FE5248F7E01A",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 3819,
+      "kind": "original_external_manifest_member",
+      "entry": "run/Invoke-OwnedModelsClassSource-20261016.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\Invoke-OwnedModelsClassSource-20261016.ps1",
+      "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 3294,
+      "kind": "original_external_manifest_member",
+      "entry": "run/launcher-claim.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\launcher-claim.json",
+      "sha256": "6F241E16A4785772D58F4E376DAC23B2DBD9085FD9C469DBAE88481D016B3AE1",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2018,
+      "kind": "original_external_manifest_member",
+      "entry": "run/node-command.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\node-command.json",
+      "sha256": "C987C55396F87FCEE6140D24BE757A3142331739D1A3E2DFB6168B83414F4F99",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2386,
+      "kind": "original_external_manifest_member",
+      "entry": "run/original96BE-owner-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner-launch.json",
+      "sha256": "55C545F95FC4CA5C82142C51A92BF64B900A19F20143E350B8D48A497BE03D9E",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/original96BE-owner-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner-reservation.json",
+      "sha256": "D1F5F5D971088A730B573DB08F053B2ACB3BB40436CDBBFFAB069AE37331FBA8",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1976,
+      "kind": "original_external_manifest_member",
+      "entry": "run/original96BE-owner-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner-terminal.json",
+      "sha256": "EC8B4B305E95FB4395B8CB9C53F6B49B89847F3F996AF80A4C838FE4E1120C60",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/original96BE-owner.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2388,
+      "kind": "original_external_manifest_member",
+      "entry": "run/original96BE-owner.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\original96BE-owner.stdout.log",
+      "sha256": "EBC666C67CD6C31DDCB6AF3FBDE1C38FFCC3F2D173E0AAE45D8E8480A96262F1",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2355,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post-full-seal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post-full-seal.json",
+      "sha256": "EEC32148B64DC18FEEAF5051CDA0837C6645F0A0746268DA6CAA4D246366B3D7",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2415,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post-launch.json",
+      "sha256": "30F4DF37FA3B09ED4B92397310AE690A0CC0BE909E60684AC4C1044E2898F251",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post-reservation.json",
+      "sha256": "FCA3BEDD84A02C92890E11150D11A350C02B09A4E1D1AED20BDD5F888D7AF853",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1988,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post-terminal.json",
+      "sha256": "97F3889F289724BB0D6BAD9D21D843EE972E24E4DDDD59BD8E247540CCB4E95D",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/post.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\post.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4712,
+      "kind": "original_external_manifest_member",
+      "entry": "run/profile/AppData/Local/Microsoft/PowerShell/ModuleAnalysisCache-0C86AEE9",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\profile\\AppData\\Local\\Microsoft\\PowerShell\\ModuleAnalysisCache-0C86AEE9",
+      "sha256": "0CC0601115953042D46904AF7C47C21CE651D67DE8C5BD69157D790D4AC4A84B",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 99152,
+      "kind": "original_external_manifest_member",
+      "entry": "run/profile/AppData/Local/Microsoft/PowerShell/StartupProfileData-NonInteractive",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\profile\\AppData\\Local\\Microsoft\\PowerShell\\StartupProfileData-NonInteractive",
+      "sha256": "47D1476F5976B5B3A1113360EE0551038A0FA2249AB21D0242963F98775AEA95",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2937,
+      "kind": "original_external_manifest_member",
+      "entry": "run/runtime-free-closure.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\runtime-free-closure.json",
+      "sha256": "104758546B0AB3B7121A8EEF99EDE2B856725717A5C01B7E6929C4424CA9841B",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 650,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-artifact-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-artifact-self.json",
+      "sha256": "9F6145498F8523710C1AB7BA87C9B172BEAB0E0E0A5A8F24E265A35D9CC55725",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 994,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git1-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1-launch.json",
+      "sha256": "F53F03853E27E389BD767A8BC6816838D65EB804071F1796062A557F85E1B433",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git1-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1-reservation.json",
+      "sha256": "41ABB8C6108FC99CB0CFD7DAEFF9A824B0139E3B246AD40D2362D38CCA02880F",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2425,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git1-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1-terminal.json",
+      "sha256": "8B5AEE7095484B849983367D9E1310E44C05976D1DC0C7FD74684894EBC180F2",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git1.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git1.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git1.stdout.log",
+      "sha256": "5204E5AC62B8A74E2C369E08272BD83CF9282BA4543B11C0738C32516F262F43",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1001,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git2-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2-launch.json",
+      "sha256": "27AC30DCB3EB3F04784F4E3456FFA48E5C082FCD46B1CE3761C9F76BF3646F70",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git2-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2-reservation.json",
+      "sha256": "30766B8DF65A9CFA715664919ADD9B154BDAB5F7C552FC9C5EF3F5742F6DDD42",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2439,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git2-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2-terminal.json",
+      "sha256": "91A51BA86079141B0ACEE0776CCB8C5A2E8F82FB8E869B0661DD152CA647E29B",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git2.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git2.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git2.stdout.log",
+      "sha256": "39A50BBA97772A63FB0B872696BBDE2A0D318A9E0D296DA694FD59C34679E64C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1029,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git3-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3-launch.json",
+      "sha256": "8ADDE9BCBDB05BF4E91F6CE8CE41E9583778F6F67AA91FA59469E8F1C13FF09C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git3-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3-reservation.json",
+      "sha256": "2999E0C7600D73D446201BB760FDC0C6FEC18F26E6D2969671A6C0D2429A4DB2",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2501,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git3-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3-terminal.json",
+      "sha256": "15F7C2E5641A61ECEAD10C4C87AC6609905023EB8CA9D84EA115CF6ED7F084A3",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git3.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git3.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git3.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 983,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git4-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4-launch.json",
+      "sha256": "EF34DF41A8B67DE9FD8409A8642E72F09056A74A6064467B9E9CBF030B4A3BA2",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git4-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4-reservation.json",
+      "sha256": "1648728BBC705530CABA5F0F33677D8DBBF1FE3FBD0DC9684E95736243C88D53",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2403,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git4-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4-terminal.json",
+      "sha256": "C1BD6D523823B6E2411FAFB36CE873CD5A25E2B5CAAE01D2A1EED24F5321361F",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git4.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git4.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git4.stdout.log",
+      "sha256": "82F702F1853097749D24714A8B4F629C05AE6F93B182BF8177971564C6924EB7",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 987,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git5-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5-launch.json",
+      "sha256": "72116C87B36D72BB6B798CC5D80130E6D0FAC1E64F86EA7E5F127056971B2186",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git5-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5-reservation.json",
+      "sha256": "D9FEABB94CDD1A208CF03BD537721176497D497D686A100430CB52823F8A1D30",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2411,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git5-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5-terminal.json",
+      "sha256": "5A511C1C391ACFF4828026365726584356284A55D03343AC2C5FAAA1A368F184",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git5.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git5.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git5.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 967,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git6-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6-launch.json",
+      "sha256": "2C11A95993259AD3FE5218FDA932CADEEE25B760A3B6C8175DCF075CDF9D10CA",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git6-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6-reservation.json",
+      "sha256": "491CEC8C3C6340010D451A1523DE80C034FF48371FA8D5978B7ABED72A57DCC2",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2365,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git6-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6-terminal.json",
+      "sha256": "5EAF9D5C81DC9FF5E7DE4BCCD9DE3DCF52AF73136E9476C7F16EAE506E4E128D",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git6.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 797016,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-git6.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-git6.stdout.log",
+      "sha256": "988C6E7C4A241474E2ADC34C63A988D3D40CFE83914CA290F61459D7EED71DBF",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4992,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-partial-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-partial-identities.json",
+      "sha256": "9F5FBD687FC8D258FFD62789B1A6E4B63A8AAE6A281EFB67F48A742B14843108",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 648,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-before-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-before-self.json",
+      "sha256": "7FB7211F29701637E85BEBFE5CB82DE6A06FE6F6436B747B2AAE7CE00509AE81",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 994,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git1-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1-launch.json",
+      "sha256": "72625777DF8AF76EAE6F36ECE5BE896311CCAE119392FCDA1C518EAFD1DE449B",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git1-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1-reservation.json",
+      "sha256": "8973F472F31D64FB66E879F24A36D9CEE7575DC18D6917FB0098AA3A83F01424",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2423,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git1-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1-terminal.json",
+      "sha256": "B1411C39B39EF01F7004C4461668666621BFA99EFDE182BD9B9BB5860F9DAA93",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git1.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git1.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git1.stdout.log",
+      "sha256": "5204E5AC62B8A74E2C369E08272BD83CF9282BA4543B11C0738C32516F262F43",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1001,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git2-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2-launch.json",
+      "sha256": "3AC070EC8F3BA59C9C8993EFF2E03CC5676EAA475EBB0043E392BE7C78C74515",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git2-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2-reservation.json",
+      "sha256": "25D9017FB85CFB6874E101009BD0265C7CCC2C9694D247BBE17FCE6CC696C6E8",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2437,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git2-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2-terminal.json",
+      "sha256": "499468BDD0FF618331803DAA551923CEA7069EDAC772B2F36B89C66285A19C1C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git2.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git2.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git2.stdout.log",
+      "sha256": "39A50BBA97772A63FB0B872696BBDE2A0D318A9E0D296DA694FD59C34679E64C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1029,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git3-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3-launch.json",
+      "sha256": "739A0D04B35DCDD6CF17AF1786BA2EE69C46BDF546F4047F3CEC972BF0E371E8",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git3-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3-reservation.json",
+      "sha256": "F06BB3970D5970454AD6E8B6EC1FD4DA89DEE691DB71976237D11EA73742FF98",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2499,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git3-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3-terminal.json",
+      "sha256": "A3A2C91F553580A53EF4CC30DE9062DE164F40F85F3FBD277D5D9DCC9FA59728",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git3.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git3.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git3.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 983,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git4-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4-launch.json",
+      "sha256": "53C6521CCE4AFD56AD411C26E631CF891273190040054FEB48FACCCB86BEA308",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git4-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4-reservation.json",
+      "sha256": "866822387D20CB354D6BFEBCDEF3CB2CCE0D40F06E5FD5C5EAAF025F412C15FC",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2401,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git4-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4-terminal.json",
+      "sha256": "D0675AE14108800BE29E5AE5C233822D3F3CA4249BA762831883943E63003039",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git4.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git4.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git4.stdout.log",
+      "sha256": "82F702F1853097749D24714A8B4F629C05AE6F93B182BF8177971564C6924EB7",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 987,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git5-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5-launch.json",
+      "sha256": "D549E4291B89E37269A0956582A923314DF1666BA3632A4D1490B32E54BABF23",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git5-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5-reservation.json",
+      "sha256": "C2E4DD29E77065DB052FA4DB990C3553DAE8132C02EFD0B48A8B283D94AD8DF4",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2409,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git5-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5-terminal.json",
+      "sha256": "CCFDB8017752ED2564FB9B5E6620F9B214D24AA6752AE45EF3B1B84BC7DE8310",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git5.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git5.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git5.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 966,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git6-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6-launch.json",
+      "sha256": "F71EE5AE9FA883CEA3C3E6B6B46F9012140753237D3DE9DEBF800B188C8EE5F3",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git6-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6-reservation.json",
+      "sha256": "CBCEA2231CA4D1208FC122ACBD6259FF3A7DBF3EF5358899D36395E3CB60E575",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2361,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git6-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6-terminal.json",
+      "sha256": "4D151F5BFD89E61C4529160D40D1C4732541FF383FA0D22A2A9C6406AC13AB45",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git6.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 797016,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-git6.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-git6.stdout.log",
+      "sha256": "988C6E7C4A241474E2ADC34C63A988D3D40CFE83914CA290F61459D7EED71DBF",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4991,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-partial-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-partial-identities.json",
+      "sha256": "D5B3F0A143351A1B4355DA2AEF566D482FD31A4ED3457163D73ACC3AA948CBFB",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 646,
+      "kind": "original_external_manifest_member",
+      "entry": "run/seal-post-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\seal-post-self.json",
+      "sha256": "1FE7EC97656D5BB6614A5738C85D46E0B6D96A774FAF762D5DA27DF98E86B723",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 29102,
+      "kind": "original_external_manifest_member",
+      "entry": "run/source160-raw.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160-raw.json",
+      "sha256": "C7A60845D59D505EF09FC4038E0B05AFCC13F18364C4BD4178D1EA1F93C00530",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 331,
+      "kind": "original_external_manifest_member",
+      "entry": "run/source160-validation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160-validation.json",
+      "sha256": "75FB787CA862E52A620DC4BC3F34A3AC71B61A035782978E8E9DD086903BDA18",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2388,
+      "kind": "original_external_manifest_member",
+      "entry": "run/source160.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160.json",
+      "sha256": "EBC666C67CD6C31DDCB6AF3FBDE1C38FFCC3F2D173E0AAE45D8E8480A96262F1",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/source160.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/source160.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\source160.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 6555,
+      "kind": "original_external_manifest_member",
+      "entry": "run/start-fence-identity.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\start-fence-identity.json",
+      "sha256": "E3E815DAAB48BAA8C2CCD3476296FCB9BC293CAB89E218DA7A9E0FC3796C5BD0",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2118,
+      "kind": "original_external_manifest_member",
+      "entry": "run/start-fence-ready.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\start-fence-ready.json",
+      "sha256": "916B6D57814A844FA9FEC04932184E93AFEC969EF461D490575CFCDAB6E622CC",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 108,
+      "kind": "original_external_manifest_member",
+      "entry": "run/start-fence-release.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\start-fence-release.json",
+      "sha256": "1CC6A6386F684C32FF5C55679AD81F1D6A3AE25D857022ECE26831694FBD03F9",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4584,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-claim-accepted.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-claim-accepted.json",
+      "sha256": "46EA5D982256DEFBC48018FE62BE1A4504EBA768C41E2DAF60E513DD6D115DAD",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 72010,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-descendants-absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-descendants-absence.json",
+      "sha256": "5A4E947D235CD6CCF59F40458A397BB8EB4DCE7BEC1D07F44892B8E8073C5AAF",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 982,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git1-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1-launch.json",
+      "sha256": "343BBFF80E691DB9BF273783BEF63ED80F9060F65830AE5FF3CCDB59582E44DD",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git1-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1-reservation.json",
+      "sha256": "E3338314F47B0D693B7C3B6C8A41737F0B801383B65CF577DAB77B987370175E",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2400,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git1-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1-terminal.json",
+      "sha256": "8EC6050D5B6BE5BDE6C991B4136B5F28C1E8502F5163FBE373C69F5673FDF654",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git1.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 41,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git1.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git1.stdout.log",
+      "sha256": "82F702F1853097749D24714A8B4F629C05AE6F93B182BF8177971564C6924EB7",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 986,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git2-launch.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2-launch.json",
+      "sha256": "5D3025B08A6D5FA0C46426B4BC8B3C3630FEF1C0D59F948081FE6B4FA8D23EEB",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 174,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git2-reservation.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2-reservation.json",
+      "sha256": "073AD89491EBF48A75080CEF14787EF589BF6EF3978FAE4AD5D52A9BBAE33EA4",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2408,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git2-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2-terminal.json",
+      "sha256": "BB1CE91F733E3B13AC577B35177B73B17840C8F7D86C12DB321F8EA30FEDBA0C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git2.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 0,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-git2.stdout.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-git2.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 8277,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-identities.json",
+      "sha256": "24958C9A5975ABB085E7347CEEC59E5B8548503A07A3FE51AC37A8C335D2D757",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2914,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-partial-identities.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-partial-identities.json",
+      "sha256": "E9CB7A62152ECD7190BA68BDDB322B79072D7A6C473CCBF448BE398FAA996E54",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 2115,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-self.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-self.json",
+      "sha256": "82C4F9CE280A08AEE67AEDC8400B98A1794CD43500FC3992157A8F342B502DFE",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 22079,
+      "kind": "original_external_manifest_member",
+      "entry": "run/supervisor-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\retry698a-runtime-free-captures\\root-source160-81ec-watch-20261016-220726\\supervisor-terminal.json",
+      "sha256": "81F11555AECE9F8B8FA9DFBAD51ACBBC92A4FE7CFEF63956BDCCA3456217C8C6",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 244,
+      "kind": "original_Root_watcher_provenance",
+      "entry": "watcher/root-source160-81ec-watch-20261016-220726-approver-terminal.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726-approver-terminal.json",
+      "sha256": "D322512811BFC55201C7B908D4E55375370A5B66AE5F4ECFF7B23A25AF431F71",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 796,
+      "kind": "original_Root_watcher_provenance",
+      "entry": "watcher/root-source160-81ec-watch-20261016-220726-approver.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726-approver.json",
+      "sha256": "0EDE063BAD58F8256F33D28A0DD7D0FFE07BD7FEABE168972B56FB0495509D2C",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 1772,
+      "kind": "original_Root_watcher_provenance",
+      "entry": "watcher/root-source160-81ec-watch-20261016-220726.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\root-source160-81ec-watch-20261016-220726.json",
+      "sha256": "2048B99CBDAAB51240BD7670763CA5FD9137B4C0DE4852E52966FE5248F7E01A",
+      "byte_identical_original": true
+    },
+    {
+      "bytes": 4081,
+      "kind": "original_Root_watcher_provenance",
+      "entry": "watcher/Wait-ApproveSource160.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-source160-grants-20261016\\Wait-ApproveSource160.ps1",
+      "sha256": "6A9BD9824A13F0CC0B38B0AA89F469C142DF9FBD59334251B860A9B796465A03",
+      "byte_identical_original": true
+    }
+  ],
+  "prepared_utc": "2026-10-16T22:27:02.5480939+00:00"
+}
