@@ -31969,8 +31969,9 @@ static JSModuleDef *js_host_resolve_imported_module_origin(JSContext *ctx,
     m = graph ? js_pi_find_loaded_module(ctx, module_name, attributes, graph)
               : js_find_loaded_module(ctx, module_name, attributes);
     if (m) {
-        if (graph && m->pi_module_origin->quarantined) {
-            JS_ThrowTypeError(ctx, "Private module definition is quarantined");
+        if (graph && (m->pi_module_origin->quarantined ||
+                      m->pi_module_origin->failed || m->eval_has_exception)) {
+            JS_ThrowTypeError(ctx, "Private failed module retry policy is not admitted");
             js_free(ctx, cname);
             JS_FreeAtom(ctx, module_name);
             JS_FreeValue(ctx, captured_attributes);
@@ -33018,6 +33019,20 @@ JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m)
     return JS_DupAtom(ctx, m->module_name);
 }
 
+/* Exact lexical origin at the same current frame as ScriptOrModuleName.
+   Do not guess an outer module for eval/generated/non-bytecode frames. */
+static JSPiModuleOrigin *js_pi_current_module_origin(JSContext *ctx)
+{
+    JSStackFrame *sf = ctx->rt->current_stack_frame;
+    JSObject *p;
+    if (!sf || JS_VALUE_GET_TAG(sf->cur_func) != JS_TAG_OBJECT)
+        return NULL;
+    p = JS_VALUE_GET_OBJ(sf->cur_func);
+    if (!js_class_has_bytecode(p->class_id))
+        return NULL;
+    return p->u.func.function_bytecode->pi_module_origin;
+}
+
 JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m)
 {
     JSValue obj;
@@ -33036,6 +33051,15 @@ static JSValue js_import_meta(JSContext *ctx)
 {
     JSAtom filename;
     JSModuleDef *m;
+    JSPiModuleOrigin *origin = js_pi_current_module_origin(ctx);
+
+    if (origin) {
+        if (!js_pi_has_private_module_graph(ctx, origin->graph) ||
+            !origin->module || origin->quarantined ||
+            !js_pi_has_module_definition(ctx, origin->module))
+            return JS_ThrowTypeError(ctx, "Private module origin is not active in this context");
+        return JS_GetImportMeta(ctx, origin->module);
+    }
 
     filename = JS_GetScriptOrModuleName(ctx, 0);
     if (filename == JS_ATOM_NULL)
@@ -33097,17 +33121,19 @@ static JSValue js_load_module_fulfilled(JSContext *ctx, JSValueConst this_val,
     return JS_UNDEFINED;
 }
 
-static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
+static void JS_LoadModuleInternalOrigin(JSContext *ctx, const char *basename,
                                   const char *filename,
                                   JSValueConst *resolving_funcs,
-                                  JSValueConst attributes)
+                                  JSValueConst attributes,
+                                  JSPiModuleOrigin *origin)
 {
     JSValue evaluate_promise;
     JSModuleDef *m;
     JSValue ret, err, func_obj, evaluate_resolving_funcs[2];
     JSValueConst func_data[3];
 
-    m = js_host_resolve_imported_module(ctx, basename, filename, attributes);
+    m = js_host_resolve_imported_module_origin(ctx, basename, filename, attributes,
+                                               origin);
     if (!m)
         goto fail;
 
@@ -33142,6 +33168,15 @@ static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
     JS_FreeValue(ctx, evaluate_promise);
 }
 
+static void JS_LoadModuleInternal(JSContext *ctx, const char *basename,
+                                  const char *filename,
+                                  JSValueConst *resolving_funcs,
+                                  JSValueConst attributes)
+{
+    JS_LoadModuleInternalOrigin(ctx, basename, filename, resolving_funcs,
+                                  attributes, NULL);
+}
+
 /* Return a promise or an exception in case of memory error. Used by
    os.Worker() */
 JSValue JS_LoadModule(JSContext *ctx, const char *basename,
@@ -33167,6 +33202,31 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     JSValueConst attributes = argv[4];
     const char *basename = NULL, *filename;
     JSValue ret, err;
+    JSPiModuleOrigin *origin = NULL;
+
+    if (argc == 7) {
+        JSModuleDef *module;
+        JSFunctionBytecode *anchor;
+        if (JS_VALUE_GET_TAG(argv[5]) != JS_TAG_MODULE) {
+            JS_ThrowTypeError(ctx, "Invalid private module origin job token");
+            goto exception;
+        }
+        module = JS_VALUE_GET_PTR(argv[5]);
+        /* The separately retained bytecode function anchors its realm/context.
+           The module token is not independent ModuleDef GC ownership. */
+        if (!js_pi_has_module_definition(ctx, module)) {
+            JS_ThrowTypeError(ctx, "Private module origin job belongs to another context");
+            goto exception;
+        }
+        origin = module->pi_module_origin;
+        anchor = JS_GetFunctionBytecode(argv[6]);
+        if (!origin || origin->module != module || origin->quarantined ||
+            !js_pi_has_private_module_graph(ctx, origin->graph) || !anchor ||
+            anchor->pi_module_origin != origin || anchor->realm != ctx) {
+            JS_ThrowTypeError(ctx, "Private module origin job is not active");
+            goto exception;
+        }
+    }
 
     if (!JS_IsString(basename_val)) {
         JS_ThrowTypeError(ctx, "no function filename for import()");
@@ -33180,7 +33240,8 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     if (!filename)
         goto exception;
 
-    JS_LoadModuleInternal(ctx, basename, filename, resolving_funcs, attributes);
+    JS_LoadModuleInternalOrigin(ctx, basename, filename, resolving_funcs, attributes,
+                                  origin);
     JS_FreeCString(ctx, filename);
     JS_FreeCString(ctx, basename);
     return JS_UNDEFINED;
@@ -33200,7 +33261,13 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
     JSValue promise, resolving_funcs[2], basename_val, err, ret;
     JSValue specifier_str = JS_UNDEFINED, attributes = JS_UNDEFINED;
     JSValue attributes_obj = JS_UNDEFINED;
-    JSValue args[5];
+    JSValue args[7];
+    JSValue origin_token = JS_UNDEFINED;
+    JSValue origin_anchor = JS_UNDEFINED;
+    JSPiModuleOrigin *origin = js_pi_current_module_origin(ctx);
+
+    if (origin)
+        origin_anchor = js_dup(ctx->rt->current_stack_frame->cur_func);
 
     basename = JS_GetScriptOrModuleName(ctx, 0);
     if (basename == JS_ATOM_NULL)
@@ -33208,13 +33275,29 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
     else
         basename_val = JS_AtomToValue(ctx, basename);
     JS_FreeAtom(ctx, basename);
-    if (JS_IsException(basename_val))
+    if (JS_IsException(basename_val)) {
+        JS_FreeValue(ctx, origin_anchor);
         return basename_val;
+    }
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
     if (JS_IsException(promise)) {
         JS_FreeValue(ctx, basename_val);
+        JS_FreeValue(ctx, origin_anchor);
         return promise;
+    }
+
+    /* Capture before specifier/options conversion can reenter guest code, and
+       before the import job/Await boundary. JS_EnqueueJob itself borrows ctx;
+       the retained function's bytecode realm anchors the owner context. */
+    if (origin) {
+        if (!js_pi_has_private_module_graph(ctx, origin->graph) ||
+            !origin->module || origin->quarantined ||
+            !js_pi_has_module_definition(ctx, origin->module)) {
+            JS_ThrowTypeError(ctx, "Private module origin is not active in this context");
+            goto exception;
+        }
+        origin_token = JS_NewModuleValue(ctx, origin->module);
     }
 
     /* the string conversion must occur here */
@@ -33280,8 +33363,18 @@ static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
 
     /* cannot run JS_LoadModuleInternal synchronously because it would
        cause an unexpected recursion in js_evaluate_module() */
-    JS_EnqueueJob(ctx, js_dynamic_import_job, 5, vc(args));
+    if (origin) {
+        args[5] = origin_token;
+        args[6] = origin_anchor;
+        if (JS_EnqueueJob(ctx, js_dynamic_import_job, 7, vc(args)) < 0)
+            goto exception;
+    } else {
+        /* Keep the existing shared/default job layout and behavior unchanged. */
+        JS_EnqueueJob(ctx, js_dynamic_import_job, 5, vc(args));
+    }
 done:
+    JS_FreeValue(ctx, origin_token);
+    JS_FreeValue(ctx, origin_anchor);
     JS_FreeValue(ctx, basename_val);
     JS_FreeValue(ctx, resolving_funcs[0]);
     JS_FreeValue(ctx, resolving_funcs[1]);
@@ -40127,6 +40220,11 @@ static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)
     uint32_t flags;
     int idx, i;
 
+    if (b->pi_module_origin) {
+        JS_ThrowTypeError(s->ctx, "Cannot serialize private module graph bytecode");
+        return -1;
+    }
+
     if (b->native_async_body) {
         JS_ThrowTypeError(s->ctx, "Cannot serialize a native async function body");
         return -1;
@@ -40225,6 +40323,11 @@ static int JS_WriteModule(BCWriterState *s, JSValueConst obj)
 {
     JSModuleDef *m = JS_VALUE_GET_PTR(obj);
     int i;
+
+    if (m->pi_module_origin) {
+        JS_ThrowTypeError(s->ctx, "Cannot serialize a private module graph definition");
+        return -1;
+    }
 
     bc_put_u8(s, BC_TAG_MODULE);
     bc_put_atom(s, m->module_name);

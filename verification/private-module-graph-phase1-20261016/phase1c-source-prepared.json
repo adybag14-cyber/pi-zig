@@ -1,0 +1,25 @@
+{
+  "status": "phase1c_exact_origin_meta_dynamic_serialization_source_only_incomplete",
+  "prior": "11825ddabddb62d42669bd74410e53c48d1c6617",
+  "implemented": [
+    "exactcurrentlexicalbytecodeOrigin forprivateimportmeta",
+    "private dynamicorigin capturedbeforeguestcoercion/Await",
+    "internalprivatejob7args: ModuleValtoken+strongcurrentbytecodefunction realm/contextanchor",
+    "ctxloadedModule membershipbeforetokenMDderef andanchor-origin/realm checks",
+    "legacydefaultjob5args unchanged/noRuntimeglobalgraph",
+    "privateModule/bytecode serialization explicitreject; defaultwriterformatuntouched",
+    "failedprivatecache retryunobservedpolicy rejects"
+  ],
+  "lifetime": "ModuleVal isnotindependentMDownership; contextloaded_modules pinsdefinitions, functionbytecode.realm holdscontext; ordinaryhostcontextlifetimecontract remains",
+  "pending": [
+    "scopedlink-failure accounting",
+    "native preparedtests",
+    "Source missingpolicyedges",
+    "productiongraphGC/resourcepolicy"
+  ],
+  "c_sha256": "706A447C16EDFA163F1568A91674AE0271967C69B710251534763CC56D7367BC",
+  "h_sha256": "FC5192DE3671CA8CE10111F2059B7CC7F2BE533B43E79A909A90B0319A43276B",
+  "compiler_or_runtime_executed": false,
+  "engine_changed": false,
+  "default_selected": false
+}
