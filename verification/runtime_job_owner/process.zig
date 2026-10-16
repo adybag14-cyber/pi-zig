@@ -43,6 +43,7 @@ pub const Launch = struct {
     full_identity_bound: bool = false,
     role: enum { unset, worker, node } = .unset,
     node_resume_acknowledged: bool = false,
+    last_create_error: ?u32 = null,
     kernel: ?KernelIdentity = null,
 
     /// Mandatory atomic worker path. JOB_LIST association is part of creation;
@@ -128,7 +129,13 @@ pub const Launch = struct {
         // the API writes directly into this cleanup-owned state, then we arm it.
         if (w.CreateProcessW(exe.ptr, mutable_command.ptr, null, null, 1,
             w.create_suspended | w.create_unicode_environment | w.extended_startupinfo_present | w.create_no_window,
-            env_block.ptr, cwd.ptr, &startup.info, &self.info) == 0) return error.CreateSuspendedFailed;
+            env_block.ptr, cwd.ptr, &startup.info, &self.info) == 0) {
+            self.last_create_error = w.GetLastError();
+            // FALSE output is undefined, never process/thread ownership. Disarm
+            // it before any defer/probe/cleanup can observe these fields.
+            self.info = std.mem.zeroes(w.ProcessInfo);
+            return error.CreateSuspendedFailed;
+        }
         self.created_by_this_call = true;
         self.assigned = true; // JOB_LIST or verified worker inheritance, before defers
     }
@@ -146,6 +153,7 @@ pub const Launch = struct {
     }
 
     pub fn queryKernel(self: *Launch) !void {
+        if (!self.created_by_this_call) return error.NoSuccessfulCreationAuthority;
         const handle = self.info.process orelse return error.NoCreatedHandle;
         self.kernel = try identity(handle);
         if (self.kernel.?.pid != self.info.pid) return error.CreatedPidMismatch;
@@ -165,6 +173,7 @@ pub const Launch = struct {
 
     /// Must persist returned record before releaseExited; no endless Child.wait.
     pub fn exitRecord(self: *const Launch) !ExitRecord {
+        if (!self.created_by_this_call) return error.NoSuccessfulCreationAuthority;
         const handle = self.info.process orelse return error.NoCreatedHandle;
         if (w.WaitForSingleObject(handle, 0) != w.wait_object) return error.ProcessNotRetired;
         var created: w.FileTime = undefined;
@@ -183,6 +192,7 @@ pub const Launch = struct {
     }
 
     pub fn releaseExited(self: *Launch) !void {
+        if (!self.created_by_this_call) return error.NoSuccessfulCreationAuthority;
         if (self.info.process) |handle| {
             if (w.WaitForSingleObject(handle, 0) != w.wait_object) return error.LiveProcessReleaseForbidden;
         }

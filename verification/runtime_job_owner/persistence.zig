@@ -25,11 +25,13 @@ pub const Queue = struct {
     bytes_submitted: usize = 0,
     stop_submitted: bool = false,
     pending_since_ms: u64 = 0,
+    attempted: bool = false,
 
     /// Initialize at a stable heap address. file is CREATE_NEW/non-overlapped,
     /// supervisor-owned and must remain open until this thread actually exits.
     pub fn start(self: *Queue) !void {
-        if (self.thread != null or self.wake != null) return error.PersistenceAlreadyStarted;
+        if (self.thread != null or self.wake != null or self.attempted) return error.PersistenceAlreadyStarted;
+        self.attempted = true; // one shot even if an event/thread API fails
         var flags: u32 = 0;
         if (w.GetHandleInformation(self.file, &flags) == 0 or flags & w.handle_flag_inherit != 0)
             return error.PersistenceFileInheritable;

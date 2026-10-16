@@ -12,12 +12,14 @@ needed to qualify the owner. All controls preserve unrelated sentinel processes.
 | Failure or supervisor death immediately around CreateProcess return | Successful worker creation is already job-associated; partial PI retained before probes; no abandoned suspended worker; zero/unknown reported honestly. |
 | Identity reply completes after2seconds, before next poll | Timeout, never accepted as ready. |
 | Attempt to start a closed/completed metadata request again | Explicit one-shot rejection, no stale result. |
+| CreateProcess FALSE with poisoned/undefined output slots | Disarm PI; handle-consuming methods reject before inspecting/closing any slot; retain immediate Win32 error. |
 | Zero-length WriteFile followed by owned-gate nonempty write | Capture rearms on zero and records later bytes; no fake EOF, workload sleep or fabricated event. |
 | Stdout/stderr exact8MiB | Exactly bounded bytes retained, hashes/counts complete, normal retirement still required. |
 | Stdout/stderr8MiB+1 | Explicit overflow negative; file never exceeds cap; fresh owned job only is stopped. |
 | Pending read cancellation | Cancellation requested and actual completion observed before state release; otherwise unknown with state retained until exit. |
 | Pending sink write/flush stalls | Timing loop remains responsive; bounded watchdog triggers owned retirement; no endless join/disposal. |
 | First append after long idle | Receives a fresh persistence budget, not immediate stale-progress timeout. |
+| Restart a closed/failed persistence queue | Explicit one-shot rejection before creating event/thread, no stale ledger replay. |
 | Persistence record/queue/ledger bound exceeded | Negative; no truncated complete receipt or unbounded allocation. |
 | Duplicate/reordered/incorrect-nonce ACK | Node stays suspended; owned retirement; no second launch. |
 | Supervisor pulls wrong local handle | PID/creation/job binding fails; no privileged supervisor/job handle sent to worker. |
@@ -27,6 +29,8 @@ needed to qualify the owner. All controls preserve unrelated sentinel processes.
 | Whole phase reaches D−10 in preflight/postseal | Normal work stops; one shared reserve ends at D, never D+10. |
 | Retired worker/Node handles still retained | Record exit, release every owned/metadata duplicate, then require zero; no false absence while references block decrement. |
 | Old grant/live prior lease PID/wrong controls | Reject before any workload launch. |
+| Foreign owned control main.exe in .zig-cache/zig-out | Native admission rejects despite its basename; discovery does not authorize stopping it. |
+| Relevant named native row with unavailable metadata | Negative/unknown rather than silently counting zero; unrelated partial metadata stays explicit. |
 | Poisoned launcher environment | Worker/Node see only reviewed explicit environment and private prospective PATH. |
 | Protected stage/extra tool/cache drift | Negative before Node; all readable independent final seals retained. |
 | Output/link/absence drift after first positive comparison | Final asserted comparison makes the phase negative. |

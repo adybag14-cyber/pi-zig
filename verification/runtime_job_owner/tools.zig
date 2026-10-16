@@ -4,6 +4,7 @@ const files = @import("files.zig");
 const manifest = @import("manifest.zig");
 const grant = @import("grant.zig");
 const Deadline = @import("deadline.zig").Deadline;
+const absence = @import("absence.zig");
 pub const node_path = "C:\\Program Files\\nodejs\\node.exe";
 pub const node_root = "C:\\Program Files\\nodejs";
 pub const npm_root = "C:\\Program Files\\nodejs\\node_modules\\npm";
@@ -130,4 +131,62 @@ pub fn releaseProspective(allocator: std.mem.Allocator, data: Prospective) void 
     allocator.free(data.private_tool_root);
     allocator.free(data.private_node_sha256);
     allocator.free(data.npm_wrapper_sha256);
+}
+
+pub const AncestorBin = struct {
+    path: []const u8,
+    scope: enum { original_runtime_manifest, prospective_required_absent },
+    state: ?absence.State,
+};
+pub const AncestorSink = struct {
+    context: *anyopaque,
+    write_fn: *const fn (*anyopaque, AncestorBin) anyerror!void,
+};
+/// npm's sealed set-path.js prepends .bin from every ancestor to drive root,
+/// before private PATH. All outside-runtime ancestors must therefore be absent,
+/// rather than silently becoming executable search authority. No npm edits.
+pub fn checkAncestorBins(allocator: std.mem.Allocator, reproduction: []const u8,
+    script_cwds: []const []const u8, deadline: Deadline, sink: AncestorSink) !void
+{
+    try files.contained(reproduction, files.container ++ "\\upstream\\runtime");
+    if (script_cwds.len == 0 or script_cwds.len > 32) return error.BuildCwdClosureLimit;
+    var seen: std.StringHashMapUnmanaged(void) = .empty;
+    defer {
+        var keys = seen.keyIterator();
+        while (keys.next()) |key| allocator.free(key.*);
+        seen.deinit(allocator);
+    }
+    var unexpected: usize = 0;
+    for (script_cwds) |cwd| {
+        if (!std.mem.eql(u8, cwd, reproduction)) try files.contained(cwd, reproduction);
+        try files.absolute(cwd);
+        var parent = cwd;
+        while (true) {
+            try deadline.normal();
+            const path = try std.fmt.allocPrint(allocator, "{s}{s}node_modules\\.bin",
+                .{ parent, if (std.mem.endsWith(u8, parent, "\\")) "" else "\\" });
+            const entry = seen.getOrPut(allocator, path) catch |err| {
+                allocator.free(path);
+                return err;
+            };
+            if (entry.found_existing) {
+                allocator.free(path);
+            } else {
+                // Ownership transfers to seen, including subsequent errors.
+                const in_runtime = path.len > reproduction.len and path[reproduction.len] == '\\' and
+                    std.ascii.eqlIgnoreCase(path[0..reproduction.len], reproduction);
+                if (in_runtime) {
+                    try sink.write_fn(sink.context, .{ .path = path, .scope = .original_runtime_manifest, .state = null });
+                } else {
+                    const state = try absence.inspectPhysicalPath(allocator, path);
+                    if (state == .present) unexpected += 1;
+                    try sink.write_fn(sink.context, .{ .path = path, .scope = .prospective_required_absent, .state = state });
+                }
+            }
+            if (parent.len == 3) break;
+            const end = std.mem.lastIndexOfScalar(u8, parent, '\\') orelse return error.InvalidBuildCwd;
+            parent = parent[0..if (end == 2) 3 else end];
+        }
+    }
+    if (unexpected != 0) return error.UnsealedAncestorBinPresent;
 }

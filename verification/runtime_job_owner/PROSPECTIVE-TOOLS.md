@@ -63,3 +63,14 @@ Native tools.zig checks the exact private two-file inventory, the separately
 reviewed cmd.exe hash, original Node bytes, and a Root-reviewed wrapper hash.
 The installer/composition is not implemented or admitted yet. This source file
 is not on PATH and was never invoked.
+
+Pinned npm @npmcli/run-script/lib/set-path.js prepends node_modules/.bin from
+every script-CWD ancestor up to drive root, ahead of the configured PATH, and
+adds its original pinned node-gyp-bin directory. Therefore private PATH alone
+does not close resolution. tools.checkAncestorBins records each unique search
+path: in-runtime paths remain original full-manifest inputs; all outside-runtime
+ancestor .bin paths must be absent in the prospective control environment.
+Present or unapproved-link paths reject admission; do not inspect their contents,
+delete them, patch npm or silently admit unrelated tools. Repeat these checks in
+final assertions. Actual original build-CWD closure must be supplied from the
+reviewed root/package script graph before this API can be used.

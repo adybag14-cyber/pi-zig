@@ -54,13 +54,13 @@ fn one(allocator: std.mem.Allocator, root: []const u8, plan: []const junctions.P
     defer allocator.free(path);
     const resolved = try junctions.resolveCheckedPlan(allocator, plan, root, path);
     defer allocator.free(resolved);
-    const state = try inspect(allocator, resolved);
+    const state = try inspectPhysicalPath(allocator, resolved);
     count.* += 1;
     if (state == .present) present.* += 1;
     try sink.write_fn(sink.context, relative, resolved[root.len + 1..], state);
 }
 
-fn inspect(allocator: std.mem.Allocator, path: []const u8) !State {
+pub fn inspectPhysicalPath(allocator: std.mem.Allocator, path: []const u8) !State {
     try files.absolute(path);
     // Inspect each existing ancestor without traversing its reparse point. An
     // absent ancestor proves the leaf absent; AccessDenied/unknown is negative.
