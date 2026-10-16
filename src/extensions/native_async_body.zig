@@ -40,6 +40,14 @@ pub fn action(s: *Scope, job: c.JSValue) !native.Action {
         .thrown => .{ .thrown = value },
     };
 }
-pub fn failure(engine: *v.em.Engine, err: anyerror) native.Action {
+pub fn failure(engine: *v.em.Engine, err: anyerror) anyerror!native.Action {
+    // Only a trusted classified host failure enters the primitive's scoped
+    // uncatchable path. Guest names/messages and old native tags are irrelevant.
+    if (err == error.OutOfMemory) return err;
     return .{ .thrown = flow.reason(engine, err) };
+}
+/// The caller snapshots generation before the fallible host/guest boundary.
+/// Engine classification excludes historical tags and guest lookalikes.
+pub fn failureSince(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!native.Action {
+    return failure(engine, engine.nativeAllocationError(err, generation));
 }
