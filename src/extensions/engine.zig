@@ -175,6 +175,13 @@ pub const Engine = struct {
     native_durable_storage_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_durable_storage_close: ?*const fn (*Engine) void = null,
     host_scheduler_deinit: ?*const fn (*Engine) void = null,
+    native_immediate_state: ?*anyopaque = null,
+    native_immediate_pump: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_pending: ?*const fn (*Engine) bool = null,
+    native_immediate_referenced: ?*const fn (*Engine) bool = null,
+    native_immediate_before_poll: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_timer_ready: ?*const fn (*Engine) anyerror!bool = null,
+    native_immediate_cleanup: ?*const fn (*Engine) void = null,
     host_await_deadline_ms: ?i64 = null,
     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
@@ -278,6 +285,7 @@ pub const Engine = struct {
         if (self.native_sdk_events_deinit) |cleanup| cleanup(self);
         if (self.native_sdk_resource_owner_deinit) |cleanup| cleanup(self);
         self.closeDurableOwner();
+        if (self.native_immediate_cleanup) |cleanup| cleanup(self);
         @import("native_async_scope.zig").deinit(self);
         if (self.native_sdk_noop_ui) |value| self.freeValue(value);
         if (self.native_sdk_command_runner_prototype) |value| self.freeValue(value);
@@ -763,6 +771,9 @@ pub const Engine = struct {
     pub fn pumpControls(self: *Engine) !bool {
         if (self.progress_probe) |probe| probe.control_pumps +%= 1;
         self.refreshUiDeadline();
+        // Complete the preceding check/timer boundary before fresh I/O records
+        // can schedule a new check batch. Timer-created jobs retain priority.
+        if (self.native_immediate_before_poll) |before_poll| if (try before_poll(self)) return true;
         const host_worked = if (self.host_control_pump) |pump| try pump(self) else false;
         const storage_worked = if (self.native_durable_storage_pump) |pump| try pump(self) else false;
         const durable_worked = if (self.native_durable_control_pump) |pump| try pump(self) else false;
@@ -788,14 +799,30 @@ pub const Engine = struct {
         self.native_durable_control_deinit = null;
     }
 
-    /// Drain queued microtasks without awaiting a promise or sleeping on the
-    /// host scheduler. Used by the persistent owner's idle event loop.
+    /// Finish a microtask checkpoint and one ready check batch without sleeping.
+    /// Used by the persistent owner's idle event loop.
     pub fn drainReadyJobs(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(true);
+    }
+    /// The direct stdio loop checks referenced liveness between its microtask
+    /// checkpoint and the check phase, while preserving every existing I/O pump.
+    pub fn drainReadyJobsBeforeCheck(self: *Engine) !bool {
+        return self.drainReadyJobsImpl(false);
+    }
+    fn drainReadyJobsImpl(self: *Engine, check_phase: bool) !bool {
         defer self.finishJob();
         const ai_http_worked = if (self.native_ai_http_pump) |pump| try pump(self) else false;
         const jobs = try self.runReadyJobs(self.options.job_budget);
         if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
-        return ai_http_worked or jobs != 0;
+        self.finishJob();
+        const timer_worked = if (check_phase) (if (self.native_immediate_before_poll) |before_poll| try before_poll(self) else false) else false;
+        const timer_jobs = if (timer_worked) try self.runReadyJobs(self.options.job_budget -| jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        if (timer_worked) self.finishJob();
+        const immediate_worked = if (check_phase) (if (self.native_immediate_pump) |pump| try pump(self) else false) else false;
+        const after_immediate = if (immediate_worked) try self.runReadyJobs(self.options.job_budget -| jobs -| timer_jobs) else 0;
+        if (c.JS_IsJobPending(self.runtime)) return error.JavaScriptJobLimit;
+        return ai_http_worked or jobs != 0 or timer_worked or immediate_worked or timer_jobs != 0 or after_immediate != 0;
     }
 
     /// Run part of a microtask checkpoint. The caller must finish the checkpoint
@@ -862,9 +889,15 @@ pub const Engine = struct {
                 // The promise may span another timer/I/O turn. The current
                 // job's complete microtask checkpoint ends before that turn.
                 self.finishJob();
+                if (self.native_immediate_pump) |pump| {
+                    if (try pump(self)) continue;
+                }
                 if (self.host_pump) |pump| {
                     if (try pump(self)) continue;
                 }
+                // A completed check batch yields to the timer/poll turn before
+                // nested immediates begin the next check phase.
+                if (self.native_immediate_pending) |has_pending| if (has_pending(self)) continue;
                 // A native transport can settle a promise through an incoming
                 // abort or UI response even when no timer or JS job is pending.
                 if ((self.host_control_pump != null or self.native_durable_control_pump != null or self.native_durable_storage_pump != null or self.native_codemode_pump != null or (if (self.native_sdk_builtin_execution_pending) |has_pending| has_pending(self) else false) or (if (self.native_ai_http_pending) |has_pending| has_pending(self) else false)) and self.native_io != null) {

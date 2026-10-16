@@ -1571,6 +1571,12 @@ pub fn build(b: *std.Build) void {
     google_mistral_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-google-mistral", "Compile actual Google Vertex Mistral facades before runtime qualification").dependOn(&google_mistral_tests.step);
     b.step("test-native-ai-google-mistral", "Compare actual Source Google Vertex Mistral request events callbacks and native ownership").dependOn(&b.addRunArtifact(google_mistral_tests).step);
+    const ai_http_checkpoint_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_http_checkpoint_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native AI Google Mistral", "native AI HTTP", "native immediates", "extensions.timers.", "native live EventStream", "native node function preserves", "native node method retains", "native async generator functional", "native pi-ai EventStream", "native EventStream allocation", "native terminal admission", "native AssistantMessageEventStream genuine Source result-only", "native provider validation", "native provider cancellation", "native AgentLoop private real eight original Source636", "native AgentLoop private real three original Source639" }, .use_llvm = use_llvm });
+    linkQuickJs(b, ai_http_checkpoint_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(ai_http_checkpoint_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_http_checkpoint_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-http-checkpoint", "Compile strict Source30 with HTTP Immediate timer and EventStream scheduling regressions").dependOn(&ai_http_checkpoint_tests.step);
+    b.step("test-native-ai-http-checkpoint", "Retain actual Source30 Source31 HTTP and live EventStream traces across complete microtask checkpoints").dependOn(&b.addRunArtifact(ai_http_checkpoint_tests).step);
     const google_mistral60_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_google_mistral_source60_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AI Google Mistral"}, .use_llvm = use_llvm });
     linkQuickJs(b, google_mistral60_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(google_mistral60_tests.root_module, sqlite_lib_dir, sqlite_library);

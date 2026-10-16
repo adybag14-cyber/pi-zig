@@ -1,0 +1,17 @@
+{
+  "qualified_candidate": "919ef1d81b71e8dc7774d90e5b5bfe636957779b",
+  "compile_pid": 70808,
+  "runtime_pid": 29808,
+  "owned_root_pids_absent": true,
+  "source_cases": 32,
+  "real_tcp_poll_callbacks": 4,
+  "native_tests": 21,
+  "archive_sha256": "6A1843275D629B5A30934FD170F3DF74CA2051795549D6A1E40AD04F23D46D57",
+  "archive_entries": 71,
+  "raw_payloads_independently_verified": 70,
+  "code_diff_to_tested_candidate": [],
+  "all191_host_qualified": false,
+  "full_pi_qualified": false,
+  "public_activation": false,
+  "verified_utc": "2026-10-15T21:59:55.9773258+00:00"
+}

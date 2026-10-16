@@ -1,0 +1,14 @@
+globalThis.immediateRows=[];
+const trace=[];
+// Complete a preceding check phase before the real TCP poll callback arrives.
+await new Promise(resolve=>setImmediate(resolve));
+await runInPoll(()=>{
+  setTimeout(()=>trace.push('timer'),0);
+  setImmediate(()=>trace.push('check'));
+  // Both Node and native use their real clocks. This makes the timer due before
+  // this poll callback returns; the check phase must nevertheless run first.
+  const until=Date.now()+8;
+  while(Date.now()<until){}
+});
+await new Promise(resolve=>setTimeout(resolve,20));
+immediateRows.push({name:'completed-check-to-delayed-real-poll',value:trace});
