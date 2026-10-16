@@ -1,7 +1,7 @@
 //! Shared module seams for TypeBox's actual native compiler dependency graph.
 const js = @import("native_js_values.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const ordinary = @import("native_legacy_function.zig");
+const ordinary = @import("native_node_function.zig");
 const o = @import("native_typebox_compile_ops.zig");
 const ir = @import("native_typebox_compile_ir.zig");
 const c = js.c;
