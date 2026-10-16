@@ -126,7 +126,27 @@ pub fn build(engine: *v.em.Engine, dependencies: c.JSValue, model: c.JSValue, co
 }
 pub fn wire(scope: *Scope, params: c.JSValue) !c.JSValue {
     const result = try scope.object();
-    try scope.put(result, "contents", try scope.get(params, "contents"));
+    const contents = try scope.get(params, "contents");
+    if (try v.array(scope, contents)) {
+        const Content = struct {
+            fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+                var row: Scope = .{ .engine = engine };
+                defer row.deinit();
+                const item = if (args.len > 0) args[0] else c.pi_js_undefined();
+                const converted = try row.object();
+                // Both pinned SDK content converters read and emit parts
+                // before role. Keep payload-hook objects in their own order;
+                // this conversion belongs only to the serialized SDK request.
+                const parts = try v.optional(&row, item, "parts");
+                if (!v.nullish(parts)) try row.put(converted, "parts", parts);
+                const role = try v.optional(&row, item, "role");
+                if (!v.nullish(role)) try row.put(converted, "role", role);
+                return c.JS_DupValue(engine.context, converted);
+            }
+        };
+        const convert = try scope.own(try @import("native_node_function.zig").createArrow(scope.engine, "", 1, Content.call, &.{}));
+        try scope.put(result, "contents", try scope.invoke(contents, "map", &.{convert}));
+    } else try scope.put(result, "contents", contents);
     const config = try scope.get(params, "config");
     const generation = try v.spread(scope, config);
     inline for (.{ "abortSignal", "tools", "toolConfig", "systemInstruction" }) |key| try v.remove(scope, generation, key);
