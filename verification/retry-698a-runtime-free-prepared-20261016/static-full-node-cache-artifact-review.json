@@ -1,0 +1,101 @@
+{
+  "mode": "STATIC_FILESYSTEM_AND_IDENTITY_DATA_CHECKS_ONLY",
+  "fixture_root": "C:\\Users\\adyba\\pi-zig\\evidence\\source160-seal-static-20261016-c6a2a0fc",
+  "cached_ancestor_checks": {
+    "directory": 3,
+    "leaf": 3,
+    "lexical": 5,
+    "end_revalidated": 2,
+    "cache_hits": 4
+  },
+  "lexical_escape_rejected": true,
+  "ancestor_reparse_rejected": true,
+  "console_deferral_cases": [
+    {
+      "unresolved": 0,
+      "present_retained": 1,
+      "deferred": 1,
+      "passed": true,
+      "case": "exact-own-host"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 1,
+      "deferred": 0,
+      "passed": true,
+      "case": "wrong-parent"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 1,
+      "deferred": 0,
+      "passed": true,
+      "case": "wrong-argv"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 1,
+      "deferred": 0,
+      "passed": true,
+      "case": "before-supervisor"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 1,
+      "deferred": 0,
+      "passed": true,
+      "case": "unknown-identity"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 1,
+      "deferred": 0,
+      "passed": true,
+      "case": "wrong-hash"
+    },
+    {
+      "unresolved": 2,
+      "present_retained": 2,
+      "deferred": 0,
+      "passed": true,
+      "case": "two-hosts"
+    },
+    {
+      "unresolved": 1,
+      "present_retained": 2,
+      "deferred": 1,
+      "passed": true,
+      "case": "unknown-partial"
+    }
+  ],
+  "all_deferred_still_marked_present": true,
+  "no_conhost_kill": true,
+  "external_all_absence_still_required": true,
+  "node_or_child_jobs_started": 0,
+  "recorded_utc": "2026-10-16T21:52:12.8322954+01:00",
+  "original_full_node_authority_sha256": "35F1F2B0F12BF79C06B47AE2BA8C485EF10A7714BE3F129772E3BA1BBB97B927",
+  "original_node1774_manifest_sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+  "current_node1838_single_hash_check": {
+    "leaf_reparse": 0,
+    "original1774_exact_subset": true,
+    "hash_drift": 0,
+    "inventory_difference": 0,
+    "files": 1838
+  },
+  "controller_outcome_distinct_from_owner_terminal": true,
+  "artifact_launch_record_closure_fence_seconds": 10,
+  "exact_mutable_profile_only_excluded_before_terminal": true,
+  "final_external_seal_requires_all_absence_zero": true,
+  "tool_hashes": {
+    "Start-RuntimeFreeSource160.ps1": "4B5162AD482D6CBE75106C45B7F90DC66CF007FB206252214A703D01B3A6B4A9",
+    "Run-RuntimeFreeSource160.ps1": "58AD1D54A473F706C40AA9D9A1BD208DC7F6D4DDC20BB87F092FDDE3DAA5004E",
+    "Invoke-RuntimeFreeSource160Controller.ps1": "62ADEA80C14803CD36B93CF4DBF53737233441C71ACAA151004F475E566BA75D",
+    "Invoke-RuntimeFreeSource160Seal.ps1": "0D03BB69ED7DC1A3561C525463B7B885ECC29E8EE0763832481AC1BBC9BBC754",
+    "Invoke-RuntimeFreeSource160OriginalOwner.ps1": "C47ACFD443C13823BB1C72CD1378012841E8A4AA2EC4EE9DCBEF2ADCAD18CF02",
+    "RuntimeFreeSource160.Common.ps1": "0ED1E3765AFDBC56520F16307D6CB03A0BF140C85AA0F075CC48DF9A2CB2AFB6",
+    "Confirm-RuntimeFreeSource160Absent.ps1": "22A908D4FA85DE0BB80AF80DFC714C135A86D876865CD80A2804F42CA0EEC4AC",
+    "Resolve-RuntimeFreeSource160Controls.ps1": "ACEA70E25AE9714CFBCA344CA6B14B7C1663217D2917097A3B9E0C6BF3EB1A02",
+    "guarded-start-fence.mjs": "1624207CB6A393969235F60C87A516B0CA280AF948F3BA4E11508B1ACD2BF470",
+    "ordered-source160-case-ids.json": "9543A0E058D23177FBB52739B7BB4185AAAC9FC7C830468DB6BE58E303621040"
+  }
+}

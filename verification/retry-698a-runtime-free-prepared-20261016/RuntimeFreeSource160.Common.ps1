@@ -349,6 +349,31 @@ function Get-S160Absence($Identities,$Partial){
     })
     @{rows=$rows;partial_rows=$partials;present_or_unknown=@($rows|Where-Object {!$_.original_identity_absent}).Count+@($partials|Where-Object {!$_.original_identity_absent}).Count;observed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
 }
+function Set-S160DeferredSupervisorConsole($Absence,$Supervisor,$Config){
+    # An owner cannot observe its own console host absent before that owner exits.
+    # Preserve present=true; only final external absence can discharge this row.
+    $Absence.deferred_present=@();$Absence.unresolved_present_or_unknown=$Absence.present_or_unknown
+    if($Config.own_console_host_path -cne 'C:\Windows\system32\conhost.exe' -or $Config.own_console_host_command_line -cne '\??\C:\Windows\system32\conhost.exe 0x4' -or [string]$Config.own_console_host_sha256 -cnotmatch '^[A-F0-9]{64}$'){return}
+    $candidates=[Collections.Generic.Dictionary[string,object]]::new([StringComparer]::Ordinal)
+    foreach($row in $Absence.rows){
+        $identity=$row.identity
+        if($row.original_identity_absent -or $row.identity_unknown -or $row.identity_conflict -or $identity.executable -ine $Config.own_console_host_path -or $identity.command_line -cne $Config.own_console_host_command_line -or [int]$identity.parent_pid -ne [int]$Supervisor.pid -or ([DateTimeOffset]$identity.created_utc).UtcDateTime -lt ([DateTimeOffset]$Supervisor.created_utc).UtcDateTime){continue}
+        $key=[string]$identity.pid+'|'+([DateTimeOffset]$identity.created_utc).UtcDateTime.Ticks
+        $candidates[$key]=$identity
+    }
+    if($candidates.Count -ne 1 -or (Get-S160Sha $Config.own_console_host_path) -cne $Config.own_console_host_sha256){return}
+    $candidate=@($candidates.Values)[0]
+    foreach($row in $Absence.rows){
+        $identity=$row.identity
+        if(!$row.original_identity_absent -and !$row.identity_unknown -and !$row.identity_conflict -and [int]$identity.pid -eq [int]$candidate.pid -and ([DateTimeOffset]$identity.created_utc).UtcDateTime.Ticks -eq ([DateTimeOffset]$candidate.created_utc).UtcDateTime.Ticks){$row.deferred_until_supervisor_exit=$true}
+    }
+    foreach($row in $Absence.partial_rows){
+        $observation=$row.observation
+        if(!$row.original_identity_absent -and $observation.created_utc -and [int]$observation.pid -eq [int]$candidate.pid -and [int]$observation.parent_pid -eq [int]$Supervisor.pid -and ([DateTimeOffset]$observation.created_utc).UtcDateTime.Ticks -eq ([DateTimeOffset]$candidate.created_utc).UtcDateTime.Ticks){$row.deferred_until_supervisor_exit=$true}
+    }
+    $Absence.deferred_present=@(@{identity=$candidate;original_identity_absent=$false;reason='exact_own_console_host_awaiting_supervisor_exit';system_binary_sha256=$Config.own_console_host_sha256;kill_authority=$false;external_absence_required=$true})
+    $Absence.unresolved_present_or_unknown=@($Absence.rows|Where-Object {!$_.original_identity_absent -and !$_.deferred_until_supervisor_exit}).Count+@($Absence.partial_rows|Where-Object {!$_.original_identity_absent -and !$_.deferred_until_supervisor_exit}).Count
+}
 function Invoke-S160Git([string]$Directory,[string[]]$Arguments,$Context){
     if(!$Context){throw 'Git requires an established retained ownership context'}
     $allowed=($Arguments.Count -eq 2 -and $Arguments[0] -ceq 'rev-parse' -and $Arguments[1] -cin @('HEAD','HEAD^{tree}')) -or ($Arguments.Count -eq 1 -and $Arguments[0] -ceq 'ls-files') -or (($Arguments.Count -eq 2 -or $Arguments.Count -eq 3) -and $Arguments[0] -ceq 'status' -and $Arguments[1] -ceq '--porcelain' -and ($Arguments.Count -eq 2 -or $Arguments[2] -ceq '--untracked-files=no'))

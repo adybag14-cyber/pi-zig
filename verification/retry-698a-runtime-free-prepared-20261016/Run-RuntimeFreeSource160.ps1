@@ -39,6 +39,8 @@ $config=[ordered]@{
     source_head=$resolved.config_template.source_head;source_tree=$resolved.config_template.source_tree;classifier=$resolved.config_template.classifier;forbidden_runtime=$workspace.runtime;
     module_files=$resolved.config_template.module_files;fence_nonce=[Guid]::NewGuid().ToString('N');nonce=$null;
     node=$s160Node;node_sha256=$resolved.node_sha256;source_manifest=$resolved.source_manifest;node_manifest=$resolved.node_manifest;output=$resolved.output;
+    node_full_authority=$resolved.node_full_authority;node_full_authority_sha256=$resolved.node_full_authority_sha256;node_full_authority_group=$resolved.node_full_authority_group;node_full_files=1838;
+    own_console_host_path='C:\Windows\system32\conhost.exe';own_console_host_sha256=(Get-S160Sha 'C:\Windows\system32\conhost.exe');own_console_host_command_line='\??\C:\Windows\system32\conhost.exe 0x4';
     classifier_sha256='D7ACFF8DC7F0EEE04ECB116A79FBB8331337D9F091A0CEEE775D623D7478D448';caller_sha256='84C373D351B8D348EE03A922663DC6C74BC2E5479C29BEB760E4B2AD91248392';
     guard=(Join-Path $PSScriptRoot 'guarded-start-fence.mjs');driver=$resolved.driver;capture_control_root=$PSScriptRoot;capture_caller_root=(Split-Path -Parent $resolved.driver);case_ids=(Join-Path $PSScriptRoot 'ordered-source160-case-ids.json');
     owner_copy=(Join-Path $run 'Invoke-OwnedModelsClassSource-20261016.ps1');owner_invocation=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160OriginalOwner.ps1');seal_script=(Join-Path $PSScriptRoot 'Invoke-RuntimeFreeSource160Seal.ps1');
@@ -85,10 +87,11 @@ try{
         $union=Get-S160LaunchUnion $run
         $exclude=@($PID,[int]$self.parent_pid)
         $absence=Get-S160Absence @($union.known|Where-Object {$_.pid -notin $exclude}) @($union.partial|Where-Object {$_.pid -notin $exclude})
+        Set-S160DeferredSupervisorConsole $absence $self $config
         Write-S160Json (Join-Path $run 'supervisor-descendants-absence.json') $absence
-        if($absence.present_or_unknown){$failures.Add('Supervisor owned/observed descendants still present or unknown')}
+        if($absence.unresolved_present_or_unknown){$failures.Add('Supervisor owned/observed descendants still present or unknown')}
     }catch{$failures.Add($_.Exception.Message)}
-    $terminal=if(Test-Path -LiteralPath (Join-Path $run 'controller-terminal.json')){Read-S160Json (Join-Path $run 'controller-terminal.json')}else{$null}
+    $terminal=if(Test-Path -LiteralPath (Join-Path $run 'controller-outcome.json')){Read-S160Json (Join-Path $run 'controller-outcome.json')}else{$null}
     if(!$terminal -or $terminal.status -cne 'captured_pending_root_review'){$failures.Add('Controller capture is not terminal positive')}
     Write-S160Json (Join-Path $run 'supervisor-terminal.json') @{status=if(!$failures.Count){'captured_pending_external_absence_and_root_review'}else{'negative'};failures=$failures.ToArray();candidate_head=$CandidateHead;source_head=$config.source_head;known_owned_identities=$context.known.ToArray();partial_observations=$context.partial.ToArray();all_launch_ledger_paths=@($union.launch_ledger_paths);config_sha256=$configSha;expected_created=$false;global_hold_lifted=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
     # No unbounded GetResult call exists in this supervisor. Its own pipes are guarded2s.

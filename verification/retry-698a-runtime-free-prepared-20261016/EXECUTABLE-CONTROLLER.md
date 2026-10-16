@@ -15,6 +15,10 @@ at launcher entry and replaced only by strict claim validation in the supervisor
 The second5cc pre-Git/Node negative is preserved separately. Read
 `ENVIRONMENT-BOOTSTRAP-SUCCESSOR.md` for the one authorized hashes-only diagnostic
 and child-only exact PATH/PATHEXT/PSModulePath restoration before cmdlet autoload.
+The1f3 inventory/artifact negative is preserved. Read
+`FULL-NODE-ARTIFACT-SUCCESSOR.md` for originalNode1838 authority alongside the
+unchanged1774 group, phase-local physical-path caching, controller outcome ordering
+and exact own-console deferral with mandatory final external absence.
 
 ## Entry points and bounded ownership
 
@@ -81,7 +85,10 @@ seals and owned settlement remain required. No elapsed wait implies approval.
 ## Exact authority and closure
 
 All project paths use the central workspace resolver. Source1970 and Node1774
-full original manifest rows and exact path inventories are compared before and
+full original manifest rows are compared before and after, with the separate
+original35F node_complete1838 authority providing the complete install inventory.
+The original1774 remains a separately checked exact subset; no original row changes.
+Source1970 and completeNode1838 exact path inventories are compared before and
 after the child. Candidate HEAD/clean status/tracked path list and every tracked
 file are sealed, including vendor/current source, all controls and historical273
 proof bytes. Run config, copied grant, exact96BE owner, central resolver, workspace

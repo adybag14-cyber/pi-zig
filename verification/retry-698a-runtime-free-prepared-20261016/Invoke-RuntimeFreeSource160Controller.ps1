@@ -77,7 +77,7 @@ try{
         Write-S160Json (Join-Path $task.run 'controller-descendants-absence.json') $absence
         if($absence.present_or_unknown){$failures.Add('Controller descendants not independently absent')}
     }catch{$failures.Add($_.Exception.Message)}
-    Write-S160Json (Join-Path $task.run 'controller-terminal.json') @{status=if(!$failures.Count -and $rawValidated -and $postPassed){'captured_pending_root_review'}else{'negative'};failures=$failures.ToArray();candidate_head=$task.candidate_head;source_head=$task.source_head;raw160_validated=$rawValidated;full_post_passed=$postPassed;known_owned_identities=$context.known.ToArray();partial_observations=$context.partial.ToArray();expected_created=$false;global_hold_lifted=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
+    Write-S160Json (Join-Path $task.run 'controller-outcome.json') @{status=if(!$failures.Count -and $rawValidated -and $postPassed){'captured_pending_root_review'}else{'negative'};failures=$failures.ToArray();candidate_head=$task.candidate_head;source_head=$task.source_head;raw160_validated=$rawValidated;full_post_passed=$postPassed;known_owned_identities=$context.known.ToArray();partial_observations=$context.partial.ToArray();expected_created=$false;global_hold_lifted=$false;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}
     try{Seal 'artifact'}catch{$failures.Add($_.Exception.Message);Write-S160Json (Join-Path $task.run 'artifact-negative.json') @{failure=$_.Exception.Message}}
 }
 if($failures.Count){exit 1}
