@@ -4870,49 +4870,6 @@ static int string_buffer_concat_value_free(StringBuffer *s, JSValue v)
     return res;
 }
 
-/* Same own enumerable string-key/string-value rules as dynamic import's
-   options.with snapshot. The private copy cannot be mutated by a retained
-   host object after it becomes a module cache key. Undefined/empty equality
-   continues to use js_module_attributes_equal unchanged. */
-static JSValue js_pi_snapshot_module_attributes(JSContext *ctx,
-                                                 JSValueConst attributes)
-{
-    JSPropertyEnum *atoms = NULL;
-    uint32_t count = 0, i;
-    JSValue result, value;
-    if (JS_IsUndefined(attributes))
-        return JS_UNDEFINED;
-    if (!JS_IsObject(attributes))
-        return JS_ThrowTypeError(ctx, "module attributes must be an object");
-    result = JS_NewObjectProto(ctx, JS_NULL);
-    if (JS_IsException(result))
-        return result;
-    if (JS_GetOwnPropertyNames(ctx, &atoms, &count, attributes,
-                              JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) < 0)
-        goto fail;
-    for (i = 0; i < count; i++) {
-        value = JS_GetProperty(ctx, attributes, atoms[i].atom);
-        if (JS_IsException(value))
-            goto fail;
-        if (!JS_IsString(value)) {
-            JS_FreeValue(ctx, value);
-            JS_ThrowTypeError(ctx, "module attribute values must be strings");
-            goto fail;
-        }
-        /* DefinePropertyValue consumes value on success and failure. */
-        if (JS_DefinePropertyValue(ctx, result, atoms[i].atom, value,
-                                   JS_PROP_ENUMERABLE) < 0)
-            goto fail;
-    }
-    if (JS_PreventExtensions(ctx, result) < 0)
-        goto fail;
-    JS_FreePropertyEnum(ctx, atoms, count);
-    return result;
-fail:
-    JS_FreePropertyEnum(ctx, atoms, count);
-    JS_FreeValue(ctx, result);
-    return JS_EXCEPTION; /* cleanup never replaces the exact pending reason */
-}
 
 static int string_buffer_fill(StringBuffer *s, int c, int count)
 {
@@ -31818,6 +31775,50 @@ static int js_module_attributes_equal(JSContext *ctx, JSValueConst attr1,
 done:
     js_free_prop_enum(ctx, tab, len);
     return res;
+}
+
+/* Same own enumerable string-key/string-value rules as dynamic import's
+   options.with snapshot. The private copy cannot be mutated by a retained
+   host object after it becomes a module cache key. Undefined/empty equality
+   continues to use js_module_attributes_equal unchanged. */
+static JSValue js_pi_snapshot_module_attributes(JSContext *ctx,
+                                                 JSValueConst attributes)
+{
+    JSPropertyEnum *atoms = NULL;
+    uint32_t count = 0, i;
+    JSValue result, value;
+    if (JS_IsUndefined(attributes))
+        return JS_UNDEFINED;
+    if (!JS_IsObject(attributes))
+        return JS_ThrowTypeError(ctx, "module attributes must be an object");
+    result = JS_NewObjectProto(ctx, JS_NULL);
+    if (JS_IsException(result))
+        return result;
+    if (JS_GetOwnPropertyNames(ctx, &atoms, &count, attributes,
+                              JS_GPN_STRING_MASK | JS_GPN_ENUM_ONLY) < 0)
+        goto fail;
+    for (i = 0; i < count; i++) {
+        value = JS_GetProperty(ctx, attributes, atoms[i].atom);
+        if (JS_IsException(value))
+            goto fail;
+        if (!JS_IsString(value)) {
+            JS_FreeValue(ctx, value);
+            JS_ThrowTypeError(ctx, "module attribute values must be strings");
+            goto fail;
+        }
+        /* DefinePropertyValue consumes value on success and failure. */
+        if (JS_DefinePropertyValue(ctx, result, atoms[i].atom, value,
+                                   JS_PROP_ENUMERABLE) < 0)
+            goto fail;
+    }
+    if (JS_PreventExtensions(ctx, result) < 0)
+        goto fail;
+    JS_FreePropertyEnum(ctx, atoms, count);
+    return result;
+fail:
+    JS_FreePropertyEnum(ctx, atoms, count);
+    JS_FreeValue(ctx, result);
+    return JS_EXCEPTION; /* cleanup never replaces the exact pending reason */
 }
 
 static JSModuleDef *js_find_loaded_module(JSContext *ctx, JSAtom name,
