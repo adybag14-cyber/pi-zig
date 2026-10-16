@@ -34,6 +34,10 @@ function Candidate-Rows {
  @(& git -c gc.auto=0 -c maintenance.auto=false -C $taskTree ls-files --cached --others --exclude-standard|Sort-Object -Unique|ForEach-Object {$path=Join-Path $taskTree $_;@{path=$path;relative=$_;sha256=(Get-FileHash -LiteralPath $path).Hash}})
 }
 function Scoped-Paths([string]$Root){@(Get-ChildItem -LiteralPath $Root -Recurse -File -Force|ForEach-Object FullName|Sort-Object)}
+function Authority-Paths([string]$Root){@(Scoped-Paths $Root|Where-Object {[IO.Path]::GetRelativePath($Root,$_) -notmatch '(^|[\\/])\.git([\\/]|$)'})}
+function Assert-PassedTerminal($Record,[string]$Label){
+ if($null -eq $Record -or $Record.status -cne 'passed' -or $null -eq $Record.exit_code -or $Record.exit_code -ne 0){throw "$Label requires terminal passed with explicit exit_code0"}
+}
 function Node-Paths {@(@('C:\Program Files\nodejs\node.exe')+@(Scoped-Paths 'C:/Program Files/nodejs/node_modules/npm')|Sort-Object)}
 if((& git -C $taskTree rev-parse HEAD) -cne $taskHead -or (& git -C $taskTree status --porcelain)){throw 'Exact clean sealed current-Root C9h candidate required'}
 if((Get-FileHash -LiteralPath $taskZig).Hash -cne '086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864'){throw 'Pinned Zig0.16 changed'}
@@ -63,8 +67,8 @@ function Present-Absent {@($taskAbsent|Where-Object{(Test-Path -LiteralPath $_.s
 if($taskAbsent.Count -ne 84 -or @(Present-Absent).Count){throw 'Exact84 absence records mismatch'}
 $taskSourceRoot='C:/Users/adyba/pi-upstream-source-5ab7fe7-20261015'
 $taskRuntimeRoot='C:/Users/adyba/pi-upstream-runtime-19cb534-20261012'
-$taskPathSets=@{source=@(Scoped-Paths $taskSourceRoot);dependencies=@(Scoped-Paths $taskRuntimeRoot);compiler=@(Scoped-Paths (Split-Path $taskZig -Parent));node=@(Node-Paths)}
-foreach($key in @('compiler','node')){
+$taskPathSets=@{source=@(Authority-Paths $taskSourceRoot);dependencies=@(Authority-Paths $taskRuntimeRoot);compiler=@(Scoped-Paths (Split-Path $taskZig -Parent));node=@(Node-Paths)}
+foreach($key in @('source','dependencies','compiler','node')){
  $rows=@(($taskFrozen|Where-Object name -ceq $key).rows)
  if(@(Compare-Object @($rows.path|Sort-Object) $taskPathSets[$key]).Count){throw "$key manifest path inventory mismatch"}
 }
@@ -91,7 +95,7 @@ function Post-Check {
  $after=Candidate-Rows
  $candidateDrift=@(Compare-Object @($taskBefore|ForEach-Object {"$($_.relative):$($_.sha256)"}) @($after|ForEach-Object {"$($_.relative):$($_.sha256)"}))
  $manifests=@(foreach($item in $taskFrozen){@{name=$item.name;count=$item.rows.Count;drift=@(Check-Rows $item.rows)}})
- $afterPaths=@{source=@(Scoped-Paths $taskSourceRoot);dependencies=@(Scoped-Paths $taskRuntimeRoot);compiler=@(Scoped-Paths (Split-Path $taskZig -Parent));node=@(Node-Paths)}
+ $afterPaths=@{source=@(Authority-Paths $taskSourceRoot);dependencies=@(Authority-Paths $taskRuntimeRoot);compiler=@(Scoped-Paths (Split-Path $taskZig -Parent));node=@(Node-Paths)}
  $pathDrift=@(foreach($key in @('source','dependencies','compiler','node')){@{name=$key;count=$afterPaths[$key].Count;drift=@(Compare-Object $taskPathSets[$key] $afterPaths[$key])}})
  $controlDrift=@(Check-Rows $taskControls);$absenceDrift=@(Present-Absent)
  @{head=$taskHead;target=$Target;phase=$Phase;candidate_before=$taskBefore.Count;candidate_after=$after.Count;candidate_drift=$candidateDrift;manifests=$manifests;inventories=$pathDrift;controls=$taskControls.Count;control_drift=$controlDrift;absences=84;absence_drift=$absenceDrift;completed_utc=[DateTimeOffset]::UtcNow.ToString('o')}|ConvertTo-Json -Depth 9|Set-Content -LiteralPath (Join-Path $taskEvidence "$taskName-posthash.json") -Encoding utf8NoBOM
@@ -106,13 +110,17 @@ if($Phase -ceq 'runtime'){
  $post=Get-Content -Raw (Join-Path $taskEvidence "$taskCompileName-posthash.json")|ConvertFrom-Json
  $artifacts=@(Get-Content -Raw (Join-Path $taskEvidence "$taskCompileName-artifacts.json")|ConvertFrom-Json)
  $metadata=Get-Content -Raw (Join-Path $taskEvidence "$taskCompileName-metadata.json")|ConvertFrom-Json
- if($compile.status -cne 'passed' -or $post.candidate_drift.Count -or @($post.manifests|Where-Object {$_.drift.Count}).Count -or @($post.inventories|Where-Object {$_.drift.Count}).Count -or $post.control_drift.Count -or $post.absence_drift.Count -or @(Check-Rows $artifacts).Count -or !$metadata.tests.Count){throw 'Prior compile/fullpost0/artifact/metadata required'}
+ Assert-PassedTerminal $compile 'Prior compile'
+ $metadataProbe=Get-Content -Raw (Join-Path $taskEvidence "$taskCompileName-metadata-probe.json")|ConvertFrom-Json
+ Assert-PassedTerminal $metadataProbe 'Prior metadata probe'
+ if($post.head -cne $taskHead -or $metadata.candidate -cne $taskHead -or $post.candidate_drift.Count -or @($post.manifests|Where-Object {$_.drift.Count}).Count -or @($post.inventories|Where-Object {$_.drift.Count}).Count -or $post.control_drift.Count -or $post.absence_drift.Count -or @(Check-Rows $artifacts).Count -or !$metadata.tests.Count){throw 'Prior matching-head compile/fullpost0/artifact/metadata required'}
  $step="test-$($taskSteps[$Target])";$timeout=300
 }else{$step="build-highlight-root10db-$Target";$timeout=1320}
 $taskPriorArtifacts=@(Get-ChildItem -LiteralPath (Join-Path $taskTree '.zig-cache') -Recurse -Filter test.exe -File -ErrorAction SilentlyContinue|ForEach-Object FullName)
 try{
  & $taskOwner -Executable $taskZig -WorkingDirectory $taskTree -Arguments @('build',$step,'-Doptimize=Debug','-Duse-llvm=true','-j1','--test-timeout','120s','--summary','all') -ReceiptBase (Join-Path $taskEvidence $taskName) -TimeoutSeconds $timeout | Out-Null
  $terminal=Get-Content -LiteralPath (Join-Path $taskEvidence "$taskName.process.json") -Raw|ConvertFrom-Json
+ Assert-PassedTerminal $terminal 'Owned native phase'
  if($Phase -ceq 'compile'){
   $installed=Join-Path $taskTree "zig-out/bin/highlight-root10db-$Target.exe"
   $installedHash=(Get-FileHash -LiteralPath $installed).Hash
@@ -124,6 +132,8 @@ try{
   $request=[byte[]](4,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0)
   $receipt=Join-Path $taskEvidence "$taskName-metadata-probe"
   $probe=Invoke-CiOwnedProcess $binary @('--listen=-') $taskTree $receipt 30 $request
+  Assert-PassedTerminal $probe 'Metadata probe'
+  if(@(Check-Rows $artifacts).Count -or $probe.executable_sha256 -cne $installedHash){throw 'Compile/metadata artifact identity drift'}
   $bytes=[IO.File]::ReadAllBytes("$receipt.stdout.bin");$offset=0;$names=@();$version=$null
   while($offset -lt $bytes.Length){
    if($offset+8 -gt $bytes.Length){throw 'Truncated metadata header'}
