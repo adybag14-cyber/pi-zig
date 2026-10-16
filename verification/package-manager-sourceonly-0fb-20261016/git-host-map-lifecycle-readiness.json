@@ -1,0 +1,60 @@
+{
+  "status": "source_only_default_used_LRU_Map_lifecycle_authored_unqualified",
+  "base": "cfb9adc01d6105d4633311e22d6d0e6fd1b21e16",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "dependency": "lru-cache",
+  "version": "11.4.0",
+  "actual_VM_Map": true,
+  "bounded_default_max": 1000,
+  "map_methods": [
+    "get",
+    "set",
+    "delete",
+    "clear"
+  ],
+  "has_uses_Map_get": true,
+  "prepared_source_case_ids": [
+    "ordinary",
+    "partial_set",
+    "nested_update",
+    "undefined_delete",
+    "eviction"
+  ],
+  "fresh_process_per_case_required": true,
+  "source_expected_present": false,
+  "source_execution": false,
+  "zig_format": false,
+  "zig_ast": false,
+  "compile": false,
+  "native_execution": false,
+  "allocator_qualification": false,
+  "source_hook_qualification": false,
+  "engine_changed": false,
+  "shared_scope_sdk_class_changed": false,
+  "c_changed": false,
+  "root_changed": false,
+  "default_selected": false,
+  "full_pi_qualification": false,
+  "files": [
+    {
+      "path": "src/extensions/native_hosted_git.zig",
+      "sha256": "C87724523C1889991965EEDFE6BC8DE625B1497D1468425CF0A33A6F06507A5B"
+    },
+    {
+      "path": "src/extensions/native_hosted_git_lru.zig",
+      "sha256": "272B22C7758E16D642267C535C887FF2AB0A1F0C2ECBE7980B3A6621D2C062D1"
+    },
+    {
+      "path": "src/extensions/fixtures/git-host-map-lifecycle-0fb.input.mjs",
+      "sha256": "FE211619E7A7B15E5E7E0F67BE1D95500517A91ECF891613B172128D84436936"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/capture-git-map-source-prepared.mjs",
+      "sha256": "2EF4763272313E2DD789886DE78C3E3F5D0A135C5B43EE6424F64CEE2781F736"
+    },
+    {
+      "path": "verification/package-manager-sourceonly-0fb-20261016/git-host-map-lifecycle-sourceonly.md",
+      "sha256": "4F0C6BC975E6BA6F421F3D16F75A3190D84FB944D2C37D2830790EE2F0B5A2B2"
+    }
+  ]
+}
