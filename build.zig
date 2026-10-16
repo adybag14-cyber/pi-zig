@@ -1775,6 +1775,19 @@ pub fn build(b: *std.Build) void {
     const sdk_settings_run = b.addRunArtifact(sdk_settings_tests);
     b.step("test-sdk-settings-ownership", "Exercise SDK settings persistence and ownership against Source").dependOn(&sdk_settings_run.step);
     test_step.dependOn(&sdk_settings_run.step);
+    const fs_metadata_module = b.createModule(.{ .root_source_file = b.path("src/native_fs_metadata_test.zig"), .target = target, .optimize = optimize });
+    fs_metadata_module.addImport("catalog_tool", catalog_tool);
+    linkQuickJs(b, fs_metadata_module, quickjs, sqlite_lib_dir);
+    linkSqlite(fs_metadata_module, sqlite_lib_dir, sqlite_library);
+    const fs_metadata_tests = b.addTest(.{
+        .root_module = fs_metadata_module,
+        .filters = &.{"native filesystem metadata equals all22"},
+        .use_llvm = use_llvm,
+    });
+    b.step("build-native-fs-metadata", "Compile the actual Node Source22 native filesystem metadata comparison").dependOn(&b.addInstallArtifact(fs_metadata_tests, .{}).step);
+    const fs_metadata_run = b.addRunArtifact(fs_metadata_tests);
+    fs_metadata_run.has_side_effects = true;
+    b.step("test-native-fs-metadata", "Run actual Node Source22 callers against native stat Stats and realpath APIs").dependOn(&fs_metadata_run.step);
     const sdk_session_manager_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_manager_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK session manager"},
