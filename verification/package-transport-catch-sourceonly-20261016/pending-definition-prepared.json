@@ -1,0 +1,15 @@
+{
+  "status": "owned_package_transport_pending_definition_source_only_correction",
+  "parent": "045a0e466ef7eff3806eb37ca58dac4254cf75a7",
+  "scope": "all12 owned Scope.put calls use local checked DefinePropertyValueStr preserving flags/dup ownership and capturing currentpendingreason",
+  "shared_Scope_changed": false,
+  "sdk_changed": false,
+  "Engine_changed": false,
+  "c_changed": false,
+  "source53_44_15_48_39_preserved": true,
+  "prepared_new_test": "actual Proxy defineProperty rawnewreason replaces older capturedreason; pending VM exception consumed",
+  "transport_sha256": "0D0F0FFD6C44842E065E4D1CC3FEE708C15C2F7D62EFAB24544F6B7DA90E15EE",
+  "fmt_ast": false,
+  "native_executed": false,
+  "default_selected": false
+}

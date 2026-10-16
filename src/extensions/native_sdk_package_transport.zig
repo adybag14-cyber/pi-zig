@@ -5,7 +5,24 @@ const js = v.js;
 const c = v.c;
 const Scope = v.Scope;
 const functions = @import("native_node_function.zig");
+const std = @import("std");
 const body = @import("native_async_body.zig");
+fn put(engine: *v.em.Engine, target: c.JSValue, name: [*:0]const u8, borrowed: c.JSValue) !void {
+    if (c.JS_DefinePropertyValueStr(engine.context, target, name, c.JS_DupValue(engine.context, borrowed), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+}
+
+test "package transport checked definition captures its pending reason instead of an older capture" {
+    const engine = try v.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const target = try engine.eval("globalThis.transportNewReason={fresh:true};new Proxy({}, {defineProperty(){throw transportNewReason}})", "transport-define-proxy.js", c.JS_EVAL_TYPE_GLOBAL); defer engine.freeValue(target);
+    try std.testing.expectError(error.JavaScriptException, engine.eval("throw(globalThis.transportOlderReason={old:true})", "transport-old-capture.js", c.JS_EVAL_TYPE_GLOBAL));
+    const older = c.JS_DupValue(engine.context, engine.captured_exception.?); defer engine.freeValue(older);
+    try std.testing.expectError(error.JavaScriptException, put(engine, target, "newField", c.JS_NewInt32(engine.context, 1)));
+    const actual = engine.captured_exception orelse return error.MissingDefinitionReason;
+    const original = try js.global(engine, "transportNewReason"); defer engine.freeValue(original);
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, actual, older));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, original));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+}
 pub const Inputs = struct { process: c.JSValue, read_file_sync: c.JSValue, spawn_process: c.JSValue, spawn_process_sync: c.JSValue, is_stdout_taken_over: c.JSValue };
 const Method = enum(c_int) { spawnCommand, spawnCaptureCommand, runCommandCapture, runCommand, runCommandSync };
 const Event = enum(c_int) { executor_capture, executor_command, stdout, stderr, timeout, capture_error, capture_close, command_exit };
@@ -19,7 +36,7 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue, inputs: Inputs) !void
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const imports = try private(&scope);
-    inline for (@typeInfo(Inputs).@"struct".fields) |field| try scope.put(imports, field.name, @field(inputs, field.name));
+    inline for (@typeInfo(Inputs).@"struct".fields) |field| try put(scope.engine, imports, field.name, @field(inputs, field.name));
     inline for (.{ inputs.read_file_sync, inputs.spawn_process, inputs.spawn_process_sync, inputs.is_stdout_taken_over }) |value| if (!c.JS_IsFunction(engine.context, value)) return error.RequiredRealPackageTransportImport;
     inline for (@typeInfo(Method).@"enum".fields) |field| {
         const value = try scope.own(try functions.createMethod(engine, field.name, if (field.value == @intFromEnum(Method.runCommandSync)) 2 else 3, method, &.{ imports, c.JS_NewInt32(engine.context, field.value) }));
@@ -97,7 +114,7 @@ fn method(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
                 }
             }
             const supplied = try scope.object();
-            try scope.put(supplied, "cwd", if (v.nullish(options)) c.pi_js_undefined() else try scope.get(options, "cwd"));
+            try put(scope.engine, supplied, "cwd", if (v.nullish(options)) c.pi_js_undefined() else try scope.get(options, "cwd"));
             var streams: c.JSValue = undefined;
             if (operation == .spawnCaptureCommand) streams = try stdio(&scope) else if (scope.truthy(try imported(&scope, roots[0], "is_stdout_taken_over", &.{}))) {
                 streams = try scope.array();
@@ -105,16 +122,16 @@ fn method(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
                 try scope.index(streams, 1, c.JS_NewInt32(engine.context, 2));
                 try scope.index(streams, 2, c.JS_NewInt32(engine.context, 2));
             } else streams = try scope.text("inherit");
-            try scope.put(supplied, "stdio", streams);
-            try scope.put(supplied, "env", env);
+            try put(scope.engine, supplied, "stdio", streams);
+            try put(scope.engine, supplied, "env", env);
             return c.JS_DupValue(engine.context, try imported(&scope, roots[0], "spawn_process", &.{ command, argv, supplied }));
         },
         .runCommandSync => {
             const env = try environment(&scope, roots[0]);
             const supplied = try scope.object();
-            try scope.put(supplied, "stdio", try stdio(&scope));
-            try scope.put(supplied, "encoding", try scope.text("utf-8"));
-            try scope.put(supplied, "env", env);
+            try put(scope.engine, supplied, "stdio", try stdio(&scope));
+            try put(scope.engine, supplied, "encoding", try scope.text("utf-8"));
+            try put(scope.engine, supplied, "env", env);
             const result = try imported(&scope, roots[0], "spawn_process_sync", &.{ command, argv, supplied });
             if (scope.truthy(try scope.get(result, "error")) or !scope.equal(try scope.get(result, "status"), c.JS_NewInt32(engine.context, 0))) {
                 const error_value = try scope.get(result, "error");
@@ -156,17 +173,17 @@ fn event(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []c
     if (kind == .executor_capture or kind == .executor_command) {
         const child = try scope.invoke(roots[1], if (kind == .executor_capture) "spawnCaptureCommand" else "spawnCommand", &.{ roots[2], roots[3], roots[4] });
         const owner = try private(&scope);
-        inline for (.{ "child", "command", "args", "options", "resolve", "reject" }, 0..) |name, index| try scope.put(owner, name, switch (index) { 0 => child, 1 => roots[2], 2 => roots[3], 3 => roots[4], 4 => arg(args, 0), else => arg(args, 1) });
+        inline for (.{ "child", "command", "args", "options", "resolve", "reject" }, 0..) |name, index| try put(scope.engine, owner, name, switch (index) { 0 => child, 1 => roots[2], 2 => roots[3], 3 => roots[4], 4 => arg(args, 0), else => arg(args, 1) });
         if (kind == .executor_command) {
             _ = try scope.invoke(child, "on", &.{ try scope.text("error"), arg(args, 1) });
             _ = try scope.invoke(child, "on", &.{ try scope.text("exit"), try listener(&scope, .command_exit, owner, 1) });
         } else {
-            try scope.put(owner, "stdout", try scope.text(""));
-            try scope.put(owner, "stderr", try scope.text(""));
-            try scope.put(owner, "timedOut", c.pi_js_bool(engine.context, 0));
+            try put(scope.engine, owner, "stdout", try scope.text(""));
+            try put(scope.engine, owner, "stderr", try scope.text(""));
+            try put(scope.engine, owner, "timedOut", c.pi_js_bool(engine.context, 0));
             const timeout_ms = if (v.nullish(roots[4])) c.pi_js_undefined() else try scope.get(roots[4], "timeoutMs");
             const timer = if (c.JS_IsNumber(timeout_ms)) try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ try listener(&scope, .timeout, owner, 0), try scope.get(roots[4], "timeoutMs") }) else c.pi_js_undefined();
-            try scope.put(owner, "timeout", timer);
+            try put(scope.engine, owner, "timeout", timer);
             inline for (.{ .{ "stdout", Event.stdout }, .{ "stderr", Event.stderr } }) |pair| {
                 const stream = try scope.get(child, pair[0]);
                 if (!v.nullish(stream)) _ = try scope.invoke(stream, "on", &.{ try scope.text("data"), try listener(&scope, pair[1], owner, 1) });
