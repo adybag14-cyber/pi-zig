@@ -57087,7 +57087,9 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
                                                int argc, JSValueConst *argv)
 {
     JSValueConst promise, thenable, then;
-    JSValue args[2], res;
+    JSValue args[2] = { JS_UNDEFINED, JS_UNDEFINED };
+    JSValue res = JS_UNDEFINED, fatal = JS_UNDEFINED;
+    bool has_fatal = false;
     JSRuntime *rt;
 
     promise_trace(ctx, "js_promise_resolve_thenable_job\n");
@@ -57102,12 +57104,32 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     if (rt->promise_hook) {
         rt->promise_hook(ctx, JS_PROMISE_HOOK_BEFORE, promise, JS_UNDEFINED,
                          rt->promise_hook_opaque);
+        if (JS_HasException(ctx) &&
+            JS_IsUncatchableError(ctx->rt->current_exception)) {
+            fatal = JS_GetException(ctx);
+            goto fatal_cleanup;
+        }
     }
     res = JS_Call(ctx, then, thenable, 2, vc(args));
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        /* Preserve paired AFTER notification and its existing view of the
+           current exception, but retain the first fatal before that hook can
+           consume or replace it. This duplicate does not allocate. */
+        fatal = js_dup(ctx->rt->current_exception);
+        has_fatal = true;
+    }
     if (rt->promise_hook) {
         rt->promise_hook(ctx, JS_PROMISE_HOOK_AFTER, promise, JS_UNDEFINED,
                          rt->promise_hook_opaque);
     }
+    if (!has_fatal && JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        fatal = JS_GetException(ctx);
+        has_fatal = true;
+    }
+    if (has_fatal)
+        goto fatal_cleanup;
     if (JS_IsException(res)) {
         JSValue error = JS_GetException(ctx);
         res = JS_Call(ctx, args[1], JS_UNDEFINED, 1, vc(&error));
@@ -57116,6 +57138,11 @@ static JSValue js_promise_resolve_thenable_job(JSContext *ctx,
     JS_FreeValue(ctx, args[0]);
     JS_FreeValue(ctx, args[1]);
     return res;
+ fatal_cleanup:
+    JS_FreeValue(ctx, res);
+    JS_FreeValue(ctx, args[0]);
+    JS_FreeValue(ctx, args[1]);
+    return JS_Throw(ctx, fatal);
 }
 
 static void js_promise_resolve_function_free_resolved(JSRuntime *rt,
@@ -57225,6 +57252,12 @@ static JSValue js_promise_resolve_function_call(JSContext *ctx,
         goto fail_reject;
     }
     then = JS_GetProperty(ctx, resolution, JS_ATOM_then);
+    if (JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JSValue error = JS_GetException(ctx);
+        JS_FreeValue(ctx, then);
+        return JS_Throw(ctx, error);
+    }
     if (JS_IsException(then)) {
         JSValue error;
     fail_reject:
