@@ -1,0 +1,53 @@
+{
+  "tested_head": "d01090424356fde9b2ab89753285f9b4ae2ea0f8",
+  "baseline_head": "1097e7ff3fa72d3284a762d4ed4cb583ae20072f",
+  "root_dry_apply_checked_head": "0da226522f4db5da2b711f9587320af7fe811849",
+  "dry_apply_check_passed": true,
+  "patch": "ROOT-INTAKE.patch",
+  "patch_sha256": "292330E5C50E3DAA2B153F240B8A4FCEEA505BDAC14DE3CD193DA88AA9D73CCD",
+  "root_C_before": "12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D",
+  "root_H_before": "F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062",
+  "product_after": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "33DFB18C9A930D3967A089DF0B28B65AF88B7665B7ADD725AED30FCB8F046FD2"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "E3189DA8F918993FB567D07DF32E91CECD12C6666D9E9B1D68A6C65A15CEC37E"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/native_async_function_body_test.zig",
+      "sha256": "4828E0BD9F18094EB31B5F9B8A6ED546D27D0EF8952DC0CD21ABB8FBDCE85013"
+    },
+    {
+      "path": "src/native_async_function_qualification_test.zig",
+      "sha256": "B928ABB16DBD7B199F063CBD0EE31FE8C5CA82E2C2AA563236821D40B965E4C2"
+    },
+    {
+      "path": "src/extensions/fixtures/async-function-body-node24.input.txt",
+      "sha256": "5776BF2FA3CD180CD299DB2295875CADE31A2D3FC6A0403A8BD1B171AA7ACFB2"
+    },
+    {
+      "path": "src/extensions/fixtures/async-function-body-node24.json",
+      "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653"
+    }
+  ],
+  "build_change": "Only12 added AsyncFunction/cohort target lines; exclude older Claude RuntimeCredentials and URL hunks",
+  "paths": [
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "src/extensions/native_async_function.zig",
+    "src/native_async_function_body_test.zig",
+    "src/native_async_function_qualification_test.zig",
+    "src/extensions/fixtures/async-function-body-node24.input.txt",
+    "src/extensions/fixtures/async-function-body-node24.json",
+    "build.zig"
+  ],
+  "engine_HTTP_Body_upstream_TypeBox_changed": false,
+  "root_actual_intake_not_performed": true
+}
