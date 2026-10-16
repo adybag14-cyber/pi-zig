@@ -1,0 +1,18 @@
+{
+  "status": "source_review_reaffirmed",
+  "receipt_author": "Root recording collaboration reviewer message",
+  "reviewer": "/root/body_validation_resume",
+  "path": "src/extensions/native_sdk_package_data.zig",
+  "sha256": "3815559A3920B79F5CB17294940754C10D14E2C41A24083505A02CDEE06FB380",
+  "git_blob": "e273762300c78c895a26ff4b263be4e81e688f38",
+  "reviewed_source_commit": "cfb9adc01d6105d4633311e22d6d0e6fd1b21e16",
+  "findings": [
+    "Borrowed value duplicated once; C consumes the duplicate on both paths",
+    "Negative definition result immediately captures the exact pending VM exception",
+    "No double free; Engine shared Scope and SDK remain unchanged"
+  ],
+  "review_basis": "Fresh exact-file reaffirmation delivered to Root in collaboration message; historical closure was a team message, not a separate stored receipt",
+  "compiled": false,
+  "runtime_qualified": false,
+  "recorded_utc": "2026-10-16T22:36:41.6822079+00:00"
+}

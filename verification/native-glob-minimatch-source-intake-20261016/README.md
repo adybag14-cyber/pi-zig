@@ -15,7 +15,10 @@ not establish the broader Node glob API. Both glob expected outputs are absent.
 The checked helper is copied exactly from its retained source. Root read its
 duplicate-once property definition and immediate pending-exception capture at
 intake. The separate historical-review attestation is preserved accurately;
-fresh independent reaffirmation remains pending.
+fresh independent exact-file reaffirmation is now recorded separately in
+`package-data-review-reaffirmation.json`. That Root-written receipt identifies
+the reviewer's collaboration message as its basis and does not invent a
+historical standalone audit file.
 
 The copied manifests describe their original source trees and bases. The Root
 receipt records this later additive intake. The upstream Node license retains
