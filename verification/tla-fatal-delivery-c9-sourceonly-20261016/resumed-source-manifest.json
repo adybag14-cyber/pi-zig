@@ -1,0 +1,42 @@
+{
+  "kind": "resumed-tla-source-only-unexecuted",
+  "base": "b9701e111cdecc2e4da3f0457e24066bbcd6a208",
+  "worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\runtime-tla",
+  "runtime_status": "recovery_pending",
+  "historical_controls": "unchanged; old paths resolve via container path-relocations.json",
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "2DF2D6943C9127DB05A373982DB26CFC883E8285C5DE639E1FC4A6B4DE20EBF9"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/native_tla_fatal_delivery_test.zig",
+      "sha256": "B5195B545E83CC55AA7C7FCD306D1DEBC2E45A02F4D2129D05A9FD3CF0B7F5B9"
+    },
+    {
+      "path": "src/native_tla_resumed_fatal_known_gap_test.zig",
+      "sha256": "293AC4DEBFDB57914ECBA85B6BDEDF6EF74F45905ADCEFA9FFDB3AF98EC624FC"
+    },
+    {
+      "path": "src/native_tla_resumed_fatal_delivery_test.zig",
+      "sha256": "8B7EFEA7C86FB47403529A66EE4B807BBBB8207F60F5A8551CFF02D8B8320A93"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/RESUMED-IMPLEMENTATION.md",
+      "sha256": "0790BD1C7069DC60A99723C7C4E7E55DB1D12F56822B095CC9E499976330B71F"
+    },
+    {
+      "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-resumed-snippet.zig.txt",
+      "sha256": "6B66C1D22459DA3557A96AF563044EFA4497175291E303EAD79902BF532883E8"
+    }
+  ],
+  "checks": [
+    "git diff --check only"
+  ],
+  "execution": "No compiler, Zig, formatter, Node, Source generator or native jobs",
+  "review": "Root and independent C-owner required before execution"
+}
