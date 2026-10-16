@@ -111,3 +111,15 @@ exact product-head proof. The passing matrix does not establish qualification
 of this later combined head, all provider families, the complete factory, or
 the complete application. Earlier failing matrices and their minimal repairs
 remain preserved rather than rewritten as successful runs.
+
+## Contained SDK loader intake, 16 October
+
+The reviewed actual extension cache orchestration from `f12aa12f` is intaken
+at `d7f8ca7c`. It adds the five genuine async loader bodies, cache token and
+failure ordering, host initializer seam, and a lazy virtual namespace object
+whose twenty properties retain the real registered namespace identities.
+Independent source review closed the scoped ownership and IteratorClose
+boundaries. Its nine prepared controls have not run. The real importer,
+getCreateJiti/getAliases composition and Graph2/default interop are still
+required before this path can replace the application's extension bridge.
+This intake is source-only and does not extend any earlier native or hosted proof.
