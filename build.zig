@@ -1545,6 +1545,12 @@ pub fn build(b: *std.Build) void {
     idle_settlement_identity_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-sdk-idle-settlement-identity", "Compile exact fatal identity and entered-finally controls for the idle settlement leaf").dependOn(&idle_settlement_identity_tests.step);
     b.step("test-native-sdk-idle-settlement-identity", "Exercise exact native reason retention across idle settlement finalizers").dependOn(&b.addRunArtifact(idle_settlement_identity_tests).step);
+    const hook_helper_realasync_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_hook_helpers_realasync_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native hook helper"}, .use_llvm = use_llvm });
+    linkQuickJs(b, hook_helper_realasync_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(hook_helper_realasync_tests.root_module, sqlite_lib_dir, sqlite_library);
+    hook_helper_realasync_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-hook-helpers-realasync", "Compile four actual session hook helper bodies and focused controls").dependOn(&hook_helper_realasync_tests.step);
+    b.step("test-native-sdk-hook-helpers-realasync", "Exercise exact await getter and fatal identity boundaries of four session hook helpers").dependOn(&b.addRunArtifact(hook_helper_realasync_tests).step);
     const session_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_models_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session models"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_models_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_models_tests.root_module, sqlite_lib_dir, sqlite_library);
