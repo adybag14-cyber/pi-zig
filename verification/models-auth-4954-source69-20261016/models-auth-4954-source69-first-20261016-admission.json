@@ -1,0 +1,11 @@
+{
+  "coordinated_with": "Root explicit ModelsAuth69 LIGHT grant required",
+  "native_head": "e15129a15d85468d17475edb5a6a9efcda3f6455",
+  "observed_utc": "2026-10-16T09:46:11.3232012+00:00",
+  "status": "admitted",
+  "heap_mb": 256,
+  "compiler_files": 19546,
+  "free_kib": 14421252,
+  "candidate_files": 8303,
+  "required_kib": 2097152
+}
