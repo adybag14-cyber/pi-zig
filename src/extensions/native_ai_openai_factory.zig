@@ -9,6 +9,7 @@ const http = @import("native_ai_http.zig");
 const request = @import("native_ai_openai_request.zig");
 const Stage = enum(c_int) { payload, ready, response, next, chunk, retried, closed };
 pub fn create(engine: *v.em.Engine) !c.JSValue {
+    try @import("native_ai_openai_client_options.zig").initialize(engine);
     try @import("native_stream.zig").install(engine);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -112,10 +113,23 @@ fn setup(scope: *Scope, owner: c.JSValue) !void {
     try @import("native_ai_openai_decode.zig").configure(scope.engine, try scope.get(owner, "decoderState"), compat, properties);
     const retention = try request.cacheRetention(scope, options);
     try scope.put(owner, "retention", retention);
-    // createClient captures these defaults before the awaited payload hook.
-    try scope.put(owner, "clientHeaders", try prepareClientHeaders(scope, owner));
-    try scope.put(owner, "clientBaseUrl", try scope.get(try scope.get(owner, "model"), "baseUrl"));
-    try scope.put(owner, "clientFetch", try v.optional(scope, options, "fetch"));
+    // Preserve createClient argument evaluation before its header object body.
+    const session = if (try v.eq(scope, retention, "none")) c.pi_js_undefined() else try v.optional(scope, options, "sessionId");
+    const option_headers = try v.optional(scope, options, "headers");
+    const provided_fetch = try v.optional(scope, options, "fetch");
+    const defaults = try prepareClientHeaders(scope, owner, option_headers, session);
+    const client = try scope.own(try @import("native_ai_openai_client_options.zig").capture(scope.engine, .{
+        .api_key = try scope.get(owner, "apiKey"),
+        .base_url = try scope.get(try scope.get(owner, "model"), "baseUrl"),
+        .fetch = provided_fetch,
+        .default_headers = defaults,
+    }));
+    try scope.put(owner, "clientOptions", client);
+    try scope.put(owner, "clientBaseUrl", try scope.get(client, "baseURL"));
+    try scope.put(owner, "clientResolvedFetch", try scope.get(client, "fetch"));
+    // The existing transport's explicit custom-fetch gate remains separate;
+    // routing an overridden global default fetch is an unqualified seam.
+    try scope.put(owner, "clientFetch", provided_fetch);
     const params = try scope.own(try request.build(scope.engine, try scope.get(owner, "model"), try scope.get(owner, "context"), options, try scope.get(owner, "compat"), retention, properties, try scope.get(try scope.get(owner, "agent"), "simple")));
     try scope.put(owner, "payload", params);
     try wait(scope, owner, try hook(scope, owner, "onPayload", params), .payload);
@@ -152,7 +166,7 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 fn aborted(scope: *Scope, owner: c.JSValue) !bool {
     return scope.truthy(try v.optional(scope, try v.optional(scope, try scope.get(owner, "options"), "signal"), "aborted"));
 }
-fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
+fn failError(scope: *Scope, owner: c.JSValue, err: anyerror) anyerror!void {
     const reason = flow.reason(scope.engine, err);
     defer scope.engine.freeValue(reason);
     if (scope.engine.captured_exception) |captured| {
@@ -199,7 +213,7 @@ fn applyFailure(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
     };
     try flow.settle(scope.engine, owner, false, c.pi_js_undefined());
 }
-fn prepareClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
+fn prepareClientHeaders(scope: *Scope, owner: c.JSValue, option_headers: c.JSValue, session: c.JSValue) !c.JSValue {
     const defaults = try scope.object();
     try scope.put(defaults, "User-Agent", try @import("native_ai_user_agent.zig").runtime(scope));
     const model = try scope.get(owner, "model");
@@ -235,8 +249,6 @@ fn prepareClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
             }
         }
     }
-    const options = try scope.get(owner, "options");
-    const session = if (try v.eq(scope, try scope.get(owner, "retention"), "none")) c.pi_js_undefined() else try v.optional(scope, options, "sessionId");
     const compat = try scope.get(owner, "compat");
     if (scope.truthy(session) and scope.truthy(try scope.get(compat, "sendSessionAffinityHeaders"))) {
         if (try v.eq(scope, try scope.get(compat, "sessionAffinityFormat"), "openrouter")) try scope.put(defaults, "x-session-id", session) else {
@@ -245,10 +257,11 @@ fn prepareClientHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
             try scope.put(defaults, "x-session-affinity", session);
         }
     }
-    try v.js.spreadInto(scope.engine, defaults, try v.optional(scope, options, "headers"));
+    try v.js.spreadInto(scope.engine, defaults, option_headers);
     return defaults;
 }
 fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
+    const client = try scope.get(owner, "clientOptions");
     const base = try scope.object();
     try scope.put(base, "accept", try scope.text("application/json"));
     try scope.put(base, "user-agent", try @import("native_ai_user_agent.zig").runtime(scope));
@@ -260,15 +273,26 @@ fn buildHeaders(scope: *Scope, owner: c.JSValue) !c.JSValue {
         const seconds = try scope.own(try @import("native_image_arithmetic.zig").binary(scope.engine, .divide, timeout, c.JS_NewInt32(scope.engine.context, 1000)));
         try scope.put(base, "x-stainless-timeout", try scope.stringify(try scope.invoke(try scope.global("Math"), "trunc", &.{seconds})));
     }
+    try scope.put(base, "OpenAI-Organization", try scope.get(client, "organization"));
+    try scope.put(base, "OpenAI-Project", try scope.get(client, "project"));
     const authentication = try scope.object();
-    const key = try scope.own(try scope.engine.checked(c.JS_ToString(scope.engine.context, try scope.get(owner, "apiKey"))));
-    try scope.put(authentication, "authorization", try scope.concat(try scope.text("Bearer "), key));
+    const key = try scope.get(client, "apiKey");
+    if (!c.JS_IsNull(key)) try scope.put(authentication, "authorization", try scope.concat(try scope.text("Bearer "), key));
     const body_headers = try scope.object();
     try scope.put(body_headers, "content-type", try scope.text("application/json"));
     // SDK JSON body headers apply after createClient's defaultHeaders. The
     // real Headers implementation supplies validation, trimming and append.
-    const built = try @import("native_ai_openai_sdk_headers.zig").build(scope.engine, &.{ base, authentication, try scope.get(owner, "clientHeaders"), body_headers });
+    const sdk_headers = @import("native_ai_openai_sdk_headers.zig");
+    const defaults: sdk_headers.Layer = if (scope.truthy(try scope.get(client, "headersPrepared")))
+        .{ .nullable = .{ .values = try scope.get(client, "defaultHeaders"), .nulls = try scope.get(client, "headerNulls") } }
+    else
+        .{ .plain = try scope.get(client, "defaultHeaders") };
+    const built = try sdk_headers.buildMixed(scope.engine, &.{ .{ .plain = base }, .{ .plain = authentication }, defaults, .{ .plain = body_headers } });
     defer scope.engine.freeValue(built.nulls);
+    errdefer scope.engine.freeValue(built.values);
+    const authorized = scope.truthy(try scope.invoke(built.values, "get", &.{try scope.text("authorization")})) or scope.truthy(try scope.invoke(built.values, "get", &.{try scope.text("api-key")}));
+    const omitted = scope.truthy(try scope.invoke(built.nulls, "has", &.{try scope.text("authorization")})) or scope.truthy(try scope.invoke(built.nulls, "has", &.{try scope.text("api-key")}));
+    if (!authorized and !omitted) return v.errorText(scope, try scope.text("Could not resolve authentication method. Expected either apiKey or adminAPIKey to be set. Or for one of the \"Authorization\" or \"api-key\" headers to be explicitly omitted"));
     return built.values;
 }
 fn open(scope: *Scope, owner: c.JSValue) !void {
@@ -391,7 +415,7 @@ fn prepareSdk(scope: *Scope, owner: c.JSValue, response: c.JSValue) !void {
         .codec = try scope.own(try @import("native_ai_openai_sdk_chunks.zig").codec(engine)),
         .controller = controller,
         .error_factory = try scope.own(try @import("native_ai_openai_sdk_error.zig").factory(engine, headers)),
-        .logger = try scope.global("console"),
+        .logger = try @import("native_ai_openai_client_log.zig").loggerFor(scope, try scope.get(owner, "clientOptions")),
     }));
     try scope.put(owner, "iterator", iterator);
 }

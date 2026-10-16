@@ -27,6 +27,8 @@ fn install(scope: *v.Scope) !void {
     try @import("extensions/native_headers.zig").install(engine);
     try @import("extensions/abort_signal.zig").install(engine);
     try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/console.zig").install(engine, std.testing.io);
+    try @import("extensions/native_web_fetch.zig").install(engine);
     const loaded = try engine.evalModule("import 'pi-ai';export const loaded=true;", "full58-native-installed-stream.mjs");
     engine.freeValue(loaded);
     const global = try scope.own(c.JS_GetGlobalObject(engine.context));

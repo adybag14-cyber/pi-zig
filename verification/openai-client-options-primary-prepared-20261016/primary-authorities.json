@@ -1,0 +1,49 @@
+{
+  "status": "primary_files_read_only_observer_unexecuted",
+  "sdk": "6.40.0",
+  "runtime_root": "C:\\Users\\adyba\\pi-upstream-runtime-19cb534-20261012\\node_modules\\openai",
+  "files": [
+    {
+      "relative": "client.mjs",
+      "sha256": "45B54E0C0A779A8B284CC8BCFB41A0A0F1817EAC32D9CC585FF71875B62AEB6B",
+      "length": 36154
+    },
+    {
+      "relative": "internal/headers.mjs",
+      "sha256": "CFE8E16C485C42F58182A701BE897DB98E7A52F0A98A40D16D142FD7F200DA0F",
+      "length": 2528
+    },
+    {
+      "relative": "internal/utils/env.mjs",
+      "sha256": "528C56AEF7B4B936DB60B96BAE662A39968A6F27C36B59342A0A35A9D4878686",
+      "length": 610
+    },
+    {
+      "relative": "internal/utils/log.mjs",
+      "sha256": "69A97A0F32E3D5B0707E222D54C04AAD9BE2388E58B82C9E9B1624DB07312AD0",
+      "length": 2687
+    },
+    {
+      "relative": "internal/utils/values.mjs",
+      "sha256": "158B5322A4496971D91A74F179DC8CFFBA2D23849467618F5F90E79CEA6E1D93",
+      "length": 2881
+    },
+    {
+      "relative": "internal/shims.mjs",
+      "sha256": "0EEB939EE18F8DF00273D819FFE94D84FA2C3E990485902C4C94A108669FFAEA",
+      "length": 3125
+    },
+    {
+      "relative": "version.mjs",
+      "sha256": "FF69AAAB17CC2ADCF6D464988BE98F3F7D6FB4ABAAF478306B105CEE61C671A1",
+      "length": 97
+    },
+    {
+      "relative": "core/streaming.mjs",
+      "sha256": "6EA8902E35B980775B9BF0EFFBA19EC4F09AC57030D9ED339C7AF861682F6D31",
+      "length": 10603
+    }
+  ],
+  "expected_source_output_exists": false,
+  "native_qualified": false
+}

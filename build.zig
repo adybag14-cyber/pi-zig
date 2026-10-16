@@ -1798,6 +1798,12 @@ pub fn build(b: *std.Build) void {
     openai_header_contract_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-ai-openai-header-contract", "Compile independent native runtime identity and pinned SDK header merge contracts").dependOn(&openai_header_contract_tests.step);
     b.step("test-native-ai-openai-header-contract", "Check truthful compiler/engine identity and SDK undefined null append body and protocol override rules").dependOn(&b.addRunArtifact(openai_header_contract_tests).step);
+    const openai_client_options_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_client_options_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI constructor options"}, .use_llvm = use_llvm });
+    linkQuickJs(b, openai_client_options_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(openai_client_options_tests.root_module, sqlite_lib_dir, sqlite_library);
+    openai_client_options_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-ai-openai-client-options", "Compile accessed SDK constructor env nullable merge and getter-boundary controls").dependOn(&openai_client_options_tests.step);
+    b.step("test-native-ai-openai-client-options", "Check owned dummy env precedence raw throws early merge and payload boundary").dependOn(&b.addRunArtifact(openai_client_options_tests).step);
     const strict_schema_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_constrained_sampling_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native constrained sampling"}, .use_llvm = use_llvm });
     linkQuickJs(b, strict_schema_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(strict_schema_tests.root_module, sqlite_lib_dir, sqlite_library);

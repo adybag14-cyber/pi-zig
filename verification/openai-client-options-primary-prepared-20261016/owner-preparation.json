@@ -1,0 +1,27 @@
+{
+  "status": "prepared_not_executed",
+  "required_owner": "Root separately granted source owner with full reference candidate compiler controls inventories and 84 absences",
+  "timeout_seconds": 300,
+  "heap_mb": 256,
+  "minimum_free_gib": 2,
+  "process_start_info_environment_overrides": {
+    "NODE_OPTIONS": "",
+    "NODE_PATH": "",
+    "PI_PACKAGE_DIR": "",
+    "OPENAI_API_KEY": "fixture-owned-api-key",
+    "OPENAI_ADMIN_KEY": "fixture-owned-admin-key",
+    "OPENAI_ORG_ID": "fixture-owned-org",
+    "OPENAI_PROJECT_ID": "fixture-owned-project",
+    "OPENAI_WEBHOOK_SECRET": "fixture-owned-webhook",
+    "OPENAI_BASE_URL": "http://127.0.0.1:1/fixture-owned-base",
+    "OPENAI_CUSTOM_HEADERS": "",
+    "OPENAI_LOG": "",
+    "HTTP_PROXY": "",
+    "HTTPS_PROXY": "",
+    "ALL_PROXY": "",
+    "NO_PROXY": "127.0.0.1,localhost"
+  },
+  "host_environment_values_read_by_tools": false,
+  "expected_source_fixture_absent": true,
+  "native_qualified": false
+}

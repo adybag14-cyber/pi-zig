@@ -4,19 +4,12 @@
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
-const array_key = "\x00native-openai-sdk-header-array-predicate";
 pub const Built = struct { values: c.JSValue, nulls: c.JSValue };
+pub const Layer = union(enum) { plain: c.JSValue, nullable: Built };
 fn readonlyArray(scope: *Scope, value: c.JSValue) !bool {
-    const engine = scope.engine;
-    const predicate = if (engine.native_module_values.get(array_key)) |cached| cached else capture: {
-        const function = try scope.get(try scope.global("Array"), "isArray");
-        const retained = c.JS_DupValue(engine.context, function);
-        engine.native_module_values.put(engine.gpa, array_key, retained) catch |err| {
-            engine.freeValue(retained);
-            return err;
-        };
-        break :capture retained;
-    };
+    // values.mjs's isReadonlyArray retains the initial wrapper, not the
+    // rebound isArray export. That wrapper rereads Array.isArray each call.
+    const predicate = try scope.get(try scope.global("Array"), "isArray");
     return scope.truthy(try scope.call(predicate, c.pi_js_undefined(), &.{value}));
 }
 fn apply(scope: *Scope, target: c.JSValue, nulls: c.JSValue, seen: c.JSValue, name: c.JSValue, value: c.JSValue) !void {
@@ -35,15 +28,49 @@ fn apply(scope: *Scope, target: c.JSValue, nulls: c.JSValue, seen: c.JSValue, na
 }
 pub fn build(engine: *v.em.Engine, sources: []const c.JSValue) !Built {
     const generation = engine.native_allocation_generation;
+    return buildPlain(engine, sources) catch |err| return engine.nativeAllocationError(err, generation);
+}
+fn buildPlain(engine: *v.em.Engine, sources: []const c.JSValue) !Built {
+    const layers = try engine.gpa.alloc(Layer, sources.len);
+    defer engine.gpa.free(layers);
+    for (sources, layers) |source, *layer| layer.* = .{ .plain = source };
+    return buildMixed(engine, layers);
+}
+/// The constructor's early nullable merge is an actual Headers/Set pair. Keep
+/// its tombstones when layering it after SDK/auth defaults at request time.
+pub fn buildMixed(engine: *v.em.Engine, sources: []const Layer) !Built {
+    const generation = engine.native_allocation_generation;
     return buildValues(engine, sources) catch |err| return engine.nativeAllocationError(err, generation);
 }
-fn buildValues(engine: *v.em.Engine, sources: []const c.JSValue) !Built {
+fn buildValues(engine: *v.em.Engine, sources: []const Layer) !Built {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const target = try scope.own(try v.js.builtin(engine, "Headers", &.{}));
     const nulls = try scope.own(try v.js.builtin(engine, "Set", &.{}));
-    for (sources) |source| {
+    for (sources) |layer| {
         const seen = try scope.own(try v.js.builtin(engine, "Set", &.{}));
+        const source = switch (layer) {
+            .plain => |value| value,
+            .nullable => |prepared| {
+                var entries = try v.iterator(&scope, try scope.invoke(prepared.values, "entries", &.{}));
+                defer entries.deinit();
+                errdefer entries.closePreserving();
+                while (try entries.next()) |entry| {
+                    defer engine.freeValue(entry);
+                    const fields = try v.js.pair(engine, entry, try scope.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context))));
+                    defer for (fields) |field| engine.freeValue(field);
+                    try apply(&scope, target, nulls, seen, fields[0], fields[1]);
+                }
+                var removed = try v.iterator(&scope, prepared.nulls);
+                defer removed.deinit();
+                errdefer removed.closePreserving();
+                while (try removed.next()) |name| {
+                    defer engine.freeValue(name);
+                    try apply(&scope, target, nulls, seen, name, c.pi_js_null());
+                }
+                continue;
+            },
+        };
         if (!scope.truthy(source)) continue;
         const instance = c.JS_IsInstanceOf(engine.context, source, try scope.global("Headers"));
         if (instance < 0) return v.js.capture(engine);
