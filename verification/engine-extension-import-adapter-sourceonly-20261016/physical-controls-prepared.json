@@ -1,0 +1,40 @@
+{
+  "status": "actual_input_physical_component_controls_prepared_unrun",
+  "implementation": "ad4bd5d3c5438475dbca3d92c2ef4509784c4c8f",
+  "caller": "actual installed worker SourceLoader and all20 real namespace authorities in a fresh Engine",
+  "entrypoint": "native_engine_extension_import_adapter_controls.verify(engine,actual_inputs,new_owned_absolute_directory)",
+  "root_import_calls": 19,
+  "host_invalid_handle_control": 1,
+  "owned_final_physical_files": 15,
+  "physical_write_versions": 24,
+  "retention": "control_directory_must_not_exist_before_start_and_is_never_removed_by_controls; owner_must_retain_each_version_metadata_and_body_before_admission",
+  "coverage": [
+    "fresh_static_TS_graph_keeps_old_namespace",
+    "seeded_old_late_and_new_dynamic_TS_graphs",
+    "shared_mjs_cjs_js_module_js_no_type_cache_after_edits",
+    "shared_js_package_type_transition",
+    "shared_JSON_object_identity_after_edit",
+    "actual_TypeBox_virtual_alias_namespace_and_Type_identity",
+    "physical_import_meta_URL_and_nested_filename",
+    "unsupported_mts_rejects",
+    "foreign_unaligned_opaque_session_pointer_rejects_before_dereference"
+  ],
+  "controls_sha256": "47E1AFFDE0759680EE2A29FE16EFCF58E841AB0786A30E5B6EE1E1F27AF2D2EF",
+  "standalone_fake_namespace_bootstrap": false,
+  "complete_source48_39_replay": false,
+  "node_reference_executed": false,
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "actual_compiled_test_count": null,
+  "default_selected": false,
+  "additional_gates": [
+    "full_real_bootstrap_assembly",
+    "per_write_actual_physical_metadata_version_archive_owner",
+    "allocation_position_and_terminal_charged_owner",
+    "anchor_only_context_lifetime",
+    "real_Source48_39_full_stack_and_await_trace",
+    "missing_jiti_policies_interop_shared_failure_retries",
+    "graph_reclamation_resource_policy"
+  ]
+}
