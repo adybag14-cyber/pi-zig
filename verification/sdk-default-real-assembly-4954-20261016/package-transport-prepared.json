@@ -1,0 +1,40 @@
+{
+  "status": "actual_package_transport_source_only",
+  "base": "35c2cffc53bd8987ba78ab6ca7bc993f2e3c7b99",
+  "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
+  "source_module": "packages/coding-agent/src/core/package-manager.ts",
+  "source_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+  "latest0fb_module_identical": true,
+  "native_file": "src/extensions/native_sdk_package_transport.zig",
+  "native_sha256": "FEE3E1D05ACDDCBDF92C910BF64252FF4543687AE9A0C8BB4FE8B01B6ACB8283",
+  "methods": [
+    "spawnCommand",
+    "spawnCaptureCommand",
+    "runCommandCapture",
+    "runCommand",
+    "runCommandSync"
+  ],
+  "helpers": [
+    "getEnv"
+  ],
+  "required_real_inputs": [
+    "process",
+    "readFileSync",
+    "spawnProcess",
+    "spawnProcessSync",
+    "isStdoutTakenOver"
+  ],
+  "external_boundaries": [
+    "genuine child process namespace",
+    "cross-spawn Windows resolution",
+    "real Node stream objects",
+    "frontend inherited stdio route",
+    "actual global Promise/setTimeout/clearTimeout"
+  ],
+  "assembly_selected": false,
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_tested": false,
+  "genuine_reference_capture": false,
+  "default_selected": false
+}
