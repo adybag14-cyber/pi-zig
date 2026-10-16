@@ -1,0 +1,9 @@
+{
+  "policy": "Root revised serial single-native admission; previous16GiB negatives retained",
+  "minimum_available_bytes": 12884901888,
+  "cancel_below_available_bytes": 4294967296,
+  "available_bytes": 17493897216,
+  "other_native_processes": 0,
+  "sample_interval_ms": 1000,
+  "checked_utc": "2026-10-16T10:01:30.6099433+00:00"
+}

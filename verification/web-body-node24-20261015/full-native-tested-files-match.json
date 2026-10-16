@@ -1,0 +1,10 @@
+{
+  "tested_source_head": "898bd4adb03defc1da0d93af763dca06a83197e3",
+  "original_candidate_inventory": 6229,
+  "original_candidate_files_checked": 6229,
+  "changed_original_candidate_files": 0,
+  "new_files": "Proof receipts ledgers and documentation only; original tested files remain byte-identical",
+  "body_expected_sha256": "7518FDCD2401E2C6D8111E3327B6A6D01B85D06F9E95128BD4C62A04CF295ED5",
+  "body_input_sha256": "B20ECA3D00631D8B7745C8769DE4790F5FC2E82CA0589CBE633F2C8901756CEA",
+  "checked_utc": "2026-10-16T10:14:00.8609887+00:00"
+}

@@ -1,0 +1,10 @@
+{
+  "minimum_free_bytes": 12884901888,
+  "cancel_below_available_bytes": 4294967296,
+  "serial_zero_other_native": true,
+  "policy_authority": "Root revised single-native admission 20261016; previous16GiB negatives retained",
+  "available_bytes": 16565145600,
+  "existing_native_roots": 0,
+  "existing_native_processes": [],
+  "checked_utc": "2026-10-16T10:02:29.3362656+00:00"
+}

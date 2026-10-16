@@ -1,0 +1,42 @@
+[
+  {
+    "pid": 35660,
+    "parent_pid": 64936,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\body-serial-owner-normal-smoke-helper-20261016.ps1",
+    "created_utc": "2026-10-16T10:01:30.6337930Z",
+    "parent_key": null,
+    "depth": 0,
+    "peak_rss_bytes": 85995520
+  },
+  {
+    "pid": 67832,
+    "parent_pid": 35660,
+    "executable": "C:\\Windows\\system32\\conhost.exe",
+    "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+    "created_utc": "2026-10-16T10:01:30.6367570Z",
+    "parent_key": "35660|2026-10-16T10:01:30.6337930Z",
+    "depth": 1,
+    "peak_rss_bytes": 7598080
+  },
+  {
+    "pid": 66884,
+    "parent_pid": 35660,
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -Command Start-Sleep -Seconds 2; Write-Output child-terminal",
+    "created_utc": "2026-10-16T10:01:30.9515520Z",
+    "parent_key": "35660|2026-10-16T10:01:30.6337930Z",
+    "depth": 1,
+    "peak_rss_bytes": 80138240
+  },
+  {
+    "pid": 62936,
+    "parent_pid": 66884,
+    "executable": "C:\\Windows\\system32\\conhost.exe",
+    "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+    "created_utc": "2026-10-16T10:01:30.9546360Z",
+    "parent_key": "66884|2026-10-16T10:01:30.9515520Z",
+    "depth": 2,
+    "peak_rss_bytes": 11870208
+  }
+]

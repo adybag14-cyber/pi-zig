@@ -1,0 +1,24 @@
+{
+  "authorization": "Root independently reviewed current identity and retained45928->65040 ancestry; explicit reconciliation authorization",
+  "original_owner_complete_capture": false,
+  "basis": {
+    "pid": 69860,
+    "parent_pid": 45928,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "command_line": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe build-obj -cflags -std=gnu11 -O1 -ffp-contract=off -fno-fast-math -DWASM_RT_USE_MMAP=0 -DWASM_RT_USE_SEGUE=0 -DWASM_RT_MEMCHECK_BOUNDS_CHECK=1 -DWASM_RT_TRAP_HANDLER=pi_image_trap -- C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native\\photon_12.c -ODebug -I C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native -Mroot -lc --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name pi-photon-photon_12 --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+    "created_utc": "2026-10-16T10:02:36.016898Z"
+  },
+  "started_utc": "2026-10-16T10:05:53.7322019+00:00",
+  "rechecked_identity": {
+    "pid": 69860,
+    "parent_pid": 45928,
+    "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "command_line": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe build-obj -cflags -std=gnu11 -O1 -ffp-contract=off -fno-fast-math -DWASM_RT_USE_MMAP=0 -DWASM_RT_USE_SEGUE=0 -DWASM_RT_MEMCHECK_BOUNDS_CHECK=1 -DWASM_RT_TRAP_HANDLER=pi_image_trap -- C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native\\photon_12.c -ODebug -I C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native -Mroot -lc --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name pi-photon-photon_12 --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+    "created_utc": "2026-10-16T10:02:36.0168980Z",
+    "handle_created_utc": "2026-10-16T10:02:36.0168985Z"
+  },
+  "action": "exact_retained_handle_Kill_false",
+  "pid_absent": true,
+  "status": "reconciled_and_absence_verified",
+  "completed_utc": "2026-10-16T10:05:54.4547371+00:00"
+}

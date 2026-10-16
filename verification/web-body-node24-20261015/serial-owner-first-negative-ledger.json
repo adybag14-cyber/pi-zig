@@ -1,0 +1,197 @@
+[
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016-owned-absence.json",
+    "bytes": 2211,
+    "sha256": "B361ED3A8A56BBE54D4687E29354CD53FB5D1F19929A622B041838B283009092"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016-owned-identities.json",
+    "bytes": 1543,
+    "sha256": "01DCB780A0834062E908DC02B0C440823D6038F97A6184B37DBD815FE19D2536"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016-resource-admission.json",
+    "bytes": 342,
+    "sha256": "66DFAC9DFAE5468B5CDAD32C5A5A1452CC297A8C8BCD39D18C45CE8E8473945C"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016-resource-samples.jsonl",
+    "bytes": 384,
+    "sha256": "E26F3EF071E8DCCA8B897785A89AC2459680E3A8EE6BF34859B0F423CBA0B960"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016-resource-summary.json",
+    "bytes": 1893,
+    "sha256": "C2C019306CDF860C4673692A06DCFF5FC6618305E7F5FA77149E5AC898385C07"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016.process.json",
+    "bytes": 1448,
+    "sha256": "E84D28282672530B95FFD59DC324E07C5EE01078ADCDA77D80D56CA9D4EC190B"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016.stderr.log",
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-first-20261016.stdout.log",
+    "bytes": 17,
+    "sha256": "4CEB94005A17BFC385A5BB587E5AE3979192A39F7B306C32153C8F80801E86EB"
+  },
+  {
+    "path": "serial-owner-first-negative/body-serial-owner-normal-smoke-helper-20261016.ps1",
+    "bytes": 278,
+    "sha256": "53DEB29E51DCC5E4B7AF4969D180A518885498B34C90A848073827F7EB4E3B09"
+  },
+  {
+    "path": "serial-owner-first-negative/web-body176-fallback-resume4-pre-admission-20261016.json",
+    "bytes": 342,
+    "sha256": "59A9A758920472D0B2297F5F24D2D4DF1545A2C3D43FE728D8C00158CF0901C8"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-admission.json",
+    "bytes": 200,
+    "sha256": "0C54F1C06ACE0CCE7ECB8E21AE5D29266BFDBFEA0EC3D1A26CA5C3826AAB23F2"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-authorities.json",
+    "bytes": 4080,
+    "sha256": "7CFD724050D0FC0F5DB714B2994F57B3838563576F02D5D4D1AA17CF5F931DA3"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-before.json",
+    "bytes": 1277,
+    "sha256": "05E54507D4524B4577A144C2D3B962AB3D482FD4F271DB2263979564678DB046"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-candidate.json",
+    "bytes": 1417784,
+    "sha256": "E717E42714EAD2D55FC83AE18F6F8BA12953DAA4DEA9BD66496BBBA663989C1B"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-controls.json",
+    "bytes": 1781,
+    "sha256": "35345F9DA0D722D224405A14E77E45DAAEF1A64861B121F49C53183A2A019287"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-frozen.json",
+    "bytes": 2437,
+    "sha256": "35F603054446B9D31E89C9D538A1CEDA9EE1299C031AB543B019859590287736"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-preflight-negative.json",
+    "bytes": 354,
+    "sha256": "832ACA4CE7B83D984D2DDA7BD76C1B00E5CF23BDFB35FC085FA84F48437BD795"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-tools.json",
+    "bytes": 4508818,
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "path": "serial-owner-first-negative/web-default-native-web-body-full-debug-build-resume2-20261015-vendor.json",
+    "bytes": 278178,
+    "sha256": "EB8477DB3300C7AAB7E8237EB38ECB0FDFC5BC4AE5F9E6A7528A50141EB01DE1"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-body-resume3-post-owner-audit-20261016.json",
+    "bytes": 1997,
+    "sha256": "060869D8A16D9C697D0FDA6715344CDE62F987886B5FAA8D3A7EB7EFB5053CD3"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-admission.json",
+    "bytes": 390,
+    "sha256": "E39C3B71F13F311EAB722886BD768874C5810B0EC9CE3FB93132E68984608A83"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-after.json",
+    "bytes": 1272,
+    "sha256": "FAF8AB12820CB8691D5B5448BF2A1CE27262A0C46009468A6CFC1180BDA326CE"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-authorities.json",
+    "bytes": 4080,
+    "sha256": "7CFD724050D0FC0F5DB714B2994F57B3838563576F02D5D4D1AA17CF5F931DA3"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-before.json",
+    "bytes": 1272,
+    "sha256": "FAF8AB12820CB8691D5B5448BF2A1CE27262A0C46009468A6CFC1180BDA326CE"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-candidate.json",
+    "bytes": 1418487,
+    "sha256": "1D0E32BD998A4F19FBE42C9BD9D1561CA0BAC69E0B7DA945E5B9D694F007D004"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-controls.json",
+    "bytes": 1813,
+    "sha256": "00CB56178C00555A298F0BEF6533F359EA1FA68195AB753967FFE0289D287582"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-frozen.json",
+    "bytes": 2427,
+    "sha256": "CA98B2FA12C2AAFF7CA6A6A3900AC52B7975620C460271175F9F348DB94FC1A4"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-launch-intent.json",
+    "bytes": 670,
+    "sha256": "0266F41A9F024FF46FE8408AD4385D74267349D73201F5C65C1FFEE8CE7D104C"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-orphan-identities.json",
+    "bytes": 882,
+    "sha256": "FA45102DB8FD3F9AAD37AC518606235C095A2DAF4109CFB27C2B0616D66B8FBE"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-orphan-reconciliation-second.json",
+    "bytes": 2306,
+    "sha256": "1E33BD3A882D424847323A3A66E4B38A6F76121717236DEC369765F1735EE65B"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-orphan-reconciliation.json",
+    "bytes": 1386,
+    "sha256": "8A16E843A09B0CFFE7F0705D3BB8AEA52712305708CF99E9FEFA69533532B1E2"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-owned-absence.json",
+    "bytes": 2137,
+    "sha256": "C8B775A3B1ACFC8C624B841EC17A418B57874A4F595DD28F88461D3EC2EDBDA4"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-owned-identities.json",
+    "bytes": 1636,
+    "sha256": "C5C74FBD76D1BFA69B2543D4115F1A09AC86020D3A64A16EBFF5102F376E7278"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-resource-admission.json",
+    "bytes": 342,
+    "sha256": "E8413BD09C6CCA033DF71B4EA408E3B64B1125351CC6CBD912F5FC22FFA95A0E"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-resource-samples.jsonl",
+    "bytes": 390,
+    "sha256": "FC7E6BA01847B626599461FE87CCD263DA8A24BC1CA6526CF547D58D93F1649F"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-resource-summary.json",
+    "bytes": 2115,
+    "sha256": "84EE266F751B4E80E9E75689496F0A15EBCE4D83C601304B6E7F1C2DD6C9FAE1"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-tools.json",
+    "bytes": 4508818,
+    "sha256": "CE7D170F3DDE340CB94AA29C228B83E2E9D3ABA2B62615474AF3BCE67C581018"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016-vendor.json",
+    "bytes": 278178,
+    "sha256": "EB8477DB3300C7AAB7E8237EB38ECB0FDFC5BC4AE5F9E6A7528A50141EB01DE1"
+  },
+  {
+    "path": "serial-owner-first-negative/web-serial-native-web-body-full-debug-build-resume3-20261016.process.json",
+    "bytes": 1575,
+    "sha256": "909FD9F6BB9411F81EDCDA80F30DC8839076C44E274017448BB30417CF07A4ED"
+  }
+]

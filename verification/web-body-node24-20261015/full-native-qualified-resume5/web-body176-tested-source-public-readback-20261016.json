@@ -1,0 +1,9 @@
+{
+  "source_head": "898bd4adb03defc1da0d93af763dca06a83197e3",
+  "public_ref": "refs/heads/checkpoint/native-web-body176-tested-source-20261016",
+  "exact_remote_readback": "898bd4adb03defc1da0d93af763dca06a83197e3\trefs/heads/checkpoint/native-web-body176-tested-source-20261016",
+  "native_body176_windows_debug": true,
+  "failed_serial_resource_owner_qualified": false,
+  "main_release_activation": false,
+  "verified_utc": "2026-10-16T10:13:06.8266099+00:00"
+}

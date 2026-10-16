@@ -1,0 +1,33 @@
+{
+  "pid": 35660,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+  "argv": [
+    "-NoProfile",
+    "-File",
+    "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\body-serial-owner-normal-smoke-helper-20261016.ps1"
+  ],
+  "live_command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoProfile -File C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\body-serial-owner-normal-smoke-helper-20261016.ps1",
+  "created_utc": "2026-10-16T10:01:30.6337930Z",
+  "parent_pid": 64936,
+  "launched_utc": "2026-10-16T10:01:30.6324492+00:00",
+  "working_directory": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003",
+  "outer_seconds": 300,
+  "settle_seconds": 10,
+  "status": "passed",
+  "resource_policy": {
+    "policy": "Root revised serial single-native admission; previous16GiB negatives retained",
+    "minimum_available_bytes": 12884901888,
+    "cancel_below_available_bytes": 4294967296,
+    "available_bytes": 17493897216,
+    "other_native_processes": 0,
+    "sample_interval_ms": 1000,
+    "checked_utc": "2026-10-16T10:01:30.6099433+00:00"
+  },
+  "owner_pid": 64936,
+  "owner_script_sha256": "9B5A40C1399D6685362DB73AD2086070401C79EB1158BAAC9AD75E144601E4FD",
+  "exit_code": 0,
+  "pipe_settlement_budget_ms": 8593,
+  "pipes_settled": true,
+  "completed_utc": "2026-10-16T10:01:35.5557059+00:00"
+}

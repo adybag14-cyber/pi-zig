@@ -1,0 +1,73 @@
+{
+  "source_head": "898bd4adb03defc1da0d93af763dca06a83197e3",
+  "checked_utc": "2026-10-16T10:13:03.4288301+00:00",
+  "recorded_identities": [
+    {
+      "recorded_pid": 76308,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 45296,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 51776,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 67748,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 66136,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 68556,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 61628,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 65040,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 69212,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 45928,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 69860,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 67964,
+      "pid_absent": true,
+      "current_identity": []
+    },
+    {
+      "recorded_pid": 63052,
+      "pid_absent": true,
+      "current_identity": []
+    }
+  ],
+  "candidate_native_inventory": [],
+  "no_candidate_native_processes": true
+}

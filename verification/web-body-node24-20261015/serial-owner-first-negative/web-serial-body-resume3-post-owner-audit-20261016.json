@@ -1,0 +1,19 @@
+{
+  "captured_utc": "2026-10-16T10:03:44.1946737+00:00",
+  "processes": [
+    {
+      "ProcessId": 69860,
+      "ParentProcessId": 45928,
+      "ExecutablePath": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "CommandLine": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe build-obj -cflags -std=gnu11 -O1 -ffp-contract=off -fno-fast-math -DWASM_RT_USE_MMAP=0 -DWASM_RT_USE_SEGUE=0 -DWASM_RT_MEMCHECK_BOUNDS_CHECK=1 -DWASM_RT_TRAP_HANDLER=pi_image_trap -- C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native\\photon_12.c -ODebug -I C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\vendor\\photon-native -Mroot -lc --cache-dir .zig-cache --global-cache-dir C:\\Users\\adyba\\AppData\\Local\\zig --name pi-photon-photon_12 --zig-lib-dir C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib\\ --listen=-",
+      "CreationDate": "2026-10-16T11:02:36.016898+01:00"
+    },
+    {
+      "ProcessId": 63016,
+      "ParentProcessId": 23620,
+      "ExecutablePath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "CommandLine": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -Command \"try { [Console]::OutputEncoding=[System.Text.Encoding]::UTF8 } catch {}\n$all=@(Get-CimInstance Win32_Process);$owned=@($all|Where-Object{$_.CommandLine-like'*pi-zig-web-body-full-source-20261016*'-or$_.ParentProcessId-in@(65040,69212,45928)});$owned|Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine,CreationDate|ConvertTo-Json -Depth 4;[ordered]@{captured_utc=[DateTimeOffset]::UtcNow.ToString('o');processes=@($owned|Select-Object ProcessId,ParentProcessId,ExecutablePath,CommandLine,CreationDate)}|ConvertTo-Json -Depth 5|Set-Content -LiteralPath C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\web-serial-body-resume3-post-owner-audit-20261016.json -Encoding utf8NoBOM\"",
+      "CreationDate": "2026-10-16T11:03:43.513268+01:00"
+    }
+  ]
+}

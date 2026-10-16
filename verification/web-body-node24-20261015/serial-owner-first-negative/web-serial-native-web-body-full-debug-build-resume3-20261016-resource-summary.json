@@ -1,0 +1,43 @@
+{
+  "sample_count": 2,
+  "root_peak_rss_bytes": 17633280,
+  "aggregate_owned_sampled_peak_rss_bytes": 34459648,
+  "minimum_available_bytes": 16618143744,
+  "owned_identities": [
+    {
+      "pid": 65040,
+      "parent_pid": 69748,
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "command_line": "\"C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-web-body-full -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-16T10:02:30.0213470Z",
+      "parent_key": null,
+      "depth": 0,
+      "peak_rss_bytes": 17633280
+    },
+    {
+      "pid": 69212,
+      "parent_pid": 65040,
+      "executable": "C:\\Windows\\system32\\conhost.exe",
+      "command_line": "\\??\\C:\\Windows\\system32\\conhost.exe 0x4",
+      "created_utc": "2026-10-16T10:02:30.0258100Z",
+      "parent_key": "65040|2026-10-16T10:02:30.0213470Z",
+      "depth": 1,
+      "peak_rss_bytes": 7397376
+    },
+    {
+      "pid": 45928,
+      "parent_pid": 65040,
+      "executable": "C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\.zig-cache\\o\\68750a47e4b420c70b3db33e902712c6\\build.exe",
+      "command_line": ".zig-cache\\o\\68750a47e4b420c70b3db33e902712c6\\build.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\lib C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016 .zig-cache C:\\Users\\adyba\\AppData\\Local\\zig --seed 0x1dfb8028 -Z88a2e5ad42590ccb build-native-web-body-full -Doptimize=Debug -j1 --test-timeout 120s --summary all",
+      "created_utc": "2026-10-16T10:02:30.1004690Z",
+      "parent_key": "65040|2026-10-16T10:02:30.0213470Z",
+      "depth": 1,
+      "peak_rss_bytes": 9523200
+    }
+  ],
+  "cancellation_reason": "resource_monitor_failure",
+  "capture_errors": [
+    "Unverifiable or host descendant; refusing ownership/control"
+  ],
+  "monitor_error": "Unverifiable or host descendant; refusing ownership/control"
+}

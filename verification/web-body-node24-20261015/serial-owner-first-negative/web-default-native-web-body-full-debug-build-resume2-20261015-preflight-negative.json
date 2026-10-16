@@ -1,0 +1,10 @@
+{
+  "candidate_head": "9c51fbe8b5f8b04d1739540bbf792ace84335f0b",
+  "status": "preflight_admission_rejected",
+  "native_process_launched": false,
+  "available_bytes": 14485598208,
+  "minimum_free_bytes": 17179869184,
+  "existing_native_roots": 0,
+  "preserved_all_frozen_prechecks": true,
+  "checked_utc": "2026-10-16T09:47:35.9930990+00:00"
+}
