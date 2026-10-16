@@ -1539,6 +1539,12 @@ pub fn build(b: *std.Build) void {
     session_control_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-sdk-session-control", "Compare original session cancellation idle disposal modes and shared resource cleanup with complete owner graphs").dependOn(&b.addRunArtifact(session_control_tests).step);
     b.step("build-native-sdk-session-control", "Compile ordinary session cancellation and disposal separately from runtime deadlines").dependOn(&session_control_tests.step);
+    const idle_settlement_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_idle_settlement_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native idle settlement"}, .use_llvm = use_llvm });
+    linkQuickJs(b, idle_settlement_identity_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(idle_settlement_identity_tests.root_module, sqlite_lib_dir, sqlite_library);
+    idle_settlement_identity_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-sdk-idle-settlement-identity", "Compile exact fatal identity and entered-finally controls for the idle settlement leaf").dependOn(&idle_settlement_identity_tests.step);
+    b.step("test-native-sdk-idle-settlement-identity", "Exercise exact native reason retention across idle settlement finalizers").dependOn(&b.addRunArtifact(idle_settlement_identity_tests).step);
     const session_models_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_session_models_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native SDK session models"}, .use_llvm = use_llvm });
     linkQuickJs(b, session_models_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(session_models_tests.root_module, sqlite_lib_dir, sqlite_library);
