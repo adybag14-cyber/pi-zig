@@ -1,0 +1,191 @@
+{
+  "schema": 1,
+  "status": "source-only independent peer review closed; unexecuted",
+  "source_head": "6db380cb5255f29bd5500b9778cda5fd72e487fd",
+  "source_base": "e9fdebc24637cb29a19e1229256b51654a286fba",
+  "branch": "work/upstream-8efd-compat-20261016",
+  "upstream_head": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "upstream_snapshot": "upstream/snapshots/8efd314f-20261016",
+  "impact_inventory_sha256": "1A1198C39AEABAF8A9B0207BFF9B2669EF3470E9143D146FF7CAAA371D768E02",
+  "impact_report_sha256": "7ED1A7337259F09190A034C4DAEDB98322B8D3A9FF0CD492C3FE975FFD6A2F19",
+  "upstream_raw_delta_sha256": "3ADBBEE3558011C38240A984BFEC409CB5BC98D65AC2C3469FE5C8C9101064F3",
+  "peer_review": {
+    "agent": "body_validation_resume",
+    "reviewed_head": "6db380cb5255f29bd5500b9778cda5fd72e487fd",
+    "result": "closed within Root documented mixed-host-contract scope",
+    "checks": [
+      "Source construction capture order, optional captured undefined, raw supplier receiver, per-access identity",
+      "Harness root mark/free and per-attempt env cell ownership",
+      "Ordinary capture transfer before guest catch with current pending precedence",
+      "Fresh native/already-uncatchable exact reason escape and pendingError/directOOM identity",
+      "Retention prior cause and diagnostic ownership detachment/restoration; preexisting fatal supplier bypass",
+      "Context retention fatal bypass of reporter/fallback and fallible propagation",
+      "Balanced leaf diagnostic suppression with no-coercion controls",
+      "Eleven upstream Source pins and whitespace checks"
+    ]
+  },
+  "files": [
+    {
+      "path": "src/ai/providers.zig",
+      "bytes": 42484,
+      "sha256": "5F4FC0DDD294F40B0ACB3EABBC0595EBC4C77D94AD70745614F4AB100C9AF963"
+    },
+    {
+      "path": "src/extensions/native_durable_agent.zig",
+      "bytes": 31034,
+      "sha256": "F9D11D67DE2DC3C8C212E135D8CCBE3CE47EE7AC665572770D88D8361F8A87D2"
+    },
+    {
+      "path": "src/extensions/native_durable_document_retention.zig",
+      "bytes": 18275,
+      "sha256": "B833C5096F37F83ECAFFAB9243DB97FF39FA9AF203D523FD85AAF55A32674DFD"
+    },
+    {
+      "path": "src/extensions/native_durable_harness.zig",
+      "bytes": 41889,
+      "sha256": "A2957681A1675D95685641684EF2637EB9F6960EF6267B068878F283C39EF4E7"
+    },
+    {
+      "path": "src/extensions/native_durable_host_inputs.zig",
+      "bytes": 3936,
+      "sha256": "6E0A5F0AD7E496E73B1D981349A5591226FE2BC40592B4BA70B2B8FA085FC833"
+    },
+    {
+      "path": "src/extensions/native_durable_submission_handle.zig",
+      "bytes": 30197,
+      "sha256": "F92A363BE9FC6A879D6EE344830C23056E13429308B69CDF1F71BDDE3FACDA5F"
+    },
+    {
+      "path": "src/extensions/native_durable_tasks.zig",
+      "bytes": 287616,
+      "sha256": "39BFBE4C6F66DD9D5CB81E7F0B0BDDCACA517823E05341F4A13B3BB40163DF5D"
+    },
+    {
+      "path": "src/extensions/native_durable_tool_api.zig",
+      "bytes": 11176,
+      "sha256": "7F2915E2F78449DF74D5332CB5F8939F74BCE4E290FBD026C78D12039CE05D89"
+    },
+    {
+      "path": "src/extensions/native_durable_tool_execute.zig",
+      "bytes": 16700,
+      "sha256": "D6239001885490817F93F9E303F1249517EFA2DAF5DB2334608288A992F66E5A"
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_model.zig",
+      "bytes": 6242,
+      "sha256": "1011D2E89976D0AE312322AFBB781D398E3F10A90ACBAC22B664FE7A160A89BE"
+    },
+    {
+      "path": "src/native_durable_live_host_inputs_test.zig",
+      "bytes": 9800,
+      "sha256": "D8AE56007B35664C1D2406FA3B03A674EC8AB232C07933E388B4112C9FC02C40"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/FATAL-CONTROLS-PREPARED.md",
+      "bytes": 4423,
+      "sha256": "40A8786DD5556FBFD6A137730FED1C5620AC78B07ECDAE8EAB1C5598AFCC4C3D"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/README.md",
+      "bytes": 5077,
+      "sha256": "1836EADE4BB2D793CA60846F81CF7CE18DB23A6BBC0B939E63E8E6287CF0E980"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/SCHEMA-GENERATION-PLAN.md",
+      "bytes": 3193,
+      "sha256": "BF49092B094C96EE2912AB0DA450BF7D5B7196F9F971F30CED7BE2F1B7F09E21"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/original-harness-host-inputs.test.ts.source",
+      "bytes": 4183,
+      "sha256": "8D6DF8AEBAB45D9DB82A5C8197F626E3DA1077BF54E3A7BA5D7A2088AA21C91F"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/public-callers.mjs",
+      "bytes": 4700,
+      "sha256": "65B206D25431FCC8DE390900E3D0E6ED81434C9ED5E8186323F055AE29F3ED99"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/unsupported-mixed-oom-control.zig",
+      "bytes": 1115,
+      "sha256": "2EB2BDA8A299BEF7952D8BF3764186BADD2AF7BC5F7C92A72600999218C08E93"
+    },
+    {
+      "path": "verification/upstream-8efd-compat-sourceonly-20261016/upstream-source-pins.json",
+      "bytes": 2791,
+      "sha256": "27731323D7122AD873203136C26C95490C3D4BDDC8E01117562FCBD7B052B8BD"
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "blob": "d53be37fcd49dafac09dd179d2b84708257c3d8c",
+      "unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "blob": "1fe806fe1373f0e1ea97cf15587e9614783b15e7",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_durable.zig",
+      "blob": "1afb1b26340779fc3c0e068013e7a36fd3ded364",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+      "unchanged": true
+    },
+    {
+      "path": "src/ai/catalog_generated.zig",
+      "blob": "e9d6277c857f37e06ce1446b144a27939f1141e6",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_ai_model_schema_program.zig",
+      "blob": "93904934ebb890d677142d928f5cc07067fda833",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/model-config-1cedd32.schema.json",
+      "blob": "0c2671868c026f1e3b9a7323f07379081d0f4316",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/model-config-6fb2e78.schema.json",
+      "blob": "b043aa14ee53b06e2b6c4abf3ee016409df11b45",
+      "unchanged": true
+    }
+  ],
+  "historical_fixture_changed_paths": [],
+  "native_controls_authored": 6,
+  "native_controls_executed": false,
+  "original_source_subjects": 4,
+  "source_callers_executed": false,
+  "expected_source_output_created": false,
+  "schema_generation_executed": false,
+  "generated_catalog_edited": false,
+  "compiled": false,
+  "zig_fmt_or_ast_executed": false,
+  "node_executed": false,
+  "main_edited": false,
+  "limitations": [
+    "No public Harness/generation/compaction/hooks/recovery runtime equality claim",
+    "Mixed direct trustedOOM plus unrelated primitive/plain pending reason remains unqualified negative, observed-only control prepared",
+    "Legacy clocks/raw readSettings/generic durable callback and public open Promise capture policies remain separate audits",
+    "NVIDIA new default absent from genuine8efd/native generated catalogs; old authored membership invariant preserved pending Source-based fallback successor controls",
+    "Generated8efd schema/introspection parity remains future coordinated owner route; no manual generated changes",
+    "All exact original/native capture and compile gates require later Root grants"
+  ]
+}
