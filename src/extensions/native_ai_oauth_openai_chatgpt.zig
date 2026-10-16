@@ -86,8 +86,8 @@ fn refresh(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: [
 fn initializeRefresh(engine: *v.em.Engine, owner: c.JSValue, args: []const c.JSValue, config: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const credential = arg(args, 0);
-    const client_id = try credentialField(&scope, credential, "clientId");
+    const stored_credential = arg(args, 0);
+    const client_id = try credentialField(&scope, stored_credential, "clientId");
     if (!try nonempty(&scope, client_id)) return fail(&scope, "Stored OpenAI OAuth credential does not contain an issued client ID; reconnect ChatGPT");
     try scope.put(owner, "clientId", client_id);
     try scope.put(owner, "config", config);
@@ -96,7 +96,7 @@ fn initializeRefresh(engine: *v.em.Engine, owner: c.JSValue, args: []const c.JSV
     const fields = try scope.object();
     try scope.put(fields, "grant_type", try scope.text("refresh_token"));
     try scope.put(fields, "client_id", client_id);
-    try scope.put(fields, "refresh_token", try scope.get(credential, "refresh"));
+    try scope.put(fields, "refresh_token", try scope.get(stored_credential, "refresh"));
     try scope.put(fields, "resource", try scope.text(resource));
     const body = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, params_constructor, 1, @constCast(&[_]c.JSValue{fields}))));
     try request(&scope, owner, body, arg(args, 1));

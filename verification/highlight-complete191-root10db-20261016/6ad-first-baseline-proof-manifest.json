@@ -1,0 +1,517 @@
+{
+  "payload_count": 84,
+  "foundation_runtime": "passed6/6",
+  "tested_head": "6ad290967f74ad471600d25a3f7da3f30fe12bc3",
+  "successor_native_qualified": false,
+  "async26_runtime_started": false,
+  "async26_metadata_started": false,
+  "payloads": [
+    {
+      "bytes": 2647,
+      "entry": "payload/Users/adyba/pi-upstream-source-b45e0eb-20261014/node_modules/highlight.js/package.json",
+      "sha256": "4F657BEB931CB9613E5173414855B2A01E698696C0661D21973BFBBD50E184CF",
+      "path": "C:\\Users\\adyba\\pi-upstream-source-b45e0eb-20261014\\node_modules\\highlight.js\\package.json"
+    },
+    {
+      "bytes": 43350565,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/.zig-cache/o/ac6e5d0a6cac423dc33de09df4994e53/test_zcu.obj",
+      "sha256": "7F4C6C1E2D0107B46951C91EB09E13F1D8F186550DB1F4E39B69302C7675C2C4",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\.zig-cache\\o\\ac6e5d0a6cac423dc33de09df4994e53\\test_zcu.obj"
+    },
+    {
+      "bytes": 47236096,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/.zig-cache/o/ac6e5d0a6cac423dc33de09df4994e53/test.exe",
+      "sha256": "D6AE6280DA565CEBED923E07E792CEC8D525CE9E60FBCD55D80187AF77D0029D",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\.zig-cache\\o\\ac6e5d0a6cac423dc33de09df4994e53\\test.exe"
+    },
+    {
+      "bytes": 15314944,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/.zig-cache/o/ac6e5d0a6cac423dc33de09df4994e53/test.pdb",
+      "sha256": "E925C2B98E88EA26CE52981DFCDA841ADEFF591143E981FEFE6F250DE37AB191",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\.zig-cache\\o\\ac6e5d0a6cac423dc33de09df4994e53\\test.pdb"
+    },
+    {
+      "bytes": 8500,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.input.txt",
+      "sha256": "DE6884665E832BDC31A541F41691B5E3EFD67DBBAFC69F2BF981C5397CB8CD76",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.input.txt"
+    },
+    {
+      "bytes": 6814,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.lookup_failure.json",
+      "sha256": "5AF3FF3C8BA5433DC6D5945B84A99D08F7AACD2F5FF93A4BF972E58C88AF1BEA",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.lookup_failure.json"
+    },
+    {
+      "bytes": 37103,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.safe_factory_failure.json",
+      "sha256": "C5D2A7A27D1711885B76D74A1CBFFB926B0DA3FEEA65543B354B854350FBAB92",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.safe_factory_failure.json"
+    },
+    {
+      "bytes": 11145926,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.success.json",
+      "sha256": "D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.success.json"
+    },
+    {
+      "bytes": 11699,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/tools/ci/native_qualification_ci.ps1",
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\tools\\ci\\native_qualification_ci.ps1"
+    },
+    {
+      "bytes": 2206521,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/vendor/quickjs/quickjs.c",
+      "sha256": "E2F988956B452EBACDDC1B24AB45E5F70F7AFB4777F7452EDF1457649B2D1D3B",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\vendor\\quickjs\\quickjs.c"
+    },
+    {
+      "bytes": 75537,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\vendor\\quickjs\\quickjs.h"
+    },
+    {
+      "bytes": 5590,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/verification/highlight-complete191-root10db-20261016/gate-plan.json",
+      "sha256": "9974E7833998DFD729CAB2E09A2DF5E0B90971BAC4CA9CCCF3CE78674EC8095D",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\verification\\highlight-complete191-root10db-20261016\\gate-plan.json"
+    },
+    {
+      "bytes": 19404,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/verification/highlight-complete191-root10db-20261016/Run-HighlightRoot10dbNativePhase-20261016.ps1",
+      "sha256": "78E08E2FF31589CB08AB3454712C9DCC8E1A4C743126C5776F2FD68BCFFBF634",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\verification\\highlight-complete191-root10db-20261016\\Run-HighlightRoot10dbNativePhase-20261016.ps1"
+    },
+    {
+      "bytes": 47236096,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root10db-20261016/zig-out/bin/highlight-root10db-foundation.exe",
+      "sha256": "D6AE6280DA565CEBED923E07E792CEC8D525CE9E60FBCD55D80187AF77D0029D",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root10db-20261016\\zig-out\\bin\\highlight-root10db-foundation.exe"
+    },
+    {
+      "bytes": 8500,
+      "entry": "payload/Users/adyba/pi-zig-highlight-complete191-root55-20261015/src/extensions/fixtures/sdk-highlight-complete191-10_7_3.input.txt",
+      "sha256": "DE6884665E832BDC31A541F41691B5E3EFD67DBBAFC69F2BF981C5397CB8CD76",
+      "path": "C:\\Users\\adyba\\pi-zig-highlight-complete191-root55-20261015\\src\\extensions\\fixtures\\sdk-highlight-complete191-10_7_3.input.txt"
+    },
+    {
+      "bytes": 3488,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Audit-HighlightRoot10dbBaselineTerminal-20261016.ps1",
+      "sha256": "0DD15FCAF52111200B5B61C7B9006A80067643D156A57255EBF801DD2D3B0080",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Audit-HighlightRoot10dbBaselineTerminal-20261016.ps1"
+    },
+    {
+      "bytes": 1245,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/capture-highlight-complete191-20261015.mjs",
+      "sha256": "A5FA59062B75F3F8F6323F4F056C0C88C137535A9965B2329E15B2D613E9732D",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\capture-highlight-complete191-20261015.mjs"
+    },
+    {
+      "bytes": 7153406,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/durable-19cb534-reference-20261012-all-built-runtime.json",
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-19cb534-reference-20261012-all-built-runtime.json"
+    },
+    {
+      "bytes": 4665338,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json"
+    },
+    {
+      "bytes": 42417,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-canonical195-20261015.json",
+      "sha256": "1DC95247D464B0303E19A7E60E7C9AA30EFC3582872120C6FCD0CE61AB5A8542",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-canonical195-20261015.json"
+    },
+    {
+      "bytes": 2729,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015-controls-before.json",
+      "sha256": "622EB0A7182209E70899CC4F9B5C8830E0BFB450A4E83C40ED7CB6F0B9DF369B",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015-controls-before.json"
+    },
+    {
+      "bytes": 615,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015-module-observations.json",
+      "sha256": "5361CFF6882D33D62897A004FC38ACA344DEDA431DE2C138C7777971B3231398",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015-module-observations.json"
+    },
+    {
+      "bytes": 2213308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015-native-before.json",
+      "sha256": "D411B769A7E50C7E13227E29BE936D8088BF1D9BE2909F694EC4D602295205B3",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015-native-before.json"
+    },
+    {
+      "bytes": 6814,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015-output.json",
+      "sha256": "5AF3FF3C8BA5433DC6D5945B84A99D08F7AACD2F5FF93A4BF972E58C88AF1BEA",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015-output.json"
+    },
+    {
+      "bytes": 595,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015-posthash.json",
+      "sha256": "7DB222574E1A5A59820999A6B0B3E0D1A22E13194ACE286FE50F95FED1F37A64",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015-posthash.json"
+    },
+    {
+      "bytes": 1290,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-lookup_failure-first-20261015.json",
+      "sha256": "945561BD343E3BAD6A2066F651C137DAAE9E40BEFE71EA3F130264269549A59E",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-lookup_failure-first-20261015.json"
+    },
+    {
+      "bytes": 2735,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015-controls-before.json",
+      "sha256": "6780CD8D891A6F3EA077D441D14C048DA9A7B9442BFEC679E1068B66CA51BEC6",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015-controls-before.json"
+    },
+    {
+      "bytes": 624,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015-module-observations.json",
+      "sha256": "B35396DB484B251F9862EE93B7E8D408E00FF1DD27CBB5EA305DA79BF0B287D2",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015-module-observations.json"
+    },
+    {
+      "bytes": 2213308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015-native-before.json",
+      "sha256": "7B844EEECDB63E3BD1BD817F0F53A660D9A356ACDDA07CFA6FF938EE5CF74B2E",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015-native-before.json"
+    },
+    {
+      "bytes": 37103,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015-output.json",
+      "sha256": "C5D2A7A27D1711885B76D74A1CBFFB926B0DA3FEEA65543B354B854350FBAB92",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015-output.json"
+    },
+    {
+      "bytes": 595,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015-posthash.json",
+      "sha256": "0F15D6F3C799E6CC7F4ED87C284F39D87CE702042D1EAA7AC671D0894A202B32",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015-posthash.json"
+    },
+    {
+      "bytes": 1308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-safe_factory_failure-first-20261015.json",
+      "sha256": "0E1DCAACE40D454AB4061B0279D73B889976F7F89D746B0A52D3148C312117D4",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-safe_factory_failure-first-20261015.json"
+    },
+    {
+      "bytes": 1970,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-series-terminal-20261015.json",
+      "sha256": "9CC518918AA7D74FD542405B2DDE3F3B0692389979300522E498322E1D492AD2",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-series-terminal-20261015.json"
+    },
+    {
+      "bytes": 2722,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015-controls-before.json",
+      "sha256": "747D304E27EE122BC96B9335812276B4FF7B15718BDFAB829F9DD597C684DBF5",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-controls-before.json"
+    },
+    {
+      "bytes": 615,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015-module-observations.json",
+      "sha256": "316A47034C0C4D4CC11EE63CFF4CA8C35B4160402831B49EE02EE86453DF33D6",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-module-observations.json"
+    },
+    {
+      "bytes": 2213308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015-native-before.json",
+      "sha256": "7B844EEECDB63E3BD1BD817F0F53A660D9A356ACDDA07CFA6FF938EE5CF74B2E",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-native-before.json"
+    },
+    {
+      "bytes": 11145926,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015-output.json",
+      "sha256": "D6D410D29A79FCCC24D2C4690F40D66A34A879E6C3B662C102B4B9B7F9AD17F6",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-output.json"
+    },
+    {
+      "bytes": 595,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015-posthash.json",
+      "sha256": "B1A9F2854EBD298EF524A98BFE80B7015A4426B3ACD8D9FC774009C853BF9ABD",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015-posthash.json"
+    },
+    {
+      "bytes": 1269,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-complete191-source-success-first-20261015.json",
+      "sha256": "1592F0744BC91FC28CCF532D859A5243DBCAE73716A988FB31A7CA576C40144B",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-complete191-source-success-first-20261015.json"
+    },
+    {
+      "bytes": 28556,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-lazy-batch8-source106-absences84-20261015.json",
+      "sha256": "A27946F8379AEF5A1FF9CC77124715DEF9CC5796FBC641B33153FB0CBC47A589",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-lazy-batch8-source106-absences84-20261015.json"
+    },
+    {
+      "bytes": 151017,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-6ad29096-public-readback-20261016.json",
+      "sha256": "90EB4FBE07FD771875170A82BBA349A5F6F75A0CAF1E2AE49B9427D6DFAE5BC9",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-6ad29096-public-readback-20261016.json"
+    },
+    {
+      "bytes": 385,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-admission.json",
+      "sha256": "3D98003BCC1C009A8AC4B95732F0210D21DFD171C6D897D59B915FA4FFFEF92B",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-admission.json"
+    },
+    {
+      "bytes": 3340829,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-before.json",
+      "sha256": "07138067B506469A32A789CF32419D046B47223DA7DEAF623369952D803FCBDC",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-before.json"
+    },
+    {
+      "bytes": 8308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-controls.json",
+      "sha256": "28C789561E20D286920CB4C49F3666634D206441649DE20A2720708F244A3B93",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-controls.json"
+    },
+    {
+      "bytes": 2193,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-independent-terminal.json",
+      "sha256": "6C881C6DD4E9316C3F4697755DC28BFA03F31B6BEA12A6075DA2CCCBB0A0247A",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-independent-terminal.json"
+    },
+    {
+      "bytes": 6949054,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-paths-before.json",
+      "sha256": "6C3EC49B8011F1C75CA7C2C4B9386A5EA4EF1B4C88552AAFBE23EA65BC1248F3",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-paths-before.json"
+    },
+    {
+      "bytes": 1128,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016-posthash.json",
+      "sha256": "FA43754FD02EA0DED3AA9A3FDE368B414A0B7E1F8BCABA93E9A5FC26CFCF4A01",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016-posthash.json"
+    },
+    {
+      "bytes": 983,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016.process.json",
+      "sha256": "5C084067D8E8B2F3E26542A9255143EB1B7210368E40A8F8B5BA774ABD9BC42A",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016.process.json"
+    },
+    {
+      "bytes": 18197,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016.stderr.log",
+      "sha256": "175A1E6FBBA80EB432AB923C751229E16BA6C0FBDF814A4EA093C650741BD223",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-async26-compile-first-20261016.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-async26-compile-first-20261016.stdout.log"
+    },
+    {
+      "bytes": 388,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-admission.json",
+      "sha256": "7AC733D8D6E80478D94C289C5E22A2CF47236DEC53FE238DE6BEF15D294D0591",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-admission.json"
+    },
+    {
+      "bytes": 931,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-artifacts.json",
+      "sha256": "3D50F983D0DCFB58E8C56D4FB7206CA13CE35E7E0981F7D844C6F538F542109E",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-artifacts.json"
+    },
+    {
+      "bytes": 3340829,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-before.json",
+      "sha256": "F420A5340DED440413151643F99CA27F66E036FABF5DBECE568D0028B9F59F3A",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-before.json"
+    },
+    {
+      "bytes": 8308,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-controls.json",
+      "sha256": "6F03BA0BE9079B1711FBCC3191A5D9AC7872FB82C13368CB0FB181482BC39723",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-controls.json"
+    },
+    {
+      "bytes": 2302,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-independent-terminal.json",
+      "sha256": "07AA3B6EF0AC1C740882E18847178E7D8CDADF8B83E009FA8BF5402730891F9F",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-independent-terminal.json"
+    },
+    {
+      "bytes": 1168,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-metadata-probe.json",
+      "sha256": "B706C44AD142781879AC37B4D92C5FFE5A3CFC3E73A4DF7447A56EFECA345233",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-metadata-probe.json"
+    },
+    {
+      "bytes": 0,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-metadata-probe.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-metadata-probe.stderr.log"
+    },
+    {
+      "bytes": 840,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-metadata-probe.stdout.bin",
+      "sha256": "699E561DCA394C4FBA9ED8761CEC7C12E2AD7F6FCDF8BF61B95B5D02F9024C19",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-metadata-probe.stdout.bin"
+    },
+    {
+      "bytes": 1301,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-metadata.json",
+      "sha256": "E6510AFCF9063C84D9D134D8576473A91BE8D83C246D002ACDDCA418C67138FE",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-metadata.json"
+    },
+    {
+      "bytes": 6949054,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-paths-before.json",
+      "sha256": "92BEC209F8E7A7E72D251FF10864040DE1263C0683B15AAE86005CD78FF1F5E8",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-paths-before.json"
+    },
+    {
+      "bytes": 1131,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016-posthash.json",
+      "sha256": "454BA061BEA0484FE7D7EAD1380304D0D954DA4653F7DB16673E95136815625A",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016-posthash.json"
+    },
+    {
+      "bytes": 989,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016.process.json",
+      "sha256": "DF1DD342FADFC395805A050B2F66DC0146D95B1D29360EA31B43A810EB53DB34",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016.process.json"
+    },
+    {
+      "bytes": 13935,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016.stderr.log",
+      "sha256": "DA562BB9ED60697DBD88C4D90FFBD551966D60BEE4ABFF2CABBE31EE8FDB6613",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-compile-first-20261016.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-compile-first-20261016.stdout.log"
+    },
+    {
+      "bytes": 388,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-admission.json",
+      "sha256": "B5B77C4E9575167D02C14CC3DD875426ED6055C02953FB19B18B1911034A8A0C",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-admission.json"
+    },
+    {
+      "bytes": 3340829,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-before.json",
+      "sha256": "183842FEA30ABFAA36DD425D4C1811F945D8EEE9CD42A4AA44C826F04FBA4016",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-before.json"
+    },
+    {
+      "bytes": 10103,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-controls.json",
+      "sha256": "A64E766AC61C1A136F4476F779E5F5DC7404E11B4B4282D7C534E904711AE17D",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-controls.json"
+    },
+    {
+      "bytes": 4573,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-independent-terminal.json",
+      "sha256": "CBAF4BEDDFECF41EB261E2A98EB98675DAF6EDE6D611B911F7D99993E4A36345",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-independent-terminal.json"
+    },
+    {
+      "bytes": 6949054,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-paths-before.json",
+      "sha256": "9EED39573BB7E953B9B586708B7B12696D92B66F67D05A47F9B9295B8866A924",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-paths-before.json"
+    },
+    {
+      "bytes": 1131,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016-posthash.json",
+      "sha256": "EB50A0BE6BBAA625E84D1CB1BA62D12BD1C0594AA886F7DCEB30DB458778E3F2",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016-posthash.json"
+    },
+    {
+      "bytes": 996,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016.process.json",
+      "sha256": "E30841969A35FB23E5DEDD84968B769B4CD2CB8B999464463A76E8D6C7CB0A82",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016.process.json"
+    },
+    {
+      "bytes": 13973,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016.stderr.log",
+      "sha256": "E05A58D474C9AC685286ADE68C4AD3AF8A5E8BEEAF7FDEF960AD1F3C62FA4A91",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016.stderr.log"
+    },
+    {
+      "bytes": 0,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/highlight-root10db-foundation-runtime-first-20261016.stdout.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\highlight-root10db-foundation-runtime-first-20261016.stdout.log"
+    },
+    {
+      "bytes": 3723,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Invoke-OwnedEeSourceJob-20261012.ps1",
+      "sha256": "B553B9A183BD2FB4CFBC7852B98B47E788ADB97AE32723F1E56EE04A8776B2F9",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Invoke-OwnedEeSourceJob-20261012.ps1"
+    },
+    {
+      "bytes": 3406,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Package-HighlightRoot10dbFirstBaseline-20261016.ps1",
+      "sha256": "874AAF9C65D9D0BDF2A4138B28853C981F5D8486D138E5C569F45D45CD091AAC",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Package-HighlightRoot10dbFirstBaseline-20261016.ps1"
+    },
+    {
+      "bytes": 352993,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/root-current8a-npm-tools-before.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\root-current8a-npm-tools-before.json"
+    },
+    {
+      "bytes": 2224,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Run-HighlightComplete191Series-20261015.ps1",
+      "sha256": "34227047BE2BE9DC3D0476CA66A5E0EE67EEE33AF7D80669293286E0C666074B",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Series-20261015.ps1"
+    },
+    {
+      "bytes": 6854,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Run-HighlightComplete191Source-20261015.ps1",
+      "sha256": "AD8BA8EF4B33EF10F5AF8048D78E6F62C009835007A147627E8DFBF6BEFF590D",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightComplete191Source-20261015.ps1"
+    },
+    {
+      "bytes": 12769,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Run-HighlightRoot55NativePhase-20261015.ps1",
+      "sha256": "D0737A3C4B5F552E998B8B5A8BFF0FF1341C80FA3D50355B4D61E6514E469F15",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Run-HighlightRoot55NativePhase-20261015.ps1"
+    },
+    {
+      "bytes": 211110,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/source5ab-dependency-contract-audit-20261015.json",
+      "sha256": "C6AD1BBCB7CFAE3E4369BA93DCA7A183CDA26C4B32620B065918650EB7977352",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-dependency-contract-audit-20261015.json"
+    },
+    {
+      "bytes": 556118,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/source5ab-full-manifest-20261015.json",
+      "sha256": "DC83FE4B08A0A6BFAE300540D0353905E7FBA5F072C99891BB39D0170BC0B1BE",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-full-manifest-20261015.json"
+    },
+    {
+      "bytes": 4469,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/source5ab-observe-20261015.mjs",
+      "sha256": "6261264D0A4D3D82B36E12B6675CC59FCC74ACE1A1E92A225703A24285DCF017",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\source5ab-observe-20261015.mjs"
+    },
+    {
+      "bytes": 4078,
+      "entry": "payload/Users/adyba/pi-zig-update-evidence-20261003/Validate-HighlightFoundationMetadata6-20261015.ps1",
+      "sha256": "DF9964A16991E0B83EBC506AF2A110CF7388895714CD33B8A82C52EA5B358B20",
+      "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\Validate-HighlightFoundationMetadata6-20261015.ps1"
+    },
+    {
+      "bytes": 3573,
+      "entry": "payload/Users/adyba/pi-zig-web-body-full-source-20261016/verification/web-body-node24-20261015/run-owner.ps1",
+      "sha256": "B91945EF77F91388BB8792959AB29C3A49505B5381BA0994723AC0FC6E0502AB",
+      "path": "C:\\Users\\adyba\\pi-zig-web-body-full-source-20261016\\verification\\web-body-node24-20261015\\run-owner.ps1"
+    }
+  ],
+  "async26_compile": "failed_exit1_inherited_inline_for_runtime_continue",
+  "later_gates_started": false,
+  "all_original_bytes_preserved": true
+}

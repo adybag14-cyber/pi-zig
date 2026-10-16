@@ -113,12 +113,12 @@ fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected:
 }
 fn required(s: *Scope, body: c.JSValue, name: [*:0]const u8) !c.JSValue {
     const value = try s.get(body, name);
-    if (!c.JS_IsString(value) or try v.length(s, value) == 0) return v.errorText(s, try s.concat(try s.text("Invalid xAI OAuth response field: "), try s.text(name)));
+    if (!c.JS_IsString(value) or try v.length(s, value) == 0) return v.errorText(s, try s.concat(try s.text("Invalid xAI OAuth response field: "), try s.text(@import("std").mem.span(name))));
     return value;
 }
 fn positive(s: *Scope, body: c.JSValue, name: [*:0]const u8) !c.JSValue {
     const value = try s.get(body, name);
-    if (!try h.positive(s, value)) return v.errorText(s, try s.concat(try s.text("Invalid xAI OAuth response field: "), try s.text(name)));
+    if (!try h.positive(s, value)) return v.errorText(s, try s.concat(try s.text("Invalid xAI OAuth response field: "), try s.text(@import("std").mem.span(name))));
     return value;
 }
 fn failure(s: *Scope, owner: c.JSValue, body: c.JSValue, action: []const u8) !c.JSValue {
