@@ -4,7 +4,7 @@
   "files": [
     {
       "path": "vendor/quickjs/quickjs.c",
-      "sha256": "60CDC2A50655385F15161E40F238A442E52B7F7BE5CF29940EF995C82C8FE4FA"
+      "sha256": "333ABF5DC0CD17259C77B7A578D321C9836EC92199DAB413DD30EBCB29554F1A"
     },
     {
       "path": "vendor/quickjs/quickjs.h",
@@ -16,11 +16,15 @@
     },
     {
       "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/DESIGN.md",
-      "sha256": "1278FF687471CCAF756E89A60DAFB5F1F05D941FBF4328CE7B8D9B6511945EC6"
+      "sha256": "F7937A1FA5EFCE168E99EFA8733E2CDFC6E242D7EC515C8FB9593694BCAFAEF2"
     },
     {
       "path": "verification/tla-fatal-delivery-c9-sourceonly-20261016/build-snippet.zig.txt",
-      "sha256": "B2BE63537BC2C8D8C94A3FDE4EC2459B646BAE8BBFD7E629A4621F71A20C9E08"
+      "sha256": "C1953DCFE66BD2CAE8E86E50372D6CBD30A967BAF1A0E17C3A3EA8E99DD06DBF"
+    },
+    {
+      "path": "src/native_tla_resumed_fatal_known_gap_test.zig",
+      "sha256": "293AC4DEBFDB57914ECBA85B6BDEDF6EF74F45905ADCEFA9FFDB3AF98EC624FC"
     }
   ],
   "checks": [

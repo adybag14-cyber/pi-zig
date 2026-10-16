@@ -1097,6 +1097,7 @@ struct JSModuleDef {
        eval_exception */
     bool eval_has_exception;
     bool eval_has_fatal_exception; /* terminal host abort, not promise rejection */
+    JSModuleDef *fatal_next; /* transient allocation-free fatal worklist */
     JSValue eval_exception;
     JSValue meta_obj; /* for import.meta */
     JSValue private_value; /* private value for C modules */
@@ -31233,6 +31234,7 @@ static JSModuleDef *js_new_module_def(JSContext *ctx, JSAtom name)
     m->func_obj = JS_UNDEFINED;
     m->eval_exception = JS_UNDEFINED;
     m->eval_has_fatal_exception = false;
+    m->fatal_next = NULL;
     m->meta_obj = JS_UNDEFINED;
     m->promise = JS_UNDEFINED;
     m->resolving_funcs[0] = JS_UNDEFINED;
@@ -33042,41 +33044,42 @@ static void js_promise_set_handled(JSContext *ctx, JSValueConst promise);
 
 /* Fatal module execution has no rejection continuation. Retain its exact
    reason in the affected modules so cached evaluation cannot return a pending
-   capability. A failure-only fixed point avoids allocating or recursing while
-   propagating through cyclic/asynchronous parent graphs. */
-static void js_mark_module_fatal_failure(JSContext *ctx, JSModuleDef *module,
+   capability. Mark-on-enqueue visits each affected module/parent edge once,
+   without allocating or recursing, including cyclic parent graphs. */
+static void js_mark_module_fatal_failure(JSModuleDef *module,
                                          JSValueConst error)
 {
-    struct list_head *el;
-    JSModuleDef *m, *parent;
-    bool changed;
+    JSModuleDef *pending, *m, *parent;
     int i;
 
+    if (module->status == JS_MODULE_STATUS_EVALUATED)
+        return;
     module->eval_has_exception = true;
     module->eval_has_fatal_exception = true;
     module->eval_exception = js_dup(error);
     module->status = JS_MODULE_STATUS_EVALUATED;
     module->async_evaluation = false;
-    do {
-        changed = false;
-        list_for_each(el, &ctx->loaded_modules) {
-            m = list_entry(el, JSModuleDef, link);
-            if (!m->eval_has_fatal_exception ||
-                !JS_IsStrictEqual(ctx, m->eval_exception, error))
+    module->fatal_next = NULL;
+    pending = module;
+    while (pending != NULL) {
+        m = pending;
+        pending = m->fatal_next;
+        m->fatal_next = NULL;
+        for (i = 0; i < m->async_parent_modules_count; i++) {
+            parent = m->async_parent_modules[i];
+            /* Includes modules already enqueued and pre-existing terminal
+               ordinary failures; neither may be overwritten or enqueued. */
+            if (parent->status == JS_MODULE_STATUS_EVALUATED)
                 continue;
-            for (i = 0; i < m->async_parent_modules_count; i++) {
-                parent = m->async_parent_modules[i];
-                if (parent->status == JS_MODULE_STATUS_EVALUATED)
-                    continue;
-                parent->eval_has_exception = true;
-                parent->eval_has_fatal_exception = true;
-                parent->eval_exception = js_dup(error);
-                parent->status = JS_MODULE_STATUS_EVALUATED;
-                parent->async_evaluation = false;
-                changed = true;
-            }
+            parent->eval_has_exception = true;
+            parent->eval_has_fatal_exception = true;
+            parent->eval_exception = js_dup(error);
+            parent->status = JS_MODULE_STATUS_EVALUATED;
+            parent->async_evaluation = false;
+            parent->fatal_next = pending;
+            pending = parent;
         }
-    } while (changed);
+    }
 }
 
 static JSValue js_async_module_execution_rejected(JSContext *ctx, JSValueConst this_val,
@@ -33160,7 +33163,7 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
             if (js_execute_async_module(ctx, m) < 0) {
                 JSValue error = JS_GetException(ctx);
                 if (JS_IsUncatchableError(error)) {
-                    js_mark_module_fatal_failure(ctx, m, error);
+                    js_mark_module_fatal_failure(m, error);
                     js_free(ctx, exec_list->tab);
                     return JS_Throw(ctx, error);
                 } else {
@@ -33180,7 +33183,7 @@ static JSValue js_async_module_execution_fulfilled(JSContext *ctx, JSValueConst 
             JSValue error;
             if (js_execute_sync_module(ctx, m, &error) < 0) {
                 if (JS_IsUncatchableError(error)) {
-                    js_mark_module_fatal_failure(ctx, m, error);
+                    js_mark_module_fatal_failure(m, error);
                     js_free(ctx, exec_list->tab);
                     return JS_Throw(ctx, error);
                 }
