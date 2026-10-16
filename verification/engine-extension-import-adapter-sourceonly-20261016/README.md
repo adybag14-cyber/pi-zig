@@ -63,6 +63,9 @@ opaque records through context/runtime destruction, then free charged records
 and release their owner reference. None of this is graph garbage collection.
 Context pinning and long-lived reload growth remain explicit production gates;
 terminal allocation/teardown and anchor-only context controls are still needed.
+The existing native TS parser's internal transient allocations have not been
+proved against the aggregate owner. Charging retained records and source/output
+buffers does not establish accounting for the entire transformation pipeline.
 
 Explicit unsupported cases include nonempty/explicit import attributes, arbitrary
 bare packages/tsconfig aliases, .mts/.cts/.tsx, TypeScript inside node_modules,

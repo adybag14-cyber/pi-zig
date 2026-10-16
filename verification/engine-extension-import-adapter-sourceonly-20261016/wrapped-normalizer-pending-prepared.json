@@ -1,0 +1,13 @@
+{
+  "status": "wrapped_normalizer_pending_reason_source_only_correction",
+  "parent": "97395ddc5f61f3709aa8f158ff64ee44c805640e",
+  "boundary": "underlying_captured_host_normalizer_can_return_owned_name_with_pending_reason",
+  "correction": "capture_and_rethrow_same_pending_reason_with_fresh_private_tag_guard_before_name_allocation; do_not_relabel_prior_reason_as_current_allocation_failure",
+  "leaf_sha256": "AFC829CF78490713F3EA6FFA680956EB31581290D7D2F68C82803A8716AB2654",
+  "c_unchanged": true,
+  "engine_unchanged": true,
+  "native_executed": false,
+  "fmt_ast": false,
+  "transient_ts_parser_quota_qualified": false,
+  "default_selected": false
+}

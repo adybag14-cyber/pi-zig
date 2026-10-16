@@ -228,6 +228,15 @@ fn normalizeGraph(context: ?*c.JSContext, origin: ?*const c.JSPiModuleOrigin, ba
     }
     const name = normalized(session, std.mem.span(base), std.mem.span(specifier)) catch |err| { callbackFailure(session.hub.engine, err, generation); return null; };
     defer session.hub.allocator().free(name);
+    // A host normalizer can return storage with a pending reason. Stop before
+    // allocating, so this boundary cannot relabel that prior reason as OOM.
+    if (c.JS_HasException(context)) {
+        const reason = c.JS_GetException(context);
+        _ = session.hub.engine.checked(c.JS_Throw(context, reason)) catch |err| {
+            callbackFailure(session.hub.engine, err, generation); return null;
+        };
+        unreachable;
+    }
     const allocation = c.js_malloc(context, name.len + 1) orelse {
         // This allocation just failed at the current trusted boundary. Preserve
         // its exact VM reason; do not classify a historical name/lookalike.
