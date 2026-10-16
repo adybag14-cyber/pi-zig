@@ -222,7 +222,9 @@ for(const b of chosen.values()){
 }
 const initialized=new Set();
 function initializeModule(file){if(initialized.has(file)||external.has(file)||!modules.has(file))return;initialized.add(file);const m=moduleOf(file);for(const stmt of m.ast.body)if(stmt.source)initializeModule(relative(file,stmt.source.value));
- for(const b of chosen.values())if(!b.external&&b.module===m&&b.init){initialize.module=m;const output=expr(initialize,b.init,b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${output});`)}
+ // ESM evaluates selected variable initializers in their original declaration
+ // order. Dependency discovery order may encounter Digit before Zero/NonZero.
+ for(const b of m.local.values())if(b.module===m&&chosen.has(b.id)&&b.init){initialize.module=m;const output=expr(initialize,b.init,b.name);line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${output});`)}
 }
 for(const b of chosen.values())if(!b.external)initializeModule(b.module.file);
 const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\n';

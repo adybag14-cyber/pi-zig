@@ -10,7 +10,10 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     return c.pi_js_undefined();
 }
 pub fn graph(e: *em.Engine) !c.JSValue {
-    return @import("extensions/native_typebox_production_graph.zig").create(e);
+    return @import("extensions/native_typebox_production_graph.zig").create(e) catch |err| {
+        std.debug.print("Actual shared TypeBox graph: {s}\n", .{e.last_error orelse "no diagnostic"});
+        return err;
+    };
 }
 pub fn replay(e: *em.Engine, actual: c.JSValue, source: c.JSValue) !void {
     var s: Scope = .{ .engine = e };
