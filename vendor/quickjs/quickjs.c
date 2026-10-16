@@ -1117,6 +1117,7 @@ struct JSPiPrivateModuleGraph {
 
 struct JSPiModuleOrigin {
     JSPiModuleOrigin *next;
+    JSPiModuleOrigin *attempt_first, *attempt_stop; /* immutable compile segment */
     JSPiPrivateModuleGraph *graph;
     JSModuleDef *module; /* tombstoned before definition destruction */
     char *physical_filename;
@@ -31479,6 +31480,24 @@ int JS_PiGetPrivateModuleGraphStats(JSContext *ctx,
     return 0;
 }
 
+/* Link/create failure only quarantines the immutable segment admitted by this
+   compile attempt. Already executing modules and earlier unrelated definitions
+   are not retired, and nothing is freed from another graph/shared0. */
+static void js_pi_quarantine_link_failure(JSModuleDef *module)
+{
+    JSPiModuleOrigin *root = module->pi_module_origin;
+    JSPiModuleOrigin *origin;
+    if (!root)
+        return;
+    root->failed = true;
+    origin = root->attempt_first ? root->attempt_first : root;
+    for (; origin != root->attempt_stop; origin = origin->next) {
+        if (origin->module &&
+            origin->module->status < JS_MODULE_STATUS_EVALUATING)
+            origin->quarantined = true;
+    }
+}
+
 #ifndef QJS_DISABLE_PARSER
 
 static int add_req_module_entry(JSContext *ctx, JSModuleDef *m,
@@ -39484,13 +39503,19 @@ static JSValue JS_EvalFunctionInternal(JSContext *ctx, JSValue fun_obj,
         m = JS_VALUE_GET_PTR(fun_obj);
         /* the module refcount should be >= 2 */
         JS_FreeValue(ctx, fun_obj);
-        if (js_create_module_function(ctx, m) < 0)
-            goto fail;
-        if (js_link_module(ctx, m) < 0)
-            goto fail;
+        if (m->pi_module_origin &&
+            !js_pi_has_private_module_graph(ctx, m->pi_module_origin->graph))
+            return JS_ThrowTypeError(ctx, "Private module definition belongs to another context");
+        if (js_create_module_function(ctx, m) < 0 || js_link_module(ctx, m) < 0) {
+            js_pi_quarantine_link_failure(m);
+            return JS_EXCEPTION;
+        }
         ret_val = js_evaluate_module(ctx, m);
         if (JS_IsException(ret_val)) {
-        fail:
+            /* Execution may have escaped a closure before failing. Preserve
+               the entire origin/definition lifetime; do not quarantine it. */
+            if (m->pi_module_origin)
+                m->pi_module_origin->failed = true;
             return JS_EXCEPTION;
         }
     } else {
@@ -39692,6 +39717,10 @@ JSValue JS_PiCompilePrivateModule(JSContext *ctx, JSPiPrivateModuleGraph *graph,
                 origin->module->status < JS_MODULE_STATUS_EVALUATING)
                 origin->quarantined = true;
         }
+    } else {
+        JSModuleDef *module = JS_VALUE_GET_PTR(result);
+        module->pi_module_origin->attempt_first = graph->origins;
+        module->pi_module_origin->attempt_stop = before;
     }
     return result;
 #else
