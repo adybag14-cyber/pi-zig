@@ -1,0 +1,31 @@
+{
+  "status": "isolated_source_proposal_not_applied",
+  "base": "fec72e26f5f64162249f838cd86331eefeb8a37d",
+  "inspected_source": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "inspected_source_file": "packages/ai/src/api/openai-completions.ts",
+  "inspected_source_sha256": "8E2B66ED66600E38AB03D12A68338ACE5EA0515810A9D1670BD9177F82556465",
+  "static_patch_context_check": "git apply --check passed, not applied",
+  "prepared_public_stream_controls": 35,
+  "node_executed": false,
+  "native_executed": false,
+  "source56_executed": false,
+  "expected_source56_created": false,
+  "active_api_or_c_changed": false,
+  "root_composition_authorized": false,
+  "independent_review": "pending models_auth_failure_resume",
+  "proposal_files": [
+    {"file":"factory-close-phase.patch","sha256":"470A1585E80049B324D58716A2C77D7D0C859E101FAFD378E9B1B7C457F49BCE"},
+    {"file":"product-callers.mjs","sha256":"106C89C7A1D52F05C80464EBF2BDAD19C3C086D23B9872350F176754B38378D8"},
+    {"file":"README.md","sha256":"25E2412AD8885855025D145655F96698F7F5D3ED78B92642319313B27E2B86C1"}
+  ],
+  "unchanged_active_files": [
+    {"file":"src/extensions/native_ai_openai_factory.zig","sha256":"556E5A34CDDC7B69F184A2DB73E6813C7D800BF5042912B5C0689EF9B9275CEC"},
+    {"file":"vendor/quickjs/quickjs.c","sha256":"12A7F02AFADA614EE9AED57F8EE87173F95977AD8FE8723177CACFACA7AB855D"},
+    {"file":"vendor/quickjs/quickjs.h","sha256":"F3B6F51DBDA727A8FAECFE275FC13F283CA3C71E3907593E47B4F8B741318062"},
+    {"file":"src/extensions/native_async_function.zig","sha256":"61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"},
+    {"file":"src/extensions/fixtures/ai-openai-full58-ae7.json","sha256":"6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"},
+    {"file":"src/extensions/fixtures/ai-openai-producer58-ae7.json","sha256":"CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650"},
+    {"file":"src/extensions/fixtures/ai-openai-tool-output4dd-native.input.txt","sha256":"76AF08700DDD0DD8BAE0E96B0D4B8D5701914539B5D190A9A99D3BF4441D16AC"},
+    {"file":"verification/async-from-sync-api-proposal-20261016/for-await-callers.mjs","sha256":"36EA5D987B13607157C91318E72865D56B806E66B8443854BA040BCDD4D7A83A"}
+  ]
+}
