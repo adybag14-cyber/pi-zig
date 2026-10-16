@@ -79,9 +79,7 @@ pub const Prospective = struct {
     private_node_sha256: []const u8,
     npm_wrapper_sha256: []const u8,
 };
-pub fn checkProspective(allocator: std.mem.Allocator, path: []const u8, expected_sha: []const u8,
-    deadline: Deadline, sink: manifest.Sink) !Prospective
-{
+pub fn loadProspective(allocator: std.mem.Allocator, path: []const u8, expected_sha: []const u8) !Prospective {
     try files.contained(path, files.container);
     const bytes = try files.readBounded(allocator, path, 65536);
     defer allocator.free(bytes);
@@ -98,6 +96,13 @@ pub fn checkProspective(allocator: std.mem.Allocator, path: []const u8, expected
     const leaf = data.private_tool_root[(files.container ++ "\\upstream\\runtime\\").len..];
     if (!std.mem.startsWith(u8, leaf, "19cb534-owner-tools-")) return error.UnreviewedPrivateToolRoot;
     for (leaf) |byte| if (!std.ascii.isAlphanumeric(byte) and byte != '-') return error.UnreviewedPrivateToolRoot;
+    return cloneProspective(allocator, data);
+}
+pub fn checkProspective(allocator: std.mem.Allocator, path: []const u8, expected_sha: []const u8,
+    deadline: Deadline, sink: manifest.Sink) !Prospective
+{
+    const data = try loadProspective(allocator, path, expected_sha);
+    errdefer releaseProspective(allocator, data);
     try grant.sameHash(data.cmd_sha256, try files.hash(allocator, data.cmd_path));
     var expected: manifest.Manifest = .{ .allocator = allocator };
     defer expected.deinit();
@@ -105,9 +110,7 @@ pub fn checkProspective(allocator: std.mem.Allocator, path: []const u8, expected
     try expected.add("npm.cmd", data.npm_wrapper_sha256);
     const report = try manifest.checkTree(allocator, data.private_tool_root, &expected, deadline, sink);
     try report.requireExact(0);
-    // Return owned field bytes; the parsed document is freed on return.
-    // Caller frees these fields only after environment/phase use completes.
-    return cloneProspective(allocator, data);
+    return data;
 }
 fn cloneProspective(allocator: std.mem.Allocator, data: Prospective) !Prospective {
     const scope = try allocator.dupe(u8, data.authority_scope);

@@ -210,9 +210,10 @@ pub const Controller = struct {
         defer _ = w.CloseHandle(stdin_handle);
         const home = try files.join(allocator, self.run_root, "home");
         const temp = try files.join(allocator, self.run_root, "temp");
-        const prospective_bytes = try files.readBounded(allocator, self.cfg.prospective_tools, 65536);
-        const prospective = try std.json.parseFromSlice(tools.Prospective, allocator, prospective_bytes, .{});
-        const env = try phase.environment(allocator, self.cfg, prospective.value, self.args.selected, home, temp);
+        const prospective = try tools.loadProspective(allocator, self.cfg.prospective_tools,
+            self.granted.prospective_tool_closure_sha256);
+        defer tools.releaseProspective(allocator, prospective);
+        const env = try phase.environment(allocator, self.cfg, prospective, self.args.selected, home, temp);
         const cwd = try std.unicode.utf8ToUtf16LeAllocZ(allocator, self.cfg.evidence_packet);
         try admission.requireQuietNative(&self.own, &self.job, .{ .context = self, .write_fn = nativeObservation });
         const intended = try self.log(.{ .state = "worker_intent", .executable = self.owner_path,

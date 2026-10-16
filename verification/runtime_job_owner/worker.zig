@@ -75,14 +75,15 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     const executable = try std.unicode.utf8ToUtf16LeAllocZ(permanent, tools.node_path);
     const cwd_utf8 = if (args.selected == .npm_ci_offline) cfg.metadata else cfg.reproduction;
     const cwd = try std.unicode.utf8ToUtf16LeAllocZ(permanent, cwd_utf8);
-    // Prospective is loaded/checked again without retaining scratch pointers.
+    // Hash/scope validation consumes the exact bytes used for environment data.
+    // Full prospective file inventory is separately asserted in preflight/final.
     const scratch = try storage.leaseScratch();
-    const prospective_bytes = try files.readBounded(scratch, cfg.prospective_tools, 65536);
-    const parsed_prospective = try std.json.parseFromSlice(tools.Prospective, scratch, prospective_bytes, .{});
+    const prospective = try tools.loadProspective(scratch, cfg.prospective_tools,
+        granted.prospective_tool_closure_sha256);
     const home = try files.join(permanent, args.run_root, "home");
     const temp = try files.join(permanent, args.run_root, "temp");
-    const env = try phase.environment(permanent, cfg, parsed_prospective.value, args.selected, home, temp);
-    parsed_prospective.deinit();
+    const env = try phase.environment(permanent, cfg, prospective, args.selected, home, temp);
+    tools.releaseProspective(scratch, prospective);
     try storage.releaseScratch();
     const std_in = w.GetStdHandle(0xfffffff6) orelse return error.WorkerStdinUnavailable;
     const std_out = w.GetStdHandle(0xfffffff5) orelse return error.WorkerStdoutUnavailable;
