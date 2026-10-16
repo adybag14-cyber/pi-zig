@@ -26,6 +26,14 @@ fn markFatal(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSVa
     if (argc > 0) c.JS_SetUncatchableError(context, args[0]);
     return c.pi_js_undefined();
 }
+fn armActionFailure(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    const failing: *std.testing.FailingAllocator = @ptrCast(@alignCast(engine.gpa.ptr));
+    // The Source idle finally has finished its guest work. The next host
+    // allocation is the fresh Scope used by the Source-catch action reader.
+    failing.fail_index = failing.alloc_index;
+    return c.pi_js_undefined();
+}
 fn install(engine: *em.Engine) !void {
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
@@ -101,4 +109,41 @@ test "native idle settlement retains historical uncatchable identity while guest
         \\for(const primary of[new Error('out of memory'),ownedMakeNativeReason()]){primary.name='InternalError';const cleanup={cleanup:true};const receiver={_cacheWarmer:null,_agentRunAbortRequested:false,_extensionRunner:{emit(){throw primary}}};Object.defineProperty(receiver,'_isEmittingAgentSettled',{set(value){if(!value)throw cleanup}});let caught;try{await ownedIdleMethods._emitAgentSettled.call(receiver)}catch(error){caught=error}if(caught!==cleanup)throw Error('ordinary/historical guest finalizer override lost')}
     , "owned-idle-settlement-ordinary-controls.mjs");
     engine.freeValue(module);
+}
+
+test "native idle settlement trusts a fresh idle-finalizer failure after an ordinary primary rejection" {
+    try fatalCase(
+        \\globalThis.ownedCleanupCalls=0;const receiver={_cacheWarmer:null,_agentRunAbortRequested:false,_extensionRunner:{async emit(){}},_emit(){},_deferredSettledActions:[()=>{throw {ordinaryPrimary:true}}],_resolveIdleWaitIfIdle(){ownedCleanupCalls++;return ownedThrowNativeReason()}};await ownedIdleMethods._emitAgentSettled.call(receiver);
+    , 1);
+}
+
+test "native idle settlement propagates Source catch action allocation failure through the outer boundary" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    {
+        const engine = try em.Engine.init(failing.allocator(), .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        try install(engine);
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        try sdk.put(engine, global, "ownedArmActionFailure", try engine.checked(c.JS_NewCFunction(engine.context, armActionFailure, "ownedArmActionFailure", 0)));
+        const generation = engine.native_allocation_generation;
+        const evaluated = engine.evalModule(
+            \\const receiver={_cacheWarmer:null,_agentRunAbortRequested:false,_extensionRunner:{async emit(){}},_emit(){},_deferredSettledActions:[()=>{throw {ordinaryPrimary:true}}],_resolveIdleWaitIfIdle:ownedArmActionFailure};await ownedIdleMethods._emitAgentSettled.call(receiver);
+        , "owned-settlement-source-catch-action-allocation.mjs");
+        const injected_index = failing.fail_index;
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expect(failing.has_induced_failure);
+        try std.testing.expectEqual(injected_index, failing.alloc_index);
+        if (evaluated) |value| {
+            engine.freeValue(value);
+            return error.RequiredSourceCatchActionAllocationFailure;
+        } else |err| try std.testing.expectEqual(error.JavaScriptException, err);
+        const reason = engine.captured_exception orelse return error.RequiredCapturedActionAllocationFailure;
+        const marked = engine.native_allocation_exception orelse return error.RequiredMarkedActionAllocationFailure;
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, marked));
+        try std.testing.expect(c.JS_IsUncatchableError(reason));
+        const tagged = c.pi_js_native_allocation_error_generation(reason);
+        try std.testing.expect(tagged != 0 and tagged -% generation != 0 and tagged -% generation <= engine.native_allocation_generation -% generation);
+    }
+    try std.testing.expectEqual(failing.allocated_bytes, failing.freed_bytes);
 }

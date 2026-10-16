@@ -79,3 +79,44 @@ with Zig/Node, or executed. All old immutable goldens and tests remain intact.
 
 `native_qualified=false`, `full_factory_qualified=false`,
 `full_pi_qualified=false`, `public_activation=false`.
+
+## Second Root review: the outer Source-catch boundary
+
+Root's review of `8838bcdd` found that an error thrown inside the existing
+`resumeBody` catch could escape without the trusted boundary. In particular,
+an ordinary deferred callback failure could enter Source cleanup, whose idle
+finalizer then throws a fresh tagged native reason. That new fatal reason was
+outside the catch that originally handled the primary failure.
+
+The correction splits the callback into two ordinary Zig functions:
+
+- `body` snapshots the actual invocation generation and calls
+  `bodyWithSourceCatch`. Its catch invokes `trustedBoundary` first, then
+  `failureSince`. This boundary includes failures from Source-catch cleanup,
+  idle resolution, and reading the resulting Action.
+- `bodyWithSourceCatch` retains the existing Source try/finally adaptation,
+  exact-original fatal retention, and ordinary guest override behavior.
+
+This adds no JavaScript function, Promise, await, or job. There is still one
+native async invocation and the original await stages. All existing retained
+reason references remain owned by their existing defers. The outer wrapper
+borrows the invocation state and consumes no reason: a recognized captured
+reason is duplicated/transferred by the inherited rethrow helper, which lets
+the exact JavaScriptException escape before any replacement-producing host
+classification.
+
+Two additional prepared tests bring this target to six tests:
+
+1. An ordinary synchronous deferred callback failure enters the Source catch;
+   the idle finalizer throws a fresh real native-allocation reason. The final
+   Engine capture must equal the retained native reason and be uncatchable,
+   with idle cleanup called exactly once.
+2. The idle finalizer arms the owned FailingAllocator's next host allocation.
+   The next allocation is the fresh Scope used by `async_body.action` in the
+   Source-catch return path. The test requires an induced allocation failure,
+   an uncatchable private native reason identical to the Engine marker, a new
+   in-boundary tag, and complete allocator byte balance after Engine teardown.
+
+These controls remain uncompiled and unrun. Existing immutable Source fixtures
+and their assertions are unchanged. No C, Engine, shared helper, or Root edit
+was made, and no Zig, Node, source-capture, or native job ran.

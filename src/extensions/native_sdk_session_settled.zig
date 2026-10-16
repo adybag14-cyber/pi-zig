@@ -17,6 +17,15 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
 }
 fn body(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
     const generation = engine.native_allocation_generation;
+    return bodyWithSourceCatch(engine, receiver, state, completion, input) catch |err| {
+        // This wrapper includes failures raised from the Source catch/finally
+        // adaptation itself, not only failures from resumeBody.
+        try trustedBoundary(engine, err, generation);
+        return async_body.failureSince(engine, err, generation);
+    };
+}
+fn bodyWithSourceCatch(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, completion: native.Completion, input: c.JSValue) !native.Action {
+    const generation = engine.native_allocation_generation;
     return resumeBody(engine, receiver, state, completion, input) catch |err| {
         if (err == error.OutOfMemory) {
             // Execute an entered Source finally without manufacturing a guest
