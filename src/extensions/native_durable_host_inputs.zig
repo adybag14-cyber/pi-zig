@@ -21,7 +21,15 @@ pub fn escapeFatal(engine: *em.Engine, err: anyerror, generation: u64) !void {
 /// Leaf-only getter exit. A newer pending VM reason wins. Ordinary captured
 /// ownership transfers before guest code can catch; no deferred identity cleanup.
 pub fn getterFailure(engine: *em.Engine, err: anyerror, generation: u64) c.JSValue {
-    if (c.JS_HasException(engine.context)) return throwOwned(engine, c.JS_GetException(engine.context), generation);
+    if (c.JS_HasException(engine.context)) {
+        const reason = c.JS_GetException(engine.context);
+        // A trusted OOM cannot downgrade an existing Error to an ordinary throw.
+        // Preserve its exact identity rather than allocate a replacement. The
+        // pinned C API only marks Error-class values; arbitrary pending values
+        // combined with direct OOM remain an unsupported mixed host contract.
+        if (err == error.OutOfMemory and c.JS_IsError(reason)) c.JS_SetUncatchableError(engine.context, reason);
+        return throwOwned(engine, reason, generation);
+    }
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
         engine.captured_exception = null;
         return throwOwned(engine, reason, generation);

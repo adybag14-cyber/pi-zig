@@ -255,6 +255,7 @@ pub fn readSettings(engine: *Engine, options: c.JSValue) f64 {
 pub fn readCapturedSettings(engine: *Engine, captured: c.JSValue) !f64 {
     // Ordinary bookkeeping failures preserve the operation's captured cause.
     // Trusted fatal reasons are rethrown exactly through the fallible callers.
+    if (engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
     // A supplier can reenter native callbacks and replace Engine's capture even
     // though this guard itself uses raw C operations. Detach the prior ownership
     // before running any guest code; ordinary completion restores it by value.

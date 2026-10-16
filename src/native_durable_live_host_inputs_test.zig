@@ -103,3 +103,36 @@ test "8efd retention exact fresh fatal overrides prior cause without replacement
     try std.testing.expect(c.JS_IsUncatchableError(engine.captured_exception.?));
     try std.testing.expect(!c.JS_IsStrictEqual(engine.context, prior, engine.captured_exception.?));
 }
+
+test "8efd retention preexisting fatal bypasses supplier and preserves exact cause" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const prior = try engine.eval("new Error('prior fatal fixture')", "8efd-existing-fatal-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(prior);
+    c.JS_SetUncatchableError(engine.context, prior);
+    engine.native_exception_diagnostics_suppressed += 1;
+    _ = engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, prior))) catch {};
+    engine.native_exception_diagnostics_suppressed -= 1;
+    const supplier = try engine.checked(c.JS_NewCFunction(engine.context, freshAllocation, "mustNotEnterRetentionSupplier", 0));
+    defer engine.freeValue(supplier);
+    const generation = engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, @import("extensions/native_durable_document_retention.zig").readCapturedSettings(engine, supplier));
+    try std.testing.expectEqual(generation, engine.native_allocation_generation);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, prior, engine.captured_exception.?));
+}
+
+test "8efd getter direct OOM preserves current pending Error and makes it fatal" {
+    const engine = try em.Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const pending = try engine.eval("new Error('pending host fixture')", "8efd-pending-oom-input", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(pending);
+    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, pending));
+    const generation = engine.native_allocation_generation;
+    const result = host.getterFailure(engine, error.OutOfMemory, generation);
+    try std.testing.expect(c.JS_IsException(result));
+    const actual = c.JS_GetException(engine.context);
+    defer engine.freeValue(actual);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, pending, actual));
+    try std.testing.expect(c.JS_IsUncatchableError(actual));
+    try std.testing.expectEqual(generation, engine.native_allocation_generation);
+}
