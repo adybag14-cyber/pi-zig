@@ -59,8 +59,13 @@ either continuation function and while attaching `js_promise_then`.
    and its waiting async parents and returns the exact reason to the existing
    promise reaction job. The latter already returns uncatchable failure to
    `JS_ExecutePendingJob`. Propagation uses an allocation-free, failure-only
-   fixed point over the context's loaded modules. It neither recurses nor frees
-   ModuleDefs. Already evaluated modules are skipped. The execution-list
+   intrusive worklist. Each affected module is marked terminal when enqueued,
+   preventing duplicate enqueue across shared parents/cycles; each affected
+   parent edge is visited once, for O(V+E) propagation. The runtime-only
+   `fatal_next` field is initialized NULL and reset when popped. It owns no
+   value/reference and is not serialized. No full-context scan, recursion or
+   ModuleDef freeing occurs. Already evaluated modules (including ordinary
+   failures) are skipped. The execution-list
    allocation is freed before returning.
 4. A private ModuleDef boolean records fatal evaluation separately from the
    retained reason's mutable uncatchable flag. Engine.nativeAllocationError
@@ -102,6 +107,17 @@ entry rethrows. This patch does not convert a host abort into guest rejection.
   module, before module continuation attachment. Every observed outcome must
   terminate and retain its cached reason, and a healthy module must still run.
 
+The separate `src/native_tla_resumed_fatal_known_gap_test.zig` prepares an eighth
+negative control. The body suspends on `await Promise.resolve()` before its
+native START failure. Delivery to the first host job boundary must preserve
+the fresh exact reason; cached evaluation and a new import must then terminate
+with that stored outcome. The current START-path repair is expected to fail
+those cached/reimport assertions because this later-suspension path has no
+module bookkeeping hook. Both entry outcomes are recorded before assertions;
+the control adds no ticks and does not await known pending results. It has a
+separate explicitly named build/run gate and does not count as a passing
+START-path control. No execution has established this negative result yet.
+
 The quota control targets completion/handler0/handler1/then allocations. No
 claim is made that a particular quota reaches a particular site, nor that the
 allocation positions are exhaustive: an authorized instrumented run must
@@ -111,14 +127,17 @@ shared build.zig is unchanged.
 
 ## Explicit limits and next review
 
-This is confined to fatal/start/attachment delivery. Existing module graph
+This is confined to fatal/start/attachment delivery. The prepared resumed-TLA
+negative control explicitly prevents a full fatal-module qualification claim.
+Existing module graph
 allocation failure while gathering ancestors, ordinary recursive rejection
 callback handling, dynamic import's separate rejection bridge, interruption
 and full-context teardown still require their own controls if broader claims
 are desired. Existing stale generation and guest-lookalike behavior must pass
 unchanged. No core qualification or Models300 allocation success is claimed.
 
-The failure-only scan is intentionally simple and allocation-free; large
-module-graph resource limits and worst-case propagation cost remain a separate
-gate. Independent review should check cycle-root bookkeeping, parent ordering,
+The failure-only worklist has linear propagation cost in the affected graph;
+large-graph resource/runtime controls remain unexecuted. Independent review
+should check transient-link initialization/reset, terminal ordinary failure
+preservation, cycle-root bookkeeping, parent ordering,
 partial attachments, reason ownership and default ordinary rejection behavior.
