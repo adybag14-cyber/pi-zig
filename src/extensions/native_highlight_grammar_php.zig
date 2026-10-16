@@ -116,7 +116,7 @@ pub fn build(engine: *em.Engine, hljs: c.JSValue) !c.JSValue {
     try s.index(contains, 5, this);
     try s.index(contains, 6, variable);
     const composed = try s.object();
-    try s.put(composed, "begin", try literal(&s, "(::|->)+[a-zA-Z_\x7f-ÿ][a-zA-Z0-9_\x7f-ÿ]*"));
+    try s.put(composed, "begin", try literal(&s, "(::|->)+[a-zA-Z_\\x7f-\\xff][a-zA-Z0-9_\\x7f-\\xff]*"));
     try s.index(contains, 7, composed);
     const function = try mode(&s, "function");
     try s.put(function, "relevance", c.JS_NewInt32(engine.context, 0));
