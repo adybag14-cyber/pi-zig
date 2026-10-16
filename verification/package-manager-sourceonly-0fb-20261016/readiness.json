@@ -1,0 +1,155 @@
+{
+  "status": "source_only_coherent_leaf_clusters",
+  "base": "07609651754f498de1713389f720711fdad93033",
+  "source_head": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "source_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+  "source_lines": 2766,
+  "historical97_inventory_unchanged": true,
+  "actual_class_declarations": 98,
+  "new_class_methods": 40,
+  "implemented_or_existing_declarations": 61,
+  "remaining_class_declarations": [
+    "install",
+    "installAndPersist",
+    "remove",
+    "removeAndPersist",
+    "update",
+    "updateConfiguredSources",
+    "shouldUpdateNpmSource",
+    "updateNpmBatch",
+    "checkForAvailableUpdates",
+    "resolvePackageSources",
+    "resolveLocalExtensionSource",
+    "installParsedSource",
+    "installedNpmMatchesConfiguredVersion",
+    "npmHasAvailableUpdate",
+    "getLatestNpmVersion",
+    "gitHasAvailableUpdate",
+    "getRemoteGitHead",
+    "getLocalGitUpdateTarget",
+    "getGitUpstreamRef",
+    "runGitRemoteCommand",
+    "installGit",
+    "updateGit",
+    "repairMissingGitDependencies",
+    "cleanAndInstallGitDependencies",
+    "ensureGitRef",
+    "refreshTemporaryGitSource",
+    "removeGit",
+    "collectPackageResources",
+    "collectDefaultResources",
+    "applyPackageFilter",
+    "applyPackageDeltaFilter",
+    "collectManifestFiles",
+    "addManifestEntries",
+    "collectFilesFromManifestEntries",
+    "resolveLocalEntries",
+    "addAutoDiscoveredResources",
+    "collectFilesFromPaths"
+  ],
+  "owned_modules": {
+    "commands": {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_commands.zig",
+      "sha256": "7822AF27602A404ECDCBF1E4EEC11470199BE67D8BEE4B08E89C5D2FF3085171",
+      "methods": [
+        "getNpmCommand",
+        "getPackageManagerName",
+        "getGitDependencyInstallArgs",
+        "runNpmCommandSync",
+        "getNpmInstallArgs",
+        "runNpmCommand",
+        "installNpm",
+        "uninstallNpm",
+        "installNpmBatch"
+      ],
+      "native_compiled": false,
+      "source_reference_executed": false
+    },
+    "settings": {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_settings.zig",
+      "sha256": "FCDBA494E12CA3B550B632D736F29671721DAF5A50A54F5E3E9F83D693AB935A",
+      "methods": [
+        "addSourceToSettings",
+        "removeSourceFromSettings",
+        "getInstalledPath",
+        "listConfiguredPackages",
+        "getSourceMatchKeyForInput",
+        "getSourceMatchKeyForSettings",
+        "packageSourcesMatch",
+        "normalizePackageSourceForSettings",
+        "buildNoMatchingPackageMessage",
+        "findSuggestedConfiguredSource",
+        "emitProgress",
+        "withProgress"
+      ],
+      "native_compiled": false,
+      "source_reference_executed": false
+    },
+    "storage": {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_storage.zig",
+      "sha256": "3F1BD4659A9786F9FB2DEB3629830495ADBE1E23A67254A2623A197F86D957D0",
+      "methods": [
+        "getInstalledNpmVersion",
+        "hasMissingGitDependencies",
+        "getGitUpdateMarkerPath",
+        "pruneEmptyGitParents",
+        "ensureNpmProject",
+        "ensureGitIgnore",
+        "getNpmInstallRoot",
+        "getGlobalNpmRoot",
+        "getPnpmGlobalPackagePath",
+        "getManagedNpmInstallPath",
+        "getLegacyGlobalNpmInstallPath",
+        "getNpmInstallPath",
+        "getGitInstallPath",
+        "getGitInstallRoot",
+        "getTemporaryDir",
+        "resolveManagedPath"
+      ],
+      "native_compiled": false,
+      "source_reference_executed": false
+    },
+    "source": {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_source.zig",
+      "sha256": "C2591904CF8303767036FD6F1E734939A402D5D54C115922D966C9925103DAB8",
+      "methods": [
+        "parseSource",
+        "parseNpmSpec"
+      ],
+      "native_compiled": false,
+      "source_reference_executed": false
+    },
+    "concurrency": {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_concurrency.zig",
+      "sha256": "24E3D077494CE8FC38B7EFCFE005DD186DF762AB984267809CA025BE5DAFC98A",
+      "methods": [
+        "runWithConcurrency"
+      ],
+      "native_compiled": false,
+      "source_reference_executed": false
+    }
+  },
+  "missing_concrete_pure_imports": [
+    "ignore factory/add/ignores",
+    "minimatch",
+    "semver valid/validRange/satisfies/gt/maxSatisfying/rcompare",
+    "hosted-git-info.fromUrl and complete parseGitUrl"
+  ],
+  "real_platform_inputs": [
+    "filesystem exists/mkdir/chmod/readdir/read/rm/write/glob/stat",
+    "path join/dirname/basename/resolve/relative/sep and Source path utilities",
+    "process/env, actual SHA256 createHash, markPathIgnoredByCloudSync",
+    "unchanged actual command transport with real child streams/frontend stdio"
+  ],
+  "prepared_controls": 43,
+  "source_control_execution": false,
+  "expected_reference_exists": false,
+  "zig_fmt_ast_run": false,
+  "native_compile_run": false,
+  "native_runtime_run": false,
+  "c_changed": false,
+  "root_mutations": 0,
+  "full_package_manager_qualified": false,
+  "default_selected": false,
+  "full_pi_qualified": false
+}

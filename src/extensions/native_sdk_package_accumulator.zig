@@ -1,5 +1,6 @@
 //! Ordinary Source package resource accumulation, precedence and canonical dedupe.
 const std = @import("std");
+const package_catch = @import("native_sdk_package_catch.zig");
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
@@ -69,10 +70,7 @@ fn rank(scope: *Scope, metadata: c.JSValue) !i32 {
 fn realpath(scope: *Scope, function_value: c.JSValue, input: c.JSValue) !c.JSValue {
     const generation = scope.engine.native_allocation_generation;
     return scope.call(function_value, c.pi_js_undefined(), &.{input}) catch |err| {
-        const original = scope.engine.nativeAllocationError(err, generation);
-        if (original == error.OutOfMemory) return original;
-        if (scope.engine.captured_exception) |value| scope.engine.freeValue(value);
-        scope.engine.captured_exception = null;
+        try package_catch.ignore(scope.engine, err, generation);
         return input;
     };
 }

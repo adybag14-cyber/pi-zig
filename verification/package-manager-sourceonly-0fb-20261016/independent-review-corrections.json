@@ -1,0 +1,18 @@
+{
+  "status": "independent_static_review_corrections_source_only",
+  "historical_checkpoint": "d705d76f6512e6edd2051c6749b41dbeb09f3d2d",
+  "reviewer": "body_validation_resume",
+  "corrections": [
+    "Removed invented empty-spec early return from installNpmBatch: actual Source always resolves root, ensures project and awaits real npm command.",
+    "withProgress synchronous operation and complete catches rethrow exact fresh private OOM before error classification; complete uses fresh generation.",
+    "Applied the same exact fresh-OOM ordering to storage Source catch boundaries."
+  ],
+  "prepared_original_controls": 43,
+  "prepared_additional_real_empty_batch_controls": 1,
+  "actual_exec_required": true,
+  "fake_command_callback": false,
+  "source_capture_run": false,
+  "expected_output_exists": false,
+  "zig_or_native_run": false,
+  "default_selected": false
+}

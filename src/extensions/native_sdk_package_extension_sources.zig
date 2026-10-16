@@ -5,23 +5,22 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const af = @import("native_async_function.zig");
 const c = em.c;
 extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
 const Callback = enum(c_int) { builtin, package, entry };
 pub fn install(engine: *em.Engine, prototype: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const function = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, dispatch, "resolveExtensionSources", 2, 0)));
-    const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, function, parent) < 0) return js.capture(engine);
+    const function = try scope.own(try af.createResumable(engine, "resolveExtensionSources", 2, dispatch, &.{}));
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "resolveExtensionSources", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
-fn dispatch(context: ?*c.JSContext, manager: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return begin(engine, manager, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+fn dispatch(engine: *em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
+    if (completion == .fulfilled) return .{ .returned = try resolved(engine, state.*, manager) };
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null()))); af.replaceState(engine, state, c.JS_DupValue(engine.context, owner));
+    return initialize(engine, owner, manager, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
 }
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
@@ -45,14 +44,7 @@ fn collection(scope: *Scope, values: c.JSValue, name: [*:0]const u8, kind: Callb
     const function = try scope.own(try scope.engine.checked(c.JS_NewCFunctionData2(scope.engine.context, callback, "", 1, @intFromEnum(kind), roots.len, &roots)));
     return scope.call(method, values, &.{function});
 }
-fn begin(engine: *em.Engine, manager: c.JSValue, sources: c.JSValue, options: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, manager);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    initialize(engine, pending.owner, manager, sources, options) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, sources: c.JSValue, options: c.JSValue) !void {
+fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, sources: c.JSValue, options: c.JSValue) !af.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const accumulator = try scope.invoke(manager, "createAccumulator", &.{});
@@ -78,13 +70,11 @@ fn initialize(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue, sources:
         _ = try scope.call(add, manager, &.{ target, source, metadata, c.pi_js_bool(engine.context, 1) });
     }
     const packages = try collection(&scope, try collection(&scope, sources, "filter", .package, selected_scope), "map", .entry, selected_scope);
-    try flow.wait(resolved, engine, owner, try scope.invoke(manager, "resolvePackageSources", &.{ packages, accumulator }), 0);
+    return .{ .awaited = c.JS_DupValue(engine.context, try scope.invoke(manager, "resolvePackageSources", &.{ packages, accumulator })) };
 }
-fn resolved(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
-    if (rejected) return flow.settle(engine, owner, true, value);
+fn resolved(engine: *em.Engine, owner: c.JSValue, manager: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const manager = try scope.get(owner, "agent");
     const to_resolved = try scope.get(manager, "toResolvedPaths");
-    try flow.settle(engine, owner, false, try scope.call(to_resolved, manager, &.{try scope.get(owner, "accumulator")}));
+    return js.call(engine, to_resolved, manager, &.{try scope.get(owner, "accumulator")});
 }

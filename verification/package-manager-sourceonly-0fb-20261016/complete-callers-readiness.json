@@ -1,0 +1,233 @@
+{
+  "status": "source_only_complete_class_callers_not_qualified",
+  "base": "07609651754f498de1713389f720711fdad93033",
+  "upstream": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "original_source_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+  "class_declarations": 98,
+  "async_class_methods": 33,
+  "missing_class_bodies": [],
+  "prepared_controls": 50,
+  "original_prepared43_unchanged": true,
+  "missing_concrete_thirdparty": [
+    "ignore",
+    "minimatch",
+    "semver valid/validRange/satisfies/gt/maxSatisfying/rcompare",
+    "hosted-git-info plus complete parseGitUrl"
+  ],
+  "unqualified_real_platform": [
+    "filesystem glob/Dirent/stat and mutation APIs",
+    "crypto/path/process/environment identities",
+    "actual child streams and inherited frontend stdio"
+  ],
+  "modules": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_accumulator.zig",
+      "sha256": "5CCB4849AA1FC261D59D6B71800A08BCED933CB2D40DFA90B6810E46DA49ABEE",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_assembly.zig",
+      "sha256": "C8B4B69784B982AE4C9F9233272E85C6369B144FFB3F4A6FD928B2AF374DAD13",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_autoload.zig",
+      "sha256": "A2AD439FC1EE958D98F881DEFE906C554B87EECC3A20802B2FEE9F75DC1AEE39",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_commands.zig",
+      "sha256": "E762C9F697B3BEF65A1B2C230A852FD16F9EC0DF7168568C5573A29F25D87E6C",
+      "declared_class_methods": [
+        "getNpmCommand",
+        "getPackageManagerName",
+        "getGitDependencyInstallArgs",
+        "runNpmCommandSync",
+        "getNpmInstallArgs",
+        "runNpmCommand",
+        "installNpm",
+        "uninstallNpm",
+        "installNpmBatch"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_concurrency.zig",
+      "sha256": "24E3D077494CE8FC38B7EFCFE005DD186DF762AB984267809CA025BE5DAFC98A",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_declaration_order.zig",
+      "sha256": "AB91D970573E10AAA215FDC93BCBC114DCEAA2C28653FD72DD868BB9FE208AAE",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_discovery.zig",
+      "sha256": "927A94410817B030FABA8E47CDA8247EEC80B95993F4D6F230C60644EC664842",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_extension_sources.zig",
+      "sha256": "B6DDE349C08C6E81583788A7341461E7D68AF3D5D2B389D165ADE147E80A88F3",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_git.zig",
+      "sha256": "867F45D860A5F86B3DCF78E4D156024BB35F7C7098DA5B78C5126A761EABC2A1",
+      "declared_class_methods": [
+        "installGit",
+        "updateGit",
+        "cleanAndInstallGitDependencies",
+        "ensureGitRef"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_identity.zig",
+      "sha256": "96C6C855F3BAD7C4036BA65C6A77BD3FF490365CE83EFE29B187574711370371",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_install.zig",
+      "sha256": "5A0EB4FABCCA7BE16E6615F317D6443A67C0760FF9CE2685DA05F6F04A79ED26",
+      "declared_class_methods": [
+        "install",
+        "installAndPersist",
+        "remove",
+        "removeAndPersist",
+        "installParsedSource",
+        "repairMissingGitDependencies",
+        "refreshTemporaryGitSource",
+        "removeGit",
+        "runGitRemoteCommand"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_manager.zig",
+      "sha256": "98B4033E663FA64675003825A6163321EB119B5E823CDB034D08B92EEF5E9130",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_paths.zig",
+      "sha256": "2A2FCDCBFECC2C75A4A339529C740C6CB04757BD409C51C32E411CFC1E728F4F",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_patterns.zig",
+      "sha256": "5BDF0F17BD128DB5D632BDF49DF124883D75B62B76B6C15A48801CC05ED80FBC",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_resolve_sources.zig",
+      "sha256": "9BF08A7980AB3566C181431AB2310DD63EFA3A643419F42117A9BBD30E3F7B06",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_resolve.zig",
+      "sha256": "871F5F49F280808DB6B30B3E273B76E636747297B7A06F8400D51E2DF7CC51A1",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_resources.zig",
+      "sha256": "90ED7CB1AA9160762CF4F42D42165D130549FE930C4F0732FECE2F0815D95936",
+      "declared_class_methods": [
+        "collectPackageResources",
+        "collectDefaultResources",
+        "applyPackageFilter",
+        "applyPackageDeltaFilter",
+        "collectManifestFiles",
+        "addManifestEntries",
+        "collectFilesFromManifestEntries",
+        "resolveLocalEntries",
+        "collectFilesFromPaths",
+        "resolveLocalExtensionSource"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_settings.zig",
+      "sha256": "20A5AE92EF418CDECC8E34C9489A0547B61A01D6CF50F7967DE09E283C623D16",
+      "declared_class_methods": [
+        "addSourceToSettings",
+        "removeSourceFromSettings",
+        "getInstalledPath",
+        "listConfiguredPackages",
+        "getSourceMatchKeyForInput",
+        "getSourceMatchKeyForSettings",
+        "packageSourcesMatch",
+        "normalizePackageSourceForSettings",
+        "buildNoMatchingPackageMessage",
+        "findSuggestedConfiguredSource",
+        "emitProgress",
+        "withProgress"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_source.zig",
+      "sha256": "C2591904CF8303767036FD6F1E734939A402D5D54C115922D966C9925103DAB8",
+      "declared_class_methods": [
+        "parseSource",
+        "parseNpmSpec"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_storage.zig",
+      "sha256": "548FAD9EB97725F06E4C6CA7169300EF0412259669B3E5748EF6155E0674FFFF",
+      "declared_class_methods": [
+        "getInstalledNpmVersion",
+        "hasMissingGitDependencies",
+        "getGitUpdateMarkerPath",
+        "pruneEmptyGitParents",
+        "ensureNpmProject",
+        "ensureGitIgnore",
+        "getNpmInstallRoot",
+        "getGlobalNpmRoot",
+        "getPnpmGlobalPackagePath",
+        "getManagedNpmInstallPath",
+        "getLegacyGlobalNpmInstallPath",
+        "getNpmInstallPath",
+        "getGitInstallPath",
+        "getGitInstallRoot",
+        "getTemporaryDir",
+        "resolveManagedPath"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_transport.zig",
+      "sha256": "FEE3E1D05ACDDCBDF92C910BF64252FF4543687AE9A0C8BB4FE8B01B6ACB8283",
+      "declared_class_methods": []
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_updates.zig",
+      "sha256": "FEE5BD1EAAC509DF477624E993C4F77175B4E0982C6CA22108DA3644DBA3F42D",
+      "declared_class_methods": [
+        "update",
+        "updateConfiguredSources",
+        "updateNpmBatch",
+        "checkForAvailableUpdates"
+      ]
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig-package-manager-0fb-20261016\\src\\extensions\\native_sdk_package_versions.zig",
+      "sha256": "85961BE0B74BB1A34736B58B4E59F5B05400FFC8C946C7B4FF8400DC85F631DC",
+      "declared_class_methods": [
+        "installedNpmMatchesConfiguredVersion",
+        "npmHasAvailableUpdate",
+        "shouldUpdateNpmSource",
+        "getLatestNpmVersion",
+        "gitHasAvailableUpdate",
+        "getRemoteGitHead",
+        "getGitUpstreamRef",
+        "getLocalGitUpdateTarget"
+      ]
+    }
+  ],
+  "source_capture_run": false,
+  "expected_output_exists": false,
+  "zig_fmt_ast_run": false,
+  "native_compile_run": false,
+  "native_runtime_run": false,
+  "native_allocator_qualified": false,
+  "c_changed": false,
+  "default_selected": false,
+  "full_package_manager_qualified": false,
+  "full_pi_qualified": false,
+  "root_mutations": 0
+}

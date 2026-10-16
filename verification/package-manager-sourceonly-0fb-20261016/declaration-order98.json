@@ -1,0 +1,598 @@
+{
+  "source_head": "0fbdbd3f8ab1876ac260c0f08226a400759323b8",
+  "source_sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
+  "historical_inventory_preserved": true,
+  "historical_count": 97,
+  "actual_declarations": 98,
+  "correction": "Generic private async runWithConcurrency<T> was omitted by the historical inventory pattern.",
+  "declarations": [
+    {
+      "name": "constructor",
+      "source_line": 827,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "setProgressCallback",
+      "source_line": 834,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "addSourceToSettings",
+      "source_line": 838,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "removeSourceFromSettings",
+      "source_line": 869,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getInstalledPath",
+      "source_line": 887,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "emitProgress",
+      "source_line": 905,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "withProgress",
+      "source_line": 909,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "resolve",
+      "source_line": 926,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "resolveExtensionSources",
+      "source_line": 997,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "listConfiguredPackages",
+      "source_line": 1014,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "install",
+      "source_line": 1042,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "installAndPersist",
+      "source_line": 1066,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "remove",
+      "source_line": 1071,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "removeAndPersist",
+      "source_line": 1091,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "update",
+      "source_line": 1096,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "updateConfiguredSources",
+      "source_line": 1128,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "shouldUpdateNpmSource",
+      "source_line": 1187,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "updateNpmBatch",
+      "source_line": 1203,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "installNpmBatch",
+      "source_line": 1217,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "checkForAvailableUpdates",
+      "source_line": 1223,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "resolvePackageSources",
+      "source_line": 1288,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "findAutoloadDeltaBase",
+      "source_line": 1351,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "resolveLocalExtensionSource",
+      "source_line": 1366,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "installParsedSource",
+      "source_line": 1398,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getPackageSourceString",
+      "source_line": 1409,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getSourceMatchKeyForInput",
+      "source_line": 1413,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getSourceMatchKeyForSettings",
+      "source_line": 1424,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "buildNoMatchingPackageMessage",
+      "source_line": 1436,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "findSuggestedConfiguredSource",
+      "source_line": 1444,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "packageSourcesMatch",
+      "source_line": 1469,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "normalizePackageSourceForSettings",
+      "source_line": 1475,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "parseSource",
+      "source_line": 1486,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "installedNpmMatchesConfiguredVersion",
+      "source_line": 1513,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "npmHasAvailableUpdate",
+      "source_line": 1521,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getInstalledNpmVersion",
+      "source_line": 1539,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getLatestNpmVersion",
+      "source_line": 1551,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "gitHasAvailableUpdate",
+      "source_line": 1572,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getRemoteGitHead",
+      "source_line": 1589,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getLocalGitUpdateTarget",
+      "source_line": 1607,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getGitUpstreamRef",
+      "source_line": 1670,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "runGitRemoteCommand",
+      "source_line": 1687,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runWithConcurrency",
+      "source_line": 1697,
+      "async": true,
+      "generic": true
+    },
+    {
+      "name": "getPackageIdentity",
+      "source_line": 1727,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "dedupePackages",
+      "source_line": 1748,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "parseNpmSpec",
+      "source_line": 1771,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "assertProjectTrustedForScope",
+      "source_line": 1781,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getNpmCommand",
+      "source_line": 1787,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getPackageManagerName",
+      "source_line": 1799,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runNpmCommand",
+      "source_line": 1822,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getGitDependencyInstallArgs",
+      "source_line": 1827,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runNpmCommandSync",
+      "source_line": 1846,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getNpmInstallArgs",
+      "source_line": 1851,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "installNpm",
+      "source_line": 1874,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "uninstallNpm",
+      "source_line": 1880,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "installGit",
+      "source_line": 1897,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "updateGit",
+      "source_line": 1931,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "hasMissingGitDependencies",
+      "source_line": 1947,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "repairMissingGitDependencies",
+      "source_line": 1972,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "getGitUpdateMarkerPath",
+      "source_line": 1977,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "cleanAndInstallGitDependencies",
+      "source_line": 1981,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "ensureGitRef",
+      "source_line": 1998,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "refreshTemporaryGitSource",
+      "source_line": 2026,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "removeGit",
+      "source_line": 2039,
+      "async": true,
+      "generic": false
+    },
+    {
+      "name": "pruneEmptyGitParents",
+      "source_line": 2046,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "ensureNpmProject",
+      "source_line": 2068,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "ensureGitIgnore",
+      "source_line": 2081,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getNpmInstallRoot",
+      "source_line": 2091,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getGlobalNpmRoot",
+      "source_line": 2102,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getPnpmGlobalPackagePath",
+      "source_line": 2118,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getManagedNpmInstallPath",
+      "source_line": 2132,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getLegacyGlobalNpmInstallPath",
+      "source_line": 2143,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getNpmInstallPath",
+      "source_line": 2151,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getGitInstallPath",
+      "source_line": 2160,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getGitInstallRoot",
+      "source_line": 2172,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getTemporaryDir",
+      "source_line": 2183,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "resolveManagedPath",
+      "source_line": 2192,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getBaseDirForScope",
+      "source_line": 2201,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "resolvePath",
+      "source_line": 2212,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "resolvePathFromBase",
+      "source_line": 2216,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "collectPackageResources",
+      "source_line": 2220,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "collectDefaultResources",
+      "source_line": 2271,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "applyPackageFilter",
+      "source_line": 2293,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "applyPackageDeltaFilter",
+      "source_line": 2319,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "collectManifestFiles",
+      "source_line": 2342,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "addManifestEntries",
+      "source_line": 2364,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "collectFilesFromManifestEntries",
+      "source_line": 2384,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "resolveLocalEntries",
+      "source_line": 2396,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "addAutoDiscoveredResources",
+      "source_line": 2419,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "collectFilesFromPaths",
+      "source_line": 2585,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "getTargetMap",
+      "source_line": 2604,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "addResource",
+      "source_line": 2622,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "createAccumulator",
+      "source_line": 2634,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "toResolvedPaths",
+      "source_line": 2643,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "spawnCommand",
+      "source_line": 2671,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "spawnCaptureCommand",
+      "source_line": 2680,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runCommandCapture",
+      "source_line": 2694,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runCommand",
+      "source_line": 2738,
+      "async": false,
+      "generic": false
+    },
+    {
+      "name": "runCommandSync",
+      "source_line": 2752,
+      "async": false,
+      "generic": false
+    }
+  ]
+}
