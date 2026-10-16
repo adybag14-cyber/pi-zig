@@ -1,0 +1,64 @@
+{
+  "manifests": [
+    {
+      "name": "source4954",
+      "drift": 0,
+      "files": 1970,
+      "changed": []
+    },
+    {
+      "name": "executed_ae7",
+      "drift": 0,
+      "files": 1968,
+      "changed": []
+    },
+    {
+      "name": "dependencies",
+      "drift": 0,
+      "files": 31064,
+      "changed": []
+    },
+    {
+      "name": "node_tools",
+      "drift": 0,
+      "files": 1774,
+      "changed": []
+    }
+  ],
+  "candidate_files": 9217,
+  "compiler_drift": [],
+  "extra_control_drift": [],
+  "candidate_inventory_drift": [],
+  "candidate_head_drift": false,
+  "control_manifest_drift": false,
+  "candidate_drift": [],
+  "compiler_files": 19546,
+  "absent_dependency_drift": [],
+  "inventories": [
+    {
+      "name": "source4954",
+      "drift": [],
+      "files": 1970
+    },
+    {
+      "name": "executed_ae7",
+      "drift": [],
+      "files": 1968
+    },
+    {
+      "name": "dependencies",
+      "drift": [],
+      "files": 31064
+    },
+    {
+      "name": "node_tools",
+      "drift": [],
+      "files": 1774
+    }
+  ],
+  "expected_still_absent": true,
+  "compiler_inventory_drift": [],
+  "completed_utc": "2026-10-16T11:13:17.9984905+00:00",
+  "owner_failure": null,
+  "source_head_drift": false
+}

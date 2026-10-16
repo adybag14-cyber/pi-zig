@@ -1,0 +1,62 @@
+[
+  {
+    "bytes": 471,
+    "sha256": "0C8C0954904EB30B08FB4BF86D2C74E4CDF8549000E0819618AD17FCD9BEA951",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-admission.json"
+  },
+  {
+    "bytes": 2293554,
+    "sha256": "04D75933334E7D88AEBCE2CC051CF444D2F5FFC1C850E118EDFCA7216FA1A59D",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-candidate-before.json"
+  },
+  {
+    "bytes": 4508818,
+    "sha256": "CB34F4FBC552C035348692DF524D1C64A96184BBCECD5FA865BDB011C94AD9F6",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-compiler-before.json"
+  },
+  {
+    "bytes": 3972,
+    "sha256": "D709990002FED8C53A4B9014EAEB022E8C5B6332661FB516851F37D43AC3843C",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-extra-before.json"
+  },
+  {
+    "bytes": 4713372,
+    "sha256": "A8C09548066A801BBB491D509C5AD1350877C41636BDECB3D2F2D671F7E5D9B2",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-inventories-before.json"
+  },
+  {
+    "bytes": 1334242,
+    "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-output.json"
+  },
+  {
+    "bytes": 1287,
+    "sha256": "E2B11A399CA9F8829DF9E0E4C642364E69EA05A13F308D5C5D2E9AC6ECF5B11B",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-posthash.json"
+  },
+  {
+    "bytes": 458,
+    "sha256": "49E8A9B50323A78FAB0823F0AAFB2FECD836EEA7BF9C00D16B1F6EFD2852681F",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016-validation.json"
+  },
+  {
+    "bytes": 1178,
+    "sha256": "73D355B4D348F030B4605812012A61A4834CF30E980623BB69146A1F56E6C344",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016.json"
+  },
+  {
+    "bytes": 259,
+    "sha256": "E6E25F8B834DB31064672E48B3383EB226B1BDFE2A293C9A7397DDD44335D0D0",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016.stderr.log"
+  },
+  {
+    "bytes": 0,
+    "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+    "file": "ai-openai-producer58-ae7-light6-first-20261016.stdout.log"
+  },
+  {
+    "bytes": 45161,
+    "sha256": "7F2120F75BAD2AAE418EE62BA098C139EF829BF9C41D5938164BFEBC7DED8EB3",
+    "file": "sourceae7-modules-59044-0-20261015.jsonl"
+  }
+]

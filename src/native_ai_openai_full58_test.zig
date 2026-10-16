@@ -6,6 +6,7 @@ const v = @import("extensions/native_ai_provider_values.zig");
 const fixture = @import("ai/http_fixture.zig");
 const c = em.c;
 const golden = @embedFile("extensions/fixtures/ai-openai-full58-ae7.json");
+const producer_golden = @embedFile("extensions/fixtures/ai-openai-producer58-ae7.json");
 const answer = "{\"chunks\":[{\"id\":\"fixture-response\",\"choices\":[{\"delta\":{\"content\":\"done\"},\"finish_reason\":\"stop\"}]}]}";
 fn publish(scope: *v.Scope, name: [*:0]const u8, value: std.json.Value) !void {
     const encoded = try std.json.Stringify.valueAlloc(scope.engine.gpa, value, .{});
@@ -32,6 +33,11 @@ fn install(scope: *v.Scope) !void {
     const apis = try scope.own(try @import("extensions/native_ai_builtin_apis.zig").create(engine));
     try scope.put(global, "source58Apis", apis);
     try scope.put(global, "source58Factories", try scope.own(try @import("extensions/native_ai_provider_factories.zig").create(engine, apis)));
+    // Original Source58 imports the direct implementation for non-Kimi rows;
+    // the four Kimi rows deliberately retain their real lazy provider wrapper.
+    try scope.put(global, "source58DirectOpenAI", try scope.own(try @import("extensions/native_ai_openai_factory.zig").create(engine)));
+    const stream_module = engine.native_module_values.get("@earendil-works/pi-ai").?;
+    try scope.put(global, "source58EventStream", try scope.get(stream_module, "AssistantMessageEventStream"));
 }
 fn responseBody(gpa: std.mem.Allocator, plan: std.json.Value) ![]const u8 {
     const fields = plan.object;
@@ -109,8 +115,16 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
     try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", source.value.object.get("sourceHead").?.string);
     const rows = source.value.object.get("rows").?.array.items;
     try std.testing.expectEqual(@as(usize, 58), rows.len);
+    const producer_source = try std.json.parseFromSlice(std.json.Value, std.testing.allocator, producer_golden, .{});
+    defer producer_source.deinit();
+    try std.testing.expectEqualStrings("ae7b16d43b7c78c5b6fa3213fdd1215bb339729d", producer_source.value.object.get("sourceHead").?.string);
+    try std.testing.expectEqualStrings("df4b11133d4caf456de583f099ab6ebbeccccddedd040482714ae2452134db49", producer_source.value.object.get("driverSha256").?.string);
+    const producer_rows = producer_source.value.object.get("producerRows").?.array.items;
+    try std.testing.expectEqual(@as(usize, 58), producer_rows.len);
+    try std.testing.expect(producer_source.value.object.get("instrumentation").?.object.get("allOriginalRowsUnchanged").?.bool);
+    try std.testing.expectEqualStrings("6349299a388cbeb1f1086dfa58317ae4f296a26d6b620bb5a7987b6d44d82852", producer_source.value.object.get("instrumentation").?.object.get("baselineSha256").?.string);
     var all_match = true;
-    for (rows) |row| {
+    for (rows, producer_rows) |row, producer_row| {
         var arena = std.heap.ArenaAllocator.init(std.testing.allocator);
         defer arena.deinit();
         const requests = row.object.get("requests").?.array.items;
@@ -122,6 +136,7 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
         defer scope.deinit();
         try install(&scope);
         try publish(&scope, "source58Row", row);
+        try publish(&scope, "source58ExpectedProducer", producer_row);
         const global = try scope.own(c.JS_GetGlobalObject(engine.context));
         const url = try server.url(arena.allocator(), "/v1");
         try scope.put(global, "source58BaseUrl", try scope.text(url));
@@ -141,6 +156,16 @@ test "native OpenAI original Source58 actual fourteen constructors Models Kimi f
             const diagnostic = try engine.toString(try scope.get(global, "source58FullSnapshotDiagnostic"));
             defer engine.gpa.free(diagnostic);
             std.debug.print("Source58 complete intermediate snapshots {s}: {s}\n", .{ name, diagnostic });
+        }
+        const producer_checked = try engine.evalModule(
+            \\function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object'){const out={};for(const key of Object.keys(value).sort())if(value[key]!==undefined)out[key]=canonical(value[key]);return out}return value}globalThis.source58ProducerMatches=JSON.stringify(canonical(source58NativeProducer))===JSON.stringify(canonical(source58ExpectedProducer));globalThis.source58ProducerDiagnostic=JSON.stringify({actual:source58NativeProducer,expected:source58ExpectedProducer});export const done=true;
+        , "native-original-source58-producer-compare.mjs");
+        engine.freeValue(producer_checked);
+        if (!scope.truthy(try scope.get(global, "source58ProducerMatches"))) {
+            all_match = false;
+            const diagnostic = try engine.toString(try scope.get(global, "source58ProducerDiagnostic"));
+            defer engine.gpa.free(diagnostic);
+            std.debug.print("Source58 complete producer boundaries and identities {s}: {s}\n", .{ name, diagnostic });
         }
         try server.finish();
         if (!compareWire(name, server.captured.items, requests)) all_match = false;
