@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "reviewer": "models_auth_failure_resume",
+  "kind": "independent-source-only-integration-review",
+  "packet_commit": "19db83c5b62d2a1218d6c0e6ff108fe6077d8128",
+  "packet_path": "worktrees/archive/ai-openai-http58-composition-20261016/verification/openai-root476-composition-sourceonly-20261016",
+  "product_patch_sha256": "B1D4AE64980C4DFC6E4369A48712CABF0485EEA5D926B6AC0B32548C2C4182F7",
+  "composition_manifest_sha256": "BA9487F570B5BABAE44CE4F474170AFF568F74A2F4F633B6C9CCDD9B6EB7F983",
+  "result": "closed for bounded six-file source integration; no remaining concrete blocker in reviewed delta",
+  "checks": {
+    "packet_hashes": 10,
+    "packet_hash_mismatches": 0,
+    "product_hashes": 6,
+    "product_hash_mismatches": 0,
+    "retained_import_hashes": 20,
+    "retained_import_hash_mismatches": 0,
+    "current_root_protected_hashes": 14,
+    "current_root_protected_hash_mismatches": 0,
+    "virtual_bases": [
+      "4766c294e6329a6e74b12f848afcc0f9c7bbfd80",
+      "146dc350364f7679223fb6850c2877a7109a56ef",
+      "5cb442054aceca02fdfc33a1aef73b6766916d15"
+    ],
+    "virtual_product_trees": [
+      "a8be7b657ebdeae333825e1b6ac7879bfef6fe0f",
+      "a8786f587898018648be51ac455769f46820d588",
+      "5de64e395e6488c55997f2cb635885014898ed7e"
+    ],
+    "each_virtual_product_changed_path_count": 6,
+    "unexpected_product_paths": 0,
+    "virtual_protected_and_import_blob_changes": 0,
+    "git_diff_check_errors": 0,
+    "plain_git_apply_check_current_root": "passed without applying",
+    "current_root_read_head": "65624955eea4da11b1489ff9b1c087ee5f4044bf",
+    "isolated_packet_status": "clean"
+  },
+  "reviewed_semantics": [
+    "Retains prior closed IteratorClose phase patch and private null-prototype lexical owner",
+    "Readable fulfilled done getter and normal releaseLock errors enter real catch cleanup; second ordinary cleanup failure supersedes original",
+    "Saved ordinary read failure is owned while captured copy is cleared before cleanup; failed cleanup frees original Action exactly once",
+    "Fresh captured allocation and already-uncatchable errors escape before ordinary cleanup or source error conversion",
+    "Constructor/header wrappers rethrow exact captured fresh reason using unchanged Root helper",
+    "Factory setup/advance/fail and internal normalization use explicit operation boundaries; outer body guard uses per-invocation boundary",
+    "SDK dispatch/apiKey/fetch guards precede body.failure; three SDK cast/JSON catches guard before unchanged shared discard",
+    "Source52 expected, Engine, shared AF/body, Models and current C/H remain retained Root bytes"
+  ],
+  "prepared_unexecuted_controls": {
+    "prior_close_callers": 35,
+    "readable_direct": 12,
+    "readable_public": 3,
+    "readable_callers_sha256": "068C047EAE0572C0EE53F5440EF211F8B2055BB8AF06878C52DD64B879B1C6E7",
+    "fatal_matrix_sha256": "C4C6087F91E0AEEA627EBC32E0F9BEAA3A770B1A8F79728E01D735B4F248275F"
+  },
+  "scope": "Root may intake only six product files and proof metadata under its existing authorization; optional build/control patches remain separately reviewed/granted",
+  "limitations": [
+    "No compilation, Zig AST/formatter, Node/source capture, native job, allocator sweep, GC, wire or runtime validation",
+    "No full58, source56, whole application or release qualification",
+    "Retained sdk_stream generator/partial-json broader failure boundaries remain separate follow-up work",
+    "AsyncFromSync and other explicit packet gaps remain unresolved"
+  ],
+  "historical_packets_rewritten": false,
+  "root_checkout_edited": false,
+  "executed": false,
+  "compiled": false
+}
