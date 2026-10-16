@@ -42,6 +42,8 @@ fixture pins, controls and artifact hashes are sealed before, between and
 after phases. Source58/producer58 execution is outside this gate.
 Preparation does not qualify native parity, default activation or release.
 
-All Zig commands, including formatting/AST, remain deferred until Root's
-short inspection window and serial native grant. PowerShell parsing and
-git diff whitespace checks are the only preparation checks so far.
+Root released the short inspection window and serial native grant
+ROOT-MODELS259-16GiB-SERIAL-20261016. Pinned Zig0.16 formatting/AST checks
+passed; the shared recorder test received formatting only. PowerShell
+parsing and git diff whitespace checks passed. Native execution remains
+pending the runner's fresh admission and complete seals.
