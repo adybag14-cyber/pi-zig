@@ -1,0 +1,11 @@
+{
+  "source": "C:\\Users\\adyba\\pi-zig-actual-models-qualification-root10db-20261016\\.zig-cache\\o\\5962b84374ea0caa326588bc8afe9ad7\\test.exe",
+  "retained": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\actual-models-root10db-fourth-20261016-retained-artifact\\test.exe",
+  "sha256": "451DD450F0682FE2F4366834E705CA7C0FF84B394FBF6D111817365E8AB6917F",
+  "bytes": 61704192,
+  "source_candidate": "c22af0996a4ec032a0c244b91b2c2eac162a0fcc",
+  "metadata_tests": 16,
+  "runtime_passed": 11,
+  "runtime_failed": 5,
+  "native_qualified": false
+}

@@ -1,0 +1,35 @@
+{
+  "candidate": "c22af0996a4ec032a0c244b91b2c2eac162a0fcc",
+  "owners": [
+    {
+      "receipt": "compile.process.json",
+      "pid": 73868,
+      "status": "passed",
+      "created_utc": "2026-10-16T12:21:29.1950732Z",
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "pid_absent": true
+    },
+    {
+      "receipt": "runtime.process.json",
+      "pid": 70784,
+      "status": "failed",
+      "created_utc": "2026-10-16T12:22:47.7955748Z",
+      "executable": "C:\\Users\\adyba\\pi-zig-toolchain-20261003\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "pid_absent": true
+    },
+    {
+      "receipt": "metadata-probe.json",
+      "pid": 68296,
+      "status": "passed",
+      "created_utc": "2026-10-16T12:22:23.4811369Z",
+      "executable": "C:\\Users\\adyba\\pi-zig-actual-models-qualification-root10db-20261016\\.zig-cache\\o\\5962b84374ea0caa326588bc8afe9ad7\\test.exe",
+      "pid_absent": true
+    }
+  ],
+  "all_owned_roots_absent": true,
+  "remaining_owned_descendants": [],
+  "global_native_roots": [],
+  "all_native_descendants_absent": true,
+  "scope": "B919 compile/runtime roots and actual metadata process; global Zig/build/test executable inventory",
+  "observed_utc": "2026-10-16T12:26:47.6595415+00:00"
+}

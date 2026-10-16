@@ -1,0 +1,61 @@
+{
+  "phase": "compile",
+  "candidate": "c22af0996a4ec032a0c244b91b2c2eac162a0fcc",
+  "candidate_files": 9276,
+  "candidate_drift": 0,
+  "candidate_head_drift": false,
+  "vendor_files": 1316,
+  "vendor_subset_of_candidate": true,
+  "vendor_drift": 0,
+  "compiler_files": 19546,
+  "compiler_drift": 0,
+  "references": [
+    {
+      "name": "source",
+      "count": 1970,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "node_tools",
+      "count": 1774,
+      "drift": 0
+    }
+  ],
+  "path_inventories": [
+    {
+      "name": "source",
+      "count": 1970,
+      "drift": 0
+    },
+    {
+      "name": "dependencies",
+      "count": 31064,
+      "drift": 0
+    },
+    {
+      "name": "node_tools",
+      "count": 1774,
+      "drift": 0
+    },
+    {
+      "name": "compiler",
+      "count": 19546,
+      "drift": 0
+    }
+  ],
+  "controls": 11,
+  "control_drift": 0,
+  "fixtures": 10,
+  "fixture_drift": 0,
+  "absence_records": 84,
+  "absence_drift": 0,
+  "source_head_drift": false,
+  "artifact_drift": 0,
+  "artifacts": [],
+  "observed_utc": "2026-10-16T12:22:22.4490270+00:00"
+}
