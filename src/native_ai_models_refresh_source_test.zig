@@ -91,8 +91,10 @@ test "native actual Models refresh releases every failed host allocation without
                     const captured_tag = if (engine.captured_exception) |reason| c.pi_js_native_allocation_error_generation(reason) else 0;
                     const retained_tag = if (engine.native_allocation_exception) |reason| c.pi_js_native_allocation_error_generation(reason) else 0;
                     std.debug.print("MODELS_REFRESH_ALLOCATION_FAILURE fail_index={d} alloc_index={d} induced={any} error={s} boundary={d} current={d} captured_tag={d} retained_tag={d} pending_jobs={any} job_attempts={d} empty_polls={d}\n", .{ failing.fail_index, failing.alloc_index, failing.has_induced_failure, @errorName(classified), generation, engine.native_allocation_generation, captured_tag, retained_tag, c.JS_IsJobPending(engine.runtime), progress.job_attempts, progress.empty_job_polls });
-                    const allocation_stack = failing.getStackTrace();
-                    std.debug.dumpStackTrace(&allocation_stack);
+                    if (failing.has_induced_failure) {
+                        const allocation_stack = failing.getStackTrace();
+                        std.debug.dumpStackTrace(&allocation_stack);
+                    }
                 }
                 return classified;
             };
