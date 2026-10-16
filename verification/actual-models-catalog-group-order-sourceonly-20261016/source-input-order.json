@@ -2,6 +2,12 @@
   "authority": "Unchanged original provider data declarations and flattenModelCatalog group traversal",
   "source_head": "4954d760504c11df9b2cbdc040346107b6a8153d",
   "original_provider_files": 42,
+  "normalized_source_sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB",
+  "builtin_manifest_sha256": "05A7F9B7D8FC9A28018F38C6EBB4B0321E3C3685FD6BED191730D5B32D9E60AF",
+  "source_model_rows": 1705,
+  "normalized_model_rows": 1705,
+  "multi_group_providers": 10,
+  "duplicate_id_count": 0,
   "within_group_order_mismatches": [],
   "inputs": [
     {
@@ -358,6 +364,851 @@
       "api_group_order": [
         "openai-completions"
       ]
+    }
+  ],
+  "provider_api_model_census": [
+    {
+      "sha256": "DF227D426B678E44CD82DEAE1CF433855D6B27F36FEDCFF3EF4FB812FE882868",
+      "provider": "amazon-bedrock",
+      "api_groups": [
+        {
+          "models": 193,
+          "by_type": {
+            "chat": 193,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "bedrock-converse-stream"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "628FEAB3EF6C7D80CE96F75999804E1D9F05FEC3851E5302E30FFF3B69DB90F6",
+      "provider": "ant-ling",
+      "api_groups": [
+        {
+          "models": 3,
+          "by_type": {
+            "chat": 3,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "91F5DA01452C7746645D3405BC91E09F849E4E4687C7C7FF22D8976EAFE64B87",
+      "provider": "anthropic",
+      "api_groups": [
+        {
+          "models": 17,
+          "by_type": {
+            "chat": 17,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "46C4E25B84463C6475E706C581196D2735C35FEB9612D2EFCA0AB932C917D727",
+      "provider": "azure",
+      "api_groups": [
+        {
+          "models": 44,
+          "by_type": {
+            "chat": 44,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "azure-openai-responses"
+        },
+        {
+          "models": 1,
+          "by_type": {
+            "chat": 1,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "1FCDAB8DAF2881BD099EB08F9416F7DF5BF39975937D2A63B841542BD032F2E6",
+      "provider": "baseten",
+      "api_groups": [
+        {
+          "models": 22,
+          "by_type": {
+            "chat": 22,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "3ECCB58C5DE3D0DC7BA49DC6E477BA29F00CB3150CE0A35CC90D59E6B5AB368E",
+      "provider": "cerebras",
+      "api_groups": [
+        {
+          "models": 2,
+          "by_type": {
+            "chat": 2,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "388AEFD2F1E5C5B0783673DE1ACDA4A7EA8DE853EBB5BEEEEDE9646A90159A2A",
+      "provider": "cloudflare-ai-gateway",
+      "api_groups": [
+        {
+          "models": 14,
+          "by_type": {
+            "chat": 14,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 18,
+          "by_type": {
+            "chat": 18,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        },
+        {
+          "models": 25,
+          "by_type": {
+            "chat": 25,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "98B9C8CB412139AE3F5D2F5E49134F8412ED4E139A12BF6CB3AEBA38AACC6BB3",
+      "provider": "cloudflare-workers-ai",
+      "api_groups": [
+        {
+          "models": 3,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 3
+          },
+          "api": "cloudflare-workers-ai-system-one"
+        },
+        {
+          "models": 18,
+          "by_type": {
+            "chat": 18,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "10A296FB3E898F7715C80890C8AF0AF4F5FD58F22DBCD6612FDC5D762157CCDC",
+      "provider": "deepseek",
+      "api_groups": [
+        {
+          "models": 2,
+          "by_type": {
+            "chat": 2,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "8DB3C11F65A5D76260D5040A5DC5A9EF0F35B92DE8505A30907C2355C2837B36",
+      "provider": "fireworks",
+      "api_groups": [
+        {
+          "models": 14,
+          "by_type": {
+            "chat": 14,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 8,
+          "by_type": {
+            "chat": 8,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "1C7D77A4C320081BB0A80B2C8E185B34F07B73D38E67D20F3DCABCF72F2F8FCD",
+      "provider": "github-copilot",
+      "api_groups": [
+        {
+          "models": 11,
+          "by_type": {
+            "chat": 11,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 7,
+          "by_type": {
+            "chat": 7,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        },
+        {
+          "models": 18,
+          "by_type": {
+            "chat": 18,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "564D692A4292EF12E98C8EC056A39948EA64E10851F5DDAAEBCC37B585545231",
+      "provider": "google-vertex",
+      "api_groups": [
+        {
+          "models": 14,
+          "by_type": {
+            "chat": 14,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "google-vertex"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "E13D3C51B13028D8253153165F7438EA2F3C3EAA8F209BE952D3E9DED4494B5A",
+      "provider": "google",
+      "api_groups": [
+        {
+          "models": 23,
+          "by_type": {
+            "chat": 23,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "google-generative-ai"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "910952AD9DAD07856983459D63FCE0148DBA1203EDD7B10D801A77C5824F3405",
+      "provider": "groq",
+      "api_groups": [
+        {
+          "models": 7,
+          "by_type": {
+            "chat": 7,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "6399E958790A9D90C21FB55D1CBEF8569427A1CEB28DE86DADEB3B4454ECFADE",
+      "provider": "huggingface",
+      "api_groups": [
+        {
+          "models": 78,
+          "by_type": {
+            "chat": 78,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "728D5DDB63EF52130552022D5AE2FD138FDC131FF854AC8C3B10CCAAD355AB39",
+      "provider": "kimi-coding",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "563F5EC07973F52AB8C3EB26EF91A36AD8A79E950B37174935666CDCB624BF35",
+      "provider": "meta",
+      "api_groups": [
+        {
+          "models": 6,
+          "by_type": {
+            "chat": 6,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "1BBFBD11C3EDBD141841D3CEF027E12157218F1AEC92477E15772116C1FABE7A",
+      "provider": "minimax-cn",
+      "api_groups": [
+        {
+          "models": 3,
+          "by_type": {
+            "chat": 3,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "A4B6864BD97EDDF5749B2E117F643E751EC237408E8E24BEC9E2F947782FA244",
+      "provider": "minimax",
+      "api_groups": [
+        {
+          "models": 3,
+          "by_type": {
+            "chat": 3,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "27AA66C71A0504B53DC87EC194286FA7E70B99747FC8DF9B709B23B3548AFE50",
+      "provider": "mistral",
+      "api_groups": [
+        {
+          "models": 40,
+          "by_type": {
+            "chat": 40,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "mistral-conversations"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "79C9585DC84EE525EBAEBBC78B3C55F3D369EC884D4F943488F1E0B14E3587F5",
+      "provider": "moonshotai-cn",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "1DA2C4E34F22AEF17A07C974D85BDEE8E1B68B6DC712E3769C935B3F1E7DADCA",
+      "provider": "moonshotai",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "FB46994414C25ADAD86C7A4E633339F4927DE98D38E1603251C988C3241AFA56",
+      "provider": "nvidia",
+      "api_groups": [
+        {
+          "models": 19,
+          "by_type": {
+            "chat": 19,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "75DFC2F9E4B1E039978E069D94C983595EF8FF02EB64481901BEDAE5883B1D3F",
+      "provider": "openai-codex",
+      "api_groups": [
+        {
+          "models": 9,
+          "by_type": {
+            "chat": 9,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-codex-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "3598D87BD39E40FE6AE44B07ECF3F9D27CB2E745E114C8B0C0FB0A3A84DD8D3E",
+      "provider": "openai",
+      "api_groups": [
+        {
+          "models": 1,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 1
+          },
+          "api": "openai-decisions"
+        },
+        {
+          "models": 44,
+          "by_type": {
+            "chat": 44,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "04584E57D8F8A76D9F00A853C4772BCB1A826826C03A54D371B7F78E5F38E277",
+      "provider": "opencode-go",
+      "api_groups": [
+        {
+          "models": 6,
+          "by_type": {
+            "chat": 6,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 1,
+          "by_type": {
+            "chat": 1,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "google-generative-ai"
+        },
+        {
+          "models": 18,
+          "by_type": {
+            "chat": 18,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        },
+        {
+          "models": 6,
+          "by_type": {
+            "chat": 6,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "48991098B87C31B7428767A463D481E421AF2D79E38F891868695CD252E7A37D",
+      "provider": "opencode",
+      "api_groups": [
+        {
+          "models": 18,
+          "by_type": {
+            "chat": 18,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 8,
+          "by_type": {
+            "chat": 8,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "google-generative-ai"
+        },
+        {
+          "models": 27,
+          "by_type": {
+            "chat": 27,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        },
+        {
+          "models": 30,
+          "by_type": {
+            "chat": 30,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        },
+        {
+          "models": 2,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 2
+          },
+          "api": "typesafe-system-one"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "C7264D9599F80BBDA5CF2914FC235D5B296BF7143F816263E8A5A5F56F658492",
+      "provider": "openrouter",
+      "api_groups": [
+        {
+          "models": 15,
+          "by_type": {
+            "chat": 15,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 379,
+          "by_type": {
+            "chat": 379,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        },
+        {
+          "models": 59,
+          "by_type": {
+            "chat": 0,
+            "image": 59,
+            "classifier": 0
+          },
+          "api": "openrouter-images"
+        },
+        {
+          "models": 23,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 23
+          },
+          "api": "typesafe-system-one"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "2469A4091C474EC3DB0A49A9962D8D2726C074AD9065B96BC4E0C87861C4C6C5",
+      "provider": "qwen-token-plan-cn",
+      "api_groups": [
+        {
+          "models": 20,
+          "by_type": {
+            "chat": 20,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "0FB7CF64FAF39D1A3B0A884210A86C87084B805EDA15644F5F39293287B959DD",
+      "provider": "qwen-token-plan-individual",
+      "api_groups": [
+        {
+          "models": 9,
+          "by_type": {
+            "chat": 9,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "EFF10620CB577142DE4EC02698D5961A71FDA2FE4F6AE7EA9432BAD9D6844176",
+      "provider": "qwen-token-plan",
+      "api_groups": [
+        {
+          "models": 20,
+          "by_type": {
+            "chat": 20,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "47C49F1FFAF2900C8E1E23EE61CB4CBE8C066AE59A4E2D01393C5C9772A1DA04",
+      "provider": "radius",
+      "api_groups": [
+        {
+          "models": 29,
+          "by_type": {
+            "chat": 29,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "pi-messages"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "52293DF62191C8E799AE3632F8AB1B3F52EE626AEE0280677086627B32864BF7",
+      "provider": "together",
+      "api_groups": [
+        {
+          "models": 17,
+          "by_type": {
+            "chat": 17,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "A4429A2F696D5CC5273969AF61A7310BDA07D6BDCD27BF9AC9C76C534CC43716",
+      "provider": "typesafe",
+      "api_groups": [
+        {
+          "models": 1,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 1
+          },
+          "api": "typesafe-system-one"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "BB62E8A267E0E94BE31CDAD7EA95DBDB1608ADC1AB910341E8761144982940F0",
+      "provider": "vercel-ai-gateway",
+      "api_groups": [
+        {
+          "models": 297,
+          "by_type": {
+            "chat": 297,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "anthropic-messages"
+        },
+        {
+          "models": 8,
+          "by_type": {
+            "chat": 0,
+            "image": 0,
+            "classifier": 8
+          },
+          "api": "typesafe-system-one"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "879C49B78B663A52A220AC4EE013E726B10C4F50AAA03BC58EE53A4B54C76928",
+      "provider": "xai",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-responses"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "8266DC55EF720234373D4FF5434F0B8D40F614300D9E501F7D52935017534C82",
+      "provider": "xiaomi-token-plan-ams",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "07ADE989C0BD1ECF6ED9EDC32E561C0DD28C317955B82F51E7A1875083906307",
+      "provider": "xiaomi-token-plan-cn",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "6AFAB55C8A37BC4018354AD657C774F0E664AE44CF79BEFB743BC5AE3FC3E9BA",
+      "provider": "xiaomi-token-plan-sgp",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "93F81B40E4D01F0193DD0B191F6ADA2B851A71D351113067999AB0F9DC3F737E",
+      "provider": "xiaomi",
+      "api_groups": [
+        {
+          "models": 6,
+          "by_type": {
+            "chat": 6,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "EE5EE705FB6E413A6088DB5E3616C27FCE802A8ECE6C355F1DB35490D787F610",
+      "provider": "zai-coding-cn",
+      "api_groups": [
+        {
+          "models": 4,
+          "by_type": {
+            "chat": 4,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
+    },
+    {
+      "sha256": "58E6642FDFB736F0B9A4A277C760C536A3CEA66A030ABBFB2615F7B2851D5C6F",
+      "provider": "zai",
+      "api_groups": [
+        {
+          "models": 7,
+          "by_type": {
+            "chat": 7,
+            "image": 0,
+            "classifier": 0
+          },
+          "api": "openai-completions"
+        }
+      ],
+      "duplicate_ids": []
     }
   ],
   "native_qualified": false,
