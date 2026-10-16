@@ -563,7 +563,7 @@ pub const Engine = struct {
 
     pub fn normalizeRequire(self: *Engine, base: []const u8, name: []const u8) ![]u8 {
         const schema_package = std.mem.eql(u8, name, "typebox") or std.mem.startsWith(u8, name, "typebox/") or std.mem.eql(u8, name, "@sinclair/typebox") or std.mem.startsWith(u8, name, "@sinclair/typebox/");
-        if (self.native_module_values.contains(name) and !schema_package) return self.gpa.dupe(u8, name);
+        if (self.native_module_names.contains(name) and self.native_module_values.contains(name) and !schema_package) return self.gpa.dupe(u8, name);
         const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
         const normalize = loader.normalize_require orelse loader.normalize orelse return error.NativeModuleLoaderUnavailable;
         return normalize(loader.context, self.gpa, base, name);
@@ -571,6 +571,9 @@ pub const Engine = struct {
 
     pub fn requireBuiltin(self: *Engine, name: []const u8) !?c.JSValue {
         if (std.fs.path.isAbsolute(name)) return null;
+        // The value cache also holds host-private state. Only explicitly
+        // registered module names are part of the guest require surface.
+        if (!self.native_module_names.contains(name)) return null;
         const namespace = self.native_module_values.get(name) orelse return null;
         const default = try self.checked(c.JS_GetPropertyStr(self.context, namespace, "default"));
         if (!c.JS_IsUndefined(default)) return default;
@@ -1266,6 +1269,34 @@ test "native import metadata distinguishes hosted modules from explicitly select
         defer engine.gpa.free(url);
         try std.testing.expect(std.mem.endsWith(u8, url, "/native/input%20file.mjs"));
     }
+}
+
+test "native require cannot expose private cached state or observe its getters" {
+    const engine = try Engine.init(std.testing.allocator, .{});
+    defer engine.deinit();
+    const private_owner = try engine.eval("({get default(){throw Error('private cache getter must not run')}})", "private-require-owner.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(private_owner);
+    for ([_][]const u8{ "private-unregistered-state", "\x00private-unregistered-state" }) |name| {
+        try engine.native_module_values.put(engine.gpa, name, c.JS_DupValue(engine.context, private_owner));
+        const escaped = try engine.requireBuiltin(name);
+        defer if (escaped) |value| engine.freeValue(value);
+        try std.testing.expect(escaped == null);
+        if (engine.normalizeRequire("private-require-entry.cjs", name)) |normalized| {
+            engine.gpa.free(normalized);
+            return error.PrivateNativeCacheEscaped;
+        } else |err| {
+            try std.testing.expectEqual(error.NativeModuleLoaderUnavailable, err);
+        }
+    }
+    const public_owner = try engine.eval("({marker:42})", "public-require-owner.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer engine.freeValue(public_owner);
+    try engine.registerValueModule("public-require-fixture", public_owner);
+    const public_value = (try engine.requireBuiltin("public-require-fixture")) orelse return error.PublicNativeModuleMissing;
+    defer engine.freeValue(public_value);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, public_owner, public_value));
+    const public_name = try engine.normalizeRequire("private-require-entry.cjs", "public-require-fixture");
+    defer engine.gpa.free(public_name);
+    try std.testing.expectEqualStrings("public-require-fixture", public_name);
 }
 
 test "native module allocation failures do not install hidden modules before retry" {
