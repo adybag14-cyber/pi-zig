@@ -1,0 +1,24 @@
+{
+  "version": "0.16.0",
+  "binary_sha256": "451DD450F0682FE2F4366834E705CA7C0FF84B394FBF6D111817365E8AB6917F",
+  "binary": "C:\\Users\\adyba\\pi-zig-actual-models-qualification-root10db-20261016\\.zig-cache\\o\\5962b84374ea0caa326588bc8afe9ad7\\test.exe",
+  "method": "Actual metadata-only Zig0.16 protocol; query and clean exit, no unit run command",
+  "tests": [
+    "native_ai_models_class_test.test.native actual Models class preserves ordinary receivers and intrinsic request promises",
+    "native_ai_models_auth_test.test.native actual Models auth replays genuine Source69 with real defaults and shared imports",
+    "native_ai_models_refresh_source_test.test.native actual Models refresh compares all genuine4954 Source60 observations",
+    "native_ai_models_refresh_source_test.test.native actual Models publication retains queued work through collection",
+    "native_ai_models_refresh_source_test.test.native actual Models refresh releases every failed host allocation without swallowed failures",
+    "native_ai_provider_factories_source_test.test.native actual provider factories compare all genuine4954 Source92 observations",
+    "native_credential_store_test.test.native actual credential store replays genuine Source20 ordinary class queue and cancellation observations",
+    "native_async_body_oom_test.test.shared recorder wrapped START host OOM remains uncatchable, not rejected Promise",
+    "native_async_body_oom_test.test.shared recorder wrapped resumed host OOM escapes actual Await job",
+    "native_async_body_oom_test.test.shared recorder guest OOM lookalike preserves raw catchable rejection identity",
+    "native_async_rejected_allocation_test.test.native async rejected allocation fresh private reason retains exact identity and uncatchable failure",
+    "native_async_rejected_allocation_test.test.native async rejected allocation historical private tag remains ordinary guest rejection",
+    "native_async_rejected_allocation_test.test.native async rejected allocation user lookalike properties never become private host authority",
+    "native_async_rejected_allocation_test.test.native async rejected allocation unsigned wrap accepts both fresh reasons and excludes older tag",
+    "native_async_rejected_allocation_test.test.native async rejected allocation recognized resumed reason escapes real primitive job with original identity",
+    "extensions.native_durable_storage.test_0"
+  ]
+}

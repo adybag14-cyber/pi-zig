@@ -1,0 +1,322 @@
+test-native-actual-models-qualification
++- run test 11 pass, 5 fail (16 total)
+error: 'native_ai_models_class_test.test.native actual Models class preserves ordinary receivers and intrinsic request promises' failed:
+       Actual Models class: Error: {"case":"query push lookup precedes provider callback","actual":{"case":"query push lookup precedes provider callback","value":{"trace":["push getter","push getter","catalog","push getter"],"result":["owned"]}},"source":{"case":"query push lookup precedes provider callback","value":{"trace":["push getter","push getter","catalog"],"result":["owned"]}}}
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:966:9: 0x7ff6a4ec6378 in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:907:9: 0x7ff6a4ec6419 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:613:25: 0x7ff6a4ec6943 in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_models_class_test.zig:44:9: 0x7ff6a5c07462 in test.native actual Models class preserves ordinary receivers and intrinsic request promises (test_zcu.obj)
+               return err;
+               ^
+error: 'native_ai_models_auth_test.test.native actual Models auth replays genuine Source69 with real defaults and shared imports' failed:
+       Actual Models auth Source69: no diagnostic
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:962:17: 0x7ff6a4ec5c65 in awaitValueImpl (test_zcu.obj)
+                       return error.JavaScriptPromiseUnsettled;
+                       ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:907:9: 0x7ff6a4ec6419 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:613:25: 0x7ff6a4ec6943 in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_models_auth_test.zig:66:9: 0x7ff6a5c06342 in test.native actual Models auth replays genuine Source69 with real defaults and shared imports (test_zcu.obj)
+               return err;
+               ^
+error: 'native_ai_models_refresh_source_test.test.native actual Models refresh compares all genuine4954 Source60 observations' failed:
+       Actual Models refresh Source60: Error: {"case":17,"actual":{"name":"phase-publish-live-provider-id","error":{"name":"TypeError","message":"not a function","raw":false,"causeRaw":false}},"source":{"name":"phase-publish-live-provider-id","error":{"name":"TypeError","message":"this.modelsStore.read is not a function","raw":false,"causeRaw":false}}}
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:966:9: 0x7ff6a4ec6378 in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:907:9: 0x7ff6a4ec6419 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:613:25: 0x7ff6a4ec6943 in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_models_refresh_source_test.zig:42:9: 0x7ff6a5c02362 in test.native actual Models refresh compares all genuine4954 Source60 observations (test_zcu.obj)
+               return err;
+               ^
+error: 'native_ai_models_refresh_source_test.test.native actual Models refresh releases every failed host allocation without swallowed failures' failed:
+       NATIVE_ACTUAL_MODELS_REFRESH_HOST_ALLOCATION_POSITIONS=300
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:962:17: 0x7ff6a4ec5c65 in awaitValueImpl (test_zcu.obj)
+                       return error.JavaScriptPromiseUnsettled;
+                       ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:907:9: 0x7ff6a4ec6419 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:613:25: 0x7ff6a4ec6943 in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:733:9: 0x7ff6a4fc93e1 in nativeAllocationError (test_zcu.obj)
+               return err;
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_models_refresh_source_test.zig:85:67: 0x7ff6a5bff923 in run (test_zcu.obj)
+                   , "models-refresh-owned-allocations.mjs") catch |err| return engine.nativeAllocationError(err, generation);
+                                                                         ^
+       C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib\std\testing.zig:1159:25: 0x7ff6a5bffe0d in checkAllAllocationFailures__anon_506367 (test_zcu.obj)
+                   else => |e| return e,
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_models_refresh_source_test.zig:92:5: 0x7ff6a5bffe5c in test.native actual Models refresh releases every failed host allocation without swallowed failures (test_zcu.obj)
+           try std.testing.checkAllAllocationFailures(std.testing.allocator, Probe.run, .{});
+           ^
+error: 'native_ai_provider_factories_source_test.test.native actual provider factories compare all genuine4954 Source92 observations' failed:
+       Actual provider factories Source92: Error: {"case":"factory azureProvider","actual":{"case":"factory azureProvider","value":{"factory":{"name":"azureProvider","length":0,"tag":"[object Function]","prototype":true,"constructible":true},"id":"azure","name":"Azure","baseUrl":null,"keys":["id","name","baseUrl","headers","auth","getModels","getAllModels","refreshModels","filterModels","filterAllModels","stream","streamSimple"],"fresh":true,"authKeys":["apiKey"],"apiKey":{"keys":["name","login","resolve"],"name":"Azure OpenAI API key","isSubscription":null,"loginLabel":null,"methods":{"login":{"name":"login","length":1,"tag":"[object AsyncFunction]","prototype":false,"constructible":false},"resolve":{"name":"resolve","length":1,"tag":"[object AsyncFunction]","prototype":false,"constructible":false}}},"oauth":null,"sameApiKey":false,"sameOAuth":true,"methods":{"getModels":{"name":"getModels","length":0,"tag":"[object Function]","prototype":false,"constructible":false},"getAllModels":{"name":"currentModels","length":0,"tag":"[object Function]","prototype":false,"constructible":false},"stream":{"name":"stream","length":3,"tag":"[object Function]","prototype":false,"constructible":false},"streamSimple":{"name":"streamSimple","length":3,"tag":"[object Function]","prototype":false,"constructible":false}},"chat":["deepseek-v4-pro","gpt-4","gpt-4-turbo","gpt-4.1","gpt-4.1-mini","gpt-4.1-nano","gpt-4o","gpt-4o-2024-05-13","gpt-4o-2024-08-06","gpt-4o-2024-11-20","gpt-4o-mini","gpt-5","gpt-5-chat-latest","gpt-5-mini","gpt-5-nano","gpt-5-pro","gpt-5.1","gpt-5.2","gpt-5.2-chat-latest","gpt-5.2-pro","gpt-5.3-chat-latest","gpt-5.3-codex","gpt-5.3-codex-spark","gpt-5.4","gpt-5.4-mini","gpt-5.4-nano","gpt-5.4-pro","gpt-5.5","gpt-5.5-pro","gpt-5.6-luna","gpt-5.6-sol","gpt-5.6-terra","gpt-6-astra","gpt-6-luna","gpt-6-sol","gpt-6.1-sol","gpt-daybreak-blue-latest","gpt-daybreak-red-latest","gpt-realtime-2.1","o1","o1-pro","o3","o3-mini","o3-pro","o4-mini"],"all":[["chat","deepseek-v4-pro"],["chat","gpt-4"],["chat","gpt-4-turbo"],["chat","gpt-4.1"],["chat","gpt-4.1-mini"],["chat","gpt-4.1-nano"],["chat","gpt-4o"],["chat","gpt-4o-2024-05-13"],["chat","gpt-4o-2024-08-06"],["chat","gpt-4o-2024-11-20"],["chat","gpt-4o-mini"],["chat","gpt-5"],["chat","gpt-5-chat-latest"],["chat","gpt-5-mini"],["chat","gpt-5-nano"],["chat","gpt-5-pro"],["chat","gpt-5.1"],["chat","gpt-5.2"],["chat","gpt-5.2-chat-latest"],["chat","gpt-5.2-pro"],["chat","gpt-5.3-chat-latest"],["chat","gpt-5.3-codex"],["chat","gpt-5.3-codex-spark"],["chat","gpt-5.4"],["chat","gpt-5.4-mini"],["chat","gpt-5.4-nano"],["chat","gpt-5.4-pro"],["chat","gpt-5.5"],["chat","gpt-5.5-pro"],["chat","gpt-5.6-luna"],["chat","gpt-5.6-sol"],["chat","gpt-5.6-terra"],["chat","gpt-6-astra"],["chat","gpt-6-luna"],["chat","gpt-6-sol"],["chat","gpt-6.1-sol"],["chat","gpt-daybreak-blue-latest"],["chat","gpt-daybreak-red-latest"],["chat","gpt-realtime-2.1"],["chat","o1"],["chat","o1-pro"],["chat","o3"],["chat","o3-mini"],["chat","o3-pro"],["chat","o4-mini"]],"canonicalFirst":true}},"source":{"case":"factory azureProvider","value":{"factory":{"name":"azureProvider","length":0,"tag":"[object Function]","prototype":true,"constructible":true},"id":"azure","name":"Azure","baseUrl":null,"keys":["id","name","baseUrl","headers","auth","getModels","getAllModels","refreshModels","filterModels","filterAllModels","stream","streamSimple"],"fresh":true,"authKeys":["apiKey"],"apiKey":{"keys":["name","login","resolve"],"name":"Azure OpenAI API key","isSubscription":null,"loginLabel":null,"methods":{"login":{"name":"login","length":1,"tag":"[object AsyncFunction]","prototype":false,"constructible":false},"resolve":{"name":"resolve","length":1,"tag":"[object AsyncFunction]","prototype":false,"constructible":false}}},"oauth":null,"sameApiKey":false,"sameOAuth":true,"methods":{"getModels":{"name":"getModels","length":0,"tag":"[object Function]","prototype":false,"constructible":false},"getAllModels":{"name":"currentModels","length":0,"tag":"[object Function]","prototype":false,"constructible":false},"stream":{"name":"stream","length":3,"tag":"[object Function]","prototype":false,"constructible":false},"streamSimple":{"name":"streamSimple","length":3,"tag":"[object Function]","prototype":false,"constructible":false}},"chat":["gpt-4","gpt-4-turbo","gpt-4.1","gpt-4.1-mini","gpt-4.1-nano","gpt-4o","gpt-4o-2024-05-13","gpt-4o-2024-08-06","gpt-4o-2024-11-20","gpt-4o-mini","gpt-5","gpt-5-chat-latest","gpt-5-mini","gpt-5-nano","gpt-5-pro","gpt-5.1","gpt-5.2","gpt-5.2-chat-latest","gpt-5.2-pro","gpt-5.3-chat-latest","gpt-5.3-codex","gpt-5.3-codex-spark","gpt-5.4","gpt-5.4-mini","gpt-5.4-nano","gpt-5.4-pro","gpt-5.5","gpt-5.5-pro","gpt-5.6-luna","gpt-5.6-sol","gpt-5.6-terra","gpt-6-astra","gpt-6-luna","gpt-6-sol","gpt-6.1-sol","gpt-daybreak-blue-latest","gpt-daybreak-red-latest","gpt-realtime-2.1","o1","o1-pro","o3","o3-mini","o3-pro","o4-mini","deepseek-v4-pro"],"all":[["chat","gpt-4"],["chat","gpt-4-turbo"],["chat","gpt-4.1"],["chat","gpt-4.1-mini"],["chat","gpt-4.1-nano"],["chat","gpt-4o"],["chat","gpt-4o-2024-05-13"],["chat","gpt-4o-2024-08-06"],["chat","gpt-4o-2024-11-20"],["chat","gpt-4o-mini"],["chat","gpt-5"],["chat","gpt-5-chat-latest"],["chat","gpt-5-mini"],["chat","gpt-5-nano"],["chat","gpt-5-pro"],["chat","gpt-5.1"],["chat","gpt-5.2"],["chat","gpt-5.2-chat-latest"],["chat","gpt-5.2-pro"],["chat","gpt-5.3-chat-latest"],["chat","gpt-5.3-codex"],["chat","gpt-5.3-codex-spark"],["chat","gpt-5.4"],["chat","gpt-5.4-mini"],["chat","gpt-5.4-nano"],["chat","gpt-5.4-pro"],["chat","gpt-5.5"],["chat","gpt-5.5-pro"],["chat","gpt-5.6-luna"],["chat","gpt-5.6-sol"],["chat","gpt-5.6-terra"],["chat","gpt-6-astra"],["chat","gpt-6-luna"],["chat","gpt-6-sol"],["chat","gpt-6.1-sol"],["chat","gpt-daybreak-blue-latest"],["chat","gpt-daybreak-red-latest"],["chat","gpt-realtime-2.1"],["chat","o1"],["chat","o1-pro"],["chat","o3"],["chat","o3-mini"],["chat","o3-pro"],["chat","o4-mini"],["chat","deepseek-v4-pro"]],"canonicalFirst":true}}}
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:966:9: 0x7ff6a4ec6378 in awaitValueImpl (test_zcu.obj)
+               return switch (c.JS_PromiseState(self.context, value)) {
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:907:9: 0x7ff6a4ec6419 in awaitValue (test_zcu.obj)
+               return self.awaitValueImpl(value, true);
+               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\extensions\engine.zig:613:25: 0x7ff6a4ec6943 in evalModule (test_zcu.obj)
+               const settled = try self.awaitValue(evaluated);
+                               ^
+       C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016\src\native_ai_provider_factories_source_test.zig:69:9: 0x7ff6a4f8368e in test.native actual provider factories compare all genuine4954 Source92 observations (test_zcu.obj)
+               return err;
+               ^
+failed command: ".\\.zig-cache\\o\\5962b84374ea0caa326588bc8afe9ad7\\test.exe" "--cache-dir=.\\.zig-cache" --seed=0x44bcaeb7 --listen=-
+
+Build Summary: 154/156 steps succeeded (1 failed); 11/16 tests passed (5 failed)
+test-native-actual-models-qualification transitive failure
++- run test 11 pass, 5 fail (16 total)
+   +- compile test Debug native cached 88ms MaxRSS:19M
+      +- WriteFile cached
+      +- compile lib pi-quickjs Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile lib pi-icu78-i18n Debug native cached 68ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile lib pi-icu78-common Debug native cached 76ms MaxRSS:19M
+      |  |  |  +- WriteFile cached
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native cached 35ms MaxRSS:19M
+      |  |  |  +- compile lib pi-icu78-stubdata Debug native (reused)
+      |  |  +- compile lib pi-icu78-common Debug native (+3 more reused dependencies)
+      |  +- WriteFile cached
+      |  +- compile lib pi-native-yaml Debug native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native cached 30ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native cached 33ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native cached 34ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native cached 33ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native cached 28ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native cached 36ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native cached 35ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native cached 37ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native cached 24ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native cached 26ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native cached 25ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native cached 30ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native cached 31ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native cached 26ms MaxRSS:19M
+      |  |  +- WriteFile cached
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native cached 13ms MaxRSS:19M
+      |  |  +- compile obj pi-yaml-0 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-1 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-2 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-3 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-4 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-5 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-6 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-7 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-8 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-9 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-10 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-11 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-12 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-13 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-14 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-15 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-16 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-17 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-18 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-19 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-20 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-21 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-22 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-23 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-24 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-25 ReleaseSafe native (reused)
+      |  |  +- compile obj pi-yaml-26 ReleaseSafe native (reused)
+      |  +- WriteFile cached
+      |  +- compile lib pi-sqlite Debug native cached 26ms MaxRSS:19M
+      |  +- compile lib pi-icu78-i18n Debug native (+3 more reused dependencies)
+      |  +- compile lib pi-native-yaml Debug native (+81 more reused dependencies)
+      |  +- compile lib pi-sqlite Debug native (reused)
+      +- WriteFile (reused)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- compile lib pi-quickjs Debug native (+9 more reused dependencies)
+      +- compile lib pi-sqlite Debug native (reused)
+      +- WriteFile cached
+      +- compile lib pi-photon Debug native cached 15ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_0 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_0 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_1 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_1 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_2 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_2 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_3 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_3 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_4 Debug native cached 25ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_4 Debug native cached 27ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_5 Debug native cached 35ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_5 Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_6 Debug native cached 40ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_6 Debug native cached 40ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_7 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_7 Debug native cached 76ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_8 Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_8 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_9 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_9 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_10 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_10 Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_11 Debug native cached 27ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_11 Debug native cached 42ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_12 Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_12 Debug native cached 27ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_13 Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_13 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_14 Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_14 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_15 Debug native cached 26ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_15 Debug native cached 40ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_imports Debug native cached 42ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-browser_imports Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native cached 38ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_native Debug native cached 28ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-photon_browser_native Debug native cached 37ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_api Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-session_browser_api Debug native cached 27ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native cached 40ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native cached 36ms MaxRSS:19M
+      |  +- WriteFile cached
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native cached 36ms MaxRSS:19M
+      |  +- compile obj pi-photon-photon_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_0 Debug native (reused)
+      |  +- compile obj pi-photon-photon_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_1 Debug native (reused)
+      |  +- compile obj pi-photon-photon_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_2 Debug native (reused)
+      |  +- compile obj pi-photon-photon_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_3 Debug native (reused)
+      |  +- compile obj pi-photon-photon_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_4 Debug native (reused)
+      |  +- compile obj pi-photon-photon_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_5 Debug native (reused)
+      |  +- compile obj pi-photon-photon_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_6 Debug native (reused)
+      |  +- compile obj pi-photon-photon_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_7 Debug native (reused)
+      |  +- compile obj pi-photon-photon_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_8 Debug native (reused)
+      |  +- compile obj pi-photon-photon_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_9 Debug native (reused)
+      |  +- compile obj pi-photon-photon_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_10 Debug native (reused)
+      |  +- compile obj pi-photon-photon_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_11 Debug native (reused)
+      |  +- compile obj pi-photon-photon_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_12 Debug native (reused)
+      |  +- compile obj pi-photon-photon_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_13 Debug native (reused)
+      |  +- compile obj pi-photon-photon_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_14 Debug native (reused)
+      |  +- compile obj pi-photon-photon_15 Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_15 Debug native (reused)
+      |  +- compile obj pi-photon-codec_imports Debug native (reused)
+      |  +- compile obj pi-photon-browser_imports Debug native (reused)
+      |  +- compile obj pi-photon-codec_alloc_guard Debug native (reused)
+      |  +- compile obj pi-photon-photon_native Debug native (reused)
+      |  +- compile obj pi-photon-photon_browser_native Debug native (reused)
+      |  +- compile obj pi-photon-session_api Debug native (reused)
+      |  +- compile obj pi-photon-session_browser_api Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-mem-impl Debug native (reused)
+      |  +- compile obj pi-photon-wasm-rt-exceptions-impl Debug native (reused)
+      +- compile lib pi-photon Debug native (+126 more reused dependencies)
+      +- options cached
+
+error: the following build command failed with exit code 1:
+.zig-cache\o\ec275e0c1ffdd355592d63c74ecabe46\build.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\zig.exe C:\Users\adyba\pi-zig-toolchain-20261003\zig-x86_64-windows-0.16.0\lib C:\Users\adyba\pi-zig-actual-models-qualification-root10db-20261016 .zig-cache C:\Users\adyba\AppData\Local\zig --seed 0x44bcaeb7 -Ze97489a5368b4e67 test-native-actual-models-qualification -Doptimize=Debug -Duse-llvm=true -j1 --test-timeout 120s --summary all
