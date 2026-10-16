@@ -1,0 +1,234 @@
+{
+  "status": "actual_node_module_constructor_paths_source_only_prepared_unrun",
+  "base": "926d08402250aec386d674120172586186d1a038",
+  "node_version": "24.14.0",
+  "node_source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "jiti_version": "2.7.0",
+  "products": [
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "bytes": 7117
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "sha256": "81A7FB6A1E4D075CE0B576D9E3FFA1D50E96808673D8A22D08297F405C2F03DF",
+      "bytes": 13356
+    },
+    {
+      "path": "src/extensions/native_node_module_paths.zig",
+      "sha256": "51473D87313D909D5B2E33FC00BADBAAA724966BD57F8462A88D885B85310EDF",
+      "bytes": 4599
+    },
+    {
+      "path": "src/native_node_module_constructor_controls.zig",
+      "sha256": "34FB56AD594C9EF47D5890B70826FBC3387A3DA6B08D72E6FE9FBF484B685E35",
+      "bytes": 12908
+    }
+  ],
+  "controls": [
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/reference-input.mjs",
+      "sha256": "8CD0CD43F3E15FA2DA77B6274BADE4ECBB2779A43DD681EB9E80BA44F6ECF500",
+      "bytes": 12559
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/deprecation-reference-input.mjs",
+      "sha256": "F1F6C612CEBA174198C8A858EF452BBCF2537C8DC2BFD3285E621512059FC457",
+      "bytes": 2000
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/README.md",
+      "sha256": "E0759E6C0631250DFB7F0B5AD5FB1146203F954EF6E5CF5BE7A27D6968251D53",
+      "bytes": 6949
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/CAPTURE-PLAN.md",
+      "sha256": "CA72A30FC557B9C3DD6B7E918D3F732359F0E190403653FCFB8264C41B236592",
+      "bytes": 2928
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/primary-authority.json",
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4",
+      "bytes": 3386
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/jiti-package-manifest.json",
+      "sha256": "2D2F6F910A73F539BBB1644920DA160F02BB73192FE49F6DEFD2CF39AE376AF5",
+      "bytes": 2607
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "15CB5267575DA7A6EB6DB7A952E81D9C21777C0D0DE5DECAA666C51612F52A50",
+      "bytes": 2232232
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "9E734ED5B17A977128888A8BF3192D9987FCCB897829560E9812F8DB04800784",
+      "bytes": 78368
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "9C8B67612AE1511A1C5A2BE01F7DFBEA46384D2D316C98CACC875E6A8C3C15E0",
+      "bytes": 86450
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "bytes": 5900
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "bytes": 3878
+    },
+    {
+      "path": "src/extensions/commonjs.zig",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "bytes": 17895
+    },
+    {
+      "path": "src/extensions/typescript.zig",
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9",
+      "bytes": 24307
+    },
+    {
+      "path": "src/extensions/module_resolver.zig",
+      "sha256": "7791250D05F7EAFD2E902AE93E7EAB6F1F5482497F702E7E6BB97E534F67A673",
+      "bytes": 28650
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+      "sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C",
+      "bytes": 11577
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+      "sha256": "94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3",
+      "bytes": 9345
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+      "sha256": "D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5",
+      "bytes": 31162
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+      "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00",
+      "bytes": 43669
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-module-policy-4954.expected.json",
+      "sha256": "0DDCAB7DC649CBA5AC7147C722CE0AB98C9465E9B74290F57CD92C1A1FE89F27",
+      "bytes": 62017
+    },
+    {
+      "path": "src/extensions/native_jiti_interop.zig",
+      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497",
+      "bytes": 8837
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cache.zig",
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D",
+      "bytes": 4815
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "sha256": "D48CC79AC8A6F5B8DC45F495C35BAFE48CA87F89BD09D7F6DBEA7B8E5D5C3CE6",
+      "bytes": 3225
+    },
+    {
+      "path": "src/extensions/native_extension_import_adapter.zig",
+      "sha256": "4016ADA1056C51568647F17AAC82C41C2648871F79EFE8FACDAE5DDD74EAE6E3",
+      "bytes": 27312
+    },
+    {
+      "path": "src/native_jiti_interop_cache_controls.zig",
+      "sha256": "45D6594D69282CE94FFACAFD4AE1D82E996451A3592ADEB5653A9F2150B7CB28",
+      "bytes": 15398
+    }
+  ],
+  "protected_drift": 0,
+  "native_control_entrypoints": 6,
+  "native_guest_programs": 5,
+  "ordinary_reference_rows": 42,
+  "ordinary_reference_row_order": [
+    "constructor-metadata",
+    "default-fields",
+    "fresh-fields",
+    "parent-and-child",
+    "parent-set-first-only",
+    "private-parent-not-inherited",
+    "prototype-descriptors",
+    "ordinary-call-receiver",
+    "ordinary-call-undefined",
+    "ordinary-call-primitive",
+    "subclass-new-target",
+    "constructor-getter-receiver",
+    "parent-get-null",
+    "parent-set-primitive",
+    "parent-proxy-private",
+    "constructor-effects",
+    "exports-own-define",
+    "exports-define-rejection",
+    "partial-parent-throw",
+    "captured-primordials",
+    "node-paths-metadata",
+    "cache-identities",
+    "paths-empty",
+    "paths-relative",
+    "paths-node-modules",
+    "paths-nested-node-modules",
+    "paths-node-modules-case",
+    "paths-posix-root",
+    "paths-drive-root",
+    "paths-drive-relative",
+    "paths-mixed",
+    "paths-unc",
+    "paths-extended-drive",
+    "paths-dot-dot",
+    "paths-trailing",
+    "paths-unicode",
+    "paths-undefined",
+    "paths-object",
+    "paths-live-resolve",
+    "jiti-transformed-uncached",
+    "jiti-transformed-cached",
+    "jiti-commonjs-native"
+  ],
+  "fresh_deprecation_profile_rows": 3,
+  "deprecation_profiles": [
+    "--pending-deprecation",
+    "--pending-deprecation --no-deprecation"
+  ],
+  "expected": "src/extensions/fixtures/node-module-constructor-24.expected.json",
+  "expected_absent": true,
+  "actual_existing_commonjs_cache_reused": true,
+  "legacy_cache_records_relabelled": false,
+  "complete_node_module_namespace": false,
+  "legacy_commonjs_ctor_integrated": false,
+  "complete_create_jiti_registered": false,
+  "runtime_manifest_revalidated": false,
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "node_executed": false,
+  "source_expected_written": false,
+  "engine_changed": false,
+  "c_changed": false,
+  "default_selected": false,
+  "scoped_whitespace_check": "passed",
+  "full_whitespace_authority_exception": "Original Node LICENSE.txt line362 space-before-tab, immutable bytes preserved"
+}
