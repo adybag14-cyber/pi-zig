@@ -1,0 +1,206 @@
+{
+  "status": "source_only_pending_Root_review",
+  "base": "7cd5153e093da160c3c21bb8ad8c143d05426747",
+  "provider_checkpoint": "31cecbdf55ec8b8e6a9a3264fc74746d2e3c7981",
+  "writer_product": "10f9d7bd2651819f8a7febf9f54d6105e42fca39",
+  "reader_product": "f8e9d80c037a99b69816c6d07f18035c0a72965d",
+  "wire_future_type_fix": "28c434c288d57f17c92136f2aff0b82526a4e2ec",
+  "google_wire_order_source": "4f616829e3948e69333b4e3ae0db740dda9b50b1",
+  "diagnostic_patch_sha256": "CED0096E10CB4D4FF59AA50BCFB5BA38A02B8E7517FD8CC57D55DF03AA53BE43",
+  "root_input_count": 9555,
+  "protected_root_files": 9543,
+  "protected_root_drift": 0,
+  "root_vendor_files": 1336,
+  "root_vendor_drift": 0,
+  "original_root_golden_count": 939,
+  "original_root_golden_drift": 0,
+  "planned75": 75,
+  "planned9": 9,
+  "actual_metadata": null,
+  "executed_zig_fmt": false,
+  "executed_zig_ast": false,
+  "executed_native": false,
+  "executed_node_or_Source": false,
+  "historical_baselines": [
+    {
+      "outcome": "73/74 pass; strictMistralSource30 negative; notRootpass",
+      "candidate": "24290770c8310b0a005712d2af990fa5e97cac4e"
+    },
+    {
+      "outcome": "74/75 pass; realpeer incrementalPASS; strictMistralSource30 negative; notRootpass",
+      "candidate": "10f9d7bd2651819f8a7febf9f54d6105e42fca39"
+    },
+    {
+      "outcome": "5/9 pass; customfunctional/GC/pendingPASS; rawwire/strictsnapshot/OOM negative; notRootpass",
+      "candidate": "28c434c288d57f17c92136f2aff0b82526a4e2ec"
+    }
+  ],
+  "retained_new_original_goldens": [
+    {
+      "sha256": "F41913F7D94165DD8A9FBF92DAD7F10B4A8802065C401A2DF679EA3AAF07740E",
+      "path": "src/ai/fixtures/mistral-id-source60.json",
+      "provenance": "unchanged original Source fixture from published31cecbdf"
+    },
+    {
+      "sha256": "6D16254F88623E82FF66AAFAA53D62945E8EE2969B03E33E1146CDB83A97DE4E",
+      "path": "src/extensions/fixtures/ai-google-live4-5ab.json",
+      "provenance": "unchanged original Source fixture from published31cecbdf"
+    },
+    {
+      "sha256": "92358FBEC13E1D1258D2FAD6DF2F654DF7DB71E731ED5986437545193D20E352",
+      "path": "src/extensions/fixtures/ai-google-mistral60-5ab.json",
+      "provenance": "unchanged original Source fixture from published31cecbdf"
+    },
+    {
+      "sha256": "441985AEC657B748C126C5F2CCC559CA235541D795726104B7DB4E8C188E4CF6",
+      "path": "src/extensions/fixtures/ai-mistral-fetch8-5ab.json",
+      "provenance": "unchanged original Source fixture from published31cecbdf"
+    },
+    {
+      "sha256": "D25B59920666809E7AFBD00BA4D50690F3D5684FE21E17410B4C738A6D95958F",
+      "path": "src/extensions/fixtures/ai-mistral-framing8-5ab.json",
+      "provenance": "unchanged original Source fixture from published31cecbdf"
+    }
+  ],
+  "first_failure_candidates": [
+    "Semantic compile/API compatibility remains unknown: static literal import/embed audit only,660 paths with no missing files.",
+    "Root typed Mistral ID normalizer deliberately unchanged; original genuine Source60 typed-ID control may expose the known cleaned-vs-raw hash difference.",
+    "Original Source30 and Source20 Mistral intermediate/abort/trailing snapshots may remain negative; currentRootBody/AF/I-O delivery must be diagnosed before changing awaits.",
+    "Source8 complete allocation graph may expose original manual flow.rejectError rejection/tag loss even with Root genuine AF61C boundaries preserved; diagnostic must identify first failing index/tag/catchsite.",
+    "Google parts-before-role wire source repair has not run; broader nested SDK part/schema conversion remains outside this composition.",
+    "Root import closure can add actual selected test entries; metadata discovery retains every extra and requires all planned originals before native runtime."
+  ],
+  "modified_or_added_code_rows": [
+    {
+      "sha256": "582FF3A7AB0783D79CB2C0858F1E0D8E7F83A3A80B2995F8638269948D3F4622",
+      "path": "build.zig"
+    },
+    {
+      "sha256": "F41913F7D94165DD8A9FBF92DAD7F10B4A8802065C401A2DF679EA3AAF07740E",
+      "path": "src/ai/fixtures/mistral-id-source60.json"
+    },
+    {
+      "sha256": "747470A4334E37C625DE1FA90DCC9B23D38DE4DE9081194DC0AE431CDB187EB5",
+      "path": "src/ai/http_fixture.zig"
+    },
+    {
+      "sha256": "A77734337F396A4A24E527D83B43017FEE08DF3C4FFAE9834C82E433A5749261",
+      "path": "src/ai/mistral.zig"
+    },
+    {
+      "sha256": "6D16254F88623E82FF66AAFAA53D62945E8EE2969B03E33E1146CDB83A97DE4E",
+      "path": "src/extensions/fixtures/ai-google-live4-5ab.json"
+    },
+    {
+      "sha256": "92358FBEC13E1D1258D2FAD6DF2F654DF7DB71E731ED5986437545193D20E352",
+      "path": "src/extensions/fixtures/ai-google-mistral60-5ab.json"
+    },
+    {
+      "sha256": "441985AEC657B748C126C5F2CCC559CA235541D795726104B7DB4E8C188E4CF6",
+      "path": "src/extensions/fixtures/ai-mistral-fetch8-5ab.json"
+    },
+    {
+      "sha256": "D25B59920666809E7AFBD00BA4D50690F3D5684FE21E17410B4C738A6D95958F",
+      "path": "src/extensions/fixtures/ai-mistral-framing8-5ab.json"
+    },
+    {
+      "sha256": "6C29D628BB69C83DB79060A59FB32BC423EB15A35500197F390E5140856C049C",
+      "path": "src/extensions/native_agent_async.zig"
+    },
+    {
+      "sha256": "7C7D8D458DD748C536CF05887CE8B7B5A0618019D5F92782EEB6B149692CEDB3",
+      "path": "src/extensions/native_ai_google_adc_prepare.zig"
+    },
+    {
+      "sha256": "0C9CEBF6122D7C18AD130E41B658F4DD8689EB546240B5C44CF9F6009327997B",
+      "path": "src/extensions/native_ai_google_http_response.zig"
+    },
+    {
+      "sha256": "4631CA30B35DBDE761E5D86DE7B9946A5D8C547BCC86190E5441C7DABB939718",
+      "path": "src/extensions/native_ai_google_messages.zig"
+    },
+    {
+      "sha256": "5E7CD2812B132B6732923C63CAF6674374D1900C85FF3B519471FD155D651216",
+      "path": "src/extensions/native_ai_google_mistral_decode.zig"
+    },
+    {
+      "sha256": "C928A9E42D43D641573EE80B8C5A38830F052A658ED1DBF4A6225FD74A512962",
+      "path": "src/extensions/native_ai_google_mistral_factory.zig"
+    },
+    {
+      "sha256": "20E6390BC1D6240CD2010F577FA50359DE37BB1075BF73572AFFC3A04E3A7F77",
+      "path": "src/extensions/native_ai_google_producer.zig"
+    },
+    {
+      "sha256": "4839A85EC6A5645207B673C9DE108391A1C6613D29030FB28220F30C05A5D191",
+      "path": "src/extensions/native_ai_google_request.zig"
+    },
+    {
+      "sha256": "133AF32AD9F1219215CD5FA81031B64DDB44BA198AF340EE0FF35C7A8B086C88",
+      "path": "src/extensions/native_ai_google_response.zig"
+    },
+    {
+      "sha256": "E089EE7976CACE176F338736058325DB8986F8D36CCB5EBF29BEC1C737DA69B8",
+      "path": "src/extensions/native_ai_google_sdk_generator.zig"
+    },
+    {
+      "sha256": "31E5A9866CEE752B8F9E052EE8FCD2BFBA8CF12C114301B6D5B308A1648B1F07",
+      "path": "src/extensions/native_ai_google_sse.zig"
+    },
+    {
+      "sha256": "AB201136D21D87B45CD9B9D5D5929B73FD4A2F47DF0AB4AEA782341A66166F19",
+      "path": "src/extensions/native_ai_http_worker.zig"
+    },
+    {
+      "sha256": "F23A973511495A9FC7266148EA149768BB2E33D9B02B42280E53AD4296BDACB1",
+      "path": "src/extensions/native_ai_mistral_fetch.zig"
+    },
+    {
+      "sha256": "8CE9FD0D608CB8DAB1177FCA344C1CFB498F5DF6FA8917EE2707711A7EF8F5ED",
+      "path": "src/extensions/native_ai_mistral_generator.zig"
+    },
+    {
+      "sha256": "D04605924B3502069BD2E7BF8F9245314A8480A1AC7493C2ED252938D37B701B",
+      "path": "src/extensions/native_ai_mistral_headers.zig"
+    },
+    {
+      "sha256": "783F567D3E9332BD550FE7C461732D9C18B511214C369DF36AC566E5A465B8EF",
+      "path": "src/extensions/native_ai_mistral_request_fetch.zig"
+    },
+    {
+      "sha256": "5315C77EC711BB0C0F5A572C119D1133ABB5DA665854973A7FB1432D350DBCEE",
+      "path": "src/extensions/native_ai_mistral_request.zig"
+    },
+    {
+      "sha256": "C2C0C2B7533CCE1E012C6F45DD720EAA291F7085894E33DDA37D9204FBD06A0B",
+      "path": "src/extensions/native_ai_mistral_signal.zig"
+    },
+    {
+      "sha256": "7CEB89480351854AA00F46625C9BFD203DB9F114AB41D29E971ED93884110CED",
+      "path": "src/extensions/native_ai_mistral_sse.zig"
+    },
+    {
+      "sha256": "891D5B48688F5576A0A3A3CC1640B40E441D0D36D4DF6E2F96411BE3E6F8700A",
+      "path": "src/native_ai_google_mistral_source20_test.zig"
+    },
+    {
+      "sha256": "1AF37248653BCC0EF7F5471FB2E607E040BBDDB80C4718AED6B729D817357EB6",
+      "path": "src/native_ai_google_mistral_test.zig"
+    },
+    {
+      "sha256": "9A225F5231BEE3298F1D0E8A7EEA6D72731B04810BD7F2359E327A0D8811B803",
+      "path": "src/native_ai_google_mistral_wire_fixture.zig"
+    },
+    {
+      "sha256": "3F4EE56A4C2E42629BE1A06465983FBBF3209FD882F1727C7A02CBC2E80242D0",
+      "path": "src/native_ai_http_checkpoint_test.zig"
+    },
+    {
+      "sha256": "19A7D1A8341172D871AADA89BB404E77B37F817F0ED165C70285EB7C8CB1C216",
+      "path": "src/native_ai_http_test.zig"
+    }
+  ],
+  "no_public_activation": true,
+  "full_Pi_qualified": false,
+  "prepared_utc": "2026-10-16T13:37:07.4324354+00:00"
+}

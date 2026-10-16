@@ -775,6 +775,20 @@ test "Mistral tool IDs are exactly nine alphanumeric characters and stable" {
     try std.testing.expectEqualStrings("AbC123xyz", try normalizer.normalize("AbC123xyz"));
 }
 
+test "native AI Google Mistral typed tool ID matches genuine Source60 cross-provider replay" {
+    const gpa = std.testing.allocator;
+    const source = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/mistral-id-source60.json"), .{});
+    defer source.deinit();
+    try std.testing.expectEqualStrings("5ab7fe74c400097b386662205cd93900695b8a71", source.value.object.get("sourceHead").?.string);
+    var digest: [32]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(@embedFile("../extensions/fixtures/ai-google-mistral60-5ab.json"), &digest, .{});
+    try std.testing.expectEqualStrings(source.value.object.get("sourceFixtureSha256").?.string, &std.fmt.bytesToHex(digest, .upper));
+    try std.testing.expectEqualStrings("mistral-cross-provider-replay", source.value.object.get("sourceCase").?.string);
+    var ids = IdNormalizer.init(gpa);
+    defer ids.deinit();
+    try std.testing.expectEqualStrings(source.value.object.get("observedId").?.string, try ids.normalize(source.value.object.get("rawId").?.string));
+}
+
 test "Mistral request replays thinking and pairs normalized tool IDs" {
     const gpa = std.testing.allocator;
     const calls = "[{\"id\":\"responses-call|item-123\",\"type\":\"function\",\"function\":{\"name\":\"bash\",\"arguments\":\"{\\\"cmd\\\":\\\"pwd\\\"}\"}}]";

@@ -3,7 +3,16 @@ const em = @import("extensions/engine.zig");
 const sdk = @import("extensions/native_sdk.zig");
 const facade = @import("extensions/native_ai_google_mistral_factory.zig");
 const c = em.c;
+fn traceSnapshot(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    if (argc == 0) return c.pi_js_undefined();
+    const kind = engine.toString(argv[0]) catch |err| return sdk.fail(engine, err);
+    defer engine.gpa.free(kind);
+    std.debug.print("DIAG_CONSUMER type={s} jobs={d} controls={d}\n", .{ kind, if (engine.progress_probe) |probe| probe.job_attempts else 0, if (engine.progress_probe) |probe| probe.control_pumps else 0 });
+    return c.pi_js_undefined();
+}
 fn install(engine: *em.Engine) !void {
+    if (engine.progress_probe != null) try engine.bindFunction("__diagnosticSnapshotTrace", traceSnapshot, 1);
     try @import("extensions/native_stream.zig").install(engine);
     try @import("extensions/node_url.zig").install(engine);
     const imported = try engine.evalModule("import 'pi-ai';export const loaded=true;", "native-google-mistral-stream-install.mjs");
@@ -67,6 +76,8 @@ fn source30Http(full_snapshots: bool) !void {
     for (0..30) |case_index| {
         const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
         defer engine.deinit();
+        var diagnostic_progress: em.ProgressProbe = .{};
+        engine.progress_probe = &diagnostic_progress;
         engine.native_io = std.testing.io;
         try install(engine);
         var scope: v.Scope = .{ .engine = engine };
@@ -82,8 +93,11 @@ fn source30Http(full_snapshots: bool) !void {
         const request_count = try v.length(&scope, requests);
         const name = try engine.toString(try scope.get(input, "name"));
         defer gpa.free(name);
+        std.debug.print("DIAG_CASE {s} full={any}\n", .{ name, full_snapshots });
         var wire: std.ArrayList(u8) = .empty;
         defer wire.deinit(gpa);
+        var chunk_ends: std.ArrayList(usize) = .empty;
+        defer chunk_ends.deinit(gpa);
         var raw_body = try scope.get(input, "body");
         if (c.JS_IsUndefined(raw_body)) raw_body = try scope.get(input, "rawSSE");
         if (!c.JS_IsUndefined(raw_body)) {
@@ -106,7 +120,15 @@ fn source30Http(full_snapshots: bool) !void {
                 try wire.appendSlice(gpa, "data: ");
                 try wire.appendSlice(gpa, bytes);
                 try wire.appendSlice(gpa, "\n\n");
+                try chunk_ends.append(gpa, wire.items.len);
             }
+        }
+        var response_chunks: std.ArrayList([]const u8) = .empty;
+        defer response_chunks.deinit(gpa);
+        var offset: usize = 0;
+        for (chunk_ends.items) |end| {
+            try response_chunks.append(gpa, wire.items[offset..end]);
+            offset = end;
         }
         const fixture = @import("ai/http_fixture.zig");
         const request = if (request_count > 0) try v.at(&scope, requests, 0) else c.pi_js_undefined();
@@ -134,7 +156,7 @@ fn source30Http(full_snapshots: bool) !void {
         var status: i32 = 200;
         const status_value = try scope.get(input, "status");
         if (!c.JS_IsUndefined(status_value) and c.JS_ToInt32(engine.context, &status, status_value) < 0) return v.js.capture(engine);
-        const plan = fixture.Reply{ .path = path, .status = @enumFromInt(status), .body = wire.items, .expected_request_headers = expected_headers.items, .headers = &.{.{ .name = "x-fixture", .value = "source-only" }} };
+        const plan = fixture.Reply{ .path = path, .status = @enumFromInt(status), .body = wire.items, .body_chunks = if (c.JS_IsUndefined(raw_body)) response_chunks.items else null, .expected_request_headers = expected_headers.items, .headers = &.{ .{ .name = "content-type", .value = if (c.JS_IsUndefined(status_value)) "text/event-stream" else "application/json" }, .{ .name = "x-fixture", .value = "source-only" } } };
         const server = try fixture.PlanServer.init(gpa, std.testing.io, if (request_count > 0) &.{plan} else &.{});
         defer server.deinit();
         const url = try server.url(gpa, "/v1");
@@ -147,7 +169,7 @@ fn source30Http(full_snapshots: bool) !void {
         const checked = engine.evalModule(
             \\function snapshot(value){if(Array.isArray(value))return value.map(snapshot);if(value&&typeof value==='object'){const out={};for(const[key,item]of Object.entries(value)){if(value.role==='assistant'&&key==='timestamp')out[key]='$TIMESTAMP';else if(value.role==='assistant'&&key==='durationMs')out[key]='$DURATION';else out[key]=snapshot(item)}return out}return value}
             \\function canonical(value){if(Array.isArray(value))return value.map(canonical);if(value&&typeof value==='object'){const result={};for(const key of Object.keys(value).sort())if(value[key]!==undefined)result[key]=canonical(value[key]);return result}return value}
-            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream)events.push(snapshot(event));result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','result','syncError',...(fullSnapshots?['events']:[])]){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}if(!fullSnapshots){const shape=event=>{const out={...event};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events.map(shape)))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error(JSON.stringify({case:item.name,eventShapes:events.map(shape),expected:expected.events.map(shape)}))}export const done=true;
+            \\const item=expected.input,apiName=item.kind==='google'?'google-generative-ai':item.kind==='vertex'?'google-vertex':'mistral-conversations',model={id:item.kind==='mistral'?'mistral-fixture':'gemini-3.1-pro-preview',name:'fixture',provider:item.kind==='vertex'?'google-vertex':item.kind,api:apiName,baseUrl:fixtureBase,reasoning:false,input:['text','image'],cost:{input:1,output:2,cacheRead:.5,cacheWrite:1.5},contextWindow:32000,maxTokens:8192,...item.model},context=item.context??{messages:[{role:'system',content:'system',timestamp:0},{role:'user',content:'hello',timestamp:1}]},callbacks=[],events=[],payloads=[],options={apiKey:'fixture-placeholder-key',env:{GOOGLE_CLOUD_PROJECT:'',GCLOUD_PROJECT:'',GOOGLE_CLOUD_LOCATION:'',GOOGLE_APPLICATION_CREDENTIALS:''},maxTokens:1000,maxRetries:0,sessionId:'fixture-session',...item.options,onPayload(payload){callbacks.push('payload');payloads.push(snapshot(payload));if(item.callback==='replace')return {...payload,...(item.kind==='mistral'?{temperature:.25}:{config:{...payload.config,temperature:.25}})};if(item.callback==='async')return Promise.resolve()},onResponse(response){callbacks.push('response:'+response.status+':'+response.headers['x-fixture']);if(item.callback==='throw')throw Error('caller response failed');if(item.callback==='async')return Promise.resolve()},onProviderStreamEvent(chunk){callbacks.push('chunk');if(item.callback==='async')return Promise.resolve()}};let result,syncError;try{const stream=globalThis[item.kind].streamSimple(model,context,options);for await(const event of stream){events.push(snapshot(event));__diagnosticSnapshotTrace(events[events.length-1].type)}result=snapshot(await stream.result())}catch(error){syncError={name:error.name,message:error.message}}for(const key of ['payloads','callbacks','result','syncError',...(fullSnapshots?['events']:[])]){const actual={payloads,callbacks,events,result,syncError}[key];if(JSON.stringify(canonical(actual))!==JSON.stringify(canonical(expected[key])))throw Error(JSON.stringify({case:item.name,key,actual,expected:expected[key]}))}if(!fullSnapshots){const shape=event=>{const out={...event};delete out.partial;delete out.message;delete out.error;return out};if(JSON.stringify(canonical(events.map(shape)))!==JSON.stringify(canonical(expected.events.map(shape))))throw Error(JSON.stringify({case:item.name,eventShapes:events.map(shape),expected:expected.events.map(shape)}))}export const done=true;
         , "native-google-mistral-actual-source30.mjs") catch |err| {
             std.debug.print("Google/Mistral {s}: {s}\n", .{ name, engine.last_error orelse "no diagnostic" });
             return err;

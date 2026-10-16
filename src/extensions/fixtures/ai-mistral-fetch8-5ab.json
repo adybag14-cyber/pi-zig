@@ -1,0 +1,1597 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "driverSha256": "47f166be767ca9ea3b4a580ae0d1e0021a7a82f57602a1c2f7f8b4ec6bec47af",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 67280
+  },
+  "scope": "Actual official5ab Mistral injectable fetch; getter order, response callback, reader cleanup and abort semantics; no network or provider credentials; clocks normalized only.",
+  "cases": 8,
+  "rows": [
+    {
+      "input": {
+        "name": "mistral-fetch-normal",
+        "kind": "mistral",
+        "mode": "normal"
+      },
+      "name": "mistral-fetch-normal",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.body",
+        "response.body",
+        "body.getReader",
+        "reader.read",
+        "onProviderStreamEvent",
+        "reader.read",
+        "reader.cancel",
+        "reader.releaseLock"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 12,
+          "output": 4,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000012,
+            "output": 0.000008,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000019999999999999998
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-onResponse-throws",
+        "kind": "mistral",
+        "mode": "onResponse-throws"
+      },
+      "name": "mistral-fetch-onResponse-throws",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        }
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "caller response failed",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "caller response failed",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-missing-body",
+        "kind": "mistral",
+        "mode": "missing-body"
+      },
+      "name": "mistral-fetch-missing-body",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.body"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "Mistral response has no body",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "Mistral response has no body",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-http-error",
+        "kind": "mistral",
+        "mode": "http-error"
+      },
+      "name": "mistral-fetch-http-error",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 403,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.text",
+        "response.status",
+        "response.statusText"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "Mistral API error (403): {\"message\":\"fixture denied\"}",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "Mistral API error (403): {\"message\":\"fixture denied\"}",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-fetch-rejects",
+        "kind": "mistral",
+        "mode": "fetch-rejects"
+      },
+      "name": "mistral-fetch-fetch-rejects",
+      "log": [
+        "onPayload",
+        "fetch"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "fetch rejected",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "fetch rejected",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-read-rejects",
+        "kind": "mistral",
+        "mode": "read-rejects"
+      },
+      "name": "mistral-fetch-read-rejects",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.body",
+        "response.body",
+        "body.getReader",
+        "reader.read",
+        "reader.cancel",
+        "reader.releaseLock"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "error",
+          "error": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "error",
+            "timestamp": "$TIMESTAMP",
+            "errorMessage": "reader rejected",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "error",
+        "timestamp": "$TIMESTAMP",
+        "errorMessage": "reader rejected",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-cancel-rejects",
+        "kind": "mistral",
+        "mode": "cancel-rejects"
+      },
+      "name": "mistral-fetch-cancel-rejects",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.body",
+        "response.body",
+        "body.getReader",
+        "reader.read",
+        "onProviderStreamEvent",
+        "reader.read",
+        "reader.cancel",
+        "reader.releaseLock"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 12,
+          "output": 4,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000012,
+            "output": 0.000008,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000019999999999999998
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "stop",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "mistral-fetch-abort-after-chunk",
+        "kind": "mistral",
+        "mode": "abort-after-chunk"
+      },
+      "name": "mistral-fetch-abort-after-chunk",
+      "log": [
+        "onPayload",
+        "fetch",
+        "response.status",
+        "response.headers",
+        "onResponse",
+        {
+          "status": 200,
+          "headers": {
+            "x-fixture": "source-only"
+          }
+        },
+        "response.ok",
+        "response.body",
+        "response.body",
+        "body.getReader",
+        "reader.read",
+        "onProviderStreamEvent",
+        "reader.cancel",
+        "reader.cancel",
+        "reader.releaseLock"
+      ],
+      "requests": [
+        {
+          "url": "https://source-fixture.invalid/prefix/v1/chat/completions",
+          "path": "/prefix/v1/chat/completions",
+          "pathname": "/prefix/v1/chat/completions",
+          "query": "",
+          "rawBody": "{\"model\":\"mistral-fixture\",\"stream\":true,\"messages\":[{\"role\":\"system\",\"content\":\"system\"},{\"role\":\"user\",\"content\":\"hello\"}],\"max_tokens\":1000,\"prompt_cache_key\":\"fixture-session\"}",
+          "urlConstructor": "URL",
+          "urlKeys": [],
+          "receiverUndefined": true,
+          "initKeys": [
+            "method",
+            "headers",
+            "body",
+            "signal"
+          ],
+          "method": "POST",
+          "body": {
+            "model": "mistral-fixture",
+            "stream": true,
+            "messages": [
+              {
+                "role": "system",
+                "content": "system"
+              },
+              {
+                "role": "user",
+                "content": "hello"
+              }
+            ],
+            "max_tokens": 1000,
+            "prompt_cache_key": "fixture-session"
+          },
+          "headers": {
+            "accept": "text/event-stream",
+            "authorization": "Bearer fixture-placeholder-key",
+            "content-type": "application/json",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-affinity": "fixture-session"
+          },
+          "headersConstructor": "Headers",
+          "headersTag": "[object Headers]",
+          "signalType": "AbortSignal",
+          "signalAborted": false
+        }
+      ],
+      "payloads": [
+        {
+          "model": "mistral-fixture",
+          "stream": true,
+          "messages": [
+            {
+              "role": "system",
+              "content": "system"
+            },
+            {
+              "role": "user",
+              "content": "hello"
+            }
+          ],
+          "maxTokens": 1000,
+          "promptCacheKey": "fixture-session"
+        }
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "answer",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "errorMessage": "owned signal aborted",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "error",
+          "reason": "aborted",
+          "error": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "answer"
+              }
+            ],
+            "api": "mistral-conversations",
+            "provider": "mistral",
+            "model": "mistral-fixture",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "aborted",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "stop",
+            "errorMessage": "owned signal aborted",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "answer"
+          }
+        ],
+        "api": "mistral-conversations",
+        "provider": "mistral",
+        "model": "mistral-fixture",
+        "usage": {
+          "input": 12,
+          "output": 4,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000012,
+            "output": 0.000008,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000019999999999999998
+          }
+        },
+        "stopReason": "aborted",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "stop",
+        "errorMessage": "owned signal aborted",
+        "durationMs": "$DURATION"
+      }
+    }
+  ]
+}

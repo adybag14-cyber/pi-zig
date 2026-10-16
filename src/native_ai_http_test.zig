@@ -6,6 +6,40 @@ const http = @import("extensions/native_ai_http.zig");
 const raw = @import("extensions/native_ai_http_worker.zig");
 const fixture = @import("ai/http_fixture.zig");
 const c = em.c;
+test "native AI HTTP byte stream delivers a real flushed peer chunk before owned EOF release" {
+    var eof_release: std.Io.Event = .unset;
+    const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/incremental", .body = "prefix", .body_chunks = &.{"prefix"}, .body_end_release = &eof_release }});
+    defer server.deinit();
+    const url = try server.url(std.testing.allocator, "/incremental");
+    defer std.testing.allocator.free(url);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    // Failure must release the exact peer gate before engine/server teardown.
+    defer eof_release.set(std.testing.io);
+    engine.native_io = std.testing.io;
+    try @import("extensions/text_decoder.zig").install(engine);
+    const Release = struct {
+        fn call(host: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            var address: u64 = 0;
+            if (c.JS_ToBigUint64(host.context, &address, roots[0]) < 0) return error.JavaScriptException;
+            const gate: *std.Io.Event = @ptrFromInt(@as(usize, @intCast(address)));
+            gate.set(host.native_io orelse return error.NativeHttpIoRequired);
+            return c.pi_js_undefined();
+        }
+    };
+    var scope: Scope = .{ .engine = engine };
+    defer scope.deinit();
+    const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    const capability = try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, @intFromPtr(&eof_release))));
+    try scope.put(global, "releasePeerEOF", try scope.own(try @import("extensions/native_node_function.zig").createArrow(engine, "releasePeerEOF", 0, Release.call, &.{capability})));
+    try scope.put(global, "incrementalRequest", try scope.own(try http.open(engine, .{ .url = url, .method = .GET, .payload = "", .headers = &.{}, .timeout_ms = 2000, .framing = .bytes }, c.pi_js_undefined())));
+    const module = try engine.evalModule("await incrementalRequest.ready;const decoder=new TextDecoder();let prefix='';while(prefix.length<6){const next=await incrementalRequest.events.next();if(next.done||next.value.type!=='bytes')throw Error('peer bytes were not delivered before EOF');prefix+=decoder.decode(next.value.data,{stream:true})}prefix+=decoder.decode();if(prefix!=='prefix')throw Error('peer bytes changed');releasePeerEOF();if(!(await incrementalRequest.events.next()).done)throw Error('unexpected bytes after released EOF');export const done=true;", "native-http-incremental-before-eof.mjs");
+    engine.freeValue(module);
+    try std.testing.expect(!http.pending(engine));
+    try server.finish();
+}
+
+
 test "native AI HTTP actual Fetch39 reason UTF8 and header Latin1 observations remain distinct" {
     const server = try fixture.PlanServer.init(std.testing.allocator, std.testing.io, &.{.{ .path = "/latin1", .status = .created, .reason = "Cr\xe9\xe9", .body = "latin1", .headers = &.{ .{ .name = "__proto__", .value = "own" }, .{ .name = "constructor", .value = "wire" }, .{ .name = "x-latin1", .value = "caf\xe9" } } }});
     defer server.deinit();

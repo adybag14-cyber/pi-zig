@@ -1,0 +1,11 @@
+[
+  "extensions.native_ai_google_adc_prepare.test.native AI Google Mistral ADC preparation cancels before credential file access",
+  "extensions.native_durable_storage.test_0",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source12 actual wire framing getter functional components",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source12 full intermediate snapshots remain strict",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source8 complete injectable request reader host allocation graph",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source8 injectable fetch full intermediate snapshots remain strict",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source8 injectable fetch functional getter callback reader components",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source8 injectable fetch retained facade GC components",
+  "native_ai_google_mistral_source20_test.test.native AI Google Mistral Source8 pending injectable fetch graph survives GC and optional response hook skips getters"
+]

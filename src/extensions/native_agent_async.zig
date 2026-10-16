@@ -52,6 +52,7 @@ pub fn settle(engine: *em.Engine, owner: c.JSValue, rejected: bool, value: c.JSV
 pub fn rejectError(engine: *em.Engine, owner: c.JSValue, err: anyerror) !void {
     const raw = reason(engine, err);
     defer engine.freeValue(raw);
+    @import("std").debug.print("DIAG_FLOW_REJECT err={s} generation={d} raw_tag={d} raw_uncatchable={any} captured_tag={d}\n", .{ @errorName(err), engine.native_allocation_generation, c.pi_js_native_allocation_error_generation(raw), c.JS_IsUncatchableError(raw), if (engine.captured_exception) |value| c.pi_js_native_allocation_error_generation(value) else 0 });
     try settle(engine, owner, true, raw);
 }
 

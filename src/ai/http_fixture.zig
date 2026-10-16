@@ -3,6 +3,8 @@ const std = @import("std");
 pub const Reply = struct {
     path: []const u8,
     body: []const u8,
+    /// Exact caller-supplied write boundaries; null preserves the original reply.
+    body_chunks: ?[]const []const u8 = null,
     status: std.http.Status = .ok,
     reason: ?[]const u8 = null,
     headers: []const std.http.Header = &.{},
@@ -16,6 +18,8 @@ pub const Reply = struct {
     capture_request_headers: bool = false,
     request_observed: ?*std.Io.Event = null,
     response_release: ?*std.Io.Event = null,
+    /// Optional real peer gate after its chunk writes, before response EOF.
+    body_end_release: ?*std.Io.Event = null,
 };
 pub const Captured = struct { path: []u8, payload: []u8, method: std.http.Method = .POST, headers: []std.http.Header = &.{} };
 pub const PlanServer = struct {
@@ -141,7 +145,16 @@ pub const PlanServer = struct {
             };
             if (!has_content_type) try headers.append(self.gpa, .{ .name = "content-type", .value = reply.content_type });
             try headers.appendSlice(self.gpa, reply.headers);
-            if (reply.body_delay_ms > 0) {
+            if (reply.body_chunks) |chunks| {
+                var response = try request.respondStreaming(&.{}, .{ .respond_options = .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items } });
+                for (chunks) |chunk| {
+                    try response.writer.writeAll(chunk);
+                    try response.writer.flush();
+                    try response.flush();
+                }
+                if (reply.body_end_release) |event| try event.waitTimeout(self.io, .{ .duration = .{ .raw = .fromSeconds(10), .clock = .awake } });
+                try response.end();
+            } else if (reply.body_delay_ms > 0) {
                 var buffer: [256]u8 = undefined;
                 var response = try request.respondStreaming(&buffer, .{ .content_length = reply.body.len, .respond_options = .{ .status = reply.status, .reason = reply.reason, .keep_alive = false, .extra_headers = headers.items } });
                 try request.server.out.flush();

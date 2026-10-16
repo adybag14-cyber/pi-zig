@@ -1,0 +1,1351 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "driverSha256": "9e9996c5e2911e3efaa04614c8130032467c4add9fd2b8dcc073287c53d7128c",
+  "actualNode": {
+    "execPath": "C:\\Program Files\\nodejs\\node.exe",
+    "version": "v24.14.0",
+    "pid": 61996
+  },
+  "scope": "Actual official5ab Google/Vertex/Mistral APIs, pinned SDK dependencies, owned loopback placeholder credentials; full event snapshots with assistant clocks normalized only.",
+  "cases": 4,
+  "rows": [
+    {
+      "input": {
+        "name": "google-live-text-signature-getters",
+        "kind": "google",
+        "callback": "live-text"
+      },
+      "name": "google-live-text-signature-getters",
+      "payloads": [
+        {
+          "model": "gemini-3.1-pro-preview",
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "hello"
+                }
+              ]
+            }
+          ],
+          "config": {
+            "maxOutputTokens": 1000,
+            "systemInstruction": "system"
+          }
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:53669/v1/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "urlProvenance": "received HTTP authority and request-target",
+          "path": "/v1/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "pathname": "/v1/models/gemini-3.1-pro-preview:streamGenerateContent",
+          "query": "?alt=sse",
+          "body": {
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "text": "hello"
+                  }
+                ],
+                "role": "user"
+              }
+            ],
+            "systemInstruction": {
+              "parts": [
+                {
+                  "text": "system"
+                }
+              ],
+              "role": "user"
+            },
+            "generationConfig": {
+              "maxOutputTokens": 1000
+            }
+          },
+          "rawBody": "{\"contents\":[{\"parts\":[{\"text\":\"hello\"}],\"role\":\"user\"}],\"systemInstruction\":{\"parts\":[{\"text\":\"system\"}],\"role\":\"user\"},\"generationConfig\":{\"maxOutputTokens\":1000}}",
+          "headers": {
+            "host": "127.0.0.1:53669",
+            "connection": "keep-alive",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client": "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "content-type": "application/json",
+            "x-goog-api-key": "fixture-placeholder-key",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "165"
+          },
+          "rawHeaders": [
+            "host",
+            "127.0.0.1:53669",
+            "connection",
+            "keep-alive",
+            "User-Agent",
+            "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client",
+            "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "Content-Type",
+            "application/json",
+            "x-goog-api-key",
+            "fixture-placeholder-key",
+            "accept",
+            "*/*",
+            "accept-language",
+            "*",
+            "sec-fetch-mode",
+            "cors",
+            "accept-encoding",
+            "gzip, deflate",
+            "content-length",
+            "165"
+          ]
+        }
+      ],
+      "callbacks": [
+        "payload",
+        "chunk",
+        "text:1",
+        "text:2",
+        "signature:1",
+        "text:3"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "text-3",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "text-2",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "text-2",
+            "textSignature": "YWJjZA=="
+          }
+        ],
+        "api": "google-generative-ai",
+        "provider": "google",
+        "model": "gemini-3.1-pro-preview",
+        "usage": {
+          "input": 12,
+          "output": 4,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000012,
+            "output": 0.000008,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000019999999999999998
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "STOP",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "google-live-function-getters",
+        "kind": "google",
+        "callback": "live-function",
+        "chunks": [
+          {
+            "responseId": "response-1",
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "functionCall": {
+                        "id": "call-original",
+                        "name": "read",
+                        "args": {
+                          "n": 0
+                        }
+                      }
+                    }
+                  ]
+                },
+                "finishReason": "STOP"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "google-live-function-getters",
+      "payloads": [
+        {
+          "model": "gemini-3.1-pro-preview",
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "hello"
+                }
+              ]
+            }
+          ],
+          "config": {
+            "maxOutputTokens": 1000,
+            "systemInstruction": "system"
+          }
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:53669/v1/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "urlProvenance": "received HTTP authority and request-target",
+          "path": "/v1/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "pathname": "/v1/models/gemini-3.1-pro-preview:streamGenerateContent",
+          "query": "?alt=sse",
+          "body": {
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "text": "hello"
+                  }
+                ],
+                "role": "user"
+              }
+            ],
+            "systemInstruction": {
+              "parts": [
+                {
+                  "text": "system"
+                }
+              ],
+              "role": "user"
+            },
+            "generationConfig": {
+              "maxOutputTokens": 1000
+            }
+          },
+          "rawBody": "{\"contents\":[{\"parts\":[{\"text\":\"hello\"}],\"role\":\"user\"}],\"systemInstruction\":{\"parts\":[{\"text\":\"system\"}],\"role\":\"user\"},\"generationConfig\":{\"maxOutputTokens\":1000}}",
+          "headers": {
+            "host": "127.0.0.1:53669",
+            "connection": "keep-alive",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client": "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "content-type": "application/json",
+            "x-goog-api-key": "fixture-placeholder-key",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "165"
+          },
+          "rawHeaders": [
+            "host",
+            "127.0.0.1:53669",
+            "connection",
+            "keep-alive",
+            "User-Agent",
+            "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client",
+            "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "Content-Type",
+            "application/json",
+            "x-goog-api-key",
+            "fixture-placeholder-key",
+            "accept",
+            "*/*",
+            "accept-language",
+            "*",
+            "sec-fetch-mode",
+            "cors",
+            "accept-encoding",
+            "gzip, deflate",
+            "content-length",
+            "165"
+          ]
+        }
+      ],
+      "callbacks": [
+        "payload",
+        "chunk",
+        "function:1",
+        "function:2",
+        "function:3",
+        "function:4"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"n\":4}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-2",
+            "name": "read-3",
+            "arguments": {
+              "n": 4
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-generative-ai",
+            "provider": "google",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-2",
+            "name": "read-3",
+            "arguments": {
+              "n": 4
+            }
+          }
+        ],
+        "api": "google-generative-ai",
+        "provider": "google",
+        "model": "gemini-3.1-pro-preview",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "STOP",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "vertex-live-text-signature-getters",
+        "kind": "vertex",
+        "callback": "live-text"
+      },
+      "name": "vertex-live-text-signature-getters",
+      "payloads": [
+        {
+          "model": "gemini-3.1-pro-preview",
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "hello"
+                }
+              ]
+            }
+          ],
+          "config": {
+            "maxOutputTokens": 1000,
+            "systemInstruction": "system"
+          }
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:53669/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "urlProvenance": "received HTTP authority and request-target",
+          "path": "/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "pathname": "/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent",
+          "query": "?alt=sse",
+          "body": {
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "text": "hello"
+                  }
+                ],
+                "role": "user"
+              }
+            ],
+            "systemInstruction": {
+              "parts": [
+                {
+                  "text": "system"
+                }
+              ],
+              "role": "user"
+            },
+            "generationConfig": {
+              "maxOutputTokens": 1000
+            }
+          },
+          "rawBody": "{\"contents\":[{\"parts\":[{\"text\":\"hello\"}],\"role\":\"user\"}],\"systemInstruction\":{\"parts\":[{\"text\":\"system\"}],\"role\":\"user\"},\"generationConfig\":{\"maxOutputTokens\":1000}}",
+          "headers": {
+            "host": "127.0.0.1:53669",
+            "connection": "keep-alive",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client": "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "content-type": "application/json",
+            "x-goog-api-key": "fixture-placeholder-key",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "165"
+          },
+          "rawHeaders": [
+            "host",
+            "127.0.0.1:53669",
+            "connection",
+            "keep-alive",
+            "User-Agent",
+            "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client",
+            "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "Content-Type",
+            "application/json",
+            "x-goog-api-key",
+            "fixture-placeholder-key",
+            "accept",
+            "*/*",
+            "accept-language",
+            "*",
+            "sec-fetch-mode",
+            "cors",
+            "accept-encoding",
+            "gzip, deflate",
+            "content-length",
+            "165"
+          ]
+        }
+      ],
+      "callbacks": [
+        "payload",
+        "chunk",
+        "text:1",
+        "text:2",
+        "signature:1",
+        "text:3"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "text_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "text_delta",
+          "contentIndex": 0,
+          "delta": "text-3",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "text_end",
+          "contentIndex": 0,
+          "content": "text-2",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "stop",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "text",
+                "text": "text-2",
+                "textSignature": "YWJjZA=="
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 12,
+              "output": 4,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "reasoning": 0,
+              "totalTokens": 16,
+              "cost": {
+                "input": 0.000012,
+                "output": 0.000008,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0.000019999999999999998
+              }
+            },
+            "stopReason": "stop",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "text-2",
+            "textSignature": "YWJjZA=="
+          }
+        ],
+        "api": "google-vertex",
+        "provider": "google-vertex",
+        "model": "gemini-3.1-pro-preview",
+        "usage": {
+          "input": 12,
+          "output": 4,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "reasoning": 0,
+          "totalTokens": 16,
+          "cost": {
+            "input": 0.000012,
+            "output": 0.000008,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0.000019999999999999998
+          }
+        },
+        "stopReason": "stop",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "STOP",
+        "durationMs": "$DURATION"
+      }
+    },
+    {
+      "input": {
+        "name": "vertex-live-function-getters",
+        "kind": "vertex",
+        "callback": "live-function",
+        "chunks": [
+          {
+            "responseId": "response-1",
+            "candidates": [
+              {
+                "content": {
+                  "parts": [
+                    {
+                      "functionCall": {
+                        "id": "call-original",
+                        "name": "read",
+                        "args": {
+                          "n": 0
+                        }
+                      }
+                    }
+                  ]
+                },
+                "finishReason": "STOP"
+              }
+            ]
+          }
+        ]
+      },
+      "name": "vertex-live-function-getters",
+      "payloads": [
+        {
+          "model": "gemini-3.1-pro-preview",
+          "contents": [
+            {
+              "role": "user",
+              "parts": [
+                {
+                  "text": "hello"
+                }
+              ]
+            }
+          ],
+          "config": {
+            "maxOutputTokens": 1000,
+            "systemInstruction": "system"
+          }
+        }
+      ],
+      "requests": [
+        {
+          "method": "POST",
+          "url": "http://127.0.0.1:53669/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "urlProvenance": "received HTTP authority and request-target",
+          "path": "/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent?alt=sse",
+          "pathname": "/v1/publishers/google/models/gemini-3.1-pro-preview:streamGenerateContent",
+          "query": "?alt=sse",
+          "body": {
+            "contents": [
+              {
+                "parts": [
+                  {
+                    "text": "hello"
+                  }
+                ],
+                "role": "user"
+              }
+            ],
+            "systemInstruction": {
+              "parts": [
+                {
+                  "text": "system"
+                }
+              ],
+              "role": "user"
+            },
+            "generationConfig": {
+              "maxOutputTokens": 1000
+            }
+          },
+          "rawBody": "{\"contents\":[{\"parts\":[{\"text\":\"hello\"}],\"role\":\"user\"}],\"systemInstruction\":{\"parts\":[{\"text\":\"system\"}],\"role\":\"user\"},\"generationConfig\":{\"maxOutputTokens\":1000}}",
+          "headers": {
+            "host": "127.0.0.1:53669",
+            "connection": "keep-alive",
+            "user-agent": "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client": "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "content-type": "application/json",
+            "x-goog-api-key": "fixture-placeholder-key",
+            "accept": "*/*",
+            "accept-language": "*",
+            "sec-fetch-mode": "cors",
+            "accept-encoding": "gzip, deflate",
+            "content-length": "165"
+          },
+          "rawHeaders": [
+            "host",
+            "127.0.0.1:53669",
+            "connection",
+            "keep-alive",
+            "User-Agent",
+            "pi (win32 10.0.26200; x64)",
+            "x-goog-api-client",
+            "google-genai-sdk/2.21.0 gl-node/v24.14.0",
+            "Content-Type",
+            "application/json",
+            "x-goog-api-key",
+            "fixture-placeholder-key",
+            "accept",
+            "*/*",
+            "accept-language",
+            "*",
+            "sec-fetch-mode",
+            "cors",
+            "accept-encoding",
+            "gzip, deflate",
+            "content-length",
+            "165"
+          ]
+        }
+      ],
+      "callbacks": [
+        "payload",
+        "chunk",
+        "function:1",
+        "function:2",
+        "function:3",
+        "function:4"
+      ],
+      "events": [
+        {
+          "type": "start",
+          "partial": {
+            "role": "assistant",
+            "content": [],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "pending",
+            "timestamp": "$TIMESTAMP"
+          }
+        },
+        {
+          "type": "toolcall_start",
+          "contentIndex": 0,
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "toolcall_delta",
+          "contentIndex": 0,
+          "delta": "{\"n\":4}",
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "toolcall_end",
+          "contentIndex": 0,
+          "toolCall": {
+            "type": "toolCall",
+            "id": "call-2",
+            "name": "read-3",
+            "arguments": {
+              "n": 4
+            }
+          },
+          "partial": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP"
+          }
+        },
+        {
+          "type": "done",
+          "reason": "toolUse",
+          "message": {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "toolCall",
+                "id": "call-2",
+                "name": "read-3",
+                "arguments": {
+                  "n": 4
+                }
+              }
+            ],
+            "api": "google-vertex",
+            "provider": "google-vertex",
+            "model": "gemini-3.1-pro-preview",
+            "usage": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0,
+              "totalTokens": 0,
+              "cost": {
+                "input": 0,
+                "output": 0,
+                "cacheRead": 0,
+                "cacheWrite": 0,
+                "total": 0
+              }
+            },
+            "stopReason": "toolUse",
+            "timestamp": "$TIMESTAMP",
+            "responseId": "response-1",
+            "rawStopReason": "STOP",
+            "durationMs": "$DURATION"
+          }
+        }
+      ],
+      "result": {
+        "role": "assistant",
+        "content": [
+          {
+            "type": "toolCall",
+            "id": "call-2",
+            "name": "read-3",
+            "arguments": {
+              "n": 4
+            }
+          }
+        ],
+        "api": "google-vertex",
+        "provider": "google-vertex",
+        "model": "gemini-3.1-pro-preview",
+        "usage": {
+          "input": 0,
+          "output": 0,
+          "cacheRead": 0,
+          "cacheWrite": 0,
+          "totalTokens": 0,
+          "cost": {
+            "input": 0,
+            "output": 0,
+            "cacheRead": 0,
+            "cacheWrite": 0,
+            "total": 0
+          }
+        },
+        "stopReason": "toolUse",
+        "timestamp": "$TIMESTAMP",
+        "responseId": "response-1",
+        "rawStopReason": "STOP",
+        "durationMs": "$DURATION"
+      }
+    }
+  ]
+}

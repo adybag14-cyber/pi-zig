@@ -1,0 +1,9 @@
+{
+  "sourceHead": "5ab7fe74c400097b386662205cd93900695b8a71",
+  "sourceFixture": "src/extensions/fixtures/ai-google-mistral60-5ab.json",
+  "sourceFixtureSha256": "92358FBEC13E1D1258D2FAD6DF2F654DF7DB71E731ED5986437545193D20E352",
+  "sourceDriverSha256": "3ecb06fede6ce1d9b4e4803c2a5f907473d1bcbe4e2308b42dd4167c6b5daef8",
+  "sourceCase": "mistral-cross-provider-replay",
+  "rawId": "responses_call|item$",
+  "observedId": "ply08vwam"
+}

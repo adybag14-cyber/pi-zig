@@ -1,0 +1,11 @@
+{
+  "kind": "static literal Zig import/embed path audit; no Zig execution or semantic checking",
+  "base": "7cd5153e093da160c3c21bb8ad8c143d05426747",
+  "roots": [
+    "src/native_ai_http_checkpoint_test.zig",
+    "src/native_ai_google_mistral_source20_test.zig"
+  ],
+  "visited_zig": 660,
+  "missing": [],
+  "checked_utc": "2026-10-16T13:22:39.6411789+00:00"
+}
