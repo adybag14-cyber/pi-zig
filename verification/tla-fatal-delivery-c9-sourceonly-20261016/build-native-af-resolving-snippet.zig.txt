@@ -1,0 +1,7 @@
+// Source-only proposed integration. No build or runtime grant is implied.
+const native_af_resolving_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_resolving_pending_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native AF resolving pending"}, .use_llvm = use_llvm });
+linkQuickJs(b, native_af_resolving_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(native_af_resolving_tests.root_module, sqlite_lib_dir, sqlite_library);
+native_af_resolving_tests.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-af-resolving-pending", "Compile reviewed native AF pending-fatal resolving controls").dependOn(&b.addInstallArtifact(native_af_resolving_tests, .{}).step);
+b.step("test-native-af-resolving-pending", "Run exact metadata-selected native AF pending-fatal controls after explicit grant").dependOn(&b.addRunArtifact(native_af_resolving_tests).step);
