@@ -1,0 +1,86 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\src\\extensions\\fixtures\\async-function-body-node24.input.txt",
+    "sha256": "5776BF2FA3CD180CD299DB2295875CADE31A2D3FC6A0403A8BD1B171AA7ACFB2"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-native-async-function-proposal-20261016\\src\\extensions\\fixtures\\async-function-body-node24.json",
+    "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-original-input-byte-exact.txt",
+    "sha256": "2F8C0DAB4866BD0215A6B0CF968EA7567BB02B7D33D42425D8310E5B3E40B070"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-async-function-reviewed-final-c-h-20261016.patch",
+    "sha256": "5CE1523066573791A2127C346204783C0777DB3790100248C9709EFF1E66A038"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\native-async-function-source42-8f97c86e-public-readback-20261016.json",
+    "sha256": "932D131CD6E758798C541E897FDFCF99959AA7F7A9DFB8A65A0FD29039BF1C26"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-output.json",
+    "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-capture.json",
+    "sha256": "380FD10BE32DD6480FCC2779B82D0CA0052E5CC9A72AD51BCE757C924693AE58"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-posthash.json",
+    "sha256": "855341D05F2A1FDA1D3E48702C407BC55A67E081F95E0836B5FC5301343532E9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-validation.json",
+    "sha256": "5470FD0BC43B4E3BE38900224763492834A9C43F3D819D45283D643F1B47E520"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-controls-before.json",
+    "sha256": "06F61BE35F0543CD4147A7F98158A1BD8E4B64699CD7EDE54C86C50F75B7C9C9"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-candidate-before.json",
+    "sha256": "CE901CC49F561FE750C414FB3E78D7DC0F55A439DAA3DF1F76DA7BB8B098C93B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-before.json",
+    "sha256": "57AEA79AE3BF018BE1B00B1789D72D9E5399DA275C42EE3C6F804FFD6257FCEF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review1-20261016-modules.jsonl",
+    "sha256": "DBBE0C739529DDF0A4B24CB2B48011E85F224D4764CD4A3F3BC51F1B1D8A0F95"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-output.json",
+    "sha256": "52DD975CA6C7CCE1D9BF8BB13B763122862B7849CFAACFAED8906038C3AF9653"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-capture.json",
+    "sha256": "6457D4FBE1D52DE32329C13FB97242A8992571C85EB2B448827CF07007E3D085"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-posthash.json",
+    "sha256": "269AD374438DBFB11170F01C146A11C43720718B35FB9375970E21EA61C6EA2B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-validation.json",
+    "sha256": "B89C57713568A54383A1A59B8D80F54BC6B82DC55838D3941746F1A3F850D3ED"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-controls-before.json",
+    "sha256": "B13289EB8E7EA16FC7819C15F49FB3E0EECBBFD0B09003D9625EB8533C6F6CAF"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-candidate-before.json",
+    "sha256": "588369B30FDB5068A76B5C12102050BC47AA3E44D668BDDD414EDBE73756E0C5"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-before.json",
+    "sha256": "05C938A98B25EE262649EE8D73F972D4548EC4CF8B3820FF4A9285CEB08513AB"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig-update-evidence-20261003\\async-function-body-node24-source42-review2-20261016-modules.jsonl",
+    "sha256": "DBBE0C739529DDF0A4B24CB2B48011E85F224D4764CD4A3F3BC51F1B1D8A0F95"
+  }
+]

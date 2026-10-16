@@ -1,0 +1,12 @@
+[
+  "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+  "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+  "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+  "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+  "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+  "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+  "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+  "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+  "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+  "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension"
+]
