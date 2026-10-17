@@ -1,7 +1,7 @@
 //! Source loader.ts551–733 orchestration. Real lazy module imports are required
 //! bindings, not a fabricated jiti object or an empty virtual module registry.
 //! Graph2/default-interop composition and production selection remain separate.
-//! Local revision2: rejected Await DATA is distinct from a current VM event.
+//! Rejected Await input stays borrowed DATA; only actual pending events win.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = v.Scope;
@@ -17,8 +17,12 @@ const Captures = struct {
         return .{ .engine = engine, .prior = previous };
     }
     fn deinit(self: *Captures) void {
-        if (self.engine.captured_exception == null) self.engine.captured_exception = self.prior else if (self.prior) |reason| self.engine.freeValue(reason);
+        const prior = self.prior;
         self.prior = null;
+        // Detach before either ownership transfer or finalizer-capable release.
+        // The enclosing genuine AF invocation retains actual current fatals;
+        // neither this prior diagnostic nor its flags acquire event authority.
+        if (self.engine.captured_exception == null) self.engine.captured_exception = prior else if (prior) |reason| self.engine.freeValue(reason);
     }
 };
 pub const Inputs = struct {
@@ -77,18 +81,6 @@ fn failure(engine: *v.em.Engine, err: anyerror, generation: u64) !af.Action {
     try trusted(engine, err, generation);
     return body.failureSince(engine, err, generation);
 }
-fn reject(s: *Scope, job: c.JSValue, reason: c.JSValue) !void {
-    if (c.JS_HasException(s.engine.context)) return v.js.capture(s.engine);
-    var generation: u64 = 0;
-    if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "generation")) < 0) return v.js.capture(s.engine);
-    try body.rethrowRecognizedAllocation(s.engine, reason, generation);
-    if (c.JS_HasException(s.engine.context)) return v.js.capture(s.engine);
-    // No active VM event or exact fresh private allocation cause exists.
-    // This is rejected DATA, even when it has a historical hidden fatal bit.
-    // C2 Action.THROW would otherwise reinterpret that old bit as a new event.
-    // Source catch formatting/IteratorClose also receives the SAME raw object.
-    c.JS_ClearUncatchableError(s.engine.context, reason);
-}
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return s.call(try s.get(imports, name), c.pi_js_undefined(), args);
 }
@@ -133,6 +125,7 @@ fn moduleBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     return moduleInner(engine, args, roots[0], state, completion, input) catch |err| return failure(engine, err, generation);
 }
 fn moduleInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) try body.enterRejectedContinuation(engine);
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
         const job = try body.init(&s, state);
@@ -142,7 +135,7 @@ fn moduleInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSValue
         return wait(&s, job, .create_jiti, try imported(&s, imports, "getCreateJiti", &.{}));
     }
     const job = state.*;
-    if (completion == .rejected) { try reject(&s, job, input); return .{ .thrown = c.JS_DupValue(engine.context, input) }; }
+    if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     try boundary(&s, job);
     switch (try stage(&s, job)) {
         .create_jiti => {
@@ -209,6 +202,7 @@ fn extensionBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, ro
     };
 }
 fn extensionInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) try body.enterRejectedContinuation(engine);
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
         const job = try body.init(&s, state);
@@ -222,7 +216,6 @@ fn extensionInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSVa
     }
     const job = state.*;
     if (completion == .rejected) {
-        try reject(&s, job, input);
         try put(engine, job, "inTry", c.pi_js_bool(engine.context, 0));
         return caught(&s, input);
     }
@@ -270,6 +263,7 @@ fn closeAbrupt(engine: *v.em.Engine, job: c.JSValue, generation: u64) !void {
     _ = s.call(method, iterator, &.{}) catch |err| { const suppressed = try take(engine, err, generation); engine.freeValue(suppressed); return; };
 }
 fn internalInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) try body.enterRejectedContinuation(engine);
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
         const job = try body.init(&s, state);
@@ -291,7 +285,6 @@ fn internalInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSVal
     } else {
         const job = state.*;
         if (completion == .rejected) {
-            try reject(&s, job, input);
             try closeAbrupt(engine, job, engine.native_allocation_generation);
             return .{ .thrown = c.JS_DupValue(engine.context, input) };
         }

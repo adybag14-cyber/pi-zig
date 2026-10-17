@@ -1,0 +1,159 @@
+{
+  "status": "source_only_uncompiled_unrun_pending_independent_review",
+  "base": "56457347c58b0dd2e5f721087cc1affa0aa63696",
+  "tracked_base": 11898,
+  "scope": "Only actual extension loader settled-DATA entry and owned diagnostic retirement; genuine additive controls",
+  "source_authority": {
+    "commit": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+    "path": "packages/coding-agent/src/core/extensions/loader.ts",
+    "blob": "bee134d35827b465a0f8521452cf528f923fd621",
+    "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+    "entire_retained_old_authority_byte_equal": true
+  },
+  "await_sites_unchanged": 6,
+  "public_return_adoptions_unchanged": 2,
+  "control_entrypoints": 7,
+  "genuine_profiles": [
+    "actual physical extension factory",
+    "actual physical top-level-await rejecting module"
+  ],
+  "external_runtime_prerequisites": [
+    "Root C1116 actual-pending-before-native-body semantics",
+    "Genuine composed full SDK/jiti/module importer/transactional API/runtime/event bus subject"
+  ],
+  "owned_rows": [
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "bytes": 20482,
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A"
+    },
+    {
+      "path": "src/native_sdk_loader_settled_completion_controls.zig",
+      "bytes": 10971,
+      "sha256": "E67B5CED2FE0B1838A1A24D61F6792DA9191008D61A88F8AEBCB9DC5D3EAE118"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/controller.input.mjs",
+      "bytes": 1287,
+      "sha256": "9899AB6AEFD35D346A24B23F76CF5D6A4C6B491C68E75D38036DCCE19F505709"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/extension.input.mjs",
+      "bytes": 318,
+      "sha256": "B7DA0B2AA2DDE6347884E5229B4344B4B716E79856F427A37950C85B205CCCEC"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/module-reject.input.mjs",
+      "bytes": 373,
+      "sha256": "39D07259FFE10FB9988D714C7CF0BBB32D688D993764B6E6A1EF65A1F78F65CC"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/README.md",
+      "bytes": 5127,
+      "sha256": "5048DAF84725AAE08DFC25CF3A3FE946E25ED837C40442A7F59A9139CDBD40BA"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/authority/loader.ts.txt",
+      "bytes": 28124,
+      "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A"
+    },
+    {
+      "path": "verification/sdk-loader-settled-completion-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    }
+  ],
+  "protected_rows": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "bytes": 9620,
+      "sha256": "28530A20895C549F94BFC98D9EF8B9608F75A8DB7AEF975D0935FE493EB4C8E0"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_api.zig",
+      "bytes": 23974,
+      "sha256": "876AE3A06993E9C145EC861FCB73158D0FF5C6A45C6052407E94F2AF6ED90F6F"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_runtime.zig",
+      "bytes": 12335,
+      "sha256": "F2F4EB704C17F47A44F8AC225DD4F11E765EFDEDB550AD8425C355EFD8FCF5B7"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_cache.zig",
+      "bytes": 6780,
+      "sha256": "898640E1DDDD7BEF78F3431C10185EBE934CD3D923A651F9BCEE920B4A69DA93"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_assembly.zig",
+      "bytes": 2971,
+      "sha256": "01CA1B3C8664755512C8F598183AD361BB891A01BD9200392E53410CDF4F361B"
+    },
+    {
+      "path": "src/native_sdk_loader_rejected_data_controls.zig",
+      "bytes": 11618,
+      "sha256": "C8601ACDCBCEBD6CC09FEF9EF69CC4DB10D6F1BC34015A4B23B64CA25E8826F8"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/controller.input.mjs",
+      "bytes": 1136,
+      "sha256": "851ABEDF8F4BD086E19FFD609BED1826D1262693720BD2E9177458B82AF3142D"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/extension.input.mjs",
+      "bytes": 456,
+      "sha256": "E39B194597DD525D7E1D8DF7E26C303F27C61CD1EBE79519CE04A2802CE3A57A"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/prepared.json",
+      "bytes": 5199,
+      "sha256": "8C8F7FFB49CB03B9564F807DDDF28C4AC1C793A09FEC06066B74A2C90BB1A01D"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/source-review.json",
+      "bytes": 1033,
+      "sha256": "070FE34FB058BB8CF8B6C8BF69A031CC2035F5F2EA2CC77ADD3A390C691DC39D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+      "bytes": 43669,
+      "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00"
+    }
+  ],
+  "expected_absent": [
+    "verification/sdk-loader-settled-completion-sourceonly-20261017/expected.json",
+    "verification/sdk-loader-settled-completion-sourceonly-20261017/module-reject.expected.json"
+  ],
+  "jobs_run": [],
+  "full_runtime_or_default_activation": false
+}
