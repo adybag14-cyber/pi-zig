@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 typedef union CompilerBlock {
     max_align_t alignment;
@@ -18,12 +15,6 @@ typedef struct CompilerFixture {
     size_t events, fail_at, live;
     int induced, loads;
     JSValue first_error;
-    size_t first_error_event, capture_calls;
-    int diagnostic_mode;
-    size_t diagnostic_offset, failed_size;
-    uintptr_t failure_pcs[16], image_base;
-    size_t image_size;
-    unsigned failure_pc_count;
     JSContext *context;
     JSValue interrupt_reason;
     size_t interrupt_calls, interrupt_stop;
@@ -31,44 +22,6 @@ typedef struct CompilerFixture {
     JSValue legacy_prototype, legacy_target, legacy_error_ctor;
     int legacy_finalizer_mode, legacy_finalizer_armed, legacy_finalizer_calls;
 } CompilerFixture;
-
-static void compiler_failure_trace(CompilerFixture *state, size_t size)
-{
-    if (!((state->diagnostic_mode == 0 && state->diagnostic_offset == 136) ||
-          (state->diagnostic_mode == 6 && state->diagnostic_offset == 17)))
-        return;
-    state->failed_size = size;
-#ifdef _WIN32
-    {
-        typedef WORD (NTAPI *TraceFunction)(DWORD, DWORD, PVOID *, PDWORD);
-        HMODULE library = GetModuleHandleW(L"ntdll.dll");
-        TraceFunction capture = library ? (TraceFunction)(uintptr_t)GetProcAddress(library, "RtlCaptureStackBackTrace") : NULL;
-        HMODULE image = GetModuleHandleW(NULL);
-        MEMORY_BASIC_INFORMATION memory;
-        void *addresses[16];
-        if (capture) {
-            state->failure_pc_count = capture(0, 16, addresses, NULL);
-            for (unsigned i = 0; i < state->failure_pc_count; i++)
-                state->failure_pcs[i] = (uintptr_t)addresses[i];
-        }
-        if (image && VirtualQuery(image, &memory, sizeof(memory)) == sizeof(memory) &&
-            memory.State == MEM_COMMIT && memory.Type == MEM_IMAGE && memory.AllocationBase == image &&
-            memory.RegionSize >= sizeof(IMAGE_DOS_HEADER)) {
-            const IMAGE_DOS_HEADER *dos = (const IMAGE_DOS_HEADER *)image;
-            if (dos->e_magic == IMAGE_DOS_SIGNATURE && dos->e_lfanew >= 0 &&
-                memory.RegionSize >= sizeof(IMAGE_NT_HEADERS64) &&
-                (size_t)dos->e_lfanew <= memory.RegionSize - sizeof(IMAGE_NT_HEADERS64)) {
-                const IMAGE_NT_HEADERS64 *nt = (const IMAGE_NT_HEADERS64 *)((const uint8_t *)image + dos->e_lfanew);
-                if (nt->Signature == IMAGE_NT_SIGNATURE && nt->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC &&
-                    nt->OptionalHeader.SizeOfImage >= memory.RegionSize) {
-                    state->image_base = (uintptr_t)image;
-                    state->image_size = nt->OptionalHeader.SizeOfImage;
-                }
-            }
-        }
-    }
-#endif
-}
 
 static int compiler_work_interrupt(JSRuntime *runtime, void *opaque)
 {
@@ -85,7 +38,6 @@ static int compiler_fail(CompilerFixture *state, size_t size)
 {
     if (size && state->events++ == state->fail_at) {
         state->induced++;
-        compiler_failure_trace(state, size);
         return 1;
     }
     return 0;
@@ -149,12 +101,8 @@ static int compiler_capture(JSContext *context, JSValueConst error, int phase,
 {
     CompilerFixture *state = opaque;
     (void)filter; (void)filename; (void)line; (void)column; (void)flags;
-    if (phase == JS_ERROR_STACK_CAPTURE)
-        state->capture_calls++;
-    if (phase == JS_ERROR_STACK_CAPTURE && JS_IsUndefined(state->first_error)) {
-        state->first_error_event = state->events;
+    if (phase == JS_ERROR_STACK_CAPTURE && JS_IsUndefined(state->first_error))
         state->first_error = JS_DupValue(context, error);
-    }
     return 0;
 }
 static JSModuleDef *compiler_forbidden_load(JSContext *context, const char *name,
@@ -206,8 +154,6 @@ static int compiler_attempt(int mode, size_t offset, size_t *measured,
     state.first_error = JS_UNDEFINED;
     state.interrupt_reason = JS_UNDEFINED;
     state.interrupt_stop = interrupt_stop;
-    state.diagnostic_mode = mode;
-    state.diagnostic_offset = offset;
     runtime = JS_NewRuntime2(&allocator, &state);
     if (!runtime)
         goto cleanup;
@@ -346,15 +292,7 @@ static int compiler_attempt(int mode, size_t offset, size_t *measured,
     if (JS_HasException(context)) {
         reason = JS_GetException(context);
         if (JS_IsUndefined(state.first_error) ||
-            !JS_IsStrictEqual(context, reason, state.first_error)) {
-            fprintf(stderr, "CJS_DIAGNOSTIC reason mode=%d offset=%zu outcome=%d category=%d diagnostic=%d induced=%d events=%zu first_event=%zu captures=%zu actual_tag=%d first_tag=%d actual_error=%d first_error=%d actual_fatal=%d first_fatal=%d\n",
-                    mode, offset, outcome, (int)category, (int)diagnostic, state.induced,
-                    state.events - begin, state.first_error_event >= begin ? state.first_error_event - begin : SIZE_MAX,
-                    state.capture_calls, JS_VALUE_GET_TAG(reason), JS_VALUE_GET_TAG(state.first_error),
-                    JS_IsError(reason), JS_IsError(state.first_error),
-                    JS_IsUncatchableError(reason), JS_IsUncatchableError(state.first_error));
-            status = 10; goto cleanup;
-        }
+            !JS_IsStrictEqual(context, reason, state.first_error)) { status = 10; goto cleanup; }
         if ((cjs && category != JS_PI_CJS_NO_SYNTAX_CATEGORY) || outcome == 1) {
             JSValue prototype = JS_GetPrototype(context, reason);
             int syntax = !JS_IsException(prototype) &&
@@ -383,12 +321,7 @@ static int compiler_attempt(int mode, size_t offset, size_t *measured,
         JS_FreeValue(context, meta_map); meta_map = JS_UNDEFINED;
         JS_RunGC(runtime);
         JS_ComputeMemoryUsage(runtime, &after_atoms);
-        if (before_atoms.atom_count != after_atoms.atom_count) {
-            fprintf(stderr, "CJS_DIAGNOSTIC atoms mode=%d offset=%zu outcome=%d category=%d induced=%d before=%lld after=%lld native_blocks_before_cleanup=%zu\n",
-                    mode, offset, outcome, (int)category, state.induced,
-                    (long long)before_atoms.atom_count, (long long)after_atoms.atom_count, state.live);
-            status = 21; goto cleanup;
-        }
+        if (before_atoms.atom_count != after_atoms.atom_count) { status = 21; goto cleanup; }
     }
     if ((mode == 0 || mode == 5) && outcome == 0) {
         JSValue actual = JS_Call(context, result, JS_UNDEFINED, 0, NULL);
@@ -435,52 +368,7 @@ cleanup:
     }
     if (runtime)
         JS_FreeRuntime(runtime);
-    if (status || state.live)
-        fprintf(stderr, "CJS_DIAGNOSTIC terminal mode=%d offset=%zu status=%d remaining_native_blocks=%zu\n",
-                mode, offset, status, state.live);
-    if (state.failed_size) {
-        fprintf(stderr, "CJS_DIAGNOSTIC allocation_trace mode=%d offset=%zu size=%zu count=%u image_base=0x%llx image_size=%zu\n",
-                mode, offset, state.failed_size, state.failure_pc_count,
-                (unsigned long long)state.image_base, state.image_size);
-        for (unsigned i = 0; i < state.failure_pc_count; i++) {
-            uintptr_t pc = state.failure_pcs[i];
-            bool in_image = state.image_size && pc >= state.image_base && pc - state.image_base < state.image_size;
-            fprintf(stderr, "CJS_DIAGNOSTIC allocation_pc index=%u pc=0x%llx root_image=%d rva=0x%llx\n",
-                    i, (unsigned long long)pc, in_image,
-                    (unsigned long long)(in_image ? pc - state.image_base : 0));
-        }
-    }
     return state.live ? (status ? status : 15) : status;
-}
-
-/* Diagnostic-only observer of genuine frames. The filename is converted only
-   after JS_IsString; no guest ToString/error property classification is used. */
-void pi_test_cjs_diagnose_frames(JSContext *ctx, JSValueConst frames)
-{
-    JSValue frame = JS_GetPropertyUint32(ctx, frames, 0);
-    JSValue filename = JS_UNDEFINED, name = JS_UNDEFINED;
-    int line = -1, column = -1, native = -1, constructor = -1;
-    int status = JS_ReadCapturedStackFrame(ctx, frame, &filename, &name,
-                                            &line, &column, &native, &constructor);
-    const char *text = JS_IsString(filename) ? JS_ToCString(ctx, filename) : NULL;
-    fprintf(stderr, "CJS_DIAGNOSTIC frame reader=%d line=%d column=%d native=%d constructor=%d filename_tag=%d filename=%s name_tag=%d pending=%d\n",
-            status, line, column, native, constructor, JS_VALUE_GET_TAG(filename),
-            text ? text : "<not-string>", JS_VALUE_GET_TAG(name), JS_HasException(ctx));
-    if (text) JS_FreeCString(ctx, text);
-    if (status == 0 && !JS_HasException(ctx)) {
-        const char *methods[2] = { "getFunction", "getThis" };
-        JSValue prototype = JS_GetCapturedStackFramePrototype(ctx);
-        for (int i = 0; i < 2 && !JS_HasException(ctx); i++) {
-            JSValue getter = JS_GetPropertyStr(ctx, prototype, methods[i]);
-            JSValue actual = JS_IsException(getter) ? JS_EXCEPTION :
-                JS_Call(ctx, getter, frame, 0, NULL);
-            fprintf(stderr, "CJS_DIAGNOSTIC visibility method=%s tag=%d undefined=%d pending=%d\n",
-                    methods[i], JS_VALUE_GET_TAG(actual), JS_IsUndefined(actual), JS_HasException(ctx));
-            JS_FreeValue(ctx, actual); JS_FreeValue(ctx, getter);
-        }
-        JS_FreeValue(ctx, prototype);
-    }
-    JS_FreeValue(ctx, filename); JS_FreeValue(ctx, name); JS_FreeValue(ctx, frame);
 }
 
 int pi_test_cjs_compiler_allocations(int mode)
