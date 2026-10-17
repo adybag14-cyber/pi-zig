@@ -125,6 +125,22 @@ pub fn verifyFullApplication(engine: *em.Engine, completed: bootstrap.Completed)
     try production.verifyActualPrototype(engine, try s.get(api, "AgentSession"));
 }
 
+/// The genuine native owner route uses real runtime/resource imports directly;
+/// it never assembles a fabricated Completed record in the test. Missing real
+/// owners fail normally. Qualification must supply the actual linked providers.
+pub fn verifyOwnedFullApplication(engine: *em.Engine, runtime: @import("extensions/native_sdk_runtime_imports.zig").Inputs, resources: bootstrap.ResourceImports) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const graph = try s.own(try bootstrap.createNativeFromOwners(engine, runtime, resources));
+    const api = try s.get(graph, "exports");
+    var temporary = std.testing.tmpDir(.{}); defer temporary.cleanup();
+    var path_buffer: [std.Io.Dir.max_path_bytes]u8 = undefined;
+    const length = try temporary.dir.realPath(std.testing.io, &path_buffer);
+    const caller = try s.own(try @import("extensions/native_js_values.zig").spread(engine, api));
+    try s.put(caller, "fixtureCwd", try s.text(path_buffer[0..length]));
+    try @import("native_sdk_factory_production_test.zig").compareActualSourceCases(engine, caller, @embedFile("extensions/fixtures/sdk-factory-production-4954.json"));
+    try production.verifyActualPrototype(engine, try s.get(api, "AgentSession"));
+}
+
 /// The owner supplies an actual accepted builtin Node capture; expected data is
 /// never authored natively. Execute the exact genuine caller without stdout.
 pub fn compareActualOsSource(engine: *em.Engine, reference: []const u8) !void {

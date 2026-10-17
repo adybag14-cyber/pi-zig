@@ -39,6 +39,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
         .resolve_config_value = try scope.get(config_values, "resolveConfigValue"),
     }));
     const timing = try scope.own(try @import("native_sdk_timings.zig").create(engine));
+    const management_http = try scope.own(try @import("native_sdk_management_http.zig").create(engine));
     const result = try scope.object();
     try scope.put(result, "platform", platform);
     try scope.put(result, "configuration", configuration);
@@ -46,6 +47,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try scope.put(result, "configValues", config_values);
     try scope.put(result, "authStorage", auth);
     try scope.put(result, "timing", timing);
+    try scope.put(result, "managementHttp", management_http);
     try scope.put(result, "process", inputs.process);
     try engine.registerValueModule(module_name, result);
     return c.JS_DupValue(engine.context, result);
