@@ -1,0 +1,15 @@
+// Prepared source only; no build or runtime grant is implied.
+const node24_builtin_data = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/native_node_builtin_node24_data_test.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+    .filters = &.{"Node24 original builtin"},
+    .use_llvm = use_llvm,
+});
+linkQuickJs(b, node24_builtin_data.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(node24_builtin_data.root_module, sqlite_lib_dir, sqlite_library);
+node24_builtin_data.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-node24-builtin-data-artifact", "Install prepared original Node24 builtin controls")
+    .dependOn(&b.addInstallArtifact(node24_builtin_data, .{}).step);

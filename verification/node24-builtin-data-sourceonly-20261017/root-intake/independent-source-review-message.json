@@ -1,0 +1,9 @@
+{
+  "kind": "message-derived-independent-source-review",
+  "reviewer": "/root/models_auth_failure_resume",
+  "source_commit": "930eaa1e",
+  "data_sha256": "154690A5B6FA6CEC5A330FECD69B6FF81AEDDC421847AFAA74D06D8FA20DF20A",
+  "closure": "No blocking source finding",
+  "statement": "7 immutable pinned blobs match; 72 IDs ordered match accepted F982 output, 3 handlers match raw/Zig fields; F982/F6CE rehashed. Frozen VM roots/public shape/prefix policy/generic create/version future contract reviewed. diffcheck0, 3 controls unrun, constructor WIP excluded; no reviewer jobs/edits/native activation claim.",
+  "not_a_new_runtime_receipt": true
+}

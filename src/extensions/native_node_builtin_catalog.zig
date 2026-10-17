@@ -1,18 +1,33 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
 //! Node24 builtin identity policy over its exact original ordered id table.
 //! ids is authority data from pinned Node, never engine.native_module_names.
-//! No table is fabricated here; publication awaits the admitted original table.
+//! Original Node24 data is admitted separately; generic create still accepts
+//! explicit authority data and never reads the registry of implemented modules.
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 pub const Catalog = struct {
     /// Actual frozen public builtinModules array, owned by caller.
     builtin_modules: c.JSValue,
-    /// Private predicate for BuiltinModule.normalizeRequirableId's truth test.
-    /// This is not published as a counterfeit Module.isBuiltin declaration.
+    /// Predicate using the captured authority list. Generic create uses a
+    /// private anonymous declaration; createOriginalNode24 supplies the
+    /// observed public Module.isBuiltin name/length/nonconstructor shape.
     is_builtin: c.JSValue,
 };
 pub fn create(engine: *v.em.Engine, ids: []const []const u8) !Catalog {
+    return createNamed(engine, ids, "");
+}
+/// Exact original v24.14.0 data, retaining its 72-item order. The genuine
+/// nonconstructible public isBuiltin shape was observed in the same capture.
+pub fn createOriginalNode24(engine: *v.em.Engine) !Catalog {
+    return createNamed(engine, &@import("native_node_builtin_node24_data.zig").ids, "isBuiltin");
+}
+/// Future authority refreshes must present the exact version before reusing
+/// this data. This does not add or spoof process.version/versions.node.
+pub fn requireOriginalNodeVersion(actual: []const u8) !void {
+    if (!std.mem.eql(u8, actual, @import("native_node_builtin_node24_data.zig").node_version)) return error.OriginalNodeBuiltinVersionMismatch;
+}
+fn createNamed(engine: *v.em.Engine, ids: []const []const u8, name: [*:0]const u8) !Catalog {
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     const list = try s.array();
     for (ids, 0..) |id, index| {
@@ -20,7 +35,7 @@ pub fn create(engine: *v.em.Engine, ids: []const []const u8) !Catalog {
         try s.index(list, @intCast(index), try s.text(id));
     }
     if (c.JS_FreezeObject(engine.context, list) < 0) return v.js.capture(engine);
-    const predicate = try s.own(try @import("native_node_module_callable.zig").create(engine, "", 1, false, classify, &.{list}));
+    const predicate = try s.own(try @import("native_node_module_callable.zig").create(engine, name, 1, false, classify, &.{list}));
     return .{ .builtin_modules = c.JS_DupValue(engine.context, list), .is_builtin = c.JS_DupValue(engine.context, predicate) };
 }
 fn classify(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {

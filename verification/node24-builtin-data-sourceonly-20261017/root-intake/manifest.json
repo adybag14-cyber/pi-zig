@@ -1,0 +1,68 @@
+{
+  "status": "prepared-source-only-not-intaken",
+  "source_commit": "930eaa1e4e4c57e6a5ae1df753c4c2561b9abba9",
+  "source_parent": "37e27a0d34cd77611363b24c1e309a437e713e98",
+  "intake_base": "d8b91890e5a12a18f594eff878f861668f07e834",
+  "virtual_result_tree": "74a22f42be6d7bab5579f6f85a58cbfb08b064fe",
+  "private_index": "local-only private-intake.index; not product/public proof",
+  "main_worktree_or_index_written": false,
+  "catalog_parent_equals_base": true,
+  "apply_check_exit": 0,
+  "apply_exit": 0,
+  "target_files_equal_source_blobs": 8,
+  "new_paths": 7,
+  "existing_paths_changed": 1,
+  "constructor_or_core_or_tla_wip_included": false,
+  "node_compiler_generator_jobs": false,
+  "product_patch_sha256": "64A812D6BDE4148AC7C30B062CA317DD4090A9B9DA612452E8E4DCEF8D2BC6F4",
+  "files": [
+    {
+      "path": "src/extensions/native_node_builtin_catalog.zig",
+      "bytes": 3656,
+      "sha256": "511F4D8F1EF54C3BCEFDC08CC85155EDE4A0B4CA1D42967E5A9802AA75C52865",
+      "existed_in_base": true
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data.zig",
+      "bytes": 2666,
+      "sha256": "154690A5B6FA6CEC5A330FECD69B6FF81AEDDC421847AFAA74D06D8FA20DF20A",
+      "existed_in_base": false
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data_test.zig",
+      "bytes": 3761,
+      "sha256": "F080B3685E4E4E388AF097B6C12280A8BA3DD918403D398822AB0146D7A84179",
+      "existed_in_base": false
+    },
+    {
+      "path": "src/native_node_builtin_node24_data_test.zig",
+      "bytes": 81,
+      "sha256": "1D48202739123BEE12E26EF92EB38C13C1BF7279F67924F80862C792D46AD78B",
+      "existed_in_base": false
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/README.md",
+      "bytes": 2229,
+      "sha256": "9443254EEA492653A5E2A1F9DF672120EBCD3289164655D88227A958783C2E11",
+      "existed_in_base": false
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/build-snippet.zig.txt",
+      "bytes": 763,
+      "sha256": "C50CB7596C0645BB8EFF362F7C16FB5F3859F68A9EDFEBBEE4B495BC335FB6B4",
+      "existed_in_base": false
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/node24-original-authority.json",
+      "bytes": 5183,
+      "sha256": "FAB15C3C1A949DF938EEEF92EFAB83CA9759455E7DC205FED906335B75A92AA1",
+      "existed_in_base": false
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/prepared-builtin-data.json",
+      "bytes": 1998,
+      "sha256": "4CBA3C28975AF1026FE1C4E9270E92246ADB9BD441262A675C5F55488DA235E0",
+      "existed_in_base": false
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "status": "source_reviewed_original_data_intake",
+  "source_commit": "930eaa1e4e4c57e6a5ae1df753c4c2561b9abba9",
+  "original_output_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "ordered_builtin_ids": 72,
+  "original_extension_handler_records": 3,
+  "native_executed": false,
+  "default_selected": false,
+  "prototype_or_core_wip_intaken": false
+}

@@ -1,0 +1,52 @@
+{
+  "status": "source-only-prepared-uncompiled",
+  "base": "37e27a0d34cd77611363b24c1e309a437e713e98",
+  "original_output_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "original_audit_sha256": "F6CE98842E87213326F7E46032F9ED011B721F2580290AFF2A8CD7EFD96D8FA1",
+  "ordered_ids_compared": 72,
+  "handler_records_compared": 3,
+  "prepared_named_native_tests": 3,
+  "compiled_metadata_count": null,
+  "runtime_executed": false,
+  "default_selected": false,
+  "node_jobs": false,
+  "compiler_jobs": false,
+  "generator_jobs": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_builtin_catalog.zig",
+      "bytes": 3656,
+      "sha256": "511F4D8F1EF54C3BCEFDC08CC85155EDE4A0B4CA1D42967E5A9802AA75C52865"
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data.zig",
+      "bytes": 2666,
+      "sha256": "154690A5B6FA6CEC5A330FECD69B6FF81AEDDC421847AFAA74D06D8FA20DF20A"
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data_test.zig",
+      "bytes": 3761,
+      "sha256": "F080B3685E4E4E388AF097B6C12280A8BA3DD918403D398822AB0146D7A84179"
+    },
+    {
+      "path": "src/native_node_builtin_node24_data_test.zig",
+      "bytes": 81,
+      "sha256": "1D48202739123BEE12E26EF92EB38C13C1BF7279F67924F80862C792D46AD78B"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/README.md",
+      "bytes": 2229,
+      "sha256": "9443254EEA492653A5E2A1F9DF672120EBCD3289164655D88227A958783C2E11"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/build-snippet.zig.txt",
+      "bytes": 763,
+      "sha256": "C50CB7596C0645BB8EFF362F7C16FB5F3859F68A9EDFEBBEE4B495BC335FB6B4"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/node24-original-authority.json",
+      "bytes": 5183,
+      "sha256": "FAB15C3C1A949DF938EEEF92EFAB83CA9759455E7DC205FED906335B75A92AA1"
+    }
+  ]
+}

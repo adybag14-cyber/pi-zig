@@ -1,0 +1,226 @@
+{
+  "status": "data-derived-only-from-independently-accepted-original",
+  "raw_capture": "evidence/root-node-c8-original-20261017-132606/original-output.json",
+  "raw_bytes": 22201,
+  "raw_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "independent_audit_directory": "evidence/root-node-c8-original-independent-audit-20261017",
+  "independent_audit_sha256": "F6CE98842E87213326F7E46032F9ED011B721F2580290AFF2A8CD7EFD96D8FA1",
+  "node_version": "v24.14.0",
+  "node_executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "builtin_ids": [
+    "_http_agent",
+    "_http_client",
+    "_http_common",
+    "_http_incoming",
+    "_http_outgoing",
+    "_http_server",
+    "_stream_duplex",
+    "_stream_passthrough",
+    "_stream_readable",
+    "_stream_transform",
+    "_stream_wrap",
+    "_stream_writable",
+    "_tls_common",
+    "_tls_wrap",
+    "assert",
+    "assert/strict",
+    "async_hooks",
+    "buffer",
+    "child_process",
+    "cluster",
+    "console",
+    "constants",
+    "crypto",
+    "dgram",
+    "diagnostics_channel",
+    "dns",
+    "dns/promises",
+    "domain",
+    "events",
+    "fs",
+    "fs/promises",
+    "http",
+    "http2",
+    "https",
+    "inspector",
+    "inspector/promises",
+    "module",
+    "net",
+    "os",
+    "path",
+    "path/posix",
+    "path/win32",
+    "perf_hooks",
+    "process",
+    "punycode",
+    "querystring",
+    "readline",
+    "readline/promises",
+    "repl",
+    "stream",
+    "stream/consumers",
+    "stream/promises",
+    "stream/web",
+    "string_decoder",
+    "sys",
+    "timers",
+    "timers/promises",
+    "tls",
+    "trace_events",
+    "tty",
+    "url",
+    "util",
+    "util/types",
+    "v8",
+    "vm",
+    "wasi",
+    "worker_threads",
+    "zlib",
+    "node:sea",
+    "node:sqlite",
+    "node:test",
+    "node:test/reporters"
+  ],
+  "handlers": [
+    {
+      "key": ".js",
+      "name": "",
+      "length": 2,
+      "ownsPrototype": true,
+      "prototypeConstructor": true,
+      "descriptor": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "hasGet": false,
+        "hasSet": false
+      }
+    },
+    {
+      "key": ".json",
+      "name": "",
+      "length": 2,
+      "ownsPrototype": true,
+      "prototypeConstructor": true,
+      "descriptor": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "hasGet": false,
+        "hasSet": false
+      }
+    },
+    {
+      "key": ".node",
+      "name": "",
+      "length": 2,
+      "ownsPrototype": true,
+      "prototypeConstructor": true,
+      "descriptor": {
+        "enumerable": true,
+        "configurable": true,
+        "writable": true,
+        "hasGet": false,
+        "hasSet": false
+      }
+    }
+  ],
+  "require_shape": {
+    "name": "require",
+    "length": 1,
+    "ownsPrototype": true,
+    "prototypeConstructor": true
+  },
+  "resolve_shape": {
+    "name": "resolve",
+    "length": 2,
+    "ownsPrototype": true,
+    "prototypeConstructor": true
+  },
+  "paths_shape": {
+    "name": "paths",
+    "length": 1,
+    "ownsPrototype": true,
+    "prototypeConstructor": true
+  },
+  "is_builtin_shape": {
+    "name": "isBuiltin",
+    "length": 1,
+    "ownsPrototype": false,
+    "prototypeConstructor": false
+  },
+  "module_private_shapes": [
+    {
+      "key": "_resolveLookupPaths",
+      "name": "",
+      "length": 2,
+      "ownsPrototype": true,
+      "prototypeConstructor": true
+    },
+    {
+      "key": "_resolveFilename",
+      "name": "",
+      "length": 4,
+      "ownsPrototype": true,
+      "prototypeConstructor": true
+    },
+    {
+      "key": "_findPath",
+      "name": "",
+      "length": 3,
+      "ownsPrototype": true,
+      "prototypeConstructor": true
+    },
+    {
+      "key": "_nodeModulePaths",
+      "name": "",
+      "length": 1,
+      "ownsPrototype": true,
+      "prototypeConstructor": true
+    },
+    {
+      "key": "_initPaths",
+      "name": "",
+      "length": 0,
+      "ownsPrototype": true,
+      "prototypeConstructor": true
+    }
+  ],
+  "require_descriptors": [
+    {
+      "key": "cache",
+      "enumerable": true,
+      "configurable": true,
+      "writable": true,
+      "hasGet": false,
+      "hasSet": false
+    },
+    {
+      "key": "extensions",
+      "enumerable": true,
+      "configurable": true,
+      "writable": true,
+      "hasGet": false,
+      "hasSet": false
+    },
+    {
+      "key": "main",
+      "enumerable": true,
+      "configurable": true,
+      "writable": true,
+      "hasGet": false,
+      "hasSet": false
+    },
+    {
+      "key": "resolve",
+      "enumerable": true,
+      "configurable": true,
+      "writable": true,
+      "hasGet": false,
+      "hasSet": false
+    }
+  ],
+  "future_node_version_contract": "Exact v24.14.0/Node63 and original data; a version change requires a new admitted original capture, never a guessed merged list",
+  "candidate_results_used": false,
+  "node_or_compiler_or_generator_jobs_launched": false
+}
