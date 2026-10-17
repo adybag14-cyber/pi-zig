@@ -131,3 +131,57 @@ test "SDK package AF actual completion callback GPA failure bypasses error notif
     try std.testing.expect(s.equal(try s.invoke(try s.global("packageEvents"), "join", &.{try s.text(",")}), try s.text("start,complete")));
     try std.testing.expect(engine.native_fatal_invocation == null);
 }
+const ProgressCleanup = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0 };
+var progress_cleanup_holder: ?c.JSValue = null;
+fn progressCleanup(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const owner: *ProgressCleanup = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    owner.calls += 1;
+    _ = c.JS_Throw(owner.engine.context, c.JS_DupValue(owner.engine.context, owner.reason));
+}
+fn progressCleanupToken(owner: *ProgressCleanup) !c.JSValue {
+    var class: c.JSClassID = 0; _ = c.JS_NewClassID(owner.engine.runtime, &class);
+    const definition: c.JSClassDef = .{ .class_name = "Actual package progress cleanup", .finalizer = progressCleanup };
+    if (c.JS_NewClass(owner.engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+    const result = try owner.engine.checked(c.JS_NewObjectClass(owner.engine.context, class));
+    _ = c.JS_SetOpaque(result, owner);
+    return result;
+}
+fn takeProgressMessage(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const value = progress_cleanup_holder orelse return error.RequiredSoleProgressMessage;
+    progress_cleanup_holder = null;
+    return value;
+}
+test "SDK package AF actual progress catch message cleanup preserves Source error or fresh fatal" {
+    for ([_]bool{ false, true }) |fatal_cleanup| {
+        var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try setup(engine, &environment);
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        const root = try s.own(c.JS_GetGlobalObject(engine.context));
+        try s.put(root, "actualPackageFragment", try actualFragment(engine, &s));
+        const original = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        const cleanup = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        if (fatal_cleanup) c.JS_SetUncatchableError(engine.context, cleanup);
+        var owner: ProgressCleanup = .{ .engine = engine, .reason = cleanup };
+        progress_cleanup_holder = try progressCleanupToken(&owner);
+        defer { if (progress_cleanup_holder) |value| engine.freeValue(value); progress_cleanup_holder = null; }
+        const atom = c.JS_NewAtom(engine.context, "message"); defer c.JS_FreeAtom(engine.context, atom);
+        const getter = try @import("extensions/native_node_function.zig").createArrow(engine, "get message", 0, takeProgressMessage, &.{});
+        if (c.JS_DefinePropertyGetSet(engine.context, original, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+        try s.put(root, "ownedProgressOriginal", original);
+        const source =
+            \\const{DefaultPackageManager,SettingsManager,physicalRoot}=actualPackageFragment,manager=new DefaultPackageManager({cwd:physicalRoot,agentDir:physicalRoot,settingsManager:SettingsManager.inMemory()});globalThis.progressCleanupEvents=[];globalThis.progressCleanupSeen=undefined;manager.setProgressCallback(event=>progressCleanupEvents.push(event.type));try{await manager.withProgress('update','owned','Preparing',()=>Promise.reject(ownedProgressOriginal))}catch(reason){globalThis.progressCleanupSeen=reason}
+        ;
+        if (fatal_cleanup) {
+            try std.testing.expectError(error.JavaScriptException, engine.evalModule(source, "actual-progress-fatal-cleanup.mjs"));
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, cleanup, engine.captured_exception orelse return error.RequiredProgressCleanupFatal));
+            try std.testing.expect(c.JS_IsUndefined(try s.global("progressCleanupSeen")));
+        } else {
+            const value = try engine.evalModule(source, "actual-progress-ordinary-cleanup.mjs"); engine.freeValue(value);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, try s.global("progressCleanupSeen")));
+        }
+        try std.testing.expect(s.equal(try s.invoke(try s.global("progressCleanupEvents"), "join", &.{try s.text(",")}), try s.text("start,error")));
+        try std.testing.expectEqual(@as(usize, 1), owner.calls);
+        try std.testing.expect(progress_cleanup_holder == null and engine.native_fatal_invocation == null);
+    }
+}

@@ -7,119 +7,143 @@
   "products": [
     {
       "path": "build.zig",
-      "sha256": "0962EA2F144D102B289E2BD87A5478FFB7D69FF5C61E18F12F6DB388A8113F4B",
       "length": 350149,
+      "sha256": "0962EA2F144D102B289E2BD87A5478FFB7D69FF5C61E18F12F6DB388A8113F4B",
       "git_blob": "d88f976170f8a6400eff204cb2039cb365e7253e"
     },
     {
       "path": "src/extensions/native_sdk_package_assembly.zig",
-      "sha256": "77DA91F8D3B1E6A361A19D8DA61E90214619D068B0916A3AD44C94C375CCACF2",
       "length": 7931,
+      "sha256": "77DA91F8D3B1E6A361A19D8DA61E90214619D068B0916A3AD44C94C375CCACF2",
       "git_blob": "c04b9c6ae46f508e9a9443de31a0db9c0e914402"
     },
     {
       "path": "src/extensions/native_sdk_package_catch.zig",
-      "sha256": "50AC14BBEF92E901F15F4AD3161C125F4CA6FA762DB8198F43F1506884B912F3",
       "length": 1873,
+      "sha256": "50AC14BBEF92E901F15F4AD3161C125F4CA6FA762DB8198F43F1506884B912F3",
       "git_blob": "e3154a9016f8048cbfde1ba0147d55bde369b7d8"
     },
     {
       "path": "src/extensions/native_sdk_package_commands.zig",
-      "sha256": "6401F4168C7D2BE2402A53FEE1B4073222CFDB4F3D2447D339F834407ADFCB4C",
       "length": 12315,
+      "sha256": "6401F4168C7D2BE2402A53FEE1B4073222CFDB4F3D2447D339F834407ADFCB4C",
       "git_blob": "7884dd1ab385d39a99c0dfee3a5a7dbf44b6935d"
     },
     {
       "path": "src/extensions/native_sdk_package_concurrency.zig",
-      "sha256": "A10DF7D17FDAF0B5D2A28379F6A1D4BC5ED5F87CBF99834B277C15CD99EB0086",
       "length": 4545,
+      "sha256": "A10DF7D17FDAF0B5D2A28379F6A1D4BC5ED5F87CBF99834B277C15CD99EB0086",
       "git_blob": "061c14649b36e1f4f80f8835829ca405208679d0"
     },
     {
       "path": "src/extensions/native_sdk_package_extension_sources.zig",
-      "sha256": "32D5D0DE61B9CC82CDAC8A60737DF790ACECB43EFAEC3485408008BEB7FB172D",
       "length": 5443,
+      "sha256": "32D5D0DE61B9CC82CDAC8A60737DF790ACECB43EFAEC3485408008BEB7FB172D",
       "git_blob": "1d40ef9437654f804ecfd64508e03fcc3f4f7d17"
     },
     {
       "path": "src/extensions/native_sdk_package_git.zig",
-      "sha256": "F7B7CA2B3B3649CC6AC53D6D9F745A7DF9563B651C3D7CF7E5E61900C8E3D9E0",
       "length": 13222,
+      "sha256": "F7B7CA2B3B3649CC6AC53D6D9F745A7DF9563B651C3D7CF7E5E61900C8E3D9E0",
       "git_blob": "26ab30e9dde3cbfcf8c4ba9b50a1bdfaa0883f7f"
     },
     {
       "path": "src/extensions/native_sdk_package_install.zig",
-      "sha256": "F3A171E668A87A088AB02600F2360A25BD62206E018CB882F677D0C15752FBC6",
       "length": 10923,
+      "sha256": "F3A171E668A87A088AB02600F2360A25BD62206E018CB882F677D0C15752FBC6",
       "git_blob": "6a5e435e6841f7c4034b3790525c09b684c7fd27"
     },
     {
       "path": "src/extensions/native_sdk_package_resolve.zig",
-      "sha256": "FA773C8007F9A8C7ED683BFC673172D99917853F2B8301781F307172AEF939F8",
       "length": 9140,
+      "sha256": "FA773C8007F9A8C7ED683BFC673172D99917853F2B8301781F307172AEF939F8",
       "git_blob": "88c9dcd2e32c4eddb464c7a8045d1faa075af5ee"
     },
     {
       "path": "src/extensions/native_sdk_package_resolve_sources.zig",
-      "sha256": "DED94DE2AC68897B9350BF31D88E89E86FC3E45DA9CB91E86B38ABDFBB8E3998",
       "length": 9441,
+      "sha256": "DED94DE2AC68897B9350BF31D88E89E86FC3E45DA9CB91E86B38ABDFBB8E3998",
       "git_blob": "7bed04c6e89e506867cb15871b174d799edbb6e1"
     },
     {
       "path": "src/extensions/native_sdk_package_settings.zig",
-      "sha256": "5C8E3E1EBBF403C97FF545CEC60D59B93D2E27E79B36A5968F52F65500D08F87",
-      "length": 17430,
-      "git_blob": "77ae5634709e34516a58c7e85dbffc2fbe06a736"
+      "length": 17720,
+      "sha256": "6EF35E4B19E014F3D42DE0E29C63B4F374ED294AF8A4647860EEE9929DFEA7F9",
+      "git_blob": "539a08bfdb1a059de5facbd86931baa77daa703f"
     },
     {
       "path": "src/extensions/native_sdk_package_updates.zig",
-      "sha256": "167DE057E043D024EF857DFABD5A624FE68C7B6F14C99450ED34690A6B1DDD85",
       "length": 17291,
+      "sha256": "167DE057E043D024EF857DFABD5A624FE68C7B6F14C99450ED34690A6B1DDD85",
       "git_blob": "18918c1c474293d33bebd1919b431f363bc5e01a"
     },
     {
       "path": "src/extensions/native_sdk_package_versions.zig",
-      "sha256": "D0CBF8302891B19AC54BCCE0E8835FE7235E1F988FE56E45E651C0D856AB192C",
       "length": 18151,
+      "sha256": "D0CBF8302891B19AC54BCCE0E8835FE7235E1F988FE56E45E651C0D856AB192C",
       "git_blob": "1f62bba502c285b461750e328b9cf905eee65214"
     },
     {
       "path": "src/native_sdk_package_af_test.zig",
-      "sha256": "F568181CB140458CFB6178D119E4A2E7849BBEA41AA7658FEBE8437452A1F5DC",
-      "length": 11888,
-      "git_blob": "7a485fce7f1a7bbe132de098f305d8228c633d7d"
+      "length": 16282,
+      "sha256": "5996A85C2F7E41BC1806B24B2AFC02FD62552492792BEEC70265464216400C40",
+      "git_blob": "137450c5d7f919003db079ef72d8ed28470840bf"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "length": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346"
     }
   ],
   "owned": [
     {
       "path": "verification/sdk-package-af-sourceonly-20261017/README.md",
-      "sha256": "B08FD2B7DDEA869E76249F1A0F7145F62BF47EB29602B5256767B13402349CC4",
-      "length": 4594,
-      "git_blob": "cc0cac0c8ebb5d27045cb9069c2633d2dd6e9413"
+      "length": 5854,
+      "sha256": "6FD8282013000EFD02304A08E08958850F7B9C221021CDA1F11B045781E590A2",
+      "git_blob": "ed00a65f1ad0006b534086530160b46154f60d38"
     },
     {
       "path": "verification/sdk-package-af-sourceonly-20261017/CONTROLS.md",
-      "sha256": "7B69BB383BAE6DF298C203F33D3B21311DCBA8917086A9728A39D7BFC1F9C18F",
-      "length": 3360,
-      "git_blob": "8a6c3b610b3890e1d0e139256d4e14c94fd008b0"
+      "length": 3849,
+      "sha256": "CFD4479328502CB0EDC3AA4625E740D11B7E63691DFFE1F2C57949D08122428C",
+      "git_blob": "b6e5a12b349233d45e202c8129ff26b2c6a708e6"
     },
     {
       "path": "verification/sdk-package-af-sourceonly-20261017/observe-package-progress.mjs",
-      "sha256": "BFE32B4487061E9758AE6176D7D1D3579652C7639BAFBCC776C553B170B6792B",
       "length": 3085,
+      "sha256": "BFE32B4487061E9758AE6176D7D1D3579652C7639BAFBCC776C553B170B6792B",
       "git_blob": "0ad1002f72fb7125e63c4ac452c6f8f70d515bb7"
     },
     {
       "path": "verification/sdk-package-af-sourceonly-20261017/authority/package-manager.ts",
-      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
       "length": 87307,
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310",
       "git_blob": "1ca63ebbb90bb1881ebba3e83fe49be0a6080724"
     },
     {
       "path": "verification/sdk-package-af-sourceonly-20261017/authority/LICENSE",
-      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
       "length": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
       "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/prepared-66c-ordinary-unwind-negative.json",
+      "length": 22004,
+      "sha256": "3F9C3AA896E27585C4178E749367BD3E9AA2F270E60AAD7AE445A779F13EF722",
+      "git_blob": "61ccba34b308e1b0911b25b6367c58fde8cf33d3"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/independent-66c-negative-source-review.json",
+      "length": 4249,
+      "sha256": "37A734A761350D98326263AAD8B7C93B9BCCA2661E8BB0F44DF92D23F3012D79",
+      "git_blob": "2b3db663f366fc44c57599f50e72b1c70af2d62c"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/independent-core-7335-source-review.json",
+      "length": 16404,
+      "sha256": "0D1EB5E1E31EDE1A1B4F7D34D3DB23AFE6E80CB0EC2CDA76D578E0D791CE8029",
+      "git_blob": "24c193dc258ba23e8b88e446218770a0fa9a4bf4"
     }
   ],
   "protected": [
@@ -390,7 +414,8 @@
     "SDK package AF rejected marked and fresh private DATA reaches progress error unchanged",
     "SDK package AF actual npm command preserves live lookup argument receiver and awaited void",
     "SDK package AF rejection guard ignores DATA tags but preserves actual pending first",
-    "SDK package AF actual completion callback GPA failure bypasses error notification and guest catch"
+    "SDK package AF actual completion callback GPA failure bypasses error notification and guest catch",
+    "SDK package AF actual progress catch message cleanup preserves Source error or fresh fatal"
   ],
   "existing_async_methods_preserved": 33,
   "actual_af_entries": [
@@ -473,5 +498,21 @@
     "test_bytes_unchanged": true,
     "change": "Remove only new addTest.name so cached executable retains canonical test.exe admitted by607; no native run/controller/metadata authority",
     "historical_source_head": "9b0e7ae1ecd485bbe946e79cb2aa8bcd324572cf"
+  },
+  "shared_sdk_completion_prerequisite": {
+    "path": "src/extensions/native_sdk_owned_completion.zig",
+    "git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346",
+    "only_closed_new_leaf_copied": true,
+    "source": "733517fb9670ad92f556141a5d3ede069ea2423d",
+    "core_source_receipt_sha256": "0D1EB5E1E31EDE1A1B4F7D34D3DB23AFE6E80CB0EC2CDA76D578E0D791CE8029",
+    "source_only_not_runtime": true,
+    "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+  },
+  "ordinary_unwind_adapter": {
+    "real_outcome_before_scope_retirement": true,
+    "scope_shape": "provider inline32 +overflow ArrayList",
+    "remaining_inherited_package_scopes_unqualified": true,
+    "controls_unrun": true,
+    "negative_source": "66c263d15b616a14fb79976c7a7e8b45d9e2c9a9"
   }
 }

@@ -1,6 +1,6 @@
 # Causal controls and next real producer chain
 
-Five native declarations (not results):
+Six native declarations (not results):
 
 1. Actual DefaultPackageManager constructor, real SettingsManager and selected settings/command method fragments; internal AF identities +GC +unchanged original-class11-row observer. Source order, start outside try, sync/rejected operation, complete/error callback replacement, live message/String/instanceof, actual Await are asserted.
 2. Actual `withProgress` is suspended first. Only afterward does the host create an actual private allocation Error or ordinary Error, retain/mark it as DATA and reject the unrelated pending operation with that value. The real Source error event/rethrow path runs; identity/bit remain unchanged. No event flag is cleared, no private DATA generation inferred.
@@ -13,3 +13,5 @@ Actual transport qualification (not runnable yet; no fake dependency): use the r
 Next source work after this frozen unit: audit the remaining synchronous catch boundaries in versions/Git/install/transport, snapshot each actual failing get/call rather than a whole flow, retain actual first reason through Source cleanup/recovery, and add real ordinary/history/same-object/fresh-producer controls. Preserve all33 genuine AF bodies and existing loop/iterator/callback order. Keep original rejection DATA and actual same-object new throw separate; never clear bits as a workaround. The semver6/Git/ignore/minimatch/crypto/child/frontend collaborators remain explicit actual inputs and are owned by their existing lanes.
 
 No default backend, public SDK or host868 activation follows from these controls. Full factory27/166/Original64, actual Agent32/Source20 and packaged CLI/RPC/TUI/worker gates still require complete genuine owners and accepted original runtime/reference authority.
+
+6. Actual withProgress catch binds Error.message to a transferred sole native carrier and sends its original error progress event before rethrow. Its Scope now records Action/error before temporary cleanup; actual ordinary cleanup cannot replace original A, actual fatal C promotes. Source event receiver/order/raw reason and no escaping invocation frame are checked. This is an executable native causal definition over the real subject, not a helper-only specification; it is still UNRUN.

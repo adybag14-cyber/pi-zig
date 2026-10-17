@@ -2,6 +2,7 @@
 //! paths, SettingsManager and installed-file checks remain live real imports.
 const v = @import("native_ai_provider_values.zig");
 const p = @import("native_agent_af_values.zig");
+const owned = @import("native_sdk_owned_completion.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
@@ -178,20 +179,24 @@ fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValu
     return progressBody(engine, manager, args, completion, input) catch |err| p.failure(engine, err);
 }
 fn progressBody(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    var s: Scope = .{ .engine = engine };
+    return owned.finishAction(&s, progressStep(&s, manager, args, completion, input));
+}
+fn progressStep(s: *Scope, manager: c.JSValue, args: []const c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
+    const engine = s.engine;
     if (completion == .start) {
         // Source start notification is OUTSIDE the operation/complete try.
-        try emitEvent(&s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
-        const pending = checkedCall(&s, arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| {
+        try emitEvent(s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
+        const pending = checkedCall(s, arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| {
             const reason = try s.own(try p.caught(engine, err));
-            return progressError(&s, manager, args, reason);
+            return progressError(s, manager, args, reason);
         };
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }
-    if (completion == .rejected) return progressError(&s, manager, args, input);
-    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| {
+    if (completion == .rejected) return progressError(s, manager, args, input);
+    emitEvent(s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| {
         const reason = try s.own(try p.caught(engine, err));
-        return progressError(&s, manager, args, reason);
+        return progressError(s, manager, args, reason);
     };
     return .{ .returned = c.pi_js_undefined() };
 }
