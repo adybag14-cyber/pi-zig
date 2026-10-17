@@ -1,0 +1,19 @@
+{
+  "status":"prepared_actual_subject_controls_unrun_expected_absent",
+  "canonical_api":"native_jiti_core_graph.createCanonical + cells.linkCanonical",
+  "actual_dependencies_required":true,
+  "generic_bodies_fake_positive_allowed":false,
+  "cases":[
+    {"id":"same-require-captures-real-frontend","native_entry":"verifyActualCanonicalCycle","observe":"same actual require in core/frontend; known require root13 is exact real eval export; actual shared RegExp root15/16; ordinary name/length3/constructor; duplicate link/init rejected"},
+    {"id":"missing-real-input-no-commit","native_entry":"verifyMissingDependencyNoCommit","observe":"required actual frontend transform removed only for negative preflight; no ledger increment, exports/init disallowed; valid actual deps subsequently link exactly once"},
+    {"id":"mismatched-real-module-import","native_entry":"verifyMismatchedRealImportsNoCommit","observe":"different genuine imported function put in debug slot for negative identity control; reject before any constructor/Source callback/commit"},
+    {"id":"combined-budget-denial-and-retry","native_entry":"verifyBudgetDenialRollbackAndRetry","observe":"declare real bodies first, owned reserve exhausts actual ledger; actual require reserve fails OutOfMemory, no commit/publication/initialization or hidden increase; release only owned reservation then genuine retry succeeds"},
+    {"id":"real-cycle-gc-root-and-charge-release","native_entry":"verifyActualCycleMarkingAndLedgerRelease","observe":"retain only actual core declaration, real require/frontend cycle survives GC; final core root release drops charged storage; no false preconstruction-baseline/Graph2/class-registry reclaim claim"},
+    {"id":"original-source-cache-cycle","source_root":"export function ready(){return 7} export const late=11; import {seen} from './child.ts'; export const observed=seen;","source_child":"import {ready,late} from './root.ts'; export const seen=[ready(),late];","requires":"actual original factory/Module/cache/resolver/compiler; no fake SourceLoad/require/defaulttransform","observe":"partial real Module and original require/eval cycle, loaded/export identities and old closures remain valid","driver_pending":true},
+    {"id":"source-getter-exposure-barrier","requires":"actual complete bindings and independent user getter/finalization/native-allocation fault probes","observe":"no Source getter during private declarations/preflight/require creation; platform only after full commit; caller/core/eval inaccessible until ready; actual Source order after ready","driver_pending":true},
+    {"id":"exhaustive-owned-allocation-and-init-failure","requires":"future owned native fault driver over actual namespace inputs and real platform","observe":"every staged failure maintains hidden/unpublished record, exact reason ownership and quota charges until actual GC; no dangling frontend capture; initialization cannot retry/reenter or publish after failure","driver_pending":true},
+    {"id":"actual-pending-event-before-all-three-entry-stages","native_entry":"verifyPendingEventsBeforeConstructionAndInitialization","original_input":"pending-platform-input.mjs","observe":"actual non-OOM VM pending event wins before create/declaration, directlink/preflight, and directinitialize/phase; exact same reason captured with no coercion/ledger change/platform call; same linked graph successfully initializes exactlyonce only after driver consumes terminalevent"}
+  ],
+  "expected_path":"src/extensions/fixtures/jiti-canonical-assembly.expected.json",
+  "source_executed":false,"native_executed":false,"compiler_executed":false,"formatter_executed":false,"expected_written":false,"default_selected":false
+}

@@ -1,0 +1,25 @@
+{
+  "source_head": "363479d8b164662d036d68eddb226d1d689222e2",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "source_closed_no_blocker_in_canonical_cycle_and_pending_entry_scope",
+  "manifest_rows": 89,
+  "hash_length_drift": 0,
+  "prepared_sha256": "06BEC369E1D638FF4514242A3C18DAC9DB50957E604A83BD946B7DB970704DA3",
+  "prior_bbf7_pending_entry_blocker_corrected": true,
+  "checked": [
+    "actual require captures same private frontend and identical require installed both imports",
+    "preflight/stage/nonfalliblecommit/rollback/markedchargedownership",
+    "actualpendingVMguard precedesdeclare/directlinkhostrecord/initphase/platform",
+    "balanceddiagnostics preserveexactreason withoutcoercion",
+    "sixcontrolsincludingall3pendingentries andafterconsumptioninitializeonce",
+    "require/resolveunchangedMainca974"
+  ],
+  "open": [
+    "frontend historical rejectedDATA guard",
+    "actualnativeImportOrRequire wrapper andremainingrealdependencies",
+    "publicdefaulttransformer andfullfactory/runtimequalification"
+  ],
+  "controls_executed": false,
+  "native_executed": false,
+  "default_selected": false
+}

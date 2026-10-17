@@ -1,0 +1,145 @@
+{
+  "status": "prepared_pending_successor_source_review_not_intake_authorization",
+  "source_head": "363479d8b164662d036d68eddb226d1d689222e2",
+  "source_base": "73b7c9a37998c84ebc9a6d3d96da7fd7630bbf6e",
+  "root_head_at_read": "51d2a0042306e702cde97ac955179dc5ec47ff2a",
+  "files": [
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "action": "existing_identical_exclude_copy",
+      "root_before_sha256": "7F03DCA8994C856B94F2BF8B3E302E6EB27D47949ED6C016EF707A2140F8A8CF",
+      "sha256": "7F03DCA8994C856B94F2BF8B3E302E6EB27D47949ED6C016EF707A2140F8A8CF",
+      "bytes": 21535,
+      "git_blob": "6699024e113f81590e3e11555026e194d89bc207"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "action": "replace_reviewed_existing_path",
+      "root_before_sha256": "C79FAB61E10FA5B799709269A75CBE3AE6F50FD73F30118F692F26D879234ECA",
+      "sha256": "CC26BB99EFC7E85FFDBA654432BE1C731349FB91EFCACACFD467057EF1A1055D",
+      "bytes": 2159,
+      "git_blob": "b5bfb821a3917400d78f8878e3748390529ff6bf"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "action": "replace_reviewed_existing_path",
+      "root_before_sha256": "8353C219AEAA21EB2561F5A9ABB10EC6356DD5CEB6385AEE9FEAF79A366688C7",
+      "sha256": "710D9BBB97BFB8EFF690985AB12BA18739177F47F2CC254108AD0F25E6DD34B2",
+      "bytes": 17674,
+      "git_blob": "6f27a932054896689f94f534c42a4d548467d65b"
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "action": "existing_identical_exclude_copy",
+      "root_before_sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "bytes": 15301,
+      "git_blob": "125fa70d782448627d566a779426155724a4c5ec"
+    },
+    {
+      "path": "src/extensions/native_jiti_resolve.zig",
+      "action": "existing_identical_exclude_copy",
+      "root_before_sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "bytes": 13578,
+      "git_blob": "178934966c36fd061e5a6000a5a9568e83d1b534"
+    },
+    {
+      "path": "src/native_jiti_canonical_assembly_controls.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "F949826200C03B8D9B8A9610847D11DB6B4D99B88CCF9EC9343588EAF4F800A6",
+      "bytes": 12143,
+      "git_blob": "87157775fcf88c4b488a1fe352652f5147cc30e1"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/README.md",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "C7940F0C9F0B95143481DA8456204EDA4DED6F2CC57F3735F4D539153AA27E90",
+      "bytes": 7001,
+      "git_blob": "bd0a5ada4e6eb74b9c881bb7d00e6e768ed6dc04"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/LICENSE.txt",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078,
+      "git_blob": "e739abce461d8b2899aaec6529a4af24a417e0fc"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/eval.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "bytes": 7360,
+      "git_blob": "3fcf671ebf649ae2707455e86cdfad0b665c7635"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/jiti.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+      "bytes": 5500,
+      "git_blob": "160a331b5f21df5c5129e3be0a0f06319a1310f0"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/require.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C",
+      "bytes": 4759,
+      "git_blob": "9aba1cac080d47f0da49c875162b53fcc91e875c"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-bbf7-prepared.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "3A3F417E15AB63176FF86E1C3D7909DA8B75BB186DA4F6539ABEBDA17D894D9C",
+      "bytes": 18653,
+      "git_blob": "eeae39c81283ed15fa38090bc8b0b3c12e83b66a"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-require-resolve-prepared.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "6748DD648B371148C7488195B5D74DA692DDA136D10DE9E463DFD695BFE98372",
+      "bytes": 9836,
+      "git_blob": "90e9dc291fbcaebbf3fdae592cbe5278da0221ea"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/causal-inputs.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "E5AEB4E39B194769AFC07D59F9AE66C605C9867459D96F643204F65D0423BCB9",
+      "bytes": 3711,
+      "git_blob": "1c7ac4ba5100469e1055b215babcac7f33f6bf3d"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/pending-platform-input.mjs",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "B7FD942A18641D26054D77F92F85D5BA414B27EE90BB268A1413B1E2F547E736",
+      "bytes": 749,
+      "git_blob": "f339c5c3b800f58fe326c787035aa27818eca2b8"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/prepared.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "sha256": "06BEC369E1D638FF4514242A3C18DAC9DB50957E604A83BD946B7DB970704DA3",
+      "bytes": 19515,
+      "git_blob": "a76d179965c79024fe895cc120cc18df7c6641da"
+    }
+  ],
+  "excludes": [
+    "MainC/H/Engine/sharedhelpers",
+    "otherbranchhistory",
+    "Rootidenticalrequire/resolvedependenciesandlexicalrename fromcopy"
+  ],
+  "source_executed": false,
+  "native_executed": false,
+  "default_selected": false,
+  "root_edited": false
+}

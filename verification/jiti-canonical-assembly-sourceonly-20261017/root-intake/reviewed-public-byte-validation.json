@@ -1,0 +1,106 @@
+{
+  "source_head": "363479d8b164662d036d68eddb226d1d689222e2",
+  "public_ref": "checkpoint/jiti-canonical-assembly-sourceonly-20261017",
+  "files": [
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "bytes": 21535,
+      "sha256": "7F03DCA8994C856B94F2BF8B3E302E6EB27D47949ED6C016EF707A2140F8A8CF",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/extensions/native_jiti_core_factory.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "bytes": 2159,
+      "sha256": "CC26BB99EFC7E85FFDBA654432BE1C731349FB91EFCACACFD467057EF1A1055D",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/extensions/native_jiti_core_graph.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "bytes": 17674,
+      "sha256": "710D9BBB97BFB8EFF690985AB12BA18739177F47F2CC254108AD0F25E6DD34B2",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/extensions/native_jiti_module_cells.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "bytes": 15301,
+      "sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/extensions/native_jiti_require.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_resolve.zig",
+      "bytes": 13578,
+      "sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/extensions/native_jiti_resolve.zig"
+    },
+    {
+      "path": "src/native_jiti_canonical_assembly_controls.zig",
+      "bytes": 12143,
+      "sha256": "F949826200C03B8D9B8A9610847D11DB6B4D99B88CCF9EC9343588EAF4F800A6",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/src/native_jiti_canonical_assembly_controls.zig"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/README.md",
+      "bytes": 7001,
+      "sha256": "C7940F0C9F0B95143481DA8456204EDA4DED6F2CC57F3735F4D539153AA27E90",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/README.md"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/LICENSE.txt"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/eval.ts"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/jiti.ts"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/require.ts",
+      "bytes": 4759,
+      "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/require.ts"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-bbf7-prepared.json",
+      "bytes": 18653,
+      "sha256": "3A3F417E15AB63176FF86E1C3D7909DA8B75BB186DA4F6539ABEBDA17D894D9C",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-bbf7-prepared.json"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-require-resolve-prepared.json",
+      "bytes": 9836,
+      "sha256": "6748DD648B371148C7488195B5D74DA692DDA136D10DE9E463DFD695BFE98372",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-require-resolve-prepared.json"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/causal-inputs.json",
+      "bytes": 3711,
+      "sha256": "E5AEB4E39B194769AFC07D59F9AE66C605C9867459D96F643204F65D0423BCB9",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/causal-inputs.json"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/pending-platform-input.mjs",
+      "bytes": 749,
+      "sha256": "B7FD942A18641D26054D77F92F85D5BA414B27EE90BB268A1413B1E2F547E736",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/pending-platform-input.mjs"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/prepared.json",
+      "bytes": 19515,
+      "sha256": "06BEC369E1D638FF4514242A3C18DAC9DB50957E604A83BD946B7DB970704DA3",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/363479d8b164662d036d68eddb226d1d689222e2/verification/jiti-canonical-assembly-sourceonly-20261017/prepared.json"
+    }
+  ],
+  "all_public_bytes_match": true,
+  "source_executed": false,
+  "native_executed": false,
+  "default_selected": false
+}

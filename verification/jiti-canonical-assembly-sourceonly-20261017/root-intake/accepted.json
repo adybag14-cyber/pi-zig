@@ -1,0 +1,14 @@
+{
+  "status": "reviewed_source_only",
+  "source_head": "363479d8b164662d036d68eddb226d1d689222e2",
+  "copied_paths": 13,
+  "excluded_identical_paths": 3,
+  "controls_executed": false,
+  "default_selected": false,
+  "full_factory_complete": false,
+  "remaining": [
+    "Frontend historical rejection-data correction",
+    "Actual native import-or-require wrapper",
+    "Default dependency composition and native qualification"
+  ]
+}
