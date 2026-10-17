@@ -1,0 +1,18 @@
+// Prepared registration only; no build command has been run.
+const sdk_chalk_tests = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/native_sdk_chalk_test.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+    .filters = &.{"private consumed Chalk6"},
+    .use_llvm = use_llvm,
+});
+linkQuickJs(b, sdk_chalk_tests.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(sdk_chalk_tests.root_module, sqlite_lib_dir, sqlite_library);
+sdk_chalk_tests.root_module.addImport("catalog_tool", catalog_tool);
+const sdk_chalk_install = b.addInstallArtifact(sdk_chalk_tests, .{});
+b.step("build-native-sdk-chalk", "Compile private consumed Chalk6 controls")
+    .dependOn(&sdk_chalk_install.step);
+b.step("test-native-sdk-chalk", "Check callable yellow ANSI level and raw exceptions")
+    .dependOn(&b.addRunArtifact(sdk_chalk_tests).step);

@@ -1,0 +1,67 @@
+{
+  "Node_or_native_run": false,
+  "consumed_surface": [
+    "default callable",
+    "yellow lazy builder",
+    "root and builder level accessors"
+  ],
+  "chalk_version": "6.0.0",
+  "primary_sources": [
+    {
+      "original_manifest_exact": true,
+      "sha256": "5A853FC6DC0C529BC126F97645989E9D60D06A2E9B20F66A6B48B0E8EF9DA3EF",
+      "bytes": 1743,
+      "relative": "node_modules\\chalk\\package.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\package.json"
+    },
+    {
+      "original_manifest_exact": true,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3",
+      "bytes": 1117,
+      "relative": "node_modules\\chalk\\license",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\license"
+    },
+    {
+      "original_manifest_exact": true,
+      "sha256": "08E92F2330A34D232F8AA987DA4D953893094BE5B2AA8CC39DDB4313743F206E",
+      "bytes": 8183,
+      "relative": "node_modules\\chalk\\source\\index.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\source\\index.js"
+    },
+    {
+      "original_manifest_exact": true,
+      "sha256": "A58D81494366211509EA2C373328CF68A6365A94BE8645F33C1ED49F1288650A",
+      "bytes": 1187,
+      "relative": "node_modules\\chalk\\source\\utilities.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\source\\utilities.js"
+    },
+    {
+      "original_manifest_exact": true,
+      "sha256": "F28F1EDE59BE327626E4AE5F9F05387AB8072F298BA1AB7F9C9262D39923A25D",
+      "bytes": 6996,
+      "relative": "node_modules\\chalk\\source\\vendor\\ansi-styles\\index.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\source\\vendor\\ansi-styles\\index.js"
+    },
+    {
+      "original_manifest_exact": true,
+      "sha256": "57F56BB90A586A6C7A65FC831CAE47F0773B8F42EDF11ABB7C4F2273B82FB63E",
+      "bytes": 4465,
+      "relative": "node_modules\\chalk\\source\\vendor\\supports-color\\index.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\chalk\\source\\vendor\\supports-color\\index.js"
+    },
+    {
+      "role": "official_current_Pi_actual_consumer",
+      "sha256": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\resource-loader.ts"
+    }
+  ],
+  "expected_outputs_authored": false,
+  "byte_reference_acceptance": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "license": "MIT",
+  "source_only": true,
+  "consumer_source_revision": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "integration_base": "518a7e5c681f116f62f04d92614d11574d940894",
+  "original_complete_manifest_path": "C:\\Users\\adyba\\pi-zig\\evidence\\runtime-reproduction-preparation-20261016-184519-d57a890f\\inputs\\runtime31064.json",
+  "original_complete_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+  "primary_members_checked_against_original": 6
+}

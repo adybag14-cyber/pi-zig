@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "scope": "private SDK consumed Chalk6 native supplier source-only",
+  "base": "518a7e5c681f116f62f04d92614d11574d940894",
+  "members": [
+    {
+      "path": "src/extensions/native_sdk_chalk.zig",
+      "bytes": 15113,
+      "sha256": "272826681AB85B39140022AA1BAD04F7902258A3C95EBE8AD0A44DA681DEFB6C"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_supports_color.zig",
+      "bytes": 10359,
+      "sha256": "1CC196657D34FE274CBDBA175868507484ABB4FD3665FFF14956608C70482A81"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_test.zig",
+      "bytes": 2933,
+      "sha256": "7123306F9188799194424CEA8BFF6ED0810FC0742E9171681808F8A6464AE970"
+    },
+    {
+      "path": "src/native_sdk_chalk_test.zig",
+      "bytes": 191,
+      "sha256": "026662A7424682EA45CB4457FBE8A490DC46DFB044EA47A9BBF280A893D05551"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-chalk6-consumed.input.txt",
+      "bytes": 6299,
+      "sha256": "69A5B993CAF382D21B79226BC17DAC783EEF2F0E5828922394E78F11D9A93809"
+    },
+    {
+      "path": "verification/sdk-chalk6/build-snippet.zig.txt",
+      "bytes": 887,
+      "sha256": "0B383B4269A9EB53E32C111794EF08D91E5B4323110F14DFA84BA84E975FA03D"
+    },
+    {
+      "path": "verification/sdk-chalk6/capture-primary.mjs",
+      "bytes": 1967,
+      "sha256": "E4F147A8BF0437A09936155BC833F51AFE4D29E5D024B80987D756806E190151"
+    },
+    {
+      "path": "verification/sdk-chalk6/chalk-consumed-callers.mjs",
+      "bytes": 6299,
+      "sha256": "69A5B993CAF382D21B79226BC17DAC783EEF2F0E5828922394E78F11D9A93809"
+    },
+    {
+      "path": "verification/sdk-chalk6/color-policy-callers.mjs",
+      "bytes": 1135,
+      "sha256": "0BEFBC46FB1997516F6CA56F50A85EDC7A79DAFBFDA5127415C7C78D563480A0"
+    },
+    {
+      "path": "verification/sdk-chalk6/LICENSE-chalk6.txt",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/sdk-chalk6/primary-provenance.json",
+      "bytes": 3476,
+      "sha256": "0F0F2E91BFF65EBF492443ABBC3331573C0D95C09FC39887E9B1E423C3B5B127"
+    },
+    {
+      "path": "verification/sdk-chalk6/README.md",
+      "bytes": 6501,
+      "sha256": "A8509A7A6CE58FCB0727C1D660163F6E13B75C5EFD0770FE9CCFC2714AECE210"
+    },
+    {
+      "path": "verification/sdk-chalk6/root-caller-config.template.json",
+      "bytes": 288,
+      "sha256": "CF6070BBAF1E43A5E0CAC96A70243099A6FA81FC87A19722EA9F47FEA22A0D4A"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_scope.zig",
+      "bytes": 9127,
+      "sha256": "B9FE5A0E567BAFCC059BED79505623B22AA1740DDD5A23816F5BAF85AFA0233F"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_cleanup_test.zig",
+      "bytes": 10629,
+      "sha256": "FA9B8E28FAFC39019ED5397B210256D4B80767313E59E96B8140CBD3D3FB6A94"
+    }
+  ],
+  "native_or_Node_execution": false,
+  "fmt_or_AST_execution": false,
+  "expected_Source_outputs_authored": false,
+  "planned_shared_observations": 86,
+  "planned_policy_inputs": 22,
+  "actual_native_metadata": "unknown",
+  "global_or_public_chalk_module_registered": false,
+  "resource_consumer_modified": false,
+  "license": "MIT Sindre Sorhus",
+  "preserved_negative_source_heads": [
+    "b43c8c9eae551e2bd22e986943397e16e0e7f06d",
+    "7ad3ae5f7f8fc54ce12cd3f32cd7d48650a13f18"
+  ],
+  "predecessor_peer_sha256": "BEDC3CD70A681E50F60A8B5E6DB7B0BB0A727418911B5FDD43B6D82D28A10C6F",
+  "closed_owned_completion_donor": "733517fb9670ad92f556141a5d3ede069ea2423d",
+  "closed_owned_completion_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "planned_named_native_tests": 4,
+  "shared_function_construction_allocation_frontier": "unqualified"
+}
