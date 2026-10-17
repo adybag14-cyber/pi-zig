@@ -46,13 +46,22 @@ pub fn recordFailure(engine: *em.Engine, owner: c.JSValue, err: anyerror, genera
     return failure_error;
 }
 fn drain(engine: *em.Engine) void { while (c.JS_HasException(engine.context)) { const reason = c.JS_GetException(engine.context); engine.freeValue(reason); } }
-fn promotePending(engine: *em.Engine, selected: *c.JSValue, selected_fatal: *bool) void {
+fn qualifyPending(engine: *em.Engine, reason: c.JSValue, generation: u64) bool {
+    const tagged = c.pi_js_native_allocation_error_generation(reason);
+    const distance = tagged -% generation;
+    if (tagged != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation) c.JS_SetUncatchableError(engine.context, reason);
+    return c.JS_IsUncatchableError(reason);
+}
+fn promotePending(engine: *em.Engine, selected: *c.JSValue, selected_fatal: *bool, boundary: u64) void {
+    var generation = boundary;
     while (c.JS_HasException(engine.context)) {
         const cleanup = c.JS_GetException(engine.context);
+        const cleanup_fatal = qualifyPending(engine, cleanup, generation);
         var displaced = cleanup;
-        if (!selected_fatal.* and c.JS_IsUncatchableError(cleanup)) {
+        if (!selected_fatal.* and cleanup_fatal) {
             displaced = selected.*; selected.* = cleanup; selected_fatal.* = true;
         }
+        generation = engine.native_allocation_generation;
         engine.freeValue(displaced);
     }
 }
@@ -75,10 +84,11 @@ pub fn constructOwned(engine: *em.Engine, constructor: c.JSValue, args: []const 
         c.JS_SetUncatchableError(engine.context, reason); return engine.checked(c.JS_Throw(engine.context, reason));
     }
     if (c.JS_HasException(engine.context)) {
-        var reason = c.JS_GetException(engine.context); var selected_fatal = c.JS_IsUncatchableError(reason);
+        var reason = c.JS_GetException(engine.context); var selected_fatal = qualifyPending(engine, reason, generation);
         const captured = engine.captured_exception; engine.captured_exception = null;
-        engine.freeValue(result); promotePending(engine, &reason, &selected_fatal);
-        if (captured) |old| { engine.freeValue(old); promotePending(engine, &reason, &selected_fatal); }
+        const result_generation = engine.native_allocation_generation;
+        engine.freeValue(result); promotePending(engine, &reason, &selected_fatal, result_generation);
+        if (captured) |old| { const captured_generation = engine.native_allocation_generation; engine.freeValue(old); promotePending(engine, &reason, &selected_fatal, captured_generation); }
         return engine.checked(c.JS_Throw(engine.context, reason));
     }
     return engine.checked(result) catch |err| return failureSince(engine, err, generation);

@@ -28,7 +28,11 @@ fn executePromise(engine: *em.Engine, receiver: c.JSValue, holder: c.JSValue, pu
             const waiting_queue = try executorGet(&scope, holder, receiver, "waiting");
             const enqueue = try executorGet(&scope, holder, waiting_queue, "enqueue");
             const generation = engine.native_allocation_generation;
-            _ = scope.call(enqueue, waiting_queue, &.{resolve}) catch |err| return executor_fatal.recordFailure(engine, holder, err, generation);
+            const result = scope.call(enqueue, waiting_queue, &.{resolve}) catch |err| return executor_fatal.recordFailure(engine, holder, err, generation);
+            // Source uses a concise executor arrow: a custom global Promise
+            // constructor can observe the enqueue return, even though the
+            // intrinsic Promise constructor discards it.
+            return c.JS_DupValue(engine.context, result);
         },
     }
     return c.pi_js_undefined();

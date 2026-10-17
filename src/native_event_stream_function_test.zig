@@ -48,6 +48,21 @@ test "native EventStream Promise holder first callback fatal survives real subcl
     }
 }
 fn noop(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return c.pi_js_undefined(); }
+fn constructorGpaFailure(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return error.OutOfMemory; }
+test "native EventStream holder direct native constructor GPA failure retains fresh exact reason" {
+    for (.{ @as(u64, 0), std.math.maxInt(u64) }) |generation| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var s: Scope = .{ .engine = engine }; defer s.deinit(); engine.native_allocation_generation = generation;
+        const holder = try s.own(try fatal.create(engine));
+        const constructor = try s.own(try functions.create(engine, "NativeGpaConstructor", 0, constructorGpaFailure, &.{}));
+        try std.testing.expect(c.JS_IsConstructor(engine.context, constructor));
+        try std.testing.expectError(error.JavaScriptException, fatal.constructOwned(engine, constructor, &.{}, holder));
+        const actual = engine.captured_exception orelse return error.MissingNativeConstructorFailure;
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, engine.native_allocation_exception orelse return error.MissingPrivateConstructorFailure));
+        try std.testing.expect(c.JS_IsUncatchableError(actual));
+        try std.testing.expect(c.pi_js_native_allocation_error_generation(actual) != 0);
+    }
+}
 var late_fault: bool = false;
 fn delayedFault(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     if (!late_fault) return c.pi_js_undefined();
@@ -87,9 +102,13 @@ var pending_reason: c.JSValue = undefined;
 var cleanup_fatal: c.JSValue = undefined;
 var cleanup_count: usize = 0;
 var cleanup_from_capture: bool = false;
+var cleanup_private: bool = false;
 fn resultFinalizer(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
     cleanup_count += 1;
-    _ = c.JS_Throw(cleanup_context, c.JS_DupValue(cleanup_context, cleanup_fatal));
+    if (cleanup_private) {
+        const engine = em.Engine.fromContext(cleanup_context.?);
+        _ = engine.throwNativeOutOfMemory(); cleanup_fatal = engine.native_allocation_exception.?;
+    } else _ = c.JS_Throw(cleanup_context, c.JS_DupValue(cleanup_context, cleanup_fatal));
 }
 fn pendingConstructor(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     if (cleanup_from_capture) return c.JS_Throw(context, c.JS_DupValue(context, pending_reason));
@@ -99,11 +118,12 @@ fn pendingConstructor(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.J
     return result; // Deliberate native C-contract violation, not forgeable JS.
 }
 test "native EventStream holder actual native result finalizer promotes first pending fatal" {
+  for (.{ false, true }) |private_mode| {
     for (.{ false, true }) |from_capture| {
       for (.{ false, true }) |initial_fatal| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         var s: Scope = .{ .engine = engine }; defer s.deinit();
-        cleanup_context = engine.context; cleanup_count = 0; cleanup_class = 0; cleanup_from_capture = from_capture;
+        cleanup_context = engine.context; cleanup_count = 0; cleanup_class = 0; cleanup_from_capture = from_capture; cleanup_private = private_mode;
         _ = c.JS_NewClassID(engine.runtime, &cleanup_class);
         const definition: c.JSClassDef = .{ .class_name = "Native result cleanup causal control", .finalizer = resultFinalizer };
         try std.testing.expectEqual(@as(c_int, 0), c.JS_NewClass(engine.runtime, cleanup_class, &definition));
@@ -121,6 +141,7 @@ test "native EventStream holder actual native result finalizer promotes first pe
         try std.testing.expect(!c.JS_HasException(engine.context));
       }
     }
+  }
 }
 pub fn compareActualSource(engine: *em.Engine, actual_constructor: c.JSValue, bytes: []const u8) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
@@ -130,6 +151,16 @@ pub fn compareActualSource(engine: *em.Engine, actual_constructor: c.JSValue, by
     const reference = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, bytes.len, "original-event-stream-factory.json")));
     try std.testing.expect(s.equal(try s.get(reference, "authority"), try s.text("actual-Pi1.3-8efd-EventStream-factory")));
     try std.testing.expect(s.equal(try s.get(try s.get(reference, "rows"), "length"), c.JS_NewInt32(engine.context, 13)));
+    const json = try s.global("JSON"); const stringify = try s.get(json, "stringify");
+    try std.testing.expect(s.equal(try s.call(stringify, json, &.{reference}), try s.call(stringify, json, &.{observed_value})));
+}
+pub fn compareWaitingExecutorReturn(engine: *em.Engine, actual_constructor: c.JSValue, bytes: []const u8) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const observer = try s.own(try engine.evalModule(@embedFile("../verification/event-stream-executor-ordinary-sourceonly-20261017/observer.mjs"), "actual-waiting-executor-return-observer.mjs"));
+    const observed_value = try s.own(try engine.awaitValue(try s.call(try s.get(observer, "observeWaitingExecutorReturn"), c.pi_js_undefined(), &.{actual_constructor})));
+    const terminated = try engine.gpa.dupeZ(u8, bytes); defer engine.gpa.free(terminated);
+    const reference = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, bytes.len, "original-waiting-executor-return.json")));
+    try std.testing.expect(s.equal(try s.get(reference, "authority"), try s.text("actual-Pi1.3-8efd-waiting-executor-return")));
     const json = try s.global("JSON"); const stringify = try s.get(json, "stringify");
     try std.testing.expect(s.equal(try s.call(stringify, json, &.{reference}), try s.call(stringify, json, &.{observed_value})));
 }
