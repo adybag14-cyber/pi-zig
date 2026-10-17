@@ -7,23 +7,17 @@ const flow = @import("native_agent_async.zig");
 const pipeline = @import("native_agent_tool_call.zig");
 const c = em.c;
 pub fn create(engine: *em.Engine) !c.JSValue {
-    const function = try engine.checked(c.JS_NewCFunction(engine.context, dispatch, "runToolCall", 2));
-    errdefer engine.freeValue(function);
-    const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-    defer engine.freeValue(parent);
-    if (c.JS_SetPrototype(engine.context, function, parent) < 0) return @import("native_js_values.zig").capture(engine);
-    return function;
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    const graph = try scope.own(try @import("native_agent_loop_async.zig").namespace(engine));
+    return c.JS_DupValue(engine.context, try scope.get(try scope.get(graph, "toolFunctions"), "runToolCall"));
 }
 fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
     return run(engine, if (argc > 0) argv[0] else c.pi_js_undefined(), if (argc > 1) argv[1] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }
 pub fn run(engine: *em.Engine, tool_call: c.JSValue, options: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    start(engine, pending.owner, tool_call, options) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    const function = try create(engine); defer engine.freeValue(function);
+    return @import("native_js_values.zig").call(engine, function, c.pi_js_undefined(), &.{ tool_call, options });
 }
 fn start(engine: *em.Engine, owner: c.JSValue, tool_call: c.JSValue, options: c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };

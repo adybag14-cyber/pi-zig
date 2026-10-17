@@ -1,0 +1,162 @@
+{
+  "baseline": "1ec058e76b4ef1d3788f4ee9c62ece64ddb3e7be",
+  "status": "source-only-uncompiled-unrun-independent-review-pending",
+  "expected_absent": true,
+  "source_rows_prepared": 22,
+  "native_control_specs": 9,
+  "native_control_specs_executed": false,
+  "c_api_prerequisite": "4f89b59566217b00fcabff22bf93e2900b58906d",
+  "full_methods_prerequisite": "fc2b368231f7fee0823266cbc425ce9837b27645",
+  "source": {
+    "commit": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\agent\\src\\agent-loop.ts",
+    "sha256": "28A2B03E34A7E32F004AA851E54D3B5BE9DAD71C392205614CBC9ABDF3A9020A",
+    "bytes": 29513
+  },
+  "products": [
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "C9F0821EA5442366369B66F5F0C278E497CE86FABC2173D179274BC8751F9758",
+      "bytes": 5962
+    },
+    {
+      "path": "src/extensions/native_agent_af_iterator.zig",
+      "sha256": "875BF7C448C43123B1A15ED46EB85618A5EB39A79AB337947C5715FC690FDD66",
+      "bytes": 3213
+    },
+    {
+      "path": "src/extensions/native_agent_loop_async.zig",
+      "sha256": "69FB761891F8FD4C9FE0656A128C6BB50704A2F09381BCE8616FCBFF334DF67D",
+      "bytes": 7499
+    },
+    {
+      "path": "src/extensions/native_agent_response_async.zig",
+      "sha256": "E58138F154616B8A194861AA437B388C7E36DC1E1BC52521FC4B0A7799AE4E0D",
+      "bytes": 13523
+    },
+    {
+      "path": "src/extensions/native_agent_turns_async.zig",
+      "sha256": "943C4394F08D690072CA13A35243D8BF51F7613CB3B0DB6193AB9F837A0789BB",
+      "bytes": 14060
+    },
+    {
+      "path": "src/extensions/native_agent_tool_call_async.zig",
+      "sha256": "D73EF1F2379EC5DAE3BD41684F94D3B0EDB8149FD8A7C54EAF9A16834344CF37",
+      "bytes": 16169
+    },
+    {
+      "path": "src/extensions/native_agent_tool_events_async.zig",
+      "sha256": "1E1C26E92050C910416B627F6615F0B588F351FE868A724A473DAA5AC13D56A0",
+      "bytes": 3981
+    },
+    {
+      "path": "src/extensions/native_agent_tools_async.zig",
+      "sha256": "DBA9BE822B6B8C6DA2EC212DCC789267DD9CA0F48BAACBBFAB1DD6B84C361A58",
+      "bytes": 19540
+    },
+    {
+      "path": "src/extensions/native_async_iterator_api.zig",
+      "sha256": "E11F6E592B16B989E4717CA7D5639EC0B4DC026371F9CB2A8FD881AE9A684A9C",
+      "bytes": 350
+    },
+    {
+      "path": "src/extensions/native_agent_loop.zig",
+      "sha256": "35498191BD0708C02089A59375D75C8BCB6A87CF48455BA83691DA13BFBB022E",
+      "bytes": 26322
+    },
+    {
+      "path": "src/extensions/native_agent_single_tool.zig",
+      "sha256": "685E5D6C14CA41A34A1B31CDE459FAA934E442F3AC120C9F2007D2F1EE62FAD1",
+      "bytes": 3590
+    },
+    {
+      "path": "src/extensions/native_agent_stream.zig",
+      "sha256": "15D2E4657E3B4597AF7DD48ABE83F85DB5267B8C7E622BF670CC01ED6A07B71A",
+      "bytes": 7382
+    },
+    {
+      "path": "src/native_agent_loop_async_test.zig",
+      "sha256": "D00CD150CC810CFE6BDDBA1B558C4BE0A0B901DED4B6B2914945FB737D5DDAE7",
+      "bytes": 1834
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/native_ai_transcript_context.zig",
+      "sha256": "95D592BBF2BE23E9DBF992BDA131D909F07D16F0CFF9C474F4575D9A074A5B0B",
+      "bytes": 3338
+    },
+    {
+      "path": "src/extensions/native_tool_arguments.zig",
+      "sha256": "B757A5B423DE0061B4466F379231AD055443D5978C892C733F93AAECC30EA3A9",
+      "bytes": 60107
+    },
+    {
+      "path": "src/extensions/native_agent_tool_changes.zig",
+      "sha256": "1940213184AC2A33764F2E39C3FB4C1A7D85994DBD58F269FD283B15EBDEB8A6",
+      "bytes": 15304
+    },
+    {
+      "path": "src/extensions/native_agent_tool_call.zig",
+      "sha256": "FD8D54574650C0780D5A157644736DD57B8C4A8C813916F94DA77792BBCCB888",
+      "bytes": 22206
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "build.zig",
+      "sha256": "F7AAAE8301AC0C7F9442B30ECD8B48951845A15F9D53DD7D3F16DA7C9366925A",
+      "bytes": 340308
+    },
+    {
+      "path": "verification/agent-full-methods-genuine-af-sourceonly-20261017/prepared.json",
+      "sha256": "F2AA80256A80B0F0C2B0F9DD537D94C51523837612D1D223E281A8C409FD4D9D",
+      "bytes": 9620
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/agent-loop-genuine-af-sourceonly-20261017/observer.mjs",
+      "sha256": "52DDBAEAC156C1D397533FE7390A0A5A2DC4FA4F01BB5A75F4737D956F031D25",
+      "bytes": 7329
+    },
+    {
+      "path": "verification/agent-loop-genuine-af-sourceonly-20261017/reference-input.mjs",
+      "sha256": "2B5355430898C323748351E6F60074BE1E5DEC3FD854A081F23A7AE3C7D9A154",
+      "bytes": 258
+    },
+    {
+      "path": "verification/agent-loop-genuine-af-sourceonly-20261017/README.md",
+      "sha256": "4AAAFF3F7C427F09B0FA6675737081764317B7391D984D4D6A036A11E121EA05",
+      "bytes": 4314
+    },
+    {
+      "path": "verification/agent-loop-genuine-af-sourceonly-20261017/native-controls.md",
+      "sha256": "14AD37A999E52794EB96DDD0B3CAB9BAF92748F25DCC6C4703890AD4941267C0",
+      "bytes": 1961
+    }
+  ]
+}

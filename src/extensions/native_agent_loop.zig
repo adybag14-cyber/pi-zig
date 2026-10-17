@@ -15,12 +15,7 @@ const EntryStage = enum(c_int) { agent_started, turn_started, message_started, m
 const TurnStage = enum(c_int) { steering, prepared, polled, turn_started, message_started, message_ended, request, response, tools, finish, turn_ended, following, ended };
 
 pub fn loopFunction(engine: *em.Engine, continuing: bool) !c.JSValue {
-    const result = try engine.checked(c.pi_js_function_magic(engine.context, loopCall, if (continuing) "runAgentLoopContinue" else "runAgentLoop", if (continuing) 5 else 6, @intFromBool(continuing)));
-    errdefer engine.freeValue(result);
-    const parent = try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context));
-    defer engine.freeValue(parent);
-    if (c.JS_SetPrototype(engine.context, result, parent) < 0) return js.capture(engine);
-    return result;
+    return @import("native_agent_loop_async.zig").loopFunction(engine, continuing);
 }
 fn loopCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, continuing: c_int) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
@@ -30,11 +25,8 @@ fn loopCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSVal
 }
 
 pub fn run(engine: *em.Engine, prompts: c.JSValue, context: c.JSValue, config: c.JSValue, emit: c.JSValue, signal: c.JSValue, stream: c.JSValue, continuing: bool) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    begin(engine, pending.owner, prompts, context, config, emit, signal, stream, continuing) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+    const function = try loopFunction(engine, continuing); defer engine.freeValue(function);
+    return js.call(engine, function, c.pi_js_undefined(), if (continuing) &.{ context, config, emit, signal, stream } else &.{ prompts, context, config, emit, signal, stream });
 }
 fn begin(engine: *em.Engine, owner: c.JSValue, prompts: c.JSValue, context: c.JSValue, config: c.JSValue, emit: c.JSValue, signal: c.JSValue, stream: c.JSValue, continuing: bool) !void {
     var scope: Scope = .{ .engine = engine };

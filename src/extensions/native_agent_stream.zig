@@ -5,6 +5,7 @@ const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const flow = @import("native_agent_async.zig");
+const p = @import("native_agent_af_values.zig");
 const c = em.c;
 
 pub fn function(engine: *em.Engine, continuing: bool) !c.JSValue {
@@ -43,14 +44,18 @@ pub fn run(engine: *em.Engine, prompts: c.JSValue, context: c.JSValue, config: c
     }
     const stream = try createStream(&scope);
     var roots = [_]c.JSValue{stream};
-    const emit = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, emitCall, "", 1, 0, roots.len, &roots)));
-    const async_parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, emit, async_parent) < 0) return js.capture(engine);
+    const emit = try scope.own(try p.af.createResumableArrow(engine, "", 1, emitBody, &roots, c.pi_js_undefined()));
     const pending = try scope.own(try @import("native_agent_loop.zig").run(engine, prompts, context, config, emit, signal, stream_function, continuing));
     const then = try scope.get(pending, "then");
     const fulfilled = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, finishCall, "", 1, 0, roots.len, &roots)));
     _ = try scope.call(then, pending, &.{fulfilled});
     return c.JS_DupValue(engine.context, stream);
+}
+fn emitBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: p.af.Completion, _: c.JSValue) anyerror!p.af.Action {
+    if (completion != .start) return error.UnexpectedStreamEmitterResume;
+    var scope: p.Scope = .{ .engine = engine }; defer scope.deinit();
+    _ = p.invoke(&scope, roots[0], "push", &.{if (args.len > 0) args[0] else c.pi_js_undefined()}) catch |err| return p.failure(engine, err);
+    return .{ .returned = c.pi_js_undefined() };
 }
 fn createStream(scope: *Scope) !c.JSValue {
     const engine = scope.engine;
