@@ -22,17 +22,26 @@ pub const Stat = struct {
 };
 
 pub fn read(gpa: std.mem.Allocator, path: []const u8) !Stat {
+    return readMode(gpa, path, true);
+}
+
+/// Actual final-component link metadata, including broken links. This is not
+/// a stat alias: each OS receives its native no-follow request.
+pub fn readLink(gpa: std.mem.Allocator, path: []const u8) !Stat {
+    return readMode(gpa, path, false);
+}
+fn readMode(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     // Node validates embedded NULs before entering the OS, including Buffer
     // paths. Never allow a native sentinel to silently truncate such a path.
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
     return switch (builtin.os.tag) {
-        .windows => windowsStat(gpa, path),
-        .linux => linuxStat(gpa, path),
-        else => posixStat(gpa, path),
+        .windows => windowsStat(gpa, path, follow),
+        .linux => linuxStat(gpa, path, follow),
+        else => posixStat(gpa, path, follow),
     };
 }
 
-fn windowsStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
+fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     const w = std.os.windows;
     const Native = struct {
         const FileTime = extern struct { low: u32, high: u32 };
@@ -69,12 +78,13 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
     // drive root. Keep this distinct from resolvePath/normalizePath.
     if (wide.len > 1 and wide[wide.len - 2] != ':' and (wide[wide.len - 1] == '/' or wide[wide.len - 1] == '\\')) wide[wide.len - 1] = 0;
     // FILE_READ_ATTRIBUTES, all three sharing modes, OPEN_EXISTING, and
-    // BACKUP_SEMANTICS allow directories. Omitting OPEN_REPARSE_POINT follows
-    // symlinks, exactly as statSync (as opposed to lstatSync) does.
-    const handle = Native.CreateFileW(wide.ptr, 0x80, 7, null, 3, 0x02000000, null);
+    // BACKUP_SEMANTICS allows directories. OPEN_REPARSE_POINT addresses the
+    // final link itself for lstat; all parent components retain OS traversal.
+    const handle = Native.CreateFileW(wide.ptr, 0x80, 7, null, 3, 0x02000000 | (if (follow) @as(u32, 0) else 0x00200000), null);
     if (handle == w.INVALID_HANDLE_VALUE) return switch (w.GetLastError()) {
         .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound,
         .ACCESS_DENIED => error.AccessDenied,
+        .DIRECTORY => error.NotDir,
         else => error.FileStatOpenFailed,
     };
     defer _ = Native.CloseHandle(handle);
@@ -85,21 +95,111 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
     var standard: Native.Standard = undefined;
     if (Native.GetFileInformationByHandleEx(handle, 1, &standard, @sizeOf(Native.Standard)) == 0) return error.FileStatInformationFailed;
     const directory = basic.attributes & 0x10 != 0;
+    const link_length = if (!follow and basic.attributes & 0x400 != 0) try windowsLinkLength(handle) else null;
+    // libuv retries non-link reparse tags (including volume mount points)
+    // with ordinary stat, rather than reporting every reparse point as a link.
+    if (!follow and basic.attributes & 0x400 != 0 and link_length == null) {
+        var target = try windowsStat(gpa, path, true);
+        // read's older Windows directory execute bits are not part of libuv's
+        // lstat result, including the non-link reparse retry.
+        target.mode &= ~@as(u32, 0o111);
+        return target;
+    }
     return .{
         .dev = info.volume_serial,
         .ino = (@as(u64, info.index_high) << 32) | info.index_low,
         // libuv reports zero for directories on Windows, regardless of their
         // implementation's directory stream allocation or EndOfFile value.
-        .size = if (basic.attributes & 0x10 != 0) 0 else (@as(u64, info.size_high) << 32) | info.size_low,
+        .size = if (link_length) |length| length else if (directory) 0 else (@as(u64, info.size_high) << 32) | info.size_low,
         .mtime_ns = windowsNanoseconds(basic.modification),
         .ctime_ns = windowsNanoseconds(basic.change),
         .atime_ns = windowsNanoseconds(basic.access),
         .birthtime_ns = windowsNanoseconds(basic.creation),
-        .mode = (if (directory) @as(u32, 0o040111) else @as(u32, 0o100000)) | 0o444 | (if (basic.attributes & 1 == 0) @as(u32, 0o222) else 0),
+        // Keep existing stat behavior scoped separately. New lstat follows
+        // pinned libuv's file/link/dir type and 0666/0444 Windows permissions.
+        .mode = (if (link_length != null) @as(u32, 0o120000) else if (directory) (if (follow) @as(u32, 0o040111) else 0o040000) else 0o100000) | 0o444 | (if (basic.attributes & 1 == 0) @as(u32, 0o222) else 0),
         .nlink = info.links,
         .blksize = 4096,
         .blocks = @intCast(@divTrunc(standard.allocation_size, 512)),
     };
+}
+
+/// Node24's bundled libuv fs__readlink_handle semantics. The actual kernel
+/// payload selects the link kind and supplies the decoded WTF-8 target length.
+/// null means libuv's ERROR_SYMLINK_NOT_SUPPORTED/NOT_A_REPARSE_POINT retry.
+fn windowsLinkLength(handle: std.os.windows.HANDLE) !?u64 {
+    const Native = struct {
+        extern "kernel32" fn DeviceIoControl(std.os.windows.HANDLE, u32, ?*anyopaque, u32, *anyopaque, u32, *u32, ?*anyopaque) callconv(.winapi) i32;
+    };
+    var buffer: [16384]u8 align(8) = undefined;
+    var count: u32 = 0;
+    if (Native.DeviceIoControl(handle, 0x000900a8, null, 0, &buffer, buffer.len, &count, null) == 0) {
+        if (@intFromEnum(std.os.windows.GetLastError()) == 4390) return null;
+        return error.FileStatInformationFailed;
+    }
+    if (count < 8 or count > buffer.len) return error.FileStatFieldsUnavailable;
+    const bytes = buffer[0..count];
+    const tag = std.mem.readInt(u32, bytes[0..4], .little);
+    const length = std.mem.readInt(u16, bytes[4..6], .little);
+    if (@as(usize, length) + 8 > bytes.len) return error.FileStatFieldsUnavailable;
+    const data = bytes[0 .. @as(usize, length) + 8];
+    var target: []const u8 = undefined;
+    switch (tag) {
+        0xa000000c, 0xa0000003 => {
+            const base: usize = if (tag == 0xa000000c) 20 else 16;
+            if (data.len < base) return error.FileStatFieldsUnavailable;
+            const offset = std.mem.readInt(u16, data[8..10], .little);
+            const size = std.mem.readInt(u16, data[10..12], .little);
+            if (offset % 2 != 0 or size % 2 != 0 or @as(usize, offset) + size > data.len - base) return error.FileStatFieldsUnavailable;
+            target = data[base + offset ..][0..size];
+            if (tag == 0xa0000003) {
+                // Only drive-letter junctions count; volume GUID mount points
+                // are intentionally followed by libuv's retry, not branded.
+                if (!ntDriveTarget(target)) return null;
+                target = target[8..];
+            } else if (ntPrefix(target)) {
+                if (ntDriveTarget(target)) target = target[8..] else if (target.len >= 16 and
+                    lowerUnit(unit(target, 4)) == 'u' and lowerUnit(unit(target, 5)) == 'n' and
+                    lowerUnit(unit(target, 6)) == 'c' and unit(target, 7) == '\\') {
+                    // libuv changes the old C to a backslash after removing
+                    // six units. Both are one WTF-8 byte, so length is equal.
+                    target = target[12..];
+                };
+            }
+        },
+        0x8000001b => {
+            if (data.len < 12 or std.mem.readInt(u32, data[8..12], .little) < 3) return null;
+            var start: usize = 12;
+            for (0..2) |_| {
+                const end = wideStringEnd(data, start) orelse return error.FileStatFieldsUnavailable;
+                if (end == start) return null;
+                start = end + 2;
+            }
+            const end = wideStringEnd(data, start) orelse return error.FileStatFieldsUnavailable;
+            target = data[start..end];
+            if (target.len < 6 or !asciiDrive(unit(target, 0)) or unit(target, 1) != ':' or unit(target, 2) != '\\') return null;
+        },
+        else => return null,
+    }
+    var size: u64 = 0;
+    var index: usize = 0;
+    while (index < target.len / 2) : (index += 1) {
+        const first = unit(target, index);
+        if (first >= 0xd800 and first <= 0xdbff and index + 1 < target.len / 2 and unit(target, index + 1) >= 0xdc00 and unit(target, index + 1) <= 0xdfff) {
+            size += 4; index += 1;
+        } else size += if (first < 0x80) @as(u64, 1) else if (first < 0x800) 2 else 3;
+    }
+    return size;
+}
+fn unit(bytes: []const u8, index: usize) u16 { return std.mem.readInt(u16, bytes[index * 2 ..][0..2], .little); }
+fn lowerUnit(value: u16) u16 { return if (value >= 'A' and value <= 'Z') value + 32 else value; }
+fn asciiDrive(value: u16) bool { return lowerUnit(value) >= 'a' and lowerUnit(value) <= 'z'; }
+fn ntPrefix(bytes: []const u8) bool { return bytes.len >= 8 and unit(bytes, 0) == '\\' and unit(bytes, 1) == '?' and unit(bytes, 2) == '?' and unit(bytes, 3) == '\\'; }
+fn ntDriveTarget(bytes: []const u8) bool { return ntPrefix(bytes) and bytes.len >= 12 and asciiDrive(unit(bytes, 4)) and unit(bytes, 5) == ':' and (bytes.len == 12 or unit(bytes, 6) == '\\'); }
+fn wideStringEnd(bytes: []const u8, start: usize) ?usize {
+    var index = start;
+    while (index + 1 < bytes.len) : (index += 2) if (std.mem.readInt(u16, bytes[index..][0..2], .little) == 0) return index;
+    return null;
 }
 
 /// Node's fs binding applies path.toNamespacedPath before libuv's stat call.
@@ -135,14 +235,14 @@ fn windowsNanoseconds(ticks: i64) i128 {
     return (@as(i128, ticks) - 116444736000000000) * 100;
 }
 
-fn linuxStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
+fn linuxStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     const linux = std.os.linux;
     const terminated = try gpa.dupeZ(u8, path);
     defer gpa.free(terminated);
     var info: linux.Statx = undefined;
     var wanted = linux.STATX.BASIC_STATS;
     wanted.BTIME = true;
-    while (true) switch (linux.errno(linux.statx(linux.AT.FDCWD, terminated, 0, wanted, &info))) {
+    while (true) switch (linux.errno(linux.statx(linux.AT.FDCWD, terminated, if (follow) 0 else linux.AT.SYMLINK_NOFOLLOW, wanted, &info))) {
         .SUCCESS => break,
         .INTR => continue,
         .NOENT => return error.FileNotFound,
@@ -173,11 +273,11 @@ fn linuxStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
     };
 }
 
-fn posixStat(gpa: std.mem.Allocator, path: []const u8) !Stat {
+fn posixStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     const terminated = try gpa.dupeZ(u8, path);
     defer gpa.free(terminated);
     var info: std.c.Stat = undefined;
-    while (true) switch (std.posix.errno(std.c.stat(terminated, &info))) {
+    while (true) switch (std.posix.errno(if (follow) std.c.stat(terminated, &info) else std.c.fstatat(std.c.AT.FDCWD, terminated, &info, std.c.AT.SYMLINK_NOFOLLOW))) {
         .SUCCESS => break,
         .INTR => continue,
         .NOENT => return error.FileNotFound,

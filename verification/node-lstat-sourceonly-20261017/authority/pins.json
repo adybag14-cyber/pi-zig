@@ -1,0 +1,37 @@
+{
+  "node_version": "24.14.0",
+  "node_git": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "source_only": true,
+  "files": [
+    {
+      "bytes": 1079,
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
+      "path": "libuv-LICENSE"
+    },
+    {
+      "bytes": 59847,
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
+      "path": "libuv-unix-fs.c.txt"
+    },
+    {
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "path": "libuv-win-fs.c.txt"
+    },
+    {
+      "bytes": 139328,
+      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3",
+      "path": "node-file.cc.txt"
+    },
+    {
+      "bytes": 88259,
+      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A",
+      "path": "node-fs.js.txt"
+    },
+    {
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
+      "path": "node-LICENSE"
+    }
+  ]
+}
