@@ -96,7 +96,7 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     inline for (.{ inputs.get_create_jiti, inputs.import_virtual_module, inputs.get_aliases }) |value| if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualExtensionModuleImports;
     if (!c.JS_IsString(inputs.loader_module_url)) return error.RequiredPhysicalExtensionLoaderUrl;
-    const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const imports = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try put(engine, imports, "getCreateJiti", inputs.get_create_jiti);
     try put(engine, imports, "getVirtualModules", try s.own(try @import("native_sdk_extension_virtual_modules.zig").createLazy(engine, inputs.import_virtual_module)));
     try put(engine, imports, "getAliases", inputs.get_aliases);
@@ -178,7 +178,7 @@ fn importModule(s: *Scope, job: c.JSValue, imports: c.JSValue, path: c.JSValue, 
 }
 fn errorResult(s: *Scope, message: c.JSValue) !af.Action {
     const result = try s.object();
-    try put(s.engine, result, "extension", c.JS_NULL);
+    try put(s.engine, result, "extension", c.pi_js_null());
     try put(s.engine, result, "error", message);
     return .{ .returned = c.JS_DupValue(s.engine.context, result) };
 }
@@ -236,7 +236,7 @@ fn extensionInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSVa
         .initialized => {
             const result = try s.object();
             try put(engine, result, "extension", input);
-            try put(engine, result, "error", c.JS_NULL);
+            try put(engine, result, "error", c.pi_js_null());
             return .{ .returned = c.JS_DupValue(engine.context, result) };
         },
         else => return error.InvalidExtensionLoadStage,
