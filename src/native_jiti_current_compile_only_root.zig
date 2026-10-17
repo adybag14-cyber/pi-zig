@@ -41,6 +41,7 @@ fn createAgentContinue(engine: *@import("extensions/engine.zig").Engine) !@impor
     return @import("extensions/native_agent_prompt_async.zig").create(engine, .continue_run);
 }
 comptime {
+    @setEvalBranchQuota(100_000);
     retain(@import("native_jiti_core_factory_controls.zig"), "core_control", .{
         "verifyUnlinkedNotExposed", "verifyForeignEngineRejected", "verifyCanonicalCycleAndOnce", "verifyWrapFailureAfterPublication", "verifyCompileFailureReturnsThroughRealTail", "verifyAcceptedTrace",
     });

@@ -109,7 +109,7 @@ fn factoryBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots:
 fn factoryInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
     if (completion == .start) {
-        const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+        const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
         af.replaceState(engine, state, c.JS_DupValue(engine.context, owner));
         try put(engine, owner, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, engine.native_allocation_generation))));
         var raw: i32 = 0;

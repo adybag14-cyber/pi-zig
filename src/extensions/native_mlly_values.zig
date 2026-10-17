@@ -73,7 +73,7 @@ pub fn advance(engine: *v.em.Engine, iterator: *v.js.Iterator) !?c.JSValue {
     if (!c.JS_IsObject(step)) return v.js.typeError(engine, "Iterator result is not an object");
     const done = try v.js.get(engine, step, "done"); defer engine.freeValue(done);
     if (c.JS_ToBool(engine.context, done) != 0) { iterator.closed = true; return null; }
-    return v.js.get(engine, step, "value");
+    return try v.js.get(engine, step, "value");
 }
 fn restore(engine: *v.em.Engine, value: ?c.JSValue) void {
     const previous = engine.captured_exception; engine.captured_exception = null; if (previous) |reason| engine.freeValue(reason);

@@ -6,7 +6,7 @@ const engine_mod = @import("engine.zig");
 const c = engine_mod.c;
 const thinking = @import("../ai/thinking.zig");
 
-fn reject(engine: *engine_mod.Engine, message: []const u8) error{ JavaScriptException, OutOfMemory } {
+fn reject(engine: *engine_mod.Engine, message: []const u8) anyerror {
     const value = try engine.checked(c.JS_NewError(engine.context));
     defer engine.freeValue(value);
     try sdk.put(engine, value, "message", try sdk.text(engine, message));

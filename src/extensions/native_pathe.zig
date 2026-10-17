@@ -79,7 +79,7 @@ fn advance(engine: *v.em.Engine, iterator: *v.js.Iterator) !?c.JSValue {
     if (!c.JS_IsObject(step)) return v.js.typeError(engine, "Iterator result is not an object");
     const done = try v.js.get(engine, step, "done"); defer engine.freeValue(done);
     if (c.JS_ToBool(engine.context, done) != 0) { iterator.closed = true; return null; }
-    return v.js.get(engine, step, "value");
+    return try v.js.get(engine, step, "value");
 }
 fn Boundary(comptime callback: functions.Callback) type { return struct {
     fn call(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {

@@ -866,7 +866,7 @@ pub fn install(engine: *em.Engine, namespace: c.JSValue, imports: Imports) !void
     var s: Scope = .{ .engine = engine };
     defer s.deinit();
     const captures = try s.object();
-    inline for (std.meta.fieldNames(Imports)) |field| try s.put(captures, field, @field(imports, field));
+    inline for (comptime std.meta.fieldNames(Imports)) |field| try s.put(captures, field, @field(imports, field));
     // Source exports this exact alias, including identity and ordinary function metadata.
     try s.put(namespace, "clearApiKeyCache", try s.get(imports.configValues, "clearConfigValueCache"));
     inline for (.{ .{ "composeModelProvider", Op.compose, 4 }, .{ "configuredRequestAuthStatus", Op.status, 2 }, .{ "resolveCompatibilityRequestConfig", Op.compat, 3 }, .{ "resolveConfiguredModelHeaders", Op.headers, 4 }, .{ "validateExtensionProvider", Op.validate, 4 } }) |row| try s.put(namespace, row[0], try function(&s, row[0], row[2], row[1], captures, false));
