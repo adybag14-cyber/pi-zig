@@ -29,7 +29,20 @@ pub const Inputs = struct {
 /// instance. Platform bootstrap precedes this call. Actual external imports
 /// stay explicit; this composer never invents unavailable implementations.
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
-    var s: v.Scope = .{ .engine = engine }; defer s.deinit();
+    try engine.checkNativeEntry();
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var s: v.Scope = .{ .engine = engine };
+    const value = @import("native_sdk_owned_completion.zig").finishValue(&s, createBody(&s, inputs)) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn createBody(s: *v.Scope, inputs: Inputs) !c.JSValue {
+    const engine = s.engine;
     const ai = try s.own(try @import("native_sdk_ai_imports.zig").create(engine));
     return actual.create(engine, .{
         .ai = try s.get(ai, "ai"),

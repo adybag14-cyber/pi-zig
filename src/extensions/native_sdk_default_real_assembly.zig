@@ -46,72 +46,84 @@ fn functions(scope: *Scope, target: c.JSValue, namespace: c.JSValue, comptime na
 /// Returns one assembly graph. Retain this result at the application's module
 /// owner, as for its other ESM namespace caches, rather than assembling twice.
 pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
+    try engine.checkNativeEntry();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+    const value = @import("native_sdk_owned_completion.zig").finishValue(&scope, createBody(&scope, inputs)) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn createBody(scope: *Scope, inputs: Inputs) !c.JSValue {
+    const engine = scope.engine;
     const imports = try scope.object();
-    try functions(&scope, imports, inputs.paths, .{ "join", "dirname", "basename", "parse", "resolve" });
-    try functions(&scope, imports, inputs.path_utilities, .{ "normalizePath", "getFileRevision", "resolvePath" });
-    try functions(&scope, imports, inputs.configuration, .{ "getAgentDir", "getDefaultSessionDir", "getDocsPath", "getPiUserAgent" });
-    try functions(&scope, imports, inputs.filesystem, .{ "existsSync", "mkdirSync", "copyFileSync" });
-    try functions(&scope, imports, inputs.filesystem_promises, .{"readFile"});
-    try functions(&scope, imports, inputs.abort, .{ "operationSignal", "raceWithAbortSignal" });
-    try functions(&scope, imports, inputs.timing, .{"time"});
-    try functions(&scope, imports, inputs.agent_core, .{ "Agent", "setDefaultStreamFn" });
-    try functions(&scope, imports, inputs.sdk_namespace, .{ "SessionManager", "SettingsManager" });
+    try functions(scope, imports, inputs.paths, .{ "join", "dirname", "basename", "parse", "resolve" });
+    try functions(scope, imports, inputs.path_utilities, .{ "normalizePath", "getFileRevision", "resolvePath" });
+    try functions(scope, imports, inputs.configuration, .{ "getAgentDir", "getDefaultSessionDir", "getDocsPath", "getPiUserAgent" });
+    try functions(scope, imports, inputs.filesystem, .{ "existsSync", "mkdirSync", "copyFileSync" });
+    try functions(scope, imports, inputs.filesystem_promises, .{"readFile"});
+    try functions(scope, imports, inputs.abort, .{ "operationSignal", "raceWithAbortSignal" });
+    try functions(scope, imports, inputs.timing, .{"time"});
+    try functions(scope, imports, inputs.agent_core, .{ "Agent", "setDefaultStreamFn" });
+    try functions(scope, imports, inputs.sdk_namespace, .{ "SessionManager", "SettingsManager" });
     if (!c.JS_IsConstructor(engine.context, inputs.resource_loader)) return error.RequiredActualOrdinaryResourceLoader;
     try scope.put(imports, "DefaultResourceLoader", inputs.resource_loader);
-    try functions(&scope, imports, inputs.ai, .{ "createModels", "ModelsError", "lazyStream", "normalizeContext", "clampThinkingLevel", "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult" });
-    try scope.put(imports, "streamSimple", try required(&scope, inputs.compat, "streamSimple"));
+    try functions(scope, imports, inputs.ai, .{ "createModels", "ModelsError", "lazyStream", "normalizeContext", "clampThinkingLevel", "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult" });
+    try scope.put(imports, "streamSimple", try required(scope, inputs.compat, "streamSimple"));
     try scope.put(imports, "process", inputs.process);
     try scope.put(imports, "constants", try scope.get(inputs.filesystem, "constants"));
-    try scope.put(imports, "FileAuthStorageBackend", try required(&scope, inputs.auth_storage, "FileAuthStorageBackend"));
-    try scope.put(imports, "DefaultAuthStorage", try required(&scope, inputs.auth_storage, "AuthStorage"));
+    try scope.put(imports, "FileAuthStorageBackend", try required(scope, inputs.auth_storage, "FileAuthStorageBackend"));
+    try scope.put(imports, "DefaultAuthStorage", try required(scope, inputs.auth_storage, "AuthStorage"));
     const text = try scope.own(try @import("native_sdk_model_text_production.zig").create(engine));
-    try functions(&scope, imports, text, .{ "stripBom", "stripJsonComments" });
+    try functions(scope, imports, text, .{ "stripBom", "stripJsonComments" });
     const config_values = inputs.config_values;
-    inline for (.{ "resolveConfigValue", "clearConfigValueCache", "getConfigValueEnvVarNames", "isConfigValueConfigured", "resolveHeadersOrThrow" }) |name| _ = try required(&scope, config_values, name);
+    inline for (.{ "resolveConfigValue", "clearConfigValueCache", "getConfigValueEnvVarNames", "isConfigValueConfigured", "resolveHeadersOrThrow" }) |name| _ = try required(scope, config_values, name);
     const composer = try scope.object();
     try @import("native_provider_composer_production.zig").install(engine, composer, .{
-        .isModelType = try required(&scope, inputs.ai, "isModelType"),
-        .lazyStream = try required(&scope, inputs.ai, "lazyStream"),
-        .getApiProvider = try required(&scope, inputs.compat, "getApiProvider"),
-        .imageErrorResult = try required(&scope, inputs.ai, "imageErrorResult"),
-        .classifierErrorResult = try required(&scope, inputs.ai, "classifierErrorResult"),
+        .isModelType = try required(scope, inputs.ai, "isModelType"),
+        .lazyStream = try required(scope, inputs.ai, "lazyStream"),
+        .getApiProvider = try required(scope, inputs.compat, "getApiProvider"),
+        .imageErrorResult = try required(scope, inputs.ai, "imageErrorResult"),
+        .classifierErrorResult = try required(scope, inputs.ai, "classifierErrorResult"),
         .configValues = config_values,
     });
-    try functions(&scope, imports, composer, .{ "composeModelProvider", "configuredRequestAuthStatus", "resolveCompatibilityRequestConfig", "resolveConfiguredModelHeaders", "validateExtensionProvider" });
+    try functions(scope, imports, composer, .{ "composeModelProvider", "configuredRequestAuthStatus", "resolveCompatibilityRequestConfig", "resolveConfiguredModelHeaders", "validateExtensionProvider" });
     const virtual = try scope.own(try @import("native_sdk_virtual_models_production.zig").create(engine, inputs.ai));
-    try functions(&scope, imports, virtual, .{ "createVirtualModel", "withVirtualModels", "isVirtualModel", "findLatestResponse" });
+    try functions(scope, imports, virtual, .{ "createVirtualModel", "withVirtualModels", "isVirtualModel", "findLatestResponse" });
     const remote = try scope.own(try @import("native_sdk_remote_catalog_provider.zig").create(engine, .{
-        .get_model_type = try required(&scope, inputs.ai, "getModelType"),
-        .is_model_type = try required(&scope, inputs.ai, "isModelType"),
-        .fetch_with_retry = try required(&scope, inputs.management_http, "fetchWithRetry"),
-        .get_pi_user_agent = try required(&scope, inputs.configuration, "getPiUserAgent"),
+        .get_model_type = try required(scope, inputs.ai, "getModelType"),
+        .is_model_type = try required(scope, inputs.ai, "isModelType"),
+        .fetch_with_retry = try required(scope, inputs.management_http, "fetchWithRetry"),
+        .get_pi_user_agent = try required(scope, inputs.configuration, "getPiUserAgent"),
         .version = try scope.get(inputs.configuration, "VERSION"),
     }));
-    try functions(&scope, imports, remote, .{ "withRemoteCatalog", "withPersonalizedCatalog" });
-    try scope.put(imports, "personalizeOpenRouterCatalog", try required(&scope, inputs.provider_factories, "personalizeOpenRouterCatalog"));
+    try functions(scope, imports, remote, .{ "withRemoteCatalog", "withPersonalizedCatalog" });
+    try scope.put(imports, "personalizeOpenRouterCatalog", try required(scope, inputs.provider_factories, "personalizeOpenRouterCatalog"));
     // Preserve the exact all.ts binding identities and its ordinary namespace
     // export surface. These functions construct real providers on every call.
     const catalog = try scope.object();
-    try functions(&scope, catalog, inputs.provider_factories, .{ "radiusProvider", "builtinProviders", "builtinModels", "getBuiltinModel", "getBuiltinImageModel", "getBuiltinClassifierModel", "getBuiltinProviders", "getBuiltinModelDataGeneratedAt", "getBuiltinModels", "getBuiltinImageModels", "getBuiltinClassifierModels", "getAllBuiltinModels" });
+    try functions(scope, catalog, inputs.provider_factories, .{ "radiusProvider", "builtinProviders", "builtinModels", "getBuiltinModel", "getBuiltinImageModel", "getBuiltinClassifierModel", "getBuiltinProviders", "getBuiltinModelDataGeneratedAt", "getBuiltinModels", "getBuiltinImageModels", "getBuiltinClassifierModels", "getAllBuiltinModels" });
     try scope.put(imports, "builtinProviderCatalog", catalog);
     const stores = try scope.own(try @import("native_sdk_models_store_production.zig").create(engine, imports));
-    try functions(&scope, imports, stores, .{ "FileModelsStore", "InMemoryCodingAgentModelsStore" });
+    try functions(scope, imports, stores, .{ "FileModelsStore", "InMemoryCodingAgentModelsStore" });
     const configuration = try scope.own(try @import("native_sdk_model_config_production.zig").create(engine, imports, inputs.typebox_graph));
-    try scope.put(imports, "ModelConfig", try required(&scope, configuration, "ModelConfig"));
+    try scope.put(imports, "ModelConfig", try required(scope, configuration, "ModelConfig"));
     const credentials = try scope.own(try @import("native_sdk_runtime_credentials_production.zig").constructor(engine));
     try scope.put(imports, "RuntimeCredentials", credentials);
     const model = try scope.own(try @import("native_sdk_model_runtime_production.zig").exports(engine, imports));
-    const model_runtime = try required(&scope, model, "ModelRuntime");
+    const model_runtime = try required(scope, model, "ModelRuntime");
     try @import("native_sdk_model_runtime_create_production.zig").install(engine, model_runtime, imports);
     try scope.put(imports, "ModelRuntime", model_runtime);
     const lifecycle = try scope.own(try @import("native_sdk_agent_session_runtime_production.zig").create(engine, imports));
-    try functions(&scope, imports, lifecycle, .{ "AgentSessionRuntime", "assertSessionCwdExists" });
+    try functions(scope, imports, lifecycle, .{ "AgentSessionRuntime", "assertSessionCwdExists" });
     const helpers = try scope.own(try @import("native_sdk_factory_import_helpers.zig").create(engine, try scope.get(imports, "getDocsPath"), try scope.get(imports, "join")));
-    try functions(&scope, imports, helpers, .{ "findInitialModel", "formatNoModelsAvailableMessage", "getToolListError", "isToolModifier", "applyToolModifiers", "createToolNameMatcher" });
+    try functions(scope, imports, helpers, .{ "findInitialModel", "formatNoModelsAvailableMessage", "getToolListError", "isToolModifier", "applyToolModifiers", "createToolNameMatcher" });
     // sdk.ts imports this same virtual-models binding, not a second wrapper.
-    try scope.put(imports, "getBranchSelection", try required(&scope, virtual, "getBranchSelection"));
+    try scope.put(imports, "getBranchSelection", try required(scope, virtual, "getBranchSelection"));
     inline for (.{ "DEFAULT_THINKING_LEVEL", "DEFAULT_TOOL_NAMES" }) |name| try scope.put(imports, name, try scope.get(helpers, name));
     const shared_ai = try scope.own(try @import("native_sdk_session_ai_assembly.zig").create(engine, inputs.compat));
     const factory = try scope.own(try @import("native_sdk_factory_production.zig").compose(engine, .{
