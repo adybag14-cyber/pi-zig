@@ -178,7 +178,7 @@ test "native Await DATA producer invocation ignores marked DATA history but reco
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual));
     try std.testing.expect(engine.native_fatal_invocation == null);
 }
-fn suspendWithoutEvent(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, _: *c.JSValue, completion: @import("extensions/native_async_function.zig").Completion, _: c.JSValue) !@import("extensions/native_async_function.zig").Action {
+fn suspendWithoutEvent(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, _: *c.JSValue, completion: @import("extensions/native_async_function.zig").Completion, _: c.JSValue) !@import("extensions/native_async_function.zig").Action {
     if (completion == .start) return .{ .awaited = c.pi_js_undefined() };
     return .{ .returned = c.pi_js_undefined() };
 }
