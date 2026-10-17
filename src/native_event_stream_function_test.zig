@@ -86,21 +86,24 @@ var cleanup_class: c.JSClassID = 0;
 var pending_reason: c.JSValue = undefined;
 var cleanup_fatal: c.JSValue = undefined;
 var cleanup_count: usize = 0;
+var cleanup_from_capture: bool = false;
 fn resultFinalizer(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
     cleanup_count += 1;
     _ = c.JS_Throw(cleanup_context, c.JS_DupValue(cleanup_context, cleanup_fatal));
 }
 fn pendingConstructor(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    if (cleanup_from_capture) return c.JS_Throw(context, c.JS_DupValue(context, pending_reason));
     const result = c.JS_NewObjectClass(context, cleanup_class);
     if (c.JS_IsException(result)) return result;
     _ = c.JS_Throw(context, c.JS_DupValue(context, pending_reason));
     return result; // Deliberate native C-contract violation, not forgeable JS.
 }
 test "native EventStream holder actual native result finalizer promotes first pending fatal" {
-    for (.{ false, true }) |initial_fatal| {
+    for (.{ false, true }) |from_capture| {
+      for (.{ false, true }) |initial_fatal| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         var s: Scope = .{ .engine = engine }; defer s.deinit();
-        cleanup_context = engine.context; cleanup_count = 0; cleanup_class = 0;
+        cleanup_context = engine.context; cleanup_count = 0; cleanup_class = 0; cleanup_from_capture = from_capture;
         _ = c.JS_NewClassID(engine.runtime, &cleanup_class);
         const definition: c.JSClassDef = .{ .class_name = "Native result cleanup causal control", .finalizer = resultFinalizer };
         try std.testing.expectEqual(@as(c_int, 0), c.JS_NewClass(engine.runtime, cleanup_class, &definition));
@@ -109,12 +112,14 @@ test "native EventStream holder actual native result finalizer promotes first pe
         cleanup_fatal = try s.own(try engine.checked(c.JS_NewError(engine.context))); c.JS_SetUncatchableError(engine.context, cleanup_fatal);
         const constructor = try s.own(try engine.checked(c.JS_NewCFunction2(engine.context, pendingConstructor, "PendingNativeConstructor", 0, c.JS_CFUNC_constructor, 0)));
         const holder = try s.own(try fatal.create(engine));
+        if (from_capture) engine.captured_exception = try engine.checked(c.JS_NewObjectClass(engine.context, cleanup_class));
         try std.testing.expectError(error.JavaScriptException, fatal.constructOwned(engine, constructor, &.{}, holder));
         const actual = engine.captured_exception orelse return error.MissingNativeCleanupFatal;
         try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, if (initial_fatal) pending_reason else cleanup_fatal));
         try std.testing.expect(c.JS_IsUncatchableError(actual));
         try std.testing.expectEqual(@as(usize, 1), cleanup_count);
         try std.testing.expect(!c.JS_HasException(engine.context));
+      }
     }
 }
 pub fn compareActualSource(engine: *em.Engine, actual_constructor: c.JSValue, bytes: []const u8) !void {

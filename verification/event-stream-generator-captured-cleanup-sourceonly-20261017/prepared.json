@@ -1,0 +1,50 @@
+{
+  "parent": "84a16ba66d00d6d1f845cb3f258736a44f316d9a",
+  "status": "source-only-captured-cleanup-correction-uncompiled-unrun",
+  "native_test_definitions": 6,
+  "cleanup_modes": 4,
+  "C_H_Engine_changed": false,
+  "old_packets_preserved": true,
+  "pins": [
+    {
+      "path": "src/extensions/native_promise_executor_fatal.zig",
+      "sha256": "D114F154A16CD916D92C71D8BA573FE9ECEEE59C9BF845C1FAFBB631DF06643F",
+      "bytes": 5823
+    },
+    {
+      "path": "src/native_event_stream_function_test.zig",
+      "sha256": "CBFC5565AB53A01949919129540426FA3C21EDD58641C4D9B3BD35CEAE973DE0",
+      "bytes": 11855
+    },
+    {
+      "path": "verification/event-stream-generator-function-corrections-sourceonly-20261017/prepared.json",
+      "sha256": "C3F5567C52F730A74C6F5D21A0B51D168A8F523AB9E8D1709031406DB5DA6217",
+      "bytes": 3670
+    },
+    {
+      "path": "verification/event-stream-generator-function-corrections-sourceonly-20261017/proposed-c-api.patch",
+      "sha256": "D8864FE030B1AEE33C6E22505A84FC2537436B9DD81AE56FCA92BB878C27E474",
+      "bytes": 11906
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/observer.mjs",
+      "sha256": "9D77950368A5CAAFD1C9B87CB25490D503590655BBE341CB792A7A6D4769128C",
+      "bytes": 4824
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    }
+  ]
+}

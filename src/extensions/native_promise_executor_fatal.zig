@@ -74,7 +74,7 @@ pub fn constructOwned(engine: *em.Engine, constructor: c.JSValue, args: []const 
         if (captured) |old| { engine.freeValue(old); drain(engine); }
         c.JS_SetUncatchableError(engine.context, reason); return engine.checked(c.JS_Throw(engine.context, reason));
     }
-    if (c.JS_HasException(engine.context) and !c.JS_IsException(result)) {
+    if (c.JS_HasException(engine.context)) {
         var reason = c.JS_GetException(engine.context); var selected_fatal = c.JS_IsUncatchableError(reason);
         const captured = engine.captured_exception; engine.captured_exception = null;
         engine.freeValue(result); promotePending(engine, &reason, &selected_fatal);
