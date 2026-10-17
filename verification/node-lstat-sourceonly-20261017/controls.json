@@ -78,6 +78,11 @@
       "observe": "Actual current host fatal escapes exact and is not swallowed as false; historical/lookalike/OS-error reasons remain ordinary; ordinary caught ownership transfers/nulls with no retained captured copy.",
       "fixture": "Granted direct GPA OOM/fresh captured private allocation error; historical tagged reason/lookalike/OS ENOMEM; real guest catch around actual lstatSync.",
       "id": "fresh-fatal-vs-ordinary-raw-callback-exit"
+    },
+    {
+      "id": "inherited-global-bigint-known-gap",
+      "fixture": "Owned replacement/getter for globalThis.BigInt while actual Stats BigInt construction and isDirectory/checkMode are called; original descriptor restored.",
+      "observe": "Known shared preexisting negative at this bounded checkpoint: integer/checkMode still read mutable global BigInt. Root authorized separate primordial correction; no current pass claim."
     }
   ],
   "source_owner": "A separately granted pinned Node24.14 capture executes source-caller.mjs on owned fixtures. Genuine jiti utils.isDir consumer belongs to factory owner; no copied helper result becomes a golden."
