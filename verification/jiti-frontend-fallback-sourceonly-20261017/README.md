@@ -66,7 +66,10 @@ Five controls plus explicit native fault-probe installation are prepared:
 2. After capture, an original enumerable user option getter throws the SAME
    ordinary reason held in a prior diagnostic slot during actual Source spread.
    New captured ownership preserves same-identity ordinary throw, no fatal flag
-   and no diagnostic getter coercion. This is not an object-inequality test.
+   and no diagnostic getter coercion. The real trampoline consumes that new
+   capture into JS_Throw before raw JS_Call returns; raw JS_GetException then
+   owns it and the Engine slot must be null. This is not an object-inequality
+   test or a false assertion that the consumed capture remains retained.
 3. The actual Source option getter invokes Engine.throwNativeOutOfMemory through
    an explicit native-only fault probe. Exact fresh private cause/current reason
    escapes as fatal instead of Source fallback success or old-data escalation.

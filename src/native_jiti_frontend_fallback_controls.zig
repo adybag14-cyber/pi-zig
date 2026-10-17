@@ -50,7 +50,9 @@ pub fn verifySameObjectOrdinarySpreadRethrow(engine: *v.em.Engine, actual: Subje
     engine.captured_exception = c.JS_DupValue(engine.context, same_reason);
     const reason = try actualException(engine, rawCall(engine, actual, same_reason)); defer engine.freeValue(reason);
     try same(engine, reason, same_reason);
-    try same(engine, engine.captured_exception orelse return error.MissingNewFrontendCapture, same_reason);
+    // The actual ordinary trampoline consumes the new captured root into
+    // JS_Throw before rawCall returns. actualException now owns that reason.
+    try std.testing.expect(engine.captured_exception == null);
     try std.testing.expect(!c.JS_IsUncatchableError(reason));
     try noDiagnostics(engine, actual);
 }
