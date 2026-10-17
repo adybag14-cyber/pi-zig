@@ -17425,7 +17425,7 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
 
 JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
 {
-    JSValue result, reason;
+    JSValue result, reason, cleanup, displaced;
     bool fatal;
     if (JS_HasException(ctx))
         return JS_EXCEPTION;
@@ -17435,10 +17435,16 @@ JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
     reason = JS_GetException(ctx);
     fatal = JS_IsUncatchableError(reason);
     JS_FreeValue(ctx, result);
-    if (!fatal && JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        JS_FreeValue(ctx, reason);
-        return JS_EXCEPTION;
+    while (JS_HasException(ctx)) {
+        cleanup = JS_GetException(ctx);
+        if (!fatal && JS_IsUncatchableError(cleanup)) {
+            displaced = reason;
+            reason = cleanup;
+            fatal = true;
+        } else {
+            displaced = cleanup;
+        }
+        JS_FreeValue(ctx, displaced);
     }
     return JS_Throw(ctx, reason);
 }

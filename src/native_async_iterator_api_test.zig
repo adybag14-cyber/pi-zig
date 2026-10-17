@@ -179,3 +179,78 @@ test "native async iterator API new pending reason cleanup and callback conventi
         if (mode == 1) std.debug.print("iterator API native callback convention violation observation: getter={d} method={d} owned_result_finalized={}\n", .{ getter_calls, method_calls, result_finalized });
     }
 }
+var cleanup_context: ?*c.JSContext = null;
+var cleanup_fatal: c.JSValue = undefined;
+var cleanup_tail: c.JSValue = undefined;
+var cleanup_slot: c.JSValue = undefined;
+var cleanup_original: c.JSValue = undefined;
+var cleanup_classes: [3]c.JSClassID = .{ 0, 0, 0 };
+var cleanup_counts: [3]usize = .{ 0, 0, 0 };
+var incoming_fatal: bool = false;
+fn resultCleanup(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
+    cleanup_counts[0] += 1;
+    if (cleanup_context) |ctx| {
+        if (incoming_fatal) {
+            const owned = cleanup_slot; cleanup_slot = c.pi_js_undefined();
+            _ = c.JS_Throw(ctx, owned);
+        } else _ = c.JS_Throw(ctx, c.JS_DupValue(ctx, cleanup_fatal));
+    }
+}
+fn originalCleanup(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
+    cleanup_counts[1] += 1;
+    if (cleanup_context) |ctx| if (!c.JS_IsUndefined(cleanup_slot)) {
+        const owned = cleanup_slot; cleanup_slot = c.pi_js_undefined();
+        _ = c.JS_Throw(ctx, owned);
+    };
+}
+fn displacedCleanup(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
+    cleanup_counts[2] += 1;
+    if (cleanup_context) |ctx| _ = c.JS_Throw(ctx, c.JS_DupValue(ctx, cleanup_tail));
+}
+fn cleanupMethod(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const result = c.JS_NewObjectClass(context, cleanup_classes[0]);
+    if (c.JS_IsException(result)) return result;
+    const reason = c.JS_NewObjectClass(context, cleanup_classes[1]);
+    if (c.JS_IsException(reason)) { c.JS_FreeValue(context, result); return reason; }
+    if (incoming_fatal) c.JS_SetUncatchableError(context, reason);
+    cleanup_original = reason; // Borrowed identity only: no additional refcount.
+    _ = c.JS_Throw(context, reason); // Sole owned original is transferred.
+    return result; // Deliberate native callback convention violation control.
+}
+test "native async iterator API nested result and displaced finalizers preserve first fatal" {
+    for (.{ false, true }) |fatal_first| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        cleanup_context = engine.context; defer cleanup_context = null;
+        incoming_fatal = fatal_first; cleanup_counts = .{ 0, 0, 0 }; cleanup_classes = .{ 0, 0, 0 };
+        const definitions = [_]c.JSClassDef{
+            .{ .class_name = "Iterator API result finalizer", .finalizer = resultCleanup },
+            .{ .class_name = "Iterator API original finalizer", .finalizer = originalCleanup },
+            .{ .class_name = "Iterator API displaced finalizer", .finalizer = displacedCleanup },
+        };
+        for (&cleanup_classes, definitions) |*class, definition| {
+            _ = c.JS_NewClassID(engine.runtime, class);
+            if (c.JS_NewClass(engine.runtime, class.*, &definition) < 0) return error.OutOfMemory;
+        }
+        cleanup_fatal = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(cleanup_fatal);
+        c.JS_SetUncatchableError(engine.context, cleanup_fatal);
+        cleanup_tail = try engine.checked(c.JS_NewObject(engine.context)); defer engine.freeValue(cleanup_tail);
+        cleanup_slot = try engine.checked(c.JS_NewObjectClass(engine.context, cleanup_classes[2])); defer engine.freeValue(cleanup_slot);
+        const input = try engine.checked(c.JS_NewObject(engine.context)); defer engine.freeValue(input);
+        const symbol = c.JS_GetAsyncIteratorSymbol(engine.context); defer engine.freeValue(symbol);
+        const atom = c.JS_ValueToAtom(engine.context, symbol); if (atom == c.JS_ATOM_NULL) return js.capture(engine); defer c.JS_FreeAtom(engine.context, atom);
+        const method = try engine.checked(c.JS_NewCFunction(engine.context, cleanupMethod, "iteratorCleanupControl", 0));
+        if (c.JS_DefinePropertyValue(engine.context, input, atom, method, c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+        const result = c.JS_PiGetAsyncIterator(engine.context, input);
+        try std.testing.expect(c.JS_IsException(result) and c.JS_HasException(engine.context));
+        const actual = c.JS_GetException(engine.context);
+        var actual_owned = true; defer if (actual_owned) engine.freeValue(actual);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, if (fatal_first) cleanup_original else cleanup_fatal));
+        try std.testing.expect(c.JS_IsUncatchableError(actual));
+        try std.testing.expectEqual(@as(usize, 1), cleanup_counts[0]);
+        try std.testing.expectEqual(@as(usize, if (fatal_first) 0 else 1), cleanup_counts[1]);
+        try std.testing.expectEqual(@as(usize, 1), cleanup_counts[2]);
+        engine.freeValue(actual); actual_owned = false;
+        try std.testing.expectEqual(@as(usize, 1), cleanup_counts[1]);
+        try std.testing.expect(c.JS_IsUndefined(cleanup_slot) and !c.JS_HasException(engine.context));
+    }
+}
