@@ -12,6 +12,17 @@ const Stage = enum(i32) { attempt, fetch, cancel };
 const Decision = union(enum) { again, action: p.af.Action };
 const key = "pi-private:sdk-management-http";
 
+fn put(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
+    try s.engine.checkNativeEntry();
+    const generation = s.engine.native_allocation_generation;
+    if (c.JS_DefinePropertyValueStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E) < 0) return captureSince(s.engine, generation);
+    // Successful consuming status can still publish a native finalizer event.
+    // Preserve it before the next field retirement/callback/allocation.
+    s.engine.checkNativeEntry() catch |err| {
+        _ = p.guard(s.engine, generation, @as(anyerror!c.JSValue, err)) catch |current| return current;
+        unreachable;
+    };
+}
 fn argument(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn isUndefined(value: c.JSValue) bool { return c.JS_IsUndefined(value); }
 fn nullish(value: c.JSValue) bool { return isUndefined(value) or c.JS_IsNull(value); }
@@ -36,7 +47,7 @@ fn at(s: *Scope, value: c.JSValue, index: u32) !c.JSValue {
     return s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_GetPropertyUint32(s.engine.context, value, index))));
 }
 fn optional(s: *Scope, value: c.JSValue, name: [*:0]const u8) !c.JSValue { return if (nullish(value)) c.pi_js_undefined() else p.get(s, value, name); }
-fn stage(s: *Scope, job: c.JSValue, value: Stage) !void { try s.put(job, "stage", c.JS_NewInt32(s.engine.context, @intFromEnum(value))); }
+fn stage(s: *Scope, job: c.JSValue, value: Stage) !void { try put(s, job, "stage", c.JS_NewInt32(s.engine.context, @intFromEnum(value))); }
 
 /// One actual module instance. The private Set is constructed at module
 /// initialization and retained by the genuine AsyncFunction's GC roots.
@@ -79,45 +90,90 @@ fn initializeBody(s: *Scope) !c.JSValue {
     const retryable = try s.own(try p.guard(engine, generation, engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args))));
     const result = try s.object();
     const function = try s.own(try p.af.createResumable(engine, "fetchWithRetry", 1, run, &.{retryable}));
-    try s.put(result, "fetchWithRetry", function);
+    try put(s, result, "fetchWithRetry", function);
     return c.JS_DupValue(engine.context, result);
+}
+// Source condition/call temporaries are retired at their expression boundary,
+// before a later live getter can observe GC/native-holder lifetime.
+fn definedBody(s: *Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return c.pi_js_bool(s.engine.context, @intFromBool(!isUndefined(try p.get(s, object, name))));
+}
+fn defined(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8) !bool {
+    var s: Scope = .{ .engine = engine };
+    const result = try owned.finishValue(&s, definedBody(&s, object, name));
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn finiteBody(s: *Scope, options: c.JSValue) !c.JSValue {
+    const number = try binding(s, "Number");
+    const callable = try p.get(s, number, "isFinite");
+    const value = try p.call(s, callable, number, &.{try p.get(s, options, "maxRetries")});
+    return c.pi_js_bool(s.engine.context, @intFromBool(s.truthy(value)));
+}
+fn finite(engine: *em.Engine, options: c.JSValue) !bool {
+    var s: Scope = .{ .engine = engine };
+    const result = try owned.finishValue(&s, finiteBody(&s, options));
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn floorBody(s: *Scope, options: c.JSValue) !c.JSValue {
+    const math_object = try binding(s, "Math");
+    const callable = try p.get(s, math_object, "floor");
+    return c.JS_DupValue(s.engine.context, try p.call(s, callable, math_object, &.{try p.get(s, options, "maxRetries")}));
+}
+fn floorValue(engine: *em.Engine, options: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, floorBody(&s, options));
+}
+fn maximumBody(s: *Scope, options: c.JSValue) !c.JSValue {
+    const math_object = try binding(s, "Math");
+    const callable = try p.get(s, math_object, "max");
+    const floored = try s.own(try floorValue(s.engine, options));
+    return c.JS_DupValue(s.engine.context, try p.call(s, callable, math_object, &.{c.JS_NewInt32(s.engine.context, 0), floored}));
+}
+fn maximumRetries(engine: *em.Engine, options: c.JSValue) !c.JSValue {
+    if (!try defined(engine, options, "maxRetries") or !try finite(engine, options)) return c.JS_NewInt32(engine.context, 2);
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, maximumBody(&s, options));
+}
+fn positiveBody(s: *Scope, options: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return c.pi_js_bool(s.engine.context, @intFromBool(try compare(s, .greater, try p.get(s, options, name), c.JS_NewInt32(s.engine.context, 0))));
+}
+fn positiveOption(engine: *em.Engine, options: c.JSValue, name: [*:0]const u8) !bool {
+    if (!try defined(engine, options, name)) return false;
+    var s: Scope = .{ .engine = engine };
+    const result = try owned.finishValue(&s, positiveBody(&s, options, name));
+    defer engine.freeValue(result);
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn timeoutBody(s: *Scope, options: c.JSValue) !c.JSValue {
+    const abort = try binding(s, "AbortSignal");
+    const callable = try p.get(s, abort, "timeout");
+    return c.JS_DupValue(s.engine.context, try p.call(s, callable, abort, &.{try p.get(s, options, "timeoutMs")}));
+}
+fn timeoutValue(engine: *em.Engine, options: c.JSValue) !c.JSValue {
+    if (!try positiveOption(engine, options, "timeoutMs")) return c.pi_js_undefined();
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, timeoutBody(&s, options));
 }
 fn defaults(s: *Scope, state: *c.JSValue, args: []const c.JSValue) !c.JSValue {
     const job = try p.init(s, state);
     const options = if (isUndefined(argument(args, 2))) try s.object() else argument(args, 2);
     const initial = argument(args, 1);
-    try s.put(job, "input", argument(args, 0));
-    try s.put(job, "init", initial);
-    const first = try p.get(s, options, "maxRetries");
-    var maximum = c.JS_NewInt32(s.engine.context, 2);
-    if (!isUndefined(first)) {
-        const number = try binding(s, "Number");
-        const finite = try p.get(s, number, "isFinite");
-        const second = try p.get(s, options, "maxRetries");
-        if (s.truthy(try p.call(s, finite, number, &.{second}))) {
-            const outer_math = try binding(s, "Math");
-            const max = try p.get(s, outer_math, "max");
-            const inner_math = try binding(s, "Math");
-            const floor = try p.get(s, inner_math, "floor");
-            const third = try p.get(s, options, "maxRetries");
-            maximum = try p.call(s, max, outer_math, &.{ c.JS_NewInt32(s.engine.context, 0), try p.call(s, floor, inner_math, &.{third}) });
-        }
-    }
-    try s.put(job, "maxRetries", maximum);
+    try put(s, job, "input", argument(args, 0));
+    try put(s, job, "init", initial);
+    try put(s, job, "options", options);
+    const maximum = try s.own(try maximumRetries(s.engine, options));
+    try put(s, job, "maxRetries", maximum);
     const retry = try p.get(s, options, "retryOnStatus");
-    try s.put(job, "retryOnStatus", if (nullish(retry)) c.pi_js_bool(s.engine.context, 1) else retry);
+    try put(s, job, "retryOnStatus", if (nullish(retry)) c.pi_js_bool(s.engine.context, 1) else retry);
     const parent = try optional(s, initial, "signal");
-    try s.put(job, "parentSignal", if (nullish(parent)) c.pi_js_undefined() else parent);
-    var timeout = c.pi_js_undefined();
-    if (!isUndefined(try p.get(s, options, "timeoutMs")) and try compare(s, .greater, try p.get(s, options, "timeoutMs"), c.JS_NewInt32(s.engine.context, 0))) {
-        const abort = try binding(s, "AbortSignal");
-        const callable = try p.get(s, abort, "timeout");
-        timeout = try p.call(s, callable, abort, &.{try p.get(s, options, "timeoutMs")});
-    }
-    try s.put(job, "timeoutSignal", timeout);
-    const attempt_timeout = if (!isUndefined(try p.get(s, options, "attemptTimeoutMs")) and try compare(s, .greater, try p.get(s, options, "attemptTimeoutMs"), c.JS_NewInt32(s.engine.context, 0))) try p.get(s, options, "attemptTimeoutMs") else c.pi_js_undefined();
-    try s.put(job, "attemptTimeoutMs", attempt_timeout);
-    try s.put(job, "attempt", c.JS_NewInt32(s.engine.context, 0));
+    try put(s, job, "parentSignal", if (nullish(parent)) c.pi_js_undefined() else parent);
+    const timeout = try s.own(try timeoutValue(s.engine, options));
+    try put(s, job, "timeoutSignal", timeout);
+    const attempt_timeout = if (try positiveOption(s.engine, options, "attemptTimeoutMs")) try p.get(s, options, "attemptTimeoutMs") else c.pi_js_undefined();
+    try put(s, job, "attemptTimeoutMs", attempt_timeout);
+    try put(s, job, "attempt", c.JS_NewInt32(s.engine.context, 0));
     try stage(s, job, .attempt);
     return job;
 }
@@ -133,21 +189,21 @@ fn signalForAttempt(s: *Scope, job: c.JSValue) !c.JSValue {
         const abort = try binding(s, "AbortSignal");
         attempt_timeout = try p.call(s, try p.get(s, abort, "timeout"), abort, &.{period});
     }
-    try s.put(job, "attemptTimeoutSignal", attempt_timeout);
+    try put(s, job, "attemptTimeoutSignal", attempt_timeout);
     const values = try s.array();
     try s.index(values, 0, parent); try s.index(values, 1, timeout); try s.index(values, 2, attempt_timeout);
     const callable = try p.get(s, values, "filter");
     const predicate = try s.own(try functions.createArrow(s.engine, "", 1, filter, &.{}));
     const signals = try p.call(s, callable, values, &.{predicate});
-    try s.put(job, "signals", signals);
+    try put(s, job, "signals", signals);
     if (try compare(s, .greater, try p.get(s, signals, "length"), c.JS_NewInt32(s.engine.context, 1))) {
         const abort = try binding(s, "AbortSignal");
         const signal = try p.call(s, try p.get(s, abort, "any"), abort, &.{signals});
-        try s.put(job, "signal", signal);
+        try put(s, job, "signal", signal);
         return signal;
     }
     const signal = try at(s, signals, 0);
-    try s.put(job, "signal", signal);
+    try put(s, job, "signal", signal);
     return signal;
 }
 fn fetchValue(s: *Scope, job: c.JSValue, signal: c.JSValue) !c.JSValue {
@@ -157,7 +213,7 @@ fn fetchValue(s: *Scope, job: c.JSValue, signal: c.JSValue) !c.JSValue {
     var init = initial;
     if (s.truthy(signal)) {
         init = try spreadInit(s, initial);
-        try s.put(init, "signal", signal);
+        try put(s, init, "signal", signal);
     }
     return p.call(s, fetch, c.pi_js_undefined(), &.{ input, init });
 }
@@ -199,8 +255,8 @@ fn advance(s: *Scope, job: c.JSValue) !Decision {
     const previous = try s.get(job, "attempt");
     const generation = s.engine.native_allocation_generation;
     const next = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_PiIncrement(s.engine.context, previous))));
-    try s.put(job, "attempt", next);
-    inline for (.{ "response", "signal", "signals", "attemptTimeoutSignal" }) |name| try s.put(job, name, c.pi_js_undefined());
+    try put(s, job, "attempt", next);
+    inline for (.{ "response", "signal", "signals", "attemptTimeoutSignal" }) |name| try put(s, job, name, c.pi_js_undefined());
     try stage(s, job, .attempt);
     return .again;
 }
@@ -228,7 +284,7 @@ fn cancelValue(s: *Scope, response: c.JSValue) !c.JSValue {
 }
 fn responseValue(s: *Scope, job: c.JSValue, retryable: c.JSValue, response: c.JSValue) !Decision {
     // These Source loop bindings remain traced through the body-cancel Await.
-    try s.put(job, "response", response);
+    try put(s, job, "response", response);
     var retry = s.truthy(try s.get(job, "retryOnStatus"));
     if (retry) {
         const has = try p.get(s, retryable, "has");
@@ -301,5 +357,48 @@ fn executeBody(s: *Scope, args: []const c.JSValue, retryable: c.JSValue, state: 
     while (true) {
         try tick(engine, &steps);
         switch (try iterate(engine, job)) { .action => |action| return action, .again => {} }
+    }
+}
+
+test "SDK management HTTP consuming state replacement preserves first event before next field" {
+    const std = @import("std");
+    const Token = struct {
+        const Emission = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0 };
+        fn finalize(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+            const emission: *Emission = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+            emission.calls += 1;
+            _ = c.JS_Throw(emission.engine.context, c.JS_DupValue(emission.engine.context, emission.reason));
+        }
+        fn create(emission: *Emission) !c.JSValue {
+            var class: c.JSClassID = 0; _ = c.JS_NewClassID(emission.engine.runtime, &class);
+            const definition: c.JSClassDef = .{ .class_name = "Actual management state retirement", .finalizer = finalize };
+            if (c.JS_NewClass(emission.engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+            const result = try emission.engine.checked(c.JS_NewObjectClass(emission.engine.context, class));
+            _ = c.JS_SetOpaque(result, emission);
+            return result;
+        }
+    };
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var outer: Scope = .{ .engine = engine }; defer outer.deinit();
+    const first = try outer.own(try engine.checked(c.JS_NewError(engine.context)));
+    const second = try outer.own(try engine.checked(c.JS_NewError(engine.context)));
+    var response: Token.Emission = .{ .engine = engine, .reason = first };
+    var signal: Token.Emission = .{ .engine = engine, .reason = second };
+    var scope: Scope = .{ .engine = engine };
+    const job = try scope.object();
+    try scope.put(job, "attempt", c.JS_NewInt32(engine.context, 0));
+    if (c.JS_DefinePropertyValueStr(engine.context, job, "response", try Token.create(&response), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, job, "signal", try Token.create(&signal), c.JS_PROP_C_W_E) < 0) return js.capture(engine);
+    const outcome = advance(&scope, job);
+    if (outcome) |_| return error.RequiredFirstConsumingEvent else |err| {
+        try std.testing.expect(err == error.JavaScriptException);
+        try std.testing.expectEqual(@as(usize, 1), response.calls);
+        try std.testing.expectEqual(@as(usize, 0), signal.calls); // No next define.
+        const action = try owned.finishAction(&scope, err);
+        try std.testing.expect(action == .thrown);
+        defer engine.freeValue(action.thrown);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, first, action.thrown));
+        try std.testing.expectEqual(@as(usize, 1), signal.calls);
+        try std.testing.expect(!c.JS_HasException(engine.context));
     }
 }

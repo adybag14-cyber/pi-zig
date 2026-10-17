@@ -125,12 +125,13 @@ test "SDK management HTTP signal spread preserves own keys getters and preflight
     engine.freeValue(value);
 }
 
-const CleanupEmission = struct { engine: *em.Engine, reason: c.JSValue, finalizers: usize = 0 };
+const CleanupEmission = struct { engine: *em.Engine, reason: c.JSValue, finalizers: usize = 0, quiet: bool = false };
 var cleanup_selected_function: ?c.JSValue = null;
 var cleanup_selected_calls: usize = 0;
 fn emitCleanup(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const owner: *CleanupEmission = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
     owner.finalizers += 1;
+    if (owner.quiet) return;
     _ = c.JS_Throw(owner.engine.context, c.JS_DupValue(owner.engine.context, owner.reason));
 }
 fn cleanupToken(owner: *CleanupEmission) !c.JSValue {
@@ -227,4 +228,46 @@ test "SDK management HTTP native owner pending entry wins before validation and 
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception orelse return error.RequiredOriginalEntryReason));
     try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
     try std.testing.expect(engine.native_fatal_invocation == null);
+}
+var maximum_holder: ?c.JSValue = null;
+var maximum_reads: usize = 0;
+var maximum_lifetime: ?*CleanupEmission = null;
+var maximum_observed_retirement: bool = false;
+fn takeMaximum(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    maximum_reads += 1;
+    if (maximum_reads == 1) {
+        const value = maximum_holder orelse return error.RequiredMaximumHolder;
+        maximum_holder = null;
+        return value;
+    }
+    return c.JS_NewInt32(engine.context, 0);
+}
+fn observeMaximum(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    maximum_observed_retirement = maximum_lifetime.?.finalizers == 1;
+    return c.pi_js_undefined();
+}
+test "SDK management HTTP default expression temporaries retire before later signal getter" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const root = try s.own(c.JS_GetGlobalObject(engine.context));
+    try s.put(root, "actualManagementHttp", try s.own(try @import("extensions/native_sdk_management_http.zig").create(engine)));
+    var emission: CleanupEmission = .{ .engine = engine, .reason = c.pi_js_undefined(), .quiet = true };
+    maximum_holder = try cleanupToken(&emission);
+    maximum_reads = 0; maximum_lifetime = &emission; maximum_observed_retirement = false;
+    defer { if (maximum_holder) |value| engine.freeValue(value); maximum_holder = null; maximum_lifetime = null; }
+    const options = try s.object(); const initial = try s.object();
+    const max_atom = c.JS_NewAtom(engine.context, "maxRetries"); defer c.JS_FreeAtom(engine.context, max_atom);
+    const signal_atom = c.JS_NewAtom(engine.context, "signal"); defer c.JS_FreeAtom(engine.context, signal_atom);
+    const max_getter = try @import("extensions/native_node_function.zig").createArrow(engine, "get maxRetries", 0, takeMaximum, &.{});
+    if (c.JS_DefinePropertyGetSet(engine.context, options, max_atom, max_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+    const signal_getter = try @import("extensions/native_node_function.zig").createArrow(engine, "get signal", 0, observeMaximum, &.{});
+    if (c.JS_DefinePropertyGetSet(engine.context, initial, signal_atom, signal_getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+    try s.put(root, "actualLifetimeOptions", options); try s.put(root, "actualLifetimeInit", initial);
+    const result = try engine.evalModule(
+        \\globalThis.fetch=()=>({status:200});if((await actualManagementHttp.fetchWithRetry('owned',actualLifetimeInit,actualLifetimeOptions)).status!==200)throw Error('actual lifetime response');
+    , "actual-management-option-lifetime.mjs");
+    engine.freeValue(result);
+    try std.testing.expectEqual(@as(usize, 3), maximum_reads);
+    try std.testing.expectEqual(@as(usize, 1), emission.finalizers);
+    try std.testing.expect(maximum_observed_retirement and maximum_holder == null);
 }

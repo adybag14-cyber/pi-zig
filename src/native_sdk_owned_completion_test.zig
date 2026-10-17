@@ -6,10 +6,39 @@ const owned = @import("extensions/native_sdk_owned_completion.zig");
 const af = @import("extensions/native_async_function.zig");
 const Prompt = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const Provider = @import("extensions/native_models_stream_scope.zig").Scope;
-const Emission = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0, capture: bool = false, transfer: bool = false };
+const Emission = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0, capture: bool = false, transfer: bool = false, await_data: bool = false, private_data: bool = false, raw_oom: bool = false, caught_data: bool = false, initially_marked: bool = false };
 fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *Emission = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
     state.calls += 1;
+    if (state.raw_oom) {
+        _ = state.engine.throwNativeOutOfMemory(); // Actual pending private producer.
+        state.reason = state.engine.native_allocation_exception.?;
+        state.initially_marked = c.JS_IsUncatchableError(state.reason);
+        return;
+    }
+    if (state.await_data) {
+        if (state.private_data) {
+            _ = state.engine.throwNativeOutOfMemory();
+            const reason = c.JS_GetException(state.engine.context);
+            c.JS_SetUncatchableError(state.engine.context, reason);
+            state.reason = state.engine.native_allocation_exception.?;
+            state.engine.freeValue(reason);
+        }
+        var resolving: [2]c.JSValue = undefined;
+        const promise = c.JS_NewPromiseCapability(state.engine.context, &resolving);
+        if (c.JS_IsException(promise)) return;
+        var arguments = [_]c.JSValue{state.reason};
+        const rejected = c.JS_Call(state.engine.context, resolving[1], c.pi_js_undefined(), 1, &arguments);
+        state.engine.freeValue(rejected);
+        state.engine.freeValue(resolving[0]); state.engine.freeValue(resolving[1]);
+        const value = state.engine.awaitValueOnly(promise) catch |err| {
+            state.caught_data = err == error.JavaScriptException;
+            state.engine.freeValue(promise);
+            return;
+        };
+        state.engine.freeValue(value); state.engine.freeValue(promise);
+        return;
+    }
     const reason = if (state.transfer) blk: { const owned_reason = state.reason; state.reason = c.pi_js_undefined(); break :blk owned_reason; } else c.JS_DupValue(state.engine.context, state.reason);
     const result = c.JS_Throw(state.engine.context, reason);
     if (state.capture) _ = state.engine.checked(result) catch {};
@@ -182,4 +211,42 @@ test "SDK owned completion individual native releases preserve fatal through sol
     try std.testing.expectEqual(@as(usize, 1), last.calls);
     try std.testing.expect(c.JS_IsUndefined(displaced.reason));
     try std.testing.expect(!c.JS_HasException(engine.context));
+}
+test "SDK owned completion cleanup caught Await rejection is DATA even when newly private" {
+    for ([_]bool{ false, true }) |fresh_private| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var outer: Prompt = .{ .engine = engine }; defer outer.deinit();
+        const data = try outer.own(try engine.checked(c.JS_NewError(engine.context)));
+        c.JS_SetUncatchableError(engine.context, data);
+        const marker = try outer.text("actual normal result");
+        var emission: Emission = .{ .engine = engine, .reason = data, .await_data = true, .private_data = fresh_private };
+        var scope: Provider = .{ .engine = engine };
+        _ = try scope.own(try token(&emission));
+        const result = try owned.finishAction(&scope, .{ .returned = c.JS_DupValue(engine.context, marker) });
+        try std.testing.expect(result == .returned);
+        defer engine.freeValue(result.returned);
+        try same(engine, marker, result.returned);
+        try std.testing.expect(emission.caught_data);
+        try std.testing.expect(c.JS_IsUncatchableError(emission.reason));
+        if (fresh_private) try std.testing.expect(c.pi_js_native_allocation_error_generation(emission.reason) != 0);
+        try std.testing.expect(engine.captured_exception == null and !c.JS_HasException(engine.context));
+        try std.testing.expect(engine.native_fatal_invocation == null);
+        try std.testing.expectEqual(@as(usize, 1), emission.calls);
+    }
+}
+
+test "SDK owned completion exact native free recognizes newly born private pending OOM" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var outer: Prompt = .{ .engine = engine }; defer outer.deinit();
+    const source = try outer.own(try engine.checked(c.JS_NewError(engine.context)));
+    var emission: Emission = .{ .engine = engine, .reason = c.pi_js_undefined(), .raw_oom = true };
+    var scope: Prompt = .{ .engine = engine };
+    _ = try scope.own(try token(&emission));
+    try std.testing.expectError(error.JavaScriptException, owned.finishAction(&scope, .{ .thrown = c.JS_DupValue(engine.context, source) }));
+    try std.testing.expect(!emission.initially_marked);
+    try std.testing.expect(c.JS_IsUncatchableError(emission.reason));
+    try same(engine, emission.reason, engine.captured_exception orelse return error.RequiredActualRawOOM);
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(emission.reason) != 0);
+    try std.testing.expect(engine.native_fatal_invocation == null and !c.JS_HasException(engine.context));
+    try std.testing.expectEqual(@as(usize, 1), emission.calls);
 }

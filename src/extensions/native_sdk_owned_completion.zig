@@ -9,24 +9,51 @@ const Retirement = struct {
     engine: *em.Engine,
     chosen: ?c.JSValue = null,
     fatal: bool = false,
-    fn merge(self: *Retirement, reason: c.JSValue) void {
+    fn merge(self: *Retirement, reason: c.JSValue, boundary: ?u64) ?u64 {
+        // Called ONLY for owned ACTUAL pending events, never a diagnostic or
+        // PromiseResult. Recognize a private producer born in this exact free.
+        if (boundary) |generation| {
+            const tagged = c.pi_js_native_allocation_error_generation(reason);
+            const distance = tagged -% generation;
+            if (tagged != 0 and distance != 0 and distance <= self.engine.native_allocation_generation -% generation) {
+                c.JS_SetUncatchableError(self.engine.context, reason);
+                // Record the actual marked event in the stable invocation
+                // before any displaced diagnostic/native finalizer retires.
+                _ = self.engine.checked(c.JS_Throw(self.engine.context, c.JS_DupValue(self.engine.context, reason))) catch {};
+            }
+        }
         const fatal = c.JS_IsUncatchableError(reason);
         if (self.chosen == null or (!self.fatal and fatal)) {
             const displaced = self.chosen;
             self.chosen = reason;
             self.fatal = fatal;
-            if (displaced) |old| self.engine.freeValue(old);
-        } else self.engine.freeValue(reason);
+            if (displaced) |old| {
+                const generation = self.engine.native_allocation_generation;
+                self.engine.freeValue(old);
+                return generation;
+            }
+        } else {
+            const generation = self.engine.native_allocation_generation;
+            self.engine.freeValue(reason);
+            return generation;
+        }
+        return null;
     }
-    fn events(self: *Retirement) void {
+    fn events(self: *Retirement, boundary: ?u64) void {
+        var generation = boundary;
         // Surface Bfb's independently retained first actual invocation event.
         _ = self.engine.nativeCallbackResult(c.pi_js_undefined());
         while (c.JS_HasException(self.engine.context) or self.engine.captured_exception != null) {
-            if (c.JS_HasException(self.engine.context)) self.merge(c.JS_GetException(self.engine.context))
+            if (c.JS_HasException(self.engine.context)) generation = self.merge(c.JS_GetException(self.engine.context), generation)
             else {
                 const reason = self.engine.captured_exception.?;
                 self.engine.captured_exception = null;
-                self.merge(reason);
+                // A diagnostic-only capture may be rejected Promise DATA.
+                // Retire it as DATA; only independently retained/pending
+                // actual events can promote the completion.
+                generation = self.engine.native_allocation_generation;
+                self.engine.freeValue(reason);
+                if (!self.fatal) _ = self.engine.nativeCallbackResult(c.pi_js_undefined());
             }
         }
     }
@@ -40,6 +67,8 @@ pub const Completion = struct {
     owner: Retirement,
     action: ?p.af.Action = null,
     diagnostic: ?c.JSValue = null,
+    pending: ?c.JSValue = null,
+    invocation: em.Engine.NativeInvocation = .{},
     recorded_throw: bool = false,
     finished: bool = false,
 
@@ -69,7 +98,9 @@ pub const Completion = struct {
         // no authority; newly captured cleanup events then have an empty slot.
         self.diagnostic = engine.captured_exception;
         engine.captured_exception = null;
-        self.owner.events();
+        // Own entry pending without releasing another value in this inactive
+        // init record; the first release starts the caller-stable boundary.
+        if (c.JS_HasException(engine.context)) self.pending = c.JS_GetException(engine.context);
         return self;
     }
     pub fn initValue(engine: *em.Engine, result: anyerror!c.JSValue) Completion {
@@ -87,15 +118,31 @@ pub const Completion = struct {
         self.recorded_throw = selected == .thrown;
         return self;
     }
+    fn enter(self: *Completion) void {
+        if (self.invocation.active) return;
+        // init* returns INACTIVE by value. Only this caller-stable address is
+        // linked; never copy/move a record after release/finish has started.
+        self.owner.engine.enterNativeInvocation(&self.invocation);
+        if (self.pending) |first| {
+            self.pending = null;
+            const later = if (c.JS_HasException(self.owner.engine.context)) c.JS_GetException(self.owner.engine.context) else null;
+            _ = c.JS_Throw(self.owner.engine.context, first); // Empty slot.
+            self.owner.events(null);
+            if (later) |reason| { const generation = self.owner.merge(reason, null); self.owner.events(generation); }
+        } else self.owner.events(null);
+    }
     /// Consumes one actual owned native root in the caller's original order.
     pub fn release(self: *Completion, value: c.JSValue) void {
         std.debug.assert(!self.finished);
+        self.enter();
+        const generation = self.owner.engine.native_allocation_generation;
         self.owner.engine.freeValue(value);
-        self.owner.events();
+        self.owner.events(generation);
     }
     /// Consumes actual prompt ArrayList or provider inline32+overflow roots.
     pub fn releaseScope(self: *Completion, scope: anytype) void {
         std.debug.assert(!self.finished);
+        self.enter();
         var roots = scope.values;
         scope.values = .empty;
         if (comptime @hasField(@TypeOf(scope.*), "inline_values")) {
@@ -108,11 +155,16 @@ pub const Completion = struct {
     }
     pub fn finishAction(self: *Completion) anyerror!p.af.Action {
         std.debug.assert(!self.finished);
+        self.enter();
         if (self.diagnostic) |value| { self.diagnostic = null; self.release(value); }
         if (self.owner.chosen != null) if (self.action) |action| {
             self.action = null;
             switch (action) { .returned, .awaited, .thrown => |value| self.release(value) }
         };
+        // Pop before the selected completion or Await can escape. Keep our
+        // chosen first reason owned while the invocation holder retires.
+        _ = self.owner.engine.leaveNativeInvocation(&self.invocation, c.pi_js_undefined());
+        self.owner.events(null);
         self.finished = true;
         if (self.owner.chosen) |reason| {
             self.owner.chosen = null;

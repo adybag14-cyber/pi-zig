@@ -23,9 +23,9 @@
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
-      "length": 17891,
-      "sha256": "97A9CBB5E2D4A4A7858658DC2A3110AAD3F77407AC7BD1E202D6B727F88AA479",
-      "git_blob": "2a66fa80e053a7e83da51136eeeab0d1d7293870"
+      "length": 23706,
+      "sha256": "A6157F07B15003DA16F372A7D8B994DB7CDB53C51FD6A7027C0C1D3035512850",
+      "git_blob": "d3fa4eb610d429a2bfa7804561c91aacc6730bec"
     },
     {
       "path": "src/extensions/native_sdk_runtime_imports.zig",
@@ -41,9 +41,9 @@
     },
     {
       "path": "src/native_sdk_management_http_test.zig",
-      "length": 20385,
-      "sha256": "A2096A0A3C680639A274BFDA142851B006486AB885A85F84657DC3A40A0ECD00",
-      "git_blob": "0644f9348d979087d65e605cac1233d243766c52"
+      "length": 23558,
+      "sha256": "076869F013E51AC895BDA21FF86529EBC9F33A316CA54FB08DD71FF8053D6683",
+      "git_blob": "de1f780ad624af771d7fade36c2de08526d67f6f"
     },
     {
       "path": "src/native_sdk_application_native_test.zig",
@@ -53,23 +53,23 @@
     },
     {
       "path": "src/extensions/native_sdk_owned_completion.zig",
-      "length": 8135,
-      "sha256": "6E5C4C4416290667BD2B49803E9C2F7C63330925A21FBEBCBD54D9297A1C21ED",
-      "git_blob": "311c8a9c01e8f6e58cb6ecfdb6630e7b4d8e2c49"
+      "length": 11240,
+      "sha256": "61949B41830AD2E7FCDB3AEA5CECDE7E8E269C5A96BBED73011CC938CB3D3D50",
+      "git_blob": "7b39b6fabc4bf8a1a82a94738166fd4d2d2e051f"
     },
     {
       "path": "src/native_sdk_owned_completion_test.zig",
-      "length": 13238,
-      "sha256": "4D08941623F507D306627283702479B21B50B320B7F75C55C5149F6ACFB911D1",
-      "git_blob": "743bdd54c599cbf802e0fa5d10d83b1be41c14ca"
+      "length": 17475,
+      "sha256": "E1998519D030B8F66366E4ACAF1BC0596B7D3A502F19FC25BAB663F285570C45",
+      "git_blob": "62df355886bd90e7df914ea8d6c0fd794cfeeecb"
     }
   ],
   "owned": [
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/README.md",
-      "length": 5211,
-      "sha256": "612F20699973C5C63C1F0E5D76215F252C2D2E97DDF8F8BF3C769E062246163C",
-      "git_blob": "f282ed5beead26188ecff549a8e0f7667241349a"
+      "length": 5243,
+      "sha256": "C8E970A1711439962A5C180EEDE44771BFAF8385C4AA80E8D1E185A76C4E6705",
+      "git_blob": "2d44083125d060c18a5a2751f6ef5b36a143215f"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
@@ -79,9 +79,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
-      "length": 6164,
-      "sha256": "C7941614BE80E73425DBB83FD1DB9A25D8153C007D00A5EA5D7567497DEDE138",
-      "git_blob": "06bbde52e35d58cd0a3aba0752a26fe00a841d47"
+      "length": 6204,
+      "sha256": "B6A3851C281D3D9B92ED5A7A03B131AB483DA95BF4B3719CEACCE56E4F95BC8F",
+      "git_blob": "055c4ded41bba329145beb5fdc6e9ab0a2d9ba88"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/observe-management-http.mjs",
@@ -115,15 +115,21 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
-      "length": 5859,
-      "sha256": "AC1479FD59F20E35AEAF983D9E807EF162B59A6C3BE5F3C343BCF91538AF434A",
-      "git_blob": "b9fbbdd32f0a6b3f633f880cbf0b31810a55675a"
+      "length": 8961,
+      "sha256": "89BA1827E7AB67BF723A9EBA97EC9F19C75CC6AFD059081AE1E20FB73E4539AF",
+      "git_blob": "196e04bcc649cbd89069866ddf7ce8b95e6b8a5d"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
       "length": 20120,
       "sha256": "48A2CEEF2FF7FD32861E84CCE4A5AEE3E09486097B74E90ACFE39FCDFDC391CC",
       "git_blob": "2189e0a3e2f6fab389c62b37e470907320315305"
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-048-core-provenance-negative.json",
+      "length": 23673,
+      "sha256": "BE760415CD80B9A9A2076EDB40F230F7B2ED16DE89F661E4EE9FCDAA0D24584E",
+      "git_blob": "d56639243a4d81565a968b2662e34497b0c7bbcd"
     }
   ],
   "protected": [
@@ -444,7 +450,8 @@
     "SDK management HTTP real native fetch allocation failure bypasses retry and guest catch",
     "SDK management HTTP signal spread preserves own keys getters and preflight outside try",
     "SDK management HTTP Source throw survives ordinary sole-holder cleanup while actual fatal promotes",
-    "SDK management HTTP native owner pending entry wins before validation and GPA"
+    "SDK management HTTP native owner pending entry wins before validation and GPA",
+    "SDK management HTTP default expression temporaries retire before later signal getter"
   ],
   "original_caller_rows": 21,
   "native_tests_executed": false,
@@ -480,7 +487,9 @@
     "SDK owned completion returned native result cleanup promotes first actual fatal only",
     "SDK owned completion actual GPA failure never promotes historical captured DATA",
     "SDK owned completion recorded AF throw remains DATA through ordinary cleanup",
-    "SDK owned completion individual native releases preserve fatal through sole Source reason cleanup chain"
+    "SDK owned completion individual native releases preserve fatal through sole Source reason cleanup chain",
+    "SDK owned completion cleanup caught Await rejection is DATA even when newly private",
+    "SDK owned completion exact native free recognizes newly born private pending OOM"
   ],
   "sdk_owned_completion": {
     "api": [
@@ -498,7 +507,18 @@
     "initial_thrown_and_historical_diagnostic_are_data": true,
     "unrun": true,
     "separate_ungranted_run_target": "test-native-sdk-owned-completion",
-    "no_shared_scope_engine_c_changes": true
+    "no_shared_scope_engine_c_changes": true,
+    "capture_provenance_correction": {
+      "no_diagnostic_flag_inference": true,
+      "negative_manifest": "BE760415CD80B9A9A2076EDB40F230F7B2ED16DE89F661E4EE9FCDAA0D24584E",
+      "negative_source": "04850c9ee1188f16c9441c5b2be4dde00eb1583f",
+      "fresh_private_only_actual_pending_per_release": true,
+      "nonrecursive_event_drain": true,
+      "captured_only_diagnostics_always_data": true,
+      "current_metadata_unknown": true,
+      "lazy_stable_invocation": true,
+      "pop_before_finish_await_return": true
+    }
   },
   "source_review_corrections": {
     "negative_manifest_sha256": "48A2CEEF2FF7FD32861E84CCE4A5AEE3E09486097B74E90ACFE39FCDFDC391CC",
@@ -510,5 +530,14 @@
     "retracted_nonfinding": "Exact Bfb Engine.checked already normalizes success+pending before Scope.own; no Engine/p.get correction needed",
     "actual_original21_unchanged": true,
     "original_source_head": "689168f05c99b9650475ca796aacaa64323022d6"
+  },
+  "management_imported_operation_names": [
+    "SDK management HTTP consuming state replacement preserves first event before next field"
+  ],
+  "readonly_current_workspace_metadata": {
+    "scope": "reference bytes only per Root; no Node/job/publicactivation grant",
+    "layout_sha256": "130333B38F5150EEE50F58259D39D29AAC4088E5BB7282296105F39658074E87",
+    "relocations_sha256": "8928A70AD67AF10C61BCF45169E4FAB8C26052A3DBFFAA8D3782E9E7A136A4E2",
+    "reference_byte_receipt": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0"
   }
 }
