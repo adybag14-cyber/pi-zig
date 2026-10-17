@@ -46,7 +46,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             cancel_error: ?u32 = null, cancel_call_active: bool = false,
             quarantined: bool = false, detached: bool = false,
         };
-        const Worker = struct { event: ?H = null, thread: ?H = null, current: ?Ticket = null, arm: u64 = 0 };
+        const Worker = struct { event: ?H = null, thread: ?H = null, current: ?ReadTicket = null, arm: u64 = 0 };
         var gate: w.SRWLOCK = .{};
         var slots: [Limits.tickets]Slot = .{.{}} ** Limits.tickets;
         var workers: [Limits.read_threads]Worker = .{.{}} ** Limits.read_threads;
@@ -56,13 +56,13 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
         var native_failure: ?u32 = null;
         fn lock() void { api.AcquireSRWLockExclusive(&gate); }
         fn unlock() void { api.ReleaseSRWLockExclusive(&gate); }
-        fn valid(ticket: Ticket) !*Slot {
+        fn valid(ticket: ReadTicket) !*Slot {
             if (ticket.slot >= slots.len) return error.NativeTtyReadTicketMismatch;
             const slot = &slots[ticket.slot];
             if (slot.phase == .free or slot.generation != ticket.generation) return error.NativeTtyReadTicketMismatch;
             return slot;
         }
-        fn same(a: Ticket, b: Ticket) bool { return a.slot == b.slot and a.generation == b.generation; }
+        fn same(a: ReadTicket, b: ReadTicket) bool { return a.slot == b.slot and a.generation == b.generation; }
         fn signal(event: H) void { if (api.SetEvent(event) == 0 and native_failure == null) native_failure = api.GetLastError(); }
         fn releaseReferences(references: [3]?Wake.Ref) void { for (references) |reference| if (reference) |value| Wake.release(value); }
         fn initialize() !void {
@@ -83,7 +83,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             const canceller = try std.Thread.spawn(.{ .stack_size = Limits.stack_bytes, .allocator = std.heap.page_allocator }, cancelWorker, .{});
             canceller.detach(); initialized = true;
         }
-        pub fn reserve(reference: Wake.Ref, owner: Lifetime.Ref) !Ticket {
+        pub fn reserve(reference: Wake.Ref, owner: Lifetime.Ref) !ReadTicket {
             lock(); defer unlock(); try initialize();
             for (&slots, 0..) |*slot, index| if (slot.phase == .free and slot.generation != std.math.maxInt(u64)) {
                 var references: [3]?Wake.Ref = .{ null, null, null };
@@ -96,14 +96,14 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             };
             return error.NativeTtyReadTicketCapacity;
         }
-        pub fn submit(ticket: Ticket, mode: Mode) !void {
+        pub fn submit(ticket: ReadTicket, mode: Mode) !void {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase != .reserved) return error.NativeTtyReadAlreadySubmitted;
             slot.handle = try Lifetime.beginReadIo(slot.owner.?);
             slot.io_admitted = true; slot.mode = mode; slot.phase = .queued;
             for (workers) |worker| signal(worker.event.?);
         }
-        pub fn requestCancel(ticket: Ticket) !void {
+        pub fn requestCancel(ticket: ReadTicket) !void {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase == .completed) return;
             if (!slot.cancel_requested) { slot.cancel_requested = true; slot.cancel_started_ms = api.GetTickCount64(); }
@@ -115,7 +115,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
         /// changes. This is never a completion/retirement acknowledgement.
         /// CancelSynchronousIo returns immediately; a successful request or
         /// NOT_FOUND gap still leaves the recurring exact-arm canceller active.
-        pub fn cancelNow(ticket: Ticket) !?u32 {
+        pub fn cancelNow(ticket: ReadTicket) !?u32 {
             try requestCancel(ticket);
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             if (slot.phase != .running or slot.cancel_call_active) { unlock(); return null; }
@@ -131,7 +131,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             signal(cancel_event.?); unlock();
             return if (cancelled or failure == 1168) null else failure;
         }
-        pub fn poll(ticket: Ticket) !?Completion {
+        pub fn poll(ticket: ReadTicket) !?Completion {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.detached) return error.NativeTtyReadOwnerDetached;
             if (slot.phase != .completed) {
@@ -141,12 +141,12 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             return .{ .outcome = slot.outcome, .cancellation_requested = slot.cancel_requested, .cancellation_error = slot.cancel_error, .quarantined = slot.quarantined };
         }
         /// Copy before release; storage belongs to this generation until then.
-        pub fn lineUnits(ticket: Ticket) ![]const u16 {
+        pub fn lineUnits(ticket: ReadTicket) ![]const u16 {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase != .completed or slot.detached) return error.NativeTtyReadCompletionRequired;
             return switch (slot.outcome) { .line => |count| slot.units[0..count], else => error.NativeTtyReadNotLine };
         }
-        pub fn inputRecord(ticket: Ticket) !InputRecord {
+        pub fn inputRecord(ticket: ReadTicket) !InputRecord {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase != .completed or slot.detached) return error.NativeTtyReadCompletionRequired;
             return switch (slot.outcome) { .record => |count| if (count == 1) slot.record else error.NativeTtyReadNoRecord, else => error.NativeTtyReadNotRecord };
@@ -160,19 +160,19 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
             if (value.io_admitted) Lifetime.retireReadIo(value.owner);
             Lifetime.release(value.owner); releaseReferences(value.references);
         }
-        pub fn releaseCompleted(ticket: Ticket) !void {
+        pub fn releaseCompleted(ticket: ReadTicket) !void {
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             if (slot.phase != .completed) { unlock(); return error.NativeTtyReadCompletionRequired; }
             const retired = freeLocked(slot); unlock(); retireNative(retired);
         }
-        pub fn releaseUnsubmitted(ticket: Ticket) !void {
+        pub fn releaseUnsubmitted(ticket: ReadTicket) !void {
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             if (slot.phase != .reserved) { unlock(); return error.NativeTtyReadAlreadySubmitted; }
             const retired = freeLocked(slot); unlock(); retireNative(retired);
         }
         /// No VM root/Engine reference is retained. Native ownership remains
         /// until the actual syscall and exact canceller arm both retire.
-        pub fn detach(ticket: Ticket) !void {
+        pub fn detach(ticket: ReadTicket) !void {
             try requestCancel(ticket);
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             slot.detached = true;
@@ -192,7 +192,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
                     continue;
                 }
                 const slot = &slots[selected.?];
-                const ticket: Ticket = .{ .slot = @intCast(selected.?), .generation = slot.generation };
+                const ticket: ReadTicket = .{ .slot = @intCast(selected.?), .generation = slot.generation };
                 if (workers[index].arm == std.math.maxInt(u64)) { native_failure = 534; unlock(); return; }
                 workers[index].arm += 1; workers[index].current = ticket;
                 slot.worker = @intCast(index); slot.arm = workers[index].arm; slot.phase = .running;
@@ -253,7 +253,7 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
                     }
                     if (slot.phase != .running) { unlock(); continue; }
                     const worker = slot.worker.?;
-                    const ticket: Ticket = .{ .slot = @intCast(index), .generation = slot.generation };
+                    const ticket: ReadTicket = .{ .slot = @intCast(index), .generation = slot.generation };
                     if (workers[worker].current == null or !same(workers[worker].current.?, ticket) or workers[worker].arm != slot.arm) { unlock(); continue; }
                     slot.cancel_call_active = true;
                     const thread = workers[worker].thread.?;

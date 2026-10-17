@@ -34,7 +34,7 @@ pub fn Pool(comptime Wake: type) type {
         var native_failure: ?u32 = null;
         fn lock() void { api.AcquireSRWLockExclusive(&gate); }
         fn unlock() void { api.ReleaseSRWLockExclusive(&gate); }
-        fn valid(ticket: Ticket) !*Slot {
+        fn valid(ticket: Reference) !*Slot {
             if (ticket.slot >= slots.len) return error.NativeTtyCloseTicketMismatch;
             const slot = &slots[ticket.slot];
             if (slot.phase == .free or slot.generation != ticket.generation) return error.NativeTtyCloseTicketMismatch;
@@ -49,7 +49,7 @@ pub fn Pool(comptime Wake: type) type {
             thread.detach(); initialized = true;
         }
         /// Reserve both native wake entitlements BEFORE DuplicateHandle.
-        pub fn reserve(reference: Wake.Ref) !Ticket {
+        pub fn reserve(reference: Wake.Ref) !Reference {
             lock(); defer unlock(); try initialize();
             for (&slots, 0..) |*slot, index| if (slot.phase == .free and slot.generation != std.math.maxInt(u64)) {
                 const owner = try Wake.retain(reference); errdefer Wake.release(owner);
@@ -62,12 +62,12 @@ pub fn Pool(comptime Wake: type) type {
         }
         /// Exclusive ownership transfer of the actual duplicate, without an
         /// extra CRT fd allocation or a borrowed File's independent close.
-        pub fn associate(ticket: Ticket, owned_duplicate: H) !void {
+        pub fn associate(ticket: Reference, owned_duplicate: H) !void {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase != .reserved) return error.NativeTtyCloseAlreadyAssociated;
             slot.handle = owned_duplicate; slot.phase = .associated;
         }
-        pub fn releaseUnassociated(ticket: Ticket) !void {
+        pub fn releaseUnassociated(ticket: Reference) !void {
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             if (slot.phase != .reserved) { unlock(); return error.NativeTtyCloseAlreadyAssociated; }
             const owner = slot.owner_wake.?; const worker_ref = slot.worker_wake.?;
@@ -75,7 +75,7 @@ pub fn Pool(comptime Wake: type) type {
         }
         /// Caller proved every real read/write on this handle has retired.
         /// No cancellation/timeout request is accepted as that proof.
-        pub fn submitAfterIo(ticket: Ticket) !void {
+        pub fn submitAfterIo(ticket: Reference) !void {
             lock(); defer unlock(); const slot = try valid(ticket);
             if (slot.phase == .associated) {
                 slot.phase = .queued;
@@ -83,7 +83,7 @@ pub fn Pool(comptime Wake: type) type {
             } else if (slot.phase == .reserved) return error.NativeTtyCloseNativeHandleRequired;
         }
         fn freeLocked(slot: *Slot) void { const generation = slot.generation; slot.* = .{ .generation = generation }; }
-        pub fn poll(ticket: Ticket) !?Result {
+        pub fn poll(ticket: Reference) !?Result {
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             if (slot.detached) { unlock(); return error.NativeTtyCloseOwnerDetached; }
             if (slot.phase == .retained_failure) { const result = slot.result; unlock(); return result; }
@@ -95,7 +95,7 @@ pub fn Pool(comptime Wake: type) type {
             switch (result) { .closed => freeLocked(slot), .failed => { slot.phase = .retained_failure; slot.owner_wake = null; } }
             unlock(); Wake.release(owner); return result;
         }
-        pub fn detachAfterIo(ticket: Ticket) !void {
+        pub fn detachAfterIo(ticket: Reference) !void {
             try submitAfterIo(ticket);
             lock(); const slot = valid(ticket) catch |err| { unlock(); return err; };
             slot.detached = true;

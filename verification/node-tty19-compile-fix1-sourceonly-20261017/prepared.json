@@ -1,0 +1,424 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_ACTUAL_FIRST_COMPILE_DIAGNOSTIC_CORRECTION_UNCOMPILED",
+  "parent": "3338bfa57526688de28c85bc386b566f64d211cd",
+  "raw_diagnostics": "evidence/root-tty19-buildquery-20261017-213245/compile.stderr.log",
+  "raw_diagnostics_sha256": "64FB5FF7C4DDCCF4D5E9E58026F744AAB2DD387E3F88CB84CD78368ABC76BF28",
+  "compile_facts_reported_by_Root": {
+    "pid": 59400,
+    "exit_code": 1,
+    "terminal_utc": "2026-10-17T21:39:27Z",
+    "outer82971_postseal": "Not audited here; Root closure pending",
+    "actual_metadata": "UNOBSERVED"
+  },
+  "observed_error_count": 50,
+  "diagnostics": [
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 135,
+      "column": 30,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 144,
+      "column": 52,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 152,
+      "column": 33,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 153,
+      "column": 30,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 154,
+      "column": 30,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 155,
+      "column": 32,
+      "message": "function parameter shadows declaration of 'receiver'"
+    },
+    {
+      "path": "src/extensions/native_node_tty.zig",
+      "line": 29,
+      "column": 35,
+      "message": "function parameter shadows declaration of 'index'"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 37,
+      "column": 26,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 52,
+      "column": 46,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 65,
+      "column": 34,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 70,
+      "column": 44,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 78,
+      "column": 38,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 86,
+      "column": 29,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "line": 98,
+      "column": 38,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 49,
+      "column": 80,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 59,
+      "column": 26,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 65,
+      "column": 20,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 86,
+      "column": 67,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 99,
+      "column": 31,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 106,
+      "column": 38,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 118,
+      "column": 34,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 134,
+      "column": 29,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 144,
+      "column": 34,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 149,
+      "column": 36,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 163,
+      "column": 41,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 168,
+      "column": 43,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 175,
+      "column": 31,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 195,
+      "column": 31,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "line": 256,
+      "column": 35,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 15,
+      "column": 56,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 32,
+      "column": 29,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 77,
+      "column": 34,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 83,
+      "column": 35,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 89,
+      "column": 39,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 92,
+      "column": 32,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 95,
+      "column": 39,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 101,
+      "column": 40,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 109,
+      "column": 41,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 113,
+      "column": 39,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 118,
+      "column": 54,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 123,
+      "column": 35,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 126,
+      "column": 58,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 136,
+      "column": 41,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 150,
+      "column": 40,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 158,
+      "column": 37,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "line": 173,
+      "column": 34,
+      "message": "ambiguous reference"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_modes.zig",
+      "line": 29,
+      "column": 22,
+      "message": "capture shadows declaration of 'snapshot'"
+    },
+    {
+      "path": "src/native_node_tty_assembly_event_control.zig",
+      "line": 35,
+      "column": 19,
+      "message": "local constant 'actual' shadows function parameter from outer scope"
+    },
+    {
+      "path": "src/native_node_tty_builtin_alias_control.zig",
+      "line": 19,
+      "column": 11,
+      "message": "invalid left-hand side to assignment"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "line": 65,
+      "column": 21,
+      "message": "operator == not allowed for type 'error{JavaScriptException}!?anyerror'"
+    }
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "bytes": 23097,
+      "sha256": "C70B0BD6CD884073B3E448CA0140511994A5D21C1F3980FB11DD36C69F0BAA28",
+      "diagnostics": 7
+    },
+    {
+      "path": "src/extensions/native_node_tty.zig",
+      "bytes": 14522,
+      "sha256": "89052A156C48F7DEACB50DFC664C1FFDC263DFC19E932B99C351935CEB377BF5",
+      "diagnostics": 1
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "bytes": 8255,
+      "sha256": "7ACBD62074FC4B59AAD15101F6F947E7CB8F704A72F870EF970A93E45549A9CA",
+      "diagnostics": 7
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "bytes": 18447,
+      "sha256": "4FDE674C193B97D761BD9CF05AE215290842E6611E7F746C3A1BC9E0F344D659",
+      "diagnostics": 15
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "bytes": 11260,
+      "sha256": "DA02ABF3A069A1D429065C4F49AB1F4DB17CA7561CDE8C99BEE5EE8BF897F093",
+      "diagnostics": 17
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_modes.zig",
+      "bytes": 3460,
+      "sha256": "4A745EA0D154ED01B6AC851AA2F64FD888330C99494504C3720E34433DDEA323",
+      "diagnostics": 1
+    },
+    {
+      "path": "src/native_node_tty_assembly_event_control.zig",
+      "bytes": 14988,
+      "sha256": "04C275F0074A319C546A43989772FC2B3E0FE5C7849A5B365FFF1170D9A1AAAE",
+      "diagnostics": 1
+    },
+    {
+      "path": "src/native_node_tty_builtin_alias_control.zig",
+      "bytes": 10387,
+      "sha256": "43D309C96C9634B4BA5A22237362D9F98808C47228C9BCF1E4E5D0A04392E9CC",
+      "diagnostics": 1
+    }
+  ],
+  "preserved": [
+    {
+      "path": "src/extensions/engine.zig",
+      "blob": "cb9114ad1508a192a9b0123aff398d861a203f2e",
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "blob": "48a6a5dbcc210cf1e505bc731a80c6ac3304d5b6",
+      "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769"
+    },
+    {
+      "path": "src/extensions/node_buffer.zig",
+      "blob": "638c545e42f12440a8b3a1eaf9515f43e24a6108",
+      "sha256": "CCBEC71ED6F77644058DB6F0FFE79EFB822616F5CE1593BF9917DEF9BDCFC7EA"
+    },
+    {
+      "path": "build.zig",
+      "blob": "4fa556b880d71823cc1d1c3f1656a3d5c0c6434f",
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "blob": "71653819eeca489b5e16cb60bf143442c9a7d972",
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "blob": "c9b544cb3f5616368648a87cf87fb04193883513",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "blob": "a1b689283c422bd258a6a4c8876e689a3b892805",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    }
+  ],
+  "source_declarations": 19,
+  "assertions_changed": false,
+  "FS_coordination": "Dependency owner confirmed sixparameter renames keep receiver() API and optionalerror unwrap preserving event/history; ownsnooverlappingedits",
+  "corrections": [
+    "SocketScope get/call/invoke/put/set/index parameter receiver->receiver_value; public methodreceiver unchanged",
+    "Scope.captureEntry explicitly unwraps optionalerror before equality; null remains history and JavaScriptException remains event",
+    "TTYroot index parameter->root_index; Modescaptures snapshot->frontend_snapshot; forwardedcreateRequire localactual->forwarded",
+    "Keepboth module/generic publicTicket/Ref aliases; use existing underlyingReference/ReadTicket explicitly inside affectedtypes/functions",
+    "Expand source-loader restoredefer into block withsameif/else assignment"
+  ],
+  "no_C_H_Engine_Main_or_build_change": true,
+  "no_jobs_started": true,
+  "execution_grant": false,
+  "warm_cache_authority": "None here. Root may issue exact explicitUNSEALED213245privatecache exception only afteroriginalpost/absenceclosure; freshoutput required",
+  "further_compile_errors": "Unknown until next actual Rootcompile; no allerrorsfixed/runtimeclaim"
+}

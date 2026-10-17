@@ -32,9 +32,9 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
         }
         fn createRequireForward(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
             const state = active.?; std.debug.assert(context == state.engine.context);
-            const actual = c.JS_Call(context, state.real_create_require, state.module, argc, argv);
-            if (!c.JS_IsException(actual)) { state.engine.gpa = state.failing.allocator(); state.armed = true; }
-            return actual;
+            const forwarded = c.JS_Call(context, state.real_create_require, state.module, argc, argv);
+            if (!c.JS_IsException(forwarded)) { state.engine.gpa = state.failing.allocator(); state.armed = true; }
+            return forwarded;
         }
         fn defaultGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
             const state = active.?; std.debug.assert(context == state.engine.context);

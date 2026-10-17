@@ -62,7 +62,9 @@ pub const Cleanup = struct {
         const captured = takeCaptured(self.engine);
         if (pending) |value| self.event(value);
         if (captured) |value| {
-            if (err == error.JavaScriptException) self.event(value) else self.history(value);
+            if (err) |failure| {
+                if (failure == error.JavaScriptException) self.event(value) else self.history(value);
+            } else self.history(value);
         }
         self.collect();
     }
@@ -132,7 +134,7 @@ pub const Scope = struct {
         };
         return value;
     }
-    pub fn get(self: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_GetPropertyStr(self.engine.context, receiver, name), generation); }
+    pub fn get(self: *Scope, receiver_value: c.JSValue, name: [*:0]const u8) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_GetPropertyStr(self.engine.context, receiver_value, name), generation); }
     pub fn global(self: *Scope, name: [*:0]const u8) !c.JSValue {
         try self.engine.checkNativeEntry();
         const generation = self.engine.native_allocation_generation;
@@ -141,7 +143,7 @@ pub const Scope = struct {
     pub fn text(self: *Scope, value: []const u8) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_NewStringLen(self.engine.context, value.ptr, value.len), generation); }
     pub fn object(self: *Scope) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_NewObject(self.engine.context), generation); }
     pub fn array(self: *Scope) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_NewArray(self.engine.context), generation); }
-    pub fn call(self: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_Call(self.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)), generation); }
+    pub fn call(self: *Scope, function: c.JSValue, receiver_value: c.JSValue, args: []const c.JSValue) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_Call(self.engine.context, function, receiver_value, @intCast(args.len), @constCast(args.ptr)), generation); }
     pub fn construct(self: *Scope, constructor: c.JSValue, args: []const c.JSValue) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_CallConstructor(self.engine.context, constructor, @intCast(args.len), @constCast(args.ptr)), generation); }
     pub fn receiver(self: *Scope, target: c.JSValue) !c.JSValue {
         const prototype = try self.get(target, "prototype");
@@ -149,10 +151,10 @@ pub const Scope = struct {
         return self.ownSince(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(self.engine.context, prototype) else c.JS_NewObject(self.engine.context), generation);
     }
     pub fn getIndex(self: *Scope, target: c.JSValue, index_value: u32) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_GetPropertyUint32(self.engine.context, target, index_value), generation); }
-    pub fn invoke(self: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { const function = try self.get(receiver, name); return self.call(function, receiver, args); }
-    pub fn put(self: *Scope, receiver: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_DefinePropertyValueStr(self.engine.context, receiver, name, c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
-    pub fn set(self: *Scope, receiver: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_SetPropertyStr(self.engine.context, receiver, name, c.JS_DupValue(self.engine.context, value)); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
-    pub fn index(self: *Scope, receiver: c.JSValue, index_value: u32, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_DefinePropertyValueUint32(self.engine.context, receiver, index_value, c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
+    pub fn invoke(self: *Scope, receiver_value: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { const function = try self.get(receiver_value, name); return self.call(function, receiver_value, args); }
+    pub fn put(self: *Scope, receiver_value: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_DefinePropertyValueStr(self.engine.context, receiver_value, name, c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
+    pub fn set(self: *Scope, receiver_value: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_SetPropertyStr(self.engine.context, receiver_value, name, c.JS_DupValue(self.engine.context, value)); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
+    pub fn index(self: *Scope, receiver_value: c.JSValue, index_value: u32, value: c.JSValue) !void { try self.engine.checkNativeEntry(); const result = c.JS_DefinePropertyValueUint32(self.engine.context, receiver_value, index_value, c.JS_DupValue(self.engine.context, value), c.JS_PROP_C_W_E); try self.engine.checkNativeEntry(); if (result < 0) return js.capture(self.engine); }
     pub fn concat(self: *Scope, left: c.JSValue, right: c.JSValue) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_PiBinaryOperator(self.engine.context, 0, left, right), generation); }
     pub fn stringify(self: *Scope, value: c.JSValue) !c.JSValue { try self.engine.checkNativeEntry(); const generation = self.engine.native_allocation_generation; return self.ownSince(c.JS_ToString(self.engine.context, value), generation); }
     pub fn truthy(self: *Scope, value: c.JSValue) bool { return c.JS_ToBool(self.engine.context, value) == 1; }

@@ -26,7 +26,7 @@ pub const Inputs = struct {
     colors: colors.Exports,
 };
 const R = enum(usize) { lexical, net, tty, is_tty, invalid_fd, init_failed, errno, require, integer };
-fn root(roots: []const c.JSValue, index: R) c.JSValue { return roots[@intFromEnum(index)]; }
+fn root(roots: []const c.JSValue, root_index: R) c.JSValue { return roots[@intFromEnum(root_index)]; }
 fn constructor(s: *v.Scope, name: [*:0]const u8, length: c_int, callback: f.Callback, roots: []const c.JSValue, net: c.JSValue) !c.JSValue {
     const function = try s.own(try f.create(s.engine, name, length, true, callback, roots));
     const prototype = try h.get(s, function, "prototype");

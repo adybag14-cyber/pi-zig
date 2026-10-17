@@ -12,7 +12,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
     return struct {
         pub const Ref = Reference;
         const Console = consoles.Console(ClosePool, Wake);
-        pub const Admission = union(enum) { reference: Ref, failure: consoles.Failure };
+        pub const Admission = union(enum) { reference: Reference, failure: consoles.Failure };
         pub const Close = Console.Close;
         const Phase = enum { free, live, closing, closed, failed, transferred };
         const Slot = struct {
@@ -29,7 +29,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
         var slots: [maximum_leases]Slot = .{.{}} ** maximum_leases;
         fn lock() void { while (gate.cmpxchgWeak(false, true, .acquire, .monotonic) != null) std.atomic.spinLoopHint(); }
         fn unlock() void { gate.store(false, .release); }
-        fn valid(reference: Ref) !*Slot {
+        fn valid(reference: Reference) !*Slot {
             if (reference.slot >= slots.len) return error.NativeTtyLeaseMismatch;
             const slot = &slots[reference.slot];
             if (slot.phase == .free or slot.generation != reference.generation) return error.NativeTtyLeaseMismatch;
@@ -74,31 +74,31 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
         }
         /// Admission-only retain; all operation refs precede owner detachment.
         /// Existing native refs may retire afterward without reattaching a sink.
-        pub fn retain(reference: Ref) !Ref {
+        pub fn retain(reference: Reference) !Reference {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase != .live or slot.detached) return error.NativeTtyLeaseRetired;
             if (slot.references == std.math.maxInt(usize)) return error.NativeTtyLeaseReferences;
             slot.references += 1; return reference;
         }
-        pub fn release(reference: Ref) void {
+        pub fn release(reference: Reference) void {
             lock(); defer unlock();
             const slot = valid(reference) catch return;
             std.debug.assert(slot.references != 0);
             slot.references -= 1; retireLocked(slot);
         }
-        pub fn requestedFd(reference: Ref) !c_int {
+        pub fn requestedFd(reference: Reference) !c_int {
             lock(); defer unlock(); return (try valid(reference)).console.?.requested_fd;
         }
-        pub fn kind(reference: Ref) !consoles.Kind {
+        pub fn kind(reference: Reference) !consoles.Kind {
             lock(); defer unlock(); return (try valid(reference)).console.?.kind;
         }
-        pub fn beginReadIo(reference: Ref) !w.HANDLE {
+        pub fn beginReadIo(reference: Reference) !w.HANDLE {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase != .live or slot.detached or slot.read_in_flight or slot.console.?.kind != .input) return error.NativeTtyReadAdmission;
             const handle = try slot.console.?.beginIo();
             slot.read_in_flight = true; return handle;
         }
-        pub fn retireReadIo(reference: Ref) void {
+        pub fn retireReadIo(reference: Reference) void {
             lock(); defer unlock(); const slot = valid(reference) catch return;
             std.debug.assert(slot.read_in_flight);
             slot.read_in_flight = false; slot.console.?.retireIo();
@@ -106,24 +106,24 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
             // acknowledgement. Last release, not elapsed time, transfers close.
             retireLocked(slot);
         }
-        pub fn getWindowSize(reference: Ref) !consoles.QuerySize {
+        pub fn getWindowSize(reference: Reference) !consoles.QuerySize {
             lock(); defer unlock(); const slot = try valid(reference);
             return slot.console.?.getWindowSize();
         }
-        pub fn setBlocking(reference: Ref, flag: bool) !void {
+        pub fn setBlocking(reference: Reference, flag: bool) !void {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase != .live or slot.detached) return error.NativeTtyLeaseRetired;
             try slot.console.?.setBlocking(flag);
         }
-        pub fn setRawModeAfterReadRetired(reference: Ref, flag: bool, legacy_translator: bool) !?u32 {
+        pub fn setRawModeAfterReadRetired(reference: Reference, flag: bool, legacy_translator: bool) !?u32 {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase != .live or slot.detached or slot.read_in_flight) return error.NativeTtyReadRetirementRequired;
             return slot.console.?.setRawModeAfterReadRetired(flag, legacy_translator);
         }
-        pub fn rawMode(reference: Ref) !bool {
+        pub fn rawMode(reference: Reference) !bool {
             lock(); defer unlock(); return (try valid(reference)).console.?.raw;
         }
-        pub fn applyRawModeAfterCancelRequest(reference: Ref, flag: bool) !?u32 {
+        pub fn applyRawModeAfterCancelRequest(reference: Reference, flag: bool) !?u32 {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase != .live or slot.detached) return error.NativeTtyLeaseRetired;
             // Actual native KEY_EVENT translator is present, including the
@@ -133,7 +133,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
         /// The calling VM owner is the sole synchronous writer. Registry guard
         /// only publishes native admission; no long console syscall runs under
         /// this spin guard. The output module owns its actual native mutex.
-        pub fn writeBlocking(reference: Ref, bytes: []const u8) !output.Result {
+        pub fn writeBlocking(reference: Reference, bytes: []const u8) !output.Result {
             lock(); const slot = valid(reference) catch |err| { unlock(); return err; };
             if (slot.phase != .live or slot.detached or slot.write_in_flight or slot.console.?.kind != .output) { unlock(); return error.NativeTtyWriteAdmission; }
             slot.write_in_flight = true;
@@ -147,7 +147,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
         }
         /// Freeze all new native IO immediately. Already retained operation
         /// refs survive; no fake final/close completion follows this request.
-        pub fn requestClose(reference: Ref) !bool {
+        pub fn requestClose(reference: Reference) !bool {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.phase == .closed or slot.phase == .transferred) return true;
             if (slot.phase == .failed) return slot.retirement_failure orelse error.NativeTtyCloseRetained;
@@ -155,7 +155,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
             if (slot.write_in_flight) return false;
             return slot.console.?.requestClose();
         }
-        pub fn pollClose(reference: Ref) !?Close {
+        pub fn pollClose(reference: Reference) !?Close {
             lock(); defer unlock(); const slot = try valid(reference);
             if (slot.detached) return error.NativeTtyLeaseDetached;
             if (slot.phase == .closed) return .closed;
@@ -170,7 +170,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
             };
             return result;
         }
-        pub fn detach(reference: Ref) !void {
+        pub fn detach(reference: Reference) !void {
             lock(); defer unlock(); const slot = try valid(reference);
             slot.detached = true;
             if (slot.phase == .live) slot.phase = .closing;

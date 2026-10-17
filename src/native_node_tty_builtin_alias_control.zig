@@ -16,7 +16,13 @@ pub fn loaderReplacement(engine: *v.em.Engine) !void {
     const previous = engine.source_loader;
     // Restore through the public setter when available. A fresh loader-less
     // Engine is kept loader-less afterward; aliases keep the host normalizer.
-    defer if (previous) |loader| engine.setSourceLoader(loader) else engine.source_loader = null;
+    defer {
+        if (previous) |loader| {
+            engine.setSourceLoader(loader);
+        } else {
+            engine.source_loader = null;
+        }
+    }
     var state: Control.State = .{};
     engine.setSourceLoader(.{ .context = &state, .load = Control.load, .normalize = Control.normalize });
     try engine.registerModule("fixture/dep.mjs", "export const observed = 'actual-user-input';");

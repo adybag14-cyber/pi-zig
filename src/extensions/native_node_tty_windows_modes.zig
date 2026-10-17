@@ -26,7 +26,7 @@ var reset_error: ?u32 = null;
 /// frontend's validated native original snapshot wins at first initialization;
 /// it must not be replaced with a mode already changed by a guest/TUI.
 pub fn attach(engine: *v.em.Engine, capability: ?frontend.Snapshot) !void {
-    if (capability) |snapshot| try snapshot.validate(engine);
+    if (capability) |frontend_snapshot| try frontend_snapshot.validate(engine);
     api.AcquireSRWLockExclusive(&gate); defer api.ReleaseSRWLockExclusive(&gate);
     if (users == std.math.maxInt(usize)) return error.NativeTtyModeAuthorityReferences;
     if (!initialized) {
@@ -35,7 +35,7 @@ pub fn attach(engine: *v.em.Engine, capability: ?frontend.Snapshot) !void {
         if (@intFromPtr(handle) == std.math.maxInt(usize)) initialize_error = api.GetLastError() else {
             input = handle;
             var mode: u32 = 0;
-            if (api.GetConsoleMode(handle, &mode) != 0) original = if (capability) |snapshot| snapshot.original_mode else mode else initialize_error = api.GetLastError();
+            if (api.GetConsoleMode(handle, &mode) != 0) original = if (capability) |frontend_snapshot| frontend_snapshot.original_mode else mode else initialize_error = api.GetLastError();
         }
     }
     users += 1;
