@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "source_head": "6ad2362a051f287f7815928376b0a30e933960dd",
+  "ref": "checkpoint/jiti-public-factory-sourceonly-20261017",
+  "scope": "independent public raw byte readback only; no runtime qualification",
+  "all_public_bytes_match": true,
+  "records": [
+    {
+      "path": "src/extensions/native_jiti_native_import.zig",
+      "size": 1067,
+      "sha256": "48F5FEEEF3C45A15ACD759B7C0C7AA2E7D8AB390EA6142EB7E3B070486CC1A48",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/src/extensions/native_jiti_native_import.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_profile.zig",
+      "size": 12109,
+      "sha256": "950E320EFADC7C463E0EFC391F2925B463BEBC1121E9EA0427BA04BD106C1DC7",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/src/extensions/native_jiti_profile.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_public_factory.zig",
+      "size": 7900,
+      "sha256": "37485E63272B643977C39C847F8702DC07DDB381F5164EC882972B0A5D905871",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/src/extensions/native_jiti_public_factory.zig"
+    },
+    {
+      "path": "src/native_jiti_public_factory_controls.zig",
+      "size": 15034,
+      "sha256": "7AC76E9CFFB9C4BAC2F83663721364492DF71911EEF31B1CF326B9BEDEE7E817",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/src/native_jiti_public_factory_controls.zig"
+    },
+    {
+      "path": "src/native_jiti_public_factory_test.zig",
+      "size": 841,
+      "sha256": "0AA29A72F80D27865204864F893C2EDD2FE21AD674ECF52A2A7273C9A0594F40",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/src/native_jiti_public_factory_test.zig"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/README.md",
+      "size": 9638,
+      "sha256": "84A0F5D6D22266587527D9705754B4A8F52F0E7D19B0DAA85FE12411B676B8DD",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/README.md"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/eval.ts.txt",
+      "size": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/eval.ts.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "size": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/jiti-LICENSE.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/jiti-lib-jiti.cjs.txt",
+      "size": 646,
+      "sha256": "A80E7F04D21D4EF5C540287E41D6AB36DBFF73132620E1894CD83425BB1E62A7",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/jiti-lib-jiti.cjs.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/jiti-lib-jiti.mjs.txt",
+      "size": 624,
+      "sha256": "48A7909DF16A2A93E814D2C7A6F105EEA7B291AE6BCB968FB2CA21A37CB61B1E",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/jiti-lib-jiti.mjs.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/jiti-package.json.txt",
+      "size": 4784,
+      "sha256": "AAB8AAFC42D9AEEC14A6E2FE0E15EA1514C0C205A624055A7E776F2EC456283C",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/jiti-package.json.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/jiti.ts.txt",
+      "size": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/jiti.ts.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/authority/qualified-graph0-binding.zig.txt",
+      "size": 1247,
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/authority/qualified-graph0-binding.zig.txt"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/original-7a7-prepared.json",
+      "size": 9939,
+      "sha256": "18CFA42D383591ADDEEAEFB284AB55B2CEBF34910273F527A1EDD5CE516DE2B8",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/original-7a7-prepared.json"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/prepared.json",
+      "size": 10257,
+      "sha256": "4EA524B0E9ACDA2320B1034FC4542BC221D81312BDF3A6E72D6CB499CC788855",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/prepared.json"
+    },
+    {
+      "path": "verification/jiti-public-factory-sourceonly-20261017/source-input.mjs",
+      "size": 4018,
+      "sha256": "5106EF10DE97C38A29F86BA099EAA4C4CCF280B92C8A906AE61FF605DD197102",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/6ad2362a051f287f7815928376b0a30e933960dd/verification/jiti-public-factory-sourceonly-20261017/source-input.mjs"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source_head": "6ad2362a051f287f7815928376b0a30e933960dd",
+  "reviewer": "/root/async_c_review_resume",
+  "result": "source-review-closed-no-scoped-blocker",
+  "manifest_sha256": "4EA524B0E9ACDA2320B1034FC4542BC221D81312BDF3A6E72D6CB499CC788855",
+  "manifest_records": 44,
+  "record_hash_and_length_drift": 0,
+  "expected_absent": true,
+  "products_unchanged_since": "02f5b85621a46070225ff873809a965c2909aa90",
+  "review_scope": "Actual public wrapper/getter/spread/lazy/receiver/raw-C3/canonical composition/owned pending event before private cache and real ESM namespace publication; genuine required Module/cache identity preconditions",
+  "final_test_only_fix": "Immediately defer-free raw failed result so unexpected success on assertion failure is owned",
+  "public_readback_sha256": "57D129B5E82E20FE1B03E273BFC205B2A687CBE4D74E77B2A47CA66AAB62F2B4",
+  "public_readback_paths": 16,
+  "runtime_jobs_run": [],
+  "compiled": false,
+  "native_qualified": false,
+  "whole_profile_available": false,
+  "default_selection": false,
+  "remaining": [
+    "actual Node/CommonJS/createRequire/bootstrap and native Babel Module publication",
+    "completed actual pathe resolve/filename + shared MLLY/hasESMSyntax namespaces",
+    "real utilities TTY/crypto/filesystem/path/os/performance/process/libraryRequire dependencies",
+    "native default grammar/options/source-format/diagnostic frontier",
+    "actual esmEval/temp-module fallback",
+    "Graph2 resource reclamation/default-interop and whole SDK integration qualification"
+  ]
+}
