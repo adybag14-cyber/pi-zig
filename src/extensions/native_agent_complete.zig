@@ -88,8 +88,12 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
         if (entry.get) {
             try accessor(engine, prototype, entry);
         } else {
-            const callback = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
-            if (entry.async_body) {
+            const genuine_routing = entry.body == .prompt or entry.body == .continueRun;
+            const callback = try scope.own(if (genuine_routing)
+                try @import("native_agent_prompt_async.zig").create(engine, if (entry.body == .prompt) .prompt else .continue_run)
+            else
+                try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
+            if (entry.async_body and !genuine_routing) {
                 const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
                 if (c.JS_SetPrototype(engine.context, callback, parent) < 0) return js.capture(engine);
             }
