@@ -56,15 +56,20 @@ pub fn verifyActualNamespaceAndConstruction(engine: *em.Engine, actual_namespace
     const same_lazy = try js.get(engine, constructed_options, "transform"); defer engine.freeValue(same_lazy);
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, transform, same_lazy));
 }
-/// No fake cache object is used: construct a real Module with the actual
-/// constructor, then deliberately do NOT publish it. A namespace cannot leak.
-pub fn verifyUnpublishedModuleRejected(engine: *em.Engine, actual_inputs: profile.Inputs) !void {
+/// Revision2: readiness is not eager Module publication. Real native CJS
+/// registration admits the namespace while the real require cache stays empty.
+pub fn verifyReadinessLeavesBabelUnloaded(engine: *em.Engine, actual_inputs: profile.Inputs) !void {
     var staged = try profile.prepare(engine, actual_inputs); defer staged.deinit();
-    var args = [_]c.JSValue{actual_inputs.babel_filename};
-    const actual_module = try engine.checked(c.JS_CallConstructor(engine.context, staged.module_constructor, args.len, &args)); defer engine.freeValue(actual_module);
+    const cache = try js.get(engine, staged.module_constructor, "_cache"); defer engine.freeValue(cache);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, cache, engine.commonjs_cache));
+    const before = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(before);
+    try std.testing.expect(c.JS_IsUndefined(before));
     try std.testing.expect(c.JS_IsUndefined(staged.namespace));
-    try std.testing.expectError(error.RequiredActualPublishedNativeBabelModule, profile.complete(engine, &staged, actual_module));
-    try std.testing.expect(c.JS_IsUndefined(staged.namespace));
+    const namespace = try profile.complete(engine, &staged); defer engine.freeValue(namespace);
+    const after = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(after);
+    try std.testing.expect(c.JS_IsUndefined(after));
+    const again = try profile.complete(engine, &staged); defer engine.freeValue(again);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, namespace, again));
 }
 /// Entry event must win without consulting any namespace getter/allocating
 /// declarations. This is the actual pending slot, not a flagged rejected datum.
@@ -137,46 +142,80 @@ pub fn verifyPendingLazyLoadAndRetry(engine: *em.Engine, actual_inputs: public_f
     try std.testing.expect(c.JS_IsObject(cached));
     try std.testing.expectEqual(@as(i32, 2), count(engine.context, observer));
 }
-fn pendingExports(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    c.JS_SetUncatchableError(context, roots[1]);
-    _ = c.JS_Throw(context, c.JS_DupValue(context, roots[1]));
-    return c.JS_DupValue(context, roots[0]);
+fn forbiddenCacheRead(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    if (c.JS_SetPropertyStr(context, roots[0], "calls", c.JS_NewInt32(context, count(context, roots[0]) + 1)) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    return c.JS_Throw(context, c.JS_DupValue(context, roots[1]));
 }
-/// Instrument the REAL published Module's real exports field, returning its
-/// SAME backend while leaving an actual current VM event. No namespace may
-/// be installed and the existing CJS Module/cache identity must stay intact.
-pub fn verifyPendingModuleGetterBeforeNamespace(engine: *em.Engine, staged: *profile.Prepared, actual_module: c.JSValue, actual_pending_reason: c.JSValue) !void {
+/// Completing lazy readiness must not even read guest Module._cache. This
+/// instruments the REAL canonical ctor property; no fake cache or Module.
+pub fn verifyReadinessDoesNotReadModuleCache(engine: *em.Engine, staged: *profile.Prepared, actual_forbidden_reason: c.JSValue) !void {
     try std.testing.expect(engine.captured_exception == null);
     const diagnostics = engine.native_exception_diagnostics_suppressed;
-    const actual_exports = try js.get(engine, actual_module, "exports"); defer engine.freeValue(actual_exports);
-    try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual_exports, staged.native_babel_exports));
-    const atom = c.JS_NewAtom(engine.context, "exports"); if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+    const atom = c.JS_NewAtom(engine.context, "_cache"); if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     defer c.JS_FreeAtom(engine.context, atom);
     var descriptor: c.JSPropertyDescriptor = undefined;
-    if (c.JS_GetOwnProperty(engine.context, &descriptor, actual_module, atom) != 1) return error.RequiredActualBabelOwnExports;
+    if (c.JS_GetOwnProperty(engine.context, &descriptor, staged.module_constructor, atom) != 1) return error.RequiredActualCanonicalModuleCache;
     defer engine.freeValue(descriptor.value); defer engine.freeValue(descriptor.getter); defer engine.freeValue(descriptor.setter);
-    if (!c.JS_IsUndefined(descriptor.getter) or !c.JS_IsUndefined(descriptor.setter)) return error.RequiredActualBabelDataExports;
-    var roots = [_]c.JSValue{ actual_exports, actual_pending_reason };
-    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, pendingExports, "get exports", 0, 0, roots.len, &roots)); defer engine.freeValue(getter);
-    if (c.JS_DefinePropertyGetSet(engine.context, actual_module, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), descriptor.flags & (c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE)) < 0) return js.capture(engine);
-    defer { _ = c.JS_DefinePropertyValue(engine.context, actual_module, atom, c.JS_DupValue(engine.context, descriptor.value), descriptor.flags & c.JS_PROP_C_W_E); }
-    try std.testing.expectError(error.JavaScriptException, profile.complete(engine, staged, actual_module));
-    const reason = engine.captured_exception orelse return error.MissingActualModuleGetterEvent;
-    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual_pending_reason));
-    try std.testing.expect(c.JS_IsUndefined(staged.namespace));
-    const cache = try js.get(engine, staged.module_constructor, "_cache"); defer engine.freeValue(cache);
-    const current = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(current);
-    try std.testing.expect(c.JS_IsStrictEqual(engine.context, current, actual_module));
+    if (!c.JS_IsUndefined(descriptor.getter) or !c.JS_IsUndefined(descriptor.setter)) return error.RequiredActualCanonicalCacheData;
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, descriptor.value, engine.commonjs_cache));
+    const observer = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())); defer engine.freeValue(observer);
+    if (c.JS_DefinePropertyValueStr(engine.context, observer, "calls", c.JS_NewInt32(engine.context, 0), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return js.capture(engine);
+    var roots = [_]c.JSValue{ observer, actual_forbidden_reason };
+    const getter = try engine.checked(c.JS_NewCFunctionData2(engine.context, forbiddenCacheRead, "get _cache", 0, 0, roots.len, &roots)); defer engine.freeValue(getter);
+    if (c.JS_DefinePropertyGetSet(engine.context, staged.module_constructor, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), descriptor.flags & (c.JS_PROP_CONFIGURABLE | c.JS_PROP_ENUMERABLE)) < 0) return js.capture(engine);
+    defer { _ = c.JS_DefinePropertyValue(engine.context, staged.module_constructor, atom, c.JS_DupValue(engine.context, descriptor.value), descriptor.flags & c.JS_PROP_C_W_E); }
+    const namespace = try profile.complete(engine, staged); defer engine.freeValue(namespace);
+    try std.testing.expect(!c.JS_IsUndefined(namespace));
+    try std.testing.expectEqual(@as(i32, 0), count(engine.context, observer));
+    const current = try js.getKey(engine, descriptor.value, staged.babel_filename); defer engine.freeValue(current);
+    try std.testing.expect(c.JS_IsUndefined(current));
     try std.testing.expect(engine.last_error == null);
     try std.testing.expectEqual(diagnostics, engine.native_exception_diagnostics_suppressed);
-    engine.captured_exception = null; engine.freeValue(reason);
 }
-pub fn verifyPendingBeforeComplete(engine: *em.Engine, staged: *profile.Prepared, actual_module: c.JSValue, actual_pending_reason: c.JSValue) !void {
+pub fn verifyPendingBeforeComplete(engine: *em.Engine, staged: *profile.Prepared, actual_pending_reason: c.JSValue) !void {
     _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, actual_pending_reason));
-    try std.testing.expectError(error.JavaScriptException, profile.complete(engine, staged, actual_module));
+    try std.testing.expectError(error.JavaScriptException, profile.complete(engine, staged));
     try std.testing.expect(staged.phase == .prepared);
     try std.testing.expect(c.JS_IsUndefined(staged.namespace));
     const reason = engine.captured_exception orelse return error.MissingActualCompleteEntryEvent;
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual_pending_reason));
     engine.captured_exception = null; engine.freeValue(reason);
+}
+/// Requires genuine complete createRequire/_load/load/_compile/wrapSafe and the
+/// retained physical Babel file. The provider is invoked ONLY by first real
+/// lazyTransform require; no host-created Module/cache record supplies it.
+pub fn verifyActualFirstLazyLoad(engine: *em.Engine, staged: *profile.Prepared, actual_inputs: profile.Inputs, actual_transform_options: c.JSValue) !void {
+    const namespace = try profile.complete(engine, staged); defer engine.freeValue(namespace);
+    const cache = try js.get(engine, staged.module_constructor, "_cache"); defer engine.freeValue(cache);
+    const before = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(before);
+    try std.testing.expect(c.JS_IsUndefined(before));
+    const options = try js.object(engine); defer engine.freeValue(options);
+    if (c.JS_DefinePropertyValueStr(engine.context, options, "fsCache", c.pi_js_bool(engine.context, 0), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return js.capture(engine);
+    const factory = try js.get(engine, namespace, "createJiti"); defer engine.freeValue(factory);
+    const jiti = try js.call(engine, factory, c.pi_js_undefined(), &.{ actual_inputs.physical_filename, options }); defer engine.freeValue(jiti);
+    const resolved = try js.get(engine, jiti, "options"); defer engine.freeValue(resolved);
+    const lazy = try js.get(engine, resolved, "transform"); defer engine.freeValue(lazy);
+    const still_missing = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(still_missing);
+    try std.testing.expect(c.JS_IsUndefined(still_missing));
+    const first = try js.call(engine, lazy, c.pi_js_undefined(), &.{actual_transform_options}); defer engine.freeValue(first);
+    try std.testing.expect(c.JS_IsObject(first));
+    const actual_module = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(actual_module);
+    try std.testing.expect(c.JS_IsObject(actual_module));
+    const exports = try js.get(engine, actual_module, "exports"); defer engine.freeValue(exports);
+    const loaded = try js.get(engine, actual_module, "loaded"); defer engine.freeValue(loaded);
+    const filename = try js.get(engine, actual_module, "filename"); defer engine.freeValue(filename);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, exports, staged.native_babel_exports));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, filename, staged.babel_filename));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, loaded, c.pi_js_bool(engine.context, 1)));
+    const parent = try @import("extensions/native_node_module_constructor.zig").lastParent(engine, staged.module_constructor, actual_module); defer engine.freeValue(parent);
+    try std.testing.expect(c.JS_IsObject(parent));
+    const parent_filename = try js.get(engine, parent, "filename"); defer engine.freeValue(parent_filename);
+    const file_url_to_path = try js.get(engine, actual_inputs.node_url, "fileURLToPath"); defer engine.freeValue(file_url_to_path);
+    const physical_parent = try js.call(engine, file_url_to_path, c.pi_js_undefined(), &.{actual_inputs.module_url}); defer engine.freeValue(physical_parent);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, parent_filename, physical_parent));
+    const second = try js.call(engine, lazy, c.pi_js_undefined(), &.{actual_transform_options}); defer engine.freeValue(second);
+    const same_module = try js.getKey(engine, cache, staged.babel_filename); defer engine.freeValue(same_module);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, same_module, actual_module));
+    const same_parent = try @import("extensions/native_node_module_constructor.zig").lastParent(engine, staged.module_constructor, actual_module); defer engine.freeValue(same_parent);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, parent, same_parent));
 }
