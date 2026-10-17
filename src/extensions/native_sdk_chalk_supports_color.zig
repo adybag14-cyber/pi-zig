@@ -34,8 +34,8 @@ fn regex(s: *Scope, pattern: []const u8, flags: []const u8, input: c.JSValue) !b
     return s.truthy(try s.invoke(expression, "test", &.{input}));
 }
 fn hasFlag(s: *Scope, process: c.JSValue, comptime flag: []const u8) !bool {
-    const deno = try s.global("Deno");
-    const argv = if (s.truthy(deno)) try s.get(try s.global("Deno"), "args") else try s.get(process, "argv");
+    const deno = try s.get(try s.global("globalThis"), "Deno");
+    const argv = if (s.truthy(deno)) try s.get(try s.get(try s.global("globalThis"), "Deno"), "args") else try s.get(process, "argv");
     const flag_text = try s.text(flag);
     const prefix = try s.text(if (s.truthy(try s.invoke(flag_text, "startsWith", &.{try s.text("-")}))) "" else if (flag.len == 1) "-" else "--");
     const position = try s.invoke(argv, "indexOf", &.{try s.concat(prefix, flag_text)});

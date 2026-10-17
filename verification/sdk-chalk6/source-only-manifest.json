@@ -10,8 +10,8 @@
     },
     {
       "path": "src/extensions/native_sdk_chalk_supports_color.zig",
-      "bytes": 10145,
-      "sha256": "4406FBD29A70C60266122DA918AC0E209F7D3F04F6DF392A1EE29CEA3CE35022"
+      "bytes": 10195,
+      "sha256": "E276C234920DA4A942FDF25F1FFE9FFDA4A10ACB35ACDF44484210A0E71CAC32"
     },
     {
       "path": "src/extensions/native_sdk_chalk_test.zig",
