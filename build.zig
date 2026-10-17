@@ -1586,6 +1586,23 @@ pub fn build(b: *std.Build) void {
     linkSqlite(current_jiti_sdk_agent_compile_only.root_module, sqlite_lib_dir, sqlite_library);
     current_jiti_sdk_agent_compile_only.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-current-main-jiti-sdk-agent-compile-only-artifact", "Compile/link actual current Jiti, dependencies, SDK application and Agent AF/control bodies; NEVER RUN").dependOn(&b.addInstallArtifact(current_jiti_sdk_agent_compile_only, .{}).step);
+    // Prospective expanded f912/c43 body gate: install only, NEVER RUN.
+    const expanded_jiti_sdk_agent_compile_only = b.addTest(.{
+        .name = "pi-expanded-jiti-sdk-agent-compile-only",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_jiti_expanded_compile_only_root.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "EXPANDED_MAIN_COMPILE_LINK_ONLY_SENTINEL_NEVER_EXECUTE", "native get-tsconfig JSONC", "jiti MD5 actual", "jiti MD5 every", "jiti local cancellation", "jiti local quota", "native jiti mlly", "mlly ", "native jiti pathe", "Pathe ", "jiti nativeImport actual", "native Agent AF correction", "SDK actual application", "CommonJS patched script", "CommonJS load failure", "converted CommonJS" },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, expanded_jiti_sdk_agent_compile_only.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, expanded_jiti_sdk_agent_compile_only.root_module, typescript_parser);
+    linkSqlite(expanded_jiti_sdk_agent_compile_only.root_module, sqlite_lib_dir, sqlite_library);
+    expanded_jiti_sdk_agent_compile_only.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        expanded_jiti_sdk_agent_compile_only.root_module.linkSystemLibrary("advapi32", .{});
+        expanded_jiti_sdk_agent_compile_only.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-expanded-main-jiti-sdk-agent-compile-only-artifact", "Compile/link actual latest full Agent AF, SDK bootstrap and Jiti/CommonJS bodies; NEVER RUN").dependOn(&b.addInstallArtifact(expanded_jiti_sdk_agent_compile_only, .{}).step);
+
     const sdk_application_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_native_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual application"},
