@@ -59,15 +59,15 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
-      "length": 6415,
-      "sha256": "A1A611B0991CDCC4D8CEFFF2A122CBE661C0082E0333828B6C6408F32EDABF1A",
-      "git_blob": "cb9706bfcd17539356f9e684c114de523d14a5ab"
+      "length": 6594,
+      "sha256": "4DC0EB004029BC3A187E2C036A05DA96275156C09AC0861AD3B552266D3A28C4",
+      "git_blob": "6b1651c250b95213c6ba267aad8fe5d3cec32868"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
-      "length": 5542,
-      "sha256": "8FDF7DBA86ABCF65D5F846DA3A7BFAE5AA072260990D1D27CD50EDB0A8ACD0A2",
-      "git_blob": "f170a0254c657325e86a0bda3132ad80cad06792"
+      "length": 5687,
+      "sha256": "9F5A2C1E026BF3FBE8B4BB1584999EE383CA7B084EEC11E3D1B4333775195770",
+      "git_blob": "94a611a1d54ab588c9a86610351b4092022975de"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/observe-management-http.mjs",
@@ -433,5 +433,10 @@
     "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-66c-original.json",
     "sha256": "214BC929C21EBBAA5F5C517921668AA085CDAF79E2F3716F8B63693871E10DD6",
     "status": "initial pre-index physical CRLF pins for two new product files; Git canonical LF differs; retained unchanged negative; current manifest pins canonical physical bytes"
+  },
+  "historical_documentation_manifest": {
+    "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-b80-original.json",
+    "sha256": "F3E871000C085461B946A1F9636372BF1EDDF541E0854E90D14229EED8FE5CA1",
+    "status": "b80 package row overstates AF migration; current source inspection proves all33 package methods already genuine AF; product bytes unchanged"
   }
 }
