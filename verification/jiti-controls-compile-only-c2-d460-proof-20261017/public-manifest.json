@@ -1,0 +1,804 @@
+{
+  "scope": "C2 exact d460 compile/link only, no Main or runtime qualification",
+  "source_head": "d460a3258903fb4b4e724c4ddc7b266e394315fe",
+  "intake_base": "4188de7b4190869cd3229f8544e291ab03867858",
+  "archive": {
+    "path": "compile83-c2-d460-raw-proof-20261017.zip",
+    "bytes": 23163693,
+    "sha256": "BD844B9FBD8286E20A38A24F77EC5AE0F84037C1AC7275E52422694F36981905",
+    "entries": 155,
+    "uncompressed_bytes": 287106441.0
+  },
+  "raw_audit_sha256": "A4572FB40978B35823E5E7557E4F6724EF94DDE20EA7178F3AAFD7688176DF78",
+  "original_audited_mapping_sha256": "62E278C225CE250EBD6D8943B4F1991D186461810D9AEB746EE5FC305213DB04",
+  "files": [
+    {
+      "path": "audit/Audit-Compile83.ps1",
+      "bytes": 13812,
+      "sha256": "9BCADC6702EE92875C144BC857FB526D6704AABEF59453CD6654371D376CABCF"
+    },
+    {
+      "path": "audit/Build-PublicList.ps1",
+      "bytes": 5745,
+      "sha256": "FF8809DF4CA0C48E38FD065B7DF28EC285A26CA36A43D1C71A998260E7AEE6CD"
+    },
+    {
+      "path": "audit/README.md",
+      "bytes": 3405,
+      "sha256": "045A473E8DDB2CB9F123A252DDCBCB69F2082377C9BB05D348EA12C2D67BFF7F"
+    },
+    {
+      "path": "audit/raw-audit.json",
+      "bytes": 3756,
+      "sha256": "A4572FB40978B35823E5E7557E4F6724EF94DDE20EA7178F3AAFD7688176DF78"
+    },
+    {
+      "path": "authority/.pi-zig-workspace.json",
+      "bytes": 817,
+      "sha256": "D551DA72833FA330C8365A625E4FDD6D2693456BAC5333C080E9657D1E38DFBF"
+    },
+    {
+      "path": "authority/evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+    },
+    {
+      "path": "authority/path-relocations.json",
+      "bytes": 109801,
+      "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/README.md",
+      "bytes": 3592,
+      "sha256": "CD40906666120B0AFDE1957B2E8CC28AC78F2C95CBAF0FC154A152B441B492C7"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 12533,
+      "sha256": "2C8BCA9B60B20CEFFDDA353FA80A7DC4FD64921EA63DC79298CE5A9FBAFC6BB9"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/prepared-manifest.json",
+      "bytes": 2178,
+      "sha256": "445CC74129C73E2159D5FBD3E25EC7031572ED23D49B423163885FEA19D32FD1"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-grant.template.json",
+      "bytes": 828,
+      "sha256": "B07E4F272228281D38223E961C1984AA3436F66B75E24DCEBEF60C1F607A6CBE"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316-grant.json",
+      "bytes": 971,
+      "sha256": "79F0ACEAA46291A0065A47DA88A8A9EE1D6D25A2BA0EEE1475B3399753A6D445"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316-outer-absence.json",
+      "bytes": 88,
+      "sha256": "7BE71B0C25D2E54455C07F11EAFCB90FA0EF5DBE9B5672735BB9F9C4D6351BCD"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316-outer.json",
+      "bytes": 1730,
+      "sha256": "A063A34DF9E70A563F70DED1055DEB6014F6395FD98D678E321EC7C1E2A7E4B8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316-outer.stderr.log",
+      "bytes": 330,
+      "sha256": "1DE456EA1B76A7E9174A5FD3DB8AF63DD4755D20D73BC6BB85C31F6EF622A60F"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316-outer.stdout.bin",
+      "bytes": 990,
+      "sha256": "62467A6C5D5C11F67DEE41272975A5E9EFBF0ECFD8B2E5DB8F9900548C45D12E"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/before.json",
+      "bytes": 9688965,
+      "sha256": "C91745DD83F2F032B1CCA4FC637D09434E07997A4E7A63B10C7AA241D3F5DBAE"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/compile-admission.json",
+      "bytes": 179,
+      "sha256": "EC1D4C44FAB09A64D8CF4C8BEC496DF9BE181CAEE5C24943F6A44E1D5139CBD1"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/compile-plan.json",
+      "bytes": 873,
+      "sha256": "7EC72696FB0C530AA1F4074CE5F22DD3285D59EEDBE829043CB0AE254C827602"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/compile.json",
+      "bytes": 2362,
+      "sha256": "4F776F3784C148F1300374333316E0F022111B59D5DF8796E803284B4E4BC407"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/compile.stderr.log",
+      "bytes": 21029,
+      "sha256": "D44BADC97F8C36B4C5ADEF835705F03E08781EFFAAF123DAF079D32898CD50D5"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/final.json",
+      "bytes": 9688965,
+      "sha256": "DEB892F850B72105D9923520883145744F291410240F0BC1CCDD64D7AB8144D6"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/initial-admission.json",
+      "bytes": 179,
+      "sha256": "5980BBB9A59ECADBF50DDCD47A5B92F973565FB661D516E24204C1A13DEF16AD"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/owner-absence.json",
+      "bytes": 331,
+      "sha256": "51FDAB6046DE6E305F1D67E360812E0B9D4133ABF6F82F1D5835D126216277BB"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/process-census-final.json",
+      "bytes": 47590636,
+      "sha256": "2C671063F40391D14D1067C5C5B20147B4DC4DA423C4E1150894FC37BF4EC778"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/result.json",
+      "bytes": 990,
+      "sha256": "62467A6C5D5C11F67DEE41272975A5E9EFBF0ECFD8B2E5DB8F9900548C45D12E"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-native-prepared-20261017/root-jiti-83-compile-only-20261017-134316/root-grant.json",
+      "bytes": 971,
+      "sha256": "79F0ACEAA46291A0065A47DA88A8A9EE1D6D25A2BA0EEE1475B3399753A6D445"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/README.md",
+      "bytes": 5344,
+      "sha256": "99A00CB9DE1E50647646E8CE00275B85828ACDF52DEC0110AFF76EC2961A6586"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 14232,
+      "sha256": "6057C0F37B02C0925FEAD95B22E70EAA3BFCB467432945BAB00E898F84F39BFA"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/driver-retry-source.diff",
+      "bytes": 8556,
+      "sha256": "30D4ED5472AB31B229BA60B96337F1413385DDCEAB88570B8BED8B07DB8136F6"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/negative-original.json",
+      "bytes": 5321,
+      "sha256": "7239399103FDF955E58E230095C02AA8A70F6B7DEC372CF4E92EDB532CE33F97"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/prepared-manifest.json",
+      "bytes": 2855,
+      "sha256": "D6537B868D3F570B2D68E152671E2DD222702FF72380445E964576140A4AAB21"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-grant.template.json",
+      "bytes": 1031,
+      "sha256": "F87B5A3D377F05521C76401B7999E71A81470A62951754AEE6AB1665E6497B55"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417-grant.json",
+      "bytes": 1502,
+      "sha256": "D818BDC2174B8ED131545D75BC89DE3EDC6240DB083FFAFE8C3BE4000EE8BC87"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417-outer-absence.json",
+      "bytes": 88,
+      "sha256": "E4A998B6E7FB36857762C7ACB431A0E4EE04AAF95E459D6E4E3AD2D86DA134C2"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417-outer.json",
+      "bytes": 1730,
+      "sha256": "D6BD27D4161D042AFAFE0FD98E20BC1ED50CA493417415294291FBC7CEF09A0E"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417-outer.stderr.log",
+      "bytes": 329,
+      "sha256": "B0DF0917647BD0557EEB627CDA1E94C149F4FDE8EE5CD7F84E029FA4D7993299"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417-outer.stdout.bin",
+      "bytes": 1031,
+      "sha256": "6B4C71AC35691E3E6FEBA159D23C7133B640D7AA77F6358A41BC1BCC7E599F45"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/before.json",
+      "bytes": 9689187,
+      "sha256": "5BA5A3638282C3AD2394BFE8D689BF27920C7E54EC91626780CF7AB3FF1CF94A"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/compile-admission.json",
+      "bytes": 179,
+      "sha256": "2625260BD2CAE6A25FF80118B78F2AD0394544B89D343DF3BF95505CE818178E"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/compile-plan.json",
+      "bytes": 1320,
+      "sha256": "0FA0F0C0407A44F2A795312164234B1EA80508B6C950AD06A63A703A47850E94"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/compile.json",
+      "bytes": 2362,
+      "sha256": "89805A536616516F47AFEDB23627CE58F09404E9C68AF06861ABFA58AFC53159"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/compile.stderr.log",
+      "bytes": 21983,
+      "sha256": "2536CA11AC54E46722CC289B9EED7661133C65E5A70F55F28958BE50491FA74C"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/final.json",
+      "bytes": 9689187,
+      "sha256": "22B8E9CB79105A3B79C869EBCA31F8D93EDA55A8EA8F19C4B8CA96FAD5B685D8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/initial-admission.json",
+      "bytes": 179,
+      "sha256": "BDD7396D29925D6D469B0F6ED217A506F030B25689D1B30348A32AD181258155"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/owner-absence.json",
+      "bytes": 331,
+      "sha256": "0B27000E379A8C46EFEFD824B237ED7F99EFF3BBF69EECF978B649F3BD4AA604"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/process-census-final.json",
+      "bytes": 47409844,
+      "sha256": "CB908FF7628352983A29ACF90111C00D2B0C52B241DC34B09EBB4037FA3660E8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/result.json",
+      "bytes": 1031,
+      "sha256": "6B4C71AC35691E3E6FEBA159D23C7133B640D7AA77F6358A41BC1BCC7E599F45"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry-prepared-20261017/root-jiti-83-compile-retry-20261017-140417/root-grant.json",
+      "bytes": 1502,
+      "sha256": "D818BDC2174B8ED131545D75BC89DE3EDC6240DB083FFAFE8C3BE4000EE8BC87"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/README.md",
+      "bytes": 5344,
+      "sha256": "8B491B8E361188634736A4454836F71DB809253E91193C367649819A52B6C77D"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 14232,
+      "sha256": "0DB0A453B862FA928A195FA294FB6EA3E1E1AB2DD13B507ABDEE97A39BABCE3D"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/head-only-source-review.json",
+      "bytes": 4181,
+      "sha256": "EF73D117BFD1AD7C63557B883F08FECF28A0D6FECD25470420B648AA4E7C5E8C"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/negative-original.json",
+      "bytes": 5321,
+      "sha256": "7239399103FDF955E58E230095C02AA8A70F6B7DEC372CF4E92EDB532CE33F97"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/prepared-manifest.json",
+      "bytes": 2855,
+      "sha256": "1CE0E5A1BF52963FA23CA048F466F7066EF7A418D4F9EC2B162B46ED5B46250B"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-grant.template.json",
+      "bytes": 1031,
+      "sha256": "2F8EAB40859D853BE9738E1468FF2B415D955B8D4201534D529917FBD73B10F3"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221-grant.json",
+      "bytes": 1432,
+      "sha256": "2CE6ED49B75F7CFFE48E6953374244AED66B5E0778D7BAE8CC5E51C8025C58B8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221-outer-absence.json",
+      "bytes": 88,
+      "sha256": "546D206984AB4E375934F2D634862B42C9C2D9F47749BC2C0526909F98607D94"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221-outer.json",
+      "bytes": 1738,
+      "sha256": "E7E60B8550BA121F43EBB24135CC39E94DE026EBD4F208820A9B9F305618B546"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221-outer.stderr.log",
+      "bytes": 330,
+      "sha256": "1428BFC1DCA65BD110E11DD0CE08FFCB0240C8AF483038BB25243999359BE111"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221-outer.stdout.bin",
+      "bytes": 1031,
+      "sha256": "83F0A561545FCE60F25F44D399E79B5F2FA8B1CE902B412665DFA4B710F10771"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/before.json",
+      "bytes": 9689196,
+      "sha256": "849E6EDC8A413DC711D9F0E4E70C886D55D008E17E772C230C609C079914ECF3"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/compile-admission.json",
+      "bytes": 179,
+      "sha256": "464AA2EA80D673035D80BEEEAFB6A14BABBA504B57689377CD6AF49BA8819682"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/compile-plan.json",
+      "bytes": 1322,
+      "sha256": "145481AF3C46AA2371BB5F977CD63085C03E76160DCF73F64643BA7AED072423"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/compile.json",
+      "bytes": 2366,
+      "sha256": "769B8D94D6B5241B835313B1866D25BA5AC41F4FADC5CB53121B98A133DF3115"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/compile.stderr.log",
+      "bytes": 21347,
+      "sha256": "694A50424BE66C327CF2DAAAA8CB107203C41DC0FF6E8E7F3663E5745D3D0F05"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/final.json",
+      "bytes": 9689196,
+      "sha256": "689B6BCA4679A2C0F4762B4BD6E6D4D47DFA9BB1C3274EF059DCE17583042752"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/initial-admission.json",
+      "bytes": 179,
+      "sha256": "A2EFCFD3116692CB7BC012BD9C7FDA2A37EA1B9F2D90E022E1E3E031BEBA3535"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/owner-absence.json",
+      "bytes": 333,
+      "sha256": "EC059B036450D4403EB6E3D7DC53FB78C14512A793CA92C88BD7D2A91EF358D3"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/process-census-final.json",
+      "bytes": 48760403,
+      "sha256": "813FCDD80BA226F16C2C30CBE4350606901C2A189E231C3CD40807E6F4930084"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/result.json",
+      "bytes": 1031,
+      "sha256": "83F0A561545FCE60F25F44D399E79B5F2FA8B1CE902B412665DFA4B710F10771"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry3-prepared-20261017/root-jiti-83-compile-retry3-20261017-141221/root-grant.json",
+      "bytes": 1432,
+      "sha256": "2CE6ED49B75F7CFFE48E6953374244AED66B5E0778D7BAE8CC5E51C8025C58B8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/README.md",
+      "bytes": 5344,
+      "sha256": "7F04B2E68E5548E1A0230034AC7EC3669A66EDDB3D7202506542D249DABA7DA9"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 14232,
+      "sha256": "1CC8A417DF223E27A1728AB4E4B82391A16A94960302D8A7A2802960BDFD4371"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/head-only-source-review.json",
+      "bytes": 565,
+      "sha256": "E7AE8DA8CCA8AD7883F3ADB9235447010CDA5FDBC1BE12260CCC85F2A7441441"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/negative-original.json",
+      "bytes": 5321,
+      "sha256": "7239399103FDF955E58E230095C02AA8A70F6B7DEC372CF4E92EDB532CE33F97"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/prepared-manifest.json",
+      "bytes": 2894,
+      "sha256": "2885A2E05AF7D07ACBFDD2101454E8FFAA004B054FE288E4146F89BD699FD66C"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-grant.template.json",
+      "bytes": 1031,
+      "sha256": "BCAE0884E5FC0DFBAC52E8B7C9AC57C878A756A8AD32C08647A62B034F1B2DD6"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404-grant.json",
+      "bytes": 1435,
+      "sha256": "BEEAD1EF45BB00FCA8303FD11869E33C0D1BC276063E9F57F5A3771DFA15C890"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404-outer-absence.json",
+      "bytes": 88,
+      "sha256": "9914AC7AA10D16759AF38774BFF6F5BB0A3CBC2515663067F839D0045BAE557D"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404-outer.json",
+      "bytes": 1657,
+      "sha256": "F8EFDA4229336838C8B854ABEB9844F23595E7A8CAEB18AEDED78395BDDF4208"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404-outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404-outer.stdout.bin",
+      "bytes": 3344,
+      "sha256": "522C34F330691985A6131E2CAA23CB6B7FFEC90503FF107D32C37FD7902526B8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/artifacts-before.json",
+      "bytes": 823,
+      "sha256": "22F440BFE78FB75514AE5BC28B59C26F382368617794639B44B6A87425E07618"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/artifacts-final.json",
+      "bytes": 965,
+      "sha256": "09B7AC09A7D3443C6FFDCAE506ADEBB4F238775323883AB09BD4F4C057AA25A4"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/before.json",
+      "bytes": 9689196,
+      "sha256": "4A781480848F173886D656A8185F8CC1A51B3884945F1DBC30BA37FA6FA994CE"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/compile-admission.json",
+      "bytes": 179,
+      "sha256": "8BA9A91D96E658D49A9AA4B98F758CCFB226743D7CE5ECBB83F19F827147166D"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/compile-plan.json",
+      "bytes": 1322,
+      "sha256": "DDCE19EACE7BD43EBFF66C24281A1415679DEAFD8B5158DE9AD8CA8C24FFBCFA"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/compile.json",
+      "bytes": 2256,
+      "sha256": "A1D3237A7B201D2AB684FD67C64FFB5DBB563FAFF48236637D72ABDDBD596290"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/compile.stderr.log",
+      "bytes": 14235,
+      "sha256": "F1DBF39E07363F6E241D4ED55395261F01278D616232A3859AA33FADC5290CC7"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/final.json",
+      "bytes": 9689196,
+      "sha256": "A375F23D7D48AD6C9F50C64B759F88A4B9AE8AF885CC50B4B3067D8F41FFE62D"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/initial-admission.json",
+      "bytes": 179,
+      "sha256": "F824422BAE0DBC220A22C111767D35B632F459A1A8BC56BF39A9982DC1F40D04"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/owner-absence.json",
+      "bytes": 333,
+      "sha256": "3194E3441CCA04F25A715C0E5854B7A0BFC24852CB859DD9A9B0B4A43B7CC214"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/process-census-final.json",
+      "bytes": 48846069,
+      "sha256": "3CB2EBD446289898E8390DA47C74C71344134D519EA1653DC0F78DE9A70DDB99"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/result.json",
+      "bytes": 3344,
+      "sha256": "522C34F330691985A6131E2CAA23CB6B7FFEC90503FF107D32C37FD7902526B8"
+    },
+    {
+      "path": "evidence/jiti-controls-compile-only-retry4-prepared-20261017/root-jiti-83-compile-retry4-20261017-143404/root-grant.json",
+      "bytes": 1435,
+      "sha256": "BEEAD1EF45BB00FCA8303FD11869E33C0D1BC276063E9F57F5A3771DFA15C890"
+    },
+    {
+      "path": "source-d460/build.zig",
+      "bytes": 341400,
+      "sha256": "686B7D2F90570DCEF0AE26B4F066F64F12F8C75AD73527A28E799FECC493613A"
+    },
+    {
+      "path": "source-d460/src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "source-d460/src/extensions/engine_abi.c",
+      "bytes": 7528,
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "source-d460/src/extensions/engine_abi.h",
+      "bytes": 1544,
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "source-d460/src/extensions/native_ai_provider_values.zig",
+      "bytes": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "path": "source-d460/src/extensions/native_file_stat.zig",
+      "bytes": 18426,
+      "sha256": "B6163A4F9C34425985E7E48841894A01A062582A75D1165AA07792F61D08AE7D"
+    },
+    {
+      "path": "source-d460/src/extensions/native_get_tsconfig.zig",
+      "bytes": 3900,
+      "sha256": "3F47F63AC7384868F191E46966D9269CEED13B22A89007F8F10786E4C3F104C3"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_budget.zig",
+      "bytes": 1767,
+      "sha256": "B3ECB37B66C11A0FDC343BAC9BA6D259EAB796463065825F4EED29E457AE35A8"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_cjs_eval.zig",
+      "bytes": 3696,
+      "sha256": "EB86B3F5055E760447DD8BD2BC1734033A46B70507733BE0BAA509592DE3B94D"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_colors.zig",
+      "bytes": 4826,
+      "sha256": "DB52800B2F0843FD15FD52425308501223C3470C8D953170F2B09FBBEA6BCBA5"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_core_factory.zig",
+      "bytes": 21545,
+      "sha256": "470A53960EDF65CF9875AF34519B9EB75D1744EDB94AA66679BBD63B51C020E4"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_core_graph.zig",
+      "bytes": 1295,
+      "sha256": "C79FAB61E10FA5B799709269A75CBE3AE6F50FD73F30118F692F26D879234ECA"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_crypto.zig",
+      "bytes": 6352,
+      "sha256": "9CE4A00F033FCFA81F603269E2121040EB4559AD3B04B25D6B8C13C8D381CCD3"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_eval_frontend.zig",
+      "bytes": 12437,
+      "sha256": "876A673135D59AAFC23B0B932A0B9D91C296426AC9CB4E8E658813A360397F96"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_eval_module.zig",
+      "bytes": 14891,
+      "sha256": "8C0A8FB35F16F4E5515F727023C37D7D99CFD6968D0B4DE592B75C975DD4F7DF"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_fs_cache.zig",
+      "bytes": 12196,
+      "sha256": "099F5FD86204EA18E8CAC676E9F86E7B81EA1A109AC34B0F15C83BC76DE75EEC"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_import.zig",
+      "bytes": 4827,
+      "sha256": "E135917642E56A10170D704FF7A460CE7EA20B222AFDB05CBA73A89BEAFEBBF0"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_interop.zig",
+      "bytes": 8842,
+      "sha256": "459613161BD0A4A314EE6F2B03FBC851BCD55D22BD91DB837843668B3A86FFCF"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_module_cache.zig",
+      "bytes": 4815,
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_module_cells.zig",
+      "bytes": 10027,
+      "sha256": "2D445C2DA0F1830933C41506B2053AD80651E5F53089956CE0A4364356782627"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_options.zig",
+      "bytes": 7054,
+      "sha256": "9CA32E5C7ABA46C0145C6D0E7EB7316DC855909CB17F60F81471CBF6E743BB77"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_require.zig",
+      "bytes": 15301,
+      "sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_resolve.zig",
+      "bytes": 13578,
+      "sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_transform.zig",
+      "bytes": 3712,
+      "sha256": "2C87DD9837B543E6BEA1A9FD874519CBF05A0478F87C82A057724888F3F4D68C"
+    },
+    {
+      "path": "source-d460/src/extensions/native_jiti_utils.zig",
+      "bytes": 12479,
+      "sha256": "2B8A1196A378977CE5ED9A19849C248BCF3D05CED17816491F58E5011D1CA333"
+    },
+    {
+      "path": "source-d460/src/extensions/native_mlly_syntax.zig",
+      "bytes": 3884,
+      "sha256": "EB08DF47846926FD15121656C1EF177ECDE7A65AD785BCFCAD9A819805ADEEAE"
+    },
+    {
+      "path": "source-d460/src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "source-d460/src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "source-d460/src/extensions/typescript.zig",
+      "bytes": 24307,
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9"
+    },
+    {
+      "path": "source-d460/src/native_get_tsconfig_test.zig",
+      "bytes": 6154,
+      "sha256": "CC81AA933F491EEC279FC27E84F5D3A55EDCEBB0AC4808C8BA8D700BBCC85F64"
+    },
+    {
+      "path": "source-d460/src/native_jiti_compile_only_root.zig",
+      "bytes": 5943,
+      "sha256": "36FE25C2E8500450ECC19A7F05AF8A8E7DA3D55DC9DE9A5612F656E3FD9E82A5"
+    },
+    {
+      "path": "source-d460/src/native_jiti_core_factory_controls.zig",
+      "bytes": 6742,
+      "sha256": "9A38A2E141F5B5763579C99E4CDC76A6E4460D361AFCD8C0CD5C8F79E76A2C19"
+    },
+    {
+      "path": "source-d460/src/native_jiti_eval_module_controls.zig",
+      "bytes": 7148,
+      "sha256": "6F80BD2DB976DFD7CF34E82BA23873E4D18C66183527206B1C146521F021A669"
+    },
+    {
+      "path": "source-d460/src/native_jiti_import_rejected_data_controls.zig",
+      "bytes": 10257,
+      "sha256": "83287BF725AD696741BB0519C20C33E1CE0D450F51A81C59D0646AAB75A57989"
+    },
+    {
+      "path": "source-d460/src/native_jiti_options_controls.zig",
+      "bytes": 8483,
+      "sha256": "AFD2953D671308C613ECD1F3950CAF2611BE98390E31B1F0C344C45D3AFDF403"
+    },
+    {
+      "path": "source-d460/src/native_jiti_utils_controls.zig",
+      "bytes": 11304,
+      "sha256": "2D4C088CCCBF54CA4CEDDCC656740E27DCB7F834A4BA98485C1E204EC4979DB7"
+    },
+    {
+      "path": "source-d460/src/native_mlly_syntax_controls.zig",
+      "bytes": 2135,
+      "sha256": "AB62456728E7FF9237EA13B5362F3C5805DD1C71540B1F3DD05931A2A47486AD"
+    },
+    {
+      "path": "source-d460/src/native_node_module_constructor_controls.zig",
+      "bytes": 13284,
+      "sha256": "4C09A9B2804EDDF1A5703D7B7D04266FB557AAB7ECFAE01EB7B1200728D91C2F"
+    },
+    {
+      "path": "source-d460/tools/ci/native_qualification_ci.ps1",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "path": "source-d460/tools/workspace/Resolve-PiZigWorkspace.ps1",
+      "bytes": 1299,
+      "sha256": "163E0872FC8CA7C9FAA37949E4F4787CDAE7C5103313894BAE26B0312ACF8BF9"
+    },
+    {
+      "path": "source-d460/vendor/quickjs/quickjs.c",
+      "bytes": 2218664,
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "path": "source-d460/vendor/quickjs/quickjs.h",
+      "bytes": 75537,
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "source-d460/vendor/tree-sitter/lib/include/tree_sitter/api.h",
+      "bytes": 49952,
+      "sha256": "EFE63C187BB941BE6E36DFB0597846BFE1976A0917C04A16E3EDF6EE7CF6F9B7"
+    },
+    {
+      "path": "source-d460/vendor/typescript-parser/typescript/src/parser.c",
+      "bytes": 8745894,
+      "sha256": "74FE453EDD70F4EAE9AF0A1050CBD7943D8971D59165B6AAEBBAA0A0B716D1AA"
+    },
+    {
+      "path": "source-d460/vendor/typescript-parser/typescript/src/scanner.c",
+      "bytes": 573,
+      "sha256": "9125013B42CB888379D9BE909F1D73DFB75A37626C2CDBF4122718A2B431A6D3"
+    },
+    {
+      "path": "source-d460/verification/jiti-controls-compile-only-20261017/README.md",
+      "bytes": 4797,
+      "sha256": "44F7DCBA50FFABD1C668439DC40D737A1D54CB4D99418C3AF3A4C9B65EB2F739"
+    },
+    {
+      "path": "source-d460/verification/jiti-controls-compile-only-20261017/coverage.json",
+      "bytes": 33803,
+      "sha256": "D1AE55ACB47F0C869CB00E84DDEE52AED2D62DD27AF7DD9B3C0461E1F10D4E06"
+    },
+    {
+      "path": "source-d460/verification/jiti-controls-compile-only-20261017/prepared.json",
+      "bytes": 9031,
+      "sha256": "1DB548FED2260998CE8D1133A5CA59E813D3E5E3CC7983C8971BAEDC868F8C64"
+    }
+  ],
+  "cache_policy": "Explicit Root grant reuses only original134316 two mutable unsealed caches; cache contents excluded, no integrity or fresh/reproducible build claim",
+  "historical_compile_negatives_preserved": [
+    "7746/2C8",
+    "51e2/6057",
+    "20e8/0DB"
+  ],
+  "excluded": [
+    "EXE/PDB/library/object payloads",
+    "All cache payloads",
+    "Whole source/compiler payloads beyond selected source; full inventories retained"
+  ],
+  "metadata_test_Node_sentinel_executed": false,
+  "Main_runtime_API_default_release_qualified": false
+}

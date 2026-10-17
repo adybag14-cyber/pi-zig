@@ -1,0 +1,17 @@
+{
+  "status": "two_identical_ZIPs_all155_entries_rehashed",
+  "archive_sha256": "BD844B9FBD8286E20A38A24F77EC5AE0F84037C1AC7275E52422694F36981905",
+  "repeat_archive_sha256": "BD844B9FBD8286E20A38A24F77EC5AE0F84037C1AC7275E52422694F36981905",
+  "entries_each": 155,
+  "entry_hash_mismatches": 0,
+  "entry_order": "Ordinal ascending",
+  "entry_timestamp": "1980-01-01T00:00:00",
+  "entry_external_attributes": 0,
+  "compression": "DotNet Optimal Deflate",
+  "determinism_scope": "Two independent writes with same payload and .NET implementation",
+  "no_binary_PDB_cache_payloads": true,
+  "packaging_script_sha256": "0CBC08B200059934BD8D55F9E6D6B444039E0552271264DBC0171FEA12B03840",
+  "native_compiler_Node_AST_generator_executed": false,
+  "Main_edited": false,
+  "pushed": false
+}
