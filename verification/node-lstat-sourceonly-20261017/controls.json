@@ -1,21 +1,84 @@
 {
-  "status":"prepared-unrun",
-  "expected_files":[],
-  "observed_files":[],
-  "fixture_authority":"Real owned filesystem objects, created only after a separate Root grant. No fabricated Stats objects or mocked native reparse payload is a positive oracle.",
-  "native_controls":[
-    {"id":"regular-directory-file-types","fixture":"Owned ordinary directory and regular UTF8 file","observe":"Actual fs.lstatSync returns genuine shared Stats prototypes; isDirectory/isFile/isSymbolicLink, own fields/method receiver/type metadata and BigInt variants match the later genuine Node authority."},
-    {"id":"directory-symlink-vs-target","fixture":"Real relative directory symlink and its directory target","observe":"lstat addresses the link and reports symbolic-link type; stat addresses the target and reports directory type; inode/device/time/size are native metadata rather than target aliases."},
-    {"id":"file-symlink-and-encoded-target-size","fixture":"Real relative file symlinks, Unicode/surrogate target names where supported","observe":"lstat size is the decoded real target WTF8 byte length on Windows and OS link size on POSIX, preserving each platform's actual behavior."},
-    {"id":"broken-link-survives-lstat","fixture":"Real broken file/directory symlink and Windows broken junction","observe":"lstat succeeds on existing link while stat fails for missing target; suppression does not erase the existing link."},
-    {"id":"drive-junction-vs-volume-mount","fixture":"Real Windows drive-letter directory junction plus separately admitted volume GUID mount fixture","observe":"Drive junction classifies as link; volume mount uses actual libuv-compatible follow retry. No all-reparse-is-link or follow-all shortcut."},
-    {"id":"appexeclink-and-cloud-reparse","fixture":"Separately admitted real AppExecLink/cloud/other reparse fixtures","observe":"Actual tag and target payload determine link vs libuv follow retry; no invented payload used as source authority."},
-    {"id":"trailing-separator-and-parent-traversal","fixture":"Final directory symlink with one/two separators and an actual symlinked parent component","observe":"Preserve libuv Windows trailing separator preparation and native OS traversal of parent components; do not impose a POSIX-follow-all policy on Windows."},
-    {"id":"missing-notdir-errors","fixture":"Missing path and child beneath actual regular file","observe":"ENOENT lstat error has original syscall/path/code/errno; throwIfNoEntry:false suppresses ENOENT only, with ENOTDIR behavior distinguished from Node stat's separate suppression rule."},
-    {"id":"denied-real-kernel-access","fixture":"Separately admitted owned ACL-denied directory/file, without modifying unrelated ACLs","observe":"Real kernel rejection becomes actual lstat filesystem error; no catch-all success or stat fallback hides it."},
-    {"id":"path-validation-and-getter-order","fixture":"Real string/Buffer/URL path; embedded NUL and null/options/getter variants","observe":"Path validation before bigint/throwIfNoEntry; raw owned getter rejection identity preserved; strict true bigint and strict false missing suppression; no implicit path coercion."},
-    {"id":"prototype-and-gc-lifetime","fixture":"Actual returned numeric/BigInt Stats retained across separately granted GC after namespace/callback refs drop","observe":"Shared real prototype/type methods and date accessors survive; no unrooted fake metadata object or leaked file handle/native owner."},
-    {"id":"trusted-host-fatal-propagation","fixture":"Separately granted allocation-failure boundary in path/metadata/value construction","observe":"Native fatal is not translated to ordinary ENOENT or swallowed by the genuine jiti isDir consumer; preserved raw ordinary getter reason remains ordinary."}
+  "status": "prepared-unrun",
+  "expected_files": [],
+  "observed_files": [],
+  "fixture_authority": "Real owned filesystem objects, created only after a separate Root grant. No fabricated Stats objects or mocked native reparse payload is a positive oracle.",
+  "native_controls": [
+    {
+      "id": "regular-directory-file-types",
+      "fixture": "Owned ordinary directory and regular UTF8 file",
+      "observe": "Actual fs.lstatSync returns genuine shared Stats prototypes; isDirectory/isFile/isSymbolicLink, own fields/method receiver/type metadata and BigInt variants match the later genuine Node authority."
+    },
+    {
+      "id": "directory-symlink-vs-target",
+      "fixture": "Real relative directory symlink and its directory target",
+      "observe": "lstat addresses the link and reports symbolic-link type; stat addresses the target and reports directory type; inode/device/time/size are native metadata rather than target aliases."
+    },
+    {
+      "id": "file-symlink-and-encoded-target-size",
+      "fixture": "Real relative file symlinks, Unicode/surrogate target names where supported",
+      "observe": "lstat size is the decoded real target WTF8 byte length on Windows and OS link size on POSIX, preserving each platform's actual behavior."
+    },
+    {
+      "id": "broken-link-survives-lstat",
+      "fixture": "Real broken file/directory symlink and Windows broken junction",
+      "observe": "lstat succeeds on existing link while stat fails for missing target; suppression does not erase the existing link."
+    },
+    {
+      "id": "drive-junction-vs-volume-mount",
+      "fixture": "Real Windows drive-letter directory junction plus separately admitted volume GUID mount fixture",
+      "observe": "Drive junction classifies as link; volume mount uses actual libuv-compatible follow retry. No all-reparse-is-link or follow-all shortcut."
+    },
+    {
+      "id": "appexeclink-and-cloud-reparse",
+      "fixture": "Separately admitted real AppExecLink/cloud/other reparse fixtures",
+      "observe": "Actual tag and target payload determine link vs libuv follow retry; no invented payload used as source authority."
+    },
+    {
+      "id": "trailing-separator-and-parent-traversal",
+      "fixture": "Final directory symlink with one/two separators and an actual symlinked parent component",
+      "observe": "Preserve libuv Windows trailing separator preparation and native OS traversal of parent components; do not impose a POSIX-follow-all policy on Windows."
+    },
+    {
+      "id": "missing-notdir-errors",
+      "fixture": "Missing path and child beneath actual regular file",
+      "observe": "ENOENT lstat error has original syscall/path/code/errno; throwIfNoEntry:false suppresses ENOENT only, with ENOTDIR behavior distinguished from Node stat's separate suppression rule."
+    },
+    {
+      "id": "denied-real-kernel-access",
+      "fixture": "Separately admitted owned ACL-denied directory/file, without modifying unrelated ACLs",
+      "observe": "Real kernel rejection becomes actual lstat filesystem error; no catch-all success or stat fallback hides it."
+    },
+    {
+      "id": "path-validation-and-getter-order",
+      "fixture": "Real string/Buffer/URL path; embedded NUL and null/options/getter variants",
+      "observe": "Path validation before bigint/throwIfNoEntry; raw owned getter rejection identity preserved; strict true bigint and strict false missing suppression; no implicit path coercion."
+    },
+    {
+      "id": "prototype-and-gc-lifetime",
+      "fixture": "Actual returned numeric/BigInt Stats retained across separately granted GC after namespace/callback refs drop",
+      "observe": "Shared real prototype/type methods and date accessors survive; no unrooted fake metadata object or leaked file handle/native owner."
+    },
+    {
+      "id": "trusted-host-fatal-propagation",
+      "fixture": "Separately granted allocation-failure boundary in path/metadata/value construction",
+      "observe": "Native fatal is not translated to ordinary ENOENT or swallowed by the genuine jiti isDir consumer; preserved raw ordinary getter reason remains ordinary."
+    },
+    {
+      "observe": "Exact raw failing code survives CloseHandle/allocator activity; pinned libuv translation yields genuine errno/name/message/syscall/path, including ERROR_INVALID_REPARSE_DATA→ENOENT, ACCESS_DENIED→EPERM, INVALID_FUNCTION→EISDIR and unknown→UNKNOWN.",
+      "fixture": "Separately granted real failing reparse/metadata operation; explicit pure translation fault cases remain separate from OS evidence.",
+      "id": "latched-win32-failure-before-cleanup"
+    },
+    {
+      "observe": "New lstat still reads actual no-follow metadata via fstatat; old stat.read behavior stays separate; no fabricated metadata results.",
+      "fixture": "Separately granted Linux kernel/seccomp/filesystem profile producing statx EINVAL/EPERM/ENOSYS/EOPNOTSUPP with working fstatat.",
+      "id": "statx-unavailable-fallback"
+    },
+    {
+      "observe": "Actual current host fatal escapes exact and is not swallowed as false; historical/lookalike/OS-error reasons remain ordinary; ordinary caught ownership transfers/nulls with no retained captured copy.",
+      "fixture": "Granted direct GPA OOM/fresh captured private allocation error; historical tagged reason/lookalike/OS ENOMEM; real guest catch around actual lstatSync.",
+      "id": "fresh-fatal-vs-ordinary-raw-callback-exit"
+    }
   ],
-  "source_owner":"A separately granted pinned Node24.14 capture executes source-caller.mjs on owned fixtures. Genuine jiti utils.isDir consumer belongs to factory owner; no copied helper result becomes a golden."
+  "source_owner": "A separately granted pinned Node24.14 capture executes source-caller.mjs on owned fixtures. Genuine jiti utils.isDir consumer belongs to factory owner; no copied helper result becomes a golden."
 }

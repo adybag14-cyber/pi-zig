@@ -235,7 +235,31 @@ fn statSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
     return readStats(engine, args, roots, true);
 }
 fn lstatSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    return readStats(engine, args, roots, false);
+    const generation = engine.native_allocation_generation;
+    return readStats(engine, args, roots, false) catch |err| return lstatFailure(engine, err, generation);
+}
+fn lstatFailure(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
+    if (err == error.OutOfMemory) {
+        _ = engine.throwNativeOutOfMemory();
+        const reason = c.JS_GetException(engine.context);
+        c.JS_SetUncatchableError(engine.context, reason);
+        _ = c.JS_Throw(engine.context, reason);
+        return error.JavaScriptException;
+    }
+    if (err != error.JavaScriptException) return err;
+    if (engine.captured_exception) |reason| {
+        @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| {
+            if (fatal != error.JavaScriptException) return fatal;
+        };
+        // Transfer the one owned ordinary/fatal captured reason back to the
+        // pending VM completion before the generic callback exit runs. No
+        // stale ordinary captured copy remains after a guest catch returns.
+        if (engine.captured_exception) |owned| {
+            engine.captured_exception = null;
+            _ = c.JS_Throw(engine.context, owned);
+        }
+    }
+    return error.JavaScriptException;
 }
 fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, follow: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
@@ -246,7 +270,7 @@ fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSVal
     const defaults = c.JS_IsUndefined(options);
     const big = !defaults and c.JS_IsStrictEqual(engine.context, try scope.get(options, "bigint"), c.pi_js_bool(engine.context, 1));
     const throw_missing = defaults or !c.JS_IsStrictEqual(engine.context, try scope.get(options, "throwIfNoEntry"), c.pi_js_bool(engine.context, 0));
-    const info = (if (follow) stat.read(engine.gpa, path) else stat.readLink(engine.gpa, path)) catch |err| {
+    const info = (if (follow) stat.read(engine.gpa, path) else lstatMetadata(engine, path, throw_missing)) catch |err| {
         if (err == error.FileNotFound and !throw_missing) return c.pi_js_undefined();
         return throwFilesystem(engine, err, path, if (follow) "stat" else "lstat");
     };
@@ -260,6 +284,17 @@ fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSVal
     }
     if (big) inline for (nanos, 0..) |name, index| try scope.put(result, name, try scope.own(try integer(engine, times[index], true)));
     return c.JS_DupValue(engine.context, result);
+}
+fn lstatMetadata(engine: *em.Engine, path: []const u8, throw_missing: bool) !stat.Stat {
+    return switch (try stat.readLink(engine.gpa, path)) {
+        .metadata => |value| value,
+        .windows_error => |raw| {
+            const errors = @import("native_node_lstat_error.zig");
+            const code = errors.translate(raw);
+            if (code == .ENOENT and !throw_missing) return error.FileNotFound;
+            return errors.throwFilesystem(engine, code, path);
+        },
+    };
 }
 fn realpathNative(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
