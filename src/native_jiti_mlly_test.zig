@@ -29,7 +29,7 @@ test "native jiti mlly compares all51 original path exports conditions cache and
     const terminated=try engine.gpa.dupeZ(u8,expected);defer engine.gpa.free(terminated);
     const parsed=try engine.checked(c.JS_ParseJSON(engine.context,terminated.ptr,expected.len,"actual-mlly-original.json"));defer engine.freeValue(parsed);
     const global=c.JS_GetGlobalObject(engine.context);defer engine.freeValue(global);try js.define(engine,global,"originalMllyObservation",c.JS_DupValue(engine.context,parsed));
-    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-mlly-1.8.2.input.mjs")++
+    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-mlly-1.8.2.input.mjs") ++
         \\if(nativeMllyObservation.count!==51||originalMllyObservation.count!==51)throw Error('Complete original51 required');for(let i=0;i<51;i++)if(JSON.stringify(nativeMllyObservation.rows[i])!==JSON.stringify(originalMllyObservation.rows[i]))throw Error(JSON.stringify({index:i,actual:nativeMllyObservation.rows[i],original:originalMllyObservation.rows[i]}));
     ,"native-jiti-mlly-original.mjs");engine.freeValue(value);
 }

@@ -200,8 +200,8 @@ fn dirnameCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, root
     if (s.equal(try s.get(segments, "length"), number(&s, 1)) and s.truthy(try s.invoke(try s.get(roots[0], "driveOnly"), "test", &.{try v.at(&s, segments, 0)}))) {
         try v.js.setKey(engine, segments, number(&s, 0), try s.concat(try v.at(&s, segments, 0), try s.text("/")));
     }
-    const joined = try s.invoke(segments, "join", &.{try s.text("/")});
-    return c.JS_DupValue(engine.context, if (s.truthy(joined)) joined else try s.text(if (try absolute(&s, roots[0], arg(args, 0))) "/" else "."));
+    const joined_path = try s.invoke(segments, "join", &.{try s.text("/")});
+    return c.JS_DupValue(engine.context, if (s.truthy(joined_path)) joined_path else try s.text(if (try absolute(&s, roots[0], arg(args, 0))) "/" else "."));
 }
 fn basenameCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();

@@ -23,9 +23,9 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 fn success(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) {
         // Own the ACTUAL event before releasing a guest-returned value.
-        const pending = c.JS_GetException(engine.context);
+        const pending_reason = c.JS_GetException(engine.context);
         engine.freeValue(owned);
-        return engine.checked(c.JS_Throw(engine.context, pending));
+        return engine.checked(c.JS_Throw(engine.context, pending_reason));
     }
     return owned;
 }

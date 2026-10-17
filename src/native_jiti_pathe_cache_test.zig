@@ -14,7 +14,7 @@ test "native jiti pathe compares40 additional original resolve and filename obse
     const engine=try em.Engine.init(std.testing.allocator,.{});defer engine.deinit();try install(engine);
     const terminated=try engine.gpa.dupeZ(u8,expected);defer engine.gpa.free(terminated);const original=try engine.checked(c.JS_ParseJSON(engine.context,terminated.ptr,expected.len,"original-pathe-cache.json"));defer engine.freeValue(original);
     const global=c.JS_GetGlobalObject(engine.context);defer engine.freeValue(global);try js.define(engine,global,"originalPatheCache",c.JS_DupValue(engine.context,original));
-    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-pathe-cache-2.0.3.input.mjs")++
+    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-pathe-cache-2.0.3.input.mjs") ++
         \\if(nativePatheCacheObservation.count!==40||originalPatheCache.count!==40)throw Error('Complete40 original observations required');for(let i=0;i<40;i++)if(JSON.stringify(nativePatheCacheObservation.rows[i])!==JSON.stringify(originalPatheCache.rows[i]))throw Error(JSON.stringify({index:i,actual:nativePatheCacheObservation.rows[i],original:originalPatheCache.rows[i]}));
     ,"native-jiti-pathe-cache-original.mjs");engine.freeValue(value);
 }

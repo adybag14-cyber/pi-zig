@@ -21,7 +21,7 @@ test "Pathe compares all six additional genuine original policy observations"{
     const bindings=try pathe.create(engine);defer engine.freeValue(bindings);const subject=try js.object(engine);defer engine.freeValue(subject);
     try js.define(engine,subject,"path",c.JS_DupValue(engine.context,bindings));try js.define(engine,subject,"utils",c.JS_DupValue(engine.context,bindings));try install(engine,"nativePathePolicySubject",subject);
     const terminated=try engine.gpa.dupeZ(u8,expected);defer engine.gpa.free(terminated);const original=try engine.checked(c.JS_ParseJSON(engine.context,terminated.ptr,expected.len,"actual-pathe-policy.json"));defer engine.freeValue(original);try install(engine,"originalPathePolicy",original);
-    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-pathe-policy-2.0.3.input.mjs")++
+    const value=try engine.evalModule(@embedFile("extensions/fixtures/jiti-pathe-policy-2.0.3.input.mjs") ++
         \\if(nativePathePolicyObservation.count!==6||originalPathePolicy.count!==6)throw Error('full original policy census required');for(let index=0;index<6;index++)if(JSON.stringify(nativePathePolicyObservation.rows[index])!==JSON.stringify(originalPathePolicy.rows[index]))throw Error(JSON.stringify({index,actual:nativePathePolicyObservation.rows[index],original:originalPathePolicy.rows[index]}));
     ,"pathe-policy-original-six.mjs");engine.freeValue(value);
 }

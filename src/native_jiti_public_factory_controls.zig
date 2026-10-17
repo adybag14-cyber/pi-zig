@@ -9,9 +9,9 @@ const public_factory = @import("extensions/native_jiti_public_factory.zig");
 const c = em.c;
 fn length(engine: *em.Engine, function: c.JSValue, expected: i32) !void {
     const value = try js.get(engine, function, "length"); defer engine.freeValue(value);
-    var count: i32 = 0;
-    if (c.JS_ToInt32(engine.context, &count, value) < 0) return js.capture(engine);
-    try std.testing.expectEqual(expected, count);
+    var actual_length: i32 = 0;
+    if (c.JS_ToInt32(engine.context, &actual_length, value) < 0) return js.capture(engine);
+    try std.testing.expectEqual(expected, actual_length);
 }
 /// Caller supplies genuine registered/owned module inputs at the physical
 /// relative path. Engine registration/real module evaluation is the subject.

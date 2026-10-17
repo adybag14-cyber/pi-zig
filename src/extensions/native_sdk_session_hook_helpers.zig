@@ -67,7 +67,7 @@ fn bodyWithSourceCatch(engine: *em.Engine, kind: Kind, receiver: c.JSValue, args
         return thrown(engine, input);
     }
     const generation = engine.native_allocation_generation;
-    return resume(&scope, kind, receiver, args, imports, state, completion, input) catch |err| {
+    return resumePhase(&scope, kind, receiver, args, imports, state, completion, input) catch |err| {
         try trustedBoundary(engine, err, generation);
         if (err != error.JavaScriptException) return err;
         const reason = engine.captured_exception orelse return error.ActualHookExceptionRequired;
@@ -83,7 +83,7 @@ fn bodyWithSourceCatch(engine: *em.Engine, kind: Kind, receiver: c.JSValue, args
         return beforeFailure(&scope, reason);
     };
 }
-fn resume(scope: *Scope, kind: Kind, receiver: c.JSValue, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+fn resumePhase(scope: *Scope, kind: Kind, receiver: c.JSValue, args: []const c.JSValue, imports: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     const engine = scope.engine;
     if (completion == .start) {
         const generation = engine.native_allocation_generation;

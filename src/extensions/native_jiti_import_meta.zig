@@ -10,7 +10,7 @@ const Kind = enum { url, dirname, filename, resolve, env };
 const Edit = struct { node: c.TSNode, kind: Kind, replacement: ?[]u8 = null };
 const Plan = struct {
     engine: *v.em.Engine, source: []const u8, edits: std.ArrayList(Edit) = .empty, original_process_identifier: bool = false,
-    fn deinit(self: *Plan) void { for (self.edits.items) |edit| if (edit.replacement) |text| self.engine.gpa.free(text); self.edits.deinit(self.engine.gpa); }
+    fn deinit(self: *Plan) void { for (self.edits.items) |edit| if (edit.replacement) |replacement_text| self.engine.gpa.free(replacement_text); self.edits.deinit(self.engine.gpa); }
 };
 fn kind(node: c.TSNode) []const u8 { return if (c.ts_node_is_null(node)) "" else std.mem.span(c.ts_node_type(node)); }
 fn is(node: c.TSNode, name: []const u8) bool { return std.mem.eql(u8, kind(node), name); }
