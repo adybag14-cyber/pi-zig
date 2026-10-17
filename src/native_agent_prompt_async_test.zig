@@ -21,7 +21,7 @@ pub fn compareActualSource(engine: *em.Engine, actual_agent: c.JSValue, original
     const prototype = try s.get(actual_agent, "prototype");
     inline for (.{ "prompt", "continue" }) |name| {
         const function = try s.get(prototype, name);
-        try std.testing.expect(c.JS_IsAsyncFunction(function) != 0);
+        try std.testing.expect(c.JS_IsAsyncFunction(function));
         try std.testing.expect(!c.JS_IsConstructor(engine.context, function));
     }
 }
