@@ -1,0 +1,144 @@
+{
+  "schema": 1,
+  "root_base": "05260c391a81950fd56a0e904b16f1ad9c5f3af7",
+  "scope": "finite SDK loader+initializer rejected-DATA/current-event ownership source successor",
+  "logic_commits": [
+    "96a5b8a9",
+    "3f76ac4b"
+  ],
+  "separate_exact_null_shim_commit": "7e8e84e8",
+  "original_loader_f12": "f12aa12fa5236eb0e00d4ef520478d88fcce66fd",
+  "original_initializer_catch_scope": "0a7607",
+  "source_loader_sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+  "source_authorities_identical": [
+    "upstream/pi",
+    "upstream/snapshots/4954d76-20261015",
+    "upstream/snapshots/0fbdbd3-20261016"
+  ],
+  "full_subject_available": false,
+  "default_selection": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "records": [
+    {
+      "role": "product",
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "size": 20907,
+      "sha256": "6E2CC076EE61546349D986B93093C11A06CAD8E627ED0254D7431B7112BE86C1"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "size": 10005,
+      "sha256": "C351ECBE107DF52529564D69DF974E5DF814F09959E0F90ACD7F912542D8554C"
+    },
+    {
+      "role": "control",
+      "path": "src/native_sdk_loader_rejected_data_controls.zig",
+      "size": 11618,
+      "sha256": "C8601ACDCBCEBD6CC09FEF9EF69CC4DB10D6F1BC34015A4B23B64CA25E8826F8"
+    },
+    {
+      "role": "control",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/controller.input.mjs",
+      "size": 1136,
+      "sha256": "851ABEDF8F4BD086E19FFD609BED1826D1262693720BD2E9177458B82AF3142D"
+    },
+    {
+      "role": "control",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/extension.input.mjs",
+      "size": 456,
+      "sha256": "E39B194597DD525D7E1D8DF7E26C303F27C61CD1EBE79519CE04A2802CE3A57A"
+    },
+    {
+      "role": "control",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/README.md",
+      "size": 5239,
+      "sha256": "F54B4ABA1D90C573E38DC7779B491EA92B2CD9FF85B85E3DAE7BA06733D635A9"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/engine.zig",
+      "size": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_function.zig",
+      "size": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_body.zig",
+      "size": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_api.zig",
+      "size": 23974,
+      "sha256": "876AE3A06993E9C145EC861FCB73158D0FF5C6A45C6052407E94F2AF6ED90F6F"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_cache.zig",
+      "size": 6780,
+      "sha256": "898640E1DDDD7BEF78F3431C10185EBE934CD3D923A651F9BCEE920B4A69DA93"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_virtual_modules.zig",
+      "size": 4841,
+      "sha256": "F00C1FBD5A4F48FDBB76CCF3D76C3D793B40F4AF17A1730FABC42D74A664739B"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_loader_assembly.zig",
+      "size": 2971,
+      "sha256": "01CA1B3C8664755512C8F598183AD361BB891A01BD9200392E53410CDF4F361B"
+    },
+    {
+      "role": "protected",
+      "path": "src/native_sdk_extension_loader_controls.zig",
+      "size": 15636,
+      "sha256": "1C4B99E0F3412F278C6D0E94CD25268A2E882AE41B981A752D6FD452FF25180F"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+      "size": 43669,
+      "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00"
+    },
+    {
+      "role": "protected",
+      "path": "verification/sdk-extension-cache-orchestration-sourceonly-20261016/prepared.json",
+      "size": 4668,
+      "sha256": "B7A8D7D88A6C5990D37604964F9A25F1D8D442830020C90F7DCCA715B33A4D1F"
+    },
+    {
+      "role": "authority",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/authority/LICENSE.txt",
+      "size": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "role": "authority",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/authority/loader.ts.txt",
+      "size": 28124,
+      "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A"
+    }
+  ]
+}
