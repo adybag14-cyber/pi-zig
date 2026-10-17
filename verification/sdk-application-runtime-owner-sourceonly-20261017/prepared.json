@@ -21,8 +21,8 @@
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
-      "length": 16978,
-      "sha256": "63CD184FB216DD261CFFE66EAF26A407DB88F4F3E1D2B141DF9D3DC30881B36D",
+      "length": 16969,
+      "sha256": "AE28283F6FC6013CC6C47EDD06FBFF2E61E6E49F1641C40C0F7BB7277C835F3D",
       "git_blob": "0ca2bbf092f3d73299c934aa18abeed1c142daa0"
     },
     {
@@ -39,8 +39,8 @@
     },
     {
       "path": "src/native_sdk_management_http_test.zig",
-      "length": 11961,
-      "sha256": "71DEC019D4B68FE1E8064A73769B21E695176B3690DE8179DD8C73D288EF4BED",
+      "length": 11960,
+      "sha256": "6E0AD9F9902BC6209C38221B3A8583639DFB219BE50E9434015E26690015CD4B",
       "git_blob": "92661770179bafc1d66841a6ddc386f52620e7db"
     },
     {
@@ -428,5 +428,10 @@
   "default_host868": "frozen unselected; unchanged",
   "no_main_c_engine_edits": true,
   "remaining_dependencies": "DEPENDENCIES.md",
-  "prospective_controls": "CONTROLS.md"
+  "prospective_controls": "CONTROLS.md",
+  "historical_manifest": {
+    "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-66c-original.json",
+    "sha256": "214BC929C21EBBAA5F5C517921668AA085CDAF79E2F3716F8B63693871E10DD6",
+    "status": "initial pre-index physical CRLF pins for two new product files; Git canonical LF differs; retained unchanged negative; current manifest pins canonical physical bytes"
+  }
 }
