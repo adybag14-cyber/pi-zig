@@ -1,0 +1,15 @@
+{
+  "head": "926d08402250aec386d674120172586186d1a038",
+  "reviewer": "/root/body_validation_resume",
+  "status": "static_review_closed_no_further_scoped_blocker",
+  "prior_head": "a99f8dee3588ce3e94f8b5ef7d8977597b547861",
+  "prior_blocker": "duplicate_start_could_retire_original_pending_graph_NULL_session",
+  "correction": "host_start_started_guard_before_second_AF",
+  "prepared_regression": "verifyPendingSharedDuplicate_actual_shared_module_namespace",
+  "products": 5,
+  "protected": 15,
+  "primary_npm_archive_and_source_authorities_verified": true,
+  "jobs_run": false,
+  "native_qualification": false,
+  "default_selected": false
+}

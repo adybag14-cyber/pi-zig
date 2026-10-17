@@ -1,0 +1,10 @@
+{
+  "status": "reviewed_source_intake_only",
+  "source_head": "73b7c9a37998c84ebc9a6d3d96da7fd7630bbf6e",
+  "root_before": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "file_count": 9,
+  "runtime_executed": false,
+  "default_selected": false,
+  "actual_subject_complete": false,
+  "scope": "Corrected actual jiti import; no C/Engine/shared AF change or whole-app qualification"
+}

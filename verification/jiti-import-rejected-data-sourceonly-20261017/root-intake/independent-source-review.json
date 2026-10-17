@@ -1,0 +1,23 @@
+{
+  "source_head": "73b7c9a37998c84ebc9a6d3d96da7fd7630bbf6e",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "source_closed_no_blocker_in_local_fix_scope",
+  "product_sha256": "C01BD6D4DB4E23D00D297192EC7436464DB09E575917B6C846CD4C8186353422",
+  "manifest_rows": 76,
+  "hash_length_drift": 0,
+  "prepared_sha256": "042F21FAC99C8A2C0045846C183AA58B27A684A858B01C7C8540099D02A268D6",
+  "reviewed": [
+    "owned prior capture isolation and restore/free",
+    "actual pending VM event first",
+    "new capture or pending normalization and missing guard",
+    "fresh private allocation check before historical dataflag clear and same owned identity",
+    "61C4 suppression covers private callback before capture/catch",
+    "all5 contrasting actualsubject controls incl real cached Promise/pendinghook/nativeinterrupt",
+    "raw fatal inspection excludes outer diagnostics"
+  ],
+  "old_d48_source_review_preserved": true,
+  "actual_subject_complete": false,
+  "controls_executed": false,
+  "native_executed": false,
+  "default_selected": false
+}
