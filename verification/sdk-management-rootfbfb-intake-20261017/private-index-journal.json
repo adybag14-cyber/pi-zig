@@ -1,0 +1,343 @@
+{
+  "schema": 1,
+  "base": "fbfbdbd1061df79cfeeaf900f1926d2e3190845b",
+  "source": "733517fb9670ad92f556141a5d3ede069ea2423d",
+  "virtual_tree": "453ab51987c7738c907b07d1643a3dc916e506ba",
+  "private_index": "C:\\Users\\adyba\\pi-zig\\evidence\\root-sdk-management-fbfb-intake-prepared-20261017\\private-fbfb.index",
+  "paths": [
+    "build.zig",
+    "src/extensions/native_sdk_application_bootstrap.zig",
+    "src/extensions/native_sdk_management_http.zig",
+    "src/extensions/native_sdk_owned_completion.zig",
+    "src/extensions/native_sdk_runtime_imports.zig",
+    "src/native_sdk_application_native_test.zig",
+    "src/native_sdk_management_http_test.zig",
+    "src/native_sdk_owned_completion_test.zig"
+  ],
+  "canonical_patch_sha256": "92119EA5ABDDCE7F1C738075F7A31196480550A63848D6124FC380EC4D84FD8F",
+  "all80_semver_files": [
+    {
+      "path": "src/extensions/fixtures/semver785-package-manager.input.txt",
+      "git_blob": "52f9882a690b7f4d26b7ad120cee84c6a720d1df"
+    },
+    {
+      "path": "src/extensions/fixtures/semver785-supplement.input.txt",
+      "git_blob": "27630c416e90006136632d4b53a483460af75e07"
+    },
+    {
+      "path": "src/extensions/native_semver785.zig",
+      "git_blob": "fab0340b07b7bd8aa31f659a9be66bd94da11f45"
+    },
+    {
+      "path": "src/extensions/native_semver785_expand.zig",
+      "git_blob": "0f0ddc20e9cf23980740675ea7e0d4db025df6fe"
+    },
+    {
+      "path": "src/extensions/native_semver785_ops.zig",
+      "git_blob": "8c890798fe3439b89785f529f3e715e0322863b8"
+    },
+    {
+      "path": "src/extensions/native_semver785_range.zig",
+      "git_blob": "d687eb5c656e4a0d339001a0e9b484be26cc1c0b"
+    },
+    {
+      "path": "src/extensions/native_semver785_regex.zig",
+      "git_blob": "816a68d4f6ea3567e225772ab7cbf77df7be1e31"
+    },
+    {
+      "path": "src/extensions/native_semver785_scope.zig",
+      "git_blob": "42c6aa2590554bf3574d6eea1230e1242444c937"
+    },
+    {
+      "path": "src/extensions/native_semver785_version.zig",
+      "git_blob": "34fe38fd43967dce813610b8bcc096da45fa1724"
+    },
+    {
+      "path": "src/native_sdk_semver_six_test.zig",
+      "git_blob": "69808128c06e4a80b6189e2f8ed94f103bcdff9c"
+    },
+    {
+      "path": "src/native_semver785_package_manager_test.zig",
+      "git_blob": "e944fa40e9e9d1f2b7699fa2205a830cf7a3ba04"
+    },
+    {
+      "path": "vendor/semver785/LICENSE",
+      "git_blob": "19129e315fe593965a2fdd50ec0d1253bcbd2ece"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/CURRENT-EVENT-SUCCESSOR.md",
+      "git_blob": "3f0a4f4761029e0e48de7845ea4860d6459d1fcc"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/OPERATION-PROVENANCE-SUCCESSOR.md",
+      "git_blob": "d59ecb2a14e254a2680c757948427e10ea0aee5f"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/README.md",
+      "git_blob": "8264df33bcb5e6a54cd03649bd678ed1c3c59db9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/LICENSE.txt",
+      "git_blob": "19129e315fe593965a2fdd50ec0d1253bcbd2ece"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/comparator.js.txt",
+      "git_blob": "647c1f0976fd7838c1b8fe0ba59888f088fb3c5d"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/index.js.txt",
+      "git_blob": "91c24ec4a726497e218889190d533e754a8c1143"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/range.js.txt",
+      "git_blob": "a7d6556febb4e5492bf3fadac69221cb1a40e6a9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/semver.js.txt",
+      "git_blob": "5438127208dbf5d2866b7ca6deb96d6236e6017d"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/clean.js.txt",
+      "git_blob": "79703d6316617ea8df49384c47b1e235357ff1a9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/cmp.js.txt",
+      "git_blob": "77487dcaac5f502ad1172a54a7047bcafbfbda4d"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/coerce.js.txt",
+      "git_blob": "cfe027599516f3d6c2165a1858d50d7810dc9dba"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare-build.js.txt",
+      "git_blob": "99157cf3d105e07072d856b72475983836e2a48a"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare-loose.js.txt",
+      "git_blob": "75316346a81cb3b3ba74442fb24583d6972a48ee"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare.js.txt",
+      "git_blob": "63d8090c626cea207b5cc1fbb022dd51881bbf99"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/diff.js.txt",
+      "git_blob": "c99ab51cc571695ddbb293156f3380e0c5896dfb"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/eq.js.txt",
+      "git_blob": "5f0eead1169fe5e7d661ff2bb2b9bede6967014b"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/gt.js.txt",
+      "git_blob": "84a57ddff50a098bafaa44973830114fa150c3fa"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/gte.js.txt",
+      "git_blob": "7c52bdf2529ad82aacf17bb895d18bc228da19ec"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/inc.js.txt",
+      "git_blob": "ff999e9d04d7fa3a725621912399df35f450c845"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/lt.js.txt",
+      "git_blob": "2fb32a0e63c9a140cc3acb351cd5ce6c3c75d501"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/lte.js.txt",
+      "git_blob": "da9ee8f4e4404e5acf0af1045b6045534dbbfe06"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/major.js.txt",
+      "git_blob": "e6d08dc20cf20bc84e954762375ece363452c616"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/minor.js.txt",
+      "git_blob": "9e70ffda19223a878a2dbb2851d7092e776eb1c7"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/neq.js.txt",
+      "git_blob": "84326b773361035e89898edc52fa69bd96371003"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/parse.js.txt",
+      "git_blob": "d544d33a7e93cb8e88a0641d3666398c3d515759"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/patch.js.txt",
+      "git_blob": "7675162f1742afbe0750d1c28fb3ac9695384a74"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/prerelease.js.txt",
+      "git_blob": "b8fe1db5049a23a0c772a465e48932f3de7d5d65"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/rcompare.js.txt",
+      "git_blob": "8e1c222b2ffc24e93a52378ad4d158dbc0d63c27"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/rsort.js.txt",
+      "git_blob": "5d3d20096844b17956ee75c1f44e8885d7eb0396"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/satisfies.js.txt",
+      "git_blob": "a0264a222ac82d7271d755bbb40390961871601c"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/sort.js.txt",
+      "git_blob": "edb24b1dc3324d6938191b41d7003db4489b7f90"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/truncate.js.txt",
+      "git_blob": "8314e4e922a41878daf2c8948c0ee3a2c90236fa"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/valid.js.txt",
+      "git_blob": "0db67edcb5952a9b56dfe514b4d934da090c4e65"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/index.js.txt",
+      "git_blob": "bc1f608ceaad3d6c9b4b18dfc02ef6cf9f9f08b5"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/constants.js.txt",
+      "git_blob": "6d1db9154331d4198faadda0a5432b6b1cc3a5e8"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/debug.js.txt",
+      "git_blob": "20d1e9dceea90e730220344671d4807203f5d9d8"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/identifiers.js.txt",
+      "git_blob": "d053472dd58b3ca0593e9cb9bab33ac4e0eb2320"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/lrucache.js.txt",
+      "git_blob": "b8bf5262a0505c8b4bba7003a7cd1bd898fed789"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/parse-options.js.txt",
+      "git_blob": "5295454130d421f5b9e54bae4572b3615af696bf"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/re.js.txt",
+      "git_blob": "2ec2c22c972d325e61b89420a91df382fe07a18a"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/package-manager.ts.txt",
+      "git_blob": "1ca63ebbb90bb1881ebba3e83fe49be0a6080724"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/package.json.txt",
+      "git_blob": "0cb7c7bb465ea49c8daff8e87350513843f89c89"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/range.bnf.txt",
+      "git_blob": "a7a4bc37831127effbd003ae76eb4829b19cd93b"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/gtr.js.txt",
+      "git_blob": "0e7601f693554a1c24854ca0be67447b70b7ca16"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/intersects.js.txt",
+      "git_blob": "917be7e4293d2b0f5a7cd6327addaab0f18c7ef1"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/ltr.js.txt",
+      "git_blob": "aa5e568ec279da4a3c292694ed066b2fde4e14b7"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/max-satisfying.js.txt",
+      "git_blob": "01fe5ae383715768e93e2b2c5f3c006a6212fb83"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/min-satisfying.js.txt",
+      "git_blob": "af89c8ef4326921204264943a9e37ef4fc151ccd"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/min-version.js.txt",
+      "git_blob": "09a65aa36fd5178264b77a05b19bc187b289294a"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/outside.js.txt",
+      "git_blob": "ca7442120798eaff9d2cd621562a5a4b11da3629"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/simplify.js.txt",
+      "git_blob": "262732e670d7dfdca05bb3278321dff65a8bd984"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/subset.js.txt",
+      "git_blob": "a949832329003b93b3913583932609fbf443ee42"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/to-comparators.js.txt",
+      "git_blob": "5be251961acbdfa429cf087f94ad3b4c1719764e"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/valid.js.txt",
+      "git_blob": "cc6b0e9f68f95f8a5a26f47fa9fddb06f3625e7a"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/semver-lock-entry.json",
+      "git_blob": "085d9331a1116c3e25d53002d35d0052e00b904f"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/capture-original.mjs",
+      "git_blob": "d6a515d18ef57fa9d59803c968dfa06a8d282f20"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/capture-package-manager-callers.mjs",
+      "git_blob": "8443cb0bdce999bfbe9ef576a6b0f52dde072683"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/historical-c64-native-test.zig.txt",
+      "git_blob": "ad10a09970a1444b8709db8de0b817d0a2a41123"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/historical-reuse.json",
+      "git_blob": "9c06dbe7b4fd7b7c9ffa17cd44d58826695d3415"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/original-capture.control.template.json",
+      "git_blob": "2d34067c24ccd5b8eee098cac577cbde73822f0d"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/package-manager-caller.control.template.json",
+      "git_blob": "940acac167fdaf623214e4b84d70f95a41a3ddde"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/package-manager-callers.input.mjs",
+      "git_blob": "1ec6f3eddffc68fbb388e87765416b6fd3bc99f5"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/prepared-current-event-successor.json",
+      "git_blob": "3ee19451e2353c065fc82d77a5f63a7485cef590"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/prepared-operation-provenance-successor.json",
+      "git_blob": "a7c51016d67006b5e8ec39f04032aefcdbaa1c30"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/prepared.json",
+      "git_blob": "8fe646ecdbd22900ad5a9a365595f99148c991dd"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/protected-base.json",
+      "git_blob": "352e42a5d95f8f70ecda9be1f8fdfde6c56fefb5"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/semver-original53.json",
+      "git_blob": "2b282fe252d8475f5e617f8c7c55e49e7ca1c625"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/supplement-capture.control.template.json",
+      "git_blob": "73649d27a94a6a6c4f477085e237824b5563a7b8"
+    }
+  ],
+  "Root_semver_build_delta_preserved": true,
+  "main_mutated": false,
+  "native_job": false
+}
