@@ -1,0 +1,30 @@
+{
+  "executable": "C:\\Program Files\\nodejs\\node.exe",
+  "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "arguments": [
+    "--max-old-space-size=256",
+    "--permission",
+    "--allow-fs-read=C:\\Program Files\\nodejs",
+    "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+    "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+    "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+    "--owned-original58"
+  ],
+  "working_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900",
+  "pid": 2612,
+  "retained_handle": 2292,
+  "created_utc": "2026-10-16T23:59:05.5661125Z",
+  "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+  "timeout_seconds": 300,
+  "status": "passed",
+  "live_identity": {
+    "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58",
+    "command_line_method": "Win32_Process.CommandLine",
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "created_utc": "2026-10-16T23:59:05.5661125Z",
+    "pid": 2612
+  },
+  "exit_code": 0,
+  "completed_utc": "2026-10-16T23:59:06.1527450+00:00"
+}

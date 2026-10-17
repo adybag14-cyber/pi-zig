@@ -1,0 +1,119 @@
+{
+  "scope": "Source-only typed-null environment removal plus exact names-only guards; no new capture",
+  "base_head": "345490eeaf4b5566df5caa49df34f0e76c98cc68",
+  "historical_diagnostic_runner_sha256": "646BED04294377D084C70E5A8584C17ABD11ABD6D7021CED2655287DEC39BA06",
+  "runner_sha256": "D29070CD3D8C0D3723FDC231732DBADC49590FF289DF1059AC7D8FBB3073F8E1",
+  "root_probe_provenance": "Root supplied isolated owned-marker probe on PowerShell7.6.6/.NET10.0.12; not reexecuted by this source work",
+  "root_probe_null_name_present": true,
+  "root_probe_typed_null_removes": true,
+  "negative_raw_files": [
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\before.json",
+      "sha256": "47CEE7302295BE284EB9F1230329FD2FD222F03584E71068140DD71D280897A7"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\final.json",
+      "sha256": "47CEE7302295BE284EB9F1230329FD2FD222F03584E71068140DD71D280897A7"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.json",
+      "sha256": "FDB6645DB8FA444CDC73137A25F666F28722D863AE65D8A62E4898EA42CDC144"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.stderr.log",
+      "sha256": "64C2D9EC95AB01FB8035C9E0CB631F625D457859A79E86B64D6FFFED5E6A4C21"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\result.json",
+      "sha256": "7EF70031C2A57A2B05F00C0B492B7136EB3A0036802A4A5D6C87AB10070EBB87"
+    },
+    {
+      "run_id": "root-crypto58-20261016-233253",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-20261016-233253\\outer.json",
+      "sha256": "7E22C333E75657BDA1038D54615C1C7B896EFEFA10D9B0DB2D5F467B1E6D0590"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\before.json",
+      "sha256": "BA01E47EDBB31D13B18A30F79B98A0A578465553EFF0EE21F64517BDC97AC50B"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\final.json",
+      "sha256": "BA01E47EDBB31D13B18A30F79B98A0A578465553EFF0EE21F64517BDC97AC50B"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.json",
+      "sha256": "2227E37E3D7ED3283264D3C7434AE2205B7C75A7AADD4A94797CC215E94A7099"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.stderr.log",
+      "sha256": "81EF389695274830BC2D8E34205E1BE298BFD055A30CA4F45CF5DB6D4594A93A"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\pre-node-environment-names.json",
+      "sha256": "357D08A332FFBE8D556DAF47220B6461F91EC4E9FBD9306B17F794F2041C8897"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\result.json",
+      "sha256": "A9BB9EE336864A9B0EB2DF2C97421798F5AA06418F6E2ED4786A0588FF0D0DC3"
+    },
+    {
+      "run_id": "root-crypto58-env-20261016-235238",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-env-20261016-235238\\outer.json",
+      "sha256": "77C1F9D64B5D9B3B65053403EEB8376A4BC06F4CCD51BA804EC2D24543133A56"
+    }
+  ],
+  "protected_files": [
+    {
+      "relative": "src/extensions/native_node_crypto_hash.zig",
+      "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487"
+    },
+    {
+      "relative": "src/extensions/fixtures/node-crypto-sha256-package.input.txt",
+      "sha256": "A9722654D1FCF6B3F00638B59F9D4EAA829549CC996EE7BE36808E24D7E2DA26"
+    },
+    {
+      "relative": "verification/node-crypto-sha256-package-sourceonly-20261016/source-only-controls.json",
+      "sha256": "4C3CF4B8B463CBA5E7FE488F761188CC895DED4CAE8C706CC41C6E3468554A0B"
+    },
+    {
+      "relative": "verification/node-crypto-sha256-package-sourceonly-20261016/Read-Original58Capture.ps1",
+      "sha256": "DA1C59A9088EFF7CD919F211FB3AFC28579E863A7FFEF5B37A47FA70F9D38E38"
+    },
+    {
+      "relative": "verification/node-crypto-sha256-package-sourceonly-20261016/capture-original.mjs",
+      "sha256": "F722F6F8306B84A87E371B1FECB934CC30FFB5BD68DD958950ABAEC9A2620F31"
+    }
+  ],
+  "ci607_sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+  "input_count": 58,
+  "case_ids_changed": false,
+  "allowed_environment_names_changed": false,
+  "inherited_values_read_or_logged": false,
+  "driver_changed": false,
+  "new_names_allowed": [],
+  "permissions_fence_node_authorities_changed": false,
+  "new_source_capture_or_native_jobs_executed": false,
+  "new_grants_created": false,
+  "expected_present": false
+}

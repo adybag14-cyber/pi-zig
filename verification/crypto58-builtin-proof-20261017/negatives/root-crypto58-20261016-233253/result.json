@@ -1,0 +1,86 @@
+{
+  "status": "negative",
+  "candidate_head": "dd65676806739ef5defc024ec0f65506fc82f70d",
+  "launcher_sha256": "F93C4B0604FABB9206F6E9194604EF9D15BA5E8489CF0044619B0037A900AA6F",
+  "runner_identity": {
+    "pid": 82136,
+    "created_utc": "2026-10-16T23:32:54.4554380+00:00",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1 -CandidateHead dd65676806739ef5defc024ec0f65506fc82f70d -RunId root-crypto58-20261016-233253 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-20261016-233253-grant.json"
+  },
+  "initial_admission": {
+    "native_census": {
+      "candidates": [],
+      "census_count": 698,
+      "utc": "2026-10-16T23:32:56.1939452+00:00",
+      "candidate_count": 0
+    },
+    "free_kib": 20062852,
+    "native_roots": 0,
+    "heap_mb": 256,
+    "light_reserved_kib": 2097152,
+    "utc": "2026-10-16T23:32:56.1964547+00:00"
+  },
+  "node_launch_requested": true,
+  "postseal": true,
+  "owned_absent": true,
+  "expected_created": false,
+  "deleted_runtime_used": false,
+  "independent_capture_acceptance": false,
+  "failures": [
+    "Owned terminal failed: C:\\Program Files\\nodejs\\node.exe"
+  ],
+  "pre_node_admission": {
+    "native_census": {
+      "candidates": [],
+      "census_count": 699,
+      "utc": "2026-10-16T23:32:59.4069089+00:00",
+      "candidate_count": 0
+    },
+    "free_kib": 19949440,
+    "native_roots": 0,
+    "heap_mb": 256,
+    "light_reserved_kib": 2097152,
+    "utc": "2026-10-16T23:32:59.4069472+00:00"
+  },
+  "node_identity": {
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "arguments": [
+      "--max-old-space-size=256",
+      "--permission",
+      "--allow-fs-read=C:\\Program Files\\nodejs",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+      "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+      "--owned-original58"
+    ],
+    "working_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253",
+    "pid": 67924,
+    "retained_handle": 2456,
+    "created_utc": "2026-10-16T23:32:59.4261082Z",
+    "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+    "timeout_seconds": 300,
+    "status": "failed",
+    "live_identity": {
+      "pid": 67924,
+      "command_line_method": "Win32_Process.CommandLine",
+      "created_utc": "2026-10-16T23:32:59.4261082Z",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58"
+    },
+    "exit_code": 1,
+    "completed_utc": "2026-10-17T00:33:00.0193847+01:00",
+    "error": "Owned terminal failed: C:\\Program Files\\nodejs\\node.exe"
+  },
+  "final_native_census": {
+    "candidates": [],
+    "census_count": 699,
+    "utc": "2026-10-16T23:33:02.7878535+00:00",
+    "candidate_count": 0
+  },
+  "native_roots_after": 0,
+  "outer_handoff": "Independent supervisor must confirm this runner identity absent after process exit",
+  "completed_utc": "2026-10-16T23:33:02.7913113+00:00"
+}

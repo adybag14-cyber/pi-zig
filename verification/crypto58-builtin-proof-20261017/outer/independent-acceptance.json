@@ -1,0 +1,79 @@
+{
+  "status": "accepted_original_builtin_crypto58_capture",
+  "reviewer": "/root/body_validation_resume",
+  "run_id": "root-crypto58-fixed-20261016-235900",
+  "audited_utc": "2026-10-17T00:03:54.0926782+00:00",
+  "source_head": "c64aa31cb8726b9da66afea2c76aed34f626a402",
+  "raw_sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+  "input_sha256": "a9722654d1fcf6b3f00638b59f9d4eaa829549cc996ee7be36808e24d7e2da26",
+  "rows": 58,
+  "node_pid": 2612,
+  "runner_pid": 81980,
+  "checks": {
+    "strict_parser_identity": true,
+    "raw_identity": true,
+    "strict_schema_framing_58_ordered_unique_ids": true,
+    "builtin_fenced_no_network_module_attempts": true,
+    "node_terminal0_empty_stderr": true,
+    "inner_terminal_fullpost_nativezero": true,
+    "outer_terminal0_originals_descendants_absent": true,
+    "kernel_cim_agreement": true,
+    "independent_kernel_cim_absence_receipts": true,
+    "nonempty_complete_descendant_censuses": true,
+    "300_inner_900_outer_bounds": true,
+    "post-reset_exact_17_names": true,
+    "pre-node_exact_17_names": true,
+    "node_exact_20_names": true,
+    "before_final_bytes_identical": true,
+    "sealed_exact_source_controls": true,
+    "complete_original_node1838_inventory_hashes": true,
+    "original_node1774_subset_inventory_hashes": true,
+    "source_outer_pins_exact": true,
+    "fresh_admission16gib_nativezero": true,
+    "exact_grant_fresh_at_launch": true,
+    "both_historical_negatives_preserved_15_hashes": true,
+    "expected_still_absent": true
+  },
+  "artifacts": [
+    {
+      "sha256": "B3D464380C7E56E814999C0B78B74E0D1DD1AAC280AE283FAFC29730D866A7E4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\before.json"
+    },
+    {
+      "sha256": "B3D464380C7E56E814999C0B78B74E0D1DD1AAC280AE283FAFC29730D866A7E4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\final.json"
+    },
+    {
+      "sha256": "7A1A16ABDE27BD2DB483E2AF65C304122792230B65FA73FE46FB03A755AE6DA4",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.json"
+    },
+    {
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.stderr.log"
+    },
+    {
+      "sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.stdout.bin"
+    },
+    {
+      "sha256": "F67023F69733AB8BAB7B8FBE6C192B6E172BFA25D381CBED725D5F2F2EBC35C9",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\post-reset-environment-names.json"
+    },
+    {
+      "sha256": "F67023F69733AB8BAB7B8FBE6C192B6E172BFA25D381CBED725D5F2F2EBC35C9",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\pre-node-environment-names.json"
+    },
+    {
+      "sha256": "3701525CD1798726B37C4F674858DBC965C002510A8875C51B8A1B54F3B18297",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\result.json"
+    },
+    {
+      "sha256": "363643FBFF3F3368048A0E5318ADC6A94518E768D21C0C1CDBEDD241A8B590DF",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900\\outer.json"
+    }
+  ],
+  "scope": "Actual original Windows Node24.14 builtin crypto observations only; no restored runtime, native implementation parity, full node:crypto or whole Pi qualification",
+  "new_node_zig_native_jobs_started": false,
+  "expected_created": false,
+  "historical_negatives_modified": false
+}

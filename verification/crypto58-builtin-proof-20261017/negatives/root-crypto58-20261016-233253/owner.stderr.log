@@ -1,0 +1,11 @@
+file:///C:/Users/adyba/pi-zig/worktrees/semver/verification/node-crypto-sha256-package-sourceonly-20261016/capture-original.mjs:13
+if(environmentNames.some(name=>!allowedNames.has(name.toUpperCase())))throw Error('Unexpected inherited environment name');
+                                                                            ^
+
+Error: Unexpected inherited environment name
+    at file:///C:/Users/adyba/pi-zig/worktrees/semver/verification/node-crypto-sha256-package-sourceonly-20261016/capture-original.mjs:13:77
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0

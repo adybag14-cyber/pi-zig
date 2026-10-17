@@ -1,0 +1,19 @@
+[
+  "APPDATA",
+  "ComSpec",
+  "HOME",
+  "HOMEDRIVE",
+  "HOMEPATH",
+  "LOCALAPPDATA",
+  "NO_COLOR",
+  "PATH",
+  "PATHEXT",
+  "POWERSHELL_TELEMETRY_OPTOUT",
+  "POWERSHELL_UPDATECHECK",
+  "PSModulePath",
+  "SystemRoot",
+  "TEMP",
+  "TMP",
+  "USERPROFILE",
+  "WINDIR"
+]

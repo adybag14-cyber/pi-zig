@@ -1,0 +1,123 @@
+{
+  "status": "captured_pending_independent_audit",
+  "candidate_head": "c64aa31cb8726b9da66afea2c76aed34f626a402",
+  "launcher_sha256": "D29070CD3D8C0D3723FDC231732DBADC49590FF289DF1059AC7D8FBB3073F8E1",
+  "runner_identity": {
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1 -CandidateHead c64aa31cb8726b9da66afea2c76aed34f626a402 -RunId root-crypto58-fixed-20261016-235900 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "created_utc": "2026-10-16T23:59:00.9115060+00:00",
+    "pid": 81980
+  },
+  "initial_admission": {
+    "native_census": {
+      "census_count": 706,
+      "candidates": [],
+      "utc": "2026-10-16T23:59:02.5259932+00:00",
+      "candidate_count": 0
+    },
+    "heap_mb": 256,
+    "native_roots": 0,
+    "free_kib": 20319004,
+    "utc": "2026-10-16T23:59:02.5287201+00:00",
+    "light_reserved_kib": 2097152
+  },
+  "node_launch_requested": true,
+  "postseal": true,
+  "owned_absent": true,
+  "expected_created": false,
+  "deleted_runtime_used": false,
+  "independent_capture_acceptance": false,
+  "failures": [],
+  "post_reset_environment_names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PATHEXT",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "PSModulePath",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ],
+  "pre_node_admission": {
+    "native_census": {
+      "census_count": 703,
+      "candidates": [],
+      "utc": "2026-10-16T23:59:05.5440691+00:00",
+      "candidate_count": 0
+    },
+    "heap_mb": 256,
+    "native_roots": 0,
+    "free_kib": 20282448,
+    "utc": "2026-10-16T23:59:05.5441053+00:00",
+    "light_reserved_kib": 2097152
+  },
+  "pre_node_environment_names": [
+    "APPDATA",
+    "ComSpec",
+    "HOME",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "LOCALAPPDATA",
+    "NO_COLOR",
+    "PATH",
+    "PATHEXT",
+    "POWERSHELL_TELEMETRY_OPTOUT",
+    "POWERSHELL_UPDATECHECK",
+    "PSModulePath",
+    "SystemRoot",
+    "TEMP",
+    "TMP",
+    "USERPROFILE",
+    "WINDIR"
+  ],
+  "cases": 58,
+  "raw_sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+  "node_identity": {
+    "executable": "C:\\Program Files\\nodejs\\node.exe",
+    "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+    "arguments": [
+      "--max-old-space-size=256",
+      "--permission",
+      "--allow-fs-read=C:\\Program Files\\nodejs",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+      "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+      "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+      "--owned-original58"
+    ],
+    "working_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900",
+    "pid": 2612,
+    "retained_handle": 2292,
+    "created_utc": "2026-10-16T23:59:05.5661125Z",
+    "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+    "timeout_seconds": 300,
+    "status": "passed",
+    "live_identity": {
+      "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58",
+      "command_line_method": "Win32_Process.CommandLine",
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "created_utc": "2026-10-16T23:59:05.5661125Z",
+      "pid": 2612
+    },
+    "exit_code": 0,
+    "completed_utc": "2026-10-17T00:59:06.152745+01:00"
+  },
+  "final_native_census": {
+    "census_count": 703,
+    "candidates": [],
+    "utc": "2026-10-16T23:59:08.7238780+00:00",
+    "candidate_count": 0
+  },
+  "native_roots_after": 0,
+  "outer_handoff": "Independent supervisor must confirm this runner identity absent after process exit",
+  "completed_utc": "2026-10-16T23:59:08.7264802+00:00"
+}

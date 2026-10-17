@@ -1,0 +1,11 @@
+file:///C:/Users/adyba/pi-zig/worktrees/semver/verification/node-crypto-sha256-package-sourceonly-20261016/capture-original.mjs:14
+if(unexpectedEnvironmentNames.length)throw Error('Unexpected inherited environment names: '+JSON.stringify(unexpectedEnvironmentNames));
+                                           ^
+
+Error: Unexpected inherited environment names: ["3DVPATH","ALLUSERSPROFILE","AMDRMSDKPATH","ANDROID_AVD_HOME","ANDROID_HOME","ANDROID_SDK_ROOT","ANDROID_USER_HOME","CARGO_TARGET_X86_64_PC_WINDOWS_GNU_AR","CARGO_TARGET_X86_64_PC_WINDOWS_GNU_LINKER","CODEX_APPLY_PATCH_PRESERVE_LINE_ENDINGS","CODEX_CI","CODEX_HOME","CODEX_SESSION_ID","CODEX_THREAD_ID","CODEX_TOOL_CALL_ID","CODEX_VERSION","COLORTERM","COMPUTERNAME","CUDA_PATH","CUDA_PATH_V13_1","ChocolateyInstall","ChocolateyLastPathUpdate","CommonProgramFiles","CommonProgramFiles(x86)","CommonProgramW6432","DriverData","GH_PAGER","GIT_EDITOR","GIT_PAGER","GOPATH","GRADLE_USER_HOME","HERMES_GIT_BASH_PATH","HERMES_HOME","JAVA_HOME","LANG","LC_ALL","LC_CTYPE","LOGONSERVER","NODE_REPL_TRUSTED_BROWSER_CLIENT_SHA256S","NUMBER_OF_PROCESSORS","OPENCLAW_MINGW_BIN","OS","OculusBase","OneDrive","PAGER","POWERSHELL_DISTRIBUTION_CHANNEL","PROCESSOR_ARCHITECTURE","PROCESSOR_IDENTIFIER","PROCESSOR_LEVEL","PROCESSOR_REVISION","PROMPT","PUBLIC","ProgramData","ProgramFiles","ProgramFiles(x86)","ProgramW6432","SESSIONNAME","SystemDrive","TERM","TORCHINDUCTOR_CACHE_DIR","TUNNEL_EDGE_BIND_ADDRESS","TUNNEL_TRANSPORT_PROTOCOL","USERDOMAIN","USERDOMAIN_ROAMINGPROFILE","USERNAME","VBOX_HWVIRTEX_IGNORE_SVM_IN_USE","VBOX_MSI_INSTALL_PATH","WSLENV","WT_PROFILE_ID","WT_SESSION","_patched","_preferred","_prog","_standalone","msbuild"]
+    at file:///C:/Users/adyba/pi-zig/worktrees/semver/verification/node-crypto-sha256-package-sourceonly-20261016/capture-original.mjs:14:44
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0

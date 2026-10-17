@@ -1,0 +1,11 @@
+{
+  "authorized": true,
+  "builtin_only_no_deleted_runtime": true,
+  "manual_fresh_16gib": true,
+  "candidate_head": "c64aa31cb8726b9da66afea2c76aed34f626a402",
+  "run_id": "root-crypto58-fixed-20261016-235900",
+  "launcher_sha256": "D29070CD3D8C0D3723FDC231732DBADC49590FF289DF1059AC7D8FBB3073F8E1",
+  "issued_utc": "2026-10-16T23:59:00.4487956+00:00",
+  "expires_utc": "2026-10-17T00:03:00.4487956+00:00",
+  "grant_id": "root-crypto58-fixed-20261016-235900"
+}

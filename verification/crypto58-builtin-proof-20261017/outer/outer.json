@@ -1,0 +1,213 @@
+{
+  "status": "runner_terminal0_pending_audit",
+  "runner_launched": true,
+  "run_id": "root-crypto58-fixed-20261016-235900",
+  "candidate_head": "c64aa31cb8726b9da66afea2c76aed34f626a402",
+  "runner_sha256": "D29070CD3D8C0D3723FDC231732DBADC49590FF289DF1059AC7D8FBB3073F8E1",
+  "helper_sha256": "0607F7148B52DFEFB74A79A9FEB9FF9426E11B9E9DCF11F4DB3D90DB30343F4F",
+  "deadline_utc": "2026-10-17T00:14:00.7270549+00:00",
+  "execution_wait_seconds": 810,
+  "shared_cleanup_reserve_seconds": 90,
+  "total_monotonic_seconds": 900,
+  "settlement_seconds_per_stage_cap": 10,
+  "environment_reset": false,
+  "root_grant_sha256": "EAA21857BB97C137A9F35FD0881343D0E7375DBCBC9E7A4BEA856005EC6177E7",
+  "runner_absent": true,
+  "node_absent": true,
+  "descendants_absent": true,
+  "absence_state": "verified_originals_absent",
+  "capture_accepted": false,
+  "expected_created": false,
+  "outer_console_logs_saved": false,
+  "output_custody": "Underlying tool stdout/stderr handles inherited; no outer readers/copy tasks/sinks. CI607 Node raws/result and outer.json are durable authority.",
+  "identity_captures": [
+    {
+      "pid": 81980,
+      "retained_handle": 2068,
+      "kernel_created_utc_raw": "2026-10-16T23:59:00.9115068Z",
+      "kernel_microsecond_ticks": 639277919409115060,
+      "kernel_executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+      "status": "agreed",
+      "cim_rows": [
+        {
+          "ProcessId": 81980,
+          "ParentProcessId": 74936,
+          "Name": "pwsh.exe",
+          "ExecutablePath": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+          "CommandLine": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1 -CandidateHead c64aa31cb8726b9da66afea2c76aed34f626a402 -RunId root-crypto58-fixed-20261016-235900 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json",
+          "CreationDate": "2026-10-17T00:59:00.911506+01:00"
+        }
+      ],
+      "cim_created_utc_raw": "2026-10-16T23:59:00.9115060Z",
+      "cim_microsecond_ticks": 639277919409115060
+    }
+  ],
+  "absence_captures": [
+    {
+      "expected": {
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58",
+        "command_line_method": "Win32_Process.CommandLine",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "created_utc": "2026-10-16T23:59:05.5661125Z",
+        "pid": 2612
+      },
+      "status": "captured",
+      "kernel_absent": true,
+      "cim_absent": true,
+      "cim_rows": [],
+      "absent": true
+    },
+    {
+      "expected": {
+        "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1 -CandidateHead c64aa31cb8726b9da66afea2c76aed34f626a402 -RunId root-crypto58-fixed-20261016-235900 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json",
+        "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+        "cim_created_utc_raw": "2026-10-16T23:59:00.9115060Z",
+        "created_microsecond_ticks": 639277919409115060,
+        "parent_pid": 74936,
+        "pid": 81980,
+        "command_line_method": "Win32_Process.CommandLine",
+        "retained_handle": 2068,
+        "created_utc": "2026-10-16T23:59:00.9115068Z"
+      },
+      "status": "captured",
+      "kernel_absent": true,
+      "cim_absent": true,
+      "cim_rows": [],
+      "absent": true
+    }
+  ],
+  "canonical_receipt_reads": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.json",
+      "status": "read",
+      "canonical": {
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+        "arguments": [
+          "--max-old-space-size=256",
+          "--permission",
+          "--allow-fs-read=C:\\Program Files\\nodejs",
+          "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+          "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+          "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+          "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+          "--owned-original58"
+        ],
+        "working_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900",
+        "pid": 2612,
+        "retained_handle": 2292,
+        "created_utc": "2026-10-16T23:59:05.5661125Z",
+        "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+        "timeout_seconds": 300,
+        "status": "passed",
+        "live_identity": {
+          "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58",
+          "command_line_method": "Win32_Process.CommandLine",
+          "executable": "C:\\Program Files\\nodejs\\node.exe",
+          "created_utc": "2026-10-16T23:59:05.5661125Z",
+          "pid": 2612
+        },
+        "exit_code": 0,
+        "completed_utc": "2026-10-17T00:59:06.152745+01:00"
+      },
+      "utc": "2026-10-16T23:59:08.9282539+00:00"
+    }
+  ],
+  "child_snapshots": [
+    {
+      "stage": "node_reconciliation",
+      "status": "captured",
+      "utc": "2026-10-16T23:59:08.9464146+00:00",
+      "descendants": [],
+      "node_hints": [],
+      "kill_authority": "none for census children/descendants",
+      "census_count": 701,
+      "root_rows": [],
+      "verified_runner": null,
+      "held_runner_handle": 0,
+      "incomplete_ancestry_rows": [],
+      "direct_children": []
+    },
+    {
+      "stage": "final_descendant_absence",
+      "status": "captured",
+      "utc": "2026-10-16T23:59:10.3978206+00:00",
+      "descendants": [],
+      "node_hints": [],
+      "kill_authority": "none for census children/descendants",
+      "census_count": 701,
+      "root_rows": [],
+      "verified_runner": null,
+      "held_runner_handle": 0,
+      "incomplete_ancestry_rows": [],
+      "direct_children": []
+    }
+  ],
+  "node_inspection_handles": [],
+  "rejections": [],
+  "pid": 81980,
+  "retained_handle": 2068,
+  "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+  "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+  "created_utc": "2026-10-16T23:59:00.9115068Z",
+  "arguments": [
+    "-NoLogo",
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1",
+    "-CandidateHead",
+    "c64aa31cb8726b9da66afea2c76aed34f626a402",
+    "-RunId",
+    "root-crypto58-fixed-20261016-235900",
+    "-RootGrant",
+    "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json"
+  ],
+  "live_identity": {
+    "command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1 -CandidateHead c64aa31cb8726b9da66afea2c76aed34f626a402 -RunId root-crypto58-fixed-20261016-235900 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "cim_created_utc_raw": "2026-10-16T23:59:00.9115060Z",
+    "created_microsecond_ticks": 639277919409115060,
+    "parent_pid": 74936,
+    "pid": 81980,
+    "command_line_method": "Win32_Process.CommandLine",
+    "retained_handle": 2068,
+    "created_utc": "2026-10-16T23:59:00.9115068Z"
+  },
+  "node_reconciliation": {
+    "canonical": {
+      "executable": "C:\\Program Files\\nodejs\\node.exe",
+      "executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+      "arguments": [
+        "--max-old-space-size=256",
+        "--permission",
+        "--allow-fs-read=C:\\Program Files\\nodejs",
+        "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+        "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+        "--allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+        "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+        "--owned-original58"
+      ],
+      "working_directory": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900",
+      "pid": 2612,
+      "retained_handle": 2292,
+      "created_utc": "2026-10-16T23:59:05.5661125Z",
+      "identity": "Retained native Process handle plus fresh executable/UTC start and exact live command line",
+      "timeout_seconds": 300,
+      "status": "passed",
+      "live_identity": {
+        "command_line": "\"C:\\Program Files\\nodejs\\node.exe\" --max-old-space-size=256 --permission \"--allow-fs-read=C:\\Program Files\\nodejs\" --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt --allow-fs-read=C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs --owned-original58",
+        "command_line_method": "Win32_Process.CommandLine",
+        "executable": "C:\\Program Files\\nodejs\\node.exe",
+        "created_utc": "2026-10-16T23:59:05.5661125Z",
+        "pid": 2612
+      },
+      "exit_code": 0,
+      "completed_utc": "2026-10-17T00:59:06.152745+01:00"
+    },
+    "absent": true
+  },
+  "runner_exit_code": 0,
+  "monotonic_elapsed_ms": 10146.5269,
+  "completed_utc": "2026-10-16T23:59:10.8736345+00:00"
+}

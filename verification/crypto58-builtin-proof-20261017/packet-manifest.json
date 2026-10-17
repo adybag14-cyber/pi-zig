@@ -1,0 +1,257 @@
+{
+  "status": "independently_accepted_original_builtin_crypto58_raw_packet",
+  "capture_head": "c64aa31cb8726b9da66afea2c76aed34f626a402",
+  "run_id": "root-crypto58-fixed-20261016-235900",
+  "raw_sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+  "acceptance_sha256": "200C985D30C76FC484CB9C0B81DB4FC789C2271BB19C49342A610A328FA53C6E",
+  "files": [
+    {
+      "relative": "capture/before.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\before.json",
+      "sha256": "B3D464380C7E56E814999C0B78B74E0D1DD1AAC280AE283FAFC29730D866A7E4",
+      "bytes": 475679
+    },
+    {
+      "relative": "capture/final.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\final.json",
+      "sha256": "B3D464380C7E56E814999C0B78B74E0D1DD1AAC280AE283FAFC29730D866A7E4",
+      "bytes": 475679
+    },
+    {
+      "relative": "capture/owner.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.json",
+      "sha256": "7A1A16ABDE27BD2DB483E2AF65C304122792230B65FA73FE46FB03A755AE6DA4",
+      "bytes": 2264
+    },
+    {
+      "relative": "capture/owner.stderr.log",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "relative": "capture/owner.stdout.bin",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\owner.stdout.bin",
+      "sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+      "bytes": 8105
+    },
+    {
+      "relative": "capture/post-reset-environment-names.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\post-reset-environment-names.json",
+      "sha256": "F67023F69733AB8BAB7B8FBE6C192B6E172BFA25D381CBED725D5F2F2EBC35C9",
+      "bytes": 285
+    },
+    {
+      "relative": "capture/pre-node-environment-names.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\pre-node-environment-names.json",
+      "sha256": "F67023F69733AB8BAB7B8FBE6C192B6E172BFA25D381CBED725D5F2F2EBC35C9",
+      "bytes": 285
+    },
+    {
+      "relative": "capture/result.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-fixed-20261016-235900\\result.json",
+      "sha256": "3701525CD1798726B37C4F674858DBC965C002510A8875C51B8A1B54F3B18297",
+      "bytes": 5274
+    },
+    {
+      "relative": "outer/outer.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900\\outer.json",
+      "sha256": "363643FBFF3F3368048A0E5318ADC6A94518E768D21C0C1CDBEDD241A8B590DF",
+      "bytes": 12370
+    },
+    {
+      "relative": "outer/independent-acceptance.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900\\independent-acceptance.json",
+      "sha256": "200C985D30C76FC484CB9C0B81DB4FC789C2271BB19C49342A610A328FA53C6E",
+      "bytes": 4009
+    },
+    {
+      "relative": "outer/root-crypto58-fixed-20261016-235900-grant.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-fixed-20261016-235900-grant.json",
+      "sha256": "EAA21857BB97C137A9F35FD0881343D0E7375DBCBC9E7A4BEA856005EC6177E7",
+      "bytes": 473
+    },
+    {
+      "relative": "outer/Invoke-Crypto58Outer-EnvironmentRemoval.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\Invoke-Crypto58Outer-EnvironmentRemoval.ps1",
+      "sha256": "0607F7148B52DFEFB74A79A9FEB9FF9426E11B9E9DCF11F4DB3D90DB30343F4F",
+      "bytes": 24397
+    },
+    {
+      "relative": "outer/Audit-Crypto58-Fixed-Independent.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\Audit-Crypto58-Fixed-Independent.ps1",
+      "sha256": "CE945B23712EC1E3C80388C71D2A2510F19D0D1104CCACB74A2F2D28619AD0E3",
+      "bytes": 10654
+    },
+    {
+      "relative": "source/Run-StandaloneOriginal58.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Run-StandaloneOriginal58.ps1",
+      "sha256": "D29070CD3D8C0D3723FDC231732DBADC49590FF289DF1059AC7D8FBB3073F8E1",
+      "bytes": 17239
+    },
+    {
+      "relative": "source/capture-original.mjs",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\capture-original.mjs",
+      "sha256": "F722F6F8306B84A87E371B1FECB934CC30FFB5BD68DD958950ABAEC9A2620F31",
+      "bytes": 4516
+    },
+    {
+      "relative": "source/Read-Original58Capture.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Read-Original58Capture.ps1",
+      "sha256": "DA1C59A9088EFF7CD919F211FB3AFC28579E863A7FFEF5B37A47FA70F9D38E38",
+      "bytes": 4494
+    },
+    {
+      "relative": "source/source-only-controls.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\source-only-controls.json",
+      "sha256": "4C3CF4B8B463CBA5E7FE488F761188CC895DED4CAE8C706CC41C6E3468554A0B",
+      "bytes": 2337
+    },
+    {
+      "relative": "source/Get-ModelsNativeCandidates.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Get-ModelsNativeCandidates.ps1",
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "bytes": 1786
+    },
+    {
+      "relative": "source/Test-ModelsNativeAdmission.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\Test-ModelsNativeAdmission.ps1",
+      "sha256": "561AA33F77504685A99F9E6EFBE373FAA3DFB833752BD4D88A5D105595B746B3",
+      "bytes": 2290
+    },
+    {
+      "relative": "source/environment-removal-sourceonly.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\environment-removal-sourceonly.json",
+      "sha256": "744EA9DAE03A15FA228A6DB2B0424DE2CBCF15133F1521638FB80F8D5B128F7A",
+      "bytes": 6278
+    },
+    {
+      "relative": "source/ENVIRONMENT-REMOVAL.md",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\verification\\node-crypto-sha256-package-sourceonly-20261016\\ENVIRONMENT-REMOVAL.md",
+      "sha256": "148FB4E50A50D31011141832CF7D2C393FF1FD6CA83AD55C5E5D63DECB11810A",
+      "bytes": 1989
+    },
+    {
+      "relative": "source/node-crypto-sha256-package.input.txt",
+      "original": "C:\\Users\\adyba\\pi-zig\\worktrees\\semver\\src\\extensions\\fixtures\\node-crypto-sha256-package.input.txt",
+      "sha256": "A9722654D1FCF6B3F00638B59F9D4EAA829549CC996EE7BE36808E24D7E2DA26",
+      "bytes": 5785
+    },
+    {
+      "relative": "source/native_qualification_ci.ps1",
+      "original": "C:\\Users\\adyba\\pi-zig\\main\\tools\\ci\\native_qualification_ci.ps1",
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "bytes": 11699
+    },
+    {
+      "relative": "authority/typebox-heap-scope-args-static-second49d-20261016-frozen.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-heap-scope-args-static-second49d-20261016-frozen.json",
+      "sha256": "35F1F2B0F12BF79C06B47AE2BA8C485EF10A7714BE3F129772E3BA1BBB97B927",
+      "bytes": 3384996
+    },
+    {
+      "relative": "authority/source4954-node-tools-before-20261015.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\source4954-node-tools-before-20261015.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "bytes": 352993
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/before.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\before.json",
+      "sha256": "47CEE7302295BE284EB9F1230329FD2FD222F03584E71068140DD71D280897A7",
+      "bytes": 475673
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/final.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\final.json",
+      "sha256": "47CEE7302295BE284EB9F1230329FD2FD222F03584E71068140DD71D280897A7",
+      "bytes": 475673
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/owner.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.json",
+      "sha256": "FDB6645DB8FA444CDC73137A25F666F28722D863AE65D8A62E4898EA42CDC144",
+      "bytes": 2334
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/owner.stderr.log",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.stderr.log",
+      "sha256": "64C2D9EC95AB01FB8035C9E0CB631F625D457859A79E86B64D6FFFED5E6A4C21",
+      "bytes": 787
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/owner.stdout.bin",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\owner.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/result.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-20261016-233253\\result.json",
+      "sha256": "7EF70031C2A57A2B05F00C0B492B7136EB3A0036802A4A5D6C87AB10070EBB87",
+      "bytes": 4568
+    },
+    {
+      "relative": "negatives/root-crypto58-20261016-233253/outer.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-20261016-233253\\outer.json",
+      "sha256": "7E22C333E75657BDA1038D54615C1C7B896EFEFA10D9B0DB2D5F467B1E6D0590",
+      "bytes": 12445
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/before.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\before.json",
+      "sha256": "BA01E47EDBB31D13B18A30F79B98A0A578465553EFF0EE21F64517BDC97AC50B",
+      "bytes": 475677
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/final.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\final.json",
+      "sha256": "BA01E47EDBB31D13B18A30F79B98A0A578465553EFF0EE21F64517BDC97AC50B",
+      "bytes": 475677
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/owner.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.json",
+      "sha256": "2227E37E3D7ED3283264D3C7434AE2205B7C75A7AADD4A94797CC215E94A7099",
+      "bytes": 2338
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/owner.stderr.log",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.stderr.log",
+      "sha256": "81EF389695274830BC2D8E34205E1BE298BFD055A30CA4F45CF5DB6D4594A93A",
+      "bytes": 2097
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/owner.stdout.bin",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\owner.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/pre-node-environment-names.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\pre-node-environment-names.json",
+      "sha256": "357D08A332FFBE8D556DAF47220B6461F91EC4E9FBD9306B17F794F2041C8897",
+      "bytes": 1930
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/result.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\crypto-sha256-original58\\root-crypto58-env-20261016-235238\\result.json",
+      "sha256": "A9BB9EE336864A9B0EB2DF2C97421798F5AA06418F6E2ED4786A0588FF0D0DC3",
+      "bytes": 6729
+    },
+    {
+      "relative": "negatives/root-crypto58-env-20261016-235238/outer.json",
+      "original": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-outer-prepared-20261016\\root-crypto58-env-20261016-235238\\outer.json",
+      "sha256": "77C1F9D64B5D9B3B65053403EEB8376A4BC06F4CCD51BA804EC2D24543133A56",
+      "bytes": 12490
+    }
+  ],
+  "historical_negative_runs": [
+    "root-crypto58-20261016-233253",
+    "root-crypto58-env-20261016-235238"
+  ],
+  "native_implementation_qualified": false,
+  "deleted_runtime_restored": false,
+  "expected_authored_by_native": false,
+  "public_publication_pending": true
+}
