@@ -121,7 +121,7 @@ comptime {
     // Actual current control bodies: the supplied pointers retain each real
     // ArgsTuple/return type; no Subject value or result is manufactured here.
     retain(@import("native_jiti_public_factory_controls.zig"), "public_control", .{
-        "verifyCapturedQueue", "verifyActualNamespaceAndConstruction", "verifyUnpublishedModuleRejected", "verifyPendingBeforeProfile", "verifyPendingLazyLoadAndRetry", "verifyPendingModuleGetterBeforeNamespace", "verifyPendingBeforeComplete",
+        "verifyCapturedQueue", "verifyActualNamespaceAndConstruction", "verifyReadinessLeavesBabelUnloaded", "verifyPendingBeforeProfile", "verifyPendingLazyLoadAndRetry", "verifyReadinessDoesNotReadModuleCache", "verifyPendingBeforeComplete",
     });
     retain(@import("native_jiti_canonical_assembly_controls.zig"), "canonical_control", .{
         "verifyActualCanonicalCycle", "verifyMissingDependencyNoCommit", "verifyMismatchedRealImportsNoCommit", "verifyBudgetDenialRollbackAndRetry", "verifyActualCycleMarkingAndLedgerRelease", "verifyPendingEventsBeforeConstructionAndInitialization",
