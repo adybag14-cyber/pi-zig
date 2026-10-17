@@ -1618,6 +1618,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-sdk-application-bootstrap-artifact", "Compile actual SDK platform/AI/manager/OS and full factory/session body anchors").dependOn(&b.addInstallArtifact(sdk_application_tests, .{}).step);
     b.step("test-native-sdk-application-bootstrap", "Execute actual SDK available bootstrap controls after explicit grant").dependOn(&b.addRunArtifact(sdk_application_tests).step);
+    const sdk_management_http_tests = b.addTest(.{
+        .name = "native-sdk-management-http",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_management_http_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK management HTTP"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_management_http_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_management_http_tests.root_module, typescript_parser);
+    linkSqlite(sdk_management_http_tests.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_management_http_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_management_http_tests.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_management_http_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-management-http", "Compile actual management HTTP and genuine SDK owner readiness controls without running").dependOn(&b.addInstallArtifact(sdk_management_http_tests, .{}).step);
+    b.step("test-native-sdk-management-http", "Run actual management HTTP controls only after an explicit qualification grant").dependOn(&b.addRunArtifact(sdk_management_http_tests).step);
     const idle_settlement_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_idle_settlement_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native idle settlement"}, .use_llvm = use_llvm });
     linkQuickJs(b, idle_settlement_identity_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(idle_settlement_identity_tests.root_module, sqlite_lib_dir, sqlite_library);
