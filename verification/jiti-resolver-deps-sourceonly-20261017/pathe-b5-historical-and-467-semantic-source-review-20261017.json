@@ -1,0 +1,72 @@
+{
+  "status": "bounded_source_review_record_no_selection_or_runtime_approval",
+  "historical_b5": {
+    "commit": "b5cd48dcf7a0a7a113a4ce6e50b2a9abfe5b61cf",
+    "leaf_sha256": "1ECFF4FEB3E8C229A59E7457D4DBE73DFD79953B32AC71AA073683211B6A914F",
+    "finite_manifest_sha256": "CF22AA9A683A4E8C5A3B152F93CB4FE0031CADC35ABAAD68437390482DAEB1AC",
+    "prior_closure_form": "Independent finite source-review closure supplied in a team message; this later record preserves its bounded scope and does not invent a historical execution receipt.",
+    "methods": ["normalize", "join", "dirname", "basename", "extname", "isAbsolute", "normalizeAliases", "resolveAlias"],
+    "bounded_corrections_reviewed_then": [
+      "Fresh inline regexp identity and original callee/literal order",
+      "basename slice callee before extension length; explicit unusual BigInt frontier",
+      "normalizeString compound assignment evaluation and coercion order",
+      "Throw-completion IteratorClose skips normal-result object validation",
+      "Namespace-local iterator advancement and native enumeration budget checks",
+      "Controlled cancellation/quota uses its actual uncatchable reason"
+    ],
+    "original_observation_count": 313,
+    "separate_supplement_observation_count": 6,
+    "original_five_native_controls_preserved": true,
+    "separate_added_native_control_declarations": 4,
+    "all_controls_unrun_at_source_closure": true,
+    "full_generic_host_fatal_policy_was_not_qualified": true
+  },
+  "new_467_semantic_review": {
+    "commit": "4672e40dd15d51c013f5e54cf491af30966180c4",
+    "leaf_sha256": "5E40B0889809BFF459E967369F26FB84C3A01976419425C3C09FB3BE72D10D50",
+    "cache_manifest_sha256": "C9BA5FB83B983A3F10DF102000BC0FACD9B0E5930D17A7A6DBD676C3BFB9F7F4",
+    "new_exports": ["resolve", "filename"],
+    "old_eight_function_bodies_unchanged": true,
+    "resolve_checks": [
+      "Actual rest array and live map callee precede fresh anonymous arrow creation",
+      "Actual normalizeWindowsPath, backward index search and VM numeric decrement",
+      "Three independent process reads and two cwd property gets, with the actual call receiver",
+      "Fresh cwd backslash regexp created after resolving replace",
+      "Source template coercion order, normalizeString and absolute-path decisions"
+    ],
+    "filename_checks": [
+      "Actual shared module SLASH_RE",
+      "Live split, pop, lastIndexOf and slice operations with Source comparison/order",
+      "Ordinary function metadata and GC-visible retained module roots"
+    ],
+    "new_original_observations": 40,
+    "new_native_control_declarations": 3,
+    "new_controls_uncompiled_unrun": true,
+    "no_additional_body_semantic_mismatch_found": true
+  },
+  "current_pin_checks": {
+    "method": "Exact immutable Git blob hashes for product and retained input files; retained authority hashes checked separately. Advancing dirty pathe working-tree bytes were excluded.",
+    "cache_product_document_control_rows": 4,
+    "retained_original_input_control_rows": 4,
+    "drift": 0,
+    "retained_authority_rows": 89,
+    "authority_drift": 0,
+    "cache_expected_file_absent_in_467_tree": true
+  },
+  "known_inherited_policy_gaps_before_selection": [
+    "The generic native_node_function carrier's direct OOM path privately tags a reason without establishing the current required uncatchable transport policy; the historical source closure does not qualify that shared carrier.",
+    "Generic callback construction work can fail before the leaf Boundary begins; its allocation ownership and fatal policy require a separately reviewed current host boundary.",
+    "The inherited closeAbrupt cleanup classification uses the older loop-start generation. A fresh cleanup boundary and exact primary/cleanup failure ownership need a separately approved successor."
+  ],
+  "limits": {
+    "historical_sources_or_inputs_rewritten": false,
+    "new_expected_data_authored": false,
+    "Node_compiler_AST_parser_native_jobs": 0,
+    "Main_or_product_edits_by_reviewer": false,
+    "compiled_metadata_observed": false,
+    "runtime_qualified": false,
+    "reflection_or_proxy_frontiers_qualified": false,
+    "default_selection_approved": false,
+    "full_jiti_or_generic_host_fatal_policy_qualified": false
+  }
+}

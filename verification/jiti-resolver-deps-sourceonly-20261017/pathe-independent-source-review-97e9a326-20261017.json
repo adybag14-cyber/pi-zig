@@ -1,0 +1,49 @@
+{
+  "status": "finite_combined_pathe_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "97e9a3268c2d165492ed4fda42f99328b5f8f456",
+  "manifest_sha256": "91547EF3C398C016A0CF49930C00820EDCC2598CDA5BD5D241B2C9E50270E8B1",
+  "historical_b5_and_467_receipt_sha256": "9B142B01B8F8FC493BC28A03D44D067699A4E66BCDF44659DBB5F3344D6158C8",
+  "reviewed_product_sha256": "3CB4E151483030AA544B50ACA1F6CF2EC2740113C2F13B1EA3B90F392E4253DA",
+  "unchanged_actual_callable_sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4",
+  "reviewed_contracts": [
+    "Real ordinary/arrow C callable covers construction and callback with charged/traced roots and owned pending-first failure transfer",
+    "Same synchronous Engine-matched provenance as MLLY; no copied namespace stack and no shared helper rewrite",
+    "All private Pathe checked boundaries honor trusted generation; three normal closes classify live return getter/call before ordinary floor",
+    "Abrupt return getter/call use fresh boundaries; ordinary cleanup remains suppressed and owned primary restored; trusted primary identity retained",
+    "Actual iterator receiver and normal object-result check retained; throw completion omits suppressed object validation",
+    "Eight prepared public controls and four genuine URL-import cross-namespace profiles exercise actual exports; no filesystem converter substitute"
+  ],
+  "source_checks": {
+    "product_and_retained_rows": 29,
+    "hash_drift": 0,
+    "authority_rows": 89,
+    "authority_drift": 0,
+    "expected_paths_absent": 4,
+    "diffcheck_exit": 0,
+    "clean_exact_head": true,
+    "adapter_MLLY_C_H_Engine_generic_Node_helpers_unchanged": true
+  },
+  "prepared_only": {
+    "pathe_tests": 20,
+    "new_policy_tests": 8,
+    "cross_namespace_profiles": 4,
+    "original_input_counts": [
+      313,
+      6,
+      40,
+      6
+    ],
+    "actual_metadata_count": null,
+    "controls_executed": false
+  },
+  "unqualified": [
+    "Compilation/native/original execution, GPA/GC/lifetime behavior and platform parity",
+    "Mixed trusted direct OOM plus unrelated pending primitive/plain object remains explicitly unsupported host contract",
+    "Broad V8 reflection/proxy/global mutation/deep recursion and complete default loader/package composition",
+    "No registry/default selection, runtime API or whole Jiti qualification"
+  ],
+  "historical_negatives_and_inputs_preserved": true,
+  "reviewer_jobs": false,
+  "reviewer_Main_or_product_edits": false,
+  "execution_grant_issued": false
+}

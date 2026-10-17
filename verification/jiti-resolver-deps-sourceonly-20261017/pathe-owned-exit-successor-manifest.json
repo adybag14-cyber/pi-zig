@@ -1,0 +1,159 @@
+{
+  "status": "authored_policy_successor_pending_independent_source_review_uncompiled_unrun",
+  "base_commit": "942c6fb236b81821411bb89c8da2e6c872329d40",
+  "planned_root_base": "4188de7b4190869cd3229f8544e291ab03867858",
+  "historical_b5": "b5cd48dcf7a0a7a113a4ce6e50b2a9abfe5b61cf",
+  "semantic_467": "4672e40dd15d51c013f5e54cf491af30966180c4",
+  "historical_semantic_peer_receipt_sha256": "9B142B01B8F8FC493BC28A03D44D067699A4E66BCDF44659DBB5F3344D6158C8",
+  "product_files": [
+    {
+      "relative": "src/extensions/native_pathe.zig",
+      "sha256": "3CB4E151483030AA544B50ACA1F6CF2EC2740113C2F13B1EA3B90F392E4253DA",
+      "bytes": 36414
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-policy-2.0.3.input.mjs",
+      "sha256": "86C65DFB2869795164A39A2BE4975ECC50A8763EC977451681671C8E71648581",
+      "bytes": 2741
+    },
+    {
+      "relative": "src/native_jiti_pathe_policy_test.zig",
+      "sha256": "51A1B98A025DA52228CFD41938AC04CC6EDA144CA3A4CDE6B678289A672E0ED3",
+      "bytes": 11182
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/PATHE-OWNED-EXIT-SUCCESSOR.md",
+      "sha256": "1FC07383F037A137C1429350F0C71EDBC5839AAF6932EDFCAD0E0387DF903397",
+      "bytes": 4816
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-b5-historical-and-467-semantic-source-review-20261017.json",
+      "sha256": "9B142B01B8F8FC493BC28A03D44D067699A4E66BCDF44659DBB5F3344D6158C8",
+      "bytes": 4267
+    }
+  ],
+  "retained_files": [
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3.input.mjs",
+      "sha256": "107731619B2C31B33F50F35C0F93EF8B8C2BF030C949E22372DEA3916E657582"
+    },
+    {
+      "relative": "src/native_jiti_pathe_test.zig",
+      "sha256": "9182B4827534F6B52DEF047E5A30F55C6F488E643310F8F09B918C96A03EFF68"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.input.mjs",
+      "sha256": "5FBD4C5C9DDA797AAC8BC1A344BC98B3F63B09276F64132B30C20B3A0B160223"
+    },
+    {
+      "relative": "src/native_jiti_pathe_supplement_test.zig",
+      "sha256": "50F2C8C96F4265701998F2C7353C3D64028AC85CD87AF656D08E54B92E2F30AA"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-cache-2.0.3.input.mjs",
+      "sha256": "19B93084E4DD4AA12A63508525D878361A67919BFEFD8820BD47012B7A070D13"
+    },
+    {
+      "relative": "src/native_jiti_pathe_cache_test.zig",
+      "sha256": "FEE94DEB99125CF9B199F0C8CB66AE54EF205C6968D82E0A8FE10991B9FF9F33"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/PATHE-SOURCE-ONLY.md",
+      "sha256": "D12AF39F252E27A8B70654B55DEB56CF81D819A0E6E6F30675CC181CB535A267"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/PATHE-FINITE-SUCCESSOR.md",
+      "sha256": "8F930032CDEA0CDA47B4297F108BC67ED822EAC47B8229E801889B2D0F589804"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/PATHE-CACHE-SUCCESSOR.md",
+      "sha256": "D2DC281464E847649FB673644AA9A6A3ACCBEBD5383D0324DB54C57D829D427A"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-source-manifest.json",
+      "sha256": "2204D3671B29A27A8F825B377611D0D8960658FB2A17788FF1447E81BADC76DE"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-finite-successor-manifest.json",
+      "sha256": "CF22AA9A683A4E8C5A3B152F93CB4FE0031CADC35ABAAD68437390482DAEB1AC"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-cache-successor-manifest.json",
+      "sha256": "C9BA5FB83B983A3F10DF102000BC0FACD9B0E5930D17A7A6DBD676C3BFB9F7F4"
+    },
+    {
+      "relative": "src/extensions/native_mlly_function.zig",
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4"
+    },
+    {
+      "relative": "src/extensions/native_mlly_values.zig",
+      "sha256": "FF04FAA7786C54665187BCB493FFD1E3A0F9A93CD9F5DB789429D4F92F078CD2"
+    },
+    {
+      "relative": "src/extensions/native_mlly_urls.zig",
+      "sha256": "FFB5EC98DB759A62C5B19A9023A6B1D0F7D112AB7338856513B7C884D259B94C"
+    },
+    {
+      "relative": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "relative": "src/extensions/native_js_values.zig",
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "relative": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "relative": "src/extensions/native_class.zig",
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0"
+    },
+    {
+      "relative": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "relative": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "relative": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.c",
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    }
+  ],
+  "actual_callable_implementation": "Reuseunchangedrealnative_mlly_function actualCcallable andsameSYNCprovenance; no genericNF orseparatecopiedstack",
+  "native_callable_sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4",
+  "retained_authority_count": 89,
+  "authority_drift": 0,
+  "original_input_counts": [
+    313,
+    6,
+    40,
+    6
+  ],
+  "pathe_test_declarations": 20,
+  "new_policy_test_declarations": 8,
+  "actual_import_entrypoints": 1,
+  "cross_namespace_profiles": 4,
+  "controls_run": 0,
+  "expected_absent": [
+    "src/extensions/fixtures/jiti-pathe-2.0.3.json",
+    "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.json",
+    "src/extensions/fixtures/jiti-pathe-cache-2.0.3.json",
+    "src/extensions/fixtures/jiti-pathe-policy-2.0.3.json"
+  ],
+  "shared_mlly_c_engine_node_helpers_changed": false,
+  "main_written": false,
+  "jobs_run": false,
+  "selected": false,
+  "qualified": false
+}
