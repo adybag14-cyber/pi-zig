@@ -1,0 +1,86 @@
+{
+  "baseline": "1138b9cfc7d009e3302ac8cb6051fbeda1051b93",
+  "status": "source-only-uncompiled-unrun-review-pending",
+  "changed_products": [
+    "src/extensions/native_agent_executor_fatal.zig",
+    "src/extensions/native_agent_lifecycle_async.zig"
+  ],
+  "changed_control": "src/native_agent_af_correction_test.zig",
+  "native_test_definitions": 4,
+  "new_constructor_bodies": 4,
+  "execution": false,
+  "engine_c_shared_policy_changed": false,
+  "old_packets_preserved": true,
+  "pins": [
+    {
+      "path": "src/extensions/native_agent_executor_fatal.zig",
+      "sha256": "5B133CD26AEDB994DC8BB732530094BCB56D4A123950ABF437E5694A61FA9837",
+      "bytes": 5090
+    },
+    {
+      "path": "src/extensions/native_agent_lifecycle_async.zig",
+      "sha256": "4763AA7AC42DA3A05DC35259759593186A302862816B9005F74C67FAABA135B5",
+      "bytes": 4713
+    },
+    {
+      "path": "src/native_agent_af_correction_test.zig",
+      "sha256": "93F8D1BBE51CBBDA58F5E0B4A5EA1D60C9C8C0A4B68CAD4D5EFFE713614005F8",
+      "bytes": 8560
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "C9F0821EA5442366369B66F5F0C278E497CE86FABC2173D179274BC8751F9758",
+      "bytes": 5962
+    },
+    {
+      "path": "src/extensions/native_agent_events_async.zig",
+      "sha256": "98AC35AF7629E236DC1C935F5D165E75D892D4662B28B455ABF19CF78EAF751D",
+      "bytes": 6567
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "verification/agent-full-methods-af-corrections-sourceonly-20261017/prepared.json",
+      "sha256": "B21C874F01F436C806F6B47CEAFBEE79332C12D764908CC566EAA0AA9CF13CAC",
+      "bytes": 9857
+    },
+    {
+      "path": "verification/agent-af-marked-error-control-sourceonly-20261017/prepared.json",
+      "sha256": "995CB14E618727FA495A23485DC1A0C4B2A153760744787C91165AAC98348B6E",
+      "bytes": 1041
+    },
+    {
+      "path": "verification/agent-full-methods-genuine-af-sourceonly-20261017/prepared.json",
+      "sha256": "F2AA80256A80B0F0C2B0F9DD537D94C51523837612D1D223E281A8C409FD4D9D",
+      "bytes": 9620
+    },
+    {
+      "path": "verification/agent-executor-retained-fatal-sourceonly-20261017/README.md",
+      "sha256": "D716E1C942AA7EA27C3445F429026926A3C8DB9D19402C5F2B24FF788E081DC6",
+      "bytes": 2508
+    }
+  ]
+}

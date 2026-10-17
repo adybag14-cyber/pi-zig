@@ -4,6 +4,7 @@ const em = @import("extensions/engine.zig");
 const p = @import("extensions/native_agent_af_values.zig");
 const functions = @import("extensions/native_node_function.zig");
 const c = em.c;
+const executor_fatal = @import("extensions/native_agent_executor_fatal.zig");
 var marked: bool = false;
 var observed: ?c.JSValue = null; // Borrowed identity; Engine owns captured reason.
 fn executorFault(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
@@ -73,4 +74,48 @@ test "native Agent AF correction event iterator cancellation remains host fatal 
     const reason = c.JS_GetException(engine.context); defer engine.freeValue(reason);
     try std.testing.expect(c.JS_IsUncatchableError(reason));
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.MissingActualInterruptReason));
+}
+var first_observed: ?c.JSValue = null; // Borrowed; the private holder retains it.
+var fault_count: usize = 0;
+fn retainedExecutorFault(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const generation = engine.native_allocation_generation;
+    const err = executor_fatal.callbackFailure(engine, roots[0], error.OutOfMemory, generation);
+    fault_count += 1;
+    if (first_observed == null) first_observed = engine.captured_exception;
+    return err;
+}
+fn overwriteDiagnostic(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    // A native operation catches its own ordinary error and returns normally.
+    // There is no pending event, but the Engine diagnostic slot has changed.
+    const reason = try engine.checked(c.JS_NewError(engine.context));
+    _ = engine.checked(c.JS_Throw(engine.context, reason)) catch return c.pi_js_undefined();
+    unreachable;
+}
+test "native Agent AF correction retained first executor fatal wins later constructor completions" {
+    const bodies = [_][]const u8{
+        "super(executor); throw globalThis.ordinaryMarker;",
+        "super(executor); overwriteDiagnostic();",
+        "super(executor); overwriteDiagnostic(); throw globalThis.ordinaryMarker;",
+        "super(executor); executor(()=>{});",
+    };
+    for (bodies, 0..) |constructor_body, index| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var s: p.Scope = .{ .engine = engine }; defer s.deinit();
+        const holder = try s.own(try executor_fatal.create(engine));
+        first_observed = null; fault_count = 0;
+        const executor = try s.own(try functions.createArrow(engine, "", 1, retainedExecutorFault, &.{holder}));
+        const global = try s.own(c.JS_GetGlobalObject(engine.context));
+        try s.put(global, "ordinaryMarker", try s.object());
+        try s.put(global, "overwriteDiagnostic", try s.own(try functions.createArrow(engine, "overwriteDiagnostic", 0, overwriteDiagnostic, &.{})));
+        const source = try std.fmt.allocPrint(std.testing.allocator, "(class extends Promise {{constructor(executor){{{s}}}}})", .{constructor_body});
+        defer std.testing.allocator.free(source);
+        const constructor = try s.own(try engine.eval(source, "actual-promise-subclass-fixture.js", c.JS_EVAL_TYPE_GLOBAL));
+        try std.testing.expectError(error.JavaScriptException, executor_fatal.construct(&s, constructor, &.{executor}, holder));
+        const actual = engine.captured_exception orelse return error.MissingRetainedExecutorFatal;
+        try std.testing.expect(first_observed != null and c.JS_IsStrictEqual(engine.context, actual, first_observed.?));
+        try std.testing.expect(c.JS_IsUncatchableError(actual));
+        try std.testing.expect(c.pi_js_native_allocation_error_generation(actual) != 0);
+        try std.testing.expectEqual(@as(usize, if (index == 3) 2 else 1), fault_count);
+        try std.testing.expect(!c.JS_HasException(engine.context));
+    }
 }

@@ -4,6 +4,7 @@ const em = @import("engine.zig");
 const c = p.c;
 const af = p.af;
 const functions = @import("native_node_function.zig");
+const executor_fatal = @import("native_agent_executor_fatal.zig");
 pub fn create(engine: *em.Engine) !c.JSValue { return af.createResumable(engine, "runWithLifecycle", 1, invoke, &.{}); }
 fn invoke(engine: *em.Engine, agent: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
     return run(engine, agent, args, state, completion, input) catch |err| p.failure(engine, err);
@@ -27,8 +28,9 @@ fn run(engine: *em.Engine, agent: c.JSValue, args: []const c.JSValue, state: *c.
     try s.put(cell, "resolve", try s.own(try functions.createArrow(engine, "resolvePromise", 0, noop, &.{})));
     try s.put(owner, "resolveCell", cell);
     const promise_constructor = try p.global(&s, "Promise");
-    const capture = try s.own(try functions.createArrow(engine, "", 1, captureResolve, &.{cell}));
-    const idle = try p.construct(&s, promise_constructor, &.{capture});
+    const fatal = try s.own(try executor_fatal.create(engine));
+    const capture = try s.own(try functions.createArrow(engine, "", 1, captureResolve, &.{ cell, fatal }));
+    const idle = try executor_fatal.construct(&s, promise_constructor, &.{capture}, fatal);
     try s.put(owner, "promise", idle);
     const active = try s.object();
     try s.put(active, "promise", idle);
@@ -69,8 +71,7 @@ fn captureResolve(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roo
     var s: p.Scope = .{ .engine = engine }; defer s.deinit();
     const generation = engine.native_allocation_generation;
     s.put(roots[0], "resolve", if (args.len > 0) args[0] else c.pi_js_undefined()) catch |err| {
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try p.body.rethrowRecognizedAllocation(engine, reason, generation);
-        return p.callbackFailure(engine, err);
+        return executor_fatal.callbackFailure(engine, roots[1], err, generation);
     };
     return c.pi_js_undefined();
 }
