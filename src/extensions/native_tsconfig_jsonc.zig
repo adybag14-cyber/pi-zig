@@ -36,8 +36,8 @@ const Parser = struct {
                 'u' => {
                     var code: u16 = 0; var count: usize = 0;
                     while (count < 4) : (count += 1) {
-                        const digit = hex(self.unit(self.pos)) orelse break;
-                        code = code * 16 + digit; self.pos += 1;
+                        const hex_digit = hex(self.unit(self.pos)) orelse break;
+                        code = code * 16 + hex_digit; self.pos += 1;
                     }
                     if (count == 4) try decoded.append(self.engine.gpa, code);
                 },
