@@ -12,14 +12,26 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     engine.enterNativeInvocation(&invocation);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var scope: Scope = .{ .engine = engine };
-    const value = @import("native_sdk_owned_completion.zig").finishValue(&scope, createBody(&scope, inputs, module_name)) catch |err| {
+    const value = createOwned(engine, inputs, module_name) catch |err| {
         const failed = @import("native_sdk.zig").fail(engine, err);
         return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, value));
 }
-fn createBody(scope: *Scope, inputs: Inputs, module_name: []const u8) !c.JSValue {
+fn createOwned(engine: *em.Engine, inputs: Inputs, module_name: []const u8) !c.JSValue {
+    const owned = @import("native_sdk_owned_completion.zig");
+    var scope: Scope = .{ .engine = engine };
+    const graph = try owned.finishValue(&scope, createBody(&scope, inputs));
+    // A completed graph is not published until all construction temporaries
+    // retire successfully. A warm dependency may ignore a freshly read value.
+    const published: anyerror!c.JSValue = if (engine.registerValueModule(module_name, graph)) |_|
+        c.JS_DupValue(engine.context, graph)
+    else |err| err;
+    var completion = owned.Completion.initValue(engine, published);
+    completion.release(graph);
+    return completion.finishValue();
+}
+fn createBody(scope: *Scope, inputs: Inputs) !c.JSValue {
     const engine = scope.engine;
     const platform = try scope.own(try @import("native_sdk_filesystem_namespaces.zig").createPlatform(engine));
     const configuration = try scope.own(try @import("native_sdk_configuration_production.zig").create(engine, .{
@@ -61,6 +73,5 @@ fn createBody(scope: *Scope, inputs: Inputs, module_name: []const u8) !c.JSValue
     try scope.put(result, "timing", timing);
     try scope.put(result, "managementHttp", management_http);
     try scope.put(result, "process", inputs.process);
-    try engine.registerValueModule(module_name, result);
     return c.JS_DupValue(engine.context, result);
 }

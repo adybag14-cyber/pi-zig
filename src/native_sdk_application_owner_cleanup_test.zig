@@ -9,7 +9,7 @@ const app = @import("extensions/native_sdk_application_assembly.zig");
 const assembly = @import("extensions/native_sdk_default_real_assembly.zig");
 const runtime = @import("extensions/native_sdk_runtime_imports.zig");
 const Route = enum { default_assembly, application, bootstrap, runtime };
-const Cleanup = enum { ordinary, fatal, raw_private };
+pub const Cleanup = enum { ordinary, fatal, raw_private };
 const Emission = struct { engine: *em.Engine, reason: c.JSValue, kind: Cleanup, calls: usize = 0 };
 var selected: ?c.JSValue = null;
 var selected_calls: usize = 0;
@@ -40,7 +40,7 @@ fn installGet(engine: *em.Engine, object: c.JSValue, name: [*:0]const u8, callba
     if (c.JS_DefinePropertyGetSet(engine.context, object, atom, callback, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0)
         return @import("extensions/native_js_values.zig").capture(engine);
 }
-fn installCarrier(engine: *em.Engine, owner: c.JSValue, first: [*:0]const u8, second: [*:0]const u8, original: c.JSValue, emission: *Emission) !void {
+fn makeCarrier(engine: *em.Engine, emission: *Emission) !void {
     var id: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &id);
     const definition: c.JSClassDef = .{ .class_name = "Actual SDK owner cleanup control", .finalizer = emit };
@@ -50,8 +50,61 @@ fn installCarrier(engine: *em.Engine, owner: c.JSValue, first: [*:0]const u8, se
     selected = @import("extensions/native_node_function.zig").createArrow(engine, "ownedCarrier", 0, neverCalled, &.{token}) catch |err| { engine.freeValue(token); return err; };
     engine.freeValue(token); // Sole token owner is the transferred function.
     selected_calls = 0;
+}
+fn installCarrier(engine: *em.Engine, owner: c.JSValue, first: [*:0]const u8, second: [*:0]const u8, original: c.JSValue, emission: *Emission) !void {
+    try makeCarrier(engine, emission);
     try installGet(engine, owner, first, try @import("extensions/native_node_function.zig").createArrow(engine, "get carrier", 0, transfer, &.{}));
     try installGet(engine, owner, second, try @import("extensions/native_node_function.zig").createArrow(engine, "get original reason", 0, reject, &.{original}));
+}
+fn transferOrActual(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    if (selected) |value| { selected = null; return value; }
+    return c.JS_DupValue(engine.context, roots[0]);
+}
+
+/// Genuine-owner integration control. Caller supplies the actual live child
+/// namespace, process, OS, URL and physical config module URL. No dummy child
+/// can be used merely because this profile does not launch a subprocess.
+/// Run each profile on a fresh real application Engine; dependency caches are
+/// intentionally warm only where the real construction below warms them.
+pub fn verifyRuntimePublicationRetirement(engine: *em.Engine, inputs: runtime.Inputs, kind: Cleanup) !void {
+    if (inputs.user_agent_runtime != .native_zig) return error.RequiredTruthfulOwnerRuntimeInputs;
+    const module_name = "pi-native:sdk-runtime-imports-native-zig";
+    if (engine.native_module_values.contains(module_name) or engine.native_module_names.contains(module_name)) return error.RequiredColdActualRuntimeOwner;
+    var s: Scope = .{ .engine = engine };
+    defer s.deinit();
+    const platform = try s.own(try @import("extensions/native_sdk_filesystem_namespaces.zig").createPlatform(engine));
+    const actual_utilities = try s.get(platform, "pathUtilities");
+    // This is the real configuration producer over real inputs. Its later
+    // cache hit ignores the first pathUtilities read made by runtime.create.
+    _ = try s.own(try @import("extensions/native_sdk_configuration_production.zig").create(engine, .{
+        .process = inputs.process, .os = inputs.os, .url = inputs.url,
+        .paths = try s.get(platform, "paths"),
+        .filesystem = try s.get(platform, "filesystem"),
+        .path_utilities = actual_utilities, .module_url = inputs.config_module_url,
+        .user_agent_runtime = .native_zig,
+    }));
+    const cleanup = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+    if (kind == .fatal) c.JS_SetUncatchableError(engine.context, cleanup);
+    var emission: Emission = .{ .engine = engine, .reason = cleanup, .kind = kind };
+    try makeCarrier(engine, &emission);
+    defer { if (selected) |value| engine.freeValue(value); selected = null; }
+    // Subsequent pathUtilities reads (actual createAuth) get the genuine
+    // original namespace; the ignored first temporary remains solely rooted
+    // by runtime construction until its completion retirement.
+    try installGet(engine, platform, "pathUtilities", try @import("extensions/native_node_function.zig").createArrow(engine, "get actual utilities", 0, transferOrActual, &.{actual_utilities}));
+    defer {
+        _ = c.JS_DefinePropertyValueStr(engine.context, platform, "pathUtilities", c.JS_DupValue(engine.context, actual_utilities), c.JS_PROP_C_W_E);
+    }
+    const suppression = engine.native_exception_diagnostics_suppressed;
+    try std.testing.expectError(error.JavaScriptException, runtime.create(engine, inputs));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, emission.reason, engine.captured_exception orelse return error.RequiredPostBodyCleanupReason));
+    try std.testing.expectEqual(@as(usize, 1), emission.calls);
+    try std.testing.expectEqual(@as(usize, 0), selected_calls);
+    try std.testing.expect(selected == null);
+    try std.testing.expect(!engine.native_module_values.contains(module_name));
+    try std.testing.expect(!engine.native_module_names.contains(module_name));
+    try std.testing.expectEqual(suppression, engine.native_exception_diagnostics_suppressed);
+    try std.testing.expect(engine.native_fatal_invocation == null);
 }
 fn unused(comptime T: type) T {
     var value: T = undefined;

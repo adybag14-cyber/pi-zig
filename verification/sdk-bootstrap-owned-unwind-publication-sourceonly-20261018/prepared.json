@@ -1,0 +1,142 @@
+{
+  "schema": 1,
+  "status": "source-only-awaiting-independent-review",
+  "base": "bb361fb5b441de66b005771d8715517cb1179598",
+  "intended_root": "283e5a3d7dc0f933ca7e535039ed69d40afbbc1c",
+  "products": [
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "sha256": "7518F398B520FF978096DD85C2B026F3F2BFB3F41A992F5B98A8D75D984E1F85",
+      "bytes": 8132
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "sha256": "17251401E8837228C006FFD2A1AEF010048BB7CA51035597AE1B65D0DB985812",
+      "bytes": 4504
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "sha256": "835E8527A11C5AC4F31833314F332A8B96BECC001875F7C47A06A9946A4138E8",
+      "bytes": 3001
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "sha256": "CD488BDE6360913D606450B33C09F6DEB193F937F8324C7A7432D5A14A9BAAB9",
+      "bytes": 12396
+    },
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "sha256": "8E338E90E4C580CDEECF5F5FF516AEC737A4520C261A7C2CD49F80D04E070C46",
+      "bytes": 13517
+    },
+    {
+      "path": "src/native_sdk_application_owner_cleanup_test.zig",
+      "sha256": "D705B5F2D32E3DC9DC0B2FBA23135601B7761702C1C01A31BA5618811A4D3A36",
+      "bytes": 12633
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "bytes": 11357
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "bytes": 4809
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "bytes": 3430
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "bytes": 3878
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "build.zig",
+      "sha256": "6B719D34AF4133418F45BFA1D2C9B4EF589086B65C65E2A4FCC9A121788FA85D",
+      "bytes": 358325
+    },
+    {
+      "path": "src/extensions/native_sdk_ai_imports.zig",
+      "sha256": "1E32E4B76B082D7D0C03FD288119DC3202DF3709AFD7D6AF551165B619FC52B3",
+      "bytes": 2859
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54",
+      "bytes": 5203
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A",
+      "bytes": 20482
+    },
+    {
+      "path": "src/extensions/native_sdk_management_http.zig",
+      "sha256": "A59F39BF40B03E31A1D8A1DB2679B0DDB49D4BEBA400794DEF3EC549A035390C",
+      "bytes": 24419
+    },
+    {
+      "path": "src/native_sdk_management_http_test.zig",
+      "sha256": "D20AEF5FF34904CC1C460C0B7920E4381E46FC24E52733BF0A78BCBE648EE712",
+      "bytes": 26664
+    },
+    {
+      "path": "src/native_sdk_owned_completion_test.zig",
+      "sha256": "E1998519D030B8F66366E4ACAF1BC0596B7D3A502F19FC25BAB663F285570C45",
+      "bytes": 17475
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-factory-production-4954.json",
+      "sha256": "EBA5A58F5A33C7675E11CF7A931DCE06EBB9D9DE25E59CEAD4324A58C83F3FCD",
+      "bytes": 17496
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-prototype-original-5ab.json",
+      "sha256": "568FED2491FF6ACC777E88F07149E2A77FDB52BF5DEA00F71C9E54F84B0B93FC",
+      "bytes": 52166
+    }
+  ],
+  "historical_negative": {
+    "finding": "Runtime publication before construction Scope retirement",
+    "head": "bb361fb5b441de66b005771d8715517cb1179598",
+    "prepared_sha256": "E83917515630628B50C9688939577CB5D472673749B98B85049F2CD048434FFC"
+  },
+  "owned": {
+    "path": "verification/sdk-bootstrap-owned-unwind-publication-sourceonly-20261018/README.md",
+    "bytes": 2866,
+    "sha256": "C6DBD5A25601988E93D6BC52D3D1A4BCBBB8DB6C2EAB55DE92957CAB15F78312"
+  },
+  "native_declarations": 5,
+  "additional_genuine_owner_entry": "verifyRuntimePublicationRetirement",
+  "additional_entry_profiles": 3,
+  "all_unrun": true,
+  "expected_or_fixture_modified": false,
+  "Main_C_Engine_Scope_modified": false,
+  "activation": false
+}
