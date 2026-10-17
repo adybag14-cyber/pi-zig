@@ -14,7 +14,7 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     const constructor = try scope.get(engine.native_module_values.get("node:events").?, "EventEmitter");
     const emitter = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null)));
     const result = try scope.object();
-    inline for (.{ Method.emit, .on, .clear }) |kind| {
+    inline for ([_]Method{ .emit, .on, .clear }) |kind| {
         var roots = [_]c.JSValue{emitter};
         const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, @tagName(kind), if (kind == .clear) 0 else 2, @intFromEnum(kind), roots.len, &roots)));
         try scope.put(result, @tagName(kind), function);
