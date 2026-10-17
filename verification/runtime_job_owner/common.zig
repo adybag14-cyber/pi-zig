@@ -49,8 +49,8 @@ pub fn waitPending(handles: []const w.H, end_ms: u64) !void {
         w.WaitForMultipleObjects(@intCast(handles.len), handles.ptr, 0, timeout);
     if (result == w.wait_failed) return error.ControlWaitFailed;
 }
-pub fn send(channel: *Channel, frame: *const protocol.Frame, end_ms: u64) !void {
-    try channel.send(frame);
+pub fn send(channel: *Channel, message_frame: *const protocol.Frame, end_ms: u64) !void {
+    try channel.send(message_frame);
     while (channel.sending) {
         if (w.GetTickCount64() >= end_ms) return error.ControlDeadline;
         try channel.advanceWrite();
@@ -61,7 +61,7 @@ pub fn receive(channel: *Channel, end_ms: u64) !protocol.Frame {
     while (true) {
         if (w.GetTickCount64() >= end_ms) return error.ControlDeadline;
         try channel.receive();
-        if (channel.take()) |frame| return frame;
+        if (channel.take()) |message_frame| return message_frame;
         if (channel.closed) return error.ControlClosed;
         try waitChannel(channel, end_ms);
     }

@@ -241,7 +241,7 @@ pub const Controller = struct {
         var boot = common.frame(.worker_containment_ack, 0, self.nonce, self.worker.info.pid, self.own.pid,
             self.worker.kernel.?.creation_filetime_utc, self.intent);
         try common.send(&self.channel, &boot, self.deadline.worker_cutoff_ms);
-        try self.worker.resume();
+        try self.worker.resumeVerified();
         while (true) {
             if (w.GetTickCount64() >= self.deadline.worker_cutoff_ms) return error.WorkerStageDeadline;
             if (self.node_end_ms) |end| if (self.node_exit_code == null and w.GetTickCount64() >= end)

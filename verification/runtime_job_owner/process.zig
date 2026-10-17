@@ -161,7 +161,7 @@ pub const Launch = struct {
 
     /// Caller can set full_identity_bound only after image/hash/live WMI parent,
     /// command line and UTC comparison, flushed binding receipt and supervisor ACK.
-    pub fn resume(self: *Launch) !void {
+    pub fn resumeVerified(self: *Launch) !void {
         if (!self.created_by_this_call or !self.assigned or !self.full_identity_bound or self.resumed)
             return error.UnboundResumeForbidden;
         if (self.role == .unset or (self.role == .node and !self.node_resume_acknowledged))

@@ -121,7 +121,7 @@ pub fn run(storage: *Storage, args: Arguments) !void {
     try node.acknowledgeInheritedNode(ack.pid, ack.creation_filetime_utc);
     node.full_identity_bound = true; // authenticated supervisor completed independent binding
     const node_end = try deadline.admitNode();
-    try node.resume();
+    try node.resumeVerified();
     var resumed = common.frame(.node_resumed, sequence, args.nonce, node.info.pid, actual.pid,
         node.kernel.?.creation_filetime_utc, node_intent_hash);
     try common.send(channel, &resumed, deadline.worker_cutoff_ms);
