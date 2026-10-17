@@ -48,11 +48,11 @@ const Plan = struct {
         p.sources.deinit(p.gpa); p.exports.deinit(p.gpa); p.declarations.deinit(p.gpa);
     }
     fn text(p: *Plan, n: c.TSNode) []const u8 { const r = range(n); return p.source[r.start..r.end]; }
-    fn edit(p: *Plan, r: Range, text: []const u8) Error!void {
-        return p.editPhase(r, text, false);
+    fn edit(p: *Plan, r: Range, replacement_text: []const u8) Error!void {
+        return p.editPhase(r, replacement_text, false);
     }
-    fn editPhase(p: *Plan, r: Range, text: []const u8, publication: bool) Error!void {
-        const copy = try p.gpa.dupe(u8, text); errdefer p.gpa.free(copy);
+    fn editPhase(p: *Plan, r: Range, replacement_text: []const u8, publication: bool) Error!void {
+        const copy = try p.gpa.dupe(u8, replacement_text); errdefer p.gpa.free(copy);
         try p.edits.append(p.gpa, .{ .range = r, .text = copy, .publication = publication });
     }
     fn erase(p: *Plan, r: Range) Error!void {
@@ -204,10 +204,10 @@ const Plan = struct {
     fn reference(p: *Plan, n: c.TSNode) Error!void {
         const index = p.imported(p.text(n)) orelse return;
         p.imports.items[index].used = true;
-        const imported = p.imports.items[index];
+        const import_entry = p.imports.items[index];
         const replacement = if (is(n, "shorthand_property_identifier"))
-            try std.fmt.allocPrint(p.gpa, "{s}: (0, __pi_cjs_import_{d}[\"{s}\"])", .{ imported.local, imported.source, imported.name })
-        else try std.fmt.allocPrint(p.gpa, "(0, __pi_cjs_import_{d}[\"{s}\"])", .{ imported.source, imported.name });
+            try std.fmt.allocPrint(p.gpa, "{s}: (0, __pi_cjs_import_{d}[\"{s}\"])", .{ import_entry.local, import_entry.source, import_entry.name })
+        else try std.fmt.allocPrint(p.gpa, "(0, __pi_cjs_import_{d}[\"{s}\"])", .{ import_entry.source, import_entry.name });
         defer p.gpa.free(replacement); try p.edit(range(n), replacement);
     }
     fn walk(p: *Plan, n: c.TSNode, depth: usize, function_depth: usize) Error!void {

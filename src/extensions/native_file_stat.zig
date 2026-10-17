@@ -196,7 +196,7 @@ fn windowsLinkLength(handle: std.os.windows.HANDLE, failure: ?*?u32) !?u64 {
                     // libuv changes the old C to a backslash after removing
                     // six units. Both are one WTF-8 byte, so length is equal.
                     target = target[12..];
-                };
+                }
             }
         },
         0x8000001b => {
