@@ -1,0 +1,40 @@
+{
+  "status": "finite_lazy_converted_CJS_provider_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "b0efd1a2ce6bbca86326d7869a594ff719d3b465",
+  "manifest_sha256": "EF411BFD8508822E371C0AA6A1CB1E8A3C78D9FE42CCE71B599C09DAF67C40B2",
+  "parent_publisher": "0641c42222c4a5ecb3cef6038c4782cfe93018a6",
+  "source_checks": {
+    "immutable_final_pins": 5,
+    "hash_drift": 0,
+    "diffcheck_exit": 0,
+    "later_inert_V8_authority_WIP_excluded": true
+  },
+  "reviewed_contracts": [
+    "Register/ready authenticate canonical ctor before private VM Map lookup; exact filename/backend/ctor roots match and conflicts refuse",
+    "Readiness does not query guest Module._cache, construct Module, assign parent/loaded or publish native namespace",
+    "Private lazy VM Map and aggregate-charged/traced ordinary five-argument CJS initializer preserve GC ownership and idempotent body identity",
+    "Actual prototype._compile dispatches after public load/extension/compile operations and selects only explicitcommonjs plus initialized unpatched canonical wrapper",
+    "Patched/uninitialized wrapper, other filename and module/unknown formats retain genuine wrapSafe requirement; no fake parse flags or metadata",
+    "Real initializer only assigns exact native backend to actual CJS module argument and returns raw undefined; surrounding genuine load owns cache/parent/executing/statcache/loaded/export snapshot",
+    "Host register/ready suppression and entry generation guards retained; initializer checks pending reason before/after assignment via existing callable boundary"
+  ],
+  "prepared_controls": {
+    "additional": 3,
+    "combined": 9,
+    "metadata_count": null,
+    "executed": false,
+    "full_public_load_executed": false,
+    "legacy_real_createRequire_retained_but_never_invoked": true,
+    "controlled_process_not_actual_node_namespace": true
+  },
+  "unqualified": [
+    "Genuine complete resolver/createRequire/compiler/hooks/namespace bootstrap and actual firstpublic_load",
+    "First-load once/cycles/reentry/eviction/cleanup through complete public Jiti graph",
+    "Full generic wrapper compiler/ESM linking/Node24 parity and default selection",
+    "Native compilation/execution/GC/GPA/runtime/whole Main qualification"
+  ],
+  "C_Engine_shared_helpers_changed": false,
+  "reviewer_jobs": false,
+  "reviewer_Main_product_edits": false,
+  "execution_grant": false
+}

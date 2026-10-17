@@ -8,6 +8,9 @@ const resolving = @import("native_jiti_resolve.zig");
 const cache = @import("native_jiti_fs_cache.zig");
 const transform = @import("native_jiti_transform.zig");
 const default_transform = @import("native_jiti_default_transform.zig");
+// Actual sealed a5792ee0 native CJS provider API; its separate constructor /
+// _compile integration must be reviewed/intaken before this can be compiled.
+const converted_provider = @import("native_node_commonjs_converted_provider.zig");
 pub const Inputs = struct {
     filesystem: c.JSValue,
     node_url: c.JSValue,
@@ -31,7 +34,8 @@ pub const Inputs = struct {
 };
 const Phase = enum { prepared, completing, complete, failed, released };
 /// Move-only, host-private preparation. It exposes NO Source namespace until
-/// complete verifies genuine shared Module/cache publication of its backend.
+/// complete registers/readies the genuine lazy native CJS provider. It never
+/// eagerly constructs or loads the Babel Module in the guest require cache.
 /// Retain once for the actual jiti module lifetime, never once per createJiti.
 pub const Prepared = struct {
     engine: *v.em.Engine,
@@ -147,10 +151,10 @@ pub fn prepare(engine: *v.em.Engine, actual: Inputs) !Prepared {
         .babel_filename = c.JS_DupValue(engine.context, actual.babel_filename),
         .namespace = c.pi_js_undefined(), .phase = .prepared };
 }
-/// Actual Node/CommonJS owner supplies its REAL newly constructed native Babel
-/// Module after normal publication. This function does not manufacture a cache,
-/// fake Module or require callback, nor publish a half-assembled ESM namespace.
-pub fn complete(engine: *v.em.Engine, staged: *Prepared, actual_babel_module: c.JSValue) !c.JSValue {
+/// Revision2: register the actual native backend for genuine FIRST _load /
+/// _compile dispatch. Source lazyTransform's real createRequire supplies that
+/// load's actual parent. No Module/cache/loaded/parent is touched at readiness.
+pub fn complete(engine: *v.em.Engine, staged: *Prepared) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     if (staged.engine != engine) return error.ForeignJitiPublicProfile;
@@ -159,17 +163,13 @@ pub fn complete(engine: *v.em.Engine, staged: *Prepared, actual_babel_module: c.
     staged.phase = .completing;
     errdefer staged.phase = .failed;
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
-    if (!c.JS_IsObject(actual_babel_module)) return error.RequiredActualPublishedNativeBabelModule;
-    const cache_object = try get(&s, staged.module_constructor, "_cache");
-    if (!c.JS_IsStrictEqual(engine.context, cache_object, engine.commonjs_cache)) return error.MismatchedActualCommonJSCache;
-    const current = try s.own(try success(engine, try v.js.getKey(engine, cache_object, staged.babel_filename)));
-    const exports = try get(&s, actual_babel_module, "exports");
-    const loaded = try get(&s, actual_babel_module, "loaded");
-    const filename = try get(&s, actual_babel_module, "filename");
-    if (!c.JS_IsStrictEqual(engine.context, current, actual_babel_module) or
-        !c.JS_IsStrictEqual(engine.context, exports, staged.native_babel_exports) or
-        !c.JS_IsStrictEqual(engine.context, filename, staged.babel_filename) or
-        !c.JS_IsStrictEqual(engine.context, loaded, c.pi_js_bool(engine.context, 1))) return error.RequiredActualPublishedNativeBabelModule;
+    const actual_provider: converted_provider.Inputs = .{ .module_constructor = staged.module_constructor,
+        .filename = staged.babel_filename, .exports = staged.native_babel_exports };
+    try converted_provider.register(engine, actual_provider);
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+    const ready = try converted_provider.ready(engine, actual_provider);
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+    if (!ready) return error.RequiredActualLazyNativeBabelProvider;
     // A carrier is used ONLY to create Engine's real ESM exotic namespace.
     const bindings = try s.object();
     try define(engine, bindings, "createJiti", staged.factory.create_jiti);

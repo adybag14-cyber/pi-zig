@@ -1,0 +1,64 @@
+{
+  "status": "finite_converted_CJS_publisher_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "0641c42222c4a5ecb3cef6038c4782cfe93018a6",
+  "initial_checkpoint": "6a168030a78c2ecb81f77d143b24e048761628df",
+  "final_manifest_sha256": "9AC69EA4FB95FF250BBBBC8F27A595D769D6F0AF15BBF454F626E927068DC174",
+  "reviewed_product_hashes": [
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 19979,
+      "sha256": "58683291910E1F708E81FC46A7B968AC1C9738ECBAC497471766C9927C7F6F96"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_prototype.zig",
+      "bytes": 11923,
+      "sha256": "62ADB34457AF4E037F182EB736E0969B07680796327C05B4AB2326FC9EF08D67"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module.zig",
+      "bytes": 6284,
+      "sha256": "710348CE1A0D91319C87A056B1DE4AFACFC51BC7E3142FEAF42FB840CE80310D"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module_test.zig",
+      "bytes": 11219,
+      "sha256": "80D81A674E831C9FC5F0C464D7AEDE68067EC602BFADB7B4E8ABE6B616496684"
+    }
+  ],
+  "source_checks": {
+    "final_pins": 7,
+    "hash_drift": 0,
+    "immutable_blobs_matched": true,
+    "diffcheck_exit": 0
+  },
+  "findings_closed": [
+    "F1 balanced leaf-local diagnostic suppression before pending check; no external suppression masking causal ordinary-error control",
+    "F2 whole publish entry generation capture before live cache/cached-module fields; exact fresh classification also covers pre-init/cache-hit errors"
+  ],
+  "reviewed_contracts": [
+    "Authenticated native constructor owner before reading guest cache; exact canonical engine cache required",
+    "Real constructor/private first-last parents and children; cached existing record requires genuine private identity, exact filename/exports and loaded truthiness",
+    "Cache published before native-converted body, matching source pre-load symbols and initialization boundary placement",
+    "Live nodeModulePaths callee read before dirname; exports assignment then loaded then private export snapshot",
+    "Initialization fresh/uncatchable/direct allocation failures bypass guest cleanup; ordinary failure owns reason through cache/child cleanup and cleanup replacement",
+    "Constructor-owned shared loader symbols and export WeakMap are used by prototype, GC-visible through authentic callback roots without native strong-key side table"
+  ],
+  "prepared_only": {
+    "controls": 6,
+    "metadata_count": null,
+    "actual_createRequire_invoked": false,
+    "controlled_warning_free_process_is_not_actual_node_namespace": true,
+    "controls_executed": false
+  },
+  "excluded": [
+    "Actual lazy-provider registration and first resolved _load dispatch; separately authorized successor",
+    "Eager publication/default bootstrap and production selection",
+    "Complete genuine createRequire/compiler/hooks/ESM/NAPI collaborators and Node24 namespace qualification",
+    "Execution/allocator/GC/platform/error diagnostic parity"
+  ],
+  "Root_null_shims_preserved": true,
+  "shared_C_Engine_generic_helpers_changed": false,
+  "reviewer_jobs": false,
+  "reviewer_Main_or_product_edits": false,
+  "execution_grant": false
+}

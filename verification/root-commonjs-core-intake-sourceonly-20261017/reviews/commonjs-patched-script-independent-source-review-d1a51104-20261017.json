@@ -1,0 +1,39 @@
+{
+  "status": "finite_patched_VM_script_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "d1a51104c12431a11e613fbce1e5a921f01558a9",
+  "manifest_sha256": "C80F07257A87BA89E871942F8B6BCEA1ED8AFB556ACA5D364D82D9113C916864",
+  "review_scope": [
+    "src/extensions/native_node_commonjs_script.zig",
+    "src/extensions/native_node_commonjs_script_test.zig",
+    "src/native_node_commonjs_script_test.zig",
+    "verification/node-jiti-commonjs-core-sourceonly-20261017/SCRIPT-SCOPE.md",
+    "verification/node-jiti-commonjs-core-sourceonly-20261017/build-script-snippet.zig.txt"
+  ],
+  "scope_exclusions": [
+    "Unimplemented CJS/body/ESM/link-only C API proposals; separate Min/Root policy review",
+    "Later constructor/prototype/publisher and proposal WIP in working tree",
+    "Node/V8 compiler metadata/diagnostic/cache parity and complete unpatched wrapSafe"
+  ],
+  "source_checks": {
+    "immutable_packet_pins": 9,
+    "hash_mismatches": 0,
+    "diffcheck_exit": 0,
+    "working_tree_has_other_author_WIP_excluded": true
+  },
+  "reviewed_contracts": [
+    "Primitive code/filename contract has no guest coercion; filename embedded NUL rejected explicitly",
+    "Actual JS_Eval2 GLOBAL|COMPILE_ONLY uses physical filename/line1, no script execution during prepare",
+    "VM CString lifetime holds charged references; compile retains its filename/bytecode before deferred frees",
+    "Host keeps Engine alive and owns Prepared bytecode; run duplicates consumed bytecode and returns actual raw JS_EvalFunction completion without Promise adoption",
+    "Pending reason owned before returned-value cleanup; suppressed diagnostics and existing exact fresh-allocation boundary retained",
+    "Pinned CString implementation preserves unmatched surrogate code points; no inferred replacement conversion finding",
+    "Four prepared actual-VM controls cover compile-only side effects/GC, real body grammar/receiver/args, physical syntax origin and raw Promise/throw identity"
+  ],
+  "native_control_declarations": 4,
+  "controls_executed": false,
+  "metadata_count": null,
+  "unpatched_body_validator_or_default_selection_claim": false,
+  "reviewer_Node_native_compiler_AST_parser_generator_jobs": false,
+  "reviewer_Main_or_product_edits": false,
+  "execution_grant": false
+}

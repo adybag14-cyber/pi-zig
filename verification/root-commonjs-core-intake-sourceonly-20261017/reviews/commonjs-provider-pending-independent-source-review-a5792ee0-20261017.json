@@ -1,0 +1,28 @@
+{
+  "status": "finite_provider_pending_success_correction_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399",
+  "manifest_sha256": "8A15675397A94293D9DB9177EAD2EA17373A08024BEA260F0F78658FB586740D",
+  "retained_prior_finite_b0_receipt_sha256": "C219973AFE04C0CAA4119A044943D831E88A8A52461646FD56257BADC6996B1B",
+  "corrected_frontier": "Actual live path getter/callee success with pending VM reason must abort new provider admission before downstream call/allocation/Map insertion",
+  "source_checks": {
+    "immutable_pins": 3,
+    "drift": 0,
+    "diffcheck_exit": 0
+  },
+  "reviewed_contracts": [
+    "Separate actual isAbsolute getter/call; capture current pending reason immediately after each successful value and before next operation",
+    "Successful value is Scope-owned until after pending capture, so cleanup cannot replace an unowned primary",
+    "Existing entry generation recognizes exact fresh private allocation and no diagnostic coercion; ordinary current reason retains exact identity",
+    "Four genuine native callbacks deliberately return function/true while actual ordinary/fresh reason remains pending; tests require no downstream getter-result call, no admission, no cache/parent publication",
+    "Prior valid registrations are not revoked by an unrelated later registration failure; no fabricated dataflag inference"
+  ],
+  "prepared_new_controls": 4,
+  "combined_named_controls": 13,
+  "actual_metadata_count": null,
+  "controls_executed": false,
+  "prior_b0_proof_bytes_preserved": true,
+  "full_bootstrap_load_compiler_and_runtime_still_unqualified": true,
+  "reviewer_jobs": false,
+  "reviewer_Main_product_edits": false,
+  "execution_grant": false
+}

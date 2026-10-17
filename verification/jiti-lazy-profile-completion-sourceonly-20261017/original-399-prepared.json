@@ -1,0 +1,133 @@
+{
+  "schema": 1,
+  "source_base": "7293eca27ef5745de51d437c8eaefd9f7d63f547",
+  "supersedes_profile_admission": "6ad2362a051f287f7815928376b0a30e933960dd",
+  "api_revision": 2,
+  "completion_signature": "complete(engine, *Prepared) -> owned real ESM namespace",
+  "required_provider_head": "b0efd1a2ce6bbca86326d7869a594ff719d3b465",
+  "required_provider_sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8",
+  "required_provider_literal_present": false,
+  "provider_dependency_separate_source_review_closed": true,
+  "provider_dependency_intake_still_required": true,
+  "full_subject_available": false,
+  "default_selection": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "records": [
+    {
+      "role": "product",
+      "path": "src/extensions/native_jiti_profile.zig",
+      "size": 11933,
+      "sha256": "8E16C9C4BCD80B2FD3D9427FCB01C8F590F6C5EA2F4116405597D3FE261BF7A0"
+    },
+    {
+      "role": "control",
+      "path": "src/native_jiti_public_factory_controls.zig",
+      "size": 19139,
+      "sha256": "9087801B7ACA04356E7F8DB9163BC60602FA5DDC3CCCAC5D96C318CB02E42FE1"
+    },
+    {
+      "role": "control",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/README.md",
+      "size": 5035,
+      "sha256": "1EDFCC920837CA22D4B99CA5DF9BA138D100F88F4E8D0B746202772CBB1F24D2"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_public_factory.zig",
+      "size": 7914,
+      "sha256": "D39EB02C95A32D144D7D76B7D1EEFE41D1CB9A74D54987EF1E5CA7D69C3A3CD7"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_native_import.zig",
+      "size": 1067,
+      "sha256": "48F5FEEEF3C45A15ACD759B7C0C7AA2E7D8AB390EA6142EB7E3B070486CC1A48"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "size": 2159,
+      "sha256": "CC26BB99EFC7E85FFDBA654432BE1C731349FB91EFCACACFD467057EF1A1055D"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "size": 17898,
+      "sha256": "084C6ECA3838FFB3E4BE5F5BE45074F8BEED61584102256AE8BE108326591454"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_require.zig",
+      "size": 17545,
+      "sha256": "FCB57E97B92F6DE82428F8C53EBA955C524B584304639E1E0B9184FCB0E6F6E1"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "size": 14198,
+      "sha256": "1312EA58FD41CF5506C109D958E5BBC78E84B0C207FB6F84831632FC5C5D1596"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_default_transform.zig",
+      "size": 7409,
+      "sha256": "7EAA6F87D0278902B7657396E10B372C150189840CF2F21D8D0EC867F346F269"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/engine.zig",
+      "size": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_function.zig",
+      "size": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_body.zig",
+      "size": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "role": "protected",
+      "path": "verification/jiti-public-factory-sourceonly-20261017/prepared.json",
+      "size": 10257,
+      "sha256": "4EA524B0E9ACDA2320B1034FC4542BC221D81312BDF3A6E72D6CB499CC788855"
+    },
+    {
+      "role": "protected",
+      "path": "verification/jiti-public-factory-sourceonly-20261017/source-review.json",
+      "size": 1579,
+      "sha256": "ED948D0B7DE85EDE308550D6F2FEBE56876E341F444E0958B183696A1B86B16C"
+    },
+    {
+      "role": "authority",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/authority/original-6ad-controls.zig.txt",
+      "size": 15034,
+      "sha256": "7AC76E9CFFB9C4BAC2F83663721364492DF71911EEF31B1CF326B9BEDEE7E817"
+    },
+    {
+      "role": "authority",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/authority/sealed-b0-converted-provider.zig.txt",
+      "size": 5011,
+      "sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8"
+    }
+  ],
+  "root_lexical_carry": "exact b34833e8 publicfactory pending_reason / controls actual_length / import_meta replacement_text; no semantic change"
+}

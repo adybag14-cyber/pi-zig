@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "source_head": "c2c8353e8ac0811ce279bd89b0b292f00c3d5227",
+  "reviewer": "/root/async_c_review_resume",
+  "result": "finite-source-review-closed-no-scoped-blocker",
+  "profile_sha256": "8A21207AB03AE8F13C0F2A7401A5D3C9F88C6BEEEB7544BFDA2F0C78EB2A06E9",
+  "control_sha256": "9087801B7ACA04356E7F8DB9163BC60602FA5DDC3CCCAC5D96C318CB02E42FE1",
+  "manifest_sha256": "FF22F1888EC6FC763F50C3C870BC21A339824C6BDBEF39F6A76FCE87A4279244",
+  "records": 21,
+  "hash_and_length_drift": 0,
+  "required_provider_head": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399",
+  "required_provider_sha256": "B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C",
+  "required_provider_review": "AuthFailure16CD",
+  "pending_event_blocker_closed": true,
+  "api_revision": 2,
+  "completion_signature": "complete(engine, *Prepared)",
+  "eager_module_cache_parent_loaded_effects": false,
+  "required_provider_literal_intake_pending": true,
+  "whole_bootstrap_qualified": false,
+  "default_selection": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "public_readback_paths": 8,
+  "public_readback_sha256": "8E49F8135A95C5739544693962BFE2C4C8F5D8C86102BB4FCADB5331AF37CC8D",
+  "excluded_scope": [
+    "unreviewed native_jiti_shared_dependencies unit",
+    "already-identical Root publicfactory/import_meta lexical fixes",
+    "entire old branch merge"
+  ]
+}
