@@ -158,6 +158,7 @@ fn sync(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots
     return c.JS_DupValue(engine.context, result);
 }
 fn asyncBody(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     if (completion == .fulfilled) return .{ .returned = c.pi_js_undefined() };
     var s: Scope = .{ .engine = engine };

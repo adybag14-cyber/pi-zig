@@ -29,7 +29,7 @@ fn copy(s: *Scope, staging: c.JSValue, prototype: c.JSValue, comptime name: [:0]
     var descriptor: c.JSPropertyDescriptor = undefined; const found = c.JS_GetOwnProperty(s.engine.context, &descriptor, staging, atom); if (found < 0) return v.js.capture(s.engine); if (found == 0) return error.RequiredActualCompletePackageMethod;
     defer s.engine.freeValue(descriptor.value); defer s.engine.freeValue(descriptor.getter); defer s.engine.freeValue(descriptor.setter);
     if (descriptor.flags & c.JS_PROP_GETSET != 0 or !c.JS_IsFunction(s.engine.context, descriptor.value)) return error.RequiredActualPackageClassMethod;
-    if ((c.JS_IsAsyncFunction(descriptor.value) != 0) != expectedAsync(name)) return error.RequiredGenuinePackageAsyncBrand;
+    if (c.JS_IsAsyncFunction(descriptor.value) != expectedAsync(name)) return error.RequiredGenuinePackageAsyncBrand;
     const flags = descriptor.flags | c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_ENUMERABLE | c.JS_PROP_HAS_WRITABLE | c.JS_PROP_HAS_VALUE;
     if (c.JS_DefineProperty(s.engine.context, prototype, atom, descriptor.value, descriptor.getter, descriptor.setter, flags) < 0) return v.js.capture(s.engine);
 }

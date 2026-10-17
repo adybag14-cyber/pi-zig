@@ -14,6 +14,7 @@ pub fn install(engine: *v.em.Engine, prototype: c.JSValue) !void {
 }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn run(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .fulfilled) return .{ .returned = c.JS_DupValue(engine.context, try s.get(state.*, "results")) };
@@ -39,6 +40,7 @@ fn run(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c
 }
 fn startWorker(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue { return v.js.call(engine, roots[0], c.pi_js_undefined(), &.{}); }
 fn work(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const shared = roots[0];
