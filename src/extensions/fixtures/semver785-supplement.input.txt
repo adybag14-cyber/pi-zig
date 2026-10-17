@@ -1,0 +1,10 @@
+// Separate prepared original controls. No answers are authored, and these
+// cases are outside the unchanged original327 capture lease.
+const api=semver785API,rows=[],raw={ownedLengthFailure:true};
+async function observe(name,body){try{const value=await body();rows.push({name,type:typeof value,value})}catch(error){rows.push({name,error:{name:error?.name,message:error?.message,raw:error===raw}})}}
+await observe('invalid-version-nul-gt',()=>api.gt('bad\0suffix','1.0.0'));
+await observe('invalid-version-nul-rcompare',()=>api.rcompare('1.0.0','bad\0suffix'));
+await observe('prerelease-length-conversion-raw-reason',()=>api.satisfies({prerelease:{length:{valueOf(){throw raw}}}},'*'));
+await observe('live-TypeError-constructor',()=>{const calls=[],descriptor=Object.getOwnPropertyDescriptor(globalThis,'TypeError'),Actual=TypeError;Object.defineProperty(globalThis,'TypeError',{configurable:true,get(){calls.push('callee');return function(message){calls.push(message);return new Actual(message)}}});try{try{api.gt('bad\0suffix','1.0.0')}catch(error){return{calls,message:error.message,name:error.name}}}finally{Object.defineProperty(globalThis,'TypeError',descriptor)}});
+await observe('ordinary-OOM-named-trim-error-swallowed',()=>{const original=String.prototype.trim;String.prototype.trim=function(){throw Object.assign(new Error('guest'),{name:'OutOfMemory'})};try{return api.valid('1.2.3')}finally{String.prototype.trim=original}});
+globalThis.semver785SupplementObservation={rows,inventory:{supplementCases:5}};

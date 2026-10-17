@@ -1,0 +1,90 @@
+//! Prepared original-package comparison. Expected JSON must come from a
+//! qualified original capture; this source checkpoint deliberately lacks it.
+const std = @import("std");
+const em = @import("extensions/engine.zig");
+const sdk = @import("extensions/native_sdk.zig");
+const c = em.c;
+test "native semver785 PackageManager six bindings replay genuine original observations" {
+    const expected = try std.Io.Dir.cwd().readFileAlloc(std.testing.io, "src/extensions/fixtures/semver785-package-manager.json", std.testing.allocator, .limited(4 * 1024 * 1024));
+    defer std.testing.allocator.free(expected);
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    const namespace = try @import("extensions/native_semver785.zig").create(engine);
+    defer engine.freeValue(namespace);
+    try sdk.put(engine, global, "semver785API", c.JS_DupValue(engine.context, namespace));
+    const input = @embedFile("extensions/fixtures/semver785-package-manager.input.txt");
+    var input_digest: [std.crypto.hash.sha2.Sha256.digest_length]u8 = undefined;
+    std.crypto.hash.sha2.Sha256.hash(input, &input_digest, .{});
+    const input_hex = std.fmt.bytesToHex(input_digest, .lower);
+    try sdk.put(engine, global, "nativeSemver785InputSha256", try sdk.text(engine, &input_hex));
+    const terminated = try engine.gpa.dupeZ(u8, expected);
+    defer engine.gpa.free(terminated);
+    try sdk.put(engine, global, "semver785Expected", try engine.checked(c.JS_ParseJSON(engine.context, terminated.ptr, expected.len, "actual-semver785-original.json")));
+    const module = engine.evalModule(@embedFile("extensions/fixtures/semver785-package-manager.input.txt") ++
+        \\if(semver785Expected.sourceHead!=='4dd2b149d155d7369de16ea4dc77c84e9f5ffb24'||semver785Expected.packageVersion!=='7.8.5'||semver785Expected.packageSha256!=='7c94cb7f2a53c27b20d76386ec144c062894dbcc909cfabd0f728c37874b1776'||semver785Expected.runtime!=='v24.14.0'||semver785Expected.inputSha256!==nativeSemver785InputSha256)throw Error('Actual original pinned semver authority/input required');
+        \\if(semver785Expected.rows.length!==semver785Observation.rows.length||JSON.stringify(semver785Expected.inventory)!==JSON.stringify(semver785Observation.inventory))throw Error('Complete original semver inventory required');
+        \\for(let i=0;i<semver785Observation.rows.length;i++)if(JSON.stringify(semver785Observation.rows[i])!==JSON.stringify(semver785Expected.rows[i]))throw Error(JSON.stringify({index:i,actual:semver785Observation.rows[i],source:semver785Expected.rows[i]}));
+    , "native-semver785-source-comparison.mjs") catch |err| {
+        std.debug.print("Semver785 Source: {s}\n", .{engine.last_error orelse "no diagnostic"});
+        return err;
+    };
+    engine.freeValue(module);
+    c.JS_RunGC(engine.runtime);
+}
+test "native semver785 PackageManager maximum callback keeps range and regex roots through collection" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+    defer engine.deinit();
+    const global = c.JS_GetGlobalObject(engine.context);
+    defer engine.freeValue(global);
+    try sdk.put(engine, global, "semver785API", try @import("extensions/native_semver785.zig").create(engine));
+    const prepared = try engine.evalModule(
+        \\globalThis.retainedMaximumResult=semver785API.maxSatisfying({forEach(callback){globalThis.retainedMaximumCallback=callback;callback('v1.2.3+first')}},'^1');delete globalThis.semver785API;
+    , "native-semver785-retain-before-gc.mjs");
+    engine.freeValue(prepared);
+    c.JS_RunGC(engine.runtime);
+    const completed = try engine.evalModule(
+        \\retainedMaximumCallback('1.9.0');retainedMaximumCallback('2.0.0');if(retainedMaximumResult!=='v1.2.3+first')throw Error('original maximum return changed');delete globalThis.retainedMaximumCallback;delete globalThis.retainedMaximumResult;
+    , "native-semver785-retain-after-gc.mjs");
+    engine.freeValue(completed);
+    c.JS_RunGC(engine.runtime);
+}
+
+// Prepared native allocation-identity controls. These use the actual private
+// Engine tag; no guest name/message match and no allocator-sweep pass claim.
+fn throwSemverAllocation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = em.Engine.fromContext(context.?);
+    _ = engine.throwNativeOutOfMemory();
+    const original = c.JS_GetException(context);
+    const global = c.JS_GetGlobalObject(context);
+    defer engine.freeValue(global);
+    if (c.JS_DefinePropertyValueStr(context, global, "ownedSemverAllocation", c.JS_DupValue(context, original), c.JS_PROP_C_W_E) < 0) {
+        engine.freeValue(original);
+        return c.JS_Throw(context, c.JS_GetException(context));
+    }
+    return c.JS_Throw(context, original);
+}
+test "native semver785 forgiving catches retain exact fresh allocation reason" {
+    for ([_][]const u8{ "valid", "validRange" }) |method| {
+        const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 });
+        defer engine.deinit();
+        const global = c.JS_GetGlobalObject(engine.context);
+        defer engine.freeValue(global);
+        const js = @import("extensions/native_js_values.zig");
+        try js.define(engine, global, "semver785API", try @import("extensions/native_semver785.zig").create(engine));
+        try js.define(engine, global, "raiseOwnedSemverAllocation", try engine.checked(c.JS_NewCFunction(engine.context, throwSemverAllocation, "raiseOwnedSemverAllocation", 0)));
+        try js.define(engine, global, "ownedSemverMethod", try sdk.text(engine, method));
+        try std.testing.expectError(error.JavaScriptException, engine.evalModule(
+            \\globalThis.ownedGuestCaught=false;const original=String.prototype.trim;String.prototype.trim=raiseOwnedSemverAllocation;try{try{semver785API[ownedSemverMethod]('1.2.3')}catch{globalThis.ownedGuestCaught=true}}finally{String.prototype.trim=original}
+        , "native-semver785-fresh-allocation-identity.mjs"));
+        const retained = try js.get(engine, global, "ownedSemverAllocation");
+        defer engine.freeValue(retained);
+        const actual = engine.captured_exception orelse return error.MissingSemverAllocationReason;
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, retained, actual));
+        try std.testing.expect(c.JS_IsUncatchableError(actual));
+        const caught = try js.get(engine, global, "ownedGuestCaught");
+        defer engine.freeValue(caught);
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToBool(engine.context, caught));
+    }
+}

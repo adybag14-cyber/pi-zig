@@ -1,0 +1,405 @@
+{
+  "schema": 1,
+  "status": "source_only_current_event_successor_peer_pending",
+  "parent_source_head": "188c7eaf5744bc6d1989ead4b16de94cc4de429f",
+  "historical_prepared_sha256": "2A20F118094DF2080DC5BC28AE8015AD833246517433B4A9D969E6B9262BF47D",
+  "negative_review_sha256": "B07381B695B56FA734EAE29C03715B96BDF735DBBB13702D7978DED92C7F420F",
+  "original53_manifest_sha256": "8FB1ACA9C9CA2473CE7E72C961C8273306908947AF8B8E7822621BCFD68041EC",
+  "original_full31064_receipt_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "new_root_named_tests": 8,
+  "original_root_named_tests": 3,
+  "actual_metadata_count": null,
+  "controls_run": false,
+  "expected_output_exists": false,
+  "compiler_parser_formatter_Node_native_jobs": 0,
+  "shared_Engine_C_modified": false,
+  "native_qualified": false,
+  "whole_sdk_qualified": false,
+  "files": [
+    {
+      "path": "build.zig",
+      "bytes": 355881,
+      "sha256": "90F310991E5ED9D0939923C768CC995E4969F020FC33371EE8A6C032BFDE216E"
+    },
+    {
+      "path": "src/extensions/fixtures/semver785-package-manager.input.txt",
+      "bytes": 5652,
+      "sha256": "D5EA1B8B14A3596E982BBB36CE98EDBAB0701C5177F3F6019E59EC401CDAA9B0"
+    },
+    {
+      "path": "src/extensions/fixtures/semver785-supplement.input.txt",
+      "bytes": 1522,
+      "sha256": "36B5F545ED1584C208A0887BEF549892A19051A1CF98FF3856212F3FA3443E7D"
+    },
+    {
+      "path": "src/extensions/native_semver785_expand.zig",
+      "bytes": 8361,
+      "sha256": "20AC9D42001183859C5B506F536A5E664417297CE1300422FD92F0357C1BDEC2"
+    },
+    {
+      "path": "src/extensions/native_semver785_ops.zig",
+      "bytes": 308,
+      "sha256": "56F30AD0933EB1D1ADB1CA9E08BBEA77AC54CF5611D994240D8F2E5314A942BC"
+    },
+    {
+      "path": "src/extensions/native_semver785_range.zig",
+      "bytes": 12750,
+      "sha256": "8BBDCABF9CE32407B57423419E162C13801894F76C18E2EC35C6EA7E651FF751"
+    },
+    {
+      "path": "src/extensions/native_semver785_regex.zig",
+      "bytes": 2851,
+      "sha256": "E5BEADB30E42A097E35C60C1969DBA25ED81CBE340E9F577355A637D3A5EBB81"
+    },
+    {
+      "path": "src/extensions/native_semver785_scope.zig",
+      "bytes": 12899,
+      "sha256": "E9414E69BB9012532F34F59856CD65731B12660350575F33F1E6CE3F07F8882C"
+    },
+    {
+      "path": "src/extensions/native_semver785_version.zig",
+      "bytes": 7018,
+      "sha256": "88E42126FC289EC3FF532B736CC761E05C03D38E55BA91AB17B03B18CB6A1F82"
+    },
+    {
+      "path": "src/extensions/native_semver785.zig",
+      "bytes": 9349,
+      "sha256": "80683A9F088D1D0DCD56AE2131615AFE26CE265DABFFE77364C311B8047169F1"
+    },
+    {
+      "path": "src/native_sdk_semver_six_test.zig",
+      "bytes": 15392,
+      "sha256": "9485DFF8B80A3766DE569E41A8FD2A42DE24164A01D20FE8FBAF050108638BC4"
+    },
+    {
+      "path": "src/native_semver785_package_manager_test.zig",
+      "bytes": 6764,
+      "sha256": "EA4F6DB53E2A19A9241BDF21437678E5D93BD41C79A30726FA0810D2D3076190"
+    },
+    {
+      "path": "vendor/semver785/LICENSE",
+      "bytes": 765,
+      "sha256": "4EC3D4C66CD87F5C8D8AD911B10F99BF27CB00CDFCFF82621956E379186B016B"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/comparator.js.txt",
+      "bytes": 3631,
+      "sha256": "054202956430D63D5FF4599FAE09760CE465B489E4F0B5EF5CE7CC7AC21157AC"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/index.js.txt",
+      "bytes": 143,
+      "sha256": "3BB69280C2A788D0EB16F915BB9DF4DBE812075182024C753DCA2283BCEA1B17"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/range.js.txt",
+      "bytes": 15647,
+      "sha256": "A6544485AA8575AA9854C67E2CAA67726815DE18A482D0CEB8A1003244DE3BC1"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/classes/semver.js.txt",
+      "bytes": 9891,
+      "sha256": "813B2C185512D30C9B931C2FED8140889D9D7490CEEEEDC370DA30337DC8CA57"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/clean.js.txt",
+      "bytes": 205,
+      "sha256": "4EADB0892844CF3AE295121A86163A66C73F89ACD1B7F0B114EC115B4539512F"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/cmp.js.txt",
+      "bytes": 961,
+      "sha256": "A63D74E87B73788E78E9CE0A4892B5333D6B809C0DE88B31E4ED76CBF17F94B3"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/coerce.js.txt",
+      "bytes": 2004,
+      "sha256": "28A251C5AB210DDF9E97551B9F37A53329FCCE91F0C3943DCBC02DE1A1DE915A"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare-build.js.txt",
+      "bytes": 281,
+      "sha256": "5AB651D5B40AF289BD85C645A92B6D8CFE1A986DC413C797CFCC8D623D7C844C"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare-loose.js.txt",
+      "bytes": 132,
+      "sha256": "07B6A3A1DB0A5210CEB784C1708BD4679F3A94FC73A9C9EB349349E7070A6F78"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/compare.js.txt",
+      "bytes": 170,
+      "sha256": "D404B5AA48AADDC8A654C5DA8FB7D4443404B7948589B21AC4B045D1CEE4E34C"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/diff.js.txt",
+      "bytes": 1423,
+      "sha256": "7A11FD39B987CDF06C65E928CB1ACA49BEC583FEB86FB5C8FE47A6FD61D7DE31"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/eq.js.txt",
+      "bytes": 126,
+      "sha256": "B6E30A7168E52723216FC163D300E2BBABF92EC0251F9AC5438BB6CCF57C8936"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/gt.js.txt",
+      "bytes": 124,
+      "sha256": "135523704AA48CD98834DD170EE9F74F0E68043B379F32D021DB11E6304C5C93"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/gte.js.txt",
+      "bytes": 127,
+      "sha256": "991C5BBE48ECB210A562646872F05862AD9FC0D42186D85AA60BDC6FA323EB9D"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/inc.js.txt",
+      "bytes": 478,
+      "sha256": "952069FC8690B7D3AF0FE9D55F7C54FE2AC067B48C5E74F6A54F9CE19A334493"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/lt.js.txt",
+      "bytes": 124,
+      "sha256": "1C897A9BC849320E2E9DC0F6C09555C01EE3DDF30734515D717B88AD7740EA25"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/lte.js.txt",
+      "bytes": 127,
+      "sha256": "3A8D0B1D00423F60CC7CB810B36AB77B61330831AD237DBE73EB5CECFA412800"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/major.js.txt",
+      "bytes": 136,
+      "sha256": "5C678480D882F511200FED2C16EC3847DFEDB08A1D70328DC2F031D35D825276"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/minor.js.txt",
+      "bytes": 136,
+      "sha256": "1B051794F1713ADEC2A236517196691687C35F82E0B596FF3316A78B3CC10AE6"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/neq.js.txt",
+      "bytes": 128,
+      "sha256": "A662883751918822C162183B46B9E20D09489132F82686C92AB78BEE67F3A127"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/parse.js.txt",
+      "bytes": 331,
+      "sha256": "29A69E15B6D02FE381D573F861881A89590E9D0F0F0CA740C5F85EAF0234C4AD"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/patch.js.txt",
+      "bytes": 136,
+      "sha256": "F02D3C1B059FE3D96CE124886F7EEF321D381A95638FD3C4A8D5CCD8E76FFADD"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/prerelease.js.txt",
+      "bytes": 234,
+      "sha256": "BAEDBF503D5610AD041BFB56071EFA48FEB331CA278295C399537D35D3FFB593"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/rcompare.js.txt",
+      "bytes": 132,
+      "sha256": "84FA5E88ADF08D15C993CAC8CDEC6D1A65045B7E95A9C55184230A7F807F4DC0"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/rsort.js.txt",
+      "bytes": 163,
+      "sha256": "6EC659CE3B6C2B173C719286CAAB04409ADBA046C0917874EC3B5E36DDFBC7E3"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/satisfies.js.txt",
+      "bytes": 247,
+      "sha256": "8CF5E122B757251671ED6C9D9680904B71CD375845853F05312E608CF2CC2946"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/sort.js.txt",
+      "bytes": 161,
+      "sha256": "C2FE2D3ED0BE8A4E9DE8F02ABDFD5D9C0D3BCC510D88E87AF84185592882C4B8"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/truncate.js.txt",
+      "bytes": 1021,
+      "sha256": "E145833A250311927C92F424F56498C52F1B7BB1271CE6AFBF006DB87773FF43"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/functions/valid.js.txt",
+      "bytes": 176,
+      "sha256": "0DE7EA736CB7807179D46DFAC09C830A9338E02B6A07DB12D7040CDE2DEF6025"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/index.js.txt",
+      "bytes": 2691,
+      "sha256": "4B3E57D3D40E29E0706002EBA113D09F35AEA593578376BBEEC83B777B9912AB"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/constants.js.txt",
+      "bytes": 873,
+      "sha256": "38A112BAF27CECA0260082FF26AC2FD7A9861CAB1AF12DD65E720277F68E6CE9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/debug.js.txt",
+      "bytes": 240,
+      "sha256": "8A9F420572260F3CF944463B5090D62A60F0730589DC23A7EC4CA25E2EE41BB3"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/identifiers.js.txt",
+      "bytes": 525,
+      "sha256": "B4916B09DC7869AE0EB05E71C855C942A3A7365F7E6E89185D59A9E45A2451D7"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/lrucache.js.txt",
+      "bytes": 802,
+      "sha256": "14D087C87DA87B6F5C36FC4CDD7D2D14077874B14A68E20FCE5B6138FA2CA34F"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/parse-options.js.txt",
+      "bytes": 338,
+      "sha256": "FDF51D0DE8D5442C35A997EF58CD530D239CE206F961D14C5121354451B01D01"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/internal/re.js.txt",
+      "bytes": 8139,
+      "sha256": "5833262888E2B5D843A69193F83C05E374818DBE55379B497819B5BF58E48CD8"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 765,
+      "sha256": "4EC3D4C66CD87F5C8D8AD911B10F99BF27CB00CDFCFF82621956E379186B016B"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/package-manager.ts.txt",
+      "bytes": 87307,
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/package.json.txt",
+      "bytes": 1661,
+      "sha256": "7C94CB7F2A53C27B20D76386EC144C062894DBCC909CFABD0F728C37874B1776"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/range.bnf.txt",
+      "bytes": 702,
+      "sha256": "15D0BAF9B7B98E6D862C0CB9E822D2533D2BC23E136BB75314D802CA1FCB0392"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/gtr.js.txt",
+      "bytes": 231,
+      "sha256": "8FADAD28E36D28E93D498AC7AC20BADBA2A407312845EABC18E82E90A0732B19"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/intersects.js.txt",
+      "bytes": 224,
+      "sha256": "FE87AC5D3020010AD3EC00636DADBF0C669FF07D0F57E0A8165A8264F79A676F"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/ltr.js.txt",
+      "bytes": 227,
+      "sha256": "E5186FCC03018ACF9BE6D968755D4C49727AEB0D981D179EB568AE5FBE983038"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/max-satisfying.js.txt",
+      "bytes": 593,
+      "sha256": "E1A2C0D6144CC772CD20BBC8ECB9E8A3A4074E9172A3D8E794838B591CDEB416"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/min-satisfying.js.txt",
+      "bytes": 591,
+      "sha256": "2681ABF54098AA670F12826B76A6EC77A2441186AE4243AFDE3BE8AE4908F7CA"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/min-version.js.txt",
+      "bytes": 1514,
+      "sha256": "FEFBA0A88C2BF74D5CEDE504B5AE50A8DC3EDFD69CF0174A491E2CF3E442614B"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/outside.js.txt",
+      "bytes": 2204,
+      "sha256": "3A2B0B23593D2F49419C06AF2AF75450CAB103B0C25D665D48FE5BCA495A21CA"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/simplify.js.txt",
+      "bytes": 1355,
+      "sha256": "7B78581C13322BC68ECE2088685386B2A9B51C15B94D0A2063BDF2546BD41934"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/subset.js.txt",
+      "bytes": 7478,
+      "sha256": "CEB9EB6ED5BFC6C7AC7AF7F47E5C3535444A4E66A0E2B58CDAD4BD02A35D454D"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/to-comparators.js.txt",
+      "bytes": 282,
+      "sha256": "6C5E966210CFF270FA2850668AAF8460FAC7759F8D99F282521EF7A78F4564E9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/ranges/valid.js.txt",
+      "bytes": 326,
+      "sha256": "5EF6F995AF801868925940CF8DF5735D565EBABB090B068695CAE65218BCD3AC"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/authority/semver-lock-entry.json",
+      "bytes": 520,
+      "sha256": "E10EDC90FFA25FCBB523E2277063295E66ABC3C2BD3906A6E569BEF149C117A9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/capture-original.mjs",
+      "bytes": 4431,
+      "sha256": "DB7D6CFB0E50E6B7886086E0E4F319B9667D855180961AEAD01036D98A57FF0E"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/capture-package-manager-callers.mjs",
+      "bytes": 2275,
+      "sha256": "38AC93A9B7713CA1E88134D0BF9E1D76AAD3DAC6877CA24D3EC28A7D6E5247EC"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/historical-c64-native-test.zig.txt",
+      "bytes": 6765,
+      "sha256": "B7B310E29FE7C426CC671C65B7A7A74957091E7D28FDE1A85B83519A636076C8"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/historical-reuse.json",
+      "bytes": 2922,
+      "sha256": "D980986DAED02EC5F8CC7D9D3F82459AEA2C7CD95536F8617CF6BF05197893C7"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/original-capture.control.template.json",
+      "bytes": 827,
+      "sha256": "65693F94FC85200FCD57C91CA64DB470FFD4EF2DD053EA1FCB3FA3B4DD65EAE9"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/package-manager-caller.control.template.json",
+      "bytes": 611,
+      "sha256": "827D5AE331BE2838B0462000DD075C793947B7575E2ACFFA005D4B75C608A01F"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/package-manager-callers.input.mjs",
+      "bytes": 1672,
+      "sha256": "83EE512905FF6C046C506FEEEABB40C9CE5A1C32B851F9C6A6A4882260BE4F07"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/protected-base.json",
+      "bytes": 1407,
+      "sha256": "61C2309A9599799B6BAB12A81436DF49A903ADD9EEF3ADD28A5DB5821FDA28C1"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/README.md",
+      "bytes": 5207,
+      "sha256": "6C1F91CE589E7263EC27A3C4C09FADF7969E2AE79E59125AA6AA54BA93568554"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/semver-original53.json",
+      "bytes": 16487,
+      "sha256": "8FB1ACA9C9CA2473CE7E72C961C8273306908947AF8B8E7822621BCFD68041EC"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/supplement-capture.control.template.json",
+      "bytes": 829,
+      "sha256": "EB44DF3E8BD4B598051E3B74223BF1AFC8DDCE579881C1BCDD1467BF249D4C8F"
+    },
+    {
+      "path": "verification/sdk-semver-six-sourceonly-20261017/CURRENT-EVENT-SUCCESSOR.md",
+      "bytes": 3078,
+      "sha256": "4B00FE0FA12D8CDD746D36BC29EE64933405394EFE869174A0FB2E629C1F631A"
+    }
+  ]
+}

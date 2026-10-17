@@ -1,0 +1,37 @@
+[
+  {
+    "path": "src/extensions/engine.zig",
+    "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+    "blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+  },
+  {
+    "path": "src/extensions/native_node_function.zig",
+    "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+    "blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a"
+  },
+  {
+    "path": "src/extensions/native_js_values.zig",
+    "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+    "blob": "dc74667547037fd639eb4e9d7f6204ea2c626787"
+  },
+  {
+    "path": "src/extensions/native_sdk_prompt_scope.zig",
+    "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+    "blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
+  },
+  {
+    "path": "src/extensions/native_sdk_package_assembly.zig",
+    "sha256": "C8B4B69784B982AE4C9F9233272E85C6369B144FFB3F4A6FD928B2AF374DAD13",
+    "blob": "b01ed04463ecb14a1a38fe21f28505db4b58febf"
+  },
+  {
+    "path": "vendor/quickjs/quickjs.c",
+    "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+    "blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+  },
+  {
+    "path": "vendor/quickjs/quickjs.h",
+    "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+    "blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+  }
+]

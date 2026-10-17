@@ -1,0 +1,13 @@
+{
+  "status": "SOURCE_ONLY_FALSE_CAPTURE_TEMPLATE_NOT_LAUNCH_AUTHORITY",
+  "execution_authorized": false,
+  "runtime": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "candidate": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-semver-six-20261017",
+  "package_manager_source": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\packages\\coding-agent\\src\\core\\package-manager.ts",
+  "input": "original",
+  "input_sha256": "D5EA1B8B14A3596E982BBB36CE98EDBAB0701C5177F3F6019E59EC401CDAA9B0",
+  "output_root": null,
+  "original_full31064_receipt_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "expected_output_authored": false,
+  "Root_later_fresh_full_inventory_resource_ownership_grant_required": true
+}

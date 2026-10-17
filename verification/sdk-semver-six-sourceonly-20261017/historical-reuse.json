@@ -1,0 +1,56 @@
+[
+  {
+    "path": "src/extensions/native_semver785.zig",
+    "historical_sha256": "FC704A787B959784EC9CEB2CE3F1EC47F9DCE6683572471593ED23D6AC2051E6",
+    "current_sha256": "75C47A511F51710395C4A4A05C1DFF2014574549C34AE040B65590C470764DE9",
+    "historical_blob": "5b7ded325042b2b3b77eefde9dda0ad44822b993"
+  },
+  {
+    "path": "src/extensions/native_semver785_version.zig",
+    "historical_sha256": "DFC26EAF75A68A3942A77F20CB3C8AC72498DDC542A80124A5F883177AF1AA99",
+    "current_sha256": "BF451F9E4E467128529D62A16D82FF445E17A683D941E3851E848F5ED125D3FB",
+    "historical_blob": "ecccaaef2ebb5108ec98e95a00eac95094d13147"
+  },
+  {
+    "path": "src/extensions/native_semver785_range.zig",
+    "historical_sha256": "B4E7B0E3B33C0860C2C95D2F63534B6DC92417ABE47502F4136C367F5B66BE46",
+    "current_sha256": "BE18CA800AC898B00C81535E94E944F9106D91F891C3A292FEBCB7DF152385C2",
+    "historical_blob": "bcbf3b122863244dd4674f4abed6e0a1884fc8fa"
+  },
+  {
+    "path": "src/extensions/native_semver785_expand.zig",
+    "historical_sha256": "091347B48479B05F14646A7F98B63752EBF5A2DE83E4EEF63900514CAEBDB71B",
+    "current_sha256": "C933AAD979D7BC9EE6CF1FE26AEFB5F7076935AA869958409EAE76628D1BFD65",
+    "historical_blob": "fa7d1d18c1d39931b1121675e62cffa7e509cc58"
+  },
+  {
+    "path": "src/extensions/native_semver785_regex.zig",
+    "historical_sha256": "8A65FF4E8DE8457E4CA81D39C65075A8130FDA54C7358485BEC58F3CB954F79A",
+    "current_sha256": "70D79A5FCE8575142EDE4E8E8F39F6F2DCC6B800AA1E9522B7B5E6F9D6316D0E",
+    "historical_blob": "13a8d540a08dc2ec14ed39c690ea50e1ce9696f3"
+  },
+  {
+    "path": "src/extensions/native_semver785_ops.zig",
+    "historical_sha256": "88B6788167BD0EB485ADBC1046D44E5B304CA09A4DC69D26DF94A4157689CAE5",
+    "current_sha256": "FBEC7614AF0CB2DEE1FEE8128BB7A27E0243513FFC6AAF7CFCACC93D8293B4B9",
+    "historical_blob": "229ceebb32055b3edaef36d6d89131d6e45b07e9"
+  },
+  {
+    "path": "src/extensions/fixtures/semver785-package-manager.input.txt",
+    "historical_sha256": "D5EA1B8B14A3596E982BBB36CE98EDBAB0701C5177F3F6019E59EC401CDAA9B0",
+    "current_sha256": "D5EA1B8B14A3596E982BBB36CE98EDBAB0701C5177F3F6019E59EC401CDAA9B0",
+    "historical_blob": "52f9882a690b7f4d26b7ad120cee84c6a720d1df"
+  },
+  {
+    "path": "src/extensions/fixtures/semver785-supplement.input.txt",
+    "historical_sha256": "36B5F545ED1584C208A0887BEF549892A19051A1CF98FF3856212F3FA3443E7D",
+    "current_sha256": "36B5F545ED1584C208A0887BEF549892A19051A1CF98FF3856212F3FA3443E7D",
+    "historical_blob": "27630c416e90006136632d4b53a483460af75e07"
+  },
+  {
+    "path": "src/native_semver785_package_manager_test.zig",
+    "historical_sha256": "B7B310E29FE7C426CC671C65B7A7A74957091E7D28FDE1A85B83519A636076C8",
+    "current_sha256": "E21A4C6EF0E6133FDAAD255D002FD2430E47B8146B26FE57CB880812D89D246D",
+    "historical_blob": "0e95551e9b15173bde343145c9479341c725537d"
+  }
+]

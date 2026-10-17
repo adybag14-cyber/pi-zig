@@ -1,0 +1,22 @@
+// Genuine original class/IO reference; no transport or class replacement.
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { join, resolve, dirname } from 'node:path';
+import { pathToFileURL } from 'node:url';
+import { createHash } from 'node:crypto';
+import { observePackageSemverCallers } from './package-manager-callers.input.mjs';
+const [controlPath, outputPath] = process.argv.slice(2);
+const control = JSON.parse(readFileSync(controlPath, 'utf8'));
+if (control.execution_authorized !== true) throw Error('Later explicit Root original-caller release required');
+const hash = bytes => createHash('sha256').update(bytes).digest('hex').toUpperCase();
+const receiptBytes = readFileSync('C:\\Users\\adyba\\pi-zig\\evidence\\original19cb-current31064-byte-independent-20261017\\acceptance.json');
+if (hash(receiptBytes) !== 'EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0') throw Error('Accepted original full31064 identity required');
+const receipt = JSON.parse(receiptBytes), runtime = resolve(control.runtime);
+if (receipt.accepted !== true || resolve(receipt.reference_path) !== runtime) throw Error('Actual original reference path differs');
+const managerPath = join(runtime, 'packages/coding-agent/dist/core/package-manager.js');
+const settingsPath = join(runtime, 'packages/coding-agent/dist/core/settings-manager.js');
+if (hash(readFileSync(managerPath)) !== control.package_manager_dist_sha256 || hash(readFileSync(settingsPath)) !== control.settings_manager_dist_sha256) throw Error('Actual original class identity differs');
+if (existsSync(control.caller_root) || existsSync(outputPath) || dirname(resolve(outputPath)) !== resolve(control.output_root)) throw Error('Fresh owned caller and output leaves required');
+const PackageAPI = await import(pathToFileURL(managerPath).href);
+const SettingsAPI = await import(pathToFileURL(settingsPath).href);
+const observed = await observePackageSemverCallers({ PackageAPI, SettingsAPI, callerRoot: control.caller_root });
+writeFileSync(outputPath, JSON.stringify({ sourceHead: 'c268154ca1171c2f9eefe75d3d7372a68aada2d5', originalRuntimeReceiptSha256: hash(receiptBytes), actualNode: { pid: process.pid, execPath: process.execPath }, ...observed }, null, 2)+'\n', { flag: 'wx' });

@@ -1,0 +1,320 @@
+[
+  {
+    "relative": "bin\\semver.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\bin\\semver.js",
+    "bytes": 4957,
+    "sha256": "BD6C871026985937DC945011FC54B74B47F5998154216D7B8D40D5ED782E4402"
+  },
+  {
+    "relative": "classes\\comparator.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\classes\\comparator.js",
+    "bytes": 3631,
+    "sha256": "054202956430D63D5FF4599FAE09760CE465B489E4F0B5EF5CE7CC7AC21157AC"
+  },
+  {
+    "relative": "classes\\index.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\classes\\index.js",
+    "bytes": 143,
+    "sha256": "3BB69280C2A788D0EB16F915BB9DF4DBE812075182024C753DCA2283BCEA1B17"
+  },
+  {
+    "relative": "classes\\range.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\classes\\range.js",
+    "bytes": 15647,
+    "sha256": "A6544485AA8575AA9854C67E2CAA67726815DE18A482D0CEB8A1003244DE3BC1"
+  },
+  {
+    "relative": "classes\\semver.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\classes\\semver.js",
+    "bytes": 9891,
+    "sha256": "813B2C185512D30C9B931C2FED8140889D9D7490CEEEEDC370DA30337DC8CA57"
+  },
+  {
+    "relative": "functions\\clean.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\clean.js",
+    "bytes": 205,
+    "sha256": "4EADB0892844CF3AE295121A86163A66C73F89ACD1B7F0B114EC115B4539512F"
+  },
+  {
+    "relative": "functions\\cmp.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\cmp.js",
+    "bytes": 961,
+    "sha256": "A63D74E87B73788E78E9CE0A4892B5333D6B809C0DE88B31E4ED76CBF17F94B3"
+  },
+  {
+    "relative": "functions\\coerce.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\coerce.js",
+    "bytes": 2004,
+    "sha256": "28A251C5AB210DDF9E97551B9F37A53329FCCE91F0C3943DCBC02DE1A1DE915A"
+  },
+  {
+    "relative": "functions\\compare-build.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\compare-build.js",
+    "bytes": 281,
+    "sha256": "5AB651D5B40AF289BD85C645A92B6D8CFE1A986DC413C797CFCC8D623D7C844C"
+  },
+  {
+    "relative": "functions\\compare-loose.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\compare-loose.js",
+    "bytes": 132,
+    "sha256": "07B6A3A1DB0A5210CEB784C1708BD4679F3A94FC73A9C9EB349349E7070A6F78"
+  },
+  {
+    "relative": "functions\\compare.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\compare.js",
+    "bytes": 170,
+    "sha256": "D404B5AA48AADDC8A654C5DA8FB7D4443404B7948589B21AC4B045D1CEE4E34C"
+  },
+  {
+    "relative": "functions\\diff.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\diff.js",
+    "bytes": 1423,
+    "sha256": "7A11FD39B987CDF06C65E928CB1ACA49BEC583FEB86FB5C8FE47A6FD61D7DE31"
+  },
+  {
+    "relative": "functions\\eq.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\eq.js",
+    "bytes": 126,
+    "sha256": "B6E30A7168E52723216FC163D300E2BBABF92EC0251F9AC5438BB6CCF57C8936"
+  },
+  {
+    "relative": "functions\\gt.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\gt.js",
+    "bytes": 124,
+    "sha256": "135523704AA48CD98834DD170EE9F74F0E68043B379F32D021DB11E6304C5C93"
+  },
+  {
+    "relative": "functions\\gte.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\gte.js",
+    "bytes": 127,
+    "sha256": "991C5BBE48ECB210A562646872F05862AD9FC0D42186D85AA60BDC6FA323EB9D"
+  },
+  {
+    "relative": "functions\\inc.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\inc.js",
+    "bytes": 478,
+    "sha256": "952069FC8690B7D3AF0FE9D55F7C54FE2AC067B48C5E74F6A54F9CE19A334493"
+  },
+  {
+    "relative": "functions\\lt.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\lt.js",
+    "bytes": 124,
+    "sha256": "1C897A9BC849320E2E9DC0F6C09555C01EE3DDF30734515D717B88AD7740EA25"
+  },
+  {
+    "relative": "functions\\lte.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\lte.js",
+    "bytes": 127,
+    "sha256": "3A8D0B1D00423F60CC7CB810B36AB77B61330831AD237DBE73EB5CECFA412800"
+  },
+  {
+    "relative": "functions\\major.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\major.js",
+    "bytes": 136,
+    "sha256": "5C678480D882F511200FED2C16EC3847DFEDB08A1D70328DC2F031D35D825276"
+  },
+  {
+    "relative": "functions\\minor.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\minor.js",
+    "bytes": 136,
+    "sha256": "1B051794F1713ADEC2A236517196691687C35F82E0B596FF3316A78B3CC10AE6"
+  },
+  {
+    "relative": "functions\\neq.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\neq.js",
+    "bytes": 128,
+    "sha256": "A662883751918822C162183B46B9E20D09489132F82686C92AB78BEE67F3A127"
+  },
+  {
+    "relative": "functions\\parse.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\parse.js",
+    "bytes": 331,
+    "sha256": "29A69E15B6D02FE381D573F861881A89590E9D0F0F0CA740C5F85EAF0234C4AD"
+  },
+  {
+    "relative": "functions\\patch.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\patch.js",
+    "bytes": 136,
+    "sha256": "F02D3C1B059FE3D96CE124886F7EEF321D381A95638FD3C4A8D5CCD8E76FFADD"
+  },
+  {
+    "relative": "functions\\prerelease.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\prerelease.js",
+    "bytes": 234,
+    "sha256": "BAEDBF503D5610AD041BFB56071EFA48FEB331CA278295C399537D35D3FFB593"
+  },
+  {
+    "relative": "functions\\rcompare.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\rcompare.js",
+    "bytes": 132,
+    "sha256": "84FA5E88ADF08D15C993CAC8CDEC6D1A65045B7E95A9C55184230A7F807F4DC0"
+  },
+  {
+    "relative": "functions\\rsort.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\rsort.js",
+    "bytes": 163,
+    "sha256": "6EC659CE3B6C2B173C719286CAAB04409ADBA046C0917874EC3B5E36DDFBC7E3"
+  },
+  {
+    "relative": "functions\\satisfies.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\satisfies.js",
+    "bytes": 247,
+    "sha256": "8CF5E122B757251671ED6C9D9680904B71CD375845853F05312E608CF2CC2946"
+  },
+  {
+    "relative": "functions\\sort.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\sort.js",
+    "bytes": 161,
+    "sha256": "C2FE2D3ED0BE8A4E9DE8F02ABDFD5D9C0D3BCC510D88E87AF84185592882C4B8"
+  },
+  {
+    "relative": "functions\\truncate.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\truncate.js",
+    "bytes": 1021,
+    "sha256": "E145833A250311927C92F424F56498C52F1B7BB1271CE6AFBF006DB87773FF43"
+  },
+  {
+    "relative": "functions\\valid.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\functions\\valid.js",
+    "bytes": 176,
+    "sha256": "0DE7EA736CB7807179D46DFAC09C830A9338E02B6A07DB12D7040CDE2DEF6025"
+  },
+  {
+    "relative": "index.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\index.js",
+    "bytes": 2691,
+    "sha256": "4B3E57D3D40E29E0706002EBA113D09F35AEA593578376BBEEC83B777B9912AB"
+  },
+  {
+    "relative": "internal\\constants.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\constants.js",
+    "bytes": 873,
+    "sha256": "38A112BAF27CECA0260082FF26AC2FD7A9861CAB1AF12DD65E720277F68E6CE9"
+  },
+  {
+    "relative": "internal\\debug.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\debug.js",
+    "bytes": 240,
+    "sha256": "8A9F420572260F3CF944463B5090D62A60F0730589DC23A7EC4CA25E2EE41BB3"
+  },
+  {
+    "relative": "internal\\identifiers.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\identifiers.js",
+    "bytes": 525,
+    "sha256": "B4916B09DC7869AE0EB05E71C855C942A3A7365F7E6E89185D59A9E45A2451D7"
+  },
+  {
+    "relative": "internal\\lrucache.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\lrucache.js",
+    "bytes": 802,
+    "sha256": "14D087C87DA87B6F5C36FC4CDD7D2D14077874B14A68E20FCE5B6138FA2CA34F"
+  },
+  {
+    "relative": "internal\\parse-options.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\parse-options.js",
+    "bytes": 338,
+    "sha256": "FDF51D0DE8D5442C35A997EF58CD530D239CE206F961D14C5121354451B01D01"
+  },
+  {
+    "relative": "internal\\re.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\internal\\re.js",
+    "bytes": 8139,
+    "sha256": "5833262888E2B5D843A69193F83C05E374818DBE55379B497819B5BF58E48CD8"
+  },
+  {
+    "relative": "LICENSE",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\LICENSE",
+    "bytes": 765,
+    "sha256": "4EC3D4C66CD87F5C8D8AD911B10F99BF27CB00CDFCFF82621956E379186B016B"
+  },
+  {
+    "relative": "package.json",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\package.json",
+    "bytes": 1661,
+    "sha256": "7C94CB7F2A53C27B20D76386EC144C062894DBCC909CFABD0F728C37874B1776"
+  },
+  {
+    "relative": "preload.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\preload.js",
+    "bytes": 83,
+    "sha256": "EDB6808911BEBCB324B2DF57E5C9935149E56984FF083B74C6CFE215F5B710BA"
+  },
+  {
+    "relative": "range.bnf",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\range.bnf",
+    "bytes": 702,
+    "sha256": "15D0BAF9B7B98E6D862C0CB9E822D2533D2BC23E136BB75314D802CA1FCB0392"
+  },
+  {
+    "relative": "ranges\\gtr.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\gtr.js",
+    "bytes": 231,
+    "sha256": "8FADAD28E36D28E93D498AC7AC20BADBA2A407312845EABC18E82E90A0732B19"
+  },
+  {
+    "relative": "ranges\\intersects.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\intersects.js",
+    "bytes": 224,
+    "sha256": "FE87AC5D3020010AD3EC00636DADBF0C669FF07D0F57E0A8165A8264F79A676F"
+  },
+  {
+    "relative": "ranges\\ltr.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\ltr.js",
+    "bytes": 227,
+    "sha256": "E5186FCC03018ACF9BE6D968755D4C49727AEB0D981D179EB568AE5FBE983038"
+  },
+  {
+    "relative": "ranges\\max-satisfying.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\max-satisfying.js",
+    "bytes": 593,
+    "sha256": "E1A2C0D6144CC772CD20BBC8ECB9E8A3A4074E9172A3D8E794838B591CDEB416"
+  },
+  {
+    "relative": "ranges\\min-satisfying.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\min-satisfying.js",
+    "bytes": 591,
+    "sha256": "2681ABF54098AA670F12826B76A6EC77A2441186AE4243AFDE3BE8AE4908F7CA"
+  },
+  {
+    "relative": "ranges\\min-version.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\min-version.js",
+    "bytes": 1514,
+    "sha256": "FEFBA0A88C2BF74D5CEDE504B5AE50A8DC3EDFD69CF0174A491E2CF3E442614B"
+  },
+  {
+    "relative": "ranges\\outside.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\outside.js",
+    "bytes": 2204,
+    "sha256": "3A2B0B23593D2F49419C06AF2AF75450CAB103B0C25D665D48FE5BCA495A21CA"
+  },
+  {
+    "relative": "ranges\\simplify.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\simplify.js",
+    "bytes": 1355,
+    "sha256": "7B78581C13322BC68ECE2088685386B2A9B51C15B94D0A2063BDF2546BD41934"
+  },
+  {
+    "relative": "ranges\\subset.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\subset.js",
+    "bytes": 7478,
+    "sha256": "CEB9EB6ED5BFC6C7AC7AF7F47E5C3535444A4E66A0E2B58CDAD4BD02A35D454D"
+  },
+  {
+    "relative": "ranges\\to-comparators.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\to-comparators.js",
+    "bytes": 282,
+    "sha256": "6C5E966210CFF270FA2850668AAF8460FAC7759F8D99F282521EF7A78F4564E9"
+  },
+  {
+    "relative": "ranges\\valid.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\ranges\\valid.js",
+    "bytes": 326,
+    "sha256": "5EF6F995AF801868925940CF8DF5735D565EBABB090B068695CAE65218BCD3AC"
+  },
+  {
+    "relative": "README.md",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\semver\\README.md",
+    "bytes": 25669,
+    "sha256": "F1A789DCEC285150BE24DB2EA04DD3175031554FA9834EC92FAB83FB5E025A57"
+  }
+]

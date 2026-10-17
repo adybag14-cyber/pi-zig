@@ -1,0 +1,17 @@
+{
+  "source": "package-lock.json",
+  "source_sha256": "B686F30BC97E99AEE6BB63C78714535ADA1D307639DB7F4E8972144059FC501D",
+  "entry": "node_modules/semver",
+  "value": {
+    "version": "7.8.5",
+    "resolved": "https://registry.npmjs.org/semver/-/semver-7.8.5.tgz",
+    "integrity": "sha512-Y7/KDsb8LjooZpwaqGyulO6DQlksgCncchHGk+sZIY4SBvUocMBEFH5Ur1fI4dV+Jvl0w6cjvucaIi40puRioA==",
+    "license": "ISC",
+    "bin": {
+      "semver": "bin/semver.js"
+    },
+    "engines": {
+      "node": ">=10"
+    }
+  }
+}

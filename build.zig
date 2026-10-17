@@ -3385,6 +3385,22 @@ pub fn build(b: *std.Build) void {
     // Reuse the actual existing TreeSitter/Zig transformer test artifact and
     // all its original tests. This alias does not select a Node TS compiler.
     b.step("build-native-expanded213-typescript-controls", "Install existing native TypeScript helper controls without running").dependOn(&b.addInstallArtifact(typescript_tests, .{ .dest_sub_path = b.fmt("native-expanded213-typescript-controls{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    // Private SDK semver supplier. Install-only and default-off: Root discovers
+    // genuine metadata before any separately granted execution.
+    const sdk_semver_six = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_semver_six_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"private SDK semver"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_semver_six.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_semver_six.root_module, typescript_parser);
+    linkSqlite(sdk_semver_six.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_semver_six.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_semver_six.root_module.linkSystemLibrary("advapi32", .{}); sdk_semver_six.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-semver-six", "Install private SDK six-binding controls without execution").dependOn(&b.addInstallArtifact(sdk_semver_six, .{ .dest_sub_path = b.fmt("native-sdk-semver-six{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    const sdk_semver_original = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_semver785_package_manager_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native semver785"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_semver_original.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_semver_original.root_module, typescript_parser);
+    linkSqlite(sdk_semver_original.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_semver_original.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_semver_original.root_module.linkSystemLibrary("advapi32", .{}); sdk_semver_original.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-semver-original", "Install genuine original-row replay and GC/fatal controls; original fixture remains required").dependOn(&b.addInstallArtifact(sdk_semver_original, .{ .dest_sub_path = b.fmt("native-sdk-semver-original{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

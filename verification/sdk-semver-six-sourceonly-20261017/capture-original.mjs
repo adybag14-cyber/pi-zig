@@ -1,0 +1,43 @@
+// Original Node reference only. Never imported by the Zig production supplier.
+// A later Root owner must bind Node, inventories, environment, resources and
+// output/absence; this data driver does not authorize or supervise its launch.
+import { readFileSync, writeFileSync, existsSync, lstatSync } from 'node:fs';
+import { resolve, dirname, join } from 'node:path';
+import { createHash } from 'node:crypto';
+import { pathToFileURL } from 'node:url';
+const [controlPath, outputPath] = process.argv.slice(2);
+if (!controlPath || !outputPath) throw Error('Explicit owned control and output paths required');
+const hash = bytes => createHash('sha256').update(bytes).digest('hex').toUpperCase();
+const control = JSON.parse(readFileSync(controlPath, 'utf8'));
+if (control.execution_authorized !== true) throw Error('A later explicit Root capture release is required');
+const receiptPath = 'C:\\Users\\adyba\\pi-zig\\evidence\\original19cb-current31064-byte-independent-20261017\\acceptance.json';
+const receiptBytes = readFileSync(receiptPath);
+if (hash(receiptBytes) !== 'EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0') throw Error('Exact accepted current31064 byte authority required');
+const receipt = JSON.parse(receiptBytes);
+if (receipt.accepted !== true || receipt.actual_current_regular_files !== 31064 || receipt.original_complete_file_path_or_hash_differences !== 0) throw Error('Original full-library byte authority incomplete');
+const runtime = resolve(control.runtime);
+if (runtime !== resolve(receipt.reference_path)) throw Error('Actual accepted runtime path required');
+const candidate = resolve(control.candidate);
+const sourcePath = resolve(control.package_manager_source);
+if (hash(readFileSync(sourcePath)) !== '61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310') throw Error('Actual Pi six-import caller identity differs');
+const library = join(runtime, 'node_modules', 'semver');
+const original53Bytes = readFileSync(join(candidate, 'verification/sdk-semver-six-sourceonly-20261017/semver-original53.json'));
+if (hash(original53Bytes) !== '8FB1ACA9C9CA2473CE7E72C961C8273306908947AF8B8E7822621BCFD68041EC') throw Error('Original library53 manifest differs');
+const original53 = JSON.parse(original53Bytes);
+if (original53.length !== 53) throw Error('Full original semver53 inventory required');
+for (const pin of original53) if (hash(readFileSync(join(library, pin.relative))) !== pin.sha256) throw Error(`Original semver file differs: ${pin.relative}`);
+const metadata = readFileSync(join(library, 'package.json'));
+if (hash(metadata) !== '7C94CB7F2A53C27B20D76386EC144C062894DBCC909CFABD0F728C37874B1776' || JSON.parse(metadata).version !== '7.8.5') throw Error('Actual semver7.8.5 required');
+const absoluteOutput = resolve(outputPath), outputRoot = resolve(control.output_root);
+if (dirname(absoluteOutput) !== outputRoot || existsSync(absoluteOutput) || lstatSync(outputRoot).isSymbolicLink()) throw Error('Fresh owned output leaf required');
+const { default: semver } = await import(pathToFileURL(join(library, 'index.js')).href);
+globalThis.semver785API = semver;
+const inputName = control.input === 'supplement' ? 'semver785-supplement.input.txt' : 'semver785-package-manager.input.txt';
+if (!['original', 'supplement'].includes(control.input)) throw Error('Exact original input selection required');
+const inputBytes = readFileSync(join(candidate, 'src/extensions/fixtures', inputName));
+if (hash(inputBytes) !== control.input_sha256) throw Error('Original input pin differs');
+await new Function('return(async()=>{'+inputBytes.toString('utf8')+'\n})()')();
+const observation = control.input === 'original' ? globalThis.semver785Observation : globalThis.semver785SupplementObservation;
+if (!observation || observation.rows.length !== Object.values(observation.inventory).reduce((sum, value) => sum + value, 0)) throw Error('Complete original observation census required');
+const output = { sourceHead: 'c268154ca1171c2f9eefe75d3d7372a68aada2d5', consumerSourceSha256: hash(readFileSync(sourcePath)).toLowerCase(), originalRuntimeReceiptSha256: hash(receiptBytes), packageVersion: '7.8.5', packageSha256: hash(metadata).toLowerCase(), inputSha256: hash(inputBytes).toLowerCase(), runtime: process.version, actualNode: { pid: process.pid, execPath: process.execPath }, ...observation };
+writeFileSync(absoluteOutput, JSON.stringify(output, null, 2)+'\n', { flag: 'wx' });

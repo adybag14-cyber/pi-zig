@@ -1,0 +1,11 @@
+{
+  "status": "SOURCE_ONLY_FALSE_ORIGINAL_CLASS_CALLER_TEMPLATE",
+  "execution_authorized": false,
+  "runtime": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "package_manager_dist_sha256": "14176C5F6A8BA9DF57FB2BAE52EEBB1823B3BD96453200BE52978715308EE9EB",
+  "settings_manager_dist_sha256": "4C6C9023A6178588E29545F3BC8D52CEB65ED44B58CE8DD72C9EF38F040E745F",
+  "caller_root": null,
+  "output_root": null,
+  "expected_output_authored": false,
+  "scope": "Actual original parse/installed call sites only, no network/gt/max/sort caller claim"
+}
