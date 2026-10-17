@@ -1,0 +1,197 @@
+{
+  "schema": "planned_native_contract_commands_v1_NOT_execution",
+  "source_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "native_working_directory": "C:\\Users\\adyba\\pi-zig\\worktrees\\c268-authority-docs-contracts",
+  "required_new_authority_checkout": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\c268154c-20261017",
+  "authority_checkout_exists": false,
+  "accepted_upstream_pi_head_observed": "4dd2b149d155d7369de16ea4dc77c84e9f5ffb24",
+  "accepted_upstream_pi_c268_object_present": false,
+  "existing_accepted_snapshots_edited": false,
+  "native_generator_source_closure": [
+    {
+      "path": "src/coding_agent/path_utils.zig",
+      "size": 10263,
+      "sha256": "202EF3F62575E880A0789CBD78360F3BEC29C2B8E7322A7B9FC356189BEC8A65"
+    },
+    {
+      "path": "src/config.zig",
+      "size": 6455,
+      "sha256": "B8988F38072ACD56504839C3304EB445066535413FE7C79A81B73434AAA1B3E6"
+    },
+    {
+      "path": "tools/agent_allocation_coverage.zig",
+      "size": 11084,
+      "sha256": "E8D65E4202828A1136D8F7DA822BEE76B6EFAFBDE764EC8911A582B2510B53ED"
+    },
+    {
+      "path": "tools/artifacts.zig",
+      "size": 11593,
+      "sha256": "67575A0A5921EC9B480A80F3FDB32967E1E5C80CB9CC986FBF9E69E5574974B2"
+    },
+    {
+      "path": "tools/catalog.zig",
+      "size": 29255,
+      "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+    },
+    {
+      "path": "tools/config_schemas.zig",
+      "size": 3465,
+      "sha256": "D3C1DAEBFB1A224FE7DBF1EB2E87B74F2174C9E20B7C58AFF25DB76CA86C87B6"
+    },
+    {
+      "path": "tools/exhaustive_allocation_coverage.zig",
+      "size": 697,
+      "sha256": "DA6D1883FD28CDFCF24750E502A199E95D8F3BD6A4BCE539A5F9C51BA843634D"
+    },
+    {
+      "path": "tools/maintenance.zig",
+      "size": 22595,
+      "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+    },
+    {
+      "path": "tools/native_composed_coverage.zig",
+      "size": 10402,
+      "sha256": "7DBF193751CF779F2CCD4D435183282083EC22DC987A6F18F388A03A93431AAA"
+    },
+    {
+      "path": "tools/native_composed_scope.zig",
+      "size": 2205,
+      "sha256": "BA660A7ADFFCAEE05EF90B53CA0EB06B08BE3A3E9DFEC24F3B1D800FCB4F500B"
+    },
+    {
+      "path": "tools/projections.zig",
+      "size": 7339,
+      "sha256": "2D852A9C510CFF21AEB6147EE905265C93C1AD355436AFFC4673B29D61D51019"
+    },
+    {
+      "path": "tools/release.zig",
+      "size": 5653,
+      "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+    },
+    {
+      "path": "tools/upstream_contract.zig",
+      "size": 9994,
+      "sha256": "0EA06389C413A1D866E9151E02CAC234DBA236B4B9638276EC252AAC9FBFFC2B"
+    }
+  ],
+  "build_and_preserved_data_pins": [
+    {
+      "path": "build.zig",
+      "size": 348995,
+      "sha256": "C925977C62DB9E778C91C22B33C2B766491B979325810597A87C1941D008D73F"
+    },
+    {
+      "path": "build.zig.zon",
+      "size": 4296,
+      "sha256": "E44D177F205B0E18B3D6870FDEA1AC1AF374B724DD528E527B3048F9079AEF10"
+    },
+    {
+      "path": ".github/workflows/upstream-contract.yml",
+      "size": 1150,
+      "sha256": "50411E85D9EBF376C5DFE10DDB02D09BBBC26E9E92B026668DBE5D79DF72DFB0"
+    },
+    {
+      "path": "verification/upstream-contract/tree-97195ec3.json",
+      "size": 369159,
+      "sha256": "208092AFA4F1C8FB956E7F250A4C92FD5C30A0D98D6D34F2D1F8E4DA081F75E8"
+    },
+    {
+      "path": "src/ai/catalog_source.json",
+      "size": 1509931,
+      "sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB"
+    },
+    {
+      "path": "src/ai/catalog_generated.zig",
+      "size": 4102035,
+      "sha256": "6B661CEFB933D9B09F5A716781DFC43FE3505E9A960B121899BDFAEE4EC59C85"
+    },
+    {
+      "path": "ARTIFACT-MANIFEST.json",
+      "size": 1392,
+      "sha256": "602E90D2A5A22EC672D69FD7CA6A25C80617A1465CD98007ABC6AE84F645A6BF"
+    }
+  ],
+  "zig": {
+    "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+    "version": "0.16.0",
+    "executed": false,
+    "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864"
+  },
+  "git": {
+    "path": "C:\\Program Files\\Git\\cmd\\git.exe",
+    "must_resolve_same_at_execution": true,
+    "sha256": "3CBD024D9D11EF08BD6A0CB5A973613C50825B4952BC6006F3F4222F436091E5"
+  },
+  "commands": [
+    {
+      "phase": "native tool selftests",
+      "argv": [
+        "build",
+        "test-upstream-contract",
+        "-Doptimize=Debug",
+        "-j1",
+        "--summary",
+        "all"
+      ],
+      "expected": "actual terminal0 before capture; not run"
+    },
+    {
+      "phase": "retain actual oldbaseline drift",
+      "argv": [
+        "build",
+        "maintenance",
+        "-Doptimize=Debug",
+        "-j1",
+        "--",
+        "verify-upstream-contract",
+        "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\c268154c-20261017",
+        "verification/upstream-contract/tree-97195ec3.json"
+      ],
+      "expected": "nonzero UpstreamContractDrift; predicted1941/107/183/310; not run"
+    },
+    {
+      "phase": "actual native capture",
+      "argv": [
+        "build",
+        "maintenance",
+        "-Doptimize=Debug",
+        "-j1",
+        "--",
+        "capture-upstream-contract",
+        "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\c268154c-20261017",
+        "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+        "verification/upstream-contract/tree-c268154c.json"
+      ],
+      "expected": "new immutable output only; destination must be absent; not run"
+    },
+    {
+      "phase": "actual native verification",
+      "argv": [
+        "build",
+        "maintenance",
+        "-Doptimize=Debug",
+        "-j1",
+        "--",
+        "verify-upstream-contract",
+        "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\c268154c-20261017",
+        "verification/upstream-contract/tree-c268154c.json"
+      ],
+      "expected": "terminal0; exactc268/sha1/1941 expected records/zero drift; not run"
+    }
+  ],
+  "generator_output_path": "verification/upstream-contract/tree-c268154c.json",
+  "generator_output_exists": false,
+  "scheduled_workflow_unchanged": true,
+  "future_workflow_line_change_after_native_success": {
+    "path": ".github/workflows/upstream-contract.yml",
+    "authorized_now": false,
+    "old": "verification/upstream-contract/tree-97195ec3.json",
+    "new": "verification/upstream-contract/tree-c268154c.json"
+  },
+  "required_execution_grant": "separate Root native build/generator/check resource and ownership grant with exact sealed inputs, complete clean target checkout and terminal/fullpost/absence evidence",
+  "generated_catalogs_and_old_contracts_not_modified": true,
+  "jobs_run": [],
+  "runtime_qualified": false,
+  "default_selection": false
+}

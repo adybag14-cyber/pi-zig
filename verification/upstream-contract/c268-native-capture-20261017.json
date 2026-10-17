@@ -1,0 +1,338 @@
+{
+  "schema": 1,
+  "projection": "Path-redacted JSON derivative; original local receipt remains unchanged",
+  "original_receipt_sha256": "D1306FB30A3988623BDD269C8B63CA6B95EAA20CC7E26BAF0397ACB4B1679DE5",
+  "original_receipt_bytes": 15051,
+  "scope": "Native structural capture/verify at c268; runtime and application parity remain unqualified",
+  "acceptance": {
+    "schema": 1,
+    "status": "INDEPENDENTLY_ACCEPTED_ACTUAL_NATIVE_CONTRACT_CAPTURE_VERIFY",
+    "accepted": true,
+    "reviewer": "/root/google_runtime_resume",
+    "reviewed_utc": "2026-10-17T21:12:33.1755295Z",
+    "native_head": "86bc80fac561d5d1173898e4dac025a942eddad0",
+    "source_head": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "source_tree": "b9004b99aceb672e8295412ee0e25f6b46063ed5",
+    "proof": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218",
+    "actual_operation": "Two root-owned Zig build maintenance invocations: capture-upstream-contract then verify-upstream-contract",
+    "owners": [
+      {
+        "phase": "capture",
+        "pid": 65084,
+        "created_utc": "2026-10-17T21:02:55.0468935Z",
+        "completed_utc": "2026-10-17T22:03:11.2767997+01:00",
+        "elapsed_seconds": 16.2299062,
+        "timeout_seconds": 1320,
+        "exit_code": 0,
+        "retained_handle_recorded": true,
+        "exact_live_argv_bound": true,
+        "admission_free_kib": 21296140,
+        "admission_elapsed_seconds": 0.533767,
+        "absence_retained": true
+      },
+      {
+        "phase": "verify",
+        "pid": 29792,
+        "created_utc": "2026-10-17T21:03:44.9951682Z",
+        "completed_utc": "2026-10-17T22:03:49.4762774+01:00",
+        "elapsed_seconds": 4.4811092,
+        "timeout_seconds": 300,
+        "exit_code": 0,
+        "retained_handle_recorded": true,
+        "exact_live_argv_bound": true,
+        "admission_free_kib": 18728884,
+        "admission_elapsed_seconds": 0.5511899,
+        "absence_retained": true
+      }
+    ],
+    "outer_owner": {
+      "pid": 22748,
+      "created_utc": "2026-10-17T21:02:18.6948835Z",
+      "elapsed_seconds": 123.5314852,
+      "deadline_seconds": 2700,
+      "exit_code": 0,
+      "retained_handle_recorded": true,
+      "absence": true
+    },
+    "pipe_settle_seconds": 10,
+    "fresh_owned_absence": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-generator-independent-google-audit-20261017\\fresh-owned-absence.json",
+      "bytes": 297,
+      "sha256": "01FE0D773D98FE56849459F61381E23357A179CC34B7E2E9C5B8D8B52DA53E97"
+    },
+    "generated_output": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\generated\\tree-c268154c.native.json",
+      "bytes": 354411,
+      "sha256": "588657E89849CDF6E7162FA3729A12C1DEFFB0972264441C1CD6DE1DAC3D3773"
+    },
+    "actual_records": 1941,
+    "official_mode_kind_object_path_join_drift": 0,
+    "actual_tool_artifact": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\.zig-cache\\o\\413c463ab75f1e32f3d1e0de6df5c151\\pi-maintenance.exe",
+      "bytes": 3454464,
+      "sha256": "64FC2B61610157921F40CFB2BC401F4F9C1F2CD797548C99B472104549C0E153"
+    },
+    "child_provenance": "Frozen build AddRunArtifact graph plus retained root Zig launch, exact verbose executable/argv, fresh private unique pi-maintenance artifact and actual output. Utility child PID/image NOT independently observed; no invented child identity.",
+    "native_tool_closure": [
+      {
+        "path": "<CONTAINER>\\main\\src\\coding_agent\\path_utils.zig",
+        "bytes": 10263,
+        "sha256": "202EF3F62575E880A0789CBD78360F3BEC29C2B8E7322A7B9FC356189BEC8A65"
+      },
+      {
+        "path": "<CONTAINER>\\main\\src\\config.zig",
+        "bytes": 6367,
+        "sha256": "B95EDFAA640D3F8AAD96B0D1FF692D076C4862125FEFBF4B65D3D978116671D4"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\agent_allocation_coverage.zig",
+        "bytes": 11084,
+        "sha256": "E8D65E4202828A1136D8F7DA822BEE76B6EFAFBDE764EC8911A582B2510B53ED"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\artifacts.zig",
+        "bytes": 11593,
+        "sha256": "67575A0A5921EC9B480A80F3FDB32967E1E5C80CB9CC986FBF9E69E5574974B2"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\catalog.zig",
+        "bytes": 29255,
+        "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\config_schemas.zig",
+        "bytes": 3465,
+        "sha256": "D3C1DAEBFB1A224FE7DBF1EB2E87B74F2174C9E20B7C58AFF25DB76CA86C87B6"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\exhaustive_allocation_coverage.zig",
+        "bytes": 697,
+        "sha256": "DA6D1883FD28CDFCF24750E502A199E95D8F3BD6A4BCE539A5F9C51BA843634D"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\maintenance.zig",
+        "bytes": 22595,
+        "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\native_composed_coverage.zig",
+        "bytes": 10402,
+        "sha256": "7DBF193751CF779F2CCD4D435183282083EC22DC987A6F18F388A03A93431AAA"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\native_composed_scope.zig",
+        "bytes": 2205,
+        "sha256": "BA660A7ADFFCAEE05EF90B53CA0EB06B08BE3A3E9DFEC24F3B1D800FCB4F500B"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\projections.zig",
+        "bytes": 7339,
+        "sha256": "2D852A9C510CFF21AEB6147EE905265C93C1AD355436AFFC4673B29D61D51019"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\release.zig",
+        "bytes": 5653,
+        "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+      },
+      {
+        "path": "<CONTAINER>\\main\\tools\\upstream_contract.zig",
+        "bytes": 9994,
+        "sha256": "0EA06389C413A1D866E9151E02CAC234DBA236B4B9638276EC252AAC9FBFFC2B"
+      }
+    ],
+    "current_hash_evidence": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-generator-independent-google-audit-20261017\\current-hashes-and-seals.json",
+      "bytes": 8114,
+      "sha256": "92D912BA40EA5805C2C7744FBCCC609DEE7A4CD6D29CE5F839CD768496EA7BBE"
+    },
+    "current_counts": {
+      "tracked": 11890,
+      "main_tree": 11903,
+      "compiler": 19546,
+      "source_tree": 1941,
+      "controls": 22
+    },
+    "prepared_payloads": [
+      {
+        "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\Run-C268NativeContract.ps1",
+        "bytes": 22108,
+        "sha256": "F0658F69A2E7B3E2EB3E84CADB4FB1A5BB45A88B2AB38D70FADCEA24E8195E13"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\Invoke-C268NativeContractOuter.ps1",
+        "bytes": 5432,
+        "sha256": "6AD2FF508D150DDA0748A3A445199FEFD595A2939D510FBD1460DCCC3EE3FC6B"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\inputs.json",
+        "bytes": 3251770,
+        "sha256": "47F28C79CBF9540C55AC5A62D0B0A2287736AC1EB544B11CA433320C7B5C7C5C"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\grant.template.json",
+        "bytes": 1956,
+        "sha256": "83D3C38A2C88C997FA9FC8DD6D0322B69529A945A825AE7B938B4CE64ED15A4E"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\README.md",
+        "bytes": 7036,
+        "sha256": "D9E3B02682E127E69B67BD3AE673CFFFC077E592840AAF82EB25CD73FBAFAB17"
+      }
+    ],
+    "source_peer": {
+      "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\independent-auth-source-review.json",
+      "bytes": 3964,
+      "sha256": "7FE91551FE0D6AD1B641877EB8CE07A06138E6DDF043B083CE2041AEBAC718C0"
+    },
+    "source_ready": {
+      "path": "<CONTAINER>\\evidence\\upstream-c268-native-contract-execution-prepared-v2-20261017\\source-ready.json",
+      "bytes": 1131,
+      "sha256": "D4EE5B3621CB4074C3F06F50D36086A1FDFF1F05277D532E1E28FC619D1EC8D4"
+    },
+    "grant": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218-grant.json",
+      "bytes": 1874,
+      "sha256": "629DB813199DDC542F3D6875EB9288E97AF634CCA12D7D5607344ED6ED7CA4CA"
+    },
+    "result": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\result.json",
+      "bytes": 1995,
+      "sha256": "D198F40691E156520876F58950F2295BE77D80DF0FBDE51BE9D9F4A075A4207B"
+    },
+    "commands": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\commands.json",
+      "bytes": 1596,
+      "sha256": "76759988AD55F750E3769B332603BE286D0200805FD6EF0CD238E7A2198F7AC6"
+    },
+    "phase_evidence": [
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture.json",
+        "bytes": 2398,
+        "sha256": "D0566C571ACA92820ABA2AB9C0E927D798B61BCA1CF1B922E55939AF73A4E37D"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture.stdout.bin",
+        "bytes": 49,
+        "sha256": "38C9C32440A6EC4A98D5F8E19696414A59ACD9A64819A56220B3303FB6ED2AD8"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture.stderr.log",
+        "bytes": 1171,
+        "sha256": "ED3B2CE144DD14CDA4D51425C1FE150C14F5CC6A73EE75A985144EDACE10CD6B"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture-admission.json",
+        "bytes": 266,
+        "sha256": "D31B62ED406070661C23DC94C17E0676A7FBEA9ABCC2E7F532EE4D41A8AAE3F8"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture-absence.json",
+        "bytes": 103,
+        "sha256": "BC6DD848A42470B0AEDECEB9268433BB711B5A7394612AFFB0CFAB76E6E3A490"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture-tool-artifact.json",
+        "bytes": 442,
+        "sha256": "2157A02C1E46F585D6A419ACE528CB21CD3C2361D3EF5EC6241540488323B408"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\capture-generated-output.json",
+        "bytes": 425,
+        "sha256": "2A4BF676CC5EEB8E53F5E59A898722DFA47DB2E26AAF4DB5266D5F1A8C1ED641"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify.json",
+        "bytes": 2305,
+        "sha256": "E2E877E4DA0F232A0D9AA3612BB2C5D5B51723C6F143064229E65BD76CEA2CCA"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify.stdout.bin",
+        "bytes": 48,
+        "sha256": "508428773F0A5EDD9E423238BE08D7EB63A61241BC54EC5ADC2A84430B673952"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify.stderr.log",
+        "bytes": 1129,
+        "sha256": "8E1A29095CD71AB14BC107ADF47CE160300205804C0206C4B73CFF860B6A26AF"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify-admission.json",
+        "bytes": 266,
+        "sha256": "AFA4F926A9E0E0A48FD76E3A9E6EE154A10D9A2EA41891E29B351FB44F7E8766"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify-absence.json",
+        "bytes": 103,
+        "sha256": "67E343D4D04B23ECA50665E0048ED3CE6BC503B83FB4706F3C89AB9E6632191B"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify-tool-artifact.json",
+        "bytes": 442,
+        "sha256": "2157A02C1E46F585D6A419ACE528CB21CD3C2361D3EF5EC6241540488323B408"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218\\verify-generated-output.json",
+        "bytes": 425,
+        "sha256": "2A4BF676CC5EEB8E53F5E59A898722DFA47DB2E26AAF4DB5266D5F1A8C1ED641"
+      }
+    ],
+    "external_evidence": [
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218-external53.json",
+        "bytes": 1449,
+        "sha256": "2DBBE6F511FC40519F8C29B4933366FBE11063E6798A882D4569829B5FD6E0C5"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218-external53-absence.json",
+        "bytes": 1783,
+        "sha256": "A60CA21976BAF61F967D8BBF7504E50F3513645B9767C324B97385CEE1AB22E4"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218-external53.stdout.bin",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-capture-20261017-210218-external53.stderr.log",
+        "bytes": 0,
+        "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+      }
+    ],
+    "copy_proposal": {
+      "path": "<CONTAINER>\\evidence\\root-c268-native-generator-independent-google-audit-20261017\\ready-main-copy-and-workflow-pointer-proposal.json",
+      "bytes": 1651,
+      "sha256": "7DA37D60866506E0FC3060059E9D65D4E3EEDBF5A3704FEF05756D79EC07F99C"
+    },
+    "postseal": true,
+    "errors": [],
+    "prior97195_drift": "Separate preserved negative; no old-checker rerun/result inferred",
+    "unit_tests_run": false,
+    "new_auditor_native_Node_generator_jobs": 0,
+    "Main_written": false,
+    "publication_performed": false,
+    "runtime_application_default_release_qualified": false,
+    "audit_tooling_notes": [
+      "The control list intentionally repeats three identical pins: compared as exact22-row multiset/19distinct, without silently dropping occurrences.",
+      "Zig verbose commands escape backslashes; exact rendered path was compared separately from actual owner argv. No raw evidence was changed."
+    ],
+    "limits": [
+      "Acceptance is actual native structural generator capture/verify, not semantic compatibility.",
+      "No upstream Source JS/TS program or package behavior was executed by this structural operation.",
+      "Audit read retained raw evidence, independently rehashed current Main/compiler/source/control inventories, joined output with official and local Git records, and queried only three named completed owner PIDs.",
+      "No generator/compiler/test/probe workload or process control started.",
+      "Proposal not copied/applied/committed/dispatched/published."
+    ],
+    "audit_scripts": [
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-generator-independent-google-audit-20261017\\Audit-CurrentHashes.ps1",
+        "bytes": 8382,
+        "sha256": "4BA1DADF8EE3591CF110E7FC31A15BB1BD4D99B8F9C96E2A4ACB296DC4107C4F"
+      },
+      {
+        "path": "<CONTAINER>\\evidence\\root-c268-native-generator-independent-google-audit-20261017\\Seal-AuditReceipt.ps1",
+        "bytes": 10303,
+        "sha256": "F73F598BF8C31472C3EC0C9F456FEFA9B7118CF7CF1112FD9341B5903EF790DD"
+      }
+    ]
+  }
+}

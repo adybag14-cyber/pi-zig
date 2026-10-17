@@ -1,0 +1,235 @@
+{
+  "schema": 1,
+  "source_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "target_source": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "prior_source_marker": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "scope": "human-maintained current source marker/docs +precise native generator/checker preparation; no generated inventory/catalog edit",
+  "records": [
+    {
+      "role": "human-maintained-target-marker",
+      "path": "src/config.zig",
+      "size": 6455,
+      "sha256": "B8988F38072ACD56504839C3304EB445066535413FE7C79A81B73434AAA1B3E6"
+    },
+    {
+      "role": "documentation",
+      "path": "README.md",
+      "size": 8298,
+      "sha256": "1391E1F69D5B7D62A540EBF7F8A28A7F3AE15405E033116AB78D17549C08C92C"
+    },
+    {
+      "role": "documentation",
+      "path": "UPSTREAM-UPDATE-20261003.md",
+      "size": 59702,
+      "sha256": "881D69E7153561141E851DC16C410E692C73687804386E863784EB1CCB324BE9"
+    },
+    {
+      "role": "documentation",
+      "path": "UPSTREAM_REBASE.md",
+      "size": 2543,
+      "sha256": "0FDC8B37E49787AB706FF08DECFAD33DDD45A20FA15C12CE9C5B9C8518331CE1"
+    },
+    {
+      "role": "documentation",
+      "path": "verification/upstream-contract/README.md",
+      "size": 5829,
+      "sha256": "67C13CF97DF4F928602FE6F65D86BF67E7111F80871BE1D5A28904A400500BB1"
+    },
+    {
+      "role": "prospective-audit-not-generated-inventory",
+      "path": "verification/c268-authority-docs-contracts-sourceonly-20261017/expected-delta.json",
+      "size": 222369,
+      "sha256": "1FA14224251AEBAB918BEA52C2543A392CC8C19DDBD1A0BDEF0CEEDAECA483CB"
+    },
+    {
+      "role": "prospective-audit-not-generated-inventory",
+      "path": "verification/c268-authority-docs-contracts-sourceonly-20261017/generator-plan.json",
+      "size": 6952,
+      "sha256": "94FB35C1A26E50367918EC54741AC45919C59D919B1588EC4B0434615AD36975"
+    },
+    {
+      "role": "prospective-audit-not-generated-inventory",
+      "path": "verification/c268-authority-docs-contracts-sourceonly-20261017/official-tree-8efd314f.json",
+      "size": 537688,
+      "sha256": "AB50E6CB6771384CC33D440DC648F5066016AFACD7B474CEE2FF3A9B023A0E6A"
+    },
+    {
+      "role": "prospective-audit-not-generated-inventory",
+      "path": "verification/c268-authority-docs-contracts-sourceonly-20261017/official-tree-c268154c.json",
+      "size": 540598,
+      "sha256": "1ED66A2396E6BDC58C389B798C4E2BD553A9045E92A07466A721372D29C1CEA4"
+    },
+    {
+      "role": "documentation",
+      "path": "verification/c268-authority-docs-contracts-sourceonly-20261017/README.md",
+      "size": 7283,
+      "sha256": "586BF661369BDD6D2D887CF7BC03CF9E601F2F8491DA1EEBDB3EAD7E9B03C4FF"
+    }
+  ],
+  "protected_records": [
+    {
+      "path": "tools/upstream_contract.zig",
+      "size": 9994,
+      "sha256": "0EA06389C413A1D866E9151E02CAC234DBA236B4B9638276EC252AAC9FBFFC2B"
+    },
+    {
+      "path": "tools/maintenance.zig",
+      "size": 22595,
+      "sha256": "C04B6A8BCB719721D658742DD8122BA91B8592DB250758D2A523F32513B85EF9"
+    },
+    {
+      "path": "tools/catalog.zig",
+      "size": 29255,
+      "sha256": "81AA67B5526B81AF1991B3C84ADE5634E58465E75D8936C8DFBA02AA78646EE5"
+    },
+    {
+      "path": "tools/release.zig",
+      "size": 5653,
+      "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+    },
+    {
+      "path": "build.zig",
+      "size": 348995,
+      "sha256": "C925977C62DB9E778C91C22B33C2B766491B979325810597A87C1941D008D73F"
+    },
+    {
+      "path": "build.zig.zon",
+      "size": 4296,
+      "sha256": "E44D177F205B0E18B3D6870FDEA1AC1AF374B724DD528E527B3048F9079AEF10"
+    },
+    {
+      "path": ".github/workflows/upstream-contract.yml",
+      "size": 1150,
+      "sha256": "50411E85D9EBF376C5DFE10DDB02D09BBBC26E9E92B026668DBE5D79DF72DFB0"
+    },
+    {
+      "path": "src/ai/catalog_source.json",
+      "size": 1509931,
+      "sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB"
+    },
+    {
+      "path": "src/ai/catalog_generated.zig",
+      "size": 4102035,
+      "sha256": "6B661CEFB933D9B09F5A716781DFC43FE3505E9A960B121899BDFAEE4EC59C85"
+    },
+    {
+      "path": "ARTIFACT-MANIFEST.json",
+      "size": 1392,
+      "sha256": "602E90D2A5A22EC672D69FD7CA6A25C80617A1465CD98007ABC6AE84F645A6BF"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "size": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "verification/upstream-contract/tree-04566631.json",
+      "size": 370221,
+      "sha256": "A630A7D9FB91D237FD4E7338D2F562F2272D3AE55AEDCDBB0A7E6201E8071A2E"
+    },
+    {
+      "path": "verification/upstream-contract/tree-148622bc.json",
+      "size": 372177,
+      "sha256": "E5BCB2AC61462E02A3E1E3B54D5316D347C1581AFA861966C04BBAEF1F404DA4"
+    },
+    {
+      "path": "verification/upstream-contract/tree-19cb534.json",
+      "size": 346808,
+      "sha256": "6A2C8DE7CCDADE6E275B54EA6395D22938B1EA7B4B2C9BEECC31F5D1987CE84C"
+    },
+    {
+      "path": "verification/upstream-contract/tree-28dcce2.json",
+      "size": 349910,
+      "sha256": "79BFE75ED16BDB1B3A571EB6F27649C38B9BF53F54D22EE38B6935FB1297B71A"
+    },
+    {
+      "path": "verification/upstream-contract/tree-42a3497d.json",
+      "size": 363935,
+      "sha256": "CEBAB5F68268FFE8885422C7E0F5ACEA3504188927A9428A91F89857198B83F0"
+    },
+    {
+      "path": "verification/upstream-contract/tree-7fb59f9.json",
+      "size": 353027,
+      "sha256": "D00E572513608921F1B78BC1FFABB3E2B766E49680973611E6DFFB6A98CC1573"
+    },
+    {
+      "path": "verification/upstream-contract/tree-89e5c2c0.json",
+      "size": 368144,
+      "sha256": "E54F5701D503347EC37D97DD7580D959639D3F53ACE457BC350DA195FD09AF9C"
+    },
+    {
+      "path": "verification/upstream-contract/tree-8a9c051f.json",
+      "size": 369521,
+      "sha256": "ED1A92304AE12F39D92CCFB350B75345DCE0C9FCAD62CF45AC983307AF6F301D"
+    },
+    {
+      "path": "verification/upstream-contract/tree-97195ec3.json",
+      "size": 369159,
+      "sha256": "208092AFA4F1C8FB956E7F250A4C92FD5C30A0D98D6D34F2D1F8E4DA081F75E8"
+    },
+    {
+      "path": "verification/upstream-contract/tree-eba84973.json",
+      "size": 362521,
+      "sha256": "3A7E63B3D18F2EB6517C54940A0A6119FA76EEAEE2CDA8A84AFE769480EF2F85"
+    },
+    {
+      "path": "verification/upstream-contract/tree-ee409a85.json",
+      "size": 372177,
+      "sha256": "27A12D17BE85E7B47A8A2F3E3FE748D76E63AE9408101EC32336EE05F4586A8B"
+    },
+    {
+      "path": "verification/upstream-contract/tree-f1b2e77.json",
+      "size": 356852,
+      "sha256": "7B56F7FE85765D627B61C6A9DF43C0C03F9C61A6249E18AB25C25C9753DD107A"
+    }
+  ],
+  "retained_official_authority_inputs": [
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/official-compare.json",
+      "size": 116139,
+      "sha256": "AC10B894DFEC0B6ABD23E91AFA5C8454671BDE6F919676F447EC5EA5CA3CA179"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/scope-audit.json",
+      "size": 1943,
+      "sha256": "D8D664C2DFAB843FC46D60F7023CA5F8A568900C39E89BF604D077E93A90E199"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/moved-body-audit.json",
+      "size": 1444,
+      "sha256": "54F78AB896C8B174E3EF11BC2B7E0837C03F300244A1CAFF94A0554647FB08E6"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority-manifest.json",
+      "size": 19507,
+      "sha256": "981E135E8B95B013B62ACCEE0CB6E52DDBB1E70BCAC523CA74DE73E80DA4E28E"
+    }
+  ],
+  "native_generated_contract_output_absent": true,
+  "whole_tree_inventory_modified": false,
+  "all12_existing_contracts_unchanged": true,
+  "workflow_manifest_pointer_modified": false,
+  "model_catalog_or_schema_modified": false,
+  "release_guard_modified": false,
+  "accepted_snapshots_modified": false,
+  "new_Git_checkout_created": false,
+  "jobs_run": [],
+  "native_generator_run": false,
+  "native_checker_run": false,
+  "source_tests_run": false,
+  "Zig_formatter_AST_compiler_run": false,
+  "runtime_qualified": false,
+  "parity_certified": false,
+  "release_certified": false,
+  "default_selection": false
+}

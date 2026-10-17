@@ -1,5 +1,33 @@
 # Active Pi upstream update
 
+## Current source target — c268154c, 17 October 2026
+
+The reviewed source target is Pi 1.3.0 at
+`c268154ca1171c2f9eefe75d3d7372a68aada2d5`, one commit after 8efd314f.
+The official comparison changes 25 files: Chord SQLite exports, moved portable
+drivers/migrations, Durable compatibility sources/tests, documentation and the
+root TypeScript path map. The agent, coding-agent and AI subtrees are unchanged.
+The exact Node and Cloudflare driver algorithm bodies retain their prior source
+identities; generic migrations gain their explicit metadata-table contract.
+
+Native Node, Cloudflare and portable adapter source units are intaken and
+reviewed. This marker does not certify their combined native execution, real
+filesystem/storage/ABI dependencies, default SDK selection or complete Pi parity.
+Original source observations retain their original commits and expected bytes.
+
+The native maintenance tool has captured and verified the whole-tree inventory
+against the clean detached c268 authority: 1,941 records, with zero additions,
+removals or changes on verification. The scheduled checker now selects
+`tree-c268154c.json`. Its 354,411 bytes are copied exactly from the accepted
+native output, SHA256
+`588657E89849CDF6E7162FA3729A12C1DEFFB0972264441C1CD6DE1DAC3D3773`.
+The structural proof does not certify semantic or application parity. See
+[the contract record](verification/upstream-contract/README.md); the
+[earlier preparation](verification/c268-authority-docs-contracts-sourceonly-20261017/README.md)
+retains its original prospective status and delta analysis.
+Catalog ae7/FFA3 provenance, generated schemas/catalogs, historical contracts and
+the strict release-parity guard remain unchanged. Entries below are historical.
+
 ## Current target and version alignment - 17 October 2026
 
 Status: active, incomplete migration. The accepted Source target is Pi 1.3.0

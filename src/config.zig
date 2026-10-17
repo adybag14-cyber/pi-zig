@@ -11,7 +11,8 @@ pub const version = "1.3.0";
 pub const upstream_api_version = version;
 /// Upstream Pi release whose public behavior this checkpoint targets.
 pub const upstream_version = version;
-pub const upstream_commit = "8efd314fa3d3232ce197d8d7a6a5660530b9d83e";
+/// Reviewed source target, separate from catalog provenance and runtime certification.
+pub const upstream_commit = "c268154ca1171c2f9eefe75d3d7372a68aada2d5";
 pub const upstream_package_name = "@earendil-works/pi-coding-agent";
 pub const identity = "pi (pi-zig) coding agent " ++ version;
 
