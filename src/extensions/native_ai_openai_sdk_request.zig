@@ -32,10 +32,10 @@ fn wait(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: c_int) !af.Actio
     try body.wait(scope, job, value, stage);
     return body.action(scope, job);
 }
-fn escapeFatal(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror!void {
+fn escapeFatal(engine: *v.em.Engine, err: anyerror, operation_generation: u64) anyerror!void {
     if (err == error.OutOfMemory) return err;
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        try body.rethrowRecognizedAllocation(engine, reason, generation);
+        try body.rethrowRecognizedAllocation(engine, reason, operation_generation);
         if (c.JS_IsUncatchableError(reason)) return err;
     };
 }
