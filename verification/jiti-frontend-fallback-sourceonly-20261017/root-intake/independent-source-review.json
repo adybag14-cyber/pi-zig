@@ -1,0 +1,18 @@
+{
+  "source_head": "5f3112e68cf668f3a510afef8093574a88efbec1",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "source_closed_no_remaining_blocker_in_finite_ordinary_callback_scope",
+  "product_sha256": "B2BC9291B41F6B432E887B41F23D4D36E55CDEB6852D68EF8FAD0B9CB4A35638",
+  "control_sha256": "00762D8D947D04CD670A8D9D892BE62F9A99FFA7E70F6EBDEA528D4023B40654",
+  "prepared_sha256": "6FD1029036785DE2964E739977F1AF0CD20DA30E9C3F5DE8ABD7B92DE56DAF7A",
+  "manifest_rows": 99,
+  "hash_length_drift": 0,
+  "current_event_owned_capture_and_rejected_data_guard_reviewed": true,
+  "ordinary_raw_return_and_source_debug_spread_self_order_preserved": true,
+  "prior_control_blocker": "retained capturedslot assertion corrected to actual consumedslotnull",
+  "original_52f_source_seal_retained": true,
+  "actual_subject_complete": false,
+  "controls_executed": false,
+  "expected_absent": true,
+  "default_selected": false
+}

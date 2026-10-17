@@ -1,0 +1,76 @@
+{
+  "source_head": "5f3112e68cf668f3a510afef8093574a88efbec1",
+  "public_ref": "checkpoint/jiti-frontend-fallback-sourceonly-20261017",
+  "files": [
+    {
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "bytes": 14057,
+      "sha256": "B2BC9291B41F6B432E887B41F23D4D36E55CDEB6852D68EF8FAD0B9CB4A35638",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/src/extensions/native_jiti_eval_frontend.zig"
+    },
+    {
+      "path": "src/native_jiti_frontend_fallback_controls.zig",
+      "bytes": 7618,
+      "sha256": "00762D8D947D04CD670A8D9D892BE62F9A99FFA7E70F6EBDEA528D4023B40654",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/src/native_jiti_frontend_fallback_controls.zig"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/README.md",
+      "bytes": 6029,
+      "sha256": "325B9F2ABC090EB141A6494F0950E52EBAB3EF96864CF1624DF25BEBD9CC2CE2",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/README.md"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/authority/LICENSE.txt"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/authority/eval.ts"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-52f214-prepared.json",
+      "bytes": 20727,
+      "sha256": "3DFABEC53C8428121F87277F3F99247BD176437FC09E67D10413C9B84D5C257F",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-52f214-prepared.json"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-65c-eval_frontend.zig.txt",
+      "bytes": 12432,
+      "sha256": "B8FC56E214C7E89949B623958176EFCF88C3D9F7AA94735784803EE6B9B252A4",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-65c-eval_frontend.zig.txt"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-callable-source.zig.txt",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-callable-source.zig.txt"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/causal-inputs.json",
+      "bytes": 2470,
+      "sha256": "3C277F49122C03F44930DD4476FD61AB5D2958B7E0E7F73D79B2EADA95C43BC4",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/causal-inputs.json"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/original-input.mjs",
+      "bytes": 2865,
+      "sha256": "B64F499824516695DB84F52D84BF0590A9624F8752D7A91EBA74F6CD83A902BD",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/original-input.mjs"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/prepared.json",
+      "bytes": 21122,
+      "sha256": "6FD1029036785DE2964E739977F1AF0CD20DA30E9C3F5DE8ABD7B92DE56DAF7A",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/5f3112e68cf668f3a510afef8093574a88efbec1/verification/jiti-frontend-fallback-sourceonly-20261017/prepared.json"
+    }
+  ],
+  "all_public_bytes_match": true,
+  "source_executed": false,
+  "native_executed": false,
+  "default_selected": false
+}
