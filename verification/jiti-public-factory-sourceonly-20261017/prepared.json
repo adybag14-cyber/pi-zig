@@ -20,20 +20,20 @@
     {
       "role": "product",
       "path": "src/extensions/native_jiti_public_factory.zig",
-      "size": 5419,
-      "sha256": "E2B21A05ED1A0DA28B10B3D127489F6D9C73AD35C67E900EC8582D479A557CC7"
+      "size": 7900,
+      "sha256": "37485E63272B643977C39C847F8702DC07DDB381F5164EC882972B0A5D905871"
     },
     {
       "role": "product",
       "path": "src/extensions/native_jiti_profile.zig",
-      "size": 11531,
-      "sha256": "489E536F159A749310E35B7E5BC34011AA080DE3D51211A4C53AB0AA5E797D07"
+      "size": 12109,
+      "sha256": "950E320EFADC7C463E0EFC391F2925B463BEBC1121E9EA0427BA04BD106C1DC7"
     },
     {
       "role": "control",
       "path": "src/native_jiti_public_factory_controls.zig",
-      "size": 5980,
-      "sha256": "52B4E635C29F918BD8430C82CA1EC8ED5A344069E38478C8DF16689BD14E2641"
+      "size": 14998,
+      "sha256": "BA8F8CF2A083CAE1320445317E832FE5F39D47770634CB3CBA9CE84433F48A49"
     },
     {
       "role": "control",
@@ -50,8 +50,8 @@
     {
       "role": "control",
       "path": "verification/jiti-public-factory-sourceonly-20261017/README.md",
-      "size": 8062,
-      "sha256": "8F47A666962D61916D72485A930B4FE7E9835F840E03D5EE1F2B56F4EF7C64DB"
+      "size": 9638,
+      "sha256": "84A0F5D6D22266587527D9705754B4A8F52F0E7D19B0DAA85FE12411B676B8DD"
     },
     {
       "role": "dependency",
@@ -268,6 +268,13 @@
       "path": "verification/jiti-public-factory-sourceonly-20261017/authority/qualified-graph0-binding.zig.txt",
       "size": 1247,
       "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/jiti-public-factory-sourceonly-20261017/original-7a7-prepared.json",
+      "size": 9939,
+      "sha256": "18CFA42D383591ADDEEAEFB284AB55B2CEBF34910273F527A1EDD5CE516DE2B8"
     }
-  ]
+  ],
+  "corrected_from": "7a7cbd2d5bb2ac02443ed7f56aa331171e70d328"
 }
