@@ -1131,7 +1131,6 @@ fn manifestProviderConfig(gpa: std.mem.Allocator, manifest_json: []const u8, pro
 test "extension stream adapter selects a live ModelClient and defers terminal delivery" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -1223,7 +1222,7 @@ test "extension stream adapter selects a live ModelClient and defers terminal de
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "native-stream.mjs" });
     defer gpa.free(path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try manifestProviderConfig(gpa, started.manifest_json, "native-stream");

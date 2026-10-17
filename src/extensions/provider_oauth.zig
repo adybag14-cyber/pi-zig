@@ -294,7 +294,6 @@ fn credentialExpiration(gpa: std.mem.Allocator, credential_json: []const u8) !i6
 test "extension OAuth login refresh key derivation and model projection are end to end" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     const FakeUi = struct {
         auth_actions: usize = 0,
@@ -377,7 +376,7 @@ test "extension OAuth login refresh key derivation and model projection are end 
     const source_path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "oauth.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "extension-oauth");
@@ -432,7 +431,6 @@ test "extension OAuth login refresh key derivation and model projection are end 
 test "extension OAuth login cancellation aborts the callback without persisting partial credentials" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -461,7 +459,7 @@ test "extension OAuth login cancellation aborts the callback without persisting 
     const source_path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "cancel-oauth.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 5000;
@@ -508,7 +506,6 @@ test "extension OAuth login cancellation aborts the callback without persisting 
 test "extension OAuth ignores a late noncooperative login result after native cancellation" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -535,7 +532,7 @@ test "extension OAuth ignores a late noncooperative login result after native ca
     const source_path = try std.fs.path.join(gpa, &.{ root, "late-oauth.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.oauth_login_timeout_ms = 5000;
@@ -607,7 +604,6 @@ fn providerConfigFromManifest(gpa: std.mem.Allocator, manifest_json: []const u8,
 test "extension OAuth reload routing follows the replacement registry and unregister removes ownership" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -639,10 +635,10 @@ test "extension OAuth reload routing follows the replacement registry and unregi
     const path_b = try std.fs.path.join(gpa, &.{ root, "swap-b.mjs" });
     defer gpa.free(path_b);
 
-    var started_a = try js_runtime.Runtime.start(gpa, io, path_a, "node");
+    var started_a = try js_runtime.Runtime.start(gpa, io, path_a);
     defer started_a.runtime.deinit();
     defer gpa.free(started_a.manifest_json);
-    var started_b = try js_runtime.Runtime.start(gpa, io, path_b, "node");
+    var started_b = try js_runtime.Runtime.start(gpa, io, path_b);
     defer started_b.runtime.deinit();
     defer gpa.free(started_b.manifest_json);
     const config_a = try providerConfigFromManifest(gpa, started_a.manifest_json, "swap-oauth");
@@ -681,7 +677,6 @@ test "extension OAuth reload routing follows the replacement registry and unregi
 test "cancelled extension refresh persists rotated tokens before returning to caller" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     const source =
@@ -715,7 +710,7 @@ test "cancelled extension refresh persists rotated tokens before returning to ca
     const root = root_buf[0..root_len];
     const path = try std.fs.path.join(gpa, &.{ root, "rotate.mjs" });
     defer gpa.free(path);
-    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try providerConfigFromManifest(gpa, started.manifest_json, "rotate-oauth");

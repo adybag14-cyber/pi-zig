@@ -8,6 +8,7 @@ pub fn build(b: *std.Build) void {
     const install_schemas = b.addInstallDirectory(.{ .source_dir = b.path("schemas"), .install_dir = .prefix, .install_subdir = "share/pi/schemas" });
     b.getInstallStep().dependOn(&install_schemas.step);
     const target = b.standardTargetOptions(.{});
+    const native_worker_test_path = b.getInstallPath(.bin, b.fmt("pi{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)}));
     const optimize = b.standardOptimizeOption(.{});
     // Zig 0.16's self-hosted backend is useful for large validation builds and
     // optional companions on constrained builders. Default remains Zig's
@@ -414,6 +415,8 @@ pub fn build(b: *std.Build) void {
     // Use terminal-mode runners so allocator and leak checks remain active.
     const run_mod_tests = std.Build.Step.Run.create(b, "run module tests");
     run_mod_tests.addArtifactArg(mod_tests);
+    run_mod_tests.step.dependOn(b.getInstallStep());
+    run_mod_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     // SQLite's C runtime gets a dedicated process. The full all-package test
     // executable intentionally skips only these six runtime cases; the next
     // artifact runs them together with their ABI/schema dependencies.
@@ -452,6 +455,8 @@ pub fn build(b: *std.Build) void {
     });
     const run_exe_tests = std.Build.Step.Run.create(b, "run executable tests");
     run_exe_tests.addArtifactArg(exe_tests);
+    run_exe_tests.step.dependOn(b.getInstallStep());
+    run_exe_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     const activation_tests = b.addTest(.{ .root_module = exe.root_module, .use_llvm = use_llvm, .filters = &.{"native CLI activation allocation"} });
     const run_activation_tests = b.addRunArtifact(activation_tests);
     const activation_step = b.step("test-tool-activation-atomic", "Exercise every allocation failure before native activation and schema acknowledgement");
@@ -2414,6 +2419,8 @@ pub fn build(b: *std.Build) void {
     b.step("test-sdk-session-files", "Exercise Source file session open repair persistence and allocation ownership").dependOn(&sdk_session_files_run.step);
     test_step.dependOn(&sdk_session_files_run.step);
     const run_binding_tests = b.addRunArtifact(binding_tests);
+    run_binding_tests.step.dependOn(b.getInstallStep());
+    run_binding_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     const binding_test_step = b.step("test-extension-bindings", "Test native Pi extension registrations and invocation");
     const cursor_boundary_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/cursor_boundary_test.zig"), .target = target, .optimize = optimize, .link_libc = true }),
@@ -2757,11 +2764,13 @@ pub fn build(b: *std.Build) void {
     });
     const run_native_runtime_tests = b.addRunArtifact(native_runtime_tests);
     run_native_runtime_tests.step.dependOn(b.getInstallStep());
+    run_native_runtime_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     run_native_runtime_tests.step.dependOn(&install_mcp_configured_fixture.step);
     run_native_runtime_tests.setEnvironmentVariable("PI_MCP_CONFIGURED_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-configured-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
     const typed_owner_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed provider owner"}, .use_llvm = use_llvm });
     const typed_owner_process_run = b.addRunArtifact(typed_owner_process_tests);
     typed_owner_process_run.step.dependOn(b.getInstallStep());
+    typed_owner_process_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     b.step("test-typed-provider-process", "Exercise typed callbacks over the real native owner transport without Node").dependOn(&typed_owner_process_run.step);
     test_step.dependOn(&typed_owner_process_run.step);
     const native_runtime_step = b.step("test-native-runtime", "Exercise the persistent native extension runtime and host without Node");
@@ -2770,6 +2779,7 @@ pub fn build(b: *std.Build) void {
     linkQuickJs(b, catalog_control_tests.root_module, quickjs, sqlite_lib_dir);
     linkTypeScriptParser(b, catalog_control_tests.root_module, typescript_parser);
     const catalog_control_run = b.addRunArtifact(catalog_control_tests);
+    catalog_control_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     catalog_control_run.step.dependOn(&install_mcp_configured_cli.step);
     catalog_control_run.step.dependOn(&install_mcp_configured_fixture.step);
     catalog_control_run.setEnvironmentVariable("PI_MCP_CONFIGURED_FIXTURE", b.getInstallPath(.bin, b.fmt("pi-mcp-configured-fixture{s}", .{target.result.os.tag.exeFileExt(target.result.cpu.arch)})));
@@ -2778,21 +2788,25 @@ pub fn build(b: *std.Build) void {
     const sdk_ui_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime SDK UI"}, .use_llvm = use_llvm });
     const sdk_ui_process_run = b.addRunArtifact(sdk_ui_process_tests);
     sdk_ui_process_run.step.dependOn(b.getInstallStep());
+    sdk_ui_process_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     b.step("test-sdk-ui-context-process", "Replay actual SDK UI service identity rebinding mode and prompt events").dependOn(&sdk_ui_process_run.step);
     test_step.dependOn(&sdk_ui_process_run.step);
     const typed_main_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed Main"}, .use_llvm = use_llvm });
     const typed_main_process_run = b.addRunArtifact(typed_main_process_tests);
     typed_main_process_run.step.dependOn(b.getInstallStep());
+    typed_main_process_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     b.step("test-typed-main-process", "Exercise actual Main typed registry and classifier/image/native callbacks without Node").dependOn(&typed_main_process_run.step);
     test_step.dependOn(&typed_main_process_run.step);
     const typed_ticket_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime typed tickets"}, .use_llvm = use_llvm });
     const typed_ticket_process_run = b.addRunArtifact(typed_ticket_process_tests);
     typed_ticket_process_run.step.dependOn(b.getInstallStep());
+    typed_ticket_process_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     b.step("test-native-ticket-process", "Prove four real callback admissions with isolated snapshots and individual abort").dependOn(&typed_ticket_process_run.step);
     test_step.dependOn(&typed_ticket_process_run.step);
     const catalog_control_process_tests = b.addTest(.{ .root_module = native_runtime_tests.root_module, .filters = &.{"native runtime private catalog control"}, .use_llvm = use_llvm });
     const catalog_control_process_run = b.addRunArtifact(catalog_control_process_tests);
     catalog_control_process_run.step.dependOn(b.getInstallStep());
+    catalog_control_process_run.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     b.step("test-native-catalog-control-process", "Prove private catalog FIFO acknowledgement and rollback on a real native worker").dependOn(&catalog_control_process_run.step);
     test_step.dependOn(&catalog_control_process_run.step);
     const late_registration_tests = b.addTest(.{
@@ -2802,6 +2816,7 @@ pub fn build(b: *std.Build) void {
     });
     const run_late_registration_tests = b.addRunArtifact(late_registration_tests);
     run_late_registration_tests.step.dependOn(b.getInstallStep());
+    run_late_registration_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     const late_registration_step = b.step("test-native-late-registration", "Prove late native registrations, atomic metadata allocation failures and live CLI discovery");
     late_registration_step.dependOn(&run_late_registration_tests.step);
     test_step.dependOn(&run_late_registration_tests.step);
@@ -2812,6 +2827,7 @@ pub fn build(b: *std.Build) void {
     });
     const run_selection_tests = b.addRunArtifact(selection_tests);
     run_selection_tests.step.dependOn(b.getInstallStep());
+    run_selection_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     const selection_step = b.step("test-tool-selection-process", "Replay source tool loadouts and registration transitions in the actual native CLI without Node");
     selection_step.dependOn(&run_selection_tests.step);
     test_step.dependOn(&run_selection_tests.step);
@@ -2822,6 +2838,7 @@ pub fn build(b: *std.Build) void {
     });
     const run_custom_editor_runtime_tests = b.addRunArtifact(custom_editor_runtime_tests);
     run_custom_editor_runtime_tests.step.dependOn(b.getInstallStep());
+    run_custom_editor_runtime_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     const custom_editor_runtime_step = b.step("test-custom-editor-runtime", "Exercise original upstream modal editor input through a real native worker");
     custom_editor_runtime_step.dependOn(&run_custom_editor_runtime_tests.step);
     test_step.dependOn(&run_native_runtime_tests.step);
@@ -3244,6 +3261,8 @@ pub fn build(b: *std.Build) void {
         .filters = &.{ "extensions.provider_", "extensions.models_store", "auth.storage" },
     });
     const run_provider_contract_tests = b.addRunArtifact(provider_contract_tests);
+    run_provider_contract_tests.step.dependOn(b.getInstallStep());
+    run_provider_contract_tests.setEnvironmentVariable("PI_NATIVE_TEST_EXECUTABLE", native_worker_test_path);
     // The provider module also discovers imported durable shell tests. Their
     // subprocess executable must be installed in this runner's environment.
     run_provider_contract_tests.step.dependOn(&install_durable_fixture.step);

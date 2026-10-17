@@ -1362,7 +1362,6 @@ test "extension provider partial re-registration shallow merges and unregister r
 test "provider registry invokes OAuth methods through the owning persistent worker" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -1387,7 +1386,7 @@ test "provider registry invokes OAuth methods through the owning persistent work
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "oauth-worker.mjs" });
     defer gpa.free(path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try testManifestProviderConfig(gpa, started.manifest_json, "oauth-worker");
@@ -1441,7 +1440,6 @@ test "provider registry invokes OAuth methods through the owning persistent work
 test "provider callback ownership remains distinct when separate workers emit colliding IDs" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -1470,10 +1468,10 @@ test "provider callback ownership remains distinct when separate workers emit co
     const path_two = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "worker-two.mjs" });
     defer gpa.free(path_two);
 
-    var first = try js_runtime.Runtime.start(gpa, io, path_one, "node");
+    var first = try js_runtime.Runtime.start(gpa, io, path_one);
     defer first.runtime.deinit();
     defer gpa.free(first.manifest_json);
-    var second = try js_runtime.Runtime.start(gpa, io, path_two, "node");
+    var second = try js_runtime.Runtime.start(gpa, io, path_two);
     defer second.runtime.deinit();
     defer gpa.free(second.manifest_json);
     const first_config = try testManifestProviderConfig(gpa, first.manifest_json, "collision-provider");
@@ -1508,7 +1506,6 @@ test "provider callback ownership remains distinct when separate workers emit co
 test "provider registry routes streamSimple to its exact persistent callback owner" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -1541,7 +1538,7 @@ test "provider registry routes streamSimple to its exact persistent callback own
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "registry-stream.mjs" });
     defer gpa.free(path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try testManifestProviderConfig(gpa, started.manifest_json, "registry-stream");
@@ -1617,7 +1614,6 @@ test "provider registry routes streamSimple to its exact persistent callback own
 test "object-form provider filterModels receives credential and owns its callback generation" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -1643,7 +1639,7 @@ test "object-form provider filterModels receives credential and owns its callbac
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "object-filter.mjs" });
     defer gpa.free(path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const config_json = try testManifestProviderConfig(gpa, started.manifest_json, "object-filter");

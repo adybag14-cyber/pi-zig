@@ -11,6 +11,29 @@ const provider_stream_mod = @import("extensions/provider_stream.zig");
 const component_protocol = @import("extensions/component_protocol.zig");
 const renderer_protocol = @import("extensions/renderer_protocol.zig");
 
+test "native runtime CLI rejects removed legacy selector before starting workers" {
+    const gpa = std.testing.allocator;
+    const io = std.testing.io;
+    var fixture = try Fixture.init();
+    defer fixture.deinit();
+    try fixture.environment.put("PI_EXTENSION_BACKEND", "legacy");
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
+    const result = try std.process.run(gpa, io, .{
+        .argv = &.{ fixture.executable, "--version" },
+        .cwd = .{ .path = fixture.root },
+        .environ_map = &fixture.environment,
+        .stdout_limit = .limited(4096),
+        .stderr_limit = .limited(4096),
+        .timeout = .{ .duration = .{ .raw = .fromSeconds(10), .clock = .awake } },
+    });
+    defer gpa.free(result.stdout);
+    defer gpa.free(result.stderr);
+    try std.testing.expect(result.term == .exited and result.term.exited != 0);
+    try std.testing.expect(std.mem.indexOf(u8, result.stderr, "PI_EXTENSION_BACKEND must be native (or unset).") != null);
+    try std.testing.expectEqual(@as(usize, 0), result.stdout.len);
+    try fixture.noBridge();
+}
+
 const editor_protocol = @import("extensions/editor_protocol.zig");
 test "native runtime SDK UI stale event keeps a separately retained genuine Main UI service without SDK fallback" {
     const gpa = std.testing.allocator;
@@ -839,7 +862,8 @@ test "native runtime cached ThemeState survives actual worker callbacks repeated
     const io = std.testing.io;
     var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('theme-retain',{handler(_,ctx){globalThis.savedTheme=ctx.ui.theme;globalThis.savedColors=savedTheme.colors;return {message:savedTheme.name+'|'+savedTheme.getColorMode()+'|'+savedTheme.getFgAnsi('accent')}}});pi.registerCommand('theme-probe',{handler(_,ctx){if(ctx.ui.theme!==savedTheme)throw Error('proxy identity');return {message:savedTheme.name+'|'+savedTheme.getColorMode()+'|'+savedTheme.getFgAnsi('accent')+'|'+(savedTheme.colors===savedColors)}}})}");
     defer fixture.deinit();
-    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
     defer host.deinit();
     try host.loadPath(fixture.source_path);
     var controller = try ui_mod.Controller.init(gpa, io, true, 100);
@@ -877,7 +901,8 @@ test "native runtime context invalidation control progresses during shutdown cal
     const io = std.testing.io;
     var fixture = try Fixture.initSource("export default pi=>{pi.registerCommand('retain',{handler(_,ctx){globalThis.oldCtx=ctx;globalThis.oldRegistry=ctx.modelRegistry;return {message:ctx.cwd}}});pi.registerCommand('probe',{handler(_,ctx){let stale;try{oldCtx.cwd;stale='live'}catch(error){if(!(error instanceof Error)||error.name!=='Error')throw Error('stale Error kind');stale=error.message}let registry;try{oldRegistry.getAll();registry='live'}catch(error){registry=error.message}return {message:stale+'|'+registry+'|'+ctx.cwd}}});pi.on('session_before_switch',()=>({cancel:true}));pi.on('session_shutdown',async(_,ctx)=>{globalThis.shutdownCtx=ctx;await ctx.ui.select('shutdown-hold',['release']);let message;try{ctx.cwd;message='wrong-live'}catch(error){if(!(error instanceof Error)||error.name!=='Error')throw Error('shutdown Error kind');message=error.message}return {message}})}");
     defer fixture.deinit();
-    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
     defer host.deinit();
     try host.loadPath(fixture.source_path);
     try host.setScriptContextJson("{\"mode\":\"interactive\",\"hasUI\":true,\"cwd\":\"old-session\"}");
@@ -2591,7 +2616,7 @@ pub const Fixture = struct {
         errdefer gpa.free(root);
         const source_path = try std.fs.path.join(gpa, &.{ root, "extensions", "native.ts" });
         errdefer gpa.free(source_path);
-        const executable = try @import("test_support/pty.zig").executablePath(gpa, io, if (builtin.os.tag == .windows) "zig-out/bin/pi.exe" else "zig-out/bin/pi");
+        const executable = try @import("test_support/native_worker.zig").executablePath(gpa, io);
         errdefer gpa.free(executable);
         var environment: std.process.Environ.Map = .init(gpa);
         errdefer environment.deinit();
@@ -2666,7 +2691,8 @@ test "native runtime uses standalone pipes for hooks tools provider callbacks li
     defer gpa.free(started.manifest_json);
     const runtime = started.runtime;
     try std.testing.expectEqual(runtime_mod.Backend.native, runtime.backend);
-    try std.testing.expectEqual(@as(usize, 0), runtime.bridge_path.len);
+    try std.testing.expect(!@hasField(runtime_mod.Runtime, "bridge_path"));
+    try std.testing.expect(!@hasField(runtime_mod.Runtime, "node_program"));
     try fixture.noBridge();
     try runtime.setContextJson("{\"cwd\":\"native-cwd\",\"sessionId\":\"runtime-session\",\"settings\":{\"marker\":\"native-setting\"}}");
     const hook = try runtime.invokeHook("native_hook", "{\"value\":\"input\"}", "{}");
@@ -2718,11 +2744,12 @@ test "native runtime uses standalone pipes for hooks tools provider callbacks li
     try fixture.noBridge();
 }
 
-test "native runtime Host discovery explicitly selects native backend and forwards context and live updates" {
+test "native runtime Host discovery defaults to native and forwards context and live updates" {
     const gpa = std.testing.allocator;
     var fixture = try Fixture.init();
     defer fixture.deinit();
-    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "intentionally-missing-node" };
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
+    var host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io, .native_runtime_options = fixture.options() };
     defer host.deinit();
     try host.setScriptContextJson("{\"cwd\":\"host-cwd\",\"sessionId\":\"host-session\",\"settings\":{\"marker\":\"host-setting\"}}");
     try host.discover(fixture.root, fixture.root, false);
@@ -2746,7 +2773,7 @@ test "native runtime Host discovery explicitly selects native backend and forwar
     try std.testing.expectEqualStrings("native:pi-zig-host:1", reused.content);
     try fixture.noBridge();
     const default_host: host_mod.Host = .{ .gpa = gpa, .io = std.testing.io };
-    try std.testing.expectEqual(runtime_mod.Backend.legacy, default_host.script_backend);
+    try std.testing.expectEqual(runtime_mod.Backend.native, default_host.script_backend);
 }
 
 test "native runtime timeout retires and reaps only its owned native child" {
@@ -3203,7 +3230,8 @@ test "native runtime late Host admits late tools commands schema and renderer re
     const io = std.testing.io;
     var fixture = try Fixture.initSource("export default pi=>{pi.registerTool({name:'same',description:'old',parameters:{type:'object'},execute(){return {content:'old'}}});pi.registerCommand('seed',{handler(){pi.registerCommand('late',{description:'late description',argumentHint:'input',handler(){return {message:'late-visible'}}});pi.registerTool({name:'late-tool',defaultActive:false,parameters:{type:'object'},execute(){return {content:'late-tool-visible'}}});pi.registerTool({name:'same',description:'new',defaultActive:false,parameters:{type:'object',required:['new']},renderCall(){return {render(){return ['new-rendered']}}},execute(){return {content:'new'}}});return {message:'seed-visible'}}});pi.registerCommand('reject',{handler(){pi.registerCommand('after-throw',{handler(){return {message:'throw-visible'}}});pi.registerTool({name:'throw-tool',parameters:{type:'object'},execute(){return {content:'throw-tool-visible'}}});throw Error('registration-primary-throw')}});pi.registerCommand('schedule',{handler(){setTimeout(()=>{pi.registerCommand('timer-command',{handler(){return {message:'timer-visible'}}});pi.registerTool({name:'timer-tool',parameters:{type:'object'},execute(){return {content:'timer-tool-visible'}}})},20);return {message:'scheduled'}}})}");
     defer fixture.deinit();
-    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options(), .js_runtime_program = "missing-node" };
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
+    var host: host_mod.Host = .{ .gpa = gpa, .io = io, .script_backend = .native, .native_runtime_options = fixture.options() };
     defer host.deinit();
     try host.loadPath(fixture.source_path);
     const view = host.extensions.items[0].script_runtime.?;
@@ -3287,7 +3315,7 @@ test "native runtime late Host collision aliases and tool winners retain source 
     try std.testing.expectEqualStrings("first", parsed.value.array.items[0].object.get("function").?.object.get("description").?.string);
 }
 
-test "native runtime late actual CLI seed then command and agent mock invoke without Node or shell on PATH" {
+test "native runtime default actual CLI seed then command and agent mock invoke without Node or shell on PATH" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
     var fixture = try Fixture.initSource("export default pi=>pi.registerCommand('seed',{handler(){pi.registerCommand('late',{handler(){return {message:'late-cli-visible'}}});pi.registerTool({name:'late-tool',parameters:{type:'object'},execute(){pi.appendEntry('late-tool-entry',{proof:'late-tool-cli-visible'});return {content:'late-tool-cli-visible'}}});return {message:'seed-cli-visible'}}})");
@@ -3307,7 +3335,8 @@ test "native runtime late actual CLI seed then command and agent mock invoke wit
     try fixture.environment.put("PI_AGENT_DIR", agent);
     try fixture.environment.put("HOME", home);
     try fixture.environment.put("USERPROFILE", home);
-    try fixture.environment.put("PI_EXTENSION_BACKEND", "native");
+    try std.testing.expect(fixture.environment.get("PI_EXTENSION_BACKEND") == null);
+    try fixture.environment.put("PI_JS_RUNTIME", "intentionally-missing-node");
     try fixture.environment.put("PI_SKIP_VERSION_CHECK", "1");
     try fixture.environment.put("PI_TELEMETRY", "0");
     const result = try std.process.run(gpa, io, .{

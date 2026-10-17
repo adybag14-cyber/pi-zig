@@ -1,0 +1,183 @@
+{
+  "baseline": "14775669ca4ad1155957114fec9bdd40b659ca3c",
+  "status": "unselected-source-only-native-production-host-migration-uncompiled-unrun-review-pending",
+  "Main_changed": false,
+  "C_H_Engine_changed": false,
+  "default_activated": false,
+  "selected_or_intaken": false,
+  "release_or_hosted_job": false,
+  "runtime_executed": false,
+  "Node_source_jobs": false,
+  "skip_guards_removed": 37,
+  "old_tests_retained": 165,
+  "current_tests": 167,
+  "expected_or_Source_golden_changed": false,
+  "test_worker_selector": "PI_NATIVE_TEST_EXECUTABLE supplied by installed-artifact build runners; production branch does not read it",
+  "retired_host": {
+    "old_path": "src/extensions/js_bridge.mjs",
+    "new_path": "verification/native-only-production-host-sourceonly-20261017/retired-host-source/js_bridge.mjs.txt",
+    "baseline_blob": "8fb93a9647dfcd94dc076aad160417641fb0bcd6",
+    "current_blob": "8fb93a9647dfcd94dc076aad160417641fb0bcd6",
+    "byte_identical": true,
+    "upstream_authority": false,
+    "production_referenced": false
+  },
+  "products": [
+    {
+      "path": "build.zig",
+      "sha256": "349CFD53D5C3F38C32B9CA98AF95E3659B990D013DB928746A8314E93EB1B4EA",
+      "bytes": 349116
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "6FB8A5B3D3DE724A220C9C6F30BA897CEE0B56FBC5C9D79476752065ADE6B847",
+      "bytes": 455602
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "E697577500629CD7DC5CEA5F541B4646A0A8540427B0D99A5FA58CD23759F7C9",
+      "bytes": 169934
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "9DB0C6328B370522DE5B0A725FF1DDCA42C740B443C62CB49210221B362082E7",
+      "bytes": 247446
+    },
+    {
+      "path": "src/coding_agent/slash.zig",
+      "sha256": "BB5D84FCF1FBCA9AEE20050054DC73FE982844668B08DD6A9ACEA5B627F2B3F2",
+      "bytes": 141127
+    },
+    {
+      "path": "src/extensions/provider_models.zig",
+      "sha256": "2A49AFB2D15E05CDD6C0084CD9ABD0004DEE4AB350A94B48D1E1F53A3D6359B1",
+      "bytes": 48652
+    },
+    {
+      "path": "src/extensions/provider_oauth.zig",
+      "sha256": "5C0F400C25EB7D7165FEB08B4406FB8706D7FF12C5B7791149D454E787514F65",
+      "bytes": 38342
+    },
+    {
+      "path": "src/extensions/provider_registry.zig",
+      "sha256": "94E7A41382ABE8E17BC3A8A266B65FE92F994CE1CCD173399DD8976E8B23A77E",
+      "bytes": 81555
+    },
+    {
+      "path": "src/extensions/provider_stream.zig",
+      "sha256": "18C8FABD28476B4A3BAA87D448364945129906855AB32570D91634F18BACB9D3",
+      "bytes": 71710
+    },
+    {
+      "path": "src/native_runtime_process_test.zig",
+      "sha256": "FA63F7B1E818BD56D762964DA91F8FE1528DA287CCF1C0D0138C474BFDBC2B2A",
+      "bytes": 250253
+    },
+    {
+      "path": "src/test_support/native_worker.zig",
+      "sha256": "47C0EE295246B14D94ED2AAECB1B7DA71B6BA139BC4770E992F350424BA4EC5C",
+      "bytes": 599
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "bytes": 125917
+    },
+    {
+      "path": "src/extensions/native_physical_stdio.zig",
+      "sha256": "B71548FB0FBBC18BBBDCB551A69BEE284BCBB2BF3099CCB8AE760BDF25E4EE5C",
+      "bytes": 25194
+    },
+    {
+      "path": "src/extensions/process_stream_parent.zig",
+      "sha256": "BAA993A3FBE1442E614714EAABF9422F073194B3EA149C4FA0E5AE92A20A0457",
+      "bytes": 13396
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "sha256": "4690317E1B5CD9AC028BBBA232A1CFC99B6A1ED82B2F2ECFD12BC7C60A620FFB",
+      "bytes": 2325
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "sha256": "66BFB9D9437390A00CCC68537945C65A703A6DB9BF09240FE91817405CF4DFA1",
+      "bytes": 11751
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "sha256": "245926CB542A7E95977FFEB501139C001FE29C01826EFD28AF42CFB93AF706C2",
+      "bytes": 10081
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E",
+      "bytes": 3920
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "DFBB82AFFFCE0C27561B07893C131A23D2688DE1A59C771E67E92EA30858E2FE",
+      "bytes": 6554
+    },
+    {
+      "path": ".github/workflows/release.yml",
+      "sha256": "1331B71D26E130CACFACFF737D301D37D059E04E1FEF244E302162023C831BCA",
+      "bytes": 6160
+    },
+    {
+      "path": "FILES.sha256",
+      "sha256": "4EBA9F69BA391FB5439A0E3078264C2FCCAEC2A5F7F637B18857748ACBBDCAFA",
+      "bytes": 699178
+    },
+    {
+      "path": "ARTIFACT-MANIFEST.json",
+      "sha256": "602E90D2A5A22EC672D69FD7CA6A25C80617A1465CD98007ABC6AE84F645A6BF",
+      "bytes": 1392
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/native-only-production-host-sourceonly-20261017/README.md",
+      "sha256": "FF8923CB0402D1C4E3939BF57A0B38134A0C67ADA33E7A53935FC8F686F57388",
+      "bytes": 5351
+    },
+    {
+      "path": "verification/native-only-production-host-sourceonly-20261017/ACTIVATION-GATES.md",
+      "sha256": "7BCBEAFFE78CCAF5C1415DFCF1C08956D722CF6BFF0D4CC1E1843F79DBA3EB5A",
+      "bytes": 6990
+    },
+    {
+      "path": "verification/native-only-production-host-sourceonly-20261017/test-inventory.json",
+      "sha256": "78DE0A662275171956617A9BD1EF82339E68F56F4F5FD2A1BA128257BB0A5B54",
+      "bytes": 1967
+    },
+    {
+      "path": "verification/native-only-production-host-sourceonly-20261017/retired-host-source/js_bridge.mjs.txt",
+      "sha256": "CFFA41AB761495D4A3EAFBD92AC64EF8B96FA1B0DEAD8203A472EFEE6345C1CF",
+      "bytes": 91705
+    }
+  ],
+  "activation_gates": "ACTIVATION-GATES.md",
+  "job_grant": false
+}

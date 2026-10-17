@@ -2549,7 +2549,6 @@ const RuntimeResourceReloadContext = struct {
         var new_host = extensions.Host{
             .gpa = gpa,
             .io = self.io,
-            .js_runtime_program = self.environ.get("PI_JS_RUNTIME") orelse "node",
             .script_ui_bridge = self.ui.bridge(),
             .script_backend = self.host.script_backend,
             .footer_models_context = self.host.footer_models_context,
@@ -3239,9 +3238,8 @@ pub fn main(init: std.process.Init) !u8 {
 }
 
 fn parseExtensionBackend(value: ?[]const u8) !extensions.js_runtime.Backend {
-    const selected = value orelse return .legacy;
+    const selected = value orelse return .native;
     if (std.mem.eql(u8, selected, "native")) return .native;
-    if (std.mem.eql(u8, selected, "legacy")) return .legacy;
     return error.InvalidExtensionBackend;
 }
 
@@ -3328,11 +3326,12 @@ fn selectTerminalTheme(producer: *extensions.terminal_theme_producer.Producer, r
     try producer.select(resource, identity);
 }
 
-test "production extension backend selector defaults legacy and rejects unknown values" {
-    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend(null));
-    try std.testing.expectEqual(extensions.js_runtime.Backend.legacy, try parseExtensionBackend("legacy"));
+test "production extension backend defaults native and rejects removed or malformed selectors" {
+    try std.testing.expectEqual(extensions.js_runtime.Backend.native, try parseExtensionBackend(null));
+    try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend("legacy"));
     try std.testing.expectEqual(extensions.js_runtime.Backend.native, try parseExtensionBackend("native"));
     try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend("unknown"));
+    for ([_][]const u8{ "", "node", "Native", "native ", " native", "LEGACY" }) |invalid| try std.testing.expectError(error.InvalidExtensionBackend, parseExtensionBackend(invalid));
 }
 
 fn runMain(init: std.process.Init, exit_code: *u8) !void {
@@ -3341,7 +3340,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
     var io = init.io;
     const environ: *const std.process.Environ.Map = init.environ_map;
     const extension_backend = parseExtensionBackend(environ.get("PI_EXTENSION_BACKEND")) catch |err| {
-        try Io.File.stderr().writeStreamingAll(io, "PI_EXTENSION_BACKEND must be native or legacy.\n");
+        try Io.File.stderr().writeStreamingAll(io, "PI_EXTENSION_BACKEND must be native (or unset).\n");
         return err;
     };
 
@@ -4022,7 +4021,6 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
     var extension_host = extensions.Host{
         .gpa = gpa,
         .io = io,
-        .js_runtime_program = environ.get("PI_JS_RUNTIME") orelse "node",
         .script_ui_bridge = extension_ui.bridge(),
         .script_backend = extension_backend,
         .native_runtime_options = .{ .executable = native_extension_executable, .environ_map = environ, .process_bridge = if (physical_stdio) |hub| hub.bridge() else null, .application_fatal = std.mem.eql(u8, extension_mode, "tui") },

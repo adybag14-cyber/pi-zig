@@ -1,0 +1,74 @@
+[
+  {
+    "path": "src/main.zig",
+    "original_tests": 15,
+    "current_tests": 15,
+    "removed_Node_skip_guards": 0,
+    "original_assertion_calls": 76,
+    "current_assertion_calls": 77
+  },
+  {
+    "path": "src/extensions/host.zig",
+    "original_tests": 24,
+    "current_tests": 24,
+    "removed_Node_skip_guards": 8,
+    "original_assertion_calls": 156,
+    "current_assertion_calls": 156
+  },
+  {
+    "path": "src/extensions/js_runtime.zig",
+    "original_tests": 26,
+    "current_tests": 27,
+    "removed_Node_skip_guards": 16,
+    "original_assertion_calls": 149,
+    "current_assertion_calls": 155
+  },
+  {
+    "path": "src/coding_agent/slash.zig",
+    "original_tests": 11,
+    "current_tests": 11,
+    "removed_Node_skip_guards": 1,
+    "original_assertion_calls": 74,
+    "current_assertion_calls": 74
+  },
+  {
+    "path": "src/extensions/provider_models.zig",
+    "original_tests": 4,
+    "current_tests": 4,
+    "removed_Node_skip_guards": 2,
+    "original_assertion_calls": 43,
+    "current_assertion_calls": 43
+  },
+  {
+    "path": "src/extensions/provider_oauth.zig",
+    "original_tests": 5,
+    "current_tests": 5,
+    "removed_Node_skip_guards": 5,
+    "original_assertion_calls": 40,
+    "current_assertion_calls": 40
+  },
+  {
+    "path": "src/extensions/provider_registry.zig",
+    "original_tests": 6,
+    "current_tests": 6,
+    "removed_Node_skip_guards": 4,
+    "original_assertion_calls": 42,
+    "current_assertion_calls": 42
+  },
+  {
+    "path": "src/extensions/provider_stream.zig",
+    "original_tests": 2,
+    "current_tests": 2,
+    "removed_Node_skip_guards": 1,
+    "original_assertion_calls": 50,
+    "current_assertion_calls": 50
+  },
+  {
+    "path": "src/native_runtime_process_test.zig",
+    "original_tests": 72,
+    "current_tests": 73,
+    "removed_Node_skip_guards": 0,
+    "original_assertion_calls": 496,
+    "current_assertion_calls": 501
+  }
+]

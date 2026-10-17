@@ -1,7 +1,6 @@
-//! Persistent compatibility runtime for upstream JavaScript and TypeScript
-//! extensions. The Zig host owns discovery, lifecycle, validation, limits and
-//! agent integration. The legacy backend executes extension input through
-//! Node; the explicit native backend uses the standalone Zig/C worker.
+//! Persistent native runtime for user JavaScript and TypeScript extensions.
+//! The Zig host owns discovery, lifecycle, validation, limits and agent
+//! integration; the standalone Zig/C worker executes extension input.
 const std = @import("std");
 const Io = std.Io;
 const component_protocol = @import("component_protocol.zig");
@@ -37,9 +36,7 @@ pub const TerminalInputResult = struct { data: []u8, consume: bool };
 pub const TerminalInputBridge = struct { context: ?*anyopaque, input_fn: *const fn (?*anyopaque, []const u8) anyerror!TerminalInputResult };
 const actions_mod = @import("actions.zig");
 
-const bridge_source = @embedFile("js_bridge.mjs");
 const record_prefix: u8 = 0x1e;
-var bridge_temp_counter: std.atomic.Value(u64) = .init(1);
 var native_owner_generation: std.atomic.Value(u64) = .init(1);
 var native_process_generation: std.atomic.Value(u64) = .init(1);
 
@@ -55,7 +52,7 @@ pub const EditorBridge = struct {
     closed_fn: *const fn (?*anyopaque, u64) anyerror!void,
 };
 
-pub const Backend = enum { legacy, native };
+pub const Backend = enum { native };
 pub const NativeModelLease = struct { generation: u64, runtime_id: u64 };
 pub const NativeModelOperation = enum { query, classify, generate_images };
 pub fn validateNativeModelReply(gpa: std.mem.Allocator, bytes: []const u8, lease: NativeModelLease, request_id: u64) !void {
@@ -63,39 +60,6 @@ pub fn validateNativeModelReply(gpa: std.mem.Allocator, bytes: []const u8, lease
     const header = std.json.parseFromSlice(Header, gpa, bytes, .{ .ignore_unknown_fields = true }) catch |cause| return if (cause == error.OutOfMemory) cause else error.InvalidNativeModelBridgeResponse;
     defer header.deinit();
     if (header.value.version != 1 or header.value.requestId != request_id or header.value.generation != lease.generation or header.value.runtimeId != lease.runtime_id) return error.InvalidNativeModelBridgeResponse;
-}
-
-fn privateFilePermissions() std.Io.File.Permissions {
-    if (@hasDecl(std.Io.File.Permissions, "fromMode")) return std.Io.File.Permissions.fromMode(0o600);
-    return .default_file;
-}
-
-fn materializeBridge(gpa: std.mem.Allocator, io: Io, source_path: []const u8) ![]u8 {
-    const parent = std.fs.path.dirname(source_path) orelse ".";
-    const source_hash = std.hash.Wyhash.hash(0, source_path);
-    var attempts: usize = 0;
-    while (attempts < 32) : (attempts += 1) {
-        const sequence = bridge_temp_counter.fetchAdd(1, .monotonic);
-        const name = try std.fmt.allocPrint(gpa, ".pi-zig-js-bridge-{x}-{x}.mjs", .{ source_hash, sequence });
-        defer gpa.free(name);
-        const path = try std.fs.path.join(gpa, &.{ parent, name });
-        errdefer gpa.free(path);
-        const file = std.Io.Dir.cwd().createFile(io, path, .{
-            .exclusive = true,
-            .permissions = privateFilePermissions(),
-        }) catch |err| switch (err) {
-            error.PathAlreadyExists => {
-                gpa.free(path);
-                continue;
-            },
-            else => return err,
-        };
-        errdefer std.Io.Dir.cwd().deleteFile(io, path) catch {};
-        defer file.close(io);
-        try file.writePositionalAll(io, bridge_source, 0);
-        return path;
-    }
-    return error.TemporaryBridgeNameExhausted;
 }
 
 /// Host-owned bridge for interactive extension UI. Request callbacks return an
@@ -970,9 +934,7 @@ pub const Runtime = struct {
     io: Io,
     child: std.process.Child,
     source_path: []u8,
-    node_program: []u8,
-    bridge_path: []u8,
-    backend: Backend = .legacy,
+    backend: Backend = .native,
     native_group: bool = false,
     shared_owner: ?*Runtime = null,
     extension_id: u64 = 1,
@@ -1064,8 +1026,8 @@ pub const Runtime = struct {
     pub const RendererBridge = RendererBridgeAdapter;
 
     pub const NativeOptions = struct {
-        // Null selects this running standalone executable. Tests/embedders can
-        // explicitly select an installed pi binary instead of the test runner.
+        // Null selects this running standalone executable in production. Tests
+        // receive the exact installed artifact from their owning build runner.
         executable: ?[]const u8 = null,
         environ_map: ?*const std.process.Environ.Map = null,
         /// Group workers admit this object before evaluating extension input.
@@ -1076,17 +1038,12 @@ pub const Runtime = struct {
         application_fatal: bool = false,
     };
 
-    pub fn start(
-        gpa: std.mem.Allocator,
-        io: Io,
-        source_path: []const u8,
-        node_program: []const u8,
-    ) !Started {
-        return startSpawned(try spawnRuntime(gpa, io, source_path, node_program));
+    /// Start one actual native worker. No production runtime selector can
+    /// materialize JavaScript host code or resolve an external Node program.
+    pub fn start(gpa: std.mem.Allocator, io: Io, source_path: []const u8) !Started {
+        return startNative(gpa, io, source_path, .{});
     }
 
-    /// Start the directly linked worker without creating bridge source or
-    /// resolving Node. This remains explicit until its complete API is gated.
     pub fn startNative(gpa: std.mem.Allocator, io: Io, source_path: []const u8, options: NativeOptions) !Started {
         return startSpawned(try spawnNativeRuntime(gpa, io, source_path, options));
     }
@@ -1160,14 +1117,8 @@ pub const Runtime = struct {
         if (!grouped and options.process_bridge != null) return error.NativeProcessBridgeRequiresGroup;
         const owned_source = try gpa.dupe(u8, source_path);
         errdefer gpa.free(owned_source);
-        const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else blk: {
-            const executable = try std.process.executablePathAlloc(io, gpa);
-            defer gpa.free(executable);
-            break :blk try gpa.dupe(u8, executable);
-        };
-        errdefer gpa.free(owned_program);
-        const owned_bridge = try gpa.dupe(u8, "");
-        errdefer gpa.free(owned_bridge);
+        const owned_program = if (options.executable) |program| try gpa.dupe(u8, program) else try defaultNativeExecutable(gpa, io);
+        defer gpa.free(owned_program);
         const single_args = [_][]const u8{ owned_program, "--internal-native-extension-worker", owned_source };
         const group_args = [_][]const u8{ owned_program, "--internal-native-extension-group-worker" };
         var child = try std.process.spawn(io, .{
@@ -1182,7 +1133,7 @@ pub const Runtime = struct {
         // Reuse the bounded native termination path on every setup failure.
         errdefer terminateChild(&child, io);
         const runtime = try gpa.create(Runtime);
-        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .node_program = owned_program, .bridge_path = owned_bridge, .backend = .native, .native_group = grouped };
+        runtime.* = .{ .gpa = gpa, .io = io, .child = child, .source_path = owned_source, .backend = .native, .native_group = grouped };
         return runtime;
     }
 
@@ -1336,64 +1287,10 @@ pub const Runtime = struct {
         if (!self.native_group or self.shared_owner != null or id == 0 or id > 9_007_199_254_740_991) return error.InvalidNativeExtensionGroup;
         const source = try self.gpa.dupe(u8, source_path);
         errdefer self.gpa.free(source);
-        const program = try self.gpa.dupe(u8, self.node_program);
-        errdefer self.gpa.free(program);
-        const bridge = try self.gpa.dupe(u8, "");
-        errdefer self.gpa.free(bridge);
         const view = try self.gpa.create(Runtime);
-        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .node_program = program, .bridge_path = bridge, .backend = .native, .shared_owner = self, .extension_id = id, .owner_generation = self.owner_generation };
+        view.* = .{ .gpa = self.gpa, .io = self.io, .child = self.child, .source_path = source, .backend = .native, .shared_owner = self, .extension_id = id, .owner_generation = self.owner_generation };
         _ = self.group_references.fetchAdd(1, .monotonic);
         return view;
-    }
-
-    fn spawnRuntime(
-        gpa: std.mem.Allocator,
-        io: Io,
-        source_path: []const u8,
-        node_program: []const u8,
-    ) !*Runtime {
-        const owned_source = try gpa.dupe(u8, source_path);
-        errdefer gpa.free(owned_source);
-        const owned_node = try gpa.dupe(u8, node_program);
-        errdefer gpa.free(owned_node);
-        const owned_bridge = try materializeBridge(gpa, io, source_path);
-        errdefer {
-            std.Io.Dir.cwd().deleteFile(io, owned_bridge) catch {};
-            gpa.free(owned_bridge);
-        }
-
-        const argv = [_][]const u8{
-            owned_node,
-            "--no-warnings",
-            "--experimental-strip-types",
-            "--experimental-transform-types",
-            owned_bridge,
-            owned_source,
-        };
-        var child = std.process.spawn(io, .{
-            .argv = &argv,
-            .stdin = .pipe,
-            .stdout = .pipe,
-            // Extension diagnostics remain visible and cannot fill an unread
-            // pipe. Protocol records stay isolated on stdout by a record byte.
-            .stderr = .inherit,
-        }) catch |err| switch (err) {
-            error.FileNotFound => return error.JavaScriptRuntimeNotFound,
-            else => return err,
-        };
-        errdefer child.kill(io);
-
-        const runtime = try gpa.create(Runtime);
-        errdefer gpa.destroy(runtime);
-        runtime.* = .{
-            .gpa = gpa,
-            .io = io,
-            .child = child,
-            .source_path = owned_source,
-            .node_program = owned_node,
-            .bridge_path = owned_bridge,
-        };
-        return runtime;
     }
 
     pub fn deinit(self: *Runtime) void {
@@ -1403,8 +1300,6 @@ pub const Runtime = struct {
             if (self.last_owner_error) |message| self.gpa.free(message);
             if (self.context_json) |context| self.gpa.free(context);
             self.gpa.free(self.source_path);
-            self.gpa.free(self.node_program);
-            self.gpa.free(self.bridge_path);
             const gpa = self.gpa;
             gpa.destroy(self);
             owner.deinit();
@@ -1461,9 +1356,6 @@ pub const Runtime = struct {
         if (self.fatal_latch) |*latch| latch.deinit();
         if (self.context_json) |context| self.gpa.free(context);
         self.gpa.free(self.source_path);
-        self.gpa.free(self.node_program);
-        if (self.backend == .legacy) std.Io.Dir.cwd().deleteFile(self.io, self.bridge_path) catch {};
-        self.gpa.free(self.bridge_path);
         const gpa = self.gpa;
         self.* = undefined;
         gpa.destroy(self);
@@ -3438,13 +3330,13 @@ fn wireInvocationId(value: std.json.Value) !u64 {
     };
 }
 
-test "native model owner transport host rejects unsupported invalid and closed registry requests before IO" {
-    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .closed = true };
+test "native-only model owner transport rejects invalid leases requests and closed registry before IO" {
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .backend = .native, .closed = true };
     try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 0, .runtime_id = 1 }, .query, "{}", null, null));
     try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "[]", null, null));
     try std.testing.expectError(error.JavaScriptExtensionClosed, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{\"method\":\"getModelsOfType\",\"args\":[\"chat\"]}", null, null));
-    runtime.backend = .legacy;
-    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 1 }, .query, "{}", null, null));
+    try std.testing.expectEqual(Backend.native, runtime.backend);
+    try std.testing.expectError(error.InvalidNativeModelBridgeRequest, runtime.invokeNativeModelBridge(.{ .generation = 41, .runtime_id = 0 }, .query, "{}", null, null));
 }
 test "native main context model responses require exact version request and registry identities including full uint64" {
     const gpa = std.testing.allocator;
@@ -3489,6 +3381,23 @@ pub fn isScriptPath(path: []const u8) bool {
         if (path.len >= extension.len and std.ascii.eqlIgnoreCase(path[path.len - extension.len ..], extension)) return true;
     }
     return false;
+}
+
+fn defaultNativeExecutable(gpa: std.mem.Allocator, io: Io) ![]u8 {
+    if (comptime @import("builtin").is_test) {
+        return @import("../test_support/native_worker.zig").executablePath(gpa, io);
+    }
+    return std.process.executablePathAlloc(io, gpa);
+}
+
+test "native runtime has no production Node launcher storage or bridge materializer" {
+    try std.testing.expectEqual(@as(usize, 1), @typeInfo(Backend).@"enum".fields.len);
+    try std.testing.expect(!@hasField(Runtime, "node_program"));
+    try std.testing.expect(!@hasField(Runtime, "bridge_path"));
+    try std.testing.expect(!@hasDecl(Runtime, "spawnRuntime"));
+    const executable = try defaultNativeExecutable(std.testing.allocator, std.testing.io);
+    defer std.testing.allocator.free(executable);
+    try std.testing.expect(std.fs.path.isAbsolute(executable));
 }
 
 fn valueAtTestPath(root: std.json.Value, path: []const u8) !std.json.Value {
@@ -3568,20 +3477,6 @@ fn providerActionCallbackId(
     return error.TestProviderActionNotFound;
 }
 
-pub fn nodeAvailable(gpa: std.mem.Allocator, io: Io) bool {
-    const result = std.process.run(gpa, io, .{
-        .argv = &.{ "node", "--version" },
-        .stdout_limit = .limited(4096),
-        .stderr_limit = .limited(4096),
-    }) catch return false;
-    defer gpa.free(result.stdout);
-    defer gpa.free(result.stderr);
-    return switch (result.term) {
-        .exited => |code| code == 0,
-        else => false,
-    };
-}
-
 test "script path recognition" {
     try std.testing.expect(isScriptPath("hello.ts"));
     try std.testing.expect(isScriptPath("hello.MJS"));
@@ -3592,7 +3487,6 @@ test "script path recognition" {
 test "persistent TypeScript compatibility runtime registers and executes upstream-shaped APIs" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3616,7 +3510,7 @@ test "persistent TypeScript compatibility runtime registers and executes upstrea
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "extension.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     try std.testing.expect(std.mem.indexOf(u8, started.manifest_json, "\"hello\"") != null);
@@ -3645,7 +3539,6 @@ test "persistent TypeScript compatibility runtime registers and executes upstrea
 test "provider methods use the production manifest bridge with ownership re-registration errors cancellation and cleanup" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3693,7 +3586,7 @@ test "provider methods use the production manifest bridge with ownership re-regi
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "provider-methods.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 5000;
@@ -3795,7 +3688,6 @@ test "provider methods use the production manifest bridge with ownership re-regi
 test "provider OAuth login uses a human interaction timeout distinct from ordinary callbacks" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3820,7 +3712,7 @@ test "provider OAuth login uses a human interaction timeout distinct from ordina
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "timeout-oauth.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 10;
@@ -3837,7 +3729,6 @@ test "provider OAuth login uses a human interaction timeout distinct from ordina
 test "command and shortcut contexts expose reload as an ordered native action" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3853,7 +3744,7 @@ test "command and shortcut contexts expose reload as an ordered native action" {
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "reload.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
 
@@ -3866,10 +3757,9 @@ test "command and shortcut contexts expose reload as an ordered native action" {
     try std.testing.expect(std.mem.indexOf(u8, shortcut, "\"type\":\"reload\"") != null);
 }
 
-test "TypeScript package entrypoints below node_modules bypass Node stripping restriction" {
+test "native TypeScript package entrypoints execute below node_modules" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3897,7 +3787,7 @@ test "TypeScript package entrypoints below node_modules bypass Node stripping re
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "node_modules", "package-155", "index.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     try std.testing.expect(std.mem.indexOf(u8, started.manifest_json, "\"package155\"") != null);
@@ -3909,7 +3799,6 @@ test "TypeScript package entrypoints below node_modules bypass Node stripping re
 test "JavaScript runtime ignores ordinary stdout before protocol records" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3925,7 +3814,7 @@ test "JavaScript runtime ignores ordinary stdout before protocol records" {
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "noise.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const result = try started.runtime.invokeCommand("noise", "", "{}");
@@ -3936,7 +3825,6 @@ test "JavaScript runtime ignores ordinary stdout before protocol records" {
 test "hung JavaScript extension invocation is terminated at the runtime deadline" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3951,7 +3839,7 @@ test "hung JavaScript extension invocation is terminated at the runtime deadline
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "hang.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 100;
@@ -3962,7 +3850,6 @@ test "hung JavaScript extension invocation is terminated at the runtime deadline
 test "runtime teardown force-reaps extensions that ignore SIGTERM" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3978,7 +3865,7 @@ test "runtime teardown force-reaps extensions that ignore SIGTERM" {
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "ignore-term.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer gpa.free(started.manifest_json);
     const result = try started.runtime.invokeCommand("ready", "", "{}");
     defer gpa.free(result);
@@ -3989,7 +3876,6 @@ test "runtime teardown force-reaps extensions that ignore SIGTERM" {
 test "script tool receives exact call ID and live AbortSignal" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4016,7 +3902,7 @@ test "script tool receives exact call ID and live AbortSignal" {
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "abort.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 5000;
@@ -4079,7 +3965,6 @@ test "script tool receives exact call ID and live AbortSignal" {
 test "lifecycle hook context receives live abort signal and worker remains reusable" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4102,7 +3987,7 @@ test "lifecycle hook context receives live abort signal and worker remains reusa
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "hook-abort.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.timeout_ms = 5000;
@@ -4134,7 +4019,6 @@ test "lifecycle hook context receives live abort signal and worker remains reusa
 test "script UI requests round-trip through native bridge and retain synchronous actions" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     const FakeUi = struct {
         request_count: usize = 0,
@@ -4198,7 +4082,7 @@ test "script UI requests round-trip through native bridge and retain synchronous
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "ui.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     var fake = FakeUi{};
@@ -4221,7 +4105,6 @@ test "script UI requests round-trip through native bridge and retain synchronous
 test "streaming tool updates arrive before the JavaScript promise resolves" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4247,7 +4130,7 @@ test "streaming tool updates arrive before the JavaScript promise resolves" {
     const marker_path = try std.fs.path.join(gpa, &.{ root_buf[0..root_len], "resolved.marker" });
     defer gpa.free(marker_path);
 
-    var started = try Runtime.start(gpa, io, source_path, "node");
+    var started = try Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
 
@@ -4291,7 +4174,6 @@ test "streaming tool updates arrive before the JavaScript promise resolves" {
 test "reload invalidates the producing command context and quarantines later actions" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4312,7 +4194,7 @@ test "reload invalidates the producing command context and quarantines later act
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "reload-stale.ts" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
 
@@ -4328,7 +4210,6 @@ test "reload invalidates the producing command context and quarantines later act
 test "provider streamSimple crosses the persistent worker with ordered acknowledgements" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4366,7 +4247,7 @@ test "provider streamSimple crosses the persistent worker with ordered acknowled
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "provider-stream.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const stream_id = try providerManifestCallbackId(gpa, started.manifest_json, "native-stream", "streamSimple");
@@ -4435,7 +4316,6 @@ test "provider streamSimple crosses the persistent worker with ordered acknowled
 test "provider stream generation retirement drains cooperative iterators and preserves worker reuse" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4464,7 +4344,7 @@ test "provider stream generation retirement drains cooperative iterators and pre
     const path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "retire-provider.mjs" });
     defer gpa.free(path);
 
-    var started = try Runtime.start(gpa, io, path, "node");
+    var started = try Runtime.start(gpa, io, path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const stream_id = try providerManifestCallbackId(gpa, started.manifest_json, "retire-provider", "streamSimple");
@@ -4522,7 +4402,6 @@ test "provider stream generation retirement drains cooperative iterators and pre
 test "provider stream retirement force-closes only the worker whose iterator ignores return" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -4556,10 +4435,10 @@ test "provider stream retirement force-closes only the worker whose iterator ign
     const healthy_path = try std.fs.path.join(gpa, &.{ path_buf[0..root_len], "healthy-worker.mjs" });
     defer gpa.free(healthy_path);
 
-    var hostile = try Runtime.start(gpa, io, hostile_path, "node");
+    var hostile = try Runtime.start(gpa, io, hostile_path);
     defer hostile.runtime.deinit();
     defer gpa.free(hostile.manifest_json);
-    var healthy = try Runtime.start(gpa, io, healthy_path, "node");
+    var healthy = try Runtime.start(gpa, io, healthy_path);
     defer healthy.runtime.deinit();
     defer gpa.free(healthy.manifest_json);
     const stream_id = try providerManifestCallbackId(gpa, hostile.manifest_json, "hostile-provider", "streamSimple");
@@ -4622,7 +4501,7 @@ test "native process stdio factory startup raw envelope independently validates 
 }
 
 test "native process stdio factory startup raw envelope rejects malformed records without nested metadata dispatch" {
-    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .backend = .native, .owner_generation = 42 };
     defer {
         for (runtime.metadata_records.items) |record| record.deinit();
         runtime.metadata_records.deinit(std.heap.page_allocator);
@@ -4635,7 +4514,7 @@ test "native process stdio factory startup raw envelope rejects malformed record
 }
 
 test "native runtime late metadata FIFO rejects stale owners and revisions without invocation mutex reentry" {
-    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .backend = .native, .owner_generation = 42 };
     defer {
         for (runtime.metadata_records.items) |record| record.deinit();
         runtime.metadata_records.deinit(std.heap.page_allocator);
@@ -4663,7 +4542,7 @@ test "native runtime late metadata FIFO rejects stale owners and revisions witho
 }
 
 test "native application fatal runtime preserves opaque ordinary UTF16 and ignores nested fatal types" {
-    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .backend = .native, .owner_generation = 42 };
     runtime.fatal_latch = .{ .lease = .{ .owner_generation = 42, .secret = .{0x31} ** 32 } };
     defer runtime.fatal_latch.?.deinit();
     try std.testing.expect(!try runtime.dispatchFatalRecord("{\"ok\":true,\"result\":{\"type\":\"native_fatal\",\"key\":\"\\ud800\"}}"));
@@ -4674,7 +4553,7 @@ test "native application fatal runtime preserves opaque ordinary UTF16 and ignor
 
 test "native application fatal runtime authenticates owner and retains diagnostic only after restoration ACK" {
     const lease: fatal_protocol.Lease = .{ .owner_generation = 42, .secret = .{0x31} ** 32 };
-    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42 };
+    var runtime: Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source"), .backend = .native, .owner_generation = 42 };
     runtime.fatal_latch = .{ .lease = lease };
     defer runtime.fatal_latch.?.deinit();
     var output: Io.Writer.Allocating = .init(std.testing.allocator);

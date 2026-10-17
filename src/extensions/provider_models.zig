@@ -732,7 +732,6 @@ fn testCatalogModel(registry: *const provider_registry.Registry, provider_id: []
 test "extension provider models restore cache refresh credentials persist and survive reload" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -777,7 +776,7 @@ test "extension provider models restore cache refresh credentials persist and su
     const source_path = try std.fs.path.join(gpa, &.{ root, "provider-models.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const dynamic_config = try testProviderConfigFromManifest(gpa, started.manifest_json, "dynamic-183");
@@ -943,7 +942,6 @@ test "extension provider models reject stale publication generations transaction
 test "extension provider model refresh abort leaves catalog and persistence unchanged" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -972,7 +970,7 @@ test "extension provider model refresh abort leaves catalog and persistence unch
     const source_path = try std.fs.path.join(gpa, &.{ root, "abort-models.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     started.runtime.models_refresh_timeout_ms = 5000;

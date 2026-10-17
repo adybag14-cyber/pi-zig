@@ -417,12 +417,9 @@ pub const Host = struct {
     hook_timeout_seconds: i64 = 15,
     max_stdout_bytes: usize = 1024 * 1024,
     max_stderr_bytes: usize = 64 * 1024,
-    /// Program used for upstream JavaScript/TypeScript extension execution.
-    /// The default resolves through PATH and can be replaced by embedders.
-    js_runtime_program: []const u8 = "node",
-    // Internal/embedder selection. Production keeps the legacy backend until
-    // the complete native extension API has passed its compatibility gates.
-    script_backend: js_runtime.Backend = .legacy,
+    // Native-only host marker. The prepared migration is not activated until
+    // its real extension/application and hosted parity gates are accepted.
+    script_backend: js_runtime.Backend = .native,
     native_runtime_options: js_runtime.Runtime.NativeOptions = .{},
     /// Shared native UI bridge and invocation-context snapshot propagated to
     /// every persistent script worker, including workers loaded later.
@@ -855,23 +852,7 @@ pub const Host = struct {
     }
 
     fn loadScript(self: *Host, source_path: []const u8) !void {
-        if (self.script_backend == .native) return self.loadNativeGroupSource(source_path);
-        var started = try switch (self.script_backend) {
-            .legacy => js_runtime.Runtime.start(self.gpa, self.io, source_path, self.js_runtime_program),
-            .native => js_runtime.Runtime.startNative(self.gpa, self.io, source_path, self.native_runtime_options),
-        };
-        errdefer started.runtime.deinit();
-        started.runtime.timeout_ms = if (self.hook_timeout_seconds <= 0)
-            0
-        else
-            @as(u64, @intCast(self.hook_timeout_seconds)) *| 1000;
-        started.runtime.setUiBridge(self.script_ui_bridge);
-        if (self.script_context_json) |context| try started.runtime.setContextJson(context);
-        defer self.gpa.free(started.manifest_json);
-        const previous_len = self.extensions.items.len;
-        try self.loadJson(started.manifest_json, std.fs.path.dirname(source_path) orelse ".");
-        if (self.extensions.items.len != previous_len + 1) return error.InvalidJavaScriptExtensionHandshake;
-        self.extensions.items[previous_len].script_runtime = started.runtime;
+        return self.loadNativeGroupSource(source_path);
     }
 
     fn loadNativeGroupSource(self: *Host, source_path: []const u8) !void {
@@ -2948,7 +2929,6 @@ test "extension command names are unique and command output is validated" {
 test "JavaScript package manifest declares multiple extension entries ahead of index" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -2989,7 +2969,6 @@ test "JavaScript package manifest declares multiple extension entries ahead of i
 test "failed JavaScript extension factory leaves no tool provider or host residue" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3032,7 +3011,6 @@ test "failed JavaScript extension factory leaves no tool provider or host residu
 test "JavaScript registerFlag rejects a mismatched default inside the factory" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
     try tmp.dir.writeFile(io, .{ .sub_path = "flags.ts", .data =
@@ -3058,7 +3036,6 @@ test "JavaScript registerFlag rejects a mismatched default inside the factory" {
 test "explicit extension directory scans direct scripts and one-level packages" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3092,7 +3069,6 @@ test "explicit extension directory scans direct scripts and one-level packages" 
 test "JavaScript renderers retain original component and tool state semantics" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3181,24 +3157,9 @@ test "JavaScript renderers retain original component and tool state semantics" {
     try std.testing.expectError(error.InvalidMarkdownMessageType, host.transformMarkdown("x", "tool", false, 72));
 }
 
-fn jsRuntimeAvailable(gpa: std.mem.Allocator, io: Io) bool {
-    const result = std.process.run(gpa, io, .{
-        .argv = &.{ "node", "--version" },
-        .stdout_limit = .limited(4096),
-        .stderr_limit = .limited(4096),
-    }) catch return false;
-    defer gpa.free(result.stdout);
-    defer gpa.free(result.stderr);
-    return switch (result.term) {
-        .exited => |code| code == 0,
-        else => false,
-    };
-}
-
 test "JavaScript tools retain ordered partial updates details and images" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3299,7 +3260,6 @@ test "JavaScript tools retain ordered partial updates details and images" {
 test "JavaScript host forwards live updates before resolution and retains observer replay" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3368,7 +3328,6 @@ test "JavaScript host forwards live updates before resolution and retains observ
 test "JavaScript extension prepareArguments transforms raw tool input" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!jsRuntimeAvailable(gpa, io)) return error.SkipZigTest;
 
     var tmp = std.testing.tmpDir(.{});
     defer tmp.cleanup();
@@ -3460,7 +3419,7 @@ test "native runtime late metadata manifest replacement is atomic under every al
             // attributing frees of unrelated setup allocations to this sweep.
             try appendInitial(&host, gpa, "{\"name\":\"old\",\"tools\":[{\"name\":\"same\",\"description\":\"old\",\"parameters\":{\"type\":\"object\"}}],\"commands\":[{\"name\":\"old\"}]}");
             try appendInitial(&host, gpa, "{\"name\":\"second-old\",\"commands\":[{\"name\":\"second-old\"}]}");
-            var runtime: js_runtime.Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .node_program = @constCast(""), .bridge_path = @constCast(""), .backend = .native, .owner_generation = 42, .extension_id = 7, .closed = true };
+            var runtime: js_runtime.Runtime = .{ .gpa = std.testing.allocator, .io = std.testing.io, .child = undefined, .source_path = @constCast("source.mjs"), .backend = .native, .owner_generation = 42, .extension_id = 7, .closed = true };
             host.extensions.items[0].script_runtime = &runtime;
             defer host.extensions.items[0].script_runtime = null;
             var second_runtime = runtime;

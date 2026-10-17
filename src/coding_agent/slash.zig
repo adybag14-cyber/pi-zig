@@ -2622,7 +2622,6 @@ fn testExtensionProviderConfigFromManifest(
 test "slash login executes extension OAuth and persists complete credentials" {
     const gpa = std.testing.allocator;
     const io = std.testing.io;
-    if (!js_runtime.nodeAvailable(gpa, io)) return error.SkipZigTest;
     tui_render.setSilent(true);
     defer tui_render.setSilent(false);
 
@@ -2648,7 +2647,7 @@ test "slash login executes extension OAuth and persists complete credentials" {
     const source_path = try std.fs.path.join(gpa, &.{ root, "slash-oauth.mjs" });
     defer gpa.free(source_path);
 
-    var started = try js_runtime.Runtime.start(gpa, io, source_path, "node");
+    var started = try js_runtime.Runtime.start(gpa, io, source_path);
     defer started.runtime.deinit();
     defer gpa.free(started.manifest_json);
     const ProviderRegistry = @import("../extensions/provider_registry.zig").Registry;
