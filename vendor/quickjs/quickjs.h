@@ -1358,6 +1358,16 @@ JS_EXTERN void JS_SetModuleNormalizeFunc2(JSRuntime *rt,
 JS_EXTERN JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSValue JS_GetModuleNamespace(JSContext *ctx, JSModuleDef *m);
+/* Actual declaration/binding preparation only; no load, resolve, body evaluation
+   or job pumping. Borrowed compiled module must belong to the live owner-thread
+   context and every static dependency must already be resolved. The host MUST
+   attest a capture-only native Error-stack owner and trusted nonreentrant
+   interrupt callback; no graph mutation/context disposal or guest formatting is
+   permitted during this synchronous call. Strict CallSite visibility is required.
+   Zero succeeds; -1 preserves the actual pending reason. Any entry pending reason
+   is refused unchanged. Failed fresh environments are restored; already linked
+   SCCs and healthy dependencies are retained. Not a require(esm) policy API. */
+JS_EXTERN int JS_PiLinkModuleGraph(JSContext *ctx, JSValueConst compiled_module);
 
 /* associate a JSValue to a C module */
 JS_EXTERN int JS_SetModulePrivateValue(JSContext *ctx, JSModuleDef *m, JSValue val);

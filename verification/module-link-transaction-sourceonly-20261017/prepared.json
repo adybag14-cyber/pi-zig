@@ -1,0 +1,135 @@
+{
+  "status": "source-only-combined-C-candidate-awaiting-independent-review",
+  "product_commit": "87a8bcec0ce27487e5181398fd1cc9e1cf8322e0",
+  "base_callsite_source_commit": "328eab6e4536eec1632edfef47ab376440b5ac45",
+  "qualified_C3_base": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "design_source_commit": "67cff4f14dfb90d628588a6d157f79db500f9fc2",
+  "primitive": "JS_PiLinkModuleGraph",
+  "installed_build_target": "build-native-module-link-transaction",
+  "named_declarations": [
+    "module link transaction prepares declarations without body evaluation jobs or synthetic namespace result",
+    "module link transaction leaves syntactically unreachable TLA body unexecuted while preparing real bindings",
+    "module link transaction accepts healthy evaluated dependency without replacing namespace or cells",
+    "module link transaction repeated ordinary missing binding preserves completed fresh dependency SCC",
+    "module link transaction ambiguous export remains genuine binding error before TLA policy or body",
+    "module link transaction genuine cycles and diamonds resolve once without invoking loader during preparation",
+    "module link transaction refuses malformed and foreign tokens before dereference and permits subsequent healthy use",
+    "module link transaction incoming actual pending ordinary and fatal reasons remain identical before admission or polling",
+    "module link transaction missing capture-only owner refuses without invoking eager guest prepareStackTrace",
+    "module link transaction native capture success with pending reason stops before further capture and preserves exact object",
+    "module link transaction real native Error stack owner defers guest formatting until host reads stack after return",
+    "module link transaction actual allocator sweep covers partial native cells namespace failure undo and ordinary evaluation retry",
+    "module link transaction actual allocator sweep covers parent then later script child creation and declaration closures",
+    "module link transaction actual allocator sweep covers numeric empty astral and BMP namespace keys and property construction",
+    "module link transaction actual allocator sweep retires failed cyclic namespace environments before retry",
+    "module link transaction actual partial native cell allocation failures permit ordinary default evaluator retry",
+    "module link transaction actual later script child creation failures permit ordinary default evaluator retry",
+    "module link transaction actual namespace allocation failures permit ordinary default evaluator retry",
+    "module link transaction actual cyclic namespace allocation failures permit ordinary default evaluator retry",
+    "module link transaction actual prologue interruption retains private frames across GC undo and API retry",
+    "module link transaction actual prologue interruption permits ordinary default evaluator retry after undo",
+    "module link transaction actual prologue success with pending native reason is not mistaken for prepared success",
+    "module link transaction genuinely unresolved deserialized root is refused then resolves and retries through public API",
+    "module link transaction refuses active native Error owner rather than reentering module preparation",
+    "module link transaction real Engine cancellation during charged graph preparation leaves clean reusable state"
+  ],
+  "compiled_metadata_count": null,
+  "compiler_AST_parser_formatter_Node_native_generator_jobs": false,
+  "Main_C_H_Engine_edits": false,
+  "default_selection": false,
+  "require_esm_caller": false,
+  "public_ABI": "one additive function; context/ledger fields private, no Engine or serialized guard",
+  "native_fault_controls": "actual custom VM allocator host/arena events, measured baseline then one-shot positions; no every-logical-small-cell claim",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 342597,
+      "sha256": "498331B619E1F6A1C0158C6461A07055C821D457F36B661131DA61462293DF5A",
+      "git_blob": "fcc86eabe86fedf8e81339bd52f3c88a8198087e"
+    },
+    {
+      "path": "src/native_module_link_allocator_controls.c",
+      "bytes": 12772,
+      "sha256": "6775E594E8E0D0D2D50579933241BE62B052CD1BE246FE4BC1D0F3B85033C2C5",
+      "git_blob": "c425cde3572e5bbd352b9335cf2eb44d1afdea40"
+    },
+    {
+      "path": "src/native_module_link_transaction_test.zig",
+      "bytes": 27350,
+      "sha256": "8C4AA2F7FA5C77184401148897CA23B48C6A835153D0A347DCCB0A36AB0AECE9",
+      "git_blob": "2f59de8d7db3e2eb93b973b1709808b1a32fef7d"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "bytes": 4305,
+      "sha256": "B005CEB1F0837C585DD319DCD9EAA2E7D7E371AA9BC8D80A1523F15C33752FAE",
+      "git_blob": "acd75071fe7a0fece7bcb09789e8f3eaadd037df"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "bytes": 14986,
+      "sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "git_blob": "8b1ab9986e566cf4027500a5b10471b78791671c"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2233294,
+      "sha256": "338836E7F8B41502D2BAB1CB091CE09E342B5762487B503D376518AB093FA562",
+      "git_blob": "3efd0f7beeef7d24ba61dda4e50317e70d12c7da"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77027,
+      "sha256": "1EAC5B3AB75B5898ECC0F056CEEBB0048FD626A2E82CCCD7AA17A5B0387E685B",
+      "git_blob": "5faf59e3a173e4485828900980bc30ff150a8485"
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/INCOMPLETE-CHECKPOINT.md",
+      "bytes": 689,
+      "sha256": "D0695570DAD79F8B0F9D1FD6F36A0E858D71D7E7FEFD0AF01818FE57A0C39338",
+      "git_blob": "24309a56539f6f13d5891415d6a2599e4f259338"
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/README.md",
+      "bytes": 8164,
+      "sha256": "B363F7ECFA80BFE918ED01B0A7A46A5122625D71A668763795745A66B6337DE5",
+      "git_blob": "dbdacc3c53dee9f7e77242d7d1602eff14f525d2"
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/REVIEWED-DESIGN.md",
+      "bytes": 16700,
+      "sha256": "4A8F7F9BFA179FFBA016505EBF2FB8EC05480A58C3591A74BE37570AF876FDD7",
+      "git_blob": "6ff8cabc192f92499f5f6874df28fe80597585fa"
+    }
+  ],
+  "unchanged_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "unchanged_since_base": true,
+      "git_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41"
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "bytes": 25360,
+      "sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+      "unchanged_since_base": true,
+      "git_blob": "1bb3736bbc93c73dfe7d9cbcbe4b45142728e894"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "bytes": 1544,
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "unchanged_since_base": true,
+      "git_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "bytes": 7528,
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "unchanged_since_base": true,
+      "git_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b"
+    }
+  ]
+}

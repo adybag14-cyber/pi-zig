@@ -627,6 +627,7 @@ struct JSContext {
     int interrupt_counter;
 
     struct list_head loaded_modules; /* list of JSModuleDef.link */
+    bool pi_link_preparing; /* private, synchronous link transaction only */
 
     /* if NULL, RegExp compilation is not supported */
     JSValue (*compile_regexp)(JSContext *ctx, JSValueConst pattern,
@@ -1606,6 +1607,14 @@ static void js_callsite_release_receiver(JSContext *ctx, JSStackFrame *sf)
         JS_FreeValue(ctx, JS_GetException(ctx));
         JS_Throw(ctx, saved);
     }
+}
+
+static JSValue js_pi_link_failure_free(JSContext *ctx, JSValue owned)
+{
+    JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+    JS_FreeValue(ctx, owned);
+    JS_FreeValue(ctx, JS_GetException(ctx));
+    return JS_Throw(ctx, first);
 }
 
 static JSValue js_call_c_function_data(JSContext *ctx, JSValueConst func_obj,
@@ -3011,6 +3020,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_stack_trace_limit = js_int32(10);
     ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
     init_list_head(&ctx->loaded_modules);
+    ctx->pi_link_preparing = false;
     // TODO(bnoordhuis) use getrandom() etc.
     ctx->random_state = rt->pi_deterministic_time
         ? (uint64_t)rt->pi_deterministic_seed + 1
@@ -6601,6 +6611,21 @@ JSValue JS_NewObject(JSContext *ctx)
 static void js_function_set_properties(JSContext *ctx, JSValue func_obj,
                                        JSAtom name, int len)
 {
+    if (ctx->pi_link_preparing) {
+        JSValue text;
+        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
+                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
+            return;
+        text = JS_AtomToString(ctx, name);
+        if (JS_IsException(text) || JS_HasException(ctx)) {
+            js_pi_link_failure_free(ctx, text);
+            return;
+        }
+        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,
+                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
+            return;
+        return;
+    }
     /* ES6 feature non compatible with ES5.1: length is configurable */
     JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
                            JS_PROP_CONFIGURABLE);
@@ -8450,6 +8475,10 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
                                        line, column, flags,
                                        rt->native_error_stack_opaque);
     rt->native_error_stack_hook_active = false;
+    if (ctx->pi_link_preparing && JS_HasException(ctx)) {
+        js_pi_link_failure_free(ctx, saved);
+        return -1;
+    }
     if (result >= 0) {
         JS_FreeValue(ctx, JS_GetException(ctx));
         JS_Throw(ctx, saved);
@@ -8709,8 +8738,21 @@ static int capture_error_stack(JSContext *ctx, JSValueConst error,
 JSValue JS_NewError(JSContext *ctx)
 {
     JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
+        return js_pi_link_failure_free(ctx, obj);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
+    if (ctx->pi_link_preparing) {
+        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 ||
+            JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        return obj;
+    }
     if (prepare_native_error_stack(ctx, obj) < 0 ||
         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
                                 NULL, 0, 0, 0) < 0 ||
@@ -8732,27 +8774,54 @@ static JSValue JS_MakeError2(JSContext *ctx, JSErrorEnum error_num,
         obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],
                                      JS_CLASS_ERROR);
     }
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
+        return js_pi_link_failure_free(ctx, obj);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
-    if (prepare_native_error_stack(ctx, obj) < 0 ||
+    if (ctx->pi_link_preparing) {
+        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+    } else if (prepare_native_error_stack(ctx, obj) < 0 ||
         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
                                 NULL, 0, 0, 0) < 0) {
+        if (ctx->pi_link_preparing)
+            return js_pi_link_failure_free(ctx, obj);
         JS_FreeValue(ctx, obj);
         return JS_EXCEPTION;
     }
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return js_pi_link_failure_free(ctx, obj);
     msg = JS_NewString(ctx, message);
+    if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        JS_FreeValue(ctx, msg);
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     if (JS_IsException(msg))
         msg = JS_NewString(ctx, "Invalid error message");
     if (!JS_IsException(msg)) {
-        JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
-                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
+                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {
+            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+            JS_FreeValue(ctx, obj);
+            return JS_Throw(ctx, first);
+        }
     }
     if (add_backtrace || ctx->rt->native_error_stack_hook) {
         if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {
+            if (ctx->pi_link_preparing)
+                return js_pi_link_failure_free(ctx, obj);
             JS_FreeValue(ctx, obj);
             return JS_EXCEPTION;
         }
     }
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return js_pi_link_failure_free(ctx, obj);
     return obj;
 }
 
@@ -8774,6 +8843,11 @@ JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,
     JSValue obj;
 
     obj = JS_MakeError(ctx, error_num, add_backtrace, fmt, ap);
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     if (unlikely(JS_IsException(obj))) {
         /* out of memory: throw JS_NULL to avoid recursing */
         obj = JS_NULL;
@@ -9018,6 +9092,26 @@ static inline __exception int js_poll_interrupts(JSContext *ctx)
     } else {
         return 0;
     }
+}
+
+static int js_pi_link_poll(JSContext *ctx)
+{
+    if (!ctx->pi_link_preparing)
+        return 0;
+    if (JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx))
+        return -1;
+    return 0;
+}
+
+static int js_pi_link_recursion(JSContext *ctx)
+{
+    if (js_pi_link_poll(ctx))
+        return -1;
+    if (ctx->pi_link_preparing && js_check_stack_overflow(ctx->rt, 0)) {
+        JS_ThrowStackOverflow(ctx);
+        return -1;
+    }
+    return 0;
 }
 
 /* return -1 (exception) or true/false */
@@ -18086,6 +18180,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
     p->u.func.is_top_level = false;
     p->u.func.home_object = NULL;
     p->u.func.var_refs = NULL;
+    if (js_pi_link_poll(ctx))
+        goto fail;
     if (b->closure_var_count) {
         var_refs = js_mallocz(ctx, sizeof(var_refs[0]) * b->closure_var_count);
         if (!var_refs)
@@ -18094,6 +18190,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
         for(i = 0; i < b->closure_var_count; i++) {
             JSClosureVar *cv = &b->closure_var[i];
             JSVarRef *var_ref;
+            if (js_pi_link_poll(ctx))
+                goto fail;
             switch(cv->closure_type) {
             case JS_CLOSURE_LOCAL:
                 /* reuse the existing variable reference if it already exists */
@@ -18119,6 +18217,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
     return func_obj;
  fail:
     /* bfunc is freed when func_obj is freed */
+    if (ctx->pi_link_preparing)
+        return js_pi_link_failure_free(ctx, func_obj);
     JS_FreeValue(ctx, func_obj);
     return JS_EXCEPTION;
 }
@@ -18160,6 +18260,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
     b = JS_VALUE_GET_PTR(bfunc);
     func_obj = JS_NewObjectClass(ctx, func_kind_to_class_id[b->func_kind]);
     if (JS_IsException(func_obj)) {
+        if (ctx->pi_link_preparing)
+            return js_pi_link_failure_free(ctx, bfunc);
         JS_FreeValue(ctx, bfunc);
         return JS_EXCEPTION;
     }
@@ -18173,6 +18275,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
         name_atom = JS_ATOM_empty_string;
     js_function_set_properties(ctx, func_obj, name_atom,
                                b->defined_arg_count);
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        goto fail;
 
     if (b->func_kind & JS_FUNC_GENERATOR) {
         JSValue proto;
@@ -18184,22 +18288,32 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
         else
             proto_class_id = JS_CLASS_GENERATOR;
         proto = JS_NewObjectProto(ctx, ctx->class_proto[proto_class_id]);
+        if (ctx->pi_link_preparing && (JS_IsException(proto) || JS_HasException(ctx))) {
+            js_pi_link_failure_free(ctx, proto);
+            goto fail;
+        }
         if (JS_IsException(proto))
             goto fail;
-        JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
-                               JS_PROP_WRITABLE);
+        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
+                                            JS_PROP_WRITABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
+            goto fail;
     } else if (b->has_prototype) {
         /* add the 'prototype' property: delay instantiation to avoid
            creating cycles for every javascript function. The prototype
            object is created on the fly when first accessed */
         JS_SetConstructorBit(ctx, func_obj, true);
-        JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
-                                  JS_AUTOINIT_ID_PROTOTYPE, NULL,
-                                  JS_PROP_WRITABLE);
+        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
+                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,
+                                             JS_PROP_WRITABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
+            goto fail;
     }
     return func_obj;
  fail:
     /* bfunc is freed when func_obj is freed */
+    if (ctx->pi_link_preparing)
+        return js_pi_link_failure_free(ctx, func_obj);
     JS_FreeValue(ctx, func_obj);
     return JS_EXCEPTION;
 }
@@ -31572,6 +31686,8 @@ static JSExportEntry *find_export_entry(JSContext *ctx, const JSModuleDef *m,
     JSExportEntry *me;
     int i;
     for(i = 0; i < m->export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return NULL;
         me = &m->export_entries[i];
         if (me->export_name == export_name)
             return me;
@@ -32001,11 +32117,13 @@ typedef struct JSResolveState {
     int count;
 } JSResolveState;
 
-static int find_resolve_entry(JSResolveState *s,
+static int find_resolve_entry(JSContext *ctx, JSResolveState *s,
                               JSModuleDef *m, JSAtom name)
 {
     int i;
     for(i = 0; i < s->count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -2;
         JSResolveEntry *re = &s->array[i];
         if (re->module == m && re->name == name)
             return i;
@@ -32047,11 +32165,18 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
 
     *pmodule = NULL;
     *pme = NULL;
-    if (find_resolve_entry(s, m, export_name) >= 0)
+    if (js_pi_link_recursion(ctx))
+        return JS_RESOLVE_RES_EXCEPTION;
+    int found = find_resolve_entry(ctx, s, m, export_name);
+    if (found == -2)
+        return JS_RESOLVE_RES_EXCEPTION;
+    if (found >= 0)
         return JS_RESOLVE_RES_CIRCULAR;
     if (add_resolve_entry(ctx, s, m, export_name) < 0)
         return JS_RESOLVE_RES_EXCEPTION;
     me = find_export_entry(ctx, m, export_name);
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return JS_RESOLVE_RES_EXCEPTION;
     if (me) {
         if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
             /* local export */
@@ -32078,6 +32203,8 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
             int i;
 
             for(i = 0; i < m->star_export_entries_count; i++) {
+                if (js_pi_link_poll(ctx))
+                    return JS_RESOLVE_RES_EXCEPTION;
                 JSStarExportEntry *se = &m->star_export_entries[i];
                 JSModuleDef *m1, *res_m;
                 JSExportEntry *res_me;
@@ -32143,6 +32270,9 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
     JSVarRef *var_ref = me->u.local.var_ref;
     int i;
 
+    if (js_pi_link_recursion(ctx))
+        return NULL;
+
     if (!var_ref) {
         JSObject *p = JS_VALUE_GET_OBJ(m->func_obj);
         var_ref = p->u.func.var_refs[me->u.local.var_idx];
@@ -32152,13 +32282,16 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
     /* the slot is a re-exported import whose source is not linked yet: follow
        the import alias, guarding against re-export cycles like js_resolve_export1 */
     for(i = 0; i < m->import_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return NULL;
         JSImportEntry *mi = &m->import_entries[i];
         JSModuleDef *m1, *res_m;
         JSExportEntry *res_me;
 
         if (mi->var_idx != me->u.local.var_idx)
             continue;
-        if (find_resolve_entry(s, m, mi->import_name) >= 0)
+        int found = find_resolve_entry(ctx, s, m, mi->import_name);
+        if (found == -2 || found >= 0)
             return NULL;
         if (add_resolve_entry(ctx, s, m, mi->import_name) < 0)
             return NULL;
@@ -32247,10 +32380,12 @@ typedef struct GetExportNamesState {
     int exported_names_count;
 } GetExportNamesState;
 
-static int find_exported_name(GetExportNamesState *s, JSAtom name)
+static int find_exported_name(JSContext *ctx, GetExportNamesState *s, JSAtom name)
 {
     int i;
     for(i = 0; i < s->exported_names_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -2;
         if (s->exported_names[i].export_name == name)
             return i;
     }
@@ -32264,8 +32399,13 @@ static __exception int get_exported_names(JSContext *ctx,
     ExportedNameEntry *en;
     int i, j;
 
+    if (js_pi_link_recursion(ctx))
+        return -1;
+
     /* check circular reference */
     for(i = 0; i < s->modules_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         if (s->modules[i] == m)
             return 0;
     }
@@ -32275,10 +32415,14 @@ static __exception int get_exported_names(JSContext *ctx,
     s->modules[s->modules_count++] = m;
 
     for(i = 0; i < m->export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         JSExportEntry *me = &m->export_entries[i];
         if (from_star && me->export_name == JS_ATOM_default)
             continue;
-        j = find_exported_name(s, me->export_name);
+        j = find_exported_name(ctx, s, me->export_name);
+        if (j == -2)
+            return -1;
         if (j < 0) {
             if (js_resize_array(ctx, (void **)&s->exported_names, sizeof(s->exported_names[0]),
                                 &s->exported_names_size,
@@ -32297,6 +32441,8 @@ static __exception int get_exported_names(JSContext *ctx,
         }
     }
     for(i = 0; i < m->star_export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         JSStarExportEntry *se = &m->star_export_entries[i];
         JSModuleDef *m1;
         m1 = m->req_module_entries[se->req_module_idx].module;
@@ -32346,6 +32492,8 @@ static JSValue js_module_ns_autoinit(JSContext *ctx, JSObject *p, JSAtom atom,
     return JS_GetModuleNamespace(ctx, m);
 }
 
+#include "quickjs-pi-link-sort.inc"
+
 static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
 {
     JSValue obj;
@@ -32353,6 +32501,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
     GetExportNamesState s_s, *s = &s_s;
     int i, ret;
     JSProperty *pr;
+    JSPiLinkSort *link_sort = NULL;
+    size_t *ordered = NULL;
 
     obj = JS_NewObjectClass(ctx, JS_CLASS_MODULE_NS);
     if (JS_IsException(obj))
@@ -32367,6 +32517,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
 
     /* Resolve the exported names. The ambiguous exports are removed */
     for(i = 0; i < s->exported_names_count; i++) {
+        if (js_pi_link_poll(ctx))
+            goto fail;
         ExportedNameEntry *en = &s->exported_names[i];
         JSResolveResultEnum res;
         JSExportEntry *res_me;
@@ -32381,10 +32533,14 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
                                     en->export_name);
         }
         if (res != JS_RESOLVE_RES_FOUND) {
+            if (ctx->pi_link_preparing && JS_HasException(ctx))
+                goto fail;
             if (res != JS_RESOLVE_RES_AMBIGUOUS) {
                 /* for a re-export the binding is missing from the target
                    module, not from m; report the target and the looked-up name */
                 JSExportEntry *me = find_export_entry(ctx, m, en->export_name);
+                if (ctx->pi_link_preparing && JS_HasException(ctx))
+                    goto fail;
                 if (me && me->export_type == JS_EXPORT_TYPE_INDIRECT &&
                     me->local_name != JS_ATOM__star_) {
                     JSModuleDef *m1 =
@@ -32405,16 +32561,26 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
                 /* follow the import alias when the slot is NULL (cyclic
                    re-export of an imported binding) */
                 en->u.var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
+                if (ctx->pi_link_preparing && JS_HasException(ctx))
+                    goto fail;
             }
         }
     }
 
     /* sort the exported names */
-    rqsort(s->exported_names, s->exported_names_count,
-           sizeof(s->exported_names[0]), exported_names_cmp, ctx);
+    if (ctx->pi_link_preparing) {
+        if (js_pi_link_sort_exports(ctx, s->exported_names,
+                                    s->exported_names_count, &link_sort, &ordered))
+            goto fail;
+    } else {
+        rqsort(s->exported_names, s->exported_names_count,
+               sizeof(s->exported_names[0]), exported_names_cmp, ctx);
+    }
 
     for(i = 0; i < s->exported_names_count; i++) {
-        ExportedNameEntry *en = &s->exported_names[i];
+        ExportedNameEntry *en = &s->exported_names[ordered ? ordered[i] : (size_t)i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         switch(en->export_type) {
         case EXPORTED_NAME_NORMAL:
             {
@@ -32447,14 +32613,34 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
     }
 
     js_free(ctx, s->exported_names);
+    js_pi_link_sort_free(ctx, link_sort);
+    link_sort = NULL;
 
-    JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
-                           JS_AtomToString(ctx, JS_ATOM_Module),
-                           0);
+    if (ctx->pi_link_preparing) {
+        JSValue tag = JS_AtomToString(ctx, JS_ATOM_Module);
+        if (JS_IsException(tag) || JS_HasException(ctx)) {
+            js_pi_link_failure_free(ctx, tag);
+            js_pi_link_failure_free(ctx, obj);
+            return JS_EXCEPTION;
+        }
+        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag, tag, 0);
+        if (status < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+    } else {
+        JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
+                               JS_AtomToString(ctx, JS_ATOM_Module), 0);
+    }
 
     p->extensible = false;
     return obj;
  fail:
+    if (ctx->pi_link_preparing) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        js_pi_link_sort_free(ctx, link_sort);
+        js_free(ctx, s->exported_names);
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     js_free(ctx, s->exported_names);
     JS_FreeValue(ctx, obj);
     return JS_EXCEPTION;
@@ -32564,6 +32750,8 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
         /* create the global variables. The other variables are
            imported from other modules */
         for(i = 0; i < b->closure_var_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             JSClosureVar *cv = &b->closure_var[i];
             JSVarRef *var_ref;
             if (cv->closure_type == JS_CLOSURE_MODULE_DECL) {
@@ -32581,12 +32769,16 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
     JS_FreeValue(ctx, bfunc);
     return 0;
  fail:
+    if (ctx->pi_link_preparing) {
+        js_pi_link_failure_free(ctx, func_obj);
+        return -1;
+    }
     JS_FreeValue(ctx, func_obj);
     return -1;
 }
 
 /* must be done before js_link_module() because of cyclic references */
-static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+static int js_create_module_function_local(JSContext *ctx, JSModuleDef *m)
 {
     bool is_c_module;
     int i;
@@ -32594,12 +32786,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
 
     if (m->func_created)
         return 0;
+    if (js_pi_link_poll(ctx))
+        return -1;
 
     is_c_module = (m->init_func != NULL);
 
     if (is_c_module) {
         /* initialize the exported variables */
         for(i = 0; i < m->export_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                return -1;
             JSExportEntry *me = &m->export_entries[i];
             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
                 var_ref = js_create_module_var(ctx, false);
@@ -32613,6 +32809,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
             return -1;
     }
     m->func_created = true;
+    return js_pi_link_poll(ctx);
+}
+
+static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+{
+    int i;
+    if (m->func_created)
+        return 0;
+    if (js_create_module_function_local(ctx, m) < 0)
+        return -1;
 
     /* do it on the dependencies */
 
@@ -32638,6 +32844,9 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
     JSObject *p;
     bool is_c_module;
     JSValue ret_val;
+
+    if (js_pi_link_poll(ctx))
+        return -1;
 
     if (js_check_stack_overflow(ctx->rt, 0)) {
         JS_ThrowStackOverflow(ctx);
@@ -32668,6 +32877,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
     for(i = 0; i < m->req_module_entries_count; i++) {
         JSReqModuleEntry *rme = &m->req_module_entries[i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         m1 = rme->module;
         index = js_inner_module_linking(ctx, m1, pstack_top, index);
         if (index < 0)
@@ -32691,6 +32902,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
     /* check the indirect exports */
     for(i = 0; i < m->export_entries_count; i++) {
         JSExportEntry *me = &m->export_entries[i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         if (me->export_type == JS_EXPORT_TYPE_INDIRECT &&
             me->local_name != JS_ATOM__star_) {
             JSResolveResultEnum ret;
@@ -32727,6 +32940,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
         var_refs = p->u.func.var_refs;
 
         for(i = 0; i < m->import_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             mi = &m->import_entries[i];
 #ifdef ENABLE_DUMPS // JS_DUMP_MODULE_RESOLVE
             if (check_dump_flag(ctx->rt, JS_DUMP_MODULE_RESOLVE)) {
@@ -32780,6 +32995,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
                        re-export of an imported binding) */
                     var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
                     if (!var_ref) {
+                        if (ctx->pi_link_preparing && JS_HasException(ctx))
+                            goto fail;
                         char buf2[ATOM_GET_STR_BUF_SIZE];
                         char buf3[ATOM_GET_STR_BUF_SIZE];
                         JS_ThrowSyntaxError(ctx,
@@ -32800,6 +33017,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
            are used when the eval function is deleted and cannot be
            initialized before in case imports are exported) */
         for(i = 0; i < m->export_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             JSExportEntry *me = &m->export_entries[i];
             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
                 var_ref = var_refs[me->u.local.var_idx];
@@ -32810,6 +33029,10 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
         /* initialize the global variables */
         ret_val = JS_Call(ctx, m->func_obj, JS_TRUE, 0, NULL);
+        if (ctx->pi_link_preparing && (JS_IsException(ret_val) || JS_HasException(ctx))) {
+            js_pi_link_failure_free(ctx, ret_val);
+            goto fail;
+        }
         if (JS_IsException(ret_val))
             goto fail;
         JS_FreeValue(ctx, ret_val);
@@ -32817,6 +33040,18 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
     assert(m->dfs_ancestor_index <= m->dfs_index);
     if (m->dfs_index == m->dfs_ancestor_index) {
+        if (ctx->pi_link_preparing) {
+            JSModuleDef *scan = *pstack_top;
+            /* Poll the complete SCC before its nonallocating atomic commit.
+               Never leave half a committed SCC on an interrupt. */
+            for (;;) {
+                if (js_pi_link_poll(ctx))
+                    goto fail;
+                if (scan == m)
+                    break;
+                scan = scan->stack_prev;
+            }
+        }
         for(;;) {
             /* pop m1 from stack */
             m1 = *pstack_top;
@@ -32869,6 +33104,8 @@ static int js_link_module(JSContext *ctx, JSModuleDef *m)
            m->status == JS_MODULE_STATUS_EVALUATED);
     return 0;
 }
+
+#include "quickjs-pi-module-link.inc"
 
 /* return JS_ATOM_NULL if the name cannot be found. Only works with
    not striped bytecode functions. */

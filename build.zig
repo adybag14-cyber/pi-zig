@@ -3292,18 +3292,22 @@ pub fn build(b: *std.Build) void {
 
     // Isolated VM composition. These steps install test artifacts only; they
     // neither select a default module nor attach a test runner to a build step.
-    const vm_controls = b.step("build-native-vm-c4-c5-callsite-controls", "Install individual and combined readonly-query iterator and CallSite controls without execution");
+    const vm_controls = b.step("build-native-vm-c4-c5-callsite-controls", "Install individual and combined query link iterator and CallSite controls without execution");
+    b.step("build-native-vm-c4-c5-callsite-link-controls", "Install the reviewed VM composition controls without execution").dependOn(vm_controls);
     const vm_control_specs = [_]struct { name: []const u8, root: []const u8, filters: []const []const u8 }{
         .{ .name = "query", .root = "src/native_module_graph_tla_query_test.zig", .filters = &.{"module graph TLA query "} },
         .{ .name = "iterator", .root = "src/native_async_iterator_api_test.zig", .filters = &.{"native async iterator API "} },
         .{ .name = "callsite", .root = "src/native_callsite_visibility_test.zig", .filters = &.{"CallSite visibility "} },
-        .{ .name = "combined", .root = "src/native_c3_c4_c5_callsite_test.zig", .filters = &.{ "module graph TLA query ", "native async iterator API ", "CallSite visibility " } },
+        .{ .name = "link", .root = "src/native_module_link_transaction_test.zig", .filters = &.{"module link transaction"} },
+        .{ .name = "combined", .root = "src/native_c3_c4_c5_callsite_test.zig", .filters = &.{ "module graph TLA query ", "native async iterator API ", "CallSite visibility ", "module link transaction", "VM query link iterator CallSite composition" } },
     };
     for (vm_control_specs) |entry| {
         const module = b.createModule(.{ .root_source_file = b.path(entry.root), .target = target, .optimize = optimize });
         module.addImport("catalog_tool", catalog_tool);
         linkQuickJs(b, module, quickjs, sqlite_lib_dir);
         linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        if (std.mem.eql(u8, entry.name, "link") or std.mem.eql(u8, entry.name, "combined"))
+            module.addCSourceFile(.{ .file = b.path("src/native_module_link_allocator_controls.c"), .flags = &.{"-std=gnu11"} });
         const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = entry.filters });
         const installed_name = b.fmt("vm-c4-c5-callsite-{s}{s}", .{ entry.name, if (target.result.os.tag == .windows) ".exe" else "" });
         const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });

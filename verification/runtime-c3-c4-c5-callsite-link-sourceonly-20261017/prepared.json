@@ -1,0 +1,171 @@
+{
+  "schema": 1,
+  "status": "source_composition_with_link_uncompiled_unrun_pending_combined_review",
+  "parent_composition": "6b78423f727f428d52ec3b8e495cfee2475ab57d",
+  "parent_prepared_sha256": "35A541D7750D08AC88222C3769864D456168D81697DC5F720BCDF9E7CC54E616",
+  "root_base": "c43d2e150d568e2769f87fc590e709eebaaa49e0",
+  "link_source": "3c49496aa884de92bbeb21738f73c903e3b5212f",
+  "link_product": "87a8bcec0ce27487e5181398fd1cc9e1cf8322e0",
+  "link_component_prepared_sha256": "706FC8EBD83C32D427653E37E6C03ED1E7330FE91F0165C68389122DC73C7CAE",
+  "source_application": "Exact328-based reviewed link-only C/H/include delta applied over6b composition; forward/reverse git apply checks pass with no conflict",
+  "products": [
+    {
+      "path": "build.zig",
+      "checkout_sha256": "1992E03209F1276365C2FC8373C20C0A87BB05D021EE86F183754BBCCE24BB3A",
+      "git_blob": "0aa9eb2e75c53e01c3705ae3582dc1260bbf3941",
+      "git_payload_sha256": "1992E03209F1276365C2FC8373C20C0A87BB05D021EE86F183754BBCCE24BB3A",
+      "git_payload_bytes": 348770
+    },
+    {
+      "path": "src/native_c3_c4_c5_callsite_test.zig",
+      "checkout_sha256": "C3DACD05843860CBB7454A5B9CF9410BA087B5722E5DA609C6B2EE30190BA859",
+      "git_blob": "5c987bd509bd8460d6af02364d1125f592594a36",
+      "git_payload_sha256": "C3DACD05843860CBB7454A5B9CF9410BA087B5722E5DA609C6B2EE30190BA859",
+      "git_payload_bytes": 4942
+    },
+    {
+      "path": "src/native_module_link_allocator_controls.c",
+      "checkout_sha256": "6775E594E8E0D0D2D50579933241BE62B052CD1BE246FE4BC1D0F3B85033C2C5",
+      "git_blob": "c425cde3572e5bbd352b9335cf2eb44d1afdea40",
+      "git_payload_sha256": "6775E594E8E0D0D2D50579933241BE62B052CD1BE246FE4BC1D0F3B85033C2C5",
+      "git_payload_bytes": 12772
+    },
+    {
+      "path": "src/native_module_link_transaction_test.zig",
+      "checkout_sha256": "8C4AA2F7FA5C77184401148897CA23B48C6A835153D0A347DCCB0A36AB0AECE9",
+      "git_blob": "2f59de8d7db3e2eb93b973b1709808b1a32fef7d",
+      "git_payload_sha256": "8C4AA2F7FA5C77184401148897CA23B48C6A835153D0A347DCCB0A36AB0AECE9",
+      "git_payload_bytes": 27350
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "checkout_sha256": "B005CEB1F0837C585DD319DCD9EAA2E7D7E371AA9BC8D80A1523F15C33752FAE",
+      "git_blob": "acd75071fe7a0fece7bcb09789e8f3eaadd037df",
+      "git_payload_sha256": "B005CEB1F0837C585DD319DCD9EAA2E7D7E371AA9BC8D80A1523F15C33752FAE",
+      "git_payload_bytes": 4305
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "checkout_sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "git_blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "git_payload_sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "git_payload_bytes": 14986
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "checkout_sha256": "E9292FD42185B2C9EDC00AB781AFE21DBBD01BAB11C9BBBAFE814ECD3E46A72C",
+      "git_blob": "9a8043b18c9f958a269fc6f65dbe1abbe3a386d1",
+      "git_payload_sha256": "E9292FD42185B2C9EDC00AB781AFE21DBBD01BAB11C9BBBAFE814ECD3E46A72C",
+      "git_payload_bytes": 2239857
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "checkout_sha256": "2102E448F700AB8EF530E604915F2B604A778319DE04B0FFB098DD9092242BCD",
+      "git_blob": "4b509c3773ecf9b16d00ee7d2ca18572efd16d1e",
+      "git_payload_sha256": "2102E448F700AB8EF530E604915F2B604A778319DE04B0FFB098DD9092242BCD",
+      "git_payload_bytes": 78428
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/INCOMPLETE-CHECKPOINT.md",
+      "checkout_sha256": "D0695570DAD79F8B0F9D1FD6F36A0E858D71D7E7FEFD0AF01818FE57A0C39338",
+      "git_blob": "24309a56539f6f13d5891415d6a2599e4f259338",
+      "git_payload_sha256": "D0695570DAD79F8B0F9D1FD6F36A0E858D71D7E7FEFD0AF01818FE57A0C39338",
+      "git_payload_bytes": 689
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/README.md",
+      "checkout_sha256": "B363F7ECFA80BFE918ED01B0A7A46A5122625D71A668763795745A66B6337DE5",
+      "git_blob": "dbdacc3c53dee9f7e77242d7d1602eff14f525d2",
+      "git_payload_sha256": "B363F7ECFA80BFE918ED01B0A7A46A5122625D71A668763795745A66B6337DE5",
+      "git_payload_bytes": 8164
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/REVIEWED-DESIGN.md",
+      "checkout_sha256": "4A8F7F9BFA179FFBA016505EBF2FB8EC05480A58C3591A74BE37570AF876FDD7",
+      "git_blob": "6ff8cabc192f92499f5f6874df28fe80597585fa",
+      "git_payload_sha256": "4A8F7F9BFA179FFBA016505EBF2FB8EC05480A58C3591A74BE37570AF876FDD7",
+      "git_payload_bytes": 16700
+    },
+    {
+      "path": "verification/module-link-transaction-sourceonly-20261017/prepared.json",
+      "checkout_sha256": "706FC8EBD83C32D427653E37E6C03ED1E7330FE91F0165C68389122DC73C7CAE",
+      "git_blob": "b83fb6850c8f020c4dc59d19ba63694a79f4da88",
+      "git_payload_sha256": "706FC8EBD83C32D427653E37E6C03ED1E7330FE91F0165C68389122DC73C7CAE",
+      "git_payload_bytes": 7533
+    },
+    {
+      "path": "verification/runtime-c3-c4-c5-callsite-link-sourceonly-20261017/README.md",
+      "checkout_sha256": "F4848D8978F3437612C36A539193E190D65AC46265EA3D0E9AD501AFF5EAA536",
+      "git_blob": "d9e73e72727a79edd54e52ffcce7703dd8479487",
+      "git_payload_sha256": "F4848D8978F3437612C36A539193E190D65AC46265EA3D0E9AD501AFF5EAA536",
+      "git_payload_bytes": 3541
+    },
+    {
+      "path": "verification/runtime-c3-c4-c5-callsite-link-sourceonly-20261017/patches/link-transaction-on328.patch",
+      "checkout_sha256": "DAD63719CAD5A5720194E810DB408554F4DFF960CB8ED358AB0BE0DB8B249B0E",
+      "git_blob": "94b98a39eeddd80e019e7d16c53df94e242579b5",
+      "git_payload_sha256": "DAD63719CAD5A5720194E810DB408554F4DFF960CB8ED358AB0BE0DB8B249B0E",
+      "git_payload_bytes": 49891
+    }
+  ],
+  "reviewed_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "git_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "checkout_sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "unchanged_from_reviewed_link": true
+    },
+    {
+      "path": "src/extensions/native_error_stack.zig",
+      "git_blob": "1bb3736bbc93c73dfe7d9cbcbe4b45142728e894",
+      "checkout_sha256": "EC0002CEED53432B26BA135F2D4CDC6FFB8C2D0460ADE1C6B8D003C8194826BF",
+      "unchanged_from_reviewed_link": true
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "git_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "checkout_sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "unchanged_from_reviewed_link": true
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "git_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "checkout_sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "unchanged_from_reviewed_link": true
+    }
+  ],
+  "unchanged_original_test_names": 25,
+  "original_link_control_sources_exact": [
+    "src/native_module_link_allocator_controls.c",
+    "src/native_module_link_transaction_test.zig",
+    "vendor/quickjs/quickjs-pi-link-sort.inc",
+    "vendor/quickjs/quickjs-pi-module-link.inc"
+  ],
+  "new_joint_control": "Real compile/query/link/no-body/query/evaluate/async-iterator/strict-CallSite interoperation",
+  "static_combined_named_declarations": 62,
+  "actual_compiled_metadata": null,
+  "host_attestation": [
+    "capture-only native Error stack owner",
+    "balanced diagnostics suppression",
+    "trusted nonreentrant interrupt callback",
+    "live owner-thread context",
+    "no guest formatting or graph mutation/context disposal/reentry"
+  ],
+  "host_attestation_is_not_inferred_from_callback_pointer": true,
+  "production_callers_added": false,
+  "original150_and_separate11_proofs_unchanged": true,
+  "C4_C5_CallSite_original_packets_unchanged": true,
+  "Engine_Main_defaults_limits_fixtures_changed": false,
+  "install_only": true,
+  "default_dependencies_added": false,
+  "compiler_parser_AST_formatter_Node_native_LLVM_jobs": 0,
+  "expected_authored": false,
+  "qualified_runtime_or_ABI": false,
+  "runtime_restoration": false,
+  "excluded": [
+    "EventStream generator-function API and producer-exit",
+    "CJS compiler/probe",
+    "Node require(esm) policy",
+    "wholeSDK/Pi/default activation"
+  ]
+}

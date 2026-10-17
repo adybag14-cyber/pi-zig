@@ -1,0 +1,1205 @@
+diff --git a/vendor/quickjs/quickjs-pi-link-sort.inc b/vendor/quickjs/quickjs-pi-link-sort.inc
+new file mode 100644
+index 00000000..acd75071
+--- /dev/null
++++ b/vendor/quickjs/quickjs-pi-link-sort.inc
+@@ -0,0 +1,124 @@
++/* Private opt-in namespace ordering. Included after ExportedNameEntry. */
++typedef struct JSPiLinkSort {
++    size_t initialized;
++    JSValue *keys;
++    size_t *order;
++    size_t *auxiliary;
++} JSPiLinkSort;
++
++static void js_pi_link_sort_free(JSContext *ctx, JSPiLinkSort *sort)
++{
++    size_t i;
++    if (!sort)
++        return;
++    for (i = 0; i < sort->initialized; i++)
++        JS_FreeValue(ctx, sort->keys[i]);
++    js_free(ctx, sort);
++}
++
++static int js_pi_link_key_compare(JSContext *ctx, JSValueConst a,
++                                  JSValueConst b, int *comparison)
++{
++    JSString *left = JS_VALUE_GET_STRING(a), *right = JS_VALUE_GET_STRING(b);
++    size_t i, count = min_int(left->len, right->len);
++    for (i = 0; i < count; i++) {
++        uint32_t x, y;
++        if (js_pi_link_poll(ctx))
++            return -1;
++        x = left->is_wide_char ? left->u.str16[i] : left->u.str8[i];
++        y = right->is_wide_char ? right->u.str16[i] : right->u.str8[i];
++        if (x != y) {
++            *comparison = x < y ? -1 : 1;
++            return 0;
++        }
++    }
++    *comparison = (left->len > right->len) - (left->len < right->len);
++    return 0;
++}
++
++static int js_pi_link_sort_exports(JSContext *ctx, ExportedNameEntry *entries,
++                                    size_t count, JSPiLinkSort **output,
++                                    size_t **ordered)
++{
++    JSPiLinkSort *sort;
++    size_t offset, key_bytes, index_bytes, total, i, width;
++    size_t *source, *target;
++    *output = NULL;
++    *ordered = NULL;
++    if (!count)
++        return 0;
++    if (count > SIZE_MAX / sizeof(JSValue) ||
++        count > SIZE_MAX / sizeof(size_t))
++        goto overflow;
++    key_bytes = count * sizeof(JSValue);
++    index_bytes = count * sizeof(size_t);
++    if (sizeof(*sort) > SIZE_MAX - (_Alignof(JSValue) - 1))
++        goto overflow;
++    offset = (sizeof(*sort) + _Alignof(JSValue) - 1) & ~(_Alignof(JSValue) - 1);
++    if (offset > SIZE_MAX - key_bytes)
++        goto overflow;
++    total = offset + key_bytes;
++    if (total > SIZE_MAX - (_Alignof(size_t) - 1))
++        goto overflow;
++    total = (total + _Alignof(size_t) - 1) & ~(_Alignof(size_t) - 1);
++    if (index_bytes > (SIZE_MAX - total) / 2)
++        goto overflow;
++    sort = js_malloc(ctx, total + index_bytes * 2);
++    if (!sort)
++        return -1;
++    sort->initialized = 0;
++    sort->keys = (JSValue *)((uint8_t *)sort + offset);
++    sort->order = (size_t *)((uint8_t *)sort + total);
++    sort->auxiliary = sort->order + count;
++    *output = sort;
++    for (i = 0; i < count; i++) {
++        JSValue key;
++        if (js_pi_link_poll(ctx))
++            return -1;
++        key = JS_AtomToString(ctx, entries[i].export_name);
++        if (JS_IsException(key) || JS_HasException(ctx)) {
++            js_pi_link_failure_free(ctx, key);
++            return -1;
++        }
++        sort->keys[sort->initialized++] = key;
++        sort->order[i] = i;
++    }
++    source = sort->order;
++    target = sort->auxiliary;
++    for (width = 1; width < count;) {
++        size_t base = 0;
++        while (base < count) {
++            size_t middle = base + (width < count - base ? width : count - base);
++            size_t end = middle + (width < count - middle ? width : count - middle);
++            size_t left = base, right = middle, index = base;
++            while (left < middle && right < end) {
++                int comparison;
++                if (js_pi_link_poll(ctx) ||
++                    js_pi_link_key_compare(ctx, sort->keys[source[left]],
++                                           sort->keys[source[right]], &comparison))
++                    return -1;
++                target[index++] = comparison <= 0 ? source[left++] : source[right++];
++            }
++            while (left < middle) {
++                if (js_pi_link_poll(ctx))
++                    return -1;
++                target[index++] = source[left++];
++            }
++            while (right < end) {
++                if (js_pi_link_poll(ctx))
++                    return -1;
++                target[index++] = source[right++];
++            }
++            base = end;
++        }
++        { size_t *swap = source; source = target; target = swap; }
++        if (width >= count - width)
++            break;
++        width *= 2;
++    }
++    *ordered = source;
++    return 0;
++overflow:
++    JS_ThrowOutOfMemory(ctx);
++    return -1;
++}
+diff --git a/vendor/quickjs/quickjs-pi-module-link.inc b/vendor/quickjs/quickjs-pi-module-link.inc
+new file mode 100644
+index 00000000..8b1ab998
+--- /dev/null
++++ b/vendor/quickjs/quickjs-pi-module-link.inc
+@@ -0,0 +1,378 @@
++/* Private synchronous link transaction; included immediately after js_link_module.
++   The host contract forbids graph mutation/reentry and requires capture-only
++   Error stacks. ModuleDefs remain owned by the live context throughout. */
++typedef struct JSPiLinkMember {
++    JSModuleDef *module;
++    size_t record_plus_one;
++} JSPiLinkMember;
++
++typedef struct JSPiLinkRecord {
++    JSModuleDef *module;
++    JSValue original_function;
++    JSModuleDef *original_stack;
++    int original_index, original_ancestor;
++    bool fresh, touched;
++} JSPiLinkRecord;
++
++typedef struct JSPiLinkFrame {
++    size_t record;
++    int next_request;
++} JSPiLinkFrame;
++
++typedef struct JSPiLinkAttempt {
++    size_t capacity, count, used;
++    JSPiLinkMember *members;
++    JSPiLinkRecord *records;
++    JSPiLinkFrame *frames;
++} JSPiLinkAttempt;
++
++static size_t js_pi_link_pointer_hash(JSModuleDef *module)
++{
++    uintptr_t value = (uintptr_t)module;
++    value ^= value >> 4;
++    value *= (uintptr_t)0x9e3779b1U;
++    value ^= value >> 16;
++    return (size_t)value;
++}
++
++/* Neither the lookup key nor a failed lookup is dereferenced. */
++static JSPiLinkMember *js_pi_link_member(JSContext *ctx, JSPiLinkAttempt *attempt,
++                                        JSModuleDef *module)
++{
++    size_t probe, slot = js_pi_link_pointer_hash(module) & (attempt->capacity - 1);
++    for (probe = 0; probe < attempt->capacity; probe++) {
++        JSPiLinkMember *entry;
++        if (js_pi_link_poll(ctx))
++            return NULL;
++        entry = &attempt->members[slot];
++        if (!entry->module || entry->module == module)
++            return entry;
++        slot = (slot + 1) & (attempt->capacity - 1);
++    }
++    JS_ThrowInternalError(ctx, "module link membership table is full");
++    return NULL;
++}
++
++static int js_pi_link_admission_error(JSContext *ctx, const char *message)
++{
++    /* Before the capture-only callback has been admitted, do not enter the
++       legacy eager Error.prepareStackTrace path even for an admission error. */
++    JSValue object, text;
++    object = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[JS_TYPE_ERROR],
++                                    JS_CLASS_ERROR);
++    if (JS_IsException(object) || JS_HasException(ctx)) {
++        js_pi_link_failure_free(ctx, object);
++        return -1;
++    }
++    text = JS_NewString(ctx, message);
++    if (JS_IsException(text) || JS_HasException(ctx)) {
++        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++        JS_FreeValue(ctx, text);
++        JS_FreeValue(ctx, object);
++        JS_Throw(ctx, first);
++        return -1;
++    }
++    if (JS_DefinePropertyValue(ctx, object, JS_ATOM_message, text,
++                              JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE) < 0 ||
++        JS_HasException(ctx)) {
++        js_pi_link_failure_free(ctx, object);
++        return -1;
++    }
++    JS_Throw(ctx, object);
++    return -1;
++}
++
++static int js_pi_link_validate_node(JSContext *ctx, JSPiLinkAttempt *attempt,
++                                     JSModuleDef *module)
++{
++    int i, variables = 0;
++    bool fresh = module->status == JS_MODULE_STATUS_UNLINKED;
++    JSFunctionBytecode *bytecode = NULL;
++    switch (module->status) {
++    case JS_MODULE_STATUS_UNLINKED:
++    case JS_MODULE_STATUS_LINKED:
++    case JS_MODULE_STATUS_EVALUATING_ASYNC:
++    case JS_MODULE_STATUS_EVALUATED:
++        break;
++    default:
++        goto invalid;
++    }
++    if (!module->resolved || (!fresh && !module->func_created) ||
++        module->req_module_entries_count < 0 || module->export_entries_count < 0 ||
++        module->import_entries_count < 0 || module->star_export_entries_count < 0 ||
++        (module->req_module_entries_count && !module->req_module_entries) ||
++        (module->export_entries_count && !module->export_entries) ||
++        (module->import_entries_count && !module->import_entries) ||
++        (module->star_export_entries_count && !module->star_export_entries))
++        goto invalid;
++    if (fresh) {
++        if (module->func_created || !JS_IsUndefined(module->module_ns) ||
++            !JS_IsUndefined(module->promise) || module->eval_has_exception ||
++            module->async_evaluation || module->pending_async_dependencies)
++            goto invalid;
++        if (!module->init_func) {
++            if (JS_VALUE_GET_TAG(module->func_obj) != JS_TAG_FUNCTION_BYTECODE)
++                goto invalid;
++            bytecode = JS_VALUE_GET_PTR(module->func_obj);
++            if (bytecode->realm != ctx || bytecode->native_async_body)
++                goto invalid;
++            variables = bytecode->closure_var_count;
++        }
++    }
++    for (i = 0; i < module->req_module_entries_count; i++) {
++        JSPiLinkMember *target;
++        if (js_pi_link_poll(ctx))
++            return -1;
++        target = js_pi_link_member(ctx, attempt, module->req_module_entries[i].module);
++        if (!target)
++            return -1;
++        if (!target->module)
++            goto invalid;
++        if (!fresh && target->module->status == JS_MODULE_STATUS_UNLINKED)
++            goto invalid;
++    }
++    for (i = 0; i < module->export_entries_count; i++) {
++        JSExportEntry *entry = &module->export_entries[i];
++        if (js_pi_link_poll(ctx))
++            return -1;
++        if (entry->export_type == JS_EXPORT_TYPE_LOCAL) {
++            if (!fresh && !entry->u.local.var_ref)
++                goto invalid;
++            if (fresh && (entry->u.local.var_ref ||
++                (!module->init_func && (entry->u.local.var_idx < 0 ||
++                                        entry->u.local.var_idx >= variables))))
++                goto invalid;
++        } else if (entry->export_type == JS_EXPORT_TYPE_INDIRECT) {
++            if (entry->u.req_module_idx < 0 ||
++                entry->u.req_module_idx >= module->req_module_entries_count)
++                goto invalid;
++        } else {
++            goto invalid;
++        }
++    }
++    for (i = 0; i < module->import_entries_count; i++) {
++        const JSImportEntry *entry = &module->import_entries[i];
++        if (js_pi_link_poll(ctx))
++            return -1;
++        if (entry->req_module_idx < 0 ||
++            entry->req_module_idx >= module->req_module_entries_count ||
++            (fresh && !module->init_func &&
++             (entry->var_idx < 0 || entry->var_idx >= variables)))
++            goto invalid;
++    }
++    for (i = 0; i < module->star_export_entries_count; i++) {
++        int index = module->star_export_entries[i].req_module_idx;
++        if (js_pi_link_poll(ctx))
++            return -1;
++        if (index < 0 || index >= module->req_module_entries_count)
++            goto invalid;
++    }
++    return 0;
++invalid:
++    JS_ThrowTypeError(ctx, "module graph is not a clean resolved link candidate");
++    return -1;
++}
++
++static int js_pi_link_record(JSContext *ctx, JSPiLinkAttempt *attempt,
++                              JSPiLinkMember *member, size_t *index)
++{
++    JSPiLinkRecord *record;
++    if (js_pi_link_poll(ctx))
++        return -1;
++    if (attempt->used >= attempt->count) {
++        JS_ThrowInternalError(ctx, "module link ledger capacity exceeded");
++        return -1;
++    }
++    *index = attempt->used;
++    record = &attempt->records[attempt->used];
++    record->module = member->module;
++    record->original_function = JS_UNDEFINED;
++    record->original_stack = member->module->stack_prev;
++    record->original_index = member->module->dfs_index;
++    record->original_ancestor = member->module->dfs_ancestor_index;
++    record->fresh = member->module->status == JS_MODULE_STATUS_UNLINKED;
++    record->touched = false;
++    /* Publish initialized cleanup bounds before any further fallible work. */
++    member->record_plus_one = ++attempt->used;
++    if (record->fresh)
++        record->original_function = JS_DupValue(ctx, member->module->func_obj);
++    return js_pi_link_validate_node(ctx, attempt, member->module);
++}
++
++static void js_pi_link_attempt_free(JSContext *ctx, JSPiLinkAttempt *attempt,
++                                    bool failed)
++{
++    size_t i;
++    for (i = 0; i < attempt->used; i++) {
++        JSPiLinkRecord *record = &attempt->records[i];
++        JSModuleDef *module = record->module;
++        if (failed && record->touched && record->fresh &&
++            module->status == JS_MODULE_STATUS_UNLINKED) {
++            int j;
++            JSValue function = module->func_obj, ns = module->module_ns;
++            module->module_ns = JS_UNDEFINED;
++            module->func_obj = record->original_function;
++            record->original_function = JS_UNDEFINED; /* ownership transferred */
++            module->func_created = false;
++            module->dfs_index = record->original_index;
++            module->dfs_ancestor_index = record->original_ancestor;
++            module->stack_prev = record->original_stack;
++            for (j = 0; j < module->export_entries_count; j++) {
++                JSExportEntry *entry = &module->export_entries[j];
++                if (entry->export_type == JS_EXPORT_TYPE_LOCAL && entry->u.local.var_ref) {
++                    JSVarRef *reference = entry->u.local.var_ref;
++                    entry->u.local.var_ref = NULL;
++                    free_var_ref(ctx->rt, reference);
++                }
++            }
++            JS_FreeValue(ctx, ns);
++            JS_FreeValue(ctx, function);
++        }
++        JS_FreeValue(ctx, record->original_function);
++    }
++    js_free(ctx, attempt);
++}
++
++int JS_PiLinkModuleGraph(JSContext *ctx, JSValueConst compiled_module)
++{
++    struct list_head *entry;
++    JSPiLinkAttempt *attempt = NULL;
++    JSPiLinkMember *root;
++    size_t count = 0, capacity = 2, offset, member_bytes, record_bytes, frame_bytes;
++    size_t i, depth = 0, root_index;
++    JSValue first;
++    if (JS_HasException(ctx))
++        return -1; /* Entry reason remains in the actual VM slot untouched. */
++    if (ctx->pi_link_preparing || !ctx->rt->native_error_stack_hook ||
++        ctx->rt->native_error_stack_hook_active)
++        return js_pi_link_admission_error(ctx, "capture-only native Error stack owner required");
++    if (JS_VALUE_GET_TAG(compiled_module) != JS_TAG_MODULE)
++        return js_pi_link_admission_error(ctx, "compiled module token required");
++    ctx->pi_link_preparing = true;
++    list_for_each(entry, &ctx->loaded_modules) {
++        if (js_pi_link_poll(ctx))
++            goto fail;
++        if (count >= INT_MAX || count == SIZE_MAX)
++            goto overflow;
++        count++;
++    }
++    if (count > SIZE_MAX / 2)
++        goto overflow;
++    while (capacity < count * 2) {
++        if (js_pi_link_poll(ctx))
++            goto fail;
++        if (capacity > SIZE_MAX / 2)
++            goto overflow;
++        capacity *= 2;
++    }
++    if (capacity > SIZE_MAX / sizeof(JSPiLinkMember) ||
++        count > SIZE_MAX / sizeof(JSPiLinkRecord) ||
++        count > SIZE_MAX / sizeof(JSPiLinkFrame))
++        goto overflow;
++    member_bytes = capacity * sizeof(JSPiLinkMember);
++    record_bytes = count * sizeof(JSPiLinkRecord);
++    frame_bytes = count * sizeof(JSPiLinkFrame);
++    if (sizeof(*attempt) > SIZE_MAX - (_Alignof(JSPiLinkMember) - 1))
++        goto overflow;
++    offset = (sizeof(*attempt) + _Alignof(JSPiLinkMember) - 1) & ~(_Alignof(JSPiLinkMember) - 1);
++    if (member_bytes > SIZE_MAX - offset)
++        goto overflow;
++    member_bytes += offset;
++    if (member_bytes > SIZE_MAX - (_Alignof(JSPiLinkRecord) - 1))
++        goto overflow;
++    member_bytes = (member_bytes + _Alignof(JSPiLinkRecord) - 1) & ~(_Alignof(JSPiLinkRecord) - 1);
++    if (record_bytes > SIZE_MAX - member_bytes)
++        goto overflow;
++    record_bytes += member_bytes;
++    if (record_bytes > SIZE_MAX - (_Alignof(JSPiLinkFrame) - 1))
++        goto overflow;
++    record_bytes = (record_bytes + _Alignof(JSPiLinkFrame) - 1) & ~(_Alignof(JSPiLinkFrame) - 1);
++    if (frame_bytes > SIZE_MAX - record_bytes)
++        goto overflow;
++    attempt = js_malloc(ctx, record_bytes + frame_bytes);
++    if (!attempt)
++        goto fail;
++    attempt->capacity = capacity;
++    attempt->count = count;
++    attempt->used = 0;
++    attempt->members = (JSPiLinkMember *)((uint8_t *)attempt + offset);
++    attempt->records = (JSPiLinkRecord *)((uint8_t *)attempt + member_bytes);
++    attempt->frames = (JSPiLinkFrame *)((uint8_t *)attempt + record_bytes);
++    for (i = 0; i < capacity; i++) {
++        if (js_pi_link_poll(ctx))
++            goto fail;
++        attempt->members[i].module = NULL;
++        attempt->members[i].record_plus_one = 0;
++    }
++    list_for_each(entry, &ctx->loaded_modules) {
++        JSModuleDef *module = list_entry(entry, JSModuleDef, link);
++        JSPiLinkMember *member = js_pi_link_member(ctx, attempt, module);
++        if (!member)
++            goto fail;
++        member->module = module;
++    }
++    root = js_pi_link_member(ctx, attempt, JS_VALUE_GET_PTR(compiled_module));
++    if (!root)
++        goto fail;
++    if (!root->module) {
++        JS_ThrowTypeError(ctx, "compiled module does not belong to this context");
++        goto fail;
++    }
++    if (js_pi_link_record(ctx, attempt, root, &root_index))
++        goto fail;
++    attempt->frames[depth++] = (JSPiLinkFrame){ root_index, 0 };
++    while (depth) {
++        JSPiLinkFrame *frame = &attempt->frames[depth - 1];
++        JSModuleDef *module = attempt->records[frame->record].module;
++        JSPiLinkMember *child;
++        size_t index;
++        if (js_pi_link_poll(ctx))
++            goto fail;
++        if (frame->next_request == module->req_module_entries_count) {
++            depth--;
++            continue;
++        }
++        child = js_pi_link_member(ctx, attempt,
++                                 module->req_module_entries[frame->next_request++].module);
++        if (!child)
++            goto fail;
++        /* validate_node already proved target membership before dereference. */
++        if (!child->module) {
++            JS_ThrowTypeError(ctx, "module graph edge is no longer a context member");
++            goto fail;
++        }
++        if (child->record_plus_one)
++            continue;
++        if (js_pi_link_record(ctx, attempt, child, &index))
++            goto fail;
++        if (depth >= count) {
++            JS_ThrowInternalError(ctx, "module link traversal capacity exceeded");
++            goto fail;
++        }
++        attempt->frames[depth++] = (JSPiLinkFrame){ index, 0 };
++    }
++    for (i = 0; i < attempt->used; i++) {
++        JSPiLinkRecord *record = &attempt->records[i];
++        if (js_pi_link_poll(ctx))
++            goto fail;
++        if (!record->fresh)
++            continue;
++        record->touched = true; /* local creation can fail before func_created */
++        if (js_create_module_function_local(ctx, record->module) < 0 || JS_HasException(ctx))
++            goto fail;
++    }
++    if (js_link_module(ctx, root->module) < 0 || JS_HasException(ctx))
++        goto fail;
++    js_pi_link_attempt_free(ctx, attempt, false);
++    ctx->pi_link_preparing = false;
++    return 0;
++overflow:
++    JS_ThrowOutOfMemory(ctx);
++fail:
++    first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++    if (attempt)
++        js_pi_link_attempt_free(ctx, attempt, true);
++    ctx->pi_link_preparing = false;
++    JS_Throw(ctx, first);
++    return -1;
++}
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index 1e67f1c0..3efd0f7b 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -627,6 +627,7 @@ struct JSContext {
+     int interrupt_counter;
+ 
+     struct list_head loaded_modules; /* list of JSModuleDef.link */
++    bool pi_link_preparing; /* private, synchronous link transaction only */
+ 
+     /* if NULL, RegExp compilation is not supported */
+     JSValue (*compile_regexp)(JSContext *ctx, JSValueConst pattern,
+@@ -1608,6 +1609,14 @@ static void js_callsite_release_receiver(JSContext *ctx, JSStackFrame *sf)
+     }
+ }
+ 
++static JSValue js_pi_link_failure_free(JSContext *ctx, JSValue owned)
++{
++    JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++    JS_FreeValue(ctx, owned);
++    JS_FreeValue(ctx, JS_GetException(ctx));
++    return JS_Throw(ctx, first);
++}
++
+ static JSValue js_call_c_function_data(JSContext *ctx, JSValueConst func_obj,
+                                        JSValueConst this_val,
+                                        int argc, JSValueConst *argv, int flags);
+@@ -3011,6 +3020,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
+     ctx->error_stack_trace_limit = js_int32(10);
+     ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
+     init_list_head(&ctx->loaded_modules);
++    ctx->pi_link_preparing = false;
+     // TODO(bnoordhuis) use getrandom() etc.
+     ctx->random_state = rt->pi_deterministic_time
+         ? (uint64_t)rt->pi_deterministic_seed + 1
+@@ -6601,6 +6611,21 @@ JSValue JS_NewObject(JSContext *ctx)
+ static void js_function_set_properties(JSContext *ctx, JSValue func_obj,
+                                        JSAtom name, int len)
+ {
++    if (ctx->pi_link_preparing) {
++        JSValue text;
++        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
++                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
++            return;
++        text = JS_AtomToString(ctx, name);
++        if (JS_IsException(text) || JS_HasException(ctx)) {
++            js_pi_link_failure_free(ctx, text);
++            return;
++        }
++        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,
++                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
++            return;
++        return;
++    }
+     /* ES6 feature non compatible with ES5.1: length is configurable */
+     JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
+                            JS_PROP_CONFIGURABLE);
+@@ -8450,6 +8475,10 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
+                                        line, column, flags,
+                                        rt->native_error_stack_opaque);
+     rt->native_error_stack_hook_active = false;
++    if (ctx->pi_link_preparing && JS_HasException(ctx)) {
++        js_pi_link_failure_free(ctx, saved);
++        return -1;
++    }
+     if (result >= 0) {
+         JS_FreeValue(ctx, JS_GetException(ctx));
+         JS_Throw(ctx, saved);
+@@ -8709,8 +8738,21 @@ static int capture_error_stack(JSContext *ctx, JSValueConst error,
+ JSValue JS_NewError(JSContext *ctx)
+ {
+     JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
++    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
++        return js_pi_link_failure_free(ctx, obj);
+     if (JS_IsException(obj))
+         return JS_EXCEPTION;
++    if (ctx->pi_link_preparing) {
++        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
++                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 ||
++            JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++        return obj;
++    }
+     if (prepare_native_error_stack(ctx, obj) < 0 ||
+         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                 NULL, 0, 0, 0) < 0 ||
+@@ -8732,27 +8774,54 @@ static JSValue JS_MakeError2(JSContext *ctx, JSErrorEnum error_num,
+         obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],
+                                      JS_CLASS_ERROR);
+     }
++    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
++        return js_pi_link_failure_free(ctx, obj);
+     if (JS_IsException(obj))
+         return JS_EXCEPTION;
+-    if (prepare_native_error_stack(ctx, obj) < 0 ||
++    if (ctx->pi_link_preparing) {
++        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
++                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++    } else if (prepare_native_error_stack(ctx, obj) < 0 ||
+         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                 NULL, 0, 0, 0) < 0) {
++        if (ctx->pi_link_preparing)
++            return js_pi_link_failure_free(ctx, obj);
+         JS_FreeValue(ctx, obj);
+         return JS_EXCEPTION;
+     }
++    if (ctx->pi_link_preparing && JS_HasException(ctx))
++        return js_pi_link_failure_free(ctx, obj);
+     msg = JS_NewString(ctx, message);
++    if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {
++        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++        JS_FreeValue(ctx, msg);
++        JS_FreeValue(ctx, obj);
++        return JS_Throw(ctx, first);
++    }
+     if (JS_IsException(msg))
+         msg = JS_NewString(ctx, "Invalid error message");
+     if (!JS_IsException(msg)) {
+-        JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
+-                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
++        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
++                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
++        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {
++            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++            JS_FreeValue(ctx, obj);
++            return JS_Throw(ctx, first);
++        }
+     }
+     if (add_backtrace || ctx->rt->native_error_stack_hook) {
+         if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {
++            if (ctx->pi_link_preparing)
++                return js_pi_link_failure_free(ctx, obj);
+             JS_FreeValue(ctx, obj);
+             return JS_EXCEPTION;
+         }
+     }
++    if (ctx->pi_link_preparing && JS_HasException(ctx))
++        return js_pi_link_failure_free(ctx, obj);
+     return obj;
+ }
+ 
+@@ -8774,6 +8843,11 @@ JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,
+     JSValue obj;
+ 
+     obj = JS_MakeError(ctx, error_num, add_backtrace, fmt, ap);
++    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {
++        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++        JS_FreeValue(ctx, obj);
++        return JS_Throw(ctx, first);
++    }
+     if (unlikely(JS_IsException(obj))) {
+         /* out of memory: throw JS_NULL to avoid recursing */
+         obj = JS_NULL;
+@@ -9020,6 +9094,26 @@ static inline __exception int js_poll_interrupts(JSContext *ctx)
+     }
+ }
+ 
++static int js_pi_link_poll(JSContext *ctx)
++{
++    if (!ctx->pi_link_preparing)
++        return 0;
++    if (JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx))
++        return -1;
++    return 0;
++}
++
++static int js_pi_link_recursion(JSContext *ctx)
++{
++    if (js_pi_link_poll(ctx))
++        return -1;
++    if (ctx->pi_link_preparing && js_check_stack_overflow(ctx->rt, 0)) {
++        JS_ThrowStackOverflow(ctx);
++        return -1;
++    }
++    return 0;
++}
++
+ /* return -1 (exception) or true/false */
+ static int JS_SetPrototypeInternal(JSContext *ctx, JSValueConst obj,
+                                    JSValueConst proto_val, bool throw_flag)
+@@ -18060,6 +18154,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
+     p->u.func.is_top_level = false;
+     p->u.func.home_object = NULL;
+     p->u.func.var_refs = NULL;
++    if (js_pi_link_poll(ctx))
++        goto fail;
+     if (b->closure_var_count) {
+         var_refs = js_mallocz(ctx, sizeof(var_refs[0]) * b->closure_var_count);
+         if (!var_refs)
+@@ -18068,6 +18164,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
+         for(i = 0; i < b->closure_var_count; i++) {
+             JSClosureVar *cv = &b->closure_var[i];
+             JSVarRef *var_ref;
++            if (js_pi_link_poll(ctx))
++                goto fail;
+             switch(cv->closure_type) {
+             case JS_CLOSURE_LOCAL:
+                 /* reuse the existing variable reference if it already exists */
+@@ -18093,6 +18191,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
+     return func_obj;
+  fail:
+     /* bfunc is freed when func_obj is freed */
++    if (ctx->pi_link_preparing)
++        return js_pi_link_failure_free(ctx, func_obj);
+     JS_FreeValue(ctx, func_obj);
+     return JS_EXCEPTION;
+ }
+@@ -18134,6 +18234,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
+     b = JS_VALUE_GET_PTR(bfunc);
+     func_obj = JS_NewObjectClass(ctx, func_kind_to_class_id[b->func_kind]);
+     if (JS_IsException(func_obj)) {
++        if (ctx->pi_link_preparing)
++            return js_pi_link_failure_free(ctx, bfunc);
+         JS_FreeValue(ctx, bfunc);
+         return JS_EXCEPTION;
+     }
+@@ -18147,6 +18249,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
+         name_atom = JS_ATOM_empty_string;
+     js_function_set_properties(ctx, func_obj, name_atom,
+                                b->defined_arg_count);
++    if (ctx->pi_link_preparing && JS_HasException(ctx))
++        goto fail;
+ 
+     if (b->func_kind & JS_FUNC_GENERATOR) {
+         JSValue proto;
+@@ -18158,22 +18262,32 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
+         else
+             proto_class_id = JS_CLASS_GENERATOR;
+         proto = JS_NewObjectProto(ctx, ctx->class_proto[proto_class_id]);
++        if (ctx->pi_link_preparing && (JS_IsException(proto) || JS_HasException(ctx))) {
++            js_pi_link_failure_free(ctx, proto);
++            goto fail;
++        }
+         if (JS_IsException(proto))
+             goto fail;
+-        JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
+-                               JS_PROP_WRITABLE);
++        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
++                                            JS_PROP_WRITABLE);
++        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
++            goto fail;
+     } else if (b->has_prototype) {
+         /* add the 'prototype' property: delay instantiation to avoid
+            creating cycles for every javascript function. The prototype
+            object is created on the fly when first accessed */
+         JS_SetConstructorBit(ctx, func_obj, true);
+-        JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
+-                                  JS_AUTOINIT_ID_PROTOTYPE, NULL,
+-                                  JS_PROP_WRITABLE);
++        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
++                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,
++                                             JS_PROP_WRITABLE);
++        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
++            goto fail;
+     }
+     return func_obj;
+  fail:
+     /* bfunc is freed when func_obj is freed */
++    if (ctx->pi_link_preparing)
++        return js_pi_link_failure_free(ctx, func_obj);
+     JS_FreeValue(ctx, func_obj);
+     return JS_EXCEPTION;
+ }
+@@ -31546,6 +31660,8 @@ static JSExportEntry *find_export_entry(JSContext *ctx, const JSModuleDef *m,
+     JSExportEntry *me;
+     int i;
+     for(i = 0; i < m->export_entries_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return NULL;
+         me = &m->export_entries[i];
+         if (me->export_name == export_name)
+             return me;
+@@ -31975,11 +32091,13 @@ typedef struct JSResolveState {
+     int count;
+ } JSResolveState;
+ 
+-static int find_resolve_entry(JSResolveState *s,
++static int find_resolve_entry(JSContext *ctx, JSResolveState *s,
+                               JSModuleDef *m, JSAtom name)
+ {
+     int i;
+     for(i = 0; i < s->count; i++) {
++        if (js_pi_link_poll(ctx))
++            return -2;
+         JSResolveEntry *re = &s->array[i];
+         if (re->module == m && re->name == name)
+             return i;
+@@ -32021,11 +32139,18 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
+ 
+     *pmodule = NULL;
+     *pme = NULL;
+-    if (find_resolve_entry(s, m, export_name) >= 0)
++    if (js_pi_link_recursion(ctx))
++        return JS_RESOLVE_RES_EXCEPTION;
++    int found = find_resolve_entry(ctx, s, m, export_name);
++    if (found == -2)
++        return JS_RESOLVE_RES_EXCEPTION;
++    if (found >= 0)
+         return JS_RESOLVE_RES_CIRCULAR;
+     if (add_resolve_entry(ctx, s, m, export_name) < 0)
+         return JS_RESOLVE_RES_EXCEPTION;
+     me = find_export_entry(ctx, m, export_name);
++    if (ctx->pi_link_preparing && JS_HasException(ctx))
++        return JS_RESOLVE_RES_EXCEPTION;
+     if (me) {
+         if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
+             /* local export */
+@@ -32052,6 +32177,8 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
+             int i;
+ 
+             for(i = 0; i < m->star_export_entries_count; i++) {
++                if (js_pi_link_poll(ctx))
++                    return JS_RESOLVE_RES_EXCEPTION;
+                 JSStarExportEntry *se = &m->star_export_entries[i];
+                 JSModuleDef *m1, *res_m;
+                 JSExportEntry *res_me;
+@@ -32117,6 +32244,9 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
+     JSVarRef *var_ref = me->u.local.var_ref;
+     int i;
+ 
++    if (js_pi_link_recursion(ctx))
++        return NULL;
++
+     if (!var_ref) {
+         JSObject *p = JS_VALUE_GET_OBJ(m->func_obj);
+         var_ref = p->u.func.var_refs[me->u.local.var_idx];
+@@ -32126,13 +32256,16 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
+     /* the slot is a re-exported import whose source is not linked yet: follow
+        the import alias, guarding against re-export cycles like js_resolve_export1 */
+     for(i = 0; i < m->import_entries_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return NULL;
+         JSImportEntry *mi = &m->import_entries[i];
+         JSModuleDef *m1, *res_m;
+         JSExportEntry *res_me;
+ 
+         if (mi->var_idx != me->u.local.var_idx)
+             continue;
+-        if (find_resolve_entry(s, m, mi->import_name) >= 0)
++        int found = find_resolve_entry(ctx, s, m, mi->import_name);
++        if (found == -2 || found >= 0)
+             return NULL;
+         if (add_resolve_entry(ctx, s, m, mi->import_name) < 0)
+             return NULL;
+@@ -32221,10 +32354,12 @@ typedef struct GetExportNamesState {
+     int exported_names_count;
+ } GetExportNamesState;
+ 
+-static int find_exported_name(GetExportNamesState *s, JSAtom name)
++static int find_exported_name(JSContext *ctx, GetExportNamesState *s, JSAtom name)
+ {
+     int i;
+     for(i = 0; i < s->exported_names_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return -2;
+         if (s->exported_names[i].export_name == name)
+             return i;
+     }
+@@ -32238,8 +32373,13 @@ static __exception int get_exported_names(JSContext *ctx,
+     ExportedNameEntry *en;
+     int i, j;
+ 
++    if (js_pi_link_recursion(ctx))
++        return -1;
++
+     /* check circular reference */
+     for(i = 0; i < s->modules_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return -1;
+         if (s->modules[i] == m)
+             return 0;
+     }
+@@ -32249,10 +32389,14 @@ static __exception int get_exported_names(JSContext *ctx,
+     s->modules[s->modules_count++] = m;
+ 
+     for(i = 0; i < m->export_entries_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return -1;
+         JSExportEntry *me = &m->export_entries[i];
+         if (from_star && me->export_name == JS_ATOM_default)
+             continue;
+-        j = find_exported_name(s, me->export_name);
++        j = find_exported_name(ctx, s, me->export_name);
++        if (j == -2)
++            return -1;
+         if (j < 0) {
+             if (js_resize_array(ctx, (void **)&s->exported_names, sizeof(s->exported_names[0]),
+                                 &s->exported_names_size,
+@@ -32271,6 +32415,8 @@ static __exception int get_exported_names(JSContext *ctx,
+         }
+     }
+     for(i = 0; i < m->star_export_entries_count; i++) {
++        if (js_pi_link_poll(ctx))
++            return -1;
+         JSStarExportEntry *se = &m->star_export_entries[i];
+         JSModuleDef *m1;
+         m1 = m->req_module_entries[se->req_module_idx].module;
+@@ -32320,6 +32466,8 @@ static JSValue js_module_ns_autoinit(JSContext *ctx, JSObject *p, JSAtom atom,
+     return JS_GetModuleNamespace(ctx, m);
+ }
+ 
++#include "quickjs-pi-link-sort.inc"
++
+ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+ {
+     JSValue obj;
+@@ -32327,6 +32475,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+     GetExportNamesState s_s, *s = &s_s;
+     int i, ret;
+     JSProperty *pr;
++    JSPiLinkSort *link_sort = NULL;
++    size_t *ordered = NULL;
+ 
+     obj = JS_NewObjectClass(ctx, JS_CLASS_MODULE_NS);
+     if (JS_IsException(obj))
+@@ -32341,6 +32491,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+ 
+     /* Resolve the exported names. The ambiguous exports are removed */
+     for(i = 0; i < s->exported_names_count; i++) {
++        if (js_pi_link_poll(ctx))
++            goto fail;
+         ExportedNameEntry *en = &s->exported_names[i];
+         JSResolveResultEnum res;
+         JSExportEntry *res_me;
+@@ -32355,10 +32507,14 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+                                     en->export_name);
+         }
+         if (res != JS_RESOLVE_RES_FOUND) {
++            if (ctx->pi_link_preparing && JS_HasException(ctx))
++                goto fail;
+             if (res != JS_RESOLVE_RES_AMBIGUOUS) {
+                 /* for a re-export the binding is missing from the target
+                    module, not from m; report the target and the looked-up name */
+                 JSExportEntry *me = find_export_entry(ctx, m, en->export_name);
++                if (ctx->pi_link_preparing && JS_HasException(ctx))
++                    goto fail;
+                 if (me && me->export_type == JS_EXPORT_TYPE_INDIRECT &&
+                     me->local_name != JS_ATOM__star_) {
+                     JSModuleDef *m1 =
+@@ -32379,16 +32535,26 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+                 /* follow the import alias when the slot is NULL (cyclic
+                    re-export of an imported binding) */
+                 en->u.var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
++                if (ctx->pi_link_preparing && JS_HasException(ctx))
++                    goto fail;
+             }
+         }
+     }
+ 
+     /* sort the exported names */
+-    rqsort(s->exported_names, s->exported_names_count,
+-           sizeof(s->exported_names[0]), exported_names_cmp, ctx);
++    if (ctx->pi_link_preparing) {
++        if (js_pi_link_sort_exports(ctx, s->exported_names,
++                                    s->exported_names_count, &link_sort, &ordered))
++            goto fail;
++    } else {
++        rqsort(s->exported_names, s->exported_names_count,
++               sizeof(s->exported_names[0]), exported_names_cmp, ctx);
++    }
+ 
+     for(i = 0; i < s->exported_names_count; i++) {
+-        ExportedNameEntry *en = &s->exported_names[i];
++        ExportedNameEntry *en = &s->exported_names[ordered ? ordered[i] : (size_t)i];
++        if (js_pi_link_poll(ctx))
++            goto fail;
+         switch(en->export_type) {
+         case EXPORTED_NAME_NORMAL:
+             {
+@@ -32421,14 +32587,34 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
+     }
+ 
+     js_free(ctx, s->exported_names);
+-
+-    JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
+-                           JS_AtomToString(ctx, JS_ATOM_Module),
+-                           0);
++    js_pi_link_sort_free(ctx, link_sort);
++    link_sort = NULL;
++
++    if (ctx->pi_link_preparing) {
++        JSValue tag = JS_AtomToString(ctx, JS_ATOM_Module);
++        if (JS_IsException(tag) || JS_HasException(ctx)) {
++            js_pi_link_failure_free(ctx, tag);
++            js_pi_link_failure_free(ctx, obj);
++            return JS_EXCEPTION;
++        }
++        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag, tag, 0);
++        if (status < 0 || JS_HasException(ctx))
++            return js_pi_link_failure_free(ctx, obj);
++    } else {
++        JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
++                               JS_AtomToString(ctx, JS_ATOM_Module), 0);
++    }
+ 
+     p->extensible = false;
+     return obj;
+  fail:
++    if (ctx->pi_link_preparing) {
++        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
++        js_pi_link_sort_free(ctx, link_sort);
++        js_free(ctx, s->exported_names);
++        JS_FreeValue(ctx, obj);
++        return JS_Throw(ctx, first);
++    }
+     js_free(ctx, s->exported_names);
+     JS_FreeValue(ctx, obj);
+     return JS_EXCEPTION;
+@@ -32538,6 +32724,8 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
+         /* create the global variables. The other variables are
+            imported from other modules */
+         for(i = 0; i < b->closure_var_count; i++) {
++            if (js_pi_link_poll(ctx))
++                goto fail;
+             JSClosureVar *cv = &b->closure_var[i];
+             JSVarRef *var_ref;
+             if (cv->closure_type == JS_CLOSURE_MODULE_DECL) {
+@@ -32555,12 +32743,16 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
+     JS_FreeValue(ctx, bfunc);
+     return 0;
+  fail:
++    if (ctx->pi_link_preparing) {
++        js_pi_link_failure_free(ctx, func_obj);
++        return -1;
++    }
+     JS_FreeValue(ctx, func_obj);
+     return -1;
+ }
+ 
+ /* must be done before js_link_module() because of cyclic references */
+-static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
++static int js_create_module_function_local(JSContext *ctx, JSModuleDef *m)
+ {
+     bool is_c_module;
+     int i;
+@@ -32568,12 +32760,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+ 
+     if (m->func_created)
+         return 0;
++    if (js_pi_link_poll(ctx))
++        return -1;
+ 
+     is_c_module = (m->init_func != NULL);
+ 
+     if (is_c_module) {
+         /* initialize the exported variables */
+         for(i = 0; i < m->export_entries_count; i++) {
++            if (js_pi_link_poll(ctx))
++                return -1;
+             JSExportEntry *me = &m->export_entries[i];
+             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
+                 var_ref = js_create_module_var(ctx, false);
+@@ -32587,6 +32783,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+             return -1;
+     }
+     m->func_created = true;
++    return js_pi_link_poll(ctx);
++}
++
++static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
++{
++    int i;
++    if (m->func_created)
++        return 0;
++    if (js_create_module_function_local(ctx, m) < 0)
++        return -1;
+ 
+     /* do it on the dependencies */
+ 
+@@ -32613,6 +32819,9 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+     bool is_c_module;
+     JSValue ret_val;
+ 
++    if (js_pi_link_poll(ctx))
++        return -1;
++
+     if (js_check_stack_overflow(ctx->rt, 0)) {
+         JS_ThrowStackOverflow(ctx);
+         return -1;
+@@ -32642,6 +32851,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+ 
+     for(i = 0; i < m->req_module_entries_count; i++) {
+         JSReqModuleEntry *rme = &m->req_module_entries[i];
++        if (js_pi_link_poll(ctx))
++            goto fail;
+         m1 = rme->module;
+         index = js_inner_module_linking(ctx, m1, pstack_top, index);
+         if (index < 0)
+@@ -32665,6 +32876,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+     /* check the indirect exports */
+     for(i = 0; i < m->export_entries_count; i++) {
+         JSExportEntry *me = &m->export_entries[i];
++        if (js_pi_link_poll(ctx))
++            goto fail;
+         if (me->export_type == JS_EXPORT_TYPE_INDIRECT &&
+             me->local_name != JS_ATOM__star_) {
+             JSResolveResultEnum ret;
+@@ -32701,6 +32914,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+         var_refs = p->u.func.var_refs;
+ 
+         for(i = 0; i < m->import_entries_count; i++) {
++            if (js_pi_link_poll(ctx))
++                goto fail;
+             mi = &m->import_entries[i];
+ #ifdef ENABLE_DUMPS // JS_DUMP_MODULE_RESOLVE
+             if (check_dump_flag(ctx->rt, JS_DUMP_MODULE_RESOLVE)) {
+@@ -32754,6 +32969,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+                        re-export of an imported binding) */
+                     var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
+                     if (!var_ref) {
++                        if (ctx->pi_link_preparing && JS_HasException(ctx))
++                            goto fail;
+                         char buf2[ATOM_GET_STR_BUF_SIZE];
+                         char buf3[ATOM_GET_STR_BUF_SIZE];
+                         JS_ThrowSyntaxError(ctx,
+@@ -32774,6 +32991,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+            are used when the eval function is deleted and cannot be
+            initialized before in case imports are exported) */
+         for(i = 0; i < m->export_entries_count; i++) {
++            if (js_pi_link_poll(ctx))
++                goto fail;
+             JSExportEntry *me = &m->export_entries[i];
+             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
+                 var_ref = var_refs[me->u.local.var_idx];
+@@ -32784,6 +33003,10 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+ 
+         /* initialize the global variables */
+         ret_val = JS_Call(ctx, m->func_obj, JS_TRUE, 0, NULL);
++        if (ctx->pi_link_preparing && (JS_IsException(ret_val) || JS_HasException(ctx))) {
++            js_pi_link_failure_free(ctx, ret_val);
++            goto fail;
++        }
+         if (JS_IsException(ret_val))
+             goto fail;
+         JS_FreeValue(ctx, ret_val);
+@@ -32791,6 +33014,18 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
+ 
+     assert(m->dfs_ancestor_index <= m->dfs_index);
+     if (m->dfs_index == m->dfs_ancestor_index) {
++        if (ctx->pi_link_preparing) {
++            JSModuleDef *scan = *pstack_top;
++            /* Poll the complete SCC before its nonallocating atomic commit.
++               Never leave half a committed SCC on an interrupt. */
++            for (;;) {
++                if (js_pi_link_poll(ctx))
++                    goto fail;
++                if (scan == m)
++                    break;
++                scan = scan->stack_prev;
++            }
++        }
+         for(;;) {
+             /* pop m1 from stack */
+             m1 = *pstack_top;
+@@ -32844,6 +33079,8 @@ static int js_link_module(JSContext *ctx, JSModuleDef *m)
+     return 0;
+ }
+ 
++#include "quickjs-pi-module-link.inc"
++
+ /* return JS_ATOM_NULL if the name cannot be found. Only works with
+    not striped bytecode functions. */
+ JSAtom JS_GetScriptOrModuleName(JSContext *ctx, int n_stack_levels)
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index a1b68928..5faf59e3 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -1352,6 +1352,16 @@ JS_EXTERN void JS_SetModuleNormalizeFunc2(JSRuntime *rt,
+ JS_EXTERN JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m);
+ JS_EXTERN JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m);
+ JS_EXTERN JSValue JS_GetModuleNamespace(JSContext *ctx, JSModuleDef *m);
++/* Actual declaration/binding preparation only; no load, resolve, body evaluation
++   or job pumping. Borrowed compiled module must belong to the live owner-thread
++   context and every static dependency must already be resolved. The host MUST
++   attest a capture-only native Error-stack owner and trusted nonreentrant
++   interrupt callback; no graph mutation/context disposal or guest formatting is
++   permitted during this synchronous call. Strict CallSite visibility is required.
++   Zero succeeds; -1 preserves the actual pending reason. Any entry pending reason
++   is refused unchanged. Failed fresh environments are restored; already linked
++   SCCs and healthy dependencies are retained. Not a require(esm) policy API. */
++JS_EXTERN int JS_PiLinkModuleGraph(JSContext *ctx, JSValueConst compiled_module);
+ 
+ /* associate a JSValue to a C module */
+ JS_EXTERN int JS_SetModulePrivateValue(JSContext *ctx, JSModuleDef *m, JSValue val);
