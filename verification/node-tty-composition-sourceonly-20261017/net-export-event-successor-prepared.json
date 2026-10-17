@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "parent": "10fd90b0159e71c57bcd05f6971a20ff184d926d",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "finding": "New net default export construction passed live enumerablegetter result through Engine.defaultExports/checked before local owned-event normalization",
+  "correction": "Assembly-local actual own-enumeration/RAW atomget/existingCleanup.takeOwned beforechecked/nextfield; propertyDefine consumes eachvalue immediately; status/pending checkedbefore nextoperation; sameactualdefaultrecord semantics",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 35550,
+      "sha256": "A3127C410DE2788763EC0C3FEA28D3969D333A8733362D18A9FD2ECEED3E2920"
+    },
+    {
+      "path": "src/native_node_tty_net_export_event_control.zig",
+      "bytes": 7008,
+      "sha256": "91247703B3CD884132F597826CC3AABC3B9B5684E29092D4067A2EEADDDF602A"
+    }
+  ],
+  "controls": [
+    "Actualcanonicalnet.Socket getter1 realctor; export-readgetter2 soleholder+pendingA; ordinaryC keepsA/freshrawnativeOOM Bpromotes",
+    "ActualStream getter neverrunsafterpending; freeonce/slotsempty/exactidentity/rawtag; no pub/Hub effects; restoredactualcarrier retry"
+  ],
+  "scope": "No sharedEngine/defaultExports/h/Scope/C/H/Main rewrite; EngineCCCC31A0 unchanged",
+  "execution_grant": false,
+  "actual_results": null
+}

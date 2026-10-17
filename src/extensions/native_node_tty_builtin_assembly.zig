@@ -255,6 +255,36 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             if (!c.JS_IsUndefined(value)) return value;
             return s.own(c.JS_DupValue(engine.context, record));
         }
+        fn defaultExports(s: *v.Scope, cleanup: *Cleanup, object: c.JSValue) !c.JSValue {
+            // Same actual export-record/default semantics as Engine, but raw
+            // enumerable getters are normalized BEFORE checked/next key. Do
+            // not keep duplicate field roots past Define's consuming call.
+            const engine = s.engine;
+            const allocation_generation = engine.native_allocation_generation;
+            const record = try own(s, cleanup, c.JS_NewObject(engine.context), allocation_generation);
+            if (c.JS_IsObject(object)) {
+                var properties: [*c]c.JSPropertyEnum = null;
+                var count: u32 = 0;
+                const generation = engine.native_allocation_generation;
+                const status = c.JS_GetOwnPropertyNames(engine.context, &properties, &count, object, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY);
+                if (status < 0) { cleanup.collect(generation); return error.JavaScriptException; }
+                // This array owns atoms only, no JS descriptor-field values.
+                defer c.JS_FreePropertyEnum(engine.context, properties, count);
+                if (c.JS_HasException(engine.context)) { cleanup.collect(generation); return error.JavaScriptException; }
+                for (0..count) |index| {
+                    const read_generation = engine.native_allocation_generation;
+                    const value = try cleanup.takeOwned(c.JS_GetProperty(engine.context, object, properties[index].atom), read_generation);
+                    const define_generation = engine.native_allocation_generation;
+                    const defined = c.JS_DefinePropertyValue(engine.context, record, properties[index].atom, value, c.JS_PROP_C_W_E);
+                    // Define consumes value on BOTH success and failure.
+                    if (defined < 0 or c.JS_HasException(engine.context)) { cleanup.collect(define_generation); return error.JavaScriptException; }
+                }
+            }
+            const generation = engine.native_allocation_generation;
+            const defined = c.JS_DefinePropertyValueStr(engine.context, record, "default", c.JS_DupValue(engine.context, object), c.JS_PROP_C_W_E);
+            if (defined < 0 or c.JS_HasException(engine.context)) { cleanup.collect(generation); return error.JavaScriptException; }
+            return c.JS_DupValue(engine.context, record);
+        }
         fn prepare(engine: *v.em.Engine, state: *State, inputs: Inputs, temporaries: *Temporaries, cleanup: *Cleanup) !void {
             const s = &temporaries.scope;
             const actual_process = try global(s, cleanup, "process");
@@ -276,7 +306,7 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
                 if (!c.JS_IsStrictEqual(engine.context, try get(s, cleanup, record, "default"), inputs.actual_net)) return error.ActualTtyNetCarrierMismatch;
             }
             state.exports.net = c.JS_DupValue(engine.context, inputs.actual_net);
-            state.exports.net_exports = if (state.net_canonical_registered) c.JS_DupValue(engine.context, engine.native_module_values.get("node:net").?) else try engine.defaultExports(inputs.actual_net);
+            state.exports.net_exports = if (state.net_canonical_registered) c.JS_DupValue(engine.context, engine.native_module_values.get("node:net").?) else try defaultExports(s, cleanup, inputs.actual_net);
             // Actual CJS implementation performs normalization and builtin
             // lookup. No locally fabricated require dispatcher is installed.
             const node_module = try registeredBuiltin(s, cleanup, "node:module");
@@ -310,9 +340,9 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
                 .tty_constructor = state.binding.?.exports.tty, .is_tty = state.binding.?.exports.is_tty,
                 .invalid_fd = bundle.tty.invalid_fd, .tty_init_failed = bundle.tty.tty_init_failed, .errno_exception = bundle.tty.errno_exception,
                 .require = state.actual_require, .number_is_integer = inputs.primordials.colors.number_is_integer, .colors = temporaries.colors.? });
-            state.exports.tty_exports = try engine.defaultExports(state.exports.tty);
-            state.exports.util_exports = try engine.defaultExports(state.exports.util);
-            state.exports.readline_exports = try engine.defaultExports(state.exports.readline);
+            state.exports.tty_exports = try defaultExports(s, cleanup, state.exports.tty);
+            state.exports.util_exports = try defaultExports(s, cleanup, state.exports.util);
+            state.exports.readline_exports = try defaultExports(s, cleanup, state.exports.readline);
             // Return through every temporary cleanup BEFORE adopter commit.
             // In particular Scope and color/message exports retire here.
         }
