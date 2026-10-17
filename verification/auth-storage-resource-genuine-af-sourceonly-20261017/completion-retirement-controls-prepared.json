@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "status": "source_only_prepared_unrun",
+  "frozen_product_commit": "32a2200475d42930ad6fe37b15e63d9bfa23f0d8",
+  "frozen_prerequisite_commit": "d5bcc71e0da18b96491797c275dce3f137c2d580",
+  "helper_owner": "/root/api_sdk_http_resume",
+  "helper_reviewed": false,
+  "product_adapters_changed": false,
+  "runtime_metadata": null,
+  "original_expected_present": false,
+  "payload": [
+    {
+      "path": "src/native_auth_resource_cleanup_controls.zig",
+      "bytes": 6382,
+      "sha256": "75032C221DCD1BA571FF904194D4A7F83BE643374A6F2155C398297D19C24149"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/COMPLETION-RETIREMENT-PLAN.md",
+      "bytes": 5199,
+      "sha256": "C70D9105593C670B53234C5AFC0C50BAB01FA8BE875CC1A3A85ED5A493B87D7D"
+    }
+  ],
+  "preserved": [
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 39115,
+      "sha256": "BC1E67C32C174FAB92C5D84AEF85574347CA4E0BF0772D178E3F5CFC75C2CC09"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 24487,
+      "sha256": "5E70174C422F79463DC68BD16BEAD5CFAEE410D75B71E02462C2F17B0392B754"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prepared.json",
+      "bytes": 5797,
+      "sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prerequisite-prepared.json",
+      "bytes": 1028,
+      "sha256": "18F417260D9090C194AC59CA31E7F91F88DB2F206CCD2BFE82CACC6DB13EB0AD"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_controls.zig",
+      "bytes": 7328,
+      "sha256": "71DE9986B95E84BD4C11C77C077F2FAAE841FB63A723A632130F7F49A886B351"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-storage-resource-genuine-af-observer.mjs",
+      "bytes": 10625,
+      "sha256": "5ED71BFE261AE91845413107E2CBA36C658AB64A2DF868AA01101F741429B8E4"
+    }
+  ]
+}

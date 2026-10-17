@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "status": "source_only_adapter_prepared_unrun",
+  "base": "56457347c58b0dd2e5f721087cc1affa0aa63696",
+  "historical_frozen": [
+    "32a2200475d42930ad6fe37b15e63d9bfa23f0d8",
+    "d5bcc71e0da18b96491797c275dce3f137c2d580",
+    "d006831f754af3edbe9540299e9d58728bcb4de2"
+  ],
+  "core_commit": "733517fb9670ad92f556141a5d3ede069ea2423d",
+  "core_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346",
+  "root_build_step": "build-native-auth-resource-owned-completion-controls-artifact",
+  "compile_only_anchors": 9,
+  "cleanup_profiles_prepared": 6,
+  "runtime_metadata": null,
+  "metadata_execution": false,
+  "runtime_execution": false,
+  "original_reference_capture": false,
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 350109,
+      "sha256": "BDC8923698176F3A8E1951810969AD30C8E3FAEC87016A6F3C84D36C6C86B4C5"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 45860,
+      "sha256": "C972FDE797611101D475380AF561BD3D82FCFF25CDE62DA6EF739DA9043A9E7A"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31582,
+      "sha256": "DD676DF61B0486772FF6B00580A24455C84F5B140A42FE13E6BF106B5C0E95F3"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "src/native_auth_resource_cleanup_controls.zig",
+      "bytes": 11816,
+      "sha256": "47D06405FB7CB8D67CE956D9F71C42A54A22D966B50D4435E3E4EBE32C53D9F2"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_compile_root.zig",
+      "bytes": 3221,
+      "sha256": "CB87C45E495CB7CDC6AB8F7ECD43039369CFF58B2ECEEA0296BA631D871C6562"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/OWNED-COMPLETION-ADAPTERS.md",
+      "bytes": 4772,
+      "sha256": "473A812DC4BE2F59687F7700D3DA1F5C07DB04F9E7A5E7BBAE1D2BF14BB57ED3"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/shared-core-independent-async-source-review.json",
+      "bytes": 16404,
+      "sha256": "0D1EB5E1E31EDE1A1B4F7D34D3DB23AFE6E80CB0EC2CDA76D578E0D791CE8029"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_spread.zig",
+      "bytes": 1523,
+      "sha256": "B0BD3066CB8BDC145DC811FD4AC568E2FF5E530E0D064F3506129D0716C20B4A"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 5203,
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 3079,
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_controls.zig",
+      "bytes": 7328,
+      "sha256": "71DE9986B95E84BD4C11C77C077F2FAAE841FB63A723A632130F7F49A886B351"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-storage-resource-genuine-af-observer.mjs",
+      "bytes": 10625,
+      "sha256": "5ED71BFE261AE91845413107E2CBA36C658AB64A2DF868AA01101F741429B8E4"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prepared.json",
+      "bytes": 5797,
+      "sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prerequisite-prepared.json",
+      "bytes": 1028,
+      "sha256": "18F417260D9090C194AC59CA31E7F91F88DB2F206CCD2BFE82CACC6DB13EB0AD"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/completion-retirement-controls-prepared.json",
+      "bytes": 2091,
+      "sha256": "A20151BA340AE146FBC3815CE4FCCBAEE557952A0BFDAEC6C41E246E1015F412"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/completion-reload-controls-prepared.json",
+      "bytes": 2068,
+      "sha256": "683623D6F0A5C7A016698A27423362B60237C346122651A5ABC0401E993B6234"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/completion-retirement-review-corrective.json",
+      "bytes": 2197,
+      "sha256": "2AA5E3B9AF79D5B5F9CF01C61848FFD0800C22BF719CAB1F37C9ECDA8B7AA94E"
+    }
+  ]
+}

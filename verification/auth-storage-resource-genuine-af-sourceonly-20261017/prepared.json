@@ -1,0 +1,164 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_GENUINE_ASYNC_FUNCTION_MIGRATION_PENDING_INDEPENDENT_REVIEW",
+  "base": "56457347c58b0dd2e5f721087cc1affa0aa63696",
+  "source": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "product_paths": [
+    "src/extensions/native_auth_storage_production.zig",
+    "src/extensions/native_sdk_resource_class_reload.zig"
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 39115,
+      "sha256": "BC1E67C32C174FAB92C5D84AEF85574347CA4E0BF0772D178E3F5CFC75C2CC09"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 24487,
+      "sha256": "5E70174C422F79463DC68BD16BEAD5CFAEE410D75B71E02462C2F17B0392B754"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_controls.zig",
+      "bytes": 7328,
+      "sha256": "71DE9986B95E84BD4C11C77C077F2FAAE841FB63A723A632130F7F49A886B351"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-storage-resource-genuine-af-observer.mjs",
+      "bytes": 10625,
+      "sha256": "5ED71BFE261AE91845413107E2CBA36C658AB64A2DF868AA01101F741429B8E4"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/README.md",
+      "bytes": 4704,
+      "sha256": "E745A9826C384E3C8B6A7657341CD61856D175EAD3F50E5408BB14ED15D42885"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/original-caller.mjs",
+      "bytes": 675,
+      "sha256": "707E5F407AA6B9C909C28675FFBB4F12A0E083C00692F4BA421D70CFE26B4370"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/authority/auth-storage.ts.txt",
+      "bytes": 16670,
+      "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/authority/resource-loader.ts.txt",
+      "bytes": 48270,
+      "sha256": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "bytes": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 5203,
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 3079,
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_loader_assembly.zig",
+      "bytes": 6282,
+      "sha256": "BBD9D48B4268EC6DD3CEEDFE0116F2CE24971982A1D89AB0D8403EC35C6706EF"
+    }
+  ],
+  "auth_async_methods": [
+    "reloadFromStorageAsync",
+    "readLatestData",
+    "read",
+    "modify",
+    "delete",
+    "list"
+  ],
+  "resource_async_methods": [
+    "reload"
+  ],
+  "genuine_internal_async_bodies": [
+    "three storage callback paths via one real AF body",
+    "InMemory withLockAsync actual async IIFE"
+  ],
+  "source_observer_cases": [
+    "auth-method-shapes",
+    "real-memory-roundtrip",
+    "read-await-and-live-getter",
+    "getter-throw-rejects-not-sync",
+    "storage-callback-shapes",
+    "no-signal-fallback-and-signalled-rejection",
+    "direct-return-thenable-observation",
+    "invalid-receiver-rejection",
+    "reload-shape",
+    "reload-real-await-order",
+    "reload-rejected-data",
+    "reload-live-trust-getter",
+    "reload-start-getter-throw"
+  ],
+  "native_integration_entries": [
+    "observeActualBootstrapBindings",
+    "verifyActualRejectedData",
+    "verifyActualCurrentEvent"
+  ],
+  "native_entries_registered": false,
+  "actual_metadata": null,
+  "controls_run": false,
+  "Node_Source_capture_run": false,
+  "native_compiler_parser_AST_formatter_run": false,
+  "original_output_present": false,
+  "expected_output_authored": false,
+  "runtime_or_SDK_qualified": false,
+  "default_selection_changed": false,
+  "Main_changed": false
+}

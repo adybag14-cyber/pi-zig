@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "status": "source_only_control_corrective_unrun",
+  "predecessor": "028d81f0b0464f0a25c07f04653793eed8a0e9df",
+  "review": "Async message-derived finite e42 control findings; final successor not yet reviewed",
+  "corrections": [
+    "Keep first actual fatal identity without overwriting owned probe duplicate on unexpected multiple retirement",
+    "Assert native invocation frame restored before terminal observations",
+    "Own fatal reason independently while raw-reading fixture numeric coercion count",
+    "Retain all prior four causal profiles and exact fresh-generation/suppression assertions"
+  ],
+  "payload": [
+    {
+      "path": "src/native_auth_resource_cleanup_controls.zig",
+      "bytes": 9683,
+      "sha256": "69E614D18FE857C1295EB5223A8CAD3C3037EC2A5E3199754E639686B4A82308"
+    }
+  ],
+  "preserved": [
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 39115,
+      "sha256": "BC1E67C32C174FAB92C5D84AEF85574347CA4E0BF0772D178E3F5CFC75C2CC09"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 24487,
+      "sha256": "5E70174C422F79463DC68BD16BEAD5CFAEE410D75B71E02462C2F17B0392B754"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prepared.json",
+      "bytes": 5797,
+      "sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prerequisite-prepared.json",
+      "bytes": 1028,
+      "sha256": "18F417260D9090C194AC59CA31E7F91F88DB2F206CCD2BFE82CACC6DB13EB0AD"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/completion-retirement-controls-prepared.json",
+      "bytes": 2091,
+      "sha256": "A20151BA340AE146FBC3815CE4FCCBAEE557952A0BFDAEC6C41E246E1015F412"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/completion-reload-controls-prepared.json",
+      "bytes": 2068,
+      "sha256": "683623D6F0A5C7A016698A27423362B60237C346122651A5ABC0401E993B6234"
+    }
+  ]
+}

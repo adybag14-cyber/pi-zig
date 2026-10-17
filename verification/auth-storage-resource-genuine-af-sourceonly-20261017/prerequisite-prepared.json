@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_DOCUMENTED_VM_PREREQUISITE_NOT_EXECUTION",
+  "product_control_checkpoint": "32a2200475d42930ad6fe37b15e63d9bfa23f0d8",
+  "original_prepared_sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6",
+  "payload": [
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/CRITICAL-VM-PREREQUISITE.md",
+      "bytes": 2236,
+      "sha256": "C0C9F6A74A720E77BEEE2AF95D9FD95FE7446CB54A39CEB482D9CE9DFC0261F7"
+    }
+  ],
+  "product_and_control_bytes_unchanged": true,
+  "Main_DA14_tagged_DATA_qualification": false,
+  "required_semantics": "Separately reviewed AF1116/Bfb current-producer and AF THROW DATA semantics; Root cumulative C composition, never flags cleared",
+  "historical_qualifying_component": "44616396656e3a0b708ea7795614de09cfad7bd6",
+  "historical_component_runtime_acceptance_sha256": "9775E77535B0D73CCF9A7088999FC8EF994DBDBBC825F6F83402BDF6F7009EF0",
+  "execution_authorized": false,
+  "new_jobs": 0
+}

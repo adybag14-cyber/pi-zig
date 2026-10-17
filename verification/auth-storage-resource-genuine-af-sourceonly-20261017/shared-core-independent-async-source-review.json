@@ -1,0 +1,386 @@
+{
+  "schema": 1,
+  "status": "FINITE SOURCE CORE CLOSED; uncompiled/unrun",
+  "reviewer": "async_c_review_resume",
+  "candidate": "733517fb9670ad92f556141a5d3ede069ea2423d",
+  "manifest_sha256": "3244593F82045F95F7FBA1B885C2D255E908F565010F0483F0E5E8E4B8935C23",
+  "core_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "test_sha256": "E1998519D030B8F66366E4ACAF1BC0596B7D3A502F19FC25BAB663F285570C45",
+  "scope": [
+    "native_sdk_owned_completion.zig full finite core",
+    "native_sdk_owned_completion_test.zig eight prepared declarations",
+    "actual Engine NativeInvocation, pending/capture provenance and Scope layouts read as prerequisites"
+  ],
+  "findings": [],
+  "source_checks": [
+    "Inactive init records link only at stable Completion address; pop before finish or Await escapes",
+    "Initial thrown Action and historical/new captured-only diagnostics are DATA; no flag or private tag authority",
+    "Actual VM pending or independently retained NativeInvocation fatal is event authority",
+    "Only actual pending produced during an owned release receives private allocation qualification against its pre-release unsigned generation span",
+    "Selected reason held outside pending/captured slots during per-root retirement; first actual fatal promotes ordinary and remains selected",
+    "Scope roots emptied and consumed in original inline32/overflow or ArrayList order",
+    "Recorded AF action read before retirement; pending entry checked before private action lookup; recorded thrown DATA stays in real AF state",
+    "Eight static declaration names match manifest exactly; real finalizer/caught rejected Promise DATA/FailingAllocator/sole-owned reason-chain controls inspected"
+  ],
+  "documentation_clarity_note": "OWNED-COMPLETION initial no-private-generation sentence should say no classification of preceding body-operation generations. The later per-release pending-only qualification paragraph states the implemented contract correctly; owner notified for documentation-only successor.",
+  "limits": [
+    "No management adapter closure from this receipt; Body owns that separate review",
+    "No Auth/package adapter closure; their actual scopes must be adapted and reviewed independently",
+    "Protected DA14/A79 C baseline is not AF1116 THROW-DATA runtime qualification; Root must compose current required AF/Bfb semantics without whole-file rollback",
+    "No Source caller capture, actual metadata count, GPA sweep, runtime correctness, full SDK/bootstrap, default activation or process absence claim",
+    "Finite cleanup assumes terminating native finalizers and caller diagnostic suppression/current-producer contract; active Completion must not be copied and must finish exactly once"
+  ],
+  "static_core_declarations": 8,
+  "executed": null,
+  "execution_authorized": null,
+  "main_modified": null,
+  "protected_and_payload_rows_checked": 69,
+  "pin_drift": [],
+  "pins": [
+    {
+      "path": "build.zig",
+      "sha256": "49601DAF29805C8424D06BF9E36CE8C63D35F32B798C75F32287E1A266E0D58D",
+      "length": 351439
+    },
+    {
+      "path": "src/extensions/native_sdk_management_http.zig",
+      "sha256": "A59F39BF40B03E31A1D8A1DB2679B0DDB49D4BEBA400794DEF3EC549A035390C",
+      "length": 24419
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "sha256": "4A3D019DC9766CB54AC483865CCE0AAC26111B54F696182FD91BB6FD2BA2F5A9",
+      "length": 3246
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "sha256": "9897BA74A70E2AB187757A9583C897093C2309E72EB797C43EEC824FFBB389C6",
+      "length": 7451
+    },
+    {
+      "path": "src/native_sdk_management_http_test.zig",
+      "sha256": "D20AEF5FF34904CC1C460C0B7920E4381E46FC24E52733BF0A78BCBE648EE712",
+      "length": 26664
+    },
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "sha256": "7C0A999D79421CEE28231F199C1246D028CDB42A957B8DDD513F522F14168B21",
+      "length": 13442
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "length": 11357
+    },
+    {
+      "path": "src/native_sdk_owned_completion_test.zig",
+      "sha256": "E1998519D030B8F66366E4ACAF1BC0596B7D3A502F19FC25BAB663F285570C45",
+      "length": 17475
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/README.md",
+      "sha256": "FD2399C00A65785304DED9673BB80594FE42876069B2E83809E68B87D6F862C4",
+      "length": 5242
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
+      "sha256": "86F74DFAC4E39225D9B78443EB23A64BDB8DD125995FB9C97A392A6756456728",
+      "length": 6669
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
+      "sha256": "53DAF99A60DF66B18C43E75D7399E843F166DF8FD64978353BF18390E6C58BA5",
+      "length": 6203
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/observe-management-http.mjs",
+      "sha256": "A569E94643E0F4437B3148829BA116C0C4BF75636ABD97F41D84E3A4A656E54A",
+      "length": 6411
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/reference-input.mjs",
+      "sha256": "6BD5ED0A3F251E6AB588FFE4DF34FF243A6B68A64B5D6F6531A0A8766CD69E35",
+      "length": 452
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/management-http.ts",
+      "sha256": "2195B345FDD5C607F87A55B93E7D00C6D70D7DCFE2989B08BBD9F39B529A756A",
+      "length": 3004
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/management-http.test.ts.txt",
+      "sha256": "2B0E2F0E179C2DDBE4AA91540728265D8703167F482375E519AEBE459C4F406B",
+      "length": 2659
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "length": 1069
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
+      "sha256": "8C4F6B5EA888B610EEFDB7A34F0C228C26DCE4C1DD0062F3B46657F277E5AF83",
+      "length": 10429
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
+      "sha256": "48A2CEEF2FF7FD32861E84CCE4A5AEE3E09486097B74E90ACFE39FCDFDC391CC",
+      "length": 20120
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-048-core-provenance-negative.json",
+      "sha256": "BE760415CD80B9A9A2076EDB40F230F7B2ED16DE89F661E4EE9FCDAA0D24584E",
+      "length": 23673
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-fb8-descriptor-review-negative.json",
+      "sha256": "2E14F780EBE2FC567CEED3C098F3A8B7F679387384541EB202A68EBBD09D4491",
+      "length": 25361
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-c827-release-order-negative.json",
+      "sha256": "E4ADF366B7AA32340AB554182CC6FDF5BD1EAC03EDADD4CF39108D7A2C2451DA",
+      "length": 26165
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "length": 93573
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "length": 7826
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "length": 4809
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "length": 3430
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "length": 5566
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "length": 5615
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "length": 6692
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "length": 163154
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "sha256": "59A6AF908B1A67AF1BFA25EE9B19F1F3E17ABD82CBDC646C6294F9330618E1E0",
+      "length": 36355
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "sha256": "E479DB781EA8EF2A7C3ABC0E2541EECBC63D30C4585F3504682B856842B4B9CE",
+      "length": 22497
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "sha256": "6E2CC076EE61546349D986B93093C11A06CAD8E627ED0254D7431B7112BE86C1",
+      "length": 20907
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_loader_assembly.zig",
+      "sha256": "BBD9D48B4268EC6DD3CEEDFE0116F2CE24971982A1D89AB0D8403EC35C6706EF",
+      "length": 6282
+    },
+    {
+      "path": "src/extensions/native_sdk_package_assembly.zig",
+      "sha256": "C8B4B69784B982AE4C9F9233272E85C6369B144FFB3F4A6FD928B2AF374DAD13",
+      "length": 7938
+    },
+    {
+      "path": "src/extensions/native_sdk_package_concurrency.zig",
+      "sha256": "24E3D077494CE8FC38B7EFCFE005DD186DF762AB984267809CA025BE5DAFC98A",
+      "length": 4395
+    },
+    {
+      "path": "src/extensions/native_sdk_package_transport.zig",
+      "sha256": "FEE3E1D05ACDDCBDF92C910BF64252FF4543687AE9A0C8BB4FE8B01B6ACB8283",
+      "length": 14884
+    },
+    {
+      "path": "src/extensions/native_typebox_production_graph.zig",
+      "sha256": "BABB14FFA26A4F770B84339F50F8131AB2A4BC0F9B34B7669C687AEA876C4676",
+      "length": 1310
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "sha256": "4690317E1B5CD9AC028BBBA232A1CFC99B6A1ED82B2F2ECFD12BC7C60A620FFB",
+      "length": 2325
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "sha256": "66BFB9D9437390A00CCC68537945C65A703A6DB9BF09240FE91817405CF4DFA1",
+      "length": 11751
+    },
+    {
+      "path": "src/extensions/native_sdk_ai_imports.zig",
+      "sha256": "1E32E4B76B082D7D0C03FD288119DC3202DF3709AFD7D6AF551165B619FC52B3",
+      "length": 2859
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_production.zig",
+      "sha256": "E8F032BE1F6D81211366AEAE81B27B8228E64172C1FA7B20D581AA1F7C36E351",
+      "length": 40706
+    },
+    {
+      "path": "src/extensions/native_sdk_session_ai_assembly.zig",
+      "sha256": "0E2F25F98C718A5966382E62DAB46BD7F1D8378A83B13A6EE11A1980140A2B57",
+      "length": 2716
+    },
+    {
+      "path": "src/extensions/native_sdk_session_platform_composition.zig",
+      "sha256": "C9C23661F0D38EC59077B01BD92472A4C84E2594995CBB9C5015FC1B6EF7742C",
+      "length": 1341
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "sha256": "245926CB542A7E95977FFEB501139C001FE29C01826EFD28AF42CFB93AF706C2",
+      "length": 10081
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54",
+      "length": 5203
+    },
+    {
+      "path": "src/extensions/native_sdk_configuration_production.zig",
+      "sha256": "64EEC1229C9CE7C4E14CB7687F70B28975B5D8D774B9B0C4E5B9C6A43A061B2A",
+      "length": 16760
+    },
+    {
+      "path": "src/extensions/native_sdk_shell_production.zig",
+      "sha256": "D95A67FD0BF3636345F0B38E853AAB1B71AA2A5A4CE0809C4E59CCA207EA9129",
+      "length": 16932
+    },
+    {
+      "path": "src/extensions/native_resolve_config_value_production.zig",
+      "sha256": "85674AE345C763A5BB15EF7C32E1D419C526100803F5968561887DC06CFB84CE",
+      "length": 13594
+    },
+    {
+      "path": "src/extensions/native_web_fetch.zig",
+      "sha256": "B9862A61715D17A0D60DD85772DC122495112498B26547C698F989AD53A68CD8",
+      "length": 20400
+    },
+    {
+      "path": "src/extensions/native_process.zig",
+      "sha256": "6D37238A8DC6A7760D2D9DA21E4395FE2916AF80B667A2F83B51C026BECEF5A0",
+      "length": 5955
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2",
+      "length": 18014
+    },
+    {
+      "path": "src/extensions/node_url.zig",
+      "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8",
+      "length": 12179
+    },
+    {
+      "path": "src/extensions/commonjs.zig",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "length": 17895
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "length": 125917
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "65D3F685042D07F5DA04680B5E63E64816C00330B6F128E96B77C5D51633C426",
+      "length": 252606
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "95EAD70D4C953B0E9AA3A1D71D8AC1D41EF71BA0C138AECA04F9A159582BF301",
+      "length": 455641
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "DAAC6E0A83095102CDD67A9224218259610D7121EF0CD377B1A8F1F24688CA6B",
+      "length": 172219
+    },
+    {
+      "path": "src/native_sdk_session_production_test.zig",
+      "sha256": "953F689457732A1131C5E7D56F5C7DDE45C9A905305AB3316D13264C6009243B",
+      "length": 5798
+    },
+    {
+      "path": "src/native_sdk_factory_production_test.zig",
+      "sha256": "E291B3857A4D02AAA1AE2C0B9E3401380BB9C6754C310106DFBA4EEE301475DA",
+      "length": 4519
+    },
+    {
+      "path": "src/native_agent_full_async_test.zig",
+      "sha256": "8CBF333AF3A5059F443D1F5A335A2FA9D1C8D65DEA887C9505B2E93772C589D5",
+      "length": 1961
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-factory-production-4954.json",
+      "sha256": "EBA5A58F5A33C7675E11CF7A931DCE06EBB9D9DE25E59CEAD4324A58C83F3FCD",
+      "length": 17496
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-factory-production-4954.input.txt",
+      "sha256": "40CB631B4ADB9BA1949C6A2255F722E2E57C0845D48B9023DF385267D2CD03E8",
+      "length": 9899
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-prototype-original-5ab.json",
+      "sha256": "568FED2491FF6ACC777E88F07149E2A77FDB52BF5DEA00F71C9E54F84B0B93FC",
+      "length": 52166
+    },
+    {
+      "path": "src/extensions/fixtures/agent-full-methods-observer.mjs",
+      "sha256": "09AE2FEF3D5512D5A6EC201CD46BF860FFC9E095F5218F39A8DABEFAD38263C1",
+      "length": 9282
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "length": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "length": 76220
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/management-http.ts",
+      "sha256": "2195B345FDD5C607F87A55B93E7D00C6D70D7DCFE2989B08BBD9F39B529A756A",
+      "length": 3004
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/management-http.test.ts.txt",
+      "sha256": "2B0E2F0E179C2DDBE4AA91540728265D8703167F482375E519AEBE459C4F406B",
+      "length": 2659
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/authority/LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "length": 1069
+    }
+  ]
+}
