@@ -33,8 +33,8 @@
     {
       "role": "control",
       "path": "verification/jiti-once-utilities-sourceonly-20261017/README.md",
-      "size": 6140,
-      "sha256": "43277D6CB8CFE7C6B5E9AB96FFF30DBB7B523FFFC923035374E010367A2ACC7C"
+      "size": 6695,
+      "sha256": "22FDEDF0AFE07FFB58DA98AF51DF8035D7F4683A07EB722A22FC8A98D34D73EC"
     },
     {
       "role": "dependency",
@@ -87,14 +87,14 @@
     {
       "role": "dependency",
       "path": "src/extensions/native_jiti_colors.zig",
-      "size": 4826,
-      "sha256": "DB52800B2F0843FD15FD52425308501223C3470C8D953170F2B09FBBEA6BCBA5"
+      "size": 5656,
+      "sha256": "819FC8FF6B5EDE56717B2F0A5DB5A5062DA0B7EC281F90DAFD331748FDE3C70E"
     },
     {
       "role": "dependency",
       "path": "src/extensions/native_jiti_utils.zig",
-      "size": 12479,
-      "sha256": "2B8A1196A378977CE5ED9A19849C248BCF3D05CED17816491F58E5011D1CA333"
+      "size": 13169,
+      "sha256": "126351AEF7838A4B47A687A92568EE9E15BA933BC45E1FBD6527FCED9DE44288"
     },
     {
       "role": "dependency",
@@ -176,5 +176,7 @@
     }
   ],
   "required_lazy_provider_source_closed": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399/B07763D8/AuthFailure16CD",
-  "required_lazy_provider_intake_still_required": true
+  "required_lazy_provider_intake_still_required": true,
+  "finite_initialization_source_closed": "2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed",
+  "historical_719_seal_sha256": "7F9894CEF719BE103A433E42DA278E4FFC8F648176DEE6BDC7E82F02AB3CF2A2"
 }

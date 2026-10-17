@@ -92,3 +92,7 @@ are not yet available as one qualified runtime graph. No Node/generator/fmt/
 AST/compiler/native job, Source capture, default selection or expected output
 exists. Prior Source53/44/15/48 proofs and current loader/profile source units
 are untouched by this additive unit.
+
+## Finite initialization event successor
+
+Source-closed 2c57e50d adds immediate actual pending-success normalization to colors/utils initialization. The shared composer and its controls are byte unchanged. See jiti-init-pending-sourceonly-20261017 for actual-delegating ordinary/fresh-OOM controls; none have run. Historical 3fff and 719 seals are retained verbatim. This local dependency seal does not authorize copying older Pathe/MLLY/profile/Engine/C bytes over Root; the minimal Root intake pins its actual preserved dependencies independently.
