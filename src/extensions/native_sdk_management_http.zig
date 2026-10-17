@@ -221,6 +221,32 @@ fn captureSince(engine: *em.Engine, generation: u64) anyerror {
     _ = p.guard(engine, generation, js.capture(engine)) catch |err| return err;
     unreachable;
 }
+fn copyDescriptorBody(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom, descriptor: *const c.JSPropertyDescriptor) !void {
+    try s.engine.checkNativeEntry();
+    if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) return;
+    var generation = s.engine.native_allocation_generation;
+    const value = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_GetProperty(s.engine.context, boxed, atom))));
+    generation = s.engine.native_allocation_generation;
+    if (c.JS_DefinePropertyValue(s.engine.context, result, atom, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E) < 0) return captureSince(s.engine, generation);
+    s.engine.checkNativeEntry() catch |err| {
+        _ = p.guard(s.engine, generation, @as(anyerror!c.JSValue, err)) catch |current| return current;
+        unreachable;
+    };
+}
+fn copyDescriptor(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom) !void {
+    var descriptor: c.JSPropertyDescriptor = undefined;
+    const generation = s.engine.native_allocation_generation;
+    const found = c.JS_GetOwnProperty(s.engine.context, &descriptor, boxed, atom);
+    if (found < 0) return captureSince(s.engine, generation);
+    if (found == 0) return s.engine.checkNativeEntry();
+    // Capture the actual Get/copy outcome BEFORE descriptor field releases.
+    // Neither caught DATA nor a new ordinary finalizer overwrites Source A.
+    var completion = owned.Completion.initVoid(s.engine, copyDescriptorBody(s, result, boxed, atom, &descriptor));
+    completion.release(descriptor.value);
+    completion.release(descriptor.getter);
+    completion.release(descriptor.setter);
+    return completion.finishVoid();
+}
 fn spreadInit(s: *Scope, initial: c.JSValue) !c.JSValue {
     const result = try s.object();
     if (nullish(initial)) return result;
@@ -233,21 +259,7 @@ fn spreadInit(s: *Scope, initial: c.JSValue) !c.JSValue {
     defer c.JS_FreePropertyEnum(s.engine.context, names, count);
     try s.engine.checkNativeEntry();
     for (names[0..count]) |entry| {
-        var descriptor: c.JSPropertyDescriptor = undefined;
-        generation = s.engine.native_allocation_generation;
-        const found = c.JS_GetOwnProperty(s.engine.context, &descriptor, boxed, entry.atom);
-        if (found < 0) return captureSince(s.engine, generation);
-        if (found == 0) { try s.engine.checkNativeEntry(); continue; }
-        defer s.engine.freeValue(descriptor.value);
-        defer s.engine.freeValue(descriptor.getter);
-        defer s.engine.freeValue(descriptor.setter);
-        try s.engine.checkNativeEntry();
-        if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
-        generation = s.engine.native_allocation_generation;
-        const value = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_GetProperty(s.engine.context, boxed, entry.atom))));
-        generation = s.engine.native_allocation_generation;
-        if (c.JS_DefinePropertyValue(s.engine.context, result, entry.atom, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E) < 0) return captureSince(s.engine, generation);
-        try s.engine.checkNativeEntry();
+        try copyDescriptor(s, result, boxed, entry.atom);
     }
     return result;
 }

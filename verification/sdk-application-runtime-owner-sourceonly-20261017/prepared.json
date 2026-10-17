@@ -23,9 +23,9 @@
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
-      "length": 23706,
-      "sha256": "A6157F07B15003DA16F372A7D8B994DB7CDB53C51FD6A7027C0C1D3035512850",
-      "git_blob": "d3fa4eb610d429a2bfa7804561c91aacc6730bec"
+      "length": 24342,
+      "sha256": "3E6A88FE74938C44632D1E83D78B22879EDEED8F159C3548C2280D0991A4C406",
+      "git_blob": "e420956fc6b208663d9494ae43eb5a23ffd9fcec"
     },
     {
       "path": "src/extensions/native_sdk_runtime_imports.zig",
@@ -41,9 +41,9 @@
     },
     {
       "path": "src/native_sdk_management_http_test.zig",
-      "length": 23558,
-      "sha256": "076869F013E51AC895BDA21FF86529EBC9F33A316CA54FB08DD71FF8053D6683",
-      "git_blob": "de1f780ad624af771d7fade36c2de08526d67f6f"
+      "length": 26664,
+      "sha256": "D20AEF5FF34904CC1C460C0B7920E4381E46FC24E52733BF0A78BCBE648EE712",
+      "git_blob": "eb58d584eccee66b5ce04c7ea39d85f1f5856dfd"
     },
     {
       "path": "src/native_sdk_application_native_test.zig",
@@ -53,9 +53,9 @@
     },
     {
       "path": "src/extensions/native_sdk_owned_completion.zig",
-      "length": 11240,
-      "sha256": "61949B41830AD2E7FCDB3AEA5CECDE7E8E269C5A96BBED73011CC938CB3D3D50",
-      "git_blob": "7b39b6fabc4bf8a1a82a94738166fd4d2d2e051f"
+      "length": 11320,
+      "sha256": "9F9E53F715727B406E418A33E32EB878575BBD7F95B9583837F205117BABBAD7",
+      "git_blob": "b5dbf77889ea3e627493ec767b0d0299947485f4"
     },
     {
       "path": "src/native_sdk_owned_completion_test.zig",
@@ -67,9 +67,9 @@
   "owned": [
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/README.md",
-      "length": 5243,
-      "sha256": "C8E970A1711439962A5C180EEDE44771BFAF8385C4AA80E8D1E185A76C4E6705",
-      "git_blob": "2d44083125d060c18a5a2751f6ef5b36a143215f"
+      "length": 5242,
+      "sha256": "FD2399C00A65785304DED9673BB80594FE42876069B2E83809E68B87D6F862C4",
+      "git_blob": "86906cf1a074543434a6bd906c6cd3d4722e679f"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
@@ -79,9 +79,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
-      "length": 6204,
-      "sha256": "B6A3851C281D3D9B92ED5A7A03B131AB483DA95BF4B3719CEACCE56E4F95BC8F",
-      "git_blob": "055c4ded41bba329145beb5fdc6e9ab0a2d9ba88"
+      "length": 6203,
+      "sha256": "53DAF99A60DF66B18C43E75D7399E843F166DF8FD64978353BF18390E6C58BA5",
+      "git_blob": "96ee52705621eee39765c6236456a72a1bb51a48"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/observe-management-http.mjs",
@@ -115,9 +115,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
-      "length": 8961,
-      "sha256": "89BA1827E7AB67BF723A9EBA97EC9F19C75CC6AFD059081AE1E20FB73E4539AF",
-      "git_blob": "196e04bcc649cbd89069866ddf7ce8b95e6b8a5d"
+      "length": 9811,
+      "sha256": "FE447592058A034C4D6DE8CA11999089F447C7B6B97A85B13874457C96AEB495",
+      "git_blob": "2b322c095daccb68b16a8a5ce607d280a5d25b00"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
@@ -130,6 +130,12 @@
       "length": 23673,
       "sha256": "BE760415CD80B9A9A2076EDB40F230F7B2ED16DE89F661E4EE9FCDAA0D24584E",
       "git_blob": "d56639243a4d81565a968b2662e34497b0c7bbcd"
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-fb8-descriptor-review-negative.json",
+      "length": 25361,
+      "sha256": "2E14F780EBE2FC567CEED3C098F3A8B7F679387384541EB202A68EBBD09D4491",
+      "git_blob": "5c3d72aa7ded493b13d03728dab6c67aa82cebb6"
     }
   ],
   "protected": [
@@ -451,7 +457,8 @@
     "SDK management HTTP signal spread preserves own keys getters and preflight outside try",
     "SDK management HTTP Source throw survives ordinary sole-holder cleanup while actual fatal promotes",
     "SDK management HTTP native owner pending entry wins before validation and GPA",
-    "SDK management HTTP default expression temporaries retire before later signal getter"
+    "SDK management HTTP default expression temporaries retire before later signal getter",
+    "SDK management HTTP actual Proxy descriptor retirement preserves Source reason or fatal promotion"
   ],
   "original_caller_rows": 21,
   "native_tests_executed": false,
@@ -539,5 +546,12 @@
     "layout_sha256": "130333B38F5150EEE50F58259D39D29AAC4088E5BB7282296105F39658074E87",
     "relocations_sha256": "8928A70AD67AF10C61BCF45169E4FAB8C26052A3DBFFAA8D3782E9E7A136A4E2",
     "reference_byte_receipt": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0"
+  },
+  "management_descriptor_retirement_correction": {
+    "initRecorded_pending_before_action_lookup": true,
+    "actual_proxy_soleholder_control_prepared": true,
+    "negative_manifest": "2E14F780EBE2FC567CEED3C098F3A8B7F679387384541EB202A68EBBD09D4491",
+    "negative_source": "fb8a5be9bf1cdc047f162bbb20e453b17c2f5711",
+    "outcome_recorded_before_descriptor_fields": true
   }
 }

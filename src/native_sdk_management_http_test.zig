@@ -271,3 +271,40 @@ test "SDK management HTTP default expression temporaries retire before later sig
     try std.testing.expectEqual(@as(usize, 1), emission.finalizers);
     try std.testing.expect(maximum_observed_retirement and maximum_holder == null);
 }
+var descriptor_holder: ?c.JSValue = null;
+fn takeDescriptorHolder(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const value = descriptor_holder orelse return error.RequiredSoleDescriptorHolder;
+    descriptor_holder = null;
+    return value;
+}
+test "SDK management HTTP actual Proxy descriptor retirement preserves Source reason or fatal promotion" {
+    for ([_]bool{ false, true }) |fatal_cleanup| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try setup(engine);
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        const root = try s.own(c.JS_GetGlobalObject(engine.context));
+        try s.put(root, "actualManagementHttp", try s.own(try @import("extensions/native_sdk_management_http.zig").create(engine)));
+        const original = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        const cleanup = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        if (fatal_cleanup) c.JS_SetUncatchableError(engine.context, cleanup);
+        try s.put(root, "ownedDescriptorOriginal", original);
+        var emission: CleanupEmission = .{ .engine = engine, .reason = cleanup };
+        descriptor_holder = try cleanupToken(&emission);
+        defer { if (descriptor_holder) |value| engine.freeValue(value); descriptor_holder = null; }
+        try s.put(root, "takeOwnedDescriptorHolder", try s.own(try @import("extensions/native_node_function.zig").createArrow(engine, "takeOwnedDescriptorHolder", 0, takeDescriptorHolder, &.{})));
+        const source =
+            \\globalThis.descriptorSeen=undefined;globalThis.descriptorFetchCalls=0;globalThis.fetch=()=>{descriptorFetchCalls++;return{status:200}};const signal=new AbortController().signal;const init=new Proxy({},{ownKeys(){return['owned']},getOwnPropertyDescriptor(){return{value:takeOwnedDescriptorHolder(),enumerable:true,configurable:true,writable:true}},get(target,key){if(key==='signal')return signal;throw ownedDescriptorOriginal}});try{await actualManagementHttp.fetchWithRetry('owned',init,{maxRetries:0})}catch(reason){globalThis.descriptorSeen=reason}
+        ;
+        if (fatal_cleanup) {
+            try std.testing.expectError(error.JavaScriptException, engine.evalModule(source, "actual-management-descriptor-fatal.mjs"));
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, cleanup, engine.captured_exception orelse return error.RequiredDescriptorFatal));
+            try std.testing.expect(c.JS_IsUndefined(try s.global("descriptorSeen")));
+        } else {
+            const value = try engine.evalModule(source, "actual-management-descriptor-ordinary.mjs"); engine.freeValue(value);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, try s.global("descriptorSeen")));
+        }
+        try std.testing.expect(s.equal(try s.global("descriptorFetchCalls"), c.JS_NewInt32(engine.context, 0)));
+        try std.testing.expectEqual(@as(usize, 1), emission.finalizers);
+        try std.testing.expect(descriptor_holder == null);
+    }
+}

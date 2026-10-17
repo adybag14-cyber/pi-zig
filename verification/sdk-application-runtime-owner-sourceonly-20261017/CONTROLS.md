@@ -1,6 +1,6 @@
 # Prepared controls and activation gates
 
-All controls and original inputs in this unit are UNRUN. There are nine driver plus one imported private-state executable native test declarations in native_sdk_management_http_test.zig, filtered only by `SDK management HTTP`. The full application helper has no fake positive declaration.
+All controls and original inputs in this unit are UNRUN. There are ten driver plus one imported private-state executable native test declarations in native_sdk_management_http_test.zig, filtered only by `SDK management HTTP`. The full application helper has no fake positive declaration.
 
 1. Real native AF identity/cache/GC + unchanged 21-row original-function caller: default transport retries, every status, cancel Await ordering, ignored cancel rejection, preflight raw reason, overall/per-attempt signal identity, zero retries/raw object/Error/string/undefined reasons, mutable Number/Math callee/getter order, Set.has before status and Error.hasInstance failure inside catch.
 2. Actual Error with uncatchable bit used as rejected body-cancel DATA. The retry enters Source's empty catch; the bit remains set and no actual pending event is fabricated.

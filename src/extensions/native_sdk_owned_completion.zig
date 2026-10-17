@@ -113,6 +113,7 @@ pub const Completion = struct {
     }
     pub fn initRecorded(s: anytype, result: anyerror!void, state: c.JSValue) Completion {
         result catch |err| return initVoid(s.engine, err);
+        s.engine.checkNativeEntry() catch |err| return initVoid(s.engine, err);
         const selected = p.body.action(s, state) catch |err| return initVoid(s.engine, err);
         var self = initAction(s.engine, selected);
         self.recorded_throw = selected == .thrown;
