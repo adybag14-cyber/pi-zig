@@ -1,0 +1,18 @@
+{
+  "contract": "Pinned QuickJS JS_ParseJSON requires buf[len]==0; dupeZ borrowedreference, deferfree, original length/content and fullcomparison unchanged",
+  "c_engine_main_modified": false,
+  "baseline": "0679619135d2a2a83e1a5e60cf5ba040373d1c0b",
+  "causal_controls": [
+    "Owned reference slice lacking trailingzero; actualJS_ParseJSON readsnewterminator",
+    "Zero-length/malformed/validJSON preserveactualparser result",
+    "InjecteddupeZ GPA failure propagates OOM and freesnothingunowned"
+  ],
+  "product": {
+    "path": "src/native_agent_prompt_async_test.zig",
+    "bytes": 1977,
+    "sha256": "EABCF5FD4BF9D9EAAF6DAD9EF27F7A748B7274D918A8690215488C5F851FAEAC"
+  },
+  "status": "JSON-caller-sentinel-source-correction-unrun",
+  "jobs_launched": false,
+  "expected_files": []
+}
