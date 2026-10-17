@@ -1,0 +1,581 @@
+{
+  "status": "actual_native_import_or_require_declaration_private_assembly_source_only_prepared_unrun",
+  "source_base": "5f3112e68cf668f3a510afef8093574a88efbec1",
+  "native_import_declaration_api_revision": 1,
+  "canonical_assembly_api_revision": 3,
+  "products": [
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "bytes": 17409,
+      "sha256": "F14CEF4F1CC98D498015786945B701B40CF3DC14FD2E585140C25211C0C36B21"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "bytes": 17893,
+      "sha256": "E3C66D944E6B12667FB1EED3F0E07731E81FC86691CB17C8BF809CD3DD8E7B98"
+    },
+    {
+      "path": "src/native_jiti_native_import_controls.zig",
+      "bytes": 9922,
+      "sha256": "6973BE16220AEA6024390C0C70A8AF5B3F075FA597875B4E2380BC354DA12DBD"
+    }
+  ],
+  "controls_and_authority": [
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/require.ts",
+      "bytes": 4759,
+      "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/retained-ca974-require.zig.txt",
+      "bytes": 15301,
+      "sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/retained-callable-source.zig.txt",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/authority/utils.ts",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/causal-inputs.json",
+      "bytes": 3733,
+      "sha256": "7440ACF6DFCC7EFA7F4673AC750316A5B39C1B66C39FFF3E8CAA1606B9CD81E5"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/original-input.mjs",
+      "bytes": 2984,
+      "sha256": "FBA1263F528954B67B7BB7E71DCF725BA46E253E6F9927902DB127BC4A04D3F9"
+    },
+    {
+      "path": "verification/jiti-native-import-declaration-sourceonly-20261017/README.md",
+      "bytes": 5790,
+      "sha256": "7DA8DD4B56ECD644474646C006C4EA1EF3A07347F381304A3DE731E15A7D3970"
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "src/extensions/commonjs.zig",
+      "bytes": 17895,
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 86450,
+      "sha256": "9C8B67612AE1511A1C5A2BE01F7DFBEA46384D2D316C98CACC875E6A8C3C15E0"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+      "bytes": 31162,
+      "sha256": "D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+      "bytes": 43669,
+      "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+      "bytes": 11577,
+      "sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-module-policy-4954.expected.json",
+      "bytes": 62017,
+      "sha256": "0DDCAB7DC649CBA5AC7147C722CE0AB98C9465E9B74290F57CD92C1A1FE89F27"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+      "bytes": 9345,
+      "sha256": "94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3"
+    },
+    {
+      "path": "src/extensions/module_resolver.zig",
+      "bytes": 28650,
+      "sha256": "7791250D05F7EAFD2E902AE93E7EAB6F1F5482497F702E7E6BB97E534F67A673"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_extension_import_adapter.zig",
+      "bytes": 27312,
+      "sha256": "4016ADA1056C51568647F17AAC82C41C2648871F79EFE8FACDAE5DDD74EAE6E3"
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_eval.zig",
+      "bytes": 3627,
+      "sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA"
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35118,
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "bytes": 21535,
+      "sha256": "7F03DCA8994C856B94F2BF8B3E302E6EB27D47949ED6C016EF707A2140F8A8CF"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "bytes": 2159,
+      "sha256": "CC26BB99EFC7E85FFDBA654432BE1C731349FB91EFCACACFD467057EF1A1055D"
+    },
+    {
+      "path": "src/extensions/native_jiti_escape_regexp.zig",
+      "bytes": 2518,
+      "sha256": "596050570E5FAF55438F1EE5D1C477387115EEE6EB7A9BEFF97AC781C02855DA"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "bytes": 14057,
+      "sha256": "B2BC9291B41F6B432E887B41F23D4D36E55CDEB6852D68EF8FAD0B9CB4A35638"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "bytes": 14886,
+      "sha256": "AF011548FEAD1038784193641611BEE13AD8076C34EC5CF29A57483C0C2577B2"
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "bytes": 4691,
+      "sha256": "C01BD6D4DB4E23D00D297192EC7436464DB09E575917B6C846CD4C8186353422"
+    },
+    {
+      "path": "src/extensions/native_jiti_interop.zig",
+      "bytes": 8837,
+      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cache.zig",
+      "bytes": 4815,
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D"
+    },
+    {
+      "path": "src/extensions/native_jiti_options.zig",
+      "bytes": 7054,
+      "sha256": "9CA32E5C7ABA46C0145C6D0E7EB7316DC855909CB17F60F81471CBF6E743BB77"
+    },
+    {
+      "path": "src/extensions/native_jiti_resolve.zig",
+      "bytes": 13578,
+      "sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712"
+    },
+    {
+      "path": "src/extensions/native_mlly_syntax.zig",
+      "bytes": 3884,
+      "sha256": "EB08DF47846926FD15121656C1EF177ECDE7A65AD785BCFCAD9A819805ADEEAE"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 5900,
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 13642,
+      "sha256": "A67A8A9472C0A7EC4A3CDB9C0ABEFD3CF3BB4BBB46BD2EA17462847FDE73FEF4"
+    },
+    {
+      "path": "src/extensions/native_node_module_paths.zig",
+      "bytes": 4599,
+      "sha256": "51473D87313D909D5B2E33FC00BADBAAA724966BD57F8462A88D885B85310EDF"
+    },
+    {
+      "path": "src/extensions/typescript.zig",
+      "bytes": 24307,
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9"
+    },
+    {
+      "path": "src/native_jiti_canonical_assembly_controls.zig",
+      "bytes": 12143,
+      "sha256": "F949826200C03B8D9B8A9610847D11DB6B4D99B88CCF9EC9343588EAF4F800A6"
+    },
+    {
+      "path": "src/native_jiti_core_factory_controls.zig",
+      "bytes": 6742,
+      "sha256": "9A38A2E141F5B5763579C99E4CDC76A6E4460D361AFCD8C0CD5C8F79E76A2C19"
+    },
+    {
+      "path": "src/native_jiti_eval_module_controls.zig",
+      "bytes": 7148,
+      "sha256": "6F80BD2DB976DFD7CF34E82BA23873E4D18C66183527206B1C146521F021A669"
+    },
+    {
+      "path": "src/native_jiti_frontend_fallback_controls.zig",
+      "bytes": 7618,
+      "sha256": "00762D8D947D04CD670A8D9D892BE62F9A99FFA7E70F6EBDEA528D4023B40654"
+    },
+    {
+      "path": "src/native_jiti_import_rejected_data_controls.zig",
+      "bytes": 10252,
+      "sha256": "0C5656F5083A86704BF3E61897A85CA43AB7BD1A9C0E5620F4F494DC03B56DDB"
+    },
+    {
+      "path": "src/native_jiti_interop_cache_controls.zig",
+      "bytes": 15398,
+      "sha256": "45D6594D69282CE94FFACAFD4AE1D82E996451A3592ADEB5653A9F2150B7CB28"
+    },
+    {
+      "path": "src/native_jiti_options_controls.zig",
+      "bytes": 8483,
+      "sha256": "AFD2953D671308C613ECD1F3950CAF2611BE98390E31B1F0C344C45D3AFDF403"
+    },
+    {
+      "path": "src/native_mlly_syntax_controls.zig",
+      "bytes": 2135,
+      "sha256": "AB62456728E7FF9237EA13B5362F3C5805DD1C71540B1F3DD05931A2A47486AD"
+    },
+    {
+      "path": "src/native_node_module_constructor_controls.zig",
+      "bytes": 13284,
+      "sha256": "4C09A9B2804EDDF1A5703D7B7D04266FB557AAB7ECFAE01EB7B1200728D91C2F"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2232232,
+      "sha256": "15CB5267575DA7A6EB6DB7A952E81D9C21777C0D0DE5DECAA666C51612F52A50"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 78368,
+      "sha256": "9E734ED5B17A977128888A8BF3192D9987FCCB897829560E9812F8DB04800784"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/require.ts",
+      "bytes": 4759,
+      "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-bbf7-prepared.json",
+      "bytes": 18653,
+      "sha256": "3A3F417E15AB63176FF86E1C3D7909DA8B75BB186DA4F6539ABEBDA17D894D9C"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-require-resolve-prepared.json",
+      "bytes": 9836,
+      "sha256": "6748DD648B371148C7488195B5D74DA692DDA136D10DE9E463DFD695BFE98372"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/causal-inputs.json",
+      "bytes": 3711,
+      "sha256": "E5AEB4E39B194769AFC07D59F9AE66C605C9867459D96F643204F65D0423BCB9"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/pending-platform-input.mjs",
+      "bytes": 749,
+      "sha256": "B7FD942A18641D26054D77F92F85D5BA414B27EE90BB268A1413B1E2F547E736"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/prepared.json",
+      "bytes": 19515,
+      "sha256": "06BEC369E1D638FF4514242A3C18DAC9DB50957E604A83BD946B7DB970704DA3"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/README.md",
+      "bytes": 7001,
+      "sha256": "C7940F0C9F0B95143481DA8456204EDA4DED6F2CC57F3735F4D539153AA27E90"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/cache.ts",
+      "bytes": 2872,
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-primary.json",
+      "bytes": 981,
+      "sha256": "2E694F21C1288D5AFFD1FD57DFFFF2CB7D024C32E5765B717962BC07744F0DB7"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-index.js.txt",
+      "bytes": 469,
+      "sha256": "AF2065AD2F2D2B91946C2121E21618DAA3F4B18787AF9226F8C953CA54CCA2F5"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-license.txt",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-package.json.txt",
+      "bytes": 732,
+      "sha256": "6D7AE0240943E38CB8A8DD35242584B2C3415A2BCA83AA86497D3B7B1BEF08EF"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/pnpm-lock.yaml",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/transform.ts",
+      "bytes": 796,
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/utils.ts",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/causal-inputs.json",
+      "bytes": 6073,
+      "sha256": "DF3C24BB92CC6CCF84F9C53E83C27ABFF25EC4A2D8245956D5B35DE72B38C75C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/DEPENDENCIES.md",
+      "bytes": 5900,
+      "sha256": "0D769495D44EF10A2945F0F0BC5F532FD986B4AA1428E461730AC3FA7C9C4990"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/eval-boundary-input.mjs",
+      "bytes": 2834,
+      "sha256": "72D000F2F4485B28FD5133686662A4E4C2DA061912DFE14A70D801C22970E652"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/prepared.json",
+      "bytes": 12151,
+      "sha256": "0B39F4C13000900796A624C6BC649C0FD17952682729A8505A41C9F99D98994C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/README.md",
+      "bytes": 7377,
+      "sha256": "A2C873C217096F4D03A53DA2E567AE61F3B569A5A5A38BF18309722CB92A03EC"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/REVIEWED-LIVE-IMPORT-API.md",
+      "bytes": 6211,
+      "sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-52f214-prepared.json",
+      "bytes": 20727,
+      "sha256": "3DFABEC53C8428121F87277F3F99247BD176437FC09E67D10413C9B84D5C257F"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-65c-eval_frontend.zig.txt",
+      "bytes": 12432,
+      "sha256": "B8FC56E214C7E89949B623958176EFCF88C3D9F7AA94735784803EE6B9B252A4"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/authority/retained-callable-source.zig.txt",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/causal-inputs.json",
+      "bytes": 2470,
+      "sha256": "3C277F49122C03F44930DD4476FD61AB5D2958B7E0E7F73D79B2EADA95C43BC4"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/original-input.mjs",
+      "bytes": 2865,
+      "sha256": "B64F499824516695DB84F52D84BF0590A9624F8752D7A91EBA74F6CD83A902BD"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/prepared.json",
+      "bytes": 21122,
+      "sha256": "6FD1029036785DE2964E739977F1AF0CD20DA30E9C3F5DE8ABD7B92DE56DAF7A"
+    },
+    {
+      "path": "verification/jiti-frontend-fallback-sourceonly-20261017/README.md",
+      "bytes": 6029,
+      "sha256": "325B9F2ABC090EB141A6494F0950E52EBAB3EF96864CF1624DF25BEBD9CC2CE2"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/authority/retained-926-native_jiti_import.zig.txt",
+      "bytes": 3225,
+      "sha256": "D48CC79AC8A6F5B8DC45F495C35BAFE48CA87F89BD09D7F6DBEA7B8E5D5C3CE6"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/authority/retained-926-source-review.json",
+      "bytes": 658,
+      "sha256": "F4B7D195550F5F779EA52159435AF0FA2FA3B8958BFFC97B162410C87F60D03A"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/original-input.mjs",
+      "bytes": 1140,
+      "sha256": "2BAD278723B5FDD0066EB60B08989F4B835BEF7A5CD807BB31F684DBB22BB781"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/prepared.json",
+      "bytes": 16978,
+      "sha256": "042F21FAC99C8A2C0045846C183AA58B27A684A858B01C7C8540099D02A268D6"
+    },
+    {
+      "path": "verification/jiti-import-rejected-data-sourceonly-20261017/README.md",
+      "bytes": 5381,
+      "sha256": "62B1940C4F8EE3888CD7AFF7635B328EBB364895A0764E4E73C1061D0C0F65AD"
+    },
+    {
+      "path": "verification/jiti-options-factory-sourceonly-20261017/options-reference-input.mjs",
+      "bytes": 6094,
+      "sha256": "5D54790A117F582156F606D4C284AE46491FBC184CC3AFFD414AB711A906223E"
+    },
+    {
+      "path": "verification/jiti-options-factory-sourceonly-20261017/prepared.json",
+      "bytes": 7977,
+      "sha256": "AEBF39959BAE425B0EAA752C5615E9D3EA1E64AD02F81F94AFE4353EF03F451B"
+    },
+    {
+      "path": "verification/jiti-transformed-eval-sourceonly-20261017/causal-inputs.json",
+      "bytes": 6066,
+      "sha256": "28730689DE663C2EFD03B2E99AE1A35AE9D69D78F115D9C2F3562ED96BCAA802"
+    },
+    {
+      "path": "verification/jiti-transformed-eval-sourceonly-20261017/prepared.json",
+      "bytes": 7857,
+      "sha256": "E9871626F9500C4C98E2DA6129C1F2E394370CB7A286F941AC4482CABFA7E58C"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/dependency-archive-manifest.json",
+      "bytes": 6681,
+      "sha256": "E3D8C723E152E38EA110B781DDD6E8C44F31A69E218F194225B48E6DA12064AC"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/dependency-pins.json",
+      "bytes": 617,
+      "sha256": "F83B427E34D3206F7D38DC1F816733FB0F018D86446A3B3316E0D2AFA0F78235"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/index.mjs.txt",
+      "bytes": 75345,
+      "sha256": "170C8B21A62ADF2803AD08305B5B7D1C0AD1C45DB35136F5FFAA4572BF961656"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/mlly-1.8.2.tgz",
+      "bytes": 52640,
+      "sha256": "74B820E74909A6EB6378E03139BFA2D1C2A6660D16CFD83E1A00F71E89AC7AD7"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/package.json.txt",
+      "bytes": 1425,
+      "sha256": "E521AB6B33AC365A19E0EC4463A7FB831C39218DCB0A34625C55CB4233B84F5E"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/authority/primary.json",
+      "bytes": 2892,
+      "sha256": "AAA5693584D5463C0A74B1873937A7957F43A5A9003BAC9F7450210DC8CFB794"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/original-input.mjs",
+      "bytes": 4202,
+      "sha256": "547F71224B4E7EEFB279CAC232DD2126377171AC427A4A4BB48761E92C85F261"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/prepared.json",
+      "bytes": 14276,
+      "sha256": "F293C24549D23D76D62DE8015D31F09EA264FBD17E0A78AF6B23F4D46CBE5B79"
+    },
+    {
+      "path": "verification/mlly-syntax-sourceonly-20261017/README.md",
+      "bytes": 2734,
+      "sha256": "8C4DCA71A9E5886696040BCAA38AA2AEDB1C8D2C52378EC866F18E14F33D6E93"
+    }
+  ],
+  "original_host_native_import_algorithm_unchanged": true,
+  "real_ordinary_name": "nativeImportOrRequire",
+  "length": 3,
+  "constructible": true,
+  "uses_actual_same_seventeen_input_captures": true,
+  "canonical_frontend_manual_slot_removed": true,
+  "no_new_graph2_or_c3_abi_required": true,
+  "ctx_native_import_must_be_actual_capability": true,
+  "actual_subject_complete": false,
+  "native_entrypoints_prepared": 8,
+  "native_fault_probe_installers": 1,
+  "causal_rows": 13,
+  "expected_path": "src/extensions/fixtures/jiti-native-import-declaration.expected.json",
+  "expected_written": false,
+  "source_executed": false,
+  "native_executed": false,
+  "formatter_executed": false,
+  "compiler_executed": false,
+  "default_selected": false
+}

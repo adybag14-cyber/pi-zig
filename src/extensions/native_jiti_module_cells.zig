@@ -61,7 +61,6 @@ pub const FrontendDependencies = struct {
     performance: c.JSValue,
     debug: c.JSValue,
     transform: c.JSValue,
-    native_import_or_require: c.JSValue,
 };
 pub const RequireDependencies = struct {
     resolve_inputs: resolving.Inputs,
@@ -235,14 +234,18 @@ pub fn linkCanonical(engine: *v.em.Engine, cells: *const Cells, supplied: Canoni
     try canonicalPreflight(engine, supplied);
     record.phase = .linking;
     errdefer record.phase = .declared;
-    const actual_require = try requiring.create(engine, requireInputs(supplied.require, record.frontend));
+    const actual_inputs = requireInputs(supplied.require, record.frontend);
+    const actual_require = try requiring.create(engine, actual_inputs);
     defer engine.freeValue(actual_require);
+    const actual_native_import = try requiring.createNativeImportOrRequire(engine, actual_inputs);
+    defer engine.freeValue(actual_native_import);
     var core_imports = empty(core.Imports);
     inline for (std.meta.fields(CoreDependencies)) |field| @field(core_imports, field.name) = @field(supplied.core, field.name);
     core_imports.jiti_require = actual_require; core_imports.eval_module = record.frontend;
     var frontend_imports = empty(frontend.Imports);
     inline for (std.meta.fields(FrontendDependencies)) |field| @field(frontend_imports, field.name) = @field(supplied.frontend, field.name);
     frontend_imports.jiti_require = actual_require;
+    frontend_imports.native_import_or_require = actual_native_import;
     frontend_imports.nested_create_jiti = record.core;
     frontend_imports.eval_module_self = record.frontend;
     // Fixed/precharged record slots; duplications cannot allocate or fail.

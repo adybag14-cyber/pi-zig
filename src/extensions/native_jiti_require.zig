@@ -27,8 +27,43 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     const roots = inputRoots(engine, inputs);
     return @import("native_node_module_callable.zig").create(engine, "jitiRequire", 3, true, exported, &roots);
 }
+/// Actual second require.ts declaration, ordinary/constructible length3.
+/// Same real module input captures/interop callbacks; no importer alias, AF,
+/// Promise adoption or replacement jitiRequire implementation is supplied.
+pub fn createNativeImportOrRequire(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
+    const roots = inputRoots(engine, inputs);
+    return @import("native_node_module_callable.zig").create(engine, "nativeImportOrRequire", 3, true, exportedNativeImport, &roots);
+}
 fn exported(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return require(engine, fromRoots(engine, roots), arg(args, 0), arg(args, 1), arg(args, 2));
+}
+fn exportedNativeImport(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    // ModuleCallable suppresses diagnostics before this private callback. A
+    // previous diagnostic capture is not a new exception event in this call.
+    const prior = engine.captured_exception;
+    engine.captured_exception = null;
+    defer {
+        if (engine.captured_exception == null) engine.captured_exception = prior else if (prior) |reason| engine.freeValue(reason);
+    }
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+    const generation = engine.native_allocation_generation;
+    const result = nativeImportOrRequire(engine, fromRoots(engine, roots), arg(args, 0), arg(args, 1), arg(args, 2)) catch |err| {
+        if (err == error.JavaScriptException) {
+            if (engine.captured_exception == null and c.JS_HasException(engine.context)) _ = v.js.capture(engine);
+            const reason = engine.captured_exception orelse return error.MissingNativeImportCurrentCapturedReason;
+            if (c.JS_IsUncatchableError(reason)) return err;
+            try body.rethrowRecognizedAllocation(engine, reason, generation);
+        }
+        return err;
+    };
+    // A public host hook can leave an actual event despite a success value.
+    // Do not return/publish a success over that still-pending VM event.
+    if (c.JS_HasException(engine.context)) {
+        const pending = c.JS_GetException(engine.context);
+        engine.freeValue(result);
+        return engine.checked(c.JS_Throw(engine.context, pending));
+    }
+    return result;
 }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 /// Borrowed inputs/ctx/id/opts; owned exact raw result or Promise. Ordinary
