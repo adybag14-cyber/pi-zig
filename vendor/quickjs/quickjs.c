@@ -442,6 +442,7 @@ struct JSRuntime {
 typedef struct JSStackFrame {
     struct JSStackFrame *prev_frame; /* NULL if first stack frame */
     JSValue cur_func; /* current function, JS_UNDEFINED if the frame is detached */
+    JSValue receiver; /* owned actual call receiver; marked for coroutine frames */
     JSValue *arg_buf; /* arguments */
     JSValue *var_buf; /* variables */
     struct JSVarRef **var_refs; /* references to arguments or local variables */
@@ -626,6 +627,7 @@ struct JSContext {
     int interrupt_counter;
 
     struct list_head loaded_modules; /* list of JSModuleDef.link */
+    bool pi_link_preparing; /* private, synchronous link transaction only */
 
     /* if NULL, RegExp compilation is not supported */
     JSValue (*compile_regexp)(JSContext *ctx, JSValueConst pattern,
@@ -1205,6 +1207,7 @@ struct JSObject {
             struct JSFunctionBytecode *function_bytecode;
             JSVarRef **var_refs;
             JSObject *home_object; /* for 'super' access */
+            bool is_top_level; /* runtime eval/module closure, never inferred from its name */
         } func;
         struct { /* JS_CLASS_C_FUNCTION: 12/20 bytes */
             JSContext *realm;
@@ -1252,6 +1255,9 @@ typedef struct JSCallSiteData {
     JSValue filename;
     JSValue func;
     JSValue func_name;
+    JSValue receiver;
+    bool strict_visibility;
+    bool top_level;
     bool native;
     bool constructor;
     int line_num;
@@ -1574,6 +1580,43 @@ static JSValue JS_CreateAsyncFromSyncIterator(JSContext *ctx,
 static void js_c_function_data_finalizer(JSRuntime *rt, JSValueConst val);
 static void js_c_function_data_mark(JSRuntime *rt, JSValueConst val,
                                     JS_MarkFunc *mark_func);
+/* Binding a sloppy JS receiver is part of activation, including functions that
+   do not read `this`. Retain that same value for later CallSite capture. */
+static JSValue js_callsite_bind_receiver(JSContext *ctx, JSValueConst receiver,
+                                        bool strict)
+{
+    if (strict || JS_IsObject(receiver))
+        return JS_DupValue(ctx, receiver);
+    if (JS_IsNull(receiver) || JS_IsUndefined(receiver))
+        return JS_DupValue(ctx, ctx->global_obj);
+    return JS_ToObject(ctx, receiver);
+}
+
+/* This new owned root must not replace an already pending first reason during
+   frame retirement. Coroutine retirement uses its RT-only equivalent below. */
+static void js_callsite_release_receiver(JSContext *ctx, JSStackFrame *sf)
+{
+    JSValue saved = JS_UNDEFINED;
+    JSValue receiver = sf->receiver;
+    bool pending = JS_HasException(ctx);
+    if (pending)
+        saved = JS_GetException(ctx);
+    sf->receiver = JS_UNDEFINED;
+    JS_FreeValue(ctx, receiver);
+    if (pending) {
+        JS_FreeValue(ctx, JS_GetException(ctx));
+        JS_Throw(ctx, saved);
+    }
+}
+
+static JSValue js_pi_link_failure_free(JSContext *ctx, JSValue owned)
+{
+    JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+    JS_FreeValue(ctx, owned);
+    JS_FreeValue(ctx, JS_GetException(ctx));
+    return JS_Throw(ctx, first);
+}
+
 static JSValue js_call_c_function_data(JSContext *ctx, JSValueConst func_obj,
                                        JSValueConst this_val,
                                        int argc, JSValueConst *argv, int flags);
@@ -1601,6 +1644,7 @@ static void js_set_uncatchable_error(JSContext *ctx, JSValueConst val,
 
 static JSValue js_new_callsite(JSContext *ctx, JSCallSiteData *csd);
 static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFrame *sf);
+static bool js_callsite_is_forwarding_frame(JSStackFrame *frame);
 static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const char *filename, int line_num, int col_num);
 static int _JS_AddIntrinsicCallSite(JSContext *ctx);
 
@@ -2977,6 +3021,7 @@ JSContext *JS_NewContextRaw(JSRuntime *rt)
     ctx->error_stack_trace_limit = js_int32(10);
     ctx->pi_legacy_arguments_poison = JS_UNDEFINED;
     init_list_head(&ctx->loaded_modules);
+    ctx->pi_link_preparing = false;
     // TODO(bnoordhuis) use getrandom() etc.
     ctx->random_state = rt->pi_deterministic_time
         ? (uint64_t)rt->pi_deterministic_seed + 1
@@ -6567,6 +6612,21 @@ JSValue JS_NewObject(JSContext *ctx)
 static void js_function_set_properties(JSContext *ctx, JSValue func_obj,
                                        JSAtom name, int len)
 {
+    if (ctx->pi_link_preparing) {
+        JSValue text;
+        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
+                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
+            return;
+        text = JS_AtomToString(ctx, name);
+        if (JS_IsException(text) || JS_HasException(ctx)) {
+            js_pi_link_failure_free(ctx, text);
+            return;
+        }
+        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,
+                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))
+            return;
+        return;
+    }
     /* ES6 feature non compatible with ES5.1: length is configurable */
     JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),
                            JS_PROP_CONFIGURABLE);
@@ -6777,7 +6837,9 @@ static JSValue js_call_c_function_data(JSContext *ctx, JSValueConst func_obj,
     sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;
     sf->cur_func = unsafe_unconst(func_obj);
     sf->arg_count = argc;
+    sf->receiver = (flags & JS_CALL_FLAG_CONSTRUCTOR) ? JS_UNDEFINED : js_dup(this_val);
     ret = s->func(ctx, this_val, argc, arg_buf, s->magic, vc(s->data));
+    js_callsite_release_receiver(ctx, sf);
     rt->current_stack_frame = sf->prev_frame;
     return ret;
 }
@@ -6903,7 +6965,9 @@ static JSValue js_call_c_closure(JSContext *ctx, JSValueConst func_obj,
     sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;
     sf->cur_func = unsafe_unconst(func_obj);
     sf->arg_count = argc;
+    sf->receiver = (flags & JS_CALL_FLAG_CONSTRUCTOR) ? JS_UNDEFINED : js_dup(this_val);
     ret = s->func(ctx, this_val, argc, arg_buf, s->magic, s->opaque);
+    js_callsite_release_receiver(ctx, sf);
     rt->current_stack_frame = sf->prev_frame;
 
     return ret;
@@ -8412,6 +8476,10 @@ static int native_error_stack_hook(JSContext *ctx, JSValueConst error, int phase
                                        line, column, flags,
                                        rt->native_error_stack_opaque);
     rt->native_error_stack_hook_active = false;
+    if (ctx->pi_link_preparing && JS_HasException(ctx)) {
+        js_pi_link_failure_free(ctx, saved);
+        return -1;
+    }
     if (result >= 0) {
         JS_FreeValue(ctx, JS_GetException(ctx));
         JS_Throw(ctx, saved);
@@ -8432,6 +8500,7 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
     JSObject *p;
     JSFunctionBytecode *b;
     bool backtrace_barrier, has_prepare, has_filter_func;
+    bool strict_visibility = false;
     JSRuntime *rt;
     JSCallSiteData csd[64];
     uint32_t i;
@@ -8519,6 +8588,8 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
             backtrace_flags &= ~JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL;
             continue;
         }
+        if (js_callsite_is_forwarding_frame(sf))
+            continue;
 
         p = JS_VALUE_GET_OBJ(sf->cur_func);
         b = NULL;
@@ -8532,6 +8603,8 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
 
         if (has_prepare) {
             js_new_callsite_data(ctx, &csd[i], sf);
+            strict_visibility |= sf->is_strict_mode;
+            csd[i].strict_visibility = strict_visibility;
         } else {
             /* func_name_str is UTF-8 encoded if needed */
             func_name_str = get_func_name(ctx, sf->cur_func);
@@ -8591,6 +8664,7 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
             JS_FreeValue(ctx, csd[k].filename);
             JS_FreeValue(ctx, csd[k].func);
             JS_FreeValue(ctx, csd[k].func_name);
+            JS_FreeValue(ctx, csd[k].receiver);
         }
         JSValueConst args[] = {
             error_obj,
@@ -8667,8 +8741,21 @@ static int capture_error_stack(JSContext *ctx, JSValueConst error,
 JSValue JS_NewError(JSContext *ctx)
 {
     JSValue obj = JS_NewObjectClass(ctx, JS_CLASS_ERROR);
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
+        return js_pi_link_failure_free(ctx, obj);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
+    if (ctx->pi_link_preparing) {
+        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 ||
+            JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        return obj;
+    }
     if (prepare_native_error_stack(ctx, obj) < 0 ||
         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
                                 NULL, 0, 0, 0) < 0 ||
@@ -8690,27 +8777,54 @@ static JSValue JS_MakeError2(JSContext *ctx, JSErrorEnum error_num,
         obj = JS_NewObjectProtoClass(ctx, ctx->native_error_proto[error_num],
                                      JS_CLASS_ERROR);
     }
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))
+        return js_pi_link_failure_free(ctx, obj);
     if (JS_IsException(obj))
         return JS_EXCEPTION;
-    if (prepare_native_error_stack(ctx, obj) < 0 ||
+    if (ctx->pi_link_preparing) {
+        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
+                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+    } else if (prepare_native_error_stack(ctx, obj) < 0 ||
         native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,
                                 NULL, 0, 0, 0) < 0) {
+        if (ctx->pi_link_preparing)
+            return js_pi_link_failure_free(ctx, obj);
         JS_FreeValue(ctx, obj);
         return JS_EXCEPTION;
     }
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return js_pi_link_failure_free(ctx, obj);
     msg = JS_NewString(ctx, message);
+    if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        JS_FreeValue(ctx, msg);
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     if (JS_IsException(msg))
         msg = JS_NewString(ctx, "Invalid error message");
     if (!JS_IsException(msg)) {
-        JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
-                               JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,
+                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {
+            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+            JS_FreeValue(ctx, obj);
+            return JS_Throw(ctx, first);
+        }
     }
     if (add_backtrace || ctx->rt->native_error_stack_hook) {
         if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {
+            if (ctx->pi_link_preparing)
+                return js_pi_link_failure_free(ctx, obj);
             JS_FreeValue(ctx, obj);
             return JS_EXCEPTION;
         }
     }
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return js_pi_link_failure_free(ctx, obj);
     return obj;
 }
 
@@ -8732,6 +8846,11 @@ JS_ThrowError2(JSContext *ctx, JSErrorEnum error_num, bool add_backtrace,
     JSValue obj;
 
     obj = JS_MakeError(ctx, error_num, add_backtrace, fmt, ap);
+    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     if (unlikely(JS_IsException(obj))) {
         /* out of memory: throw JS_NULL to avoid recursing */
         obj = JS_NULL;
@@ -8976,6 +9095,26 @@ static inline __exception int js_poll_interrupts(JSContext *ctx)
     } else {
         return 0;
     }
+}
+
+static int js_pi_link_poll(JSContext *ctx)
+{
+    if (!ctx->pi_link_preparing)
+        return 0;
+    if (JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx))
+        return -1;
+    return 0;
+}
+
+static int js_pi_link_recursion(JSContext *ctx)
+{
+    if (js_pi_link_poll(ctx))
+        return -1;
+    if (ctx->pi_link_preparing && js_check_stack_overflow(ctx->rt, 0)) {
+        JS_ThrowStackOverflow(ctx);
+        return -1;
+    }
+    return 0;
 }
 
 /* return -1 (exception) or true/false */
@@ -9568,6 +9707,13 @@ static JSValue JS_GetPropertyInternal(JSContext *ctx, JSValueConst obj,
 JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop)
 {
     return JS_GetPropertyInternal(ctx, this_obj, prop, this_obj, false);
+}
+
+/* Borrowed base/receiver/atom; owned Get completion, including Proxy traps. */
+JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
+                               JSAtom prop, JSValueConst receiver)
+{
+    return JS_GetPropertyInternal(ctx, base, prop, receiver, false);
 }
 
 static JSValue JS_ThrowTypeErrorPrivateNotFound(JSContext *ctx, JSAtom atom)
@@ -17065,26 +17211,32 @@ static JSValue js_reflect_apply(JSContext *ctx, JSValueConst this_val,
 static JSValue js_reflect_construct(JSContext *ctx, JSValueConst this_val,
                                    int argc, JSValueConst *argv);
 
-/* Read-only Source host caller observation. Skip only the three explicit
- * forwarding builtins; an ordinary native callback boundary yields null. */
+/* The actual forwarding builtins tailcall in V8 and add no visible frame.
+ * Match native callable identity and cproto, never guest-visible names. */
+static bool js_callsite_is_forwarding_frame(JSStackFrame *frame)
+{
+    JSObject *function;
+    if (!JS_IsObject(frame->cur_func))
+        return false;
+    function = JS_VALUE_GET_OBJ(frame->cur_func);
+    if (function->class_id != JS_CLASS_C_FUNCTION)
+        return false;
+    if (function->u.cfunc.cproto == JS_CFUNC_generic)
+        return function->u.cfunc.c_function.generic == js_function_call ||
+            function->u.cfunc.c_function.generic == js_reflect_apply ||
+            function->u.cfunc.c_function.generic == js_reflect_construct;
+    if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
+        return function->u.cfunc.c_function.generic_magic == js_function_apply;
+    return false;
+}
+
+/* Read-only Source host caller observation. An ordinary native callback
+ * boundary still yields null; only actual forwarding builtins are skipped. */
 JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
 {
     JSStackFrame *frame = ctx->rt->current_stack_frame;
-    while (frame && JS_IsObject(frame->cur_func)) {
-        JSObject *function = JS_VALUE_GET_OBJ(frame->cur_func);
-        bool forwarding = false;
-        if (function->class_id == JS_CLASS_C_FUNCTION) {
-            if (function->u.cfunc.cproto == JS_CFUNC_generic)
-                forwarding = function->u.cfunc.c_function.generic == js_function_call ||
-                    function->u.cfunc.c_function.generic == js_reflect_apply ||
-                    function->u.cfunc.c_function.generic == js_reflect_construct;
-            else if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
-                forwarding = function->u.cfunc.c_function.generic_magic == js_function_apply;
-        }
-        if (!forwarding)
-            break;
+    while (frame && js_callsite_is_forwarding_frame(frame))
         frame = frame->prev_frame;
-    }
     *identity = (uintptr_t)frame;
     if (!frame || frame->is_strict_mode ||
         !JS_GetFunctionBytecode(frame->cur_func))
@@ -17421,6 +17573,32 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
     ret = JS_GetIterator2(ctx, obj, method);
     JS_FreeValue(ctx, method);
     return ret;
+}
+
+JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
+{
+    JSValue result, reason, cleanup, displaced;
+    bool fatal;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    result = JS_GetIterator(ctx, obj, true);
+    if (!JS_HasException(ctx))
+        return result;
+    reason = JS_GetException(ctx);
+    fatal = JS_IsUncatchableError(reason);
+    JS_FreeValue(ctx, result);
+    while (JS_HasException(ctx)) {
+        cleanup = JS_GetException(ctx);
+        if (!fatal && JS_IsUncatchableError(cleanup)) {
+            displaced = reason;
+            reason = cleanup;
+            fatal = true;
+        } else {
+            displaced = cleanup;
+        }
+        JS_FreeValue(ctx, displaced);
+    }
+    return JS_Throw(ctx, reason);
 }
 
 /* return *pdone = 2 if the iterator object is not parsed */
@@ -18015,8 +18193,11 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
 
     p = JS_VALUE_GET_OBJ(func_obj);
     p->u.func.function_bytecode = b;
+    p->u.func.is_top_level = false;
     p->u.func.home_object = NULL;
     p->u.func.var_refs = NULL;
+    if (js_pi_link_poll(ctx))
+        goto fail;
     if (b->closure_var_count) {
         var_refs = js_mallocz(ctx, sizeof(var_refs[0]) * b->closure_var_count);
         if (!var_refs)
@@ -18025,6 +18206,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
         for(i = 0; i < b->closure_var_count; i++) {
             JSClosureVar *cv = &b->closure_var[i];
             JSVarRef *var_ref;
+            if (js_pi_link_poll(ctx))
+                goto fail;
             switch(cv->closure_type) {
             case JS_CLOSURE_LOCAL:
                 /* reuse the existing variable reference if it already exists */
@@ -18050,6 +18233,8 @@ static JSValue js_closure2(JSContext *ctx, JSValue func_obj,
     return func_obj;
  fail:
     /* bfunc is freed when func_obj is freed */
+    if (ctx->pi_link_preparing)
+        return js_pi_link_failure_free(ctx, func_obj);
     JS_FreeValue(ctx, func_obj);
     return JS_EXCEPTION;
 }
@@ -18091,6 +18276,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
     b = JS_VALUE_GET_PTR(bfunc);
     func_obj = JS_NewObjectClass(ctx, func_kind_to_class_id[b->func_kind]);
     if (JS_IsException(func_obj)) {
+        if (ctx->pi_link_preparing)
+            return js_pi_link_failure_free(ctx, bfunc);
         JS_FreeValue(ctx, bfunc);
         return JS_EXCEPTION;
     }
@@ -18104,6 +18291,8 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
         name_atom = JS_ATOM_empty_string;
     js_function_set_properties(ctx, func_obj, name_atom,
                                b->defined_arg_count);
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        goto fail;
 
     if (b->func_kind & JS_FUNC_GENERATOR) {
         JSValue proto;
@@ -18115,22 +18304,32 @@ static JSValue js_closure(JSContext *ctx, JSValue bfunc,
         else
             proto_class_id = JS_CLASS_GENERATOR;
         proto = JS_NewObjectProto(ctx, ctx->class_proto[proto_class_id]);
+        if (ctx->pi_link_preparing && (JS_IsException(proto) || JS_HasException(ctx))) {
+            js_pi_link_failure_free(ctx, proto);
+            goto fail;
+        }
         if (JS_IsException(proto))
             goto fail;
-        JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
-                               JS_PROP_WRITABLE);
+        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,
+                                            JS_PROP_WRITABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
+            goto fail;
     } else if (b->has_prototype) {
         /* add the 'prototype' property: delay instantiation to avoid
            creating cycles for every javascript function. The prototype
            object is created on the fly when first accessed */
         JS_SetConstructorBit(ctx, func_obj, true);
-        JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
-                                  JS_AUTOINIT_ID_PROTOTYPE, NULL,
-                                  JS_PROP_WRITABLE);
+        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,
+                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,
+                                             JS_PROP_WRITABLE);
+        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))
+            goto fail;
     }
     return func_obj;
  fail:
     /* bfunc is freed when func_obj is freed */
+    if (ctx->pi_link_preparing)
+        return js_pi_link_failure_free(ctx, func_obj);
     JS_FreeValue(ctx, func_obj);
     return JS_EXCEPTION;
 }
@@ -18314,6 +18513,9 @@ static JSValue js_call_c_function(JSContext *ctx, JSValueConst func_obj,
     sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;
     sf->cur_func = unsafe_unconst(func_obj);
     sf->arg_count = argc;
+    /* Native constructors receive new_target through this_obj, not a JS
+       receiver. V8's builtin construct stub uses a hole, exposed as undefined. */
+    sf->receiver = (flags & JS_CALL_FLAG_CONSTRUCTOR) ? JS_UNDEFINED : js_dup(this_obj);
     arg_buf = argv;
 
     if (unlikely(argc < arg_count)) {
@@ -18411,6 +18613,7 @@ static JSValue js_call_c_function(JSContext *ctx, JSValueConst func_obj,
         abort();
     }
 
+    js_callsite_release_receiver(ctx, sf);
     rt->current_stack_frame = sf->prev_frame;
     return ret_val;
 }
@@ -18581,6 +18784,11 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
     if (js_check_stack_overflow(rt, alloca_size))
         return JS_ThrowStackOverflow(caller_ctx);
 
+    ctx = b->realm;
+    sf->receiver = js_callsite_bind_receiver(ctx, this_obj, b->is_strict_mode);
+    if (JS_IsException(sf->receiver))
+        return JS_EXCEPTION;
+    this_obj = sf->receiver;
     sf->is_strict_mode = b->is_strict_mode;
     sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;
     arg_buf = (JSValue *)argv;
@@ -21418,6 +21626,7 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
         for(pval = local_buf; pval < sp; pval++) {
             JS_FreeValue(ctx, *pval);
         }
+        js_callsite_release_receiver(ctx, sf);
     }
     rt->current_stack_frame = sf->prev_frame;
     return ret_val;
@@ -21610,10 +21819,15 @@ static __exception int async_func_init(JSContext *ctx, JSAsyncFunctionState *s,
     JSStackFrame *sf;
     int local_count, i, arg_buf_len, n;
     size_t alloc_size;
+    JSValue receiver;
 
     sf = &s->frame;
+    sf->receiver = JS_UNDEFINED;
     p = JS_VALUE_GET_OBJ(func_obj);
     b = p->u.func.function_bytecode;
+    receiver = js_callsite_bind_receiver(b->realm, this_obj, b->is_strict_mode);
+    if (JS_IsException(receiver))
+        return -1;
     sf->is_strict_mode = b->is_strict_mode;
     sf->is_constructor = false;
     sf->cur_pc = b->byte_code_buf;
@@ -21622,10 +21836,13 @@ static __exception int async_func_init(JSContext *ctx, JSAsyncFunctionState *s,
     alloc_size = sizeof(JSValue) * max_int(local_count, 1) +
         sizeof(JSVarRef *) * b->var_ref_count;
     sf->arg_buf = js_malloc(ctx, alloc_size);
-    if (!sf->arg_buf)
+    if (!sf->arg_buf) {
+        JS_FreeValue(ctx, receiver);
         return -1;
+    }
+    sf->receiver = receiver;
     sf->cur_func = js_dup(func_obj);
-    s->this_val = js_dup(this_obj);
+    s->this_val = js_dup(receiver);
     s->argc = argc;
     sf->arg_count = arg_buf_len;
     sf->var_buf = sf->arg_buf + arg_buf_len;
@@ -21652,6 +21869,7 @@ static void async_func_mark(JSRuntime *rt, JSAsyncFunctionState *s,
 
     sf = &s->frame;
     JS_MarkValue(rt, sf->cur_func, mark_func);
+    JS_MarkValue(rt, sf->receiver, mark_func);
     JS_MarkValue(rt, s->this_val, mark_func);
     if (sf->cur_sp) {
         /* if the function is running, cur_sp is not known so we
@@ -21683,6 +21901,7 @@ static void async_func_free(JSRuntime *rt, JSAsyncFunctionState *s)
         js_free_rt(rt, sf->arg_buf);
     }
     JS_FreeValueRT(rt, sf->cur_func);
+    JS_FreeValueRT(rt, sf->receiver);
     JS_FreeValueRT(rt, s->this_val);
 }
 
@@ -21986,110 +22205,171 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     frame.arg_buf = s->native_argv;
     frame.arg_count = min_int(s->native_argc, UINT16_MAX);
     frame.is_strict_mode = true;
+    frame.receiver = js_dup(s->native_this);
     frame.cur_gc_obj = &s->header;
     ctx->rt->current_stack_frame = &frame;
     output = s->native_body(ctx, b->cpool[0], s->native_this,
         s->native_argc, vc(s->native_argv), completion, input,
         &s->native_state, action);
+    js_callsite_release_receiver(ctx, &frame);
     ctx->rt->current_stack_frame = frame.prev_frame;
     return output;
+}
+
+/* Only actual pending exceptions enter this owner. A body action payload,
+   fulfilled/rejected input or retained diagnostic is DATA even if marked. */
+typedef struct JSNativeAsyncPending {
+    bool present;
+    JSValue reason;
+} JSNativeAsyncPending;
+
+static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned)
+{
+    while (JS_HasException(ctx)) {
+        JSValue next = JS_GetException(ctx);
+        if (!owned->present) {
+            owned->present = true;
+            owned->reason = next;
+        } else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {
+            JSValue displaced = owned->reason;
+            owned->reason = next;
+            JS_FreeValue(ctx, displaced);
+        } else {
+            JS_FreeValue(ctx, next);
+        }
+    }
+}
+
+static void js_native_async_release(JSContext *ctx, JSValue value,
+                                    JSNativeAsyncPending *owned)
+{
+    js_native_async_take_pending(ctx, owned);
+    JS_FreeValue(ctx, value);
+    js_native_async_take_pending(ctx, owned);
+}
+
+static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
+                                   JSNativeAsyncPending *owned)
+{
+    JSValue state, receiver, function, resolves[2], *args;
+    int count, i;
+    js_native_async_take_pending(ctx, owned);
+    s->module = NULL;
+    if (!s->is_active)
+        return;
+    /* Detach before a native finalizer can reenter a queued reaction. */
+    s->is_active = false;
+    state = s->native_state; receiver = s->native_this;
+    function = s->native_function; args = s->native_argv;
+    count = s->native_argc;
+    resolves[0] = s->resolving_funcs[0]; resolves[1] = s->resolving_funcs[1];
+    s->native_state = s->native_this = s->native_function = JS_UNDEFINED;
+    s->native_argv = NULL; s->native_argc = 0;
+    s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
+    js_native_async_release(ctx, state, owned);
+    js_native_async_release(ctx, receiver, owned);
+    for (i = 0; i < count; i++)
+        js_native_async_release(ctx, args[i], owned);
+    js_free(ctx, args);
+    js_native_async_release(ctx, function, owned);
+    for (i = 0; i < 2; i++)
+        js_native_async_release(ctx, resolves[i], owned);
 }
 
 static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     int completion, JSValueConst input)
 {
     JSContext *ctx = s->native_ctx;
-    JSValue output, result, promise, resolving_funcs[2], ignored_funcs[2];
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    JSValue output = JS_UNDEFINED, result, promise, resolving_funcs[2], ignored_funcs[2];
     JSValue resumed_input = JS_UNDEFINED;
-    int action = -1, i, status;
+    int action = -1, i, status, resolve_index;
 
  resume_body:
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present)
+        goto rejected_event;
     action = -1;
     output = js_native_async_function_step(s, completion, input, &action);
-    JS_FreeValue(ctx, resumed_input);
+    js_native_async_release(ctx, resumed_input, &owned);
     resumed_input = JS_UNDEFINED;
-    if (JS_IsException(output))
-        goto rejected;
+    if (JS_IsException(output) && !owned.present) {
+        JS_ThrowInternalError(ctx, "Native async callback returned exception without pending reason");
+        js_native_async_take_pending(ctx, &owned);
+    }
+    if (owned.present) {
+        js_native_async_release(ctx, output, &owned);
+        output = JS_UNDEFINED;
+        goto rejected_event;
+    }
     if (action == JS_PI_AF_THROW) {
-        JS_Throw(ctx, output);
-        goto rejected;
+        /* Ordinary Source throw-completion, including old flagged DATA.
+           Do not install it as an actual producer event or clear its flag. */
+        resolve_index = 1;
+        goto settle;
     }
     if (action == JS_PI_AF_RETURN) {
-        /* Genuine AsyncFunction return: the outer capability adopts output.
-           Returning a Promise never returns that Promise's identity. */
-        result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            /* The intrinsic callback can return undefined despite a pending
-               fatal hook/enqueue reason. Retain it before any owned cleanup. */
-            JSValue error = JS_GetException(ctx);
-            JS_FreeValue(ctx, output);
-            JS_FreeValue(ctx, result);
-            js_async_function_terminate(ctx->rt, s);
-            JS_Throw(ctx, error);
-            return false;
-        }
-        JS_FreeValue(ctx, output);
-        if (JS_IsException(result))
-            goto rejected;
-        JS_FreeValue(ctx, result);
-        js_async_function_terminate(ctx->rt, s);
-        return true;
+        resolve_index = 0; /* genuine return-expression adoption */
+        goto settle;
     }
     if (action != JS_PI_AF_AWAIT) {
-        JS_FreeValue(ctx, output);
         JS_ThrowInternalError(ctx, "Invalid native async function action");
-        goto rejected;
+        js_native_async_release(ctx, output, &owned);
+        output = JS_UNDEFINED;
+        goto rejected_event;
     }
-    /* Use the same intrinsic PromiseResolve and perform_promise_then as the
-       existing bytecode Await path. No guest .then call or extra capability. */
+    /* Same intrinsic PromiseResolve/Await path, no guest .then or extra job. */
     promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&output), 0);
-    JS_FreeValue(ctx, output);
-    if (JS_IsException(promise))
+    js_native_async_release(ctx, output, &owned);
+    output = JS_UNDEFINED;
+    if (JS_IsException(promise) || owned.present) {
+        js_native_async_release(ctx, promise, &owned);
         goto await_rejected;
+    }
     if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
-        JS_FreeValue(ctx, promise);
+        js_native_async_release(ctx, promise, &owned);
         goto await_rejected;
     }
     ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
     status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));
-    JS_FreeValue(ctx, promise);
+    js_native_async_release(ctx, promise, &owned);
     for (i = 0; i < 2; i++)
-        JS_FreeValue(ctx, resolving_funcs[i]);
-    /* The shared settled-Promise helper currently leaves enqueue OOM in the
-       exception slot while returning zero. Do not lose this suspension. */
-    if (!status && !JS_HasException(ctx))
+        js_native_async_release(ctx, resolving_funcs[i], &owned);
+    if (!status && !owned.present)
         return true;
  await_rejected:
-    /* An abrupt PromiseResolve (e.g. a poisoned constructor) is thrown at
-       the actual await expression, where native catch/finally can handle it. */
-    if (!JS_IsUncatchableError(ctx->rt->current_exception)) {
-        resumed_input = JS_GetException(ctx);
+    if (!owned.present) {
+        JS_ThrowInternalError(ctx, "Native Await failed without pending reason");
+        js_native_async_take_pending(ctx, &owned);
+    }
+    if (!JS_IsUncatchableError(owned.reason)) {
+        resumed_input = owned.reason;
+        owned.present = false; owned.reason = JS_UNDEFINED;
         input = resumed_input;
         completion = JS_PI_AF_AWAIT_REJECTED;
         goto resume_body;
     }
- rejected:
-    if (JS_IsUncatchableError(ctx->rt->current_exception)) {
-        js_async_function_terminate(ctx->rt, s);
+ rejected_event:
+    if (JS_IsUncatchableError(owned.reason)) {
+        js_native_async_release(ctx, resumed_input, &owned);
+        js_native_async_retire(ctx, s, &owned);
+        JS_Throw(ctx, owned.reason); /* pending is empty; consumes owner */
         return false;
     }
-    output = JS_GetException(ctx);
-    result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
-    if (JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        JSValue error = JS_GetException(ctx);
-        JS_FreeValue(ctx, output);
-        JS_FreeValue(ctx, result);
-        js_async_function_terminate(ctx->rt, s);
-        JS_Throw(ctx, error);
+    output = owned.reason;
+    owned.present = false; owned.reason = JS_UNDEFINED;
+    resolve_index = 1;
+ settle:
+    result = JS_Call(ctx, s->resolving_funcs[resolve_index], JS_UNDEFINED, 1, vc(&output));
+    if (JS_IsException(result) && !JS_HasException(ctx))
+        JS_ThrowInternalError(ctx, "Native capability returned exception without pending reason");
+    js_native_async_release(ctx, output, &owned);
+    js_native_async_release(ctx, result, &owned);
+    js_native_async_retire(ctx, s, &owned);
+    if (owned.present) {
+        JS_Throw(ctx, owned.reason);
         return false;
     }
-    JS_FreeValue(ctx, output);
-    js_async_function_terminate(ctx->rt, s);
-    if (JS_IsException(result))
-        return false;
-    JS_FreeValue(ctx, result);
     return true;
 }
 
@@ -22298,6 +22578,7 @@ JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
     p->u.func.function_bytecode = b;
     p->u.func.var_refs = NULL;
     p->u.func.home_object = NULL;
+    p->u.func.is_top_level = false;
     /* No constructor bit, own prototype, generated JS source or bytecode. */
     name_value = JS_AtomToString(ctx, b->func_name);
     if (JS_IsException(name_value)) {
@@ -22324,10 +22605,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
     JSContext *ctx = b->realm;
     JSAsyncFunctionData *s;
-    JSValue promise, error;
-    bool fatal;
+    JSValue promise;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
     int i;
     (void)caller;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
         return JS_ThrowInternalError(ctx, "Invalid native async argument count");
     s = js_mallocz(ctx, sizeof(*s));
@@ -22360,13 +22643,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
  failed:
     /* A newly failed resolving call may have settled promise with an owned
        return/rejection value. Preserve its fatal reason over that teardown. */
-    fatal = JS_HasException(ctx) &&
-                 JS_IsUncatchableError(ctx->rt->current_exception);
-    error = fatal ? JS_GetException(ctx) : JS_UNDEFINED;
-    JS_FreeValue(ctx, promise);
+    js_native_async_release(ctx, promise, &owned);
+    js_native_async_retire(ctx, s, &owned);
     js_async_function_free(ctx->rt, s);
-    if (fatal)
-        JS_Throw(ctx, error);
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present)
+        JS_Throw(ctx, owned.reason);
     return JS_EXCEPTION;
 }
 
@@ -31480,6 +31762,8 @@ static JSExportEntry *find_export_entry(JSContext *ctx, const JSModuleDef *m,
     JSExportEntry *me;
     int i;
     for(i = 0; i < m->export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return NULL;
         me = &m->export_entries[i];
         if (me->export_name == export_name)
             return me;
@@ -31909,11 +32193,13 @@ typedef struct JSResolveState {
     int count;
 } JSResolveState;
 
-static int find_resolve_entry(JSResolveState *s,
+static int find_resolve_entry(JSContext *ctx, JSResolveState *s,
                               JSModuleDef *m, JSAtom name)
 {
     int i;
     for(i = 0; i < s->count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -2;
         JSResolveEntry *re = &s->array[i];
         if (re->module == m && re->name == name)
             return i;
@@ -31955,11 +32241,18 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
 
     *pmodule = NULL;
     *pme = NULL;
-    if (find_resolve_entry(s, m, export_name) >= 0)
+    if (js_pi_link_recursion(ctx))
+        return JS_RESOLVE_RES_EXCEPTION;
+    int found = find_resolve_entry(ctx, s, m, export_name);
+    if (found == -2)
+        return JS_RESOLVE_RES_EXCEPTION;
+    if (found >= 0)
         return JS_RESOLVE_RES_CIRCULAR;
     if (add_resolve_entry(ctx, s, m, export_name) < 0)
         return JS_RESOLVE_RES_EXCEPTION;
     me = find_export_entry(ctx, m, export_name);
+    if (ctx->pi_link_preparing && JS_HasException(ctx))
+        return JS_RESOLVE_RES_EXCEPTION;
     if (me) {
         if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
             /* local export */
@@ -31986,6 +32279,8 @@ static JSResolveResultEnum js_resolve_export1(JSContext *ctx,
             int i;
 
             for(i = 0; i < m->star_export_entries_count; i++) {
+                if (js_pi_link_poll(ctx))
+                    return JS_RESOLVE_RES_EXCEPTION;
                 JSStarExportEntry *se = &m->star_export_entries[i];
                 JSModuleDef *m1, *res_m;
                 JSExportEntry *res_me;
@@ -32051,6 +32346,9 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
     JSVarRef *var_ref = me->u.local.var_ref;
     int i;
 
+    if (js_pi_link_recursion(ctx))
+        return NULL;
+
     if (!var_ref) {
         JSObject *p = JS_VALUE_GET_OBJ(m->func_obj);
         var_ref = p->u.func.var_refs[me->u.local.var_idx];
@@ -32060,13 +32358,16 @@ static JSVarRef *js_get_local_export_var_ref1(JSContext *ctx, JSModuleDef *m,
     /* the slot is a re-exported import whose source is not linked yet: follow
        the import alias, guarding against re-export cycles like js_resolve_export1 */
     for(i = 0; i < m->import_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return NULL;
         JSImportEntry *mi = &m->import_entries[i];
         JSModuleDef *m1, *res_m;
         JSExportEntry *res_me;
 
         if (mi->var_idx != me->u.local.var_idx)
             continue;
-        if (find_resolve_entry(s, m, mi->import_name) >= 0)
+        int found = find_resolve_entry(ctx, s, m, mi->import_name);
+        if (found == -2 || found >= 0)
             return NULL;
         if (add_resolve_entry(ctx, s, m, mi->import_name) < 0)
             return NULL;
@@ -32155,10 +32456,12 @@ typedef struct GetExportNamesState {
     int exported_names_count;
 } GetExportNamesState;
 
-static int find_exported_name(GetExportNamesState *s, JSAtom name)
+static int find_exported_name(JSContext *ctx, GetExportNamesState *s, JSAtom name)
 {
     int i;
     for(i = 0; i < s->exported_names_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -2;
         if (s->exported_names[i].export_name == name)
             return i;
     }
@@ -32172,8 +32475,13 @@ static __exception int get_exported_names(JSContext *ctx,
     ExportedNameEntry *en;
     int i, j;
 
+    if (js_pi_link_recursion(ctx))
+        return -1;
+
     /* check circular reference */
     for(i = 0; i < s->modules_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         if (s->modules[i] == m)
             return 0;
     }
@@ -32183,10 +32491,14 @@ static __exception int get_exported_names(JSContext *ctx,
     s->modules[s->modules_count++] = m;
 
     for(i = 0; i < m->export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         JSExportEntry *me = &m->export_entries[i];
         if (from_star && me->export_name == JS_ATOM_default)
             continue;
-        j = find_exported_name(s, me->export_name);
+        j = find_exported_name(ctx, s, me->export_name);
+        if (j == -2)
+            return -1;
         if (j < 0) {
             if (js_resize_array(ctx, (void **)&s->exported_names, sizeof(s->exported_names[0]),
                                 &s->exported_names_size,
@@ -32205,6 +32517,8 @@ static __exception int get_exported_names(JSContext *ctx,
         }
     }
     for(i = 0; i < m->star_export_entries_count; i++) {
+        if (js_pi_link_poll(ctx))
+            return -1;
         JSStarExportEntry *se = &m->star_export_entries[i];
         JSModuleDef *m1;
         m1 = m->req_module_entries[se->req_module_idx].module;
@@ -32254,6 +32568,8 @@ static JSValue js_module_ns_autoinit(JSContext *ctx, JSObject *p, JSAtom atom,
     return JS_GetModuleNamespace(ctx, m);
 }
 
+#include "quickjs-pi-link-sort.inc"
+
 static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
 {
     JSValue obj;
@@ -32261,6 +32577,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
     GetExportNamesState s_s, *s = &s_s;
     int i, ret;
     JSProperty *pr;
+    JSPiLinkSort *link_sort = NULL;
+    size_t *ordered = NULL;
 
     obj = JS_NewObjectClass(ctx, JS_CLASS_MODULE_NS);
     if (JS_IsException(obj))
@@ -32275,6 +32593,8 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
 
     /* Resolve the exported names. The ambiguous exports are removed */
     for(i = 0; i < s->exported_names_count; i++) {
+        if (js_pi_link_poll(ctx))
+            goto fail;
         ExportedNameEntry *en = &s->exported_names[i];
         JSResolveResultEnum res;
         JSExportEntry *res_me;
@@ -32289,10 +32609,14 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
                                     en->export_name);
         }
         if (res != JS_RESOLVE_RES_FOUND) {
+            if (ctx->pi_link_preparing && JS_HasException(ctx))
+                goto fail;
             if (res != JS_RESOLVE_RES_AMBIGUOUS) {
                 /* for a re-export the binding is missing from the target
                    module, not from m; report the target and the looked-up name */
                 JSExportEntry *me = find_export_entry(ctx, m, en->export_name);
+                if (ctx->pi_link_preparing && JS_HasException(ctx))
+                    goto fail;
                 if (me && me->export_type == JS_EXPORT_TYPE_INDIRECT &&
                     me->local_name != JS_ATOM__star_) {
                     JSModuleDef *m1 =
@@ -32313,16 +32637,26 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
                 /* follow the import alias when the slot is NULL (cyclic
                    re-export of an imported binding) */
                 en->u.var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
+                if (ctx->pi_link_preparing && JS_HasException(ctx))
+                    goto fail;
             }
         }
     }
 
     /* sort the exported names */
-    rqsort(s->exported_names, s->exported_names_count,
-           sizeof(s->exported_names[0]), exported_names_cmp, ctx);
+    if (ctx->pi_link_preparing) {
+        if (js_pi_link_sort_exports(ctx, s->exported_names,
+                                    s->exported_names_count, &link_sort, &ordered))
+            goto fail;
+    } else {
+        rqsort(s->exported_names, s->exported_names_count,
+               sizeof(s->exported_names[0]), exported_names_cmp, ctx);
+    }
 
     for(i = 0; i < s->exported_names_count; i++) {
-        ExportedNameEntry *en = &s->exported_names[i];
+        ExportedNameEntry *en = &s->exported_names[ordered ? ordered[i] : (size_t)i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         switch(en->export_type) {
         case EXPORTED_NAME_NORMAL:
             {
@@ -32355,14 +32689,34 @@ static JSValue js_build_module_ns(JSContext *ctx, JSModuleDef *m)
     }
 
     js_free(ctx, s->exported_names);
+    js_pi_link_sort_free(ctx, link_sort);
+    link_sort = NULL;
 
-    JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
-                           JS_AtomToString(ctx, JS_ATOM_Module),
-                           0);
+    if (ctx->pi_link_preparing) {
+        JSValue tag = JS_AtomToString(ctx, JS_ATOM_Module);
+        if (JS_IsException(tag) || JS_HasException(ctx)) {
+            js_pi_link_failure_free(ctx, tag);
+            js_pi_link_failure_free(ctx, obj);
+            return JS_EXCEPTION;
+        }
+        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag, tag, 0);
+        if (status < 0 || JS_HasException(ctx))
+            return js_pi_link_failure_free(ctx, obj);
+    } else {
+        JS_DefinePropertyValue(ctx, obj, JS_ATOM_Symbol_toStringTag,
+                               JS_AtomToString(ctx, JS_ATOM_Module), 0);
+    }
 
     p->extensible = false;
     return obj;
  fail:
+    if (ctx->pi_link_preparing) {
+        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;
+        js_pi_link_sort_free(ctx, link_sort);
+        js_free(ctx, s->exported_names);
+        JS_FreeValue(ctx, obj);
+        return JS_Throw(ctx, first);
+    }
     js_free(ctx, s->exported_names);
     JS_FreeValue(ctx, obj);
     return JS_EXCEPTION;
@@ -32462,6 +32816,7 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
     JS_REF_COUNT(b)++;
     p->u.func.home_object = NULL;
     p->u.func.var_refs = NULL;
+    p->u.func.is_top_level = true;
     if (b->closure_var_count) {
         var_refs = js_mallocz(ctx, sizeof(var_refs[0]) * b->closure_var_count);
         if (!var_refs)
@@ -32471,6 +32826,8 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
         /* create the global variables. The other variables are
            imported from other modules */
         for(i = 0; i < b->closure_var_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             JSClosureVar *cv = &b->closure_var[i];
             JSVarRef *var_ref;
             if (cv->closure_type == JS_CLOSURE_MODULE_DECL) {
@@ -32488,12 +32845,16 @@ static int js_create_module_bytecode_function(JSContext *ctx, JSModuleDef *m)
     JS_FreeValue(ctx, bfunc);
     return 0;
  fail:
+    if (ctx->pi_link_preparing) {
+        js_pi_link_failure_free(ctx, func_obj);
+        return -1;
+    }
     JS_FreeValue(ctx, func_obj);
     return -1;
 }
 
 /* must be done before js_link_module() because of cyclic references */
-static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+static int js_create_module_function_local(JSContext *ctx, JSModuleDef *m)
 {
     bool is_c_module;
     int i;
@@ -32501,12 +32862,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
 
     if (m->func_created)
         return 0;
+    if (js_pi_link_poll(ctx))
+        return -1;
 
     is_c_module = (m->init_func != NULL);
 
     if (is_c_module) {
         /* initialize the exported variables */
         for(i = 0; i < m->export_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                return -1;
             JSExportEntry *me = &m->export_entries[i];
             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
                 var_ref = js_create_module_var(ctx, false);
@@ -32520,6 +32885,16 @@ static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
             return -1;
     }
     m->func_created = true;
+    return js_pi_link_poll(ctx);
+}
+
+static int js_create_module_function(JSContext *ctx, JSModuleDef *m)
+{
+    int i;
+    if (m->func_created)
+        return 0;
+    if (js_create_module_function_local(ctx, m) < 0)
+        return -1;
 
     /* do it on the dependencies */
 
@@ -32545,6 +32920,9 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
     JSObject *p;
     bool is_c_module;
     JSValue ret_val;
+
+    if (js_pi_link_poll(ctx))
+        return -1;
 
     if (js_check_stack_overflow(ctx->rt, 0)) {
         JS_ThrowStackOverflow(ctx);
@@ -32575,6 +32953,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
     for(i = 0; i < m->req_module_entries_count; i++) {
         JSReqModuleEntry *rme = &m->req_module_entries[i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         m1 = rme->module;
         index = js_inner_module_linking(ctx, m1, pstack_top, index);
         if (index < 0)
@@ -32598,6 +32978,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
     /* check the indirect exports */
     for(i = 0; i < m->export_entries_count; i++) {
         JSExportEntry *me = &m->export_entries[i];
+        if (js_pi_link_poll(ctx))
+            goto fail;
         if (me->export_type == JS_EXPORT_TYPE_INDIRECT &&
             me->local_name != JS_ATOM__star_) {
             JSResolveResultEnum ret;
@@ -32634,6 +33016,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
         var_refs = p->u.func.var_refs;
 
         for(i = 0; i < m->import_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             mi = &m->import_entries[i];
 #ifdef ENABLE_DUMPS // JS_DUMP_MODULE_RESOLVE
             if (check_dump_flag(ctx->rt, JS_DUMP_MODULE_RESOLVE)) {
@@ -32687,6 +33071,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
                        re-export of an imported binding) */
                     var_ref = js_get_local_export_var_ref(ctx, res_m, res_me);
                     if (!var_ref) {
+                        if (ctx->pi_link_preparing && JS_HasException(ctx))
+                            goto fail;
                         char buf2[ATOM_GET_STR_BUF_SIZE];
                         char buf3[ATOM_GET_STR_BUF_SIZE];
                         JS_ThrowSyntaxError(ctx,
@@ -32707,6 +33093,8 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
            are used when the eval function is deleted and cannot be
            initialized before in case imports are exported) */
         for(i = 0; i < m->export_entries_count; i++) {
+            if (js_pi_link_poll(ctx))
+                goto fail;
             JSExportEntry *me = &m->export_entries[i];
             if (me->export_type == JS_EXPORT_TYPE_LOCAL) {
                 var_ref = var_refs[me->u.local.var_idx];
@@ -32717,6 +33105,10 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
         /* initialize the global variables */
         ret_val = JS_Call(ctx, m->func_obj, JS_TRUE, 0, NULL);
+        if (ctx->pi_link_preparing && (JS_IsException(ret_val) || JS_HasException(ctx))) {
+            js_pi_link_failure_free(ctx, ret_val);
+            goto fail;
+        }
         if (JS_IsException(ret_val))
             goto fail;
         JS_FreeValue(ctx, ret_val);
@@ -32724,6 +33116,18 @@ static int js_inner_module_linking(JSContext *ctx, JSModuleDef *m,
 
     assert(m->dfs_ancestor_index <= m->dfs_index);
     if (m->dfs_index == m->dfs_ancestor_index) {
+        if (ctx->pi_link_preparing) {
+            JSModuleDef *scan = *pstack_top;
+            /* Poll the complete SCC before its nonallocating atomic commit.
+               Never leave half a committed SCC on an interrupt. */
+            for (;;) {
+                if (js_pi_link_poll(ctx))
+                    goto fail;
+                if (scan == m)
+                    break;
+                scan = scan->stack_prev;
+            }
+        }
         for(;;) {
             /* pop m1 from stack */
             m1 = *pstack_top;
@@ -32776,6 +33180,8 @@ static int js_link_module(JSContext *ctx, JSModuleDef *m)
            m->status == JS_MODULE_STATUS_EVALUATED);
     return 0;
 }
+
+#include "quickjs-pi-module-link.inc"
 
 /* return JS_ATOM_NULL if the name cannot be found. Only works with
    not striped bytecode functions. */
@@ -39290,6 +39696,8 @@ static JSValue JS_EvalFunctionInternal(JSContext *ctx, JSValue fun_obj,
     tag = JS_VALUE_GET_TAG(fun_obj);
     if (tag == JS_TAG_FUNCTION_BYTECODE) {
         fun_obj = js_closure(ctx, fun_obj, var_refs, sf);
+        if (!JS_IsException(fun_obj))
+            JS_VALUE_GET_OBJ(fun_obj)->u.func.is_top_level = true;
         ret_val = JS_CallFree(ctx, fun_obj, this_obj, 0, NULL);
     } else if (tag == JS_TAG_MODULE) {
         JSModuleDef *m;
@@ -39538,6 +39946,171 @@ int JS_ResolveModule(JSContext *ctx, JSValueConst obj)
         }
     }
     return 0;
+}
+
+typedef struct JSPiModuleGraphSlot {
+    JSModuleDef *module;
+    bool visited;
+} JSPiModuleGraphSlot;
+
+/* Every loop, including collision probes, uses the existing interrupt cadence.
+   A successful host poll must not hide an actually pending completion. */
+static int js_pi_module_graph_poll(JSContext *ctx)
+{
+    if (js_poll_interrupts(ctx) || JS_HasException(ctx))
+        return -1;
+    return 0;
+}
+
+static size_t js_pi_module_graph_hash(JSModuleDef *module)
+{
+    uintptr_t value = (uintptr_t)module;
+    value >>= 4;
+    value ^= value >> 16;
+    value *= (uintptr_t)0x9e3779b9U;
+    value ^= value >> 16;
+    return (size_t)value;
+}
+
+/* No ModuleDef is dereferenced here: even foreign input/edge pointers are only
+   hashed and compared against members inserted from this context's list. */
+static int js_pi_module_graph_slot(JSContext *ctx, JSPiModuleGraphSlot *table,
+                                  size_t capacity, JSModuleDef *module,
+                                  size_t *slot)
+{
+    size_t index = js_pi_module_graph_hash(module) & (capacity - 1);
+    size_t probe;
+    for (probe = 0; probe < capacity; probe++) {
+        if (js_pi_module_graph_poll(ctx))
+            return -1;
+        if (!table[index].module || table[index].module == module) {
+            *slot = index;
+            return 0;
+        }
+        index = (index + 1) & (capacity - 1);
+    }
+    JS_ThrowInternalError(ctx, "module graph membership table exhausted");
+    return -1;
+}
+
+int JS_PiModuleGraphHasTLA(JSContext *ctx, JSValueConst module, int *has_tla)
+{
+    struct list_head *el;
+    JSPiModuleGraphSlot *table = NULL;
+    JSModuleDef **work;
+    JSModuleDef *root, *current, *target;
+    size_t count = 0, capacity = 2, needed, table_bytes, work_bytes;
+    size_t index, slot, pending = 0;
+    int result = 0, i;
+
+    if (JS_HasException(ctx))
+        return -1;
+    if (!has_tla || JS_VALUE_GET_TAG(module) != JS_TAG_MODULE) {
+        JS_ThrowTypeError(ctx, "compiled module and output pointer required");
+        return -1;
+    }
+    root = JS_VALUE_GET_PTR(module); /* Borrowed, not yet dereferenced. */
+    list_for_each(el, &ctx->loaded_modules) {
+        if (js_pi_module_graph_poll(ctx))
+            return -1;
+        if (count == SIZE_MAX)
+            goto overflow;
+        count++;
+    }
+    if (!count) {
+        JS_ThrowTypeError(ctx, "module does not belong to this context");
+        return -1;
+    }
+    if (count > SIZE_MAX / 2)
+        goto overflow;
+    needed = count * 2;
+    while (capacity < needed) {
+        if (js_pi_module_graph_poll(ctx))
+            return -1;
+        if (capacity > SIZE_MAX / 2)
+            goto overflow;
+        capacity *= 2;
+    }
+    if (capacity > SIZE_MAX / sizeof(*table) ||
+        count > SIZE_MAX / sizeof(*work))
+        goto overflow;
+    table_bytes = capacity * sizeof(*table);
+    work_bytes = count * sizeof(*work);
+    if (table_bytes > SIZE_MAX - work_bytes)
+        goto overflow;
+    /* sizeof(slot) is a multiple of its pointer alignment, so the trailing
+       pointer worklist remains aligned. Both arrays share one charged block. */
+    table = js_malloc(ctx, table_bytes + work_bytes);
+    if (!table)
+        return -1;
+    if (JS_HasException(ctx))
+        goto fail;
+    work = (JSModuleDef **)((uint8_t *)table + table_bytes);
+    for (index = 0; index < capacity; index++) {
+        if (js_pi_module_graph_poll(ctx))
+            goto fail;
+        table[index].module = NULL;
+        table[index].visited = false;
+    }
+    list_for_each(el, &ctx->loaded_modules) {
+        if (js_pi_module_graph_poll(ctx))
+            goto fail;
+        target = list_entry(el, JSModuleDef, link);
+        if (js_pi_module_graph_slot(ctx, table, capacity, target, &slot))
+            goto fail;
+        if (table[slot].module) {
+            JS_ThrowInternalError(ctx, "duplicate context module membership");
+            goto fail;
+        }
+        table[slot].module = target;
+    }
+    if (js_pi_module_graph_slot(ctx, table, capacity, root, &slot))
+        goto fail;
+    if (!root || table[slot].module != root) {
+        JS_ThrowTypeError(ctx, "module does not belong to this context");
+        goto fail;
+    }
+    table[slot].visited = true;
+    work[pending++] = root;
+    while (pending) {
+        if (js_pi_module_graph_poll(ctx))
+            goto fail;
+        current = work[--pending]; /* Validated context member. */
+        if (!current->resolved || current->status == JS_MODULE_STATUS_LINKING) {
+            JS_ThrowTypeError(ctx, "module static graph is not fully resolved");
+            goto fail;
+        }
+        if (current->has_tla)
+            result = 1;
+        for (i = 0; i < current->req_module_entries_count; i++) {
+            if (js_pi_module_graph_poll(ctx))
+                goto fail;
+            target = current->req_module_entries[i].module;
+            if (js_pi_module_graph_slot(ctx, table, capacity, target, &slot))
+                goto fail;
+            if (!target || table[slot].module != target) {
+                JS_ThrowTypeError(ctx, "module static graph has an unresolved or foreign dependency");
+                goto fail;
+            }
+            if (!table[slot].visited) {
+                if (pending >= count) {
+                    JS_ThrowInternalError(ctx, "module graph worklist bound exceeded");
+                    goto fail;
+                }
+                table[slot].visited = true;
+                work[pending++] = target;
+            }
+        }
+    }
+    js_free(ctx, table); /* Native scratch only; no JS cleanup/callback. */
+    *has_tla = result;
+    return 0;
+overflow:
+    JS_ThrowOutOfMemory(ctx); /* Existing VM failure path; no new tag/policy. */
+    return -1;
+fail:
+    js_free(ctx, table); /* Leaves the exact current completion untouched. */
+    return -1;
 }
 
 /*******************************************************************/
@@ -65063,6 +65636,7 @@ static void js_callsite_finalizer(JSRuntime *rt, JSValueConst val)
         JS_FreeValueRT(rt, csd->filename);
         JS_FreeValueRT(rt, csd->func);
         JS_FreeValueRT(rt, csd->func_name);
+        JS_FreeValueRT(rt, csd->receiver);
         js_free_rt(rt, csd);
     }
 }
@@ -65075,6 +65649,7 @@ static void js_callsite_mark(JSRuntime *rt, JSValueConst val,
         JS_MarkValue(rt, csd->filename, mark_func);
         JS_MarkValue(rt, csd->func, mark_func);
         JS_MarkValue(rt, csd->func_name, mark_func);
+        JS_MarkValue(rt, csd->receiver, mark_func);
     }
 }
 
@@ -65095,6 +65670,7 @@ static JSValue js_new_callsite(JSContext *ctx, JSCallSiteData *csd) {
     csd->filename = JS_UNDEFINED;
     csd->func = JS_UNDEFINED;
     csd->func_name = JS_UNDEFINED;
+    csd->receiver = JS_UNDEFINED;
 
     JS_SetOpaqueInternal(obj, csd1);
 
@@ -65108,6 +65684,9 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
 
     csd->constructor = sf->is_constructor;
     csd->func = js_dup(sf->cur_func);
+    csd->receiver = js_dup(sf->receiver);
+    csd->strict_visibility = sf->is_strict_mode;
+    csd->top_level = false;
     /* func_name_str is UTF-8 encoded if needed */
     func_name_str = get_func_name(ctx, sf->cur_func);
     if (!func_name_str || func_name_str[0] == '\0')
@@ -65119,13 +65698,18 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
         csd->func_name = JS_NULL;
 
     p = JS_VALUE_GET_OBJ(sf->cur_func);
+    if (js_class_has_bytecode(p->class_id))
+        csd->top_level = p->u.func.is_top_level;
     if (js_class_has_bytecode(p->class_id) &&
         !p->u.func.function_bytecode->native_async_body) {
         JSFunctionBytecode *b = p->u.func.function_bytecode;
         int line_num1, col_num1;
-        line_num1 = find_line_num(ctx, b,
-                                  sf->cur_pc - b->byte_code_buf - 1,
-                                  &col_num1);
+        line_num1 = -1;
+        col_num1 = -1;
+        if (sf->cur_pc)
+            line_num1 = find_line_num(ctx, b,
+                                      sf->cur_pc - b->byte_code_buf - 1,
+                                      &col_num1);
         csd->native = false;
         csd->line_num = line_num1;
         csd->col_num = col_num1;
@@ -65144,7 +65728,10 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
 
 static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const char *filename, int line_num, int col_num)
 {
-    csd->func = JS_NULL;
+    csd->func = JS_UNDEFINED;
+    csd->receiver = JS_UNDEFINED;
+    csd->strict_visibility = false;
+    csd->top_level = true;
     csd->func_name = JS_NULL;
     csd->native = false;
     csd->constructor = false;
@@ -65172,6 +65759,7 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
     JSStackFrame *current;
     uint32_t count = 0;
     bool filtering;
+    bool strict_visibility = false;
     result = JS_NewArray(ctx);
     if (JS_IsException(result))
         return result;
@@ -65183,12 +65771,14 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             JS_FreeValue(ctx, data.filename);
             JS_FreeValue(ctx, data.func);
             JS_FreeValue(ctx, data.func_name);
+            JS_FreeValue(ctx, data.receiver);
             goto fail;
         }
         frame = js_new_callsite(ctx, &data);
         JS_FreeValue(ctx, data.filename);
         JS_FreeValue(ctx, data.func);
         JS_FreeValue(ctx, data.func_name);
+        JS_FreeValue(ctx, data.receiver);
         if (JS_IsException(frame) || JS_DefinePropertyValueUint32(ctx, result, count++, frame, JS_PROP_C_W_E) < 0)
             goto fail;
         if (flags & JS_ERROR_STACK_SINGLE_LEVEL)
@@ -65209,6 +65799,8 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             flags &= ~JS_ERROR_STACK_SKIP_FIRST;
             continue;
         }
+        if (js_callsite_is_forwarding_frame(current))
+            continue;
         function = JS_VALUE_GET_OBJ(current->cur_func);
         if (js_class_has_bytecode(function->class_id) &&
             !function->u.func.function_bytecode->native_async_body)
@@ -65217,6 +65809,8 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             /* Preserve the frame without undefined pointer arithmetic. */
             data.func = js_dup(current->cur_func);
             data.func_name = JS_NULL;
+            data.receiver = js_dup(current->receiver);
+            data.top_level = function->u.func.is_top_level;
             data.filename = bytecode->filename ? JS_AtomToString(ctx, bytecode->filename) : JS_NULL;
             data.line_num = -1;
             data.col_num = -1;
@@ -65225,16 +65819,20 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
         } else {
             js_new_callsite_data(ctx, &data, current);
         }
+        strict_visibility |= current->is_strict_mode;
+        data.strict_visibility = strict_visibility;
         if (JS_IsException(data.filename) || JS_HasException(ctx)) {
             JS_FreeValue(ctx, data.filename);
             JS_FreeValue(ctx, data.func);
             JS_FreeValue(ctx, data.func_name);
+            JS_FreeValue(ctx, data.receiver);
             goto fail;
         }
         frame = js_new_callsite(ctx, &data);
         JS_FreeValue(ctx, data.filename);
         JS_FreeValue(ctx, data.func);
         JS_FreeValue(ctx, data.func_name);
+        JS_FreeValue(ctx, data.receiver);
         if (JS_IsException(frame) || JS_DefinePropertyValueUint32(ctx, result, count++, frame, JS_PROP_C_W_E) < 0)
             goto fail;
         if (bytecode && bytecode->backtrace_barrier)
@@ -65257,10 +65855,12 @@ JSValue JS_CloneCapturedStackFrame(JSContext *ctx, JSValueConst frame)
     copy.filename = js_dup(source->filename);
     copy.func = js_dup(source->func);
     copy.func_name = js_dup(source->func_name);
+    copy.receiver = js_dup(source->receiver);
     result = js_new_callsite(ctx, &copy);
     JS_FreeValue(ctx, copy.filename);
     JS_FreeValue(ctx, copy.func);
     JS_FreeValue(ctx, copy.func_name);
+    JS_FreeValue(ctx, copy.receiver);
     return result;
 }
 JSValue JS_GetCapturedStackFramePrototype(JSContext *ctx)
@@ -65300,6 +65900,26 @@ static JSValue js_callsite_isnative(JSContext *ctx, JSValueConst this_val, int a
     return js_bool(csd->native);
 }
 
+static JSValue js_callsite_getfunction(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    JSCallSiteData *csd = JS_GetOpaque2(ctx, this_val, JS_CLASS_CALL_SITE);
+    if (!csd)
+        return JS_EXCEPTION;
+    if (csd->strict_visibility || csd->top_level)
+        return JS_UNDEFINED;
+    return js_dup(csd->func);
+}
+
+static JSValue js_callsite_getthis(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
+{
+    JSCallSiteData *csd = JS_GetOpaque2(ctx, this_val, JS_CLASS_CALL_SITE);
+    if (!csd)
+        return JS_EXCEPTION;
+    if (csd->strict_visibility)
+        return JS_UNDEFINED;
+    return js_dup(csd->receiver);
+}
+
 static JSValue js_callsite_isconstructor(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *argv)
 {
     JSCallSiteData *csd = JS_GetOpaque2(ctx, this_val, JS_CLASS_CALL_SITE);
@@ -65324,7 +65944,8 @@ static const JSCFunctionListEntry js_callsite_proto_funcs[] = {
     JS_CFUNC_DEF("isNative", 0, js_callsite_isnative),
     JS_CFUNC_DEF("isConstructor", 0, js_callsite_isconstructor),
     JS_CFUNC_MAGIC_DEF("getFileName", 0, js_callsite_getfield, offsetof(JSCallSiteData, filename)),
-    JS_CFUNC_MAGIC_DEF("getFunction", 0, js_callsite_getfield, offsetof(JSCallSiteData, func)),
+    JS_CFUNC_DEF("getFunction", 0, js_callsite_getfunction),
+    JS_CFUNC_DEF("getThis", 0, js_callsite_getthis),
     JS_CFUNC_MAGIC_DEF("getFunctionName", 0, js_callsite_getfield, offsetof(JSCallSiteData, func_name)),
     JS_CFUNC_MAGIC_DEF("getColumnNumber", 0, js_callsite_getnumber, offsetof(JSCallSiteData, col_num)),
     JS_CFUNC_MAGIC_DEF("getLineNumber", 0, js_callsite_getnumber, offsetof(JSCallSiteData, line_num)),

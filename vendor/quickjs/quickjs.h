@@ -595,6 +595,12 @@ JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);
 JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
+/* Executing acquisition, not a read-only query. Borrowed same-runtime input,
+   owned iterator return. Exceptions pending at entry prevent guest work.
+   Pending results are normalized after protected owned-result cleanup; native
+   callbacks must still obey the ordinary C API exception-return convention.
+   Uses the VM's genuine async/sync-fallback path; caller captures next itself. */
+JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
 
 /* the following functions are used to select the intrinsic object to
    save memory */
@@ -1040,6 +1046,8 @@ JS_EXTERN JSValue JS_NewDate(JSContext *ctx, double epoch_ms);
 JS_EXTERN bool JS_IsDate(JSValueConst v);
 
 JS_EXTERN JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop);
+JS_EXTERN JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
+                                         JSAtom prop, JSValueConst receiver);
 JS_EXTERN JSValue JS_GetPropertyUint32(JSContext *ctx, JSValueConst this_obj,
                                        uint32_t idx);
 JS_EXTERN JSValue JS_GetPropertyInt64(JSContext *ctx, JSValueConst this_obj,
@@ -1352,6 +1360,16 @@ JS_EXTERN void JS_SetModuleNormalizeFunc2(JSRuntime *rt,
 JS_EXTERN JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSValue JS_GetModuleNamespace(JSContext *ctx, JSModuleDef *m);
+/* Actual declaration/binding preparation only; no load, resolve, body evaluation
+   or job pumping. Borrowed compiled module must belong to the live owner-thread
+   context and every static dependency must already be resolved. The host MUST
+   attest a capture-only native Error-stack owner and trusted nonreentrant
+   interrupt callback; no graph mutation/context disposal or guest formatting is
+   permitted during this synchronous call. Strict CallSite visibility is required.
+   Zero succeeds; -1 preserves the actual pending reason. Any entry pending reason
+   is refused unchanged. Failed fresh environments are restored; already linked
+   SCCs and healthy dependencies are retained. Not a require(esm) policy API. */
+JS_EXTERN int JS_PiLinkModuleGraph(JSContext *ctx, JSValueConst compiled_module);
 
 /* associate a JSValue to a C module */
 JS_EXTERN int JS_SetModulePrivateValue(JSContext *ctx, JSModuleDef *m, JSValue val);
@@ -1410,6 +1428,18 @@ JS_EXTERN JSValue JS_EvalFunction(JSContext *ctx, JSValue fun_obj);
 /* load the dependencies of the module 'obj'. Useful when JS_ReadObject()
    returns a module. */
 JS_EXTERN int JS_ResolveModule(JSContext *ctx, JSValueConst obj);
+/* Read-only syntactic TLA query over an actual context-owned compiled module's
+   complete resolved static graph. Borrowed module/ctx; no load, binding link,
+   evaluation, jobs or module-state mutation. UNLINKED binding status is allowed
+   only when every reachable dependency is resolved; LINKING/partial graphs fail.
+   On success returns 0 and writes 0/1 to has_tla; on failure returns -1 with the
+   pending reason preserved and leaves *has_tla unchanged. The host must retain
+   ctx and prevent concurrent/reentrant module mutation/disposal. Only its trusted
+   non-reentrant interrupt handler may run; it must not call guest code or mutate
+   modules/context. Binding-link validation and Node require(esm) policy are
+   separate prerequisites; this query alone does not establish their precedence. */
+JS_EXTERN int JS_PiModuleGraphHasTLA(JSContext *ctx, JSValueConst module,
+                                    int *has_tla);
 
 /* only exported for os.Worker() */
 JS_EXTERN JSAtom JS_GetScriptOrModuleName(JSContext *ctx, int n_stack_levels);

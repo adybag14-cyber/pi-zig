@@ -1973,6 +1973,7 @@ pub fn build(b: *std.Build) void {
     linkSqlite(await_rejection_data_tests.root_module, sqlite_lib_dir, sqlite_library);
     await_rejection_data_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-await-rejection-data", "Compile rejected DATA versus actual producer event regressions").dependOn(&await_rejection_data_tests.step);
+    b.step("build-native-await-rejection-data-artifact", "Install actual Await DATA controls for separate metadata-only discovery").dependOn(&b.addInstallArtifact(await_rejection_data_tests, .{ .dest_sub_path = "native-await-rejection-data.exe" }).step);
     b.step("test-native-await-rejection-data", "Check rejected DATA catch finally raw identity current events allocator cancellation and C3 action frontier").dependOn(&b.addRunArtifact(await_rejection_data_tests).step);
     const async_rejected_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_rejected_allocation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async rejected allocation"}, .use_llvm = use_llvm });
     linkQuickJs(b, async_rejected_allocation_tests.root_module, quickjs, sqlite_lib_dir);
