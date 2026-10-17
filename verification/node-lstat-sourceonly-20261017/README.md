@@ -43,6 +43,10 @@ The old stat.read path is retained. Its existing Windows directory execute
 bits differ from the inspected libuv mode calculation; this separate known
 gap is reported to Root. New lstat mode uses actual libuv 0666/0444 permissions
 and does not inherit those extra bits, including the non-link reparse retry.
+The shared existing integer conversion/BigIntStats mode method also calls the
+live global BigInt; that known primordial-binding gap is retained truthfully
+at this bounded checkpoint. Root authorized separate followup corrections for
+both inherited issues, with their own source/native prepared controls.
 Preexisting stat error/permission coverage and the full public filesystem API
 are not silently declared complete by this small seam.
 
