@@ -4,12 +4,15 @@ const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
 pub fn run(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAssembly.Inputs, success_with_pending: bool, fatal_cleanup: bool) !void {
-    return profile(ActualAssembly, engine, actual, success_with_pending, fatal_cleanup, false);
+    return profile(ActualAssembly, engine, actual, success_with_pending, fatal_cleanup, false, false);
 }
 pub fn hostOom(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAssembly.Inputs, fatal_cleanup: bool) !void {
-    return profile(ActualAssembly, engine, actual, false, fatal_cleanup, true);
+    return profile(ActualAssembly, engine, actual, false, fatal_cleanup, true, false);
 }
-fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAssembly.Inputs, success_with_pending: bool, fatal_cleanup: bool, trusted_host_oom: bool) !void {
+pub fn pendingOwned(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAssembly.Inputs, fatal_cleanup: bool) !void {
+    return profile(ActualAssembly, engine, actual, true, fatal_cleanup, false, true);
+}
+fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAssembly.Inputs, success_with_pending: bool, fatal_cleanup: bool, trusted_host_oom: bool, pending_owned: bool) !void {
     const Control = struct {
         const State = struct {
             engine: *v.em.Engine, module: c.JSValue, reason: c.JSValue, replacement: c.JSValue,
@@ -18,6 +21,7 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
             fatal: ?c.JSValue = null, raw_fatal: bool = false,
             trusted_host_oom: bool, real_create_require: c.JSValue, forward: c.JSValue,
             failing: *std.testing.FailingAllocator, armed: bool = false,
+            pending_owned: bool,
         };
         var active: ?*State = null;
         fn createRequireGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -34,7 +38,7 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
         }
         fn defaultGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
             const state = active.?; std.debug.assert(context == state.engine.context);
-            if (state.pending_success) {
+            if (state.pending_success and !state.pending_owned) {
                 _ = c.JS_Throw(context, c.JS_DupValue(context, state.reason));
                 return c.JS_DupValue(context, state.module);
             }
@@ -47,6 +51,7 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
             if (atom == c.JS_ATOM_NULL) { c.JS_FreeValue(context, getter); c.JS_FreeValue(context, holder); return c.JS_Throw(context, c.JS_GetException(context)); }
             defer c.JS_FreeAtom(context, atom);
             if (c.JS_DefinePropertyGetSet(context, holder, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_THROW) < 0) { c.JS_FreeValue(context, holder); return c.JS_Throw(context, c.JS_GetException(context)); }
+            if (state.pending_success) _ = c.JS_Throw(context, c.JS_DupValue(context, state.reason));
             return holder; // Sole owned temporary, no external holder root.
         }
         fn finalize(_: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
@@ -85,7 +90,7 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
     const original_gpa = engine.gpa; defer engine.gpa = original_gpa;
     var failing = std.testing.FailingAllocator.init(original_gpa, .{ .fail_index = 0, .resize_fail_index = 0 });
     var state: Control.State = .{ .engine = engine, .module = module, .reason = reason, .replacement = replacement, .holder_class = holder_class, .pending_success = success_with_pending, .fatal_cleanup = fatal_cleanup,
-        .trusted_host_oom = trusted_host_oom, .real_create_require = real_create_require, .forward = forward, .failing = &failing };
+        .trusted_host_oom = trusted_host_oom, .real_create_require = real_create_require, .forward = forward, .failing = &failing, .pending_owned = pending_owned };
     defer if (state.fatal) |value| engine.freeValue(value);
     Control.active = &state; defer Control.active = null;
     const require_atom = c.JS_NewAtom(engine.context, "createRequire"); if (require_atom == c.JS_ATOM_NULL) return error.OutOfMemory;
@@ -109,10 +114,11 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
         engine.gpa = original_gpa;
         try std.testing.expect(err == error.JavaScriptException);
         const observed = engine.captured_exception orelse return error.MissingActualTtyAssemblyReason;
-        const wanted = if (!success_with_pending and fatal_cleanup) state.fatal orelse return error.MissingActualCleanupFatal else if (trusted_host_oom) engine.native_allocation_exception orelse return error.MissingTrustedAllocationReason else reason;
+        const actual_cleanup = !success_with_pending or pending_owned;
+        const wanted = if (actual_cleanup and fatal_cleanup) state.fatal orelse return error.MissingActualCleanupFatal else if (trusted_host_oom) engine.native_allocation_exception orelse return error.MissingTrustedAllocationReason else reason;
         try std.testing.expect(c.JS_IsStrictEqual(engine.context, observed, wanted));
         try std.testing.expectEqual(@as(usize, if (success_with_pending) 0 else 1), state.next_getter);
-        try std.testing.expectEqual(@as(usize, if (success_with_pending) 0 else 1), state.finalized);
+        try std.testing.expectEqual(@as(usize, if (actual_cleanup) 1 else 0), state.finalized);
         try std.testing.expect(!state.live_slot_at_free);
         if (trusted_host_oom) {
             try std.testing.expect(state.armed and failing.has_induced_failure);
@@ -120,8 +126,8 @@ fn profile(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
             try std.testing.expect(c.JS_IsUncatchableError(observed));
             try std.testing.expect(!c.JS_IsStrictEqual(engine.context, observed, replacement));
         }
-        if (!success_with_pending and fatal_cleanup) try std.testing.expect(state.raw_fatal and c.JS_IsUncatchableError(observed));
-        if (trusted_host_oom or (!success_with_pending and fatal_cleanup)) c.JS_ClearUncatchableError(engine.context, observed);
+        if (actual_cleanup and fatal_cleanup) try std.testing.expect(state.raw_fatal and c.JS_IsUncatchableError(observed));
+        if (trusted_host_oom or (actual_cleanup and fatal_cleanup)) c.JS_ClearUncatchableError(engine.context, observed);
         engine.captured_exception = null; engine.freeValue(observed);
         try std.testing.expect(!c.JS_HasException(engine.context));
         return;

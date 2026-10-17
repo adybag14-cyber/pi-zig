@@ -224,17 +224,37 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             const roots = state.primordial_roots; state.primordial_roots = c.pi_js_undefined(); cleanup.release(roots);
             if (state.failure_reason) |reason| { state.failure_reason = null; cleanup.release(reason); }
         }
-        fn prepare(engine: *v.em.Engine, state: *State, inputs: Inputs, temporaries: *Temporaries) !void {
+        fn own(s: *v.Scope, cleanup: *Cleanup, owned: c.JSValue, generation: u64) !c.JSValue {
+            if (c.JS_HasException(s.engine.context)) {
+                // Collect A before releasing the successful owned result.
+                // Its genuine native finalizer can produce raw fresh B; the
+                // SAME reducer promotes B before Scope/GPA/another getter.
+                cleanup.collect(generation); cleanup.release(owned);
+                return error.JavaScriptException;
+            }
+            return s.own(owned);
+        }
+        fn get(s: *v.Scope, cleanup: *Cleanup, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+            const generation = s.engine.native_allocation_generation;
+            return own(s, cleanup, try v.js.get(s.engine, receiver, name), generation);
+        }
+        fn call(s: *v.Scope, cleanup: *Cleanup, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+            const generation = s.engine.native_allocation_generation;
+            return own(s, cleanup, try v.js.call(s.engine, function, receiver, args), generation);
+        }
+        fn prepare(engine: *v.em.Engine, state: *State, inputs: Inputs, temporaries: *Temporaries, cleanup: *Cleanup) !void {
             const s = &temporaries.scope;
-            const actual_process = try s.own(try h.success(engine, try v.js.global(engine, "process")));
-            if (!c.JS_IsStrictEqual(engine.context, actual_process, inputs.actual_process) or !c.JS_IsFunction(engine.context, try h.get(s, actual_process, "nextTick"))) return error.RequiredActualTtyProcessTicks;
-            if (!c.JS_IsObject(inputs.actual_net) or !c.JS_IsStrictEqual(engine.context, try h.get(s, inputs.actual_net, "Socket"), inputs.canonical_socket.constructor)) return error.RequiredCanonicalTtySocketCarrier;
+            const process_generation = engine.native_allocation_generation;
+            const actual_process = try own(s, cleanup, try v.js.global(engine, "process"), process_generation);
+            if (!c.JS_IsStrictEqual(engine.context, actual_process, inputs.actual_process) or !c.JS_IsFunction(engine.context, try get(s, cleanup, actual_process, "nextTick"))) return error.RequiredActualTtyProcessTicks;
+            if (!c.JS_IsObject(inputs.actual_net) or !c.JS_IsStrictEqual(engine.context, try get(s, cleanup, inputs.actual_net, "Socket"), inputs.canonical_socket.constructor)) return error.RequiredCanonicalTtySocketCarrier;
             // Actual CJS implementation performs normalization and builtin
             // lookup. No locally fabricated require dispatcher is installed.
-            const node_module = try s.own(try h.success(engine, (try engine.requireBuiltin("node:module")) orelse return error.RequiredActualNodeModuleCreateRequire));
-            const create_require = try h.get(s, node_module, "createRequire");
+            const module_generation = engine.native_allocation_generation;
+            const node_module = try own(s, cleanup, (try engine.requireBuiltin("node:module")) orelse return error.RequiredActualNodeModuleCreateRequire, module_generation);
+            const create_require = try get(s, cleanup, node_module, "createRequire");
             if (!c.JS_IsFunction(engine.context, create_require)) return error.RequiredActualNodeModuleCreateRequire;
-            state.actual_require = c.JS_DupValue(engine.context, try h.call(s, create_require, node_module, &.{inputs.physical_filename}));
+            state.actual_require = c.JS_DupValue(engine.context, try call(s, cleanup, create_require, node_module, &.{inputs.physical_filename}));
             // Require actual dependency registration, without a live default/
             // release getter. Source loads os/release LAZILY at the color call.
             if (!engine.native_module_names.contains("os") or !engine.native_module_values.contains("os")) return error.RequiredActualNodeOsForTtyColors;
@@ -294,7 +314,7 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             const state = stateOf(engine, holder) catch unreachable;
             var temporaries: Temporaries = .{ .scope = .{ .engine = engine } };
             var failure: ?anyerror = null;
-            prepare(engine, state, inputs, &temporaries) catch |err| { failure = err; };
+            prepare(engine, state, inputs, &temporaries, &cleanup) catch |err| { failure = err; };
             cleanup.collect(generation);
             temporaries.retire(&cleanup);
             if (failure != null or cleanup.selected != null) return rollback(engine, holder, state, &cleanup, failure);

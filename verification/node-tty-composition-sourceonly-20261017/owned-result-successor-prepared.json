@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "parent": "7db12ee6d6816458af3083caecdb210cfdf1217e",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "finding": "Success+pending owned builtin/get/call/global result may finalize fresh rawNativeOOM during free; shared h.success can restoreordinaryA tooearly",
+  "correction": "Assembly-local own/get/call uses existingCleanup to escrow actualpending before successfulownedfree and collect each release BEFORE Scope.own/GPA/latercallback; sharedh/Scope/Engine unchanged",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 29881,
+      "sha256": "71D69BA725D464506AEE928EBA298ED27D2682BEA2578A00A537B0D25EDAD0C0"
+    },
+    {
+      "path": "src/native_node_tty_assembly_event_control.zig",
+      "bytes": 14979,
+      "sha256": "EE752F418157087485B5E1FAE2F6E7161B5E59C87EAFA1CFD8C30D46499C7FC4"
+    }
+  ],
+  "controls": [
+    "Actual node:module.default returns SOLE nativeholder pluspendingA; no nextcreateRequiregetter/Scope/GPA; ordinaryfinalizerC keeps exactA/freeonce/slots-empty",
+    "Same actual pendingownedprofile with freshrawnativeOOM B promotesA; exactBidentity/rawgeneration/freeonce/slots-empty"
+  ],
+  "prior_receipts": "edd7688 reopened only this owned-result frontier; historicalblobs/receipts preserved",
+  "alias_unit": "a9/f5da separate review; currentEngine C04A unchanged",
+  "execution_grant": false,
+  "actual_metadata": null
+}
