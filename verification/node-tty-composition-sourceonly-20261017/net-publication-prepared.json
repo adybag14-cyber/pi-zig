@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "parent": "8aa3bc8da4ccbf7393adac80ef19ea5b575438f4",
+  "status": "SOURCE_ONLY_PREPARED_UNREVIEWED_UNRUN",
+  "scope": "Actual canonical Socket/Stream carrier public import needed by retained TTY consumer; SAMEprovider/net/defaultrecord; no TCP/fullnet/child/defaultselectionclaim",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 33509,
+      "sha256": "2176A93A085B57025324AC4BE27FF6F65655233143CD5ABE8F745DBA5F276A31"
+    },
+    {
+      "path": "src/native_node_tty_assembly_identity_control.zig",
+      "bytes": 8229,
+      "sha256": "4DDEF56C313BDB9DFA34FE62BABF6E5B8910C99C8CDE984500AC43CD57FA6B7A"
+    },
+    {
+      "path": "src/native_node_tty_assembly_publication_control.zig",
+      "bytes": 3751,
+      "sha256": "04942F5DFA8863B06E793CD9EB38E7A467DE6D27BD51AEF2ED8FAD0EB7D6CE23"
+    },
+    {
+      "path": "src/native_node_tty_net_publication_control.zig",
+      "bytes": 2594,
+      "sha256": "DE562A8909D9B820E6FE2012E5CEBBB9C03E60C8DE236C95692FB6765069266A"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/CANONICAL-NET-PUBLICATION-SOURCE.md",
+      "bytes": 2826,
+      "sha256": "28866EA2B9EAEA6FA51ADE18485FB11C1CBACAE03498092DA5C9D9D558763BEA"
+    }
+  ],
+  "preservation": "Existing genuine canonical/bare records reused iff exactactualdefaultcarrier; laterhostregistrationchangefailsexplicit; nooverwrite/duplicate Cmodule",
+  "publication": "Allprivatecarrier/defaultrecordallocationsbefore LASTTTYadoptercommit; node:net+barealias inexistingstickypublishphase",
+  "controls": "Actualidentity includesnet defaults/requireforms; existingactualnet record preserved foralias/legacybarecases; actualotherbuiltinnegative rejected",
+  "child_gap": "Unselectedpublicchild stillcreatesseparatenetcarrier; FSacknowledgedlatercanonicalcarrierreuse/registrationintegrationrequired",
+  "execution_grant": false,
+  "actual_metadata": null
+}

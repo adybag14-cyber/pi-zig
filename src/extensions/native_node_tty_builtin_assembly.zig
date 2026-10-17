@@ -65,8 +65,8 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             qualification_admission: bool = false,
         };
         pub const Exports = struct {
-            tty: c.JSValue, util: c.JSValue, readline: c.JSValue,
-            tty_exports: c.JSValue, util_exports: c.JSValue, readline_exports: c.JSValue,
+            tty: c.JSValue, util: c.JSValue, readline: c.JSValue, net: c.JSValue,
+            tty_exports: c.JSValue, util_exports: c.JSValue, readline_exports: c.JSValue, net_exports: c.JSValue,
             /// Private, unregistered carrier objects; these are not exposed as
             /// invented complete internal modules or mutable registry cells.
             tty_wrap: c.JSValue, internal_inspect: c.JSValue, codes: c.JSValue,
@@ -89,6 +89,8 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             binding: ?Binding.Prepared = null,
             failure: ?anyerror = null,
             failure_reason: ?c.JSValue = null,
+            net_canonical_registered: bool = false,
+            net_bare_registered: bool = false,
         };
         fn emptyExports() Exports {
             var result: Exports = undefined;
@@ -265,6 +267,23 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             const actual_process = try global(s, cleanup, "process");
             if (!c.JS_IsStrictEqual(engine.context, actual_process, inputs.actual_process) or !c.JS_IsFunction(engine.context, try get(s, cleanup, actual_process, "nextTick"))) return error.RequiredActualTtyProcessTicks;
             if (!c.JS_IsObject(inputs.actual_net) or !c.JS_IsStrictEqual(engine.context, try get(s, cleanup, inputs.actual_net, "Socket"), inputs.canonical_socket.constructor)) return error.RequiredCanonicalTtySocketCarrier;
+            // This actual carrier contains genuine Socket/Stream constructor
+            // aliases. TCP/Server/connect remain outside this selected profile.
+            // Existing genuine records are reused, never replaced by a clone.
+            if (engine.modules.contains("net") or engine.modules.contains("node:net")) return error.ActualTtyNetSourceModuleConflict;
+            state.net_canonical_registered = engine.native_module_names.contains("node:net");
+            state.net_bare_registered = engine.native_module_names.contains("net") or engine.native_builtin_aliases.contains("net");
+            if (state.net_canonical_registered) {
+                const record = engine.native_module_values.get("node:net") orelse return error.RequiredActualTtyNetRecord;
+                if (!c.JS_IsStrictEqual(engine.context, try get(s, cleanup, record, "default"), inputs.actual_net)) return error.ActualTtyNetCarrierMismatch;
+            }
+            if (state.net_bare_registered) {
+                const canonical = engine.native_builtin_aliases.get("net") orelse "net";
+                const record = engine.native_module_values.get(canonical) orelse return error.RequiredActualTtyNetRecord;
+                if (!c.JS_IsStrictEqual(engine.context, try get(s, cleanup, record, "default"), inputs.actual_net)) return error.ActualTtyNetCarrierMismatch;
+            }
+            state.exports.net = c.JS_DupValue(engine.context, inputs.actual_net);
+            state.exports.net_exports = if (state.net_canonical_registered) c.JS_DupValue(engine.context, engine.native_module_values.get("node:net").?) else try engine.defaultExports(inputs.actual_net);
             // Actual CJS implementation performs normalization and builtin
             // lookup. No locally fabricated require dispatcher is installed.
             const node_module = try registeredBuiltin(s, cleanup, "node:module");
@@ -367,8 +386,11 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             }
             // Conflicting prior installations are not replaced or relabeled.
             inline for (.{ "node:util", "util", "node:readline", "readline", "node:tty", "tty" }) |name| if (engine.native_module_names.contains(name) or engine.native_builtin_aliases.contains(name) or engine.modules.contains(name)) return error.ActualTtyBuiltinAlreadyInstalled;
+            // Host registration cannot silently switch after private assembly.
+            // There is no public unregister/retry of an immutable C module.
+            if (state.net_canonical_registered != engine.native_module_names.contains("node:net") or state.net_bare_registered != (engine.native_module_names.contains("net") or engine.native_builtin_aliases.contains("net")) or engine.modules.contains("net") or engine.modules.contains("node:net")) return error.ActualTtyNetRegistrationChanged;
             state.phase = .publishing;
-            publish(engine, exports) catch |err| {
+            publish(engine, state) catch |err| {
                 // Existing Engine contract cannot undo an immutable C module.
                 // Retain completed graph/adopter and exact captured reason;
                 // never allocate another class/brand or pretend retry worked.
@@ -387,7 +409,10 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             };
             state.phase = .published; return exports;
         }
-        fn publish(engine: *v.em.Engine, exports: Exports) !void {
+        fn publish(engine: *v.em.Engine, state: *State) !void {
+            const exports = state.exports;
+            if (!state.net_canonical_registered) try engine.registerValueModule("node:net", exports.net_exports);
+            if (!state.net_bare_registered) try engine.registerBuiltinAlias("net", "node:net");
             try engine.registerValueModule("node:util", exports.util_exports); try engine.registerBuiltinAlias("util", "node:util");
             try engine.registerValueModule("node:readline", exports.readline_exports); try engine.registerBuiltinAlias("readline", "node:readline");
             try engine.registerValueModule("node:tty", exports.tty_exports); try engine.registerBuiltinAlias("tty", "node:tty");

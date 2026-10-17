@@ -11,7 +11,7 @@ pub fn run(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
     const second = try ActualAssembly.create(engine, actual); defer second.deinit(engine);
     inline for (std.meta.fields(ActualAssembly.Exports)) |field| try std.testing.expect(c.JS_IsStrictEqual(engine.context, @field(first, field.name), @field(second, field.name)));
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
-    inline for (.{ .{ first.tty, first.tty_exports }, .{ first.util, first.util_exports }, .{ first.readline, first.readline_exports } }) |pair| {
+    inline for (.{ .{ first.tty, first.tty_exports }, .{ first.util, first.util_exports }, .{ first.readline, first.readline_exports }, .{ first.net, first.net_exports } }) |pair| {
         try std.testing.expect(c.JS_IsStrictEqual(engine.context, pair[0], try h.get(&s, pair[1], "default")));
     }
     inline for (.{ "inspect", "format" }) |name| try std.testing.expect(c.JS_IsStrictEqual(engine.context, try h.get(&s, first.util, name), try h.get(&s, first.internal_inspect, name)));
@@ -29,7 +29,7 @@ pub fn run(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
         const installed = try ActualAssembly.install(engine, actual); defer installed.deinit(engine);
         const installed_again = try ActualAssembly.install(engine, actual); defer installed_again.deinit(engine);
         inline for (std.meta.fields(ActualAssembly.Exports)) |field| try std.testing.expect(c.JS_IsStrictEqual(engine.context, @field(first, field.name), @field(installed_again, field.name)));
-        inline for (.{ .{ "node:tty", "tty", first.tty }, .{ "node:util", "util", first.util }, .{ "node:readline", "readline", first.readline } }) |entry| {
+        inline for (.{ .{ "node:tty", "tty", first.tty }, .{ "node:util", "util", first.util }, .{ "node:readline", "readline", first.readline }, .{ "node:net", "net", first.net } }) |entry| {
             const prefixed = (try engine.requireBuiltin(entry[0])) orelse return error.MissingActualTtyBuiltin; defer engine.freeValue(prefixed);
             const bare = (try engine.requireBuiltin(entry[1])) orelse return error.MissingActualTtyBuiltin; defer engine.freeValue(bare);
             try std.testing.expect(c.JS_IsStrictEqual(engine.context, prefixed, entry[2]));

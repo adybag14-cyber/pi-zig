@@ -6,7 +6,7 @@ const c = v.c;
 pub const Observation = struct { fail_after: usize, admitted_public_names: usize, immutable_partial: bool };
 fn published(engine: *v.em.Engine) usize {
     var count: usize = 0;
-    inline for (.{ "node:util", "util", "node:readline", "readline", "node:tty", "tty" }) |name| {
+    inline for (.{ "node:net", "net", "node:util", "util", "node:readline", "readline", "node:tty", "tty" }) |name| {
         if (engine.native_module_names.contains(name) or engine.native_builtin_aliases.contains(name)) count += 1;
     }
     return count;
