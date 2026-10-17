@@ -29001,6 +29001,8 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
     FuncCallType call_type;
     int optional_chaining_label;
     int constructor_line_num = 0, constructor_col_num = 0;
+    int private_identifier_line = s->token.val == TOK_IDENT ? s->token.line_num : 0;
+    int private_identifier_column = s->token.col_num;
     bool accept_lparen = (parse_flags & PF_POSTFIX_CALL) != 0;
 
     call_type = FUNC_CALL_NORMAL;
@@ -29169,7 +29171,14 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
             do_get_var:
                 emit_source_loc_at(s, identifier_line_num, identifier_col_num);
                 emit_op(s, OP_scope_get_var);
-                emit_u32(s, name);
+                if (s->pi_diagnostic) {
+                    /* This local owns name. A failed location/op emission can
+                       make emit_u32 return without transferring that owner. */
+                    emit_atom(s, name);
+                    JS_FreeAtom(s->ctx, name);
+                } else {
+                    emit_u32(s, name);
+                }
                 emit_u16(s, s->cur_func->scope_level);
             }
         }
@@ -29510,6 +29519,9 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
                 /* apply function call */
                 if (call_type == FUNC_CALL_NEW && s->ctx->rt->native_error_stack_hook)
                     emit_source_loc_at(s, constructor_line_num, constructor_col_num);
+                else if (s->pi_diagnostic && private_identifier_line &&
+                         (opcode == OP_scope_get_var || opcode == OP_scope_get_ref || opcode == OP_eval))
+                    emit_source_loc_at(s, private_identifier_line, private_identifier_column);
                 switch(opcode) {
                 case OP_get_field:
                 case OP_scope_get_private_field:
@@ -29559,6 +29571,9 @@ static __exception int js_parse_postfix_expr(JSParseState *s, int parse_flags)
                    their own locations. Default compilation is unchanged. */
                 if (call_type == FUNC_CALL_NEW && s->ctx->rt->native_error_stack_hook)
                     emit_source_loc_at(s, constructor_line_num, constructor_col_num);
+                else if (s->pi_diagnostic && private_identifier_line &&
+                         (opcode == OP_scope_get_var || opcode == OP_scope_get_ref || opcode == OP_eval))
+                    emit_source_loc_at(s, private_identifier_line, private_identifier_column);
                 switch(opcode) {
                 case OP_get_field:
                 case OP_scope_get_private_field:
