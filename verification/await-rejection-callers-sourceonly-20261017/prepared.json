@@ -1,0 +1,174 @@
+{
+  "schema": 1,
+  "status": "prepared-source-only-unrun",
+  "parent": "11161f0c00e989db0bdba3d5169f3f5b644fe077",
+  "products": [
+    {
+      "path": "src/extensions/native_ai_anthropic_events.zig",
+      "sha256": "BE4294721E98E15F27B5188B20E2AB265FD2109ADE8D60CBEB4A87D3C60CFE5D",
+      "bytes": 13485
+    },
+    {
+      "path": "src/extensions/native_ai_models_refresh_methods.zig",
+      "sha256": "F9968AABF905EB09D37EE850EA2685FCF5B67C93888195559E4984FEA9EFEECB",
+      "bytes": 19620
+    },
+    {
+      "path": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "56656418D949E0FD1840DAD14FB251EB150EF196AFF30527EA3F566613818DDF",
+      "bytes": 21484
+    },
+    {
+      "path": "src/extensions/native_ai_openai_sdk_readable.zig",
+      "sha256": "B79C5B1BF00C0F219F52B7C84B114EED39E7903CC9745CB6F6564510CEACE9F4",
+      "bytes": 6890
+    },
+    {
+      "path": "src/extensions/native_ai_openai_sdk_request.zig",
+      "sha256": "1AE3A188331B7A8193A413461F695575CF5E79D22DF0F99173E521683D7C7104",
+      "bytes": 39012
+    },
+    {
+      "path": "src/extensions/native_ai_provider_retry_request.zig",
+      "sha256": "BFC046ADCB191AE8DDCAB7D29658E4C54E654B189E14FCED63ADCBB82C387FEC",
+      "bytes": 12128
+    },
+    {
+      "path": "src/extensions/native_cache_warmer_refresh.zig",
+      "sha256": "6B8CB2BC66F09D504C46CE15DE6CE34700B74E47B4C1ACE00D75542E24507F88",
+      "bytes": 8514
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "sha256": "AD033B311E6FA13ECB9A9460DEE009E80BE90353F937A1105E48532B462C9DD6",
+      "bytes": 4273
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "sha256": "D22E174AD52F785282FFEB4CDB79F4547391C9A234358605D9F5E13BDB0C19FE",
+      "bytes": 17149
+    },
+    {
+      "path": "src/extensions/native_sdk_event_bus.zig",
+      "sha256": "4551B70247922ADAF697B24B56109D63D0350BE2C1C7513CC793169E727853AF",
+      "bytes": 5256
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "sha256": "28530A20895C549F94BFC98D9EF8B9608F75A8DB7AEF975D0935FE493EB4C8E0",
+      "bytes": 9620
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_production.zig",
+      "sha256": "E8F032BE1F6D81211366AEAE81B27B8228E64172C1FA7B20D581AA1F7C36E351",
+      "bytes": 40706
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hook_helpers.zig",
+      "sha256": "DE7712762A85A30CECE49FEFDBA68BEB21A8AA633C524022951A7ECCD354874B",
+      "bytes": 16943
+    },
+    {
+      "path": "src/extensions/native_sdk_session_settled.zig",
+      "sha256": "B0D64D6BDC0D2AAE58A3E691815B18A8770D01CE3165A3AC10B2795B33B096E6",
+      "bytes": 13149
+    }
+  ],
+  "owned": [
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2",
+      "bytes": 6658
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "D6E44B498C051FCDF7482D226E6F707ECEEFE36758E64DCF25D13DD835B56180",
+      "bytes": 16988
+    },
+    {
+      "path": "verification/await-rejection-callers-sourceonly-20261017/README.md",
+      "sha256": "84453FFBD77B18EFA645F35F9968E41CADAA7EACFBC038CF055EB433AFA9B72C",
+      "bytes": 2586
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+      "bytes": 2221803
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "bytes": 5900
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "0379422826A29E45DB28643A0AF16E4A9A8FF967A39E37DFD3FC531BC7A3A4EE",
+      "bytes": 163149
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0",
+      "bytes": 4558
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5",
+      "bytes": 9123
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/prepared.json",
+      "sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284",
+      "bytes": 3292
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "bytes": 533979
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-native.input.txt",
+      "sha256": "9897105D4290888FDF84F04D412CC93764555A9B5CA166BDEBD3EE19140BC60C",
+      "bytes": 5399
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171",
+      "bytes": 12655
+    },
+    {
+      "path": "src/native_async_rejected_allocation_test.zig",
+      "sha256": "34FD3C57A1E4AD8066A04BF79D37257E532D312D8985B281335FFD3B3598B282",
+      "bytes": 7534
+    }
+  ],
+  "native_definitions": 16,
+  "source_rows_prepared": 20,
+  "executed": false,
+  "execution_grant": false,
+  "main_edited": false,
+  "new_generator_c_composed": false,
+  "expected_observed_files": [],
+  "authority_anthropic_source_sha256": "A506637463CFFD681F50F208E308DAC4C979097FF1492DF2DD1C73FE28D0F963"
+}

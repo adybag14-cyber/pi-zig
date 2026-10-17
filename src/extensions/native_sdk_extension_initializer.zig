@@ -121,14 +121,9 @@ fn initializeBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, r
     }
     const job = state.*;
     if (completion == .rejected) {
-        if (c.JS_HasException(engine.context)) return v.js.capture(engine);
-        var boundary: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(job, "generation")) < 0) return v.js.capture(engine);
-        try body.rethrowRecognizedAllocation(engine, input, boundary);
-        if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+        try body.enterRejectedContinuation(engine);
         // Only rejected DATA reaches here. Preserve its raw identity through
         // real discard/ordinary-override handling, without promoting an old bit.
-        c.JS_ClearUncatchableError(engine.context, input);
         return fail(&scope, job, input);
     }
     // commit is inside Source's try, so a commit failure also discards.

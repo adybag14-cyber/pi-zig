@@ -17,23 +17,17 @@ fn phase(scope: *Scope, owner: c.JSValue) !i32 {
     return result;
 }
 fn failure(scope: *Scope, err: anyerror) !c.JSValue {
+    if (err == error.OutOfMemory) return err;
+    if (err == error.JavaScriptException) {
+        try @import("native_async_body.zig").enterRejectedContinuation(scope.engine);
+        if (scope.engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) return err;
+    }
     const value = try scope.own(flow.reason(scope.engine, err));
     if (scope.engine.captured_exception) |previous| {
         scope.engine.captured_exception = null;
         scope.engine.freeValue(previous);
     }
     return value;
-}
-fn freshAllocation(scope: *Scope, owner: c.JSValue, value: c.JSValue) !bool {
-    const tagged = c.pi_js_native_allocation_error_generation(value);
-    if (tagged == 0) return false;
-    var generation: u64 = 0;
-    if (c.JS_ToBigUint64(scope.engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(scope.engine);
-    const distance = tagged -% generation;
-    return distance != 0 and distance <= scope.engine.native_allocation_generation -% generation;
-}
-fn captureGeneration(scope: *Scope, owner: c.JSValue) !void {
-    try scope.put(owner, "generation", try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, scope.engine.native_allocation_generation))));
 }
 pub fn messageEvents(scope: *Scope) !c.JSValue {
     const names = try scope.array();
@@ -54,7 +48,6 @@ pub fn create(engine: *v.em.Engine, response: c.JSValue, http: c.JSValue, signal
     try scope.put(owner, "closing", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "sawStart", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "sawStop", c.pi_js_bool(engine.context, 0));
-    try captureGeneration(&scope, owner);
     return gen.create(engine, owner, eventsAdvance, try scope.own(try gen.prototype(engine)));
 }
 fn messages(engine: *v.em.Engine, body: c.JSValue, http: c.JSValue, signal: c.JSValue) !c.JSValue {
@@ -67,7 +60,6 @@ fn messages(engine: *v.em.Engine, body: c.JSValue, http: c.JSValue, signal: c.JS
     try scope.put(owner, "phase", c.JS_NewInt32(engine.context, 0));
     try scope.put(owner, "cleanup", c.pi_js_bool(engine.context, 0));
     try scope.put(owner, "eof", c.pi_js_bool(engine.context, 0));
-    try captureGeneration(&scope, owner);
     return gen.create(engine, owner, messagesAdvance, try scope.own(try gen.prototype(engine)));
 }
 fn readerFinish(scope: *Scope, owner: c.JSValue, value: c.JSValue, thrown: bool) !gen.Action {
@@ -77,8 +69,6 @@ fn readerFinish(scope: *Scope, owner: c.JSValue, value: c.JSValue, thrown: bool)
         if (!v.nullish(reader)) {
             _ = scope.invoke(reader, "releaseLock", &.{}) catch |err| {
                 const closing_error = try failure(scope, err);
-                // Trusted host OOM cannot become an unrelated guest failure.
-                if (thrown and try freshAllocation(scope, owner, value)) return .{ .thrown = c.JS_DupValue(scope.engine.context, value) };
                 return .{ .thrown = c.JS_DupValue(scope.engine.context, closing_error) };
             };
         }
@@ -88,6 +78,7 @@ fn readerFinish(scope: *Scope, owner: c.JSValue, value: c.JSValue, thrown: bool)
 fn messagesAdvance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    if (completion == .rejected or completion == .thrown) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     if (completion == .returned or completion == .thrown or completion == .rejected) return readerFinish(&scope, owner, input, completion != .returned);
     return messagesStep(engine, owner, completion, input) catch |err| readerFinish(&scope, owner, try failure(&scope, err), true);
 }
@@ -137,14 +128,14 @@ fn closeInner(scope: *Scope, owner: c.JSValue, value: c.JSValue, thrown: bool) !
     const iterator = try scope.get(owner, "iterator");
     const method = scope.get(iterator, "return") catch |err| {
         const close_error = try failure(scope, err);
-        if (thrown and !try freshAllocation(scope, owner, close_error)) return original(scope, owner);
+        if (thrown) return original(scope, owner);
         return .{ .thrown = c.JS_DupValue(scope.engine.context, close_error) };
     };
     if (v.nullish(method)) return original(scope, owner);
     try scope.put(owner, "closing", c.pi_js_bool(scope.engine.context, 1));
     const pending = scope.call(method, iterator, &.{}) catch |err| {
         const close_error = try failure(scope, err);
-        if (thrown and !try freshAllocation(scope, owner, close_error)) return original(scope, owner);
+        if (thrown) return original(scope, owner);
         return .{ .thrown = c.JS_DupValue(scope.engine.context, close_error) };
     };
     return .{ .awaited = c.JS_DupValue(scope.engine.context, pending) };
@@ -156,16 +147,17 @@ fn next(scope: *Scope, owner: c.JSValue) !gen.Action {
 fn eventsAdvance(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion, input: c.JSValue) !gen.Action {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
+    if (completion == .rejected or completion == .thrown) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     if (scope.truthy(try scope.get(owner, "closing"))) {
         const thrown = scope.truthy(try scope.get(owner, "closeThrown"));
-        if (completion == .rejected and (!thrown or try freshAllocation(&scope, owner, input))) return .{ .thrown = c.JS_DupValue(engine.context, input) };
+        if (completion == .rejected and !thrown) return .{ .thrown = c.JS_DupValue(engine.context, input) };
         if (completion == .fulfilled and !thrown and !c.JS_IsObject(input)) return v.js.typeError(engine, "Iterator return result is not an object");
         return original(&scope, owner);
     }
     if (completion == .returned) return closeInner(&scope, owner, input, false);
     if (completion == .rejected and try phase(&scope, owner) == 1) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     if (completion == .thrown or completion == .rejected) {
-        const wrapped = if (try freshAllocation(&scope, owner, input)) input else try sse.parseFailure(&scope, try scope.get(owner, "frame"), input);
+        const wrapped = try sse.parseFailure(&scope, try scope.get(owner, "frame"), input);
         return closeInner(&scope, owner, wrapped, true);
     }
     return eventsStep(engine, owner, completion, input) catch |err| closeInner(&scope, owner, try failure(&scope, err), true);

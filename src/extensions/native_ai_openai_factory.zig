@@ -97,13 +97,8 @@ fn streamBodyValue(engine: *v.em.Engine, owner: c.JSValue, slot: *c.JSValue, com
         const setup_generation = engine.native_allocation_generation;
         setup(&scope, owner) catch |err| try failError(&scope, owner, err, setup_generation);
     } else {
+        if (completion == .rejected) try async_body.enterRejectedContinuation(engine);
         const stage: Stage = @enumFromInt(try async_body.stage(&scope, owner));
-        if (completion == .rejected) {
-            var generation: u64 = 0;
-            const boundary: [*:0]const u8 = if (stage == .closed) "closeGeneration" else "generation";
-            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, boundary)) < 0) return v.js.capture(engine);
-            try async_body.rethrowRecognizedAllocation(engine, input, generation);
-        }
         if (completion == .rejected) {
             if (stage == .closed) try applyFailure(&scope, owner, try scope.get(owner, "closeReason")) else {
                 if (stage == .next) try scope.put(owner, "iteratorActive", c.JS_NewBool(engine.context, false));

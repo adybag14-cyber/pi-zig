@@ -72,7 +72,7 @@ fn decide(scope: *Scope, receiver: c.JSValue, warm: c.JSValue, miss: c.JSValue, 
 fn continuation(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    if (rejected and try nativeReason(&scope, owner, value)) return error.OutOfMemory;
+    if (rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     if (stage == 0) return afterDecision(engine, owner, if (rejected) try scope.get(owner, "action") else value);
     if (!rejected) {
         const keep_going = record(&scope, owner, value) catch |err| fallback: {

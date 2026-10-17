@@ -8,6 +8,7 @@ const body = @import("extensions/native_async_body.zig");
 const af = body.native;
 const c = em.c;
 comptime { _ = @import("native_async_throw_cleanup_test.zig"); }
+comptime { _ = @import("native_await_rejection_routes_test.zig"); }
 
 fn callOne(engine: *em.Engine, function: c.JSValue, argument: c.JSValue) !c.JSValue {
     var args = [_]c.JSValue{argument};

@@ -121,13 +121,7 @@ fn factoryInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JS
         // expression before resuming Source lexical work.
         try put(engine, owner, "factoryValue", c.pi_js_undefined());
         if (completion == .rejected) {
-            if (c.JS_IsUncatchableError(input)) {
-                _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, input)));
-                unreachable;
-            }
-            var boundary: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(owner, "generation")) < 0) return js.capture(engine);
-            try body.rethrowRecognizedAllocation(engine, input, boundary);
+            try body.enterRejectedContinuation(engine);
             return .{ .thrown = c.JS_DupValue(engine.context, input) };
         }
         var raw: i32 = 0;

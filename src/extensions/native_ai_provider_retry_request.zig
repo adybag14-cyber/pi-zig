@@ -26,9 +26,7 @@ fn retryBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []c
     }
     const owner = slot.*;
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
-        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, value, generation);
+        try @import("native_async_body.zig").enterRejectedContinuation(engine);
     }
     if (scope.truthy(try scope.get(owner, "sleeping"))) {
         if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };
