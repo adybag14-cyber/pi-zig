@@ -32,6 +32,6 @@ pub fn defaultFilename(context: ?*c.JSContext, base: []const u8, name: []const u
         } else break;
     }
     if (prefix_len != 0) { output[prefix_len] = '/'; prefix_len += 1; }
-    @memcpy(output[prefix_len..][0..remaining.len], remaining);
+    @memcpy(output[prefix_len .. prefix_len + remaining.len], remaining);
     output[prefix_len + remaining.len] = 0; return output;
 }

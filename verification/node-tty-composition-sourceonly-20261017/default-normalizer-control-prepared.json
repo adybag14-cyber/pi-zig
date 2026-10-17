@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "parent": "964d3461d14a6b1e28500a32e44b32537a0fdc56",
+  "origin_alias_unit": "a9ceba604ac250c3b9f128e47e1101a8ab85f242",
+  "root_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "status": "SOURCE_ONLY_PREPARED_UNRUN",
+  "scope": "Explicit bounded destination slice plus actual linked-C-default versus alias-normalizer differential caller control",
+  "payload": [
+    {
+      "path": "src/extensions/native_builtin_alias_normalize.zig",
+      "bytes": 2284,
+      "sha256": "BE31EAF1062B3A74F44F9E877B6AB4C90874937380B6FFB035504A03ABA747F9"
+    },
+    {
+      "path": "src/native_node_tty_alias_default_normalizer_control.zig",
+      "bytes": 2431,
+      "sha256": "EA7E4E5498579FFBC1E2BA0EE54214952E6EF92F8B1AD159E2A47275B5792C03"
+    }
+  ],
+  "engine_unchanged_from_bfb_projection": "C04A16D26138C02D0162FF5D51D1DB3D68F5B06754873BAE9619567EADEEC875",
+  "control": "Same actual registered user Source modules imported before alias(Cdefault) and afteralias(nativehelper); leading parent reduction and internal../retention; genuineTTYnamespaceidentityafteralias",
+  "execution_grant": false,
+  "actual_metadata": null,
+  "expected_outputs_present": false
+}
