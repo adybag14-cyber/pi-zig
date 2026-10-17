@@ -41,7 +41,11 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     if (c.JS_DefinePropertyValueStr(engine.context, versions, "quickjs", try engine.checked(c.JS_NewString(engine.context, c.JS_GetVersion())), version_flags) < 0) return error.JavaScriptException;
     if (c.JS_DefinePropertyValueStr(engine.context, process, "versions", c.JS_DupValue(engine.context, versions), version_flags) < 0) return error.JavaScriptException;
     try put(engine, process, "cwd", try engine.checked(c.JS_NewCFunction(engine.context, currentDirectory, "cwd", 0)));
-    const platform = if (builtin.os.tag == .windows) "win32" else @tagName(builtin.os.tag);
+    const platform: [:0]const u8 = switch (builtin.os.tag) {
+        .windows => "win32",
+        .macos => "darwin",
+        else => @tagName(builtin.os.tag),
+    };
     try put(engine, process, "platform", try engine.checked(c.JS_NewString(engine.context, platform)));
     const architecture = switch (builtin.cpu.arch) {
         .x86_64 => "x64",
