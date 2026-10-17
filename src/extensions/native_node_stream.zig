@@ -121,7 +121,9 @@ fn classId(scope: *Scope, side: Side) !u32 {
 pub fn state(scope: *Scope, stream: c.JSValue, side: Side) !?*State {
     const value = try scope.get(stream, if (side == .readable) "_readableState" else "_writableState");
     if (nullish(value)) return null;
-    return @ptrCast(@alignCast(c.JS_GetOpaque(value, try classId(scope, side)) orelse return error.RequiredRealNativeNodeStreamState));
+    const selected: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, try classId(scope, side)) orelse return error.RequiredRealNativeNodeStreamState));
+    if (selected.engine != scope.engine or selected.side != side) return error.RequiredRealNativeNodeStreamState;
+    return selected;
 }
 fn required(scope: *Scope, stream: c.JSValue, side: Side) !*State { return (try state(scope, stream, side)) orelse error.RequiredRealNativeNodeStreamState; }
 pub fn errorValue(scope: *Scope, kind: [*:0]const u8, code: []const u8, message: []const u8) !c.JSValue {
@@ -794,6 +796,7 @@ fn property(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
     if (internal) {
         var raw = c.JS_GetOpaque(receiver, try classId(&scope, .readable)); if (raw == null) raw = c.JS_GetOpaque(receiver, try classId(&scope, .writable));
         if (raw) |handle| s = @ptrCast(@alignCast(handle)) else return error.RequiredRealNativeNodeStreamState;
+        if (s.?.engine != engine) return error.RequiredRealNativeNodeStreamState;
     } else if (std.mem.eql(u8, name, "destroyed") or std.mem.eql(u8, name, "closed") or std.mem.eql(u8, name, "errored")) { s = try state(&scope, receiver, .writable); if (s == null) s = try state(&scope, receiver, .readable); }
     else s = try state(&scope, receiver, side);
     if (s == null) return if (std.mem.eql(u8, name, "errored")) c.pi_js_null() else c.pi_js_bool(engine.context, 0);
@@ -900,7 +903,9 @@ pub fn install(engine: *em.Engine, process: c.JSValue) !void {
         var id: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &id);
         const definition: c.JSClassDef = .{ .class_name = if (side == .readable) "ReadableState" else "WritableState", .finalizer = finalize, .gc_mark = mark };
         if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
-        try scope.put(module, class_name, c.JS_NewUint32(engine.context, id));
+        // This registered owner can be reached through CJS. Its native brand
+        // must never be selected by guest assignment/redefinition of an ID.
+        if (c.JS_DefinePropertyValueStr(engine.context, module, class_name, c.JS_NewUint32(engine.context, id), 0) < 0) return js.capture(engine);
         const prototype = try scope.object(); try scope.put(module, proto_name, prototype);
         inline for (.{ "length", "highWaterMark", "objectMode", "destroyed", "closed", "errored", "ended", "endEmitted", "flowing", "reading", "sync", "needReadable", "needDrain", "ending", "finished", "prefinished", "writing", "corked", "pendingcb", "constructed", "autoDestroy", "emitClose", "decodeStrings", "defaultEncoding", "decoder", "encoding", "readable", "writable" }) |name| try accessor(&scope, prototype, name, true, true);
     }

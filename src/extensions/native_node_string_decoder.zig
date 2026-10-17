@@ -31,7 +31,9 @@ fn stateFor(scope: *Scope, receiver: c.JSValue) !*State {
     const root = try scope.own(try js.getKey(scope.engine, receiver, try scope.get(owner, "stateSymbol")));
     var id: u32 = 0;
     if (c.JS_ToUint32(scope.engine.context, &id, try scope.get(owner, "stateClass")) < 0) return js.capture(scope.engine);
-    return @ptrCast(@alignCast(c.JS_GetOpaque(root, id) orelse return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_THIS", "Value of \"this\" must be of type StringDecoder")));
+    const selected: *State = @ptrCast(@alignCast(c.JS_GetOpaque(root, id) orelse return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_THIS", "Value of \"this\" must be of type StringDecoder")));
+    if (selected.engine != scope.engine) return error.NativeStringDecoderOwnerRequired;
+    return selected;
 }
 pub fn bytes(scope: *Scope, view: c.JSValue) ![]const u8 {
     if (c.JS_GetTypedArrayType(view) < 0 and !c.JS_IsDataView(view)) return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_INVALID_ARG_TYPE", "The \"buf\" argument must be an instance of Buffer, TypedArray, or DataView");
@@ -180,8 +182,9 @@ pub fn install(engine: *em.Engine) !void {
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native Node StringDecoder State", .finalizer = finalize, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
-    try scope.put(owner, "stateClass", c.JS_NewUint32(engine.context, class));
-    try scope.put(owner, "stateSymbol", try scope.call(try scope.global("Symbol"), c.pi_js_undefined(), &.{try scope.text("kNativeDecoder")}));
+    if (c.JS_DefinePropertyValueStr(engine.context, owner, "stateClass", c.JS_NewUint32(engine.context, class), 0) < 0) return js.capture(engine);
+    const symbol = try scope.call(try scope.global("Symbol"), c.pi_js_undefined(), &.{try scope.text("kNativeDecoder")});
+    if (c.JS_DefinePropertyValueStr(engine.context, owner, "stateSymbol", c.JS_DupValue(engine.context, symbol), 0) < 0) return js.capture(engine);
     const constructor = try scope.own(try fnc.create(engine, "StringDecoder", 1, construct, &.{}));
     const prototype = try scope.get(constructor, "prototype");
     inline for (.{ "write", "end", "text" }, .{ Op.write, Op.end, Op.text }, .{ 1, 1, 2 }) |name, op, length| try scope.put(prototype, name, try scope.own(try fnc.create(engine, name, length, call, &.{c.JS_NewInt32(engine.context, @intFromEnum(op))})));
