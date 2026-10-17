@@ -1,0 +1,80 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_934F_THREE_DIAGNOSTICS_SYSTEMATIC_REPEAT_CORRECTION_PEER_PENDING",
+  "base": "934f7e4ef2bd705c96b1c59c7f3a8f4c703ca48f",
+  "actual_diagnostic": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-tty19-934f-buildquery-20261017-233914\\compile.stderr.log",
+    "headers": [
+      "src\\extensions\\native_node_tty_windows_close.zig:30:44: error: expected type 'extensions.native_node_tty_windows_close.Pool(extensions.native_owner_wake).Slot', found '@TypeOf(.{})'",
+      "src\\extensions\\native_node_util_inspect.zig:215:48: error: comptime call of extern function",
+      "src\\extensions\\native_owner_completion.zig:42:59: error: incompatible types: '?*const anyopaque' and '*const u8'"
+    ],
+    "sha256": "2C3FC1D283224E2C7EC838486E34729C80BF80189BBDD6B19AC6DFD39DBAD311"
+  },
+  "products": [
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "sha256": "248DEE4A94CB735B3CB7F08B9C4D16274F67DAD3EF4C62A0EA9D0431E6334CDA"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_linux.zig",
+      "sha256": "DC6046399CBF3E9FA0F04E6B9C0999F19EDC95C07AFE08E578ADA4714803D263"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "sha256": "90A6446781E0F56DB3D7E17F7E7EF6F210C2DAE3A9FA538FF2DA2055FCA853BB"
+    },
+    {
+      "path": "src/extensions/native_owner_completion.zig",
+      "sha256": "5DA41746058999DA8D69E7ED2677BDF45286ECC527D9F2F15D44C1A2F92695E8"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "sha256": "C70B0BD6CD884073B3E448CA0140511994A5D21C1F3980FB11DD36C69F0BAA28"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "7AFE96C109C3391665E33B4FB64B8FF71D02889389E6B6842A1099D7B2EE7C23"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "6F3AE3AF715887CDB6E42E25107236323EC690BE1A05FA16DC1256E8BB10DFF7"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "sha256": "1FDA28DCE467A2E43E019E52F73D80B51BFD7D4A19183CEDEB8C0E453BB4A8A4"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    }
+  ],
+  "inventory_sha256": "4D9A74CF4F6BFAA4CDB50A9189404A300A8A998231F6F61EFBA73C716B9C65FA",
+  "systematic_remaining_sameform": 0,
+  "actual_compilation": false,
+  "physical_fix4": "934fHOLD; Root-onlyfutureff afteractualnegativeaudit",
+  "source_assertions": 19,
+  "actual_metadata": null,
+  "allowed_anonymous": [],
+  "execution_authorized": false,
+  "agent_jobs": 0,
+  "algorithms_callbacks_caps_ownership_unchanged": true
+}

@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "status": "STATIC_ENTIRE_SRC_MULTILINE_SAME_FORM_INVENTORY_NO_COMPILER",
+  "base_head": "934f7e4ef2bd705c96b1c59c7f3a8f4c703ca48f",
+  "scope": "Entire src/**/*.zig supersetofreachableTTY/worker/backend includingOSbranchLinuxwake",
+  "pattern": "\\.\\{\\s*\\.\\{\\s*\\}\\s*\\}\\s*\\*\\*",
+  "base_exact_matches": [
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix4-sourceonly-20261017\\src\\extensions\\native_node_tty_windows_close.zig:30:        var slots: [Limits.tickets]Slot = .{.{}} ** Limits.tickets;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix4-sourceonly-20261017\\src\\extensions\\native_owner_wake_linux.zig:16:var slots: [16]Slot = .{.{}} ** 16;"
+  ],
+  "successor_exact_match_count": 0,
+  "family_all_repeat_lines": [
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_net_socket.zig:54:const Adopters = struct { engine: *js.Engine, entries: [4]?HandleAdopter = .{null} ** 4 };",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_close.zig:30:        var slots: [Limits.tickets]Slot = .{Slot{}} ** Limits.tickets;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_input_worker.zig:51:        var slots: [Limits.tickets]Slot = .{Slot{}} ** Limits.tickets;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_input_worker.zig:52:        var workers: [Limits.read_threads]Worker = .{Worker{}} ** Limits.read_threads;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_leases.zig:29:        var slots: [maximum_leases]Slot = .{Slot{}} ** maximum_leases;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_legacy.zig:66:    argv: [4]u16 = .{0} ** 4,",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_owner_wake_linux.zig:16:var slots: [16]Slot = .{Slot{}} ** 16;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_owner_wake_windows.zig:16:var slots: [16]Slot = .{Slot{}} ** 16;",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix6-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_owner.zig:40:            endpoints: [leases.maximum_leases]?*Endpoint = .{null} ** leases.maximum_leases,"
+  ],
+  "classification": "Allremainingfamilyrepeatoperands explicitSlot/Worker typedstructs OR primitive0/null; bothremaininganonymous-empty-struct repeats corrected includinginactiveLinuxfacadebranch",
+  "other_actual_diagnostic_inventory": "UtilContext onlyexterndefaultJSValue inTTY/util/ownerfamily; movedtosoleContextinitializer. Completiononlytagcomparison neededoptionalopaquecast; addResource alreadyhasexpectedfieldtype",
+  "jobs": 0
+}

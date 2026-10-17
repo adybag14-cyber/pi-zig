@@ -13,7 +13,7 @@ pub const Sink = struct {
     host_context: ?*anyopaque = null,
 };
 const Slot = struct { guard: Mutex = .{}, generation: u64 = 0, references: u32 = 0, sink: ?Sink = null };
-var slots: [16]Slot = .{.{}} ** 16;
+var slots: [16]Slot = .{Slot{}} ** 16;
 var creation_guard: Mutex = .{};
 pub fn create(sink: Sink) !Ref {
     if (builtin.os.tag != .linux) return error.NativeOwnerWakePlatformRequired;

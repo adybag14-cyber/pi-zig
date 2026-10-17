@@ -212,7 +212,7 @@ fn defaultsSet(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, root
 }
 const Context = struct {
     scope: *v.Scope, roots: []const c.JSValue, options: c.JSValue,
-    user_options: c.JSValue = c.pi_js_undefined(),
+    user_options: c.JSValue,
     indentation: usize = 0,
     current_depth: usize = 0,
     seen: std.ArrayList(c.JSValue) = .empty,
@@ -220,7 +220,7 @@ const Context = struct {
         const options = try s.object();
         try h.put(s.engine, options, "stylize", roots[12]);
         inline for (option_names) |name| try h.put(s.engine, options, name, try h.get(s, roots[1], name));
-        var self: Context = .{ .scope = s, .roots = roots, .options = options };
+        var self: Context = .{ .scope = s, .roots = roots, .options = options, .user_options = c.pi_js_undefined() };
         if (args.len > 2 and !c.JS_IsUndefined(args[2])) try h.put(s.engine, options, "depth", args[2]);
         if (args.len > 3 and !c.JS_IsUndefined(args[3])) try h.put(s.engine, options, "colors", args[3]);
         if (args.len > 1) {

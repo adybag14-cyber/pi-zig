@@ -27,7 +27,7 @@ pub fn Pool(comptime Wake: type) type {
             result: Result = .closed, detached: bool = false,
         };
         var gate: w.SRWLOCK = .{};
-        var slots: [Limits.tickets]Slot = .{.{}} ** Limits.tickets;
+        var slots: [Limits.tickets]Slot = .{Slot{}} ** Limits.tickets;
         var event: ?H = null;
         var initialized: bool = false;
         var initialization_failed: bool = false;
