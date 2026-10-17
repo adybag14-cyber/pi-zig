@@ -158,7 +158,7 @@ fn submitWrite(state: *State, metadata: ?SyncWriteMetadata) !Submission {
         state.offset += result.acceptedBytes;
         state.bytes_written +|= result.acceptedBytes;
         state.bytes_dispatched +|= result.dispatchedBytes;
-        if (result.failure) |failure| return failure;
+        if (result.failure) |failure| return @as(anyerror!Submission, failure);
         if (result.acceptedBytes != remaining.len) return error.NativeSocketIncompleteSynchronousAcknowledgement;
         return .complete;
     }
@@ -220,9 +220,9 @@ fn construct(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, cap
     const duplex = try scope.get(context, "Duplex"); const states = try scope.get(context, "states");
     const known_id = try scope.get(context, "classId"); const process = try scope.get(context, "process"); const buffer_ctor = try scope.get(context, "Buffer");
     const supplied = arg(args, 0);
-    if (!nullish(supplied) and !c.JS_IsObject(supplied)) return js.typeError(engine, "Socket options must be an object");
+    if (!nullish(supplied) and !c.JS_IsObject(supplied)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket options must be an object"));
     if (!nullish(supplied)) {
-        inline for (.{ "objectMode", "readableObjectMode", "writableObjectMode" }) |name| if (scope.truthy(try scope.get(supplied, name))) return js.typeError(engine, "Socket does not support object mode");
+        inline for (.{ "objectMode", "readableObjectMode", "writableObjectMode" }) |name| if (scope.truthy(try scope.get(supplied, name))) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket does not support object mode"));
     }
     const options = if (nullish(supplied)) try scope.object() else try scope.own(try js.spread(engine, supplied));
     try scope.put(options, "allowHalfOpen", if (nullish(supplied)) c.pi_js_bool(engine.context, 0) else c.pi_js_bool(engine.context, @intFromBool(scope.truthy(try scope.get(supplied, "allowHalfOpen")))));
@@ -272,7 +272,7 @@ fn write(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: 
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
     if (!nullish(state.write_callback)) return error.NativeSocketWriteAlreadyPending;
     const input = arg(args, 0); const callback = arg(args, 2);
-    if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket write callback must be a function");
+    if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket write callback must be a function"));
     if (state.hooks == null or state.endpoint_closed or state.input_finished) return js.call(engine, callback, c.pi_js_undefined(), &.{try coded(&scope, "ERR_SOCKET_CLOSED", "Socket is closed")});
     const chunk = try writeChunk(&scope, state, input, arg(args, 1));
     state.length = (try bytes(&scope, chunk)).len; state.offset = 0;
@@ -290,7 +290,7 @@ fn write(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: 
 }
 fn final(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
-    const callback = arg(args, 0); if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket final callback must be a function");
+    const callback = arg(args, 0); if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket final callback must be a function"));
     if (!nullish(state.final_callback)) return error.NativeSocketFinalAlreadyPending;
     const hooks = state.hooks orelse return js.call(engine, callback, c.pi_js_undefined(), &.{});
     const token = try state.next(); state.final_token = token; state.set(&state.final_callback, callback);
@@ -315,7 +315,7 @@ fn publishClosed(state: *State, reason: c.JSValue) !void {
 fn destroy(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
     if (state.destroy_started) return error.NativeSocketDestroyAlreadyPending;
-    const callback = arg(args, 1); if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket destroy callback must be a function");
+    const callback = arg(args, 1); if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket destroy callback must be a function"));
     state.destroy_started = true;
     state.set(&state.destroy_reason, arg(args, 0)); state.set(&state.destroy_callback, callback);
     var acknowledged = state.hooks == null;

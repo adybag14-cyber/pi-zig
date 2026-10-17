@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_COMPLETE_CAPTURED_ERRDEFER_DYNAMIC_ERROR_TYPING_UNCOMPILED",
+  "parent": "d9beacdffe51f5ac165143b06d46f0f5c06ecf76",
+  "actual_diagnostics": "evidence/root-tty19-d9be-buildquery-20261017-224810/compile.stderr.log",
+  "actual_diagnostics_sha256": "B0DA16795BBAA54733ACFE63832C06167182E4BD65563A1115243A5FF4F29BAB",
+  "observed_error_sites": [
+    "Socket223",
+    "Provider88",
+    "SocketFunction38",
+    "SocketFunction72"
+  ],
+  "pinned_compiler_source": "toolchain/zig-x86_64-windows-0.16.0/lib/std/zig/AstGen.zig",
+  "compiler_source_sha256": "2B3ABDFF84C015C3760993F1693BA5C8F10A128D4FA83D6A850E682C4A3DFBBC",
+  "correction": "Complete3module inventory of production runtime error-set returns under capturingerrdefer:12explicittypedunions, no callback/capturehelper/scope mutation",
+  "sites": [
+    "Socket:5typeError JSValue +nativefailure Submission",
+    "Provider:catcherr *Bundle",
+    "SocketFunction:invoke typeError +4createKind captures JSValue"
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "7AFE96C109C3391665E33B4FB64B8FF71D02889389E6B6842A1099D7B2EE7C23"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "6F3AE3AF715887CDB6E42E25107236323EC690BE1A05FA16DC1256E8BB10DFF7"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "sha256": "1FDA28DCE467A2E43E019E52F73D80B51BFD7D4A19183CEDEB8C0E453BB4A8A4"
+    }
+  ],
+  "production_dynamic_error_returns_remaining_under_capturing_errdefer": 0,
+  "unchanged_bare_forms": "acquire() catcherr has noerrdefer; unselectedtestcallback hasnoerrdefer",
+  "shared_capture_Scope_Engine_C_H_build_untouched": true,
+  "assertions_changed": false,
+  "source_declarations": 19,
+  "actual_metadata": null,
+  "agent_jobs": 0,
+  "execution_authorized": false
+}

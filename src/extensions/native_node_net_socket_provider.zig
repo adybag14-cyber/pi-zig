@@ -85,7 +85,7 @@ fn acquireInner(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c
     _ = c.JS_SetOpaque(holder, self);
     attached = true; provider_owned = false;
     const retained = c.JS_DupValue(engine.context, holder);
-    engine.native_module_values.put(engine.gpa, key, retained) catch |err| { engine.freeValue(retained); return err; };
+    engine.native_module_values.put(engine.gpa, key, retained) catch |err| { engine.freeValue(retained); return @as(anyerror!*Bundle, err); };
     return self;
 }
 
