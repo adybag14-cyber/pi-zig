@@ -1,0 +1,437 @@
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index c9b544c..2812253 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -912,6 +912,8 @@ typedef struct JSFunctionBytecode {
+        metadata is zero-initialized, leaving this pointer NULL. cpool[0..1]
+        retains captures/lexical-this with the existing GC and finalizer. */
+     JSPiAsyncFunctionBody *native_async_body;
++    JSPiAsyncGeneratorFactory *native_async_generator_factory;
++    JSPiAsyncGeneratorResume *native_async_generator_resume;
+     uint8_t native_async_flags;
+ } JSFunctionBytecode;
+ 
+@@ -6574,6 +6576,11 @@ static void js_function_set_properties(JSContext *ctx, JSValue func_obj,
+                            JS_AtomToString(ctx, name), JS_PROP_CONFIGURABLE);
+ }
+ 
++static bool js_bytecode_has_native_body(const JSFunctionBytecode *b)
++{
++    return b && (b->native_async_body || b->native_async_generator_factory);
++}
++
+ static bool js_class_has_bytecode(JSClassID class_id)
+ {
+     return (class_id == JS_CLASS_BYTECODE_FUNCTION ||
+@@ -6592,7 +6599,7 @@ static JSFunctionBytecode *JS_GetFunctionBytecode(JSValueConst val)
+     if (!js_class_has_bytecode(p->class_id))
+         return NULL;
+     if (p->u.func.function_bytecode &&
+-        p->u.func.function_bytecode->native_async_body)
++        js_bytecode_has_native_body(p->u.func.function_bytecode))
+         return NULL; /* Native frames have no bytecode PC/source positions. */
+     return p->u.func.function_bytecode;
+ }
+@@ -8525,7 +8532,7 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
+         backtrace_barrier = false;
+ 
+         if (js_class_has_bytecode(p->class_id) &&
+-            !p->u.func.function_bytecode->native_async_body) {
++            !js_bytecode_has_native_body(p->u.func.function_bytecode)) {
+             b = p->u.func.function_bytecode;
+             backtrace_barrier = b->backtrace_barrier;
+         }
+@@ -22716,7 +22723,85 @@ static int js_async_generator_completed_return(JSContext *ctx,
+     return res;
+ }
+ 
+-static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
++/* Only CURRENT pending events are examined here. Flagged action/input/rejected
++   DATA is never promoted. Selected reasons remain owned outside pending slots. */
++static void js_pi_ag_take_pending(JSContext *ctx, JSValue *selected,
++                                  bool *have, bool *fatal)
++{
++    JSValue cleanup, displaced;
++    while (JS_HasException(ctx)) {
++        cleanup = JS_GetException(ctx);
++        if (!*have) {
++            *selected = cleanup;
++            *have = true;
++            *fatal = JS_IsUncatchableError(cleanup);
++            continue;
++        }
++        if (!*fatal && JS_IsUncatchableError(cleanup)) {
++            displaced = *selected;
++            *selected = cleanup;
++            *fatal = true;
++        } else {
++            displaced = cleanup;
++        }
++        JS_FreeValue(ctx, displaced);
++    }
++}
++
++static void js_pi_ag_free_value(JSContext *ctx, JSValue owned)
++{
++    JSValue selected = JS_UNDEFINED;
++    bool have = false, fatal = false;
++    js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++    JS_FreeValue(ctx, owned);
++    js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++    if (have)
++        JS_Throw(ctx, selected);
++}
++
++static void js_pi_ag_free_context(JSContext *caller, JSContext *owned)
++{
++    JSValue selected = JS_UNDEFINED;
++    bool have = false, fatal = false;
++    js_pi_ag_take_pending(caller, &selected, &have, &fatal);
++    JS_FreeContext(owned);
++    js_pi_ag_take_pending(caller, &selected, &have, &fatal);
++    if (have)
++        JS_Throw(caller, selected);
++}
++
++/* Same host-abort contract as the native AF path: terminate native work,
++   release capabilities without ordinary resolver calls, and return the first
++   actual fatal to the entry/job boundary. Already-published JS Promises are not
++   given ordinary settlements during an uncatchable host abort. */
++static void js_pi_ag_abort(JSContext *caller, JSContext *owned_realm,
++                           JSAsyncGeneratorData *s, JSValue first_fatal)
++{
++    bool have = true, fatal = true;
++    JSAsyncGeneratorRequest *request;
++    js_async_generator_complete(owned_realm, s);
++    js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++    while (!list_empty(&s->queue)) {
++        request = list_entry(s->queue.next, JSAsyncGeneratorRequest, link);
++        list_del(&request->link);
++        JS_FreeValue(owned_realm, request->result);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->promise);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->resolving_funcs[0]);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->resolving_funcs[1]);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        js_free(owned_realm, request);
++    }
++    /* caller is an active same-runtime entry/callback context. It remains
++       valid if retiring the last native-owner reference frees the body realm. */
++    JS_FreeContext(owned_realm);
++    js_pi_ag_take_pending(caller, &first_fatal, &have, &fatal);
++    JS_Throw(caller, first_fatal);
++}
++
++static void js_native_async_generator_drive(JSContext *caller, JSAsyncGeneratorData *s,
+                                              int completion,
+                                              JSValueConst input)
+ {
+@@ -22735,7 +22820,27 @@ static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
+             output = s->native_resume(ctx, s->native_owner, completion,
+                                        value, &action);
+         }
+-        JS_FreeValue(ctx, value);
++        {
++            JSValue selected = JS_UNDEFINED;
++            bool have = false, fatal = false;
++            /* Take the producer event before input/result finalizers can
++               replace it. A malformed success+pending callback is normalized
++               only after it returns; no internal work is retrospectively undone. */
++            js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            JS_FreeValue(ctx, value);
++            js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            if (have && !JS_IsException(output)) {
++                JS_FreeValue(ctx, output);
++                output = JS_EXCEPTION;
++                js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            }
++            if (fatal) {
++                js_pi_ag_abort(caller, ctx, s, selected);
++                return;
++            }
++            if (have)
++                JS_Throw(ctx, selected);
++        }
+         if (JS_IsException(output)) {
+             JSValue exception = JS_GetException(ctx);
+             js_async_generator_complete(ctx, s);
+@@ -22808,8 +22913,10 @@ static void js_async_generator_resume_next(JSContext *ctx,
+             if (next->completion_type == GEN_MAGIC_NEXT) {
+                 if (s->native_resume) {
+                     s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
+-                    js_native_async_generator_drive(s, JS_PI_AG_START,
++                    js_native_async_generator_drive(ctx, s, JS_PI_AG_START,
+                                                      JS_UNDEFINED);
++                    if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++                        goto done;
+                     if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                         goto done;
+                     break;
+@@ -22850,17 +22957,19 @@ static void js_async_generator_resume_next(JSContext *ctx,
+                     if (js_async_generator_await(realm, s, next->result) < 0) {
+                         JSValue exception = JS_GetException(realm);
+                         s->native_phase = PI_AG_PHASE_NONE;
+-                        js_native_async_generator_drive(s, JS_PI_AG_THROW_INPUT,
++                        js_native_async_generator_drive(ctx, s, JS_PI_AG_THROW_INPUT,
+                                                          exception);
+-                        JS_FreeValue(realm, exception);
++                        js_pi_ag_free_value(realm, exception);
+                     }
+-                    JS_FreeContext(realm);
++                    js_pi_ag_free_context(ctx, realm);
+                 } else {
+-                    js_native_async_generator_drive(s,
++                    js_native_async_generator_drive(ctx, s,
+                         next->completion_type == GEN_MAGIC_THROW ?
+                             JS_PI_AG_THROW_INPUT : JS_PI_AG_NEXT,
+                         next->result);
+                 }
++                if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++                    goto done;
+                 if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                     goto done;
+                 break;
+@@ -22972,9 +23081,11 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
+             int completion = phase == PI_AG_PHASE_AWAIT ?
+                 (is_reject ? JS_PI_AG_AWAIT_REJECTED : JS_PI_AG_AWAIT_FULFILLED) :
+                 (is_reject ? JS_PI_AG_THROW_INPUT : JS_PI_AG_RETURN_INPUT);
+-            js_native_async_generator_drive(s, completion, arg);
++            js_native_async_generator_drive(ctx, s, completion, arg);
+         }
+-        JS_FreeContext(realm);
++        js_pi_ag_free_context(ctx, realm);
++        if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++            return JS_EXCEPTION;
+         if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
+             js_async_generator_resume_next(ctx, s);
+     } else if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+@@ -22988,6 +23099,9 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
+         }
+         js_async_generator_resume_next(ctx, s);
+     }
++    if (s->native_resume && JS_HasException(ctx) &&
++        JS_IsUncatchableError(ctx->rt->current_exception))
++        return JS_EXCEPTION;
+     return JS_UNDEFINED;
+ }
+ 
+@@ -23027,6 +23141,11 @@ static JSValue js_async_generator_next(JSContext *ctx, JSValueConst this_val,
+     if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+         js_async_generator_resume_next(ctx, s);
+     }
++    if (s->native_resume && JS_HasException(ctx) &&
++        JS_IsUncatchableError(ctx->rt->current_exception)) {
++        js_pi_ag_free_value(ctx, promise);
++        return JS_EXCEPTION;
++    }
+     return promise;
+  fail:
+     JS_FreeValue(ctx, resolving_funcs[0]);
+@@ -23035,6 +23154,66 @@ static JSValue js_async_generator_next(JSContext *ctx, JSValueConst this_val,
+     return JS_EXCEPTION;
+ }
+ 
++/* Native factory errors obey the C API exception-return convention. Keep the
++   selected reason outside pending while releasing displaced owned state. */
++static JSValue js_pi_generator_discard_pending(JSContext *ctx, JSValue value)
++{
++    JSValue reason = JS_GetException(ctx), cleanup, displaced;
++    bool fatal = JS_IsUncatchableError(reason);
++    JS_FreeValue(ctx, value);
++    while (JS_HasException(ctx)) {
++        cleanup = JS_GetException(ctx);
++        if (!fatal && JS_IsUncatchableError(cleanup)) {
++            displaced = reason;
++            reason = cleanup;
++            fatal = true;
++        } else {
++            displaced = cleanup;
++        }
++        JS_FreeValue(ctx, displaced);
++    }
++    return JS_Throw(ctx, reason);
++}
++
++static JSValue js_pi_native_generator_function_call(JSContext *caller,
++    JSValueConst function, JSValueConst receiver, int argc, JSValueConst *argv)
++{
++    JSFunctionBytecode *b = JS_VALUE_GET_OBJ(function)->u.func.function_bytecode;
++    JSContext *ctx = b->realm;
++    JSAsyncGeneratorData *s;
++    JSValue owner, object;
++    (void)caller;
++    if (JS_HasException(ctx))
++        return JS_EXCEPTION;
++    if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
++        return JS_ThrowInternalError(ctx, "Invalid native generator argument count");
++    s = js_mallocz(ctx, sizeof(*s));
++    if (!s)
++        return JS_EXCEPTION;
++    init_list_head(&s->queue);
++    s->state = JS_ASYNC_GENERATOR_STATE_SUSPENDED_START;
++    owner = b->native_async_generator_factory(ctx, b->cpool[0], receiver, argc, argv);
++    if (JS_IsException(owner) || JS_HasException(ctx)) {
++        js_free(ctx, s);
++        if (JS_HasException(ctx))
++            return js_pi_generator_discard_pending(ctx, owner);
++        return owner; /* JS_EXCEPTION without pending is a callback violation. */
++    }
++    /* Use the same live prototype lookup / creation-realm fallback as the
++       ordinary VM generator-function call, after parameter/state capture. */
++    object = js_create_from_ctor(ctx, function, JS_CLASS_ASYNC_GENERATOR);
++    if (JS_IsException(object)) {
++        js_free(ctx, s);
++        return js_pi_generator_discard_pending(ctx, owner);
++    }
++    s->native_resume = b->native_async_generator_resume;
++    s->native_ctx = JS_DupContext(ctx);
++    s->native_owner = owner;
++    s->generator = JS_VALUE_GET_OBJ(object);
++    JS_SetOpaqueInternal(object, s);
++    return object;
++}
++
+ static JSValue js_async_generator_function_call(JSContext *ctx,
+                                                 JSValueConst func_obj,
+                                                 JSValueConst this_obj,
+@@ -23044,6 +23223,8 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
+     JSValue obj, func_ret;
+     JSAsyncGeneratorData *s;
+ 
++    if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_generator_factory)
++        return js_pi_native_generator_function_call(ctx, func_obj, this_obj, argc, argv);
+     s = js_mallocz(ctx, sizeof(*s));
+     if (!s)
+         return JS_EXCEPTION;
+@@ -23075,6 +23256,70 @@ static JSValue js_async_generator_function_call(JSContext *ctx,
+     return JS_EXCEPTION;
+ }
+ 
++/* Checked native opt-in closure path. js_closure2 is the actual VM closure/GC
++   initializer; closure_var_count is zero, so it performs no fallible work.
++   Ordinary js_closure and js_function_set_properties remain unchanged. */
++static JSValue js_pi_checked_generator_closure(JSContext *ctx,
++                                               JSFunctionBytecode *b)
++{
++    JSValue function, name, prototype;
++    function = JS_NewObjectClass(ctx, func_kind_to_class_id[b->func_kind]);
++    if (JS_IsException(function))
++        return js_pi_generator_discard_pending(ctx,
++                    JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
++    function = js_closure2(ctx, function, b, NULL, NULL);
++    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_length,
++                               js_int32(b->defined_arg_count),
++                               JS_PROP_CONFIGURABLE) < 0)
++        return js_pi_generator_discard_pending(ctx, function);
++    name = JS_AtomToString(ctx, b->func_name);
++    if (JS_IsException(name))
++        return js_pi_generator_discard_pending(ctx, function);
++    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_name, name,
++                               JS_PROP_CONFIGURABLE) < 0)
++        return js_pi_generator_discard_pending(ctx, function);
++    prototype = JS_NewObjectProto(ctx, ctx->class_proto[JS_CLASS_ASYNC_GENERATOR]);
++    if (JS_IsException(prototype))
++        return js_pi_generator_discard_pending(ctx, function);
++    if (JS_DefinePropertyValue(ctx, function, JS_ATOM_prototype, prototype,
++                               JS_PROP_WRITABLE) < 0)
++        return js_pi_generator_discard_pending(ctx, function);
++    return function;
++}
++
++JSValue JS_PiNewNativeAsyncGeneratorFunction(JSContext *ctx,
++    JSPiAsyncGeneratorFactory *factory, JSPiAsyncGeneratorResume *resume,
++    JSValueConst captures, const char *name, int length)
++{
++    JSFunctionBytecode *b;
++    size_t offset = (sizeof(*b) + 7) & ~(size_t)7;
++    if (JS_HasException(ctx))
++        return JS_EXCEPTION;
++    if (!factory || !resume || length < 0 || length > UINT16_MAX)
++        return JS_ThrowTypeError(ctx, "Invalid native generator function definition");
++    b = js_mallocz(ctx, offset + sizeof(JSValue));
++    if (!b)
++        return JS_EXCEPTION;
++    JS_REF_COUNT(b) = 1;
++    b->realm = JS_DupContext(ctx);
++    b->is_strict_mode = b->has_simple_parameter_list = true;
++    b->func_kind = JS_FUNC_ASYNC_GENERATOR;
++    b->defined_arg_count = length;
++    b->cpool = (JSValue *)((uint8_t *)b + offset);
++    b->cpool_count = 1;
++    b->cpool[0] = js_dup(captures);
++    b->native_async_generator_factory = factory;
++    b->native_async_generator_resume = resume;
++    add_gc_object(ctx->rt, &b->header, JS_GC_OBJ_TYPE_FUNCTION_BYTECODE);
++    b->func_name = JS_NewAtom(ctx, name ? name : "");
++    if (b->func_name == JS_ATOM_NULL)
++        return js_pi_generator_discard_pending(ctx,
++                    JS_MKPTR(JS_TAG_FUNCTION_BYTECODE, b));
++    /* Same class/closure/realm/property invariants as VM js_closure, checked
++       immediately on this opt-in path. No constructor bit or forwarding code. */
++    return js_pi_checked_generator_closure(ctx, b);
++}
++
+ JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx)
+ {
+     return js_dup(ctx->class_proto[JS_CLASS_ASYNC_GENERATOR]);
+@@ -39958,7 +40203,7 @@ static int JS_WriteFunctionTag(BCWriterState *s, JSValueConst obj)
+     uint32_t flags;
+     int idx, i;
+ 
+-    if (b->native_async_body) {
++    if (js_bytecode_has_native_body(b)) {
+         JS_ThrowTypeError(s->ctx, "Cannot serialize a native async function body");
+         return -1;
+     }
+@@ -43829,7 +44074,7 @@ static JSValue js_function_toString(JSContext *ctx, JSValueConst this_val,
+         /* `b->source` must be pure ASCII or UTF-8 encoded */
+         if (b->source)
+             return JS_NewStringLen(ctx, b->source, b->source_len);
+-        if (b->native_async_body)
++        if (js_bytecode_has_native_body(b))
+             return JS_ConcatString3(ctx, "function ",
+                 JS_AtomToString(ctx, b->func_name), "() { [native code] }");
+     }
+@@ -65120,7 +65365,7 @@ static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFra
+ 
+     p = JS_VALUE_GET_OBJ(sf->cur_func);
+     if (js_class_has_bytecode(p->class_id) &&
+-        !p->u.func.function_bytecode->native_async_body) {
++        !js_bytecode_has_native_body(p->u.func.function_bytecode)) {
+         JSFunctionBytecode *b = p->u.func.function_bytecode;
+         int line_num1, col_num1;
+         line_num1 = find_line_num(ctx, b,
+@@ -65211,7 +65456,7 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
+         }
+         function = JS_VALUE_GET_OBJ(current->cur_func);
+         if (js_class_has_bytecode(function->class_id) &&
+-            !function->u.func.function_bytecode->native_async_body)
++            !js_bytecode_has_native_body(function->u.func.function_bytecode))
+             bytecode = function->u.func.function_bytecode;
+         if (bytecode && !current->cur_pc) {
+             /* Preserve the frame without undefined pointer arithmetic. */
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index a1b6892..b055c44 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -588,6 +588,18 @@ typedef JSValue JSPiAsyncGeneratorResume(JSContext *ctx, JSValueConst owner,
+ JS_EXTERN JSValue JS_PiNewNativeAsyncGenerator(JSContext *ctx, JSValueConst owner,
+                                               JSPiAsyncGeneratorResume *resume,
+                                               JSValueConst prototype);
++/* Genuine native async-generator FUNCTION. The factory captures parameter
++   state only (owned return), before body entry; resume uses the existing C3
++   generator instance queue. All inputs borrowed, result owned, same-runtime
++   owner-thread context. Callback exceptions obey the standard C API contract.
++   The real VM closure/class/creation realm/own prototype machinery is used;
++   native metadata has no serializable bytecode or fabricated source position. */
++typedef JSValue JSPiAsyncGeneratorFactory(JSContext *ctx, JSValueConst captures,
++    JSValueConst this_obj, int argc, JSValueConst *argv);
++JS_EXTERN JSValue JS_PiNewNativeAsyncGeneratorFunction(JSContext *ctx,
++    JSPiAsyncGeneratorFactory *factory, JSPiAsyncGeneratorResume *resume,
++    JSValueConst captures, const char *name, int length);
++
+ /* Both prototype getters return an owned reference from this context. */
+ JS_EXTERN JSValue JS_PiGetAsyncGeneratorPrototype(JSContext *ctx);
+ JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);

@@ -1,0 +1,192 @@
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index c8ff83e..2812253 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -22723,7 +22723,85 @@ static int js_async_generator_completed_return(JSContext *ctx,
+     return res;
+ }
+ 
+-static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
++/* Only CURRENT pending events are examined here. Flagged action/input/rejected
++   DATA is never promoted. Selected reasons remain owned outside pending slots. */
++static void js_pi_ag_take_pending(JSContext *ctx, JSValue *selected,
++                                  bool *have, bool *fatal)
++{
++    JSValue cleanup, displaced;
++    while (JS_HasException(ctx)) {
++        cleanup = JS_GetException(ctx);
++        if (!*have) {
++            *selected = cleanup;
++            *have = true;
++            *fatal = JS_IsUncatchableError(cleanup);
++            continue;
++        }
++        if (!*fatal && JS_IsUncatchableError(cleanup)) {
++            displaced = *selected;
++            *selected = cleanup;
++            *fatal = true;
++        } else {
++            displaced = cleanup;
++        }
++        JS_FreeValue(ctx, displaced);
++    }
++}
++
++static void js_pi_ag_free_value(JSContext *ctx, JSValue owned)
++{
++    JSValue selected = JS_UNDEFINED;
++    bool have = false, fatal = false;
++    js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++    JS_FreeValue(ctx, owned);
++    js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++    if (have)
++        JS_Throw(ctx, selected);
++}
++
++static void js_pi_ag_free_context(JSContext *caller, JSContext *owned)
++{
++    JSValue selected = JS_UNDEFINED;
++    bool have = false, fatal = false;
++    js_pi_ag_take_pending(caller, &selected, &have, &fatal);
++    JS_FreeContext(owned);
++    js_pi_ag_take_pending(caller, &selected, &have, &fatal);
++    if (have)
++        JS_Throw(caller, selected);
++}
++
++/* Same host-abort contract as the native AF path: terminate native work,
++   release capabilities without ordinary resolver calls, and return the first
++   actual fatal to the entry/job boundary. Already-published JS Promises are not
++   given ordinary settlements during an uncatchable host abort. */
++static void js_pi_ag_abort(JSContext *caller, JSContext *owned_realm,
++                           JSAsyncGeneratorData *s, JSValue first_fatal)
++{
++    bool have = true, fatal = true;
++    JSAsyncGeneratorRequest *request;
++    js_async_generator_complete(owned_realm, s);
++    js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++    while (!list_empty(&s->queue)) {
++        request = list_entry(s->queue.next, JSAsyncGeneratorRequest, link);
++        list_del(&request->link);
++        JS_FreeValue(owned_realm, request->result);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->promise);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->resolving_funcs[0]);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        JS_FreeValue(owned_realm, request->resolving_funcs[1]);
++        js_pi_ag_take_pending(owned_realm, &first_fatal, &have, &fatal);
++        js_free(owned_realm, request);
++    }
++    /* caller is an active same-runtime entry/callback context. It remains
++       valid if retiring the last native-owner reference frees the body realm. */
++    JS_FreeContext(owned_realm);
++    js_pi_ag_take_pending(caller, &first_fatal, &have, &fatal);
++    JS_Throw(caller, first_fatal);
++}
++
++static void js_native_async_generator_drive(JSContext *caller, JSAsyncGeneratorData *s,
+                                              int completion,
+                                              JSValueConst input)
+ {
+@@ -22742,7 +22820,27 @@ static void js_native_async_generator_drive(JSAsyncGeneratorData *s,
+             output = s->native_resume(ctx, s->native_owner, completion,
+                                        value, &action);
+         }
+-        JS_FreeValue(ctx, value);
++        {
++            JSValue selected = JS_UNDEFINED;
++            bool have = false, fatal = false;
++            /* Take the producer event before input/result finalizers can
++               replace it. A malformed success+pending callback is normalized
++               only after it returns; no internal work is retrospectively undone. */
++            js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            JS_FreeValue(ctx, value);
++            js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            if (have && !JS_IsException(output)) {
++                JS_FreeValue(ctx, output);
++                output = JS_EXCEPTION;
++                js_pi_ag_take_pending(ctx, &selected, &have, &fatal);
++            }
++            if (fatal) {
++                js_pi_ag_abort(caller, ctx, s, selected);
++                return;
++            }
++            if (have)
++                JS_Throw(ctx, selected);
++        }
+         if (JS_IsException(output)) {
+             JSValue exception = JS_GetException(ctx);
+             js_async_generator_complete(ctx, s);
+@@ -22815,8 +22913,10 @@ static void js_async_generator_resume_next(JSContext *ctx,
+             if (next->completion_type == GEN_MAGIC_NEXT) {
+                 if (s->native_resume) {
+                     s->state = JS_ASYNC_GENERATOR_STATE_EXECUTING;
+-                    js_native_async_generator_drive(s, JS_PI_AG_START,
++                    js_native_async_generator_drive(ctx, s, JS_PI_AG_START,
+                                                      JS_UNDEFINED);
++                    if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++                        goto done;
+                     if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                         goto done;
+                     break;
+@@ -22857,17 +22957,19 @@ static void js_async_generator_resume_next(JSContext *ctx,
+                     if (js_async_generator_await(realm, s, next->result) < 0) {
+                         JSValue exception = JS_GetException(realm);
+                         s->native_phase = PI_AG_PHASE_NONE;
+-                        js_native_async_generator_drive(s, JS_PI_AG_THROW_INPUT,
++                        js_native_async_generator_drive(ctx, s, JS_PI_AG_THROW_INPUT,
+                                                          exception);
+-                        JS_FreeValue(realm, exception);
++                        js_pi_ag_free_value(realm, exception);
+                     }
+-                    JS_FreeContext(realm);
++                    js_pi_ag_free_context(ctx, realm);
+                 } else {
+-                    js_native_async_generator_drive(s,
++                    js_native_async_generator_drive(ctx, s,
+                         next->completion_type == GEN_MAGIC_THROW ?
+                             JS_PI_AG_THROW_INPUT : JS_PI_AG_NEXT,
+                         next->result);
+                 }
++                if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++                    goto done;
+                 if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING)
+                     goto done;
+                 break;
+@@ -22979,9 +23081,11 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
+             int completion = phase == PI_AG_PHASE_AWAIT ?
+                 (is_reject ? JS_PI_AG_AWAIT_REJECTED : JS_PI_AG_AWAIT_FULFILLED) :
+                 (is_reject ? JS_PI_AG_THROW_INPUT : JS_PI_AG_RETURN_INPUT);
+-            js_native_async_generator_drive(s, completion, arg);
++            js_native_async_generator_drive(ctx, s, completion, arg);
+         }
+-        JS_FreeContext(realm);
++        js_pi_ag_free_context(ctx, realm);
++        if (JS_HasException(ctx) && JS_IsUncatchableError(ctx->rt->current_exception))
++            return JS_EXCEPTION;
+         if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING)
+             js_async_generator_resume_next(ctx, s);
+     } else if (s->state == JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+@@ -22995,6 +23099,9 @@ static JSValue js_async_generator_resolve_function(JSContext *ctx,
+         }
+         js_async_generator_resume_next(ctx, s);
+     }
++    if (s->native_resume && JS_HasException(ctx) &&
++        JS_IsUncatchableError(ctx->rt->current_exception))
++        return JS_EXCEPTION;
+     return JS_UNDEFINED;
+ }
+ 
+@@ -23034,6 +23141,11 @@ static JSValue js_async_generator_next(JSContext *ctx, JSValueConst this_val,
+     if (s->state != JS_ASYNC_GENERATOR_STATE_EXECUTING) {
+         js_async_generator_resume_next(ctx, s);
+     }
++    if (s->native_resume && JS_HasException(ctx) &&
++        JS_IsUncatchableError(ctx->rt->current_exception)) {
++        js_pi_ag_free_value(ctx, promise);
++        return JS_EXCEPTION;
++    }
+     return promise;
+  fail:
+     JS_FreeValue(ctx, resolving_funcs[0]);

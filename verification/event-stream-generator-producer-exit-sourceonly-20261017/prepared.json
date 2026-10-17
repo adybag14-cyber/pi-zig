@@ -1,0 +1,115 @@
+{
+  "parent": "9d92a1f2c6e2e8ee1c4e90f7f856de2de9fd0d16",
+  "status": "inactive-C-producer-exit-proposal-uncompiled-unrun-review-pending",
+  "active_C_H_Engine_build_changed": false,
+  "C_patch_applied": false,
+  "apply_checks_only": 2,
+  "native_new_test_definitions": 3,
+  "Source_original13_plus1_preserved": true,
+  "expected_absent": true,
+  "source_qualified": false,
+  "runtime_qualified": false,
+  "host_abort_published_promises": "remain pending; no ordinary resolver settlement during fatal teardown",
+  "finite_boundary": "native body return/input-result cleanup/direct next/native Await reaction; not every C3 internal intrinsic",
+  "pins": [
+    {
+      "path": "src/native_generator_producer_exit_test.zig",
+      "sha256": "827E968FE3B830B6F83783A062CC3FEB856078746D9D39A5D83153A2EB40F758",
+      "bytes": 6598
+    },
+    {
+      "path": "src/extensions/native_promise_executor_fatal.zig",
+      "sha256": "1C86A640EC7F8118BCDC94B333EDFC5627041E6A210625AC629746AA5483CDFB",
+      "bytes": 6566
+    },
+    {
+      "path": "src/extensions/native_async_generator_function.zig",
+      "sha256": "8C65BC03C15E2A5E2970066A51F298F6AA9A4A52CF6F1435B80181ECADCE1301",
+      "bytes": 4362
+    },
+    {
+      "path": "src/extensions/native_event_stream_core.zig",
+      "sha256": "16E49F3D2A17127F91F13E2FCC808C38EDEB2DD0E5986B0DE3AF4583814C95E6",
+      "bytes": 13639
+    },
+    {
+      "path": "src/native_event_stream_function_test.zig",
+      "sha256": "F3289DA6E6192BEAB4AB97594CAF0E050C82003D61C2502C786BD1983039BDD6",
+      "bytes": 14627
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "0CEA9590A5EA47288D8C435B33C34AF842F5FF271DBE852798045568BB36D9DC",
+      "bytes": 2553
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "build.zig",
+      "sha256": "C6C76F27E80BE573BC37330C0FC04C1770578876F18C8DFDEBB61DBD90523D6A",
+      "bytes": 342918
+    },
+    {
+      "path": "verification/event-stream-generator-function-corrections-sourceonly-20261017/proposed-c-api.patch",
+      "sha256": "D8864FE030B1AEE33C6E22505A84FC2537436B9DD81AE56FCA92BB878C27E474",
+      "bytes": 11906
+    },
+    {
+      "path": "verification/event-stream-executor-ordinary-sourceonly-20261017/prepared.json",
+      "sha256": "BF02A859B7FAC4FE90842B307D6B6258E223740A6E822F21DF862A1A2ECDA8B2",
+      "bytes": 2982
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/observer.mjs",
+      "sha256": "9D77950368A5CAAFD1C9B87CB25490D503590655BBE341CB792A7A6D4769128C",
+      "bytes": 4824
+    },
+    {
+      "path": "verification/event-stream-executor-ordinary-sourceonly-20261017/observer.mjs",
+      "sha256": "3B32D1D10E4A13CC508E3094EBA1F3CAA5A1075B50CD54FA04D1E2A3549285EE",
+      "bytes": 771
+    },
+    {
+      "path": "verification/event-stream-generator-producer-exit-sourceonly-20261017/producer-exit-only.patch",
+      "sha256": "46AD8EF2E0520C7B47FAE250A3DA230080C97F10F0CCF7C5CEA7C170ADA190FC",
+      "bytes": 8916
+    },
+    {
+      "path": "verification/event-stream-generator-producer-exit-sourceonly-20261017/proposed-c-api-and-producer-exit.patch",
+      "sha256": "ADD8B6984E9BC931A115A4FC2E8F92A08617690388667DA0F07230875D46D2CB",
+      "bytes": 20665
+    },
+    {
+      "path": "verification/event-stream-generator-producer-exit-sourceonly-20261017/README.md",
+      "sha256": "A5BEDC809D1D1AC8852CFD6EE4BBC3172ADF33F2B00C78C7706112D403B2ED22",
+      "bytes": 4384
+    }
+  ],
+  "virtual_base": "C:\\Users\\adyba\\pi-zig\\evidence\\event-stream-generator-function-checked-virtual-c3-20261017",
+  "virtual_candidate": "C:\\Users\\adyba\\pi-zig\\evidence\\event-stream-generator-producer-exit-virtual-c3-20261017",
+  "virtual_C_sha256": "2CF27FEF7EB45FA234AFA663D6F3C12F2407739694A75D85AE99FFF63B14578D",
+  "virtual_H_sha256": "48F3A57577C83296D321E02F93D95320626E961939AFBEAE2F5FEB42FCC0D8A8"
+}
