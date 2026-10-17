@@ -122,43 +122,48 @@
       "path": "src/extensions/native_ai_provider_values.zig",
       "present_in_root_a45": true,
       "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB",
-      "note": "Existing genuine Root implementation; no changes in this packet."
+      "note": "Existing genuine Root implementation; no changes in this packet.",
+      "baseline_git_blob": "4033c59939cb358c99b2591825547dd808214685"
     },
     {
       "path": "src/extensions/native_js_values.zig",
       "present_in_root_a45": true,
       "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
-      "note": "Existing genuine Root implementation; no changes in this packet."
+      "note": "Existing genuine Root implementation; no changes in this packet.",
+      "baseline_git_blob": "dc74667547037fd639eb4e9d7f6204ea2c626787"
     },
     {
       "path": "src/extensions/native_models_stream_scope.zig",
       "present_in_root_a45": true,
       "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
-      "note": "Existing genuine Root implementation; no changes in this packet."
+      "note": "Existing genuine Root implementation; no changes in this packet.",
+      "baseline_git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
     },
     {
       "path": "src/extensions/native_async_body.zig",
       "present_in_root_a45": true,
       "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
-      "note": "Existing genuine Root implementation; no changes in this packet."
+      "note": "Existing genuine Root implementation; no changes in this packet.",
+      "baseline_git_blob": "5a713e97233c42e64c602f1532838e880214f5c4"
     },
     {
       "path": "src/extensions/native_node_module_callable.zig",
       "present_in_root_a45": true,
       "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
-      "note": "Existing genuine Root implementation; no changes in this packet."
+      "note": "Existing genuine Root implementation; no changes in this packet.",
+      "baseline_git_blob": "824a2f6ce190333527ea812dc978e3fd213fead1"
     },
     {
       "path": "src/extensions/native_jiti_interop.zig",
-      "present_in_root_a45": true,
-      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497",
-      "note": "Reviewed926 selected intake owned by factory owner; not silently substituted or copied over shared helpers."
+      "present_in_root_a45": false,
+      "sha256": null,
+      "note": "Absent at exact a45 baseline. Reviewed926 selected dependencies are recorded separately; current physical Main must not be mislabeled as a45."
     },
     {
       "path": "src/extensions/native_jiti_module_cache.zig",
-      "present_in_root_a45": true,
-      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D",
-      "note": "Reviewed926 selected intake owned by factory owner; not silently substituted or copied over shared helpers."
+      "present_in_root_a45": false,
+      "sha256": null,
+      "note": "Absent at exact a45 baseline. Reviewed926 selected dependencies are recorded separately; current physical Main must not be mislabeled as a45."
     }
   ],
   "preserved_packets": [
@@ -186,5 +191,26 @@
   "observed_files": [],
   "jobs_launched": false,
   "root_engine_c_commonjs_changed": false,
-  "full_createJiti_or_default_selection_qualified": false
+  "full_createJiti_or_default_selection_qualified": false,
+  "selected_dependency_provenance": [
+    {
+      "path": "src/extensions/native_jiti_interop.zig",
+      "reviewed_source_checkpoint": "926d08402250aec386d674120172586186d1a038",
+      "reviewed_source_git_blob": "a69e8cf97386a71b15be0ac93273e4956250c020",
+      "later_root_intake": "0d5325589bcfa1fbf16a8978c953d3c5cf7889eb",
+      "intaken_git_blob": "a69e8cf97386a71b15be0ac93273e4956250c020",
+      "current_root_readonly": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cache.zig",
+      "reviewed_source_checkpoint": "926d08402250aec386d674120172586186d1a038",
+      "reviewed_source_git_blob": "970aeb5f6ca2d1a41051983a1e86aabdfc132f10",
+      "later_root_intake": "0d5325589bcfa1fbf16a8978c953d3c5cf7889eb",
+      "intaken_git_blob": "970aeb5f6ca2d1a41051983a1e86aabdfc132f10",
+      "current_root_readonly": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D"
+    }
+  ],
+  "provenance_correction": "Successor corrects ef87 manifest race: physical Main advanced while its files were inventoried. Exact a45 absence is retained separately from later selected dependency intake. Product/control/authority bytes unchanged."
 }
