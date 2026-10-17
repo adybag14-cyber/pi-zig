@@ -17,10 +17,10 @@ runtime-property detection or process.version fabrication is introduced. Actual
 default SDK graph construction/selection remains incomplete and unqualified;
 the new profile is a capability supplied by a genuine native bootstrap.
 
-Only version-discovery PI_OFFLINE/PI_SKIP_VERSION_CHECK tests now use Source
-string truthiness: absent and empty permit checks; every nonempty string,
-including0,false and whitespace, suppresses the relevant check. Telemetry's
-1/true/yes parser, main's packageOffline parser and model-runtime's explicit
+Version-discovery PI_OFFLINE/PI_SKIP_VERSION_CHECK gates and install-report's
+shared offline gate now use Source string truthiness: absent and empty permit
+the operation; every nonempty string, including0,false and whitespace, suppresses
+the relevant operation. Telemetry's separate1/true/yes parser, main's packageOffline parser and model-runtime's explicit
 undefined/presence contract remain unchanged.
 
 Historical sdk-lifecycle-version-6fb2e78.input.json and its1.1 expected JSON remain

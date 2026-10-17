@@ -29,7 +29,7 @@
     },
     {
       "path": "src/extensions/native_sdk_configuration_production.zig",
-      "sha256": "F00970B949A9822AAE9DBF24D1EEF3A36DF64E0F7C14B38EC810BCF46B2D93BC"
+      "sha256": "64EEC1229C9CE7C4E14CB7687F70B28975B5D8D774B9B0C4E5B9C6A43A061B2A"
     },
     {
       "path": "src/extensions/native_sdk_runtime_imports.zig",
@@ -47,7 +47,7 @@
     },
     {
       "path": "verification/pi-version-8efd-sourceonly-20261017/README.md",
-      "sha256": "738E0E9B124B36208EB9D62C9A94935A09D082DA7C97E8E3523A1078551F85F0"
+      "sha256": "145280554185A837CF9EDA0187E40848B5B3F0CD9D39B63551A0B0783B1159EB"
     },
     {
       "path": "verification/pi-version-8efd-sourceonly-20261017/source-probe.mjs",

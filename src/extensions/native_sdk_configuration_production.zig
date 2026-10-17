@@ -187,13 +187,12 @@ fn execute(scope: *Scope, bindings: c.JSValue, method: Method, args: []const c.J
         },
         .getPiUserAgent => blk: {
             if (scope.truthy(try scope.get(bindings, "nativeZigUserAgent"))) {
-                const version = try scope.stringify(arg(args, 0));
-                var length: usize = 0;
-                const bytes = c.JS_ToCStringLen(scope.engine.context, &length, version) orelse return js.capture(scope.engine);
-                defer c.JS_FreeCString(scope.engine.context, bytes);
-                const header = try @import("../config.zig").nativeUserAgent(scope.engine.gpa, bytes[0..length]);
+                const header = try @import("../config.zig").nativeUserAgent(scope.engine.gpa, "");
                 defer scope.engine.gpa.free(header);
-                break :blk try scope.text(header);
+                // Keep the caller's UTF16 string in the VM, including embedded
+                // NUL/lone surrogates; only the native runtime suffix is UTF8.
+                const version = try scope.stringify(arg(args, 0));
+                break :blk try scope.concat(try scope.concat(try scope.text("pi/"), version), try scope.text(header[3..]));
             }
             const process = try scope.get(bindings, "process");
             const bun = try scope.get(try scope.get(process, "versions"), "bun");
