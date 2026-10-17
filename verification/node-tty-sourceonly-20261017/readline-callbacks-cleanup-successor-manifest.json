@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "parent": "b328b1d940576f2d23e64a7754fc83a70d9151f7",
+  "scope": "new validation catch local root-retirement ownership refinement",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "executed": false,
+  "peer_review": "pending exact corrective bytes",
+  "changes": [
+    "Retain actual chosen error outsidepending/capture acrossEVERYnewwrappertemporaryrootfree",
+    "Firstactualcleanupfatal promotesordinaryerror; firstfatalstable; peroperationgeneration excludescapturedhistory",
+    "Scope fields emptied after taking exclusive root ownership; sharedScope/Engine/utility unchanged",
+    "Prepared actualgenuineValidator/actualError control; nativegetter throwssoleholderA, actualgetterBthrow, A finalizerordinaryC/freshNativeOOM C",
+    "RawCsetter reachability qualification: fatal-lease native stack owner usesordinarydata property; rawCfinding notobservedworkerleak"
+  ],
+  "original_callbacks_algorithm_changed": false,
+  "native_C_changed": false,
+  "controls": "prepared only; Root actualbundle inputs required; nofake dependency/expected packet",
+  "rows": [
+    {
+      "path": "src/extensions/native_node_readline_callbacks.zig",
+      "bytes": 6739,
+      "sha256": "E78DD14096399D19D0A103CAE4AB736E94D0B329A4E57C6DC880918485EA1467"
+    },
+    {
+      "path": "src/extensions/native_node_readline_errors.zig",
+      "bytes": 17613,
+      "sha256": "05CE47DDF4E9E9975EB6B7C9BE2D89B7513D2C824AFFBAE5211BF325EE153499"
+    },
+    {
+      "path": "src/native_node_readline_validation_cleanup_control.zig",
+      "bytes": 6707,
+      "sha256": "31BEE5230112406FA68336196D56C126537DFFE771E1CA7975162919D3CB1E2B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/READLINE-CALLBACKS-SOURCE.md",
+      "bytes": 7032,
+      "sha256": "20D24247AB723132578CBB10505B5B58D3CF39B302D89327CD1AE37176B4B42B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-readline-callbacks.mjs",
+      "bytes": 7424,
+      "sha256": "C0F94C98070ADE7D3C3B3ECE279D6B31138281B4152ED9BA78189D12CB04F0DC"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-callbacks.js",
+      "bytes": 2754,
+      "sha256": "AF9B691F147976BCA019361B7BE1095C7EF8C059353CD948E518327F2B3D6F8F"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-utils.js",
+      "bytes": 12782,
+      "sha256": "A0B8B7CB13DA3DF61BADE053AEBDD15D031CA8767399F726F047BCB5692D0FAF"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-validators.js",
+      "bytes": 19090,
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ]
+}

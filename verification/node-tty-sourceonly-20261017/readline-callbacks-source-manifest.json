@@ -1,0 +1,65 @@
+{
+  "schema": 1,
+  "parent": "473e03dc44497b1a1b2fbcbf1ed0047fcef82e77",
+  "scope": "four actual TTY-consumed readline callbacks and same shared argument-error class",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "executed": false,
+  "controls": "prepared/unrun; expected absent",
+  "frozen_TTY_utility_products_changed": false,
+  "unimplemented_unadvertised": [
+    "Interface",
+    "promises",
+    "other readline APIs"
+  ],
+  "owner_contract": "actual owner-frame stream.write; live genuine process.nextTick only in Source noop branches; no cross-thread output lock handoff",
+  "composition": "create shared error bundle ONCE; bundle.tty supplied to TTY/util; same builtin require/cache/carrier for all imports",
+  "rows": [
+    {
+      "path": "src/extensions/native_node_readline_callbacks.zig",
+      "bytes": 6739,
+      "sha256": "E78DD14096399D19D0A103CAE4AB736E94D0B329A4E57C6DC880918485EA1467"
+    },
+    {
+      "path": "src/extensions/native_node_readline_errors.zig",
+      "bytes": 8953,
+      "sha256": "AF7E0114302877FACC1F612817240A926D5C3980E2E05C69ACEB400CE655420C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/READLINE-CALLBACKS-SOURCE.md",
+      "bytes": 4400,
+      "sha256": "0F02D2272F3D9DC80DD736F8CCA20F2318260B4EA0DECE4FAAAE9FFE94772125"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-readline-callbacks.mjs",
+      "bytes": 4993,
+      "sha256": "DAE01891EB04AF2575A1C384E67F99A22A412BC9694CFD94E8DD617037361FA0"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-callbacks.js",
+      "bytes": 2754,
+      "sha256": "AF9B691F147976BCA019361B7BE1095C7EF8C059353CD948E518327F2B3D6F8F"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-utils.js",
+      "bytes": 12782,
+      "sha256": "A0B8B7CB13DA3DF61BADE053AEBDD15D031CA8767399F726F047BCB5692D0FAF"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-validators.js",
+      "bytes": 19090,
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ]
+}
