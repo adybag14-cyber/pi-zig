@@ -40,11 +40,10 @@ pub fn readLink(gpa: std.mem.Allocator, path: []const u8) !LinkResult {
                 // libuv's retry applies to any lstat failure with these codes.
                 // windowsStat already closed the first handle on this catch.
                 failure = null;
-                var target = windowsStat(gpa, path, true, &failure) catch |retry_err| {
+                const target = windowsStat(gpa, path, true, &failure) catch |retry_err| {
                     if (failure) |retry_code| return .{ .windows_error = retry_code };
                     return retry_err;
                 };
-                target.mode &= ~@as(u32, 0o111);
                 return .{ .metadata = target };
             }
             return .{ .windows_error = code };
@@ -141,9 +140,9 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool, failure: 
         .ctime_ns = windowsNanoseconds(basic.change),
         .atime_ns = windowsNanoseconds(basic.access),
         .birthtime_ns = windowsNanoseconds(basic.creation),
-        // Keep existing stat behavior scoped separately. New lstat follows
-        // pinned libuv's file/link/dir type and 0666/0444 Windows permissions.
-        .mode = (if (link_length != null) @as(u32, 0o120000) else if (directory) (if (follow) @as(u32, 0o040111) else 0o040000) else 0o100000) | 0o444 | (if (basic.attributes & 1 == 0) @as(u32, 0o222) else 0),
+        // Pinned libuv applies 0666/0444 on Windows, including directories;
+        // it does not add execute bits merely because this is a directory.
+        .mode = (if (link_length != null) @as(u32, 0o120000) else if (directory) @as(u32, 0o040000) else 0o100000) | 0o444 | (if (basic.attributes & 1 == 0) @as(u32, 0o222) else 0),
         .nlink = info.links,
         .blksize = 4096,
         .blocks = @intCast(@divTrunc(standard.allocation_size, 512)),
