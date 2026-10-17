@@ -6,6 +6,7 @@ extern fn pi_test_cjs_compiler_allocations(mode: c_int) c_int;
 extern fn pi_test_cjs_regexp_controls(mode: c_int) c_int;
 extern fn pi_test_cjs_lexer_poll(mode: c_int) c_int;
 extern fn pi_test_cjs_semantic_work() c_int;
+extern fn pi_test_cjs_diagnose_frames(context: ?*c.JSContext, frames: c.JSValue) void;
 const Owner = struct {
     error_value: c.JSValue,
     replacement: c.JSValue,
@@ -293,6 +294,7 @@ test "native CJS compiler physical body origin and UTF16 columns precede retaine
     const value = try call(engine, function, c.pi_js_undefined(), &.{}); defer engine.freeValue(value);
     try publish(engine, "physicalFrames", value);
     c.JS_RunGC(engine.runtime);
+    pi_test_cjs_diagnose_frames(engine.context, value);
     try check(engine, "physicalFrames[0].getFileName()==='C:/compiler/body.cjs'&&physicalFrames[0].getLineNumber()===2&&physicalFrames[0].getColumnNumber()===27&&physicalFrames[0].getFunction()===undefined&&physicalFrames[0].getThis()===undefined");
     const original = try text(engine, body); defer engine.freeValue(original); try publish(engine, "originalBody", original);
     try check(engine, "physicalFunction.toString()==='function (exports, require, module, __filename, __dirname) {\\n'+originalBody+'\\n}'");
