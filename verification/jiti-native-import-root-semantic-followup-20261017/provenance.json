@@ -1,0 +1,29 @@
+{
+  "status": "source_only_root_semantic_fix_carry_uncompiled",
+  "base": "64b7911ec23c81458bd37ae7f3677bde253f9995",
+  "root_fix_commit": "bf7ab8e1964f594fc73a450b85ff4f53dc14ccaa",
+  "root_baseline": "d0be7ae7f6187179ab284f3288e7251287580774",
+  "products": [
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "bytes": 17898,
+      "sha256": "084C6ECA3838FFB3E4BE5F5BE45074F8BEED61584102256AE8BE108326591454"
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "bytes": 17545,
+      "sha256": "FCB57E97B92F6DE82428F8C53EBA955C524B584304639E1E0B9184FCB0E6F6E1"
+    }
+  ],
+  "changes": [
+    "cells c.JS_NULL -> c.pi_js_null() in one object constructor",
+    "new ordinary nativeImport wrapper capture normalization uses typed capture_error and propagates unexpected error"
+  ],
+  "root_import_and_frontend_bf7_fixes_not_overwritten": true,
+  "original64_source_review_retained": true,
+  "source_executed": false,
+  "native_executed": false,
+  "formatter_executed": false,
+  "compiler_executed": false,
+  "default_selected": false
+}

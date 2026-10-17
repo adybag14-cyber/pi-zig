@@ -1,0 +1,20 @@
+{
+  "source_head": "64b7911ec23c81458bd37ae7f3677bde253f9995",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "source_closed_no_blocker_in_actual_ordinary_declaration_private_assembly_scope",
+  "manifest_rows": 110,
+  "hash_length_drift": 0,
+  "prepared_sha256": "5BDC738E9FA8FEA693BEA38D50B73840439E3258EFD2D5DB9F77EEC586FAB232",
+  "checked": [
+    "ordinaryname/length3/constructibility andsame17actualroots/fromRoots",
+    "unchangednativeInner+interop asyncshortcircuit/twolivegetterreads/ctxreceiver/livethen/rawreturn",
+    "pendingfirst/priorownership/newcapture/freshgen",
+    "pendingreasonownedbeforesuccesscleanup",
+    "tworealdeclarationsprivatelystagedbeforecommit withsecondfailurerollback",
+    "8genuinesubjectcontrasts incl actualpinnedFailingAllocator semantics/samebackingrestored"
+  ],
+  "actual_subject_complete": false,
+  "controls_executed": false,
+  "expected_absent": true,
+  "default_selected": false
+}

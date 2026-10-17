@@ -1,0 +1,9 @@
+{
+  "status": "reviewed_source_intake_with_Root_typefixes",
+  "source_head": "2129dae3bed16307f270121d3dbf6bf82af75a00",
+  "source_semantic_review": "64b7911ec23c81458bd37ae7f3677bde253f9995",
+  "actual_subject_complete": false,
+  "controls_executed": false,
+  "default_selected": false,
+  "Root_null_capture_fixes_preserved": true
+}

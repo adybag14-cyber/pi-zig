@@ -1,0 +1,23 @@
+{
+  "status":"prepared_genuine_source_calls_unrun_expected_absent",
+  "reference":"actual original jiti2.7 require.ts nativeImportOrRequire export loaded with actual dependencies; never extracted/cloned JS body",
+  "requires":["actual native require with shared Node/CommonJS cache", "actual queued or guest dynamic import of owned physical fixture", "actual interop/MLLY/pathe/std-env policy and source module identity", "canonical real core/frontend/require declarations and all actual namespace bindings"],
+  "fake_importer_require_or_namespace_allowed":false,
+  "cases":[
+    {"id":"canonical-real-two-declarations","entry":"verifyCanonicalTwoRealDeclarations","observe":"nativeImportOrRequire ordinaryname/length3/constructor distinct fromjitiRequire; bothshare17actualcaptures includingexactprivatefrontend; noalias"},
+    {"id":"real-async-then-raw-marker","entry":"verifyRealRawThenReturn","input_kind":"raw-then","observe":"twoimportgetterreads/ctxreceiver, actualnormalizationbeforecall, realPromise.thenreceiver/realinteroparrow, exactrawuserthenreturn/noextraPromise"},
+    {"id":"false-async-no-import-read","entry":"verifySyncUsesRealRequireWithoutImportRead","input_kind":"sync-must-not-read-import","observe":"importgetterwouldthrow butisunread; actualrequiregetonce/ctxreceiver/originalid andrealexportidentity"},
+    {"id":"true-async-falsy-import-require-fallback","input_kind":"falsy-import","observe":"nativeImportgetonce thenactualrequire; asyncdoesnotforcePromise/adoption"},
+    {"id":"first-import-getter-ordinary-throw","entry":"verifyActualSynchronousThrow","input_kind":"import-get-throw","observe":"sameordinaryreason synchronous/noPromise/captureconsumed/rawget,noToString"},
+    {"id":"second-import-noncallable","input_kind":"second-import-noncallable","observe":"firsttruthyread, secondcalleeisobject; actualVMTypeErrorbeforethen/extraPromise"},
+    {"id":"then-getter-ordinary-throw","entry":"verifyActualSynchronousThrow","input_kind":"then-get-throw","observe":"genuineimportstarted, thenlookupthrowsactualreason synchronousbeforeinteropcallbackcall; ownedactualimportdrainedseparately"},
+    {"id":"actual-Windows-normalization","observe":"std-envtrue+actualpatheabsolutecheck shortcircuit; actualMLLYURL thennativeImport; relativeidunchanged; falsyasyncnevernormalizes","driver_pending":true},
+    {"id":"actual-import-rejection-stays-async","observe":"genuineownedphysicalmoduleimportrejects; ordinarydeclarationreturnsrealthenresultimmediately, rejectionnotconvertedtosyncthrowornewwrapperPromise","driver_pending":true},
+    {"id":"pending-event-before-any-context-getter","entry":"verifyActualPendingEventBeforeGetters","observe":"actualcurrentVMfatalwins/nogetters/noformatting/exactidentity"},
+    {"id":"pending-event-with-success-return","entry":"verifyPendingEventOverSuccessValue","input_kind":"success-pending-event","observe":"explicitnativeeventprobe duringdelegatedrealthen leavespendingdespitesuccess; sameeventretainedbeforecleanup,nofalsesuccess"},
+    {"id":"fresh-current-native-allocation","entry":"verifyFreshCurrentNativeOOM","input_kind":"import-get-oom or then-get-oom","observe":"actualhostfault privategeneration/exactreasonfatal, nohistoricalflag/nameinference"},
+    {"id":"second-staged-declaration-failure","entry":"verifySecondDeclarationRollbackAndRetry","observe":"actualrequirestaged, nativeImportnextGPAstateallocfails, nofieldcommit/init/export; partialrootsvisibletoGC; backingallocatorrestored/genuineretry"}
+  ],
+  "expected_path":"src/extensions/fixtures/jiti-native-import-declaration.expected.json",
+  "node_executed":false,"native_executed":false,"formatter_executed":false,"compiler_executed":false,"expected_written":false,"default_selected":false
+}
