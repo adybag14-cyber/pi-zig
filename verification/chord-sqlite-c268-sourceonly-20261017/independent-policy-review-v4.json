@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "finite_corrected_SOURCE_policy_closed",
+  "head": "6b4921ad4e4533030d295bc76f4684795c592a13",
+  "manifest_sha256": "D523268661351983490D4E68BFB7821C315D5850DF3262E7D37D00502D2FA6A3",
+  "pins": 63,
+  "mismatches": 0,
+  "explicit_Root_policy": "Actual pending first; preexisting captured flag/tag is history unless explicit current producer ownership. No blanket oldflag body rejection.",
+  "checks": [
+    "Onlyproductiondelta removes old capturedflag guard; pending-first capture/isolation/restoration remain",
+    "Oldflagged actualnativeOOMcapture permits actualvalidatorbody (two coercion callbacks), returnsundefined andsameoldcapture/flagunchanged",
+    "Distinct actualpendingreason winsolderflaggedcapture beforebody; oldflagremainsunchanged",
+    "Actual nativeOOMproducer during realRegExpcoercion winsoldhistory with exactfreshidentity/generation andonebodyeffect; host-only dataassertions/no guestrecovery",
+    "RealDBIteratorGCcontrol unchanged; Source schema/migrations/SQL/oncegraph/export algorithms unchanged",
+    "All63canonical Gitpins0SHA/size drift; old9bb4/v3/receipt retained as superseded guard authority"
+  ],
+  "supersedes_prior_entry_guard_attestation": "A76442DCFC2AF501B194022CC882C0ADC699A9325E86AB3305CCF98C3FFC98E3",
+  "prior_addendum_sha256": "37489663CB67767FC6188319CEA6AEF4D7A13378548433D62D09EB6E735A5409",
+  "scope_limits": [
+    "Allcontrols/uncompiled/unrun/expectedabsent/defaultoff",
+    "ActualNode/Cloudflare/mkdir/fullsubjects separate requireddependencies",
+    "SharedAF/C markedDATA .thrown frontier separate, no C/Engine/AF changes"
+  ],
+  "jobs_started_by_reviewer": 0,
+  "Main_or_product_edits_by_reviewer": false,
+  "execution_authorized": false,
+  "runtime_pass_claim": false
+}
