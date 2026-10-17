@@ -58,7 +58,7 @@ const normal_setup=
 ;
 test "Pathe normal destructuring close older getter and call remain ordinary through parent export"{
     const engine=try em.Engine.init(std.testing.allocator,.{});defer engine.deinit();try setup(engine);
-    const value=try engine.evalModule(normal_setup++
+    const value=try engine.evalModule(normal_setup ++
         \\for(const kind of ['old-getter','old-call']){const restore=PathePolicyArmNormal(kind);let caught;try{ActualPathePolicy.normalizeAliases({a:'/one',b:'/two'})}catch(reason){caught=reason}if(caught!==pathePolicyHistorical)throw Error('normal close ordinary historical identity');restore()}
     ,"pathe-policy-normal-close-ordinary.mjs");engine.freeValue(value);try std.testing.expect(engine.captured_exception==null);
 }
