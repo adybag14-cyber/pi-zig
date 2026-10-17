@@ -1,0 +1,11 @@
+{
+  "zip": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-native-v2-independent-audit-20261017\\crypto58-native42b-raw-proof-20261017.zip",
+  "sha256": "EBC54280E6ED55F51B7A0479A00D6B4EA1D5B5438F58E36C7BF5E60760B116C8",
+  "bytes": 10607342,
+  "members": 142,
+  "all_members_rehashed": true,
+  "manifest_sha256": "0F305780AC7F70BE3EE7E42F2506EB6F608428B4391C26F31DF1F95F0E18FF61",
+  "local_ledger_sha256": "23B8ECBA7E327FA817D79A31758CB199A1169C4F8B47BA1E7ADAA200844E876A",
+  "new_native_jobs": false,
+  "main_edited": false
+}

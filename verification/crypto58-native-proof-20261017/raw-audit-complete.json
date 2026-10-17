@@ -1,0 +1,110 @@
+{
+  "status": "independent_raw_component_audit_passed",
+  "source_head": "42b8ea7007b1307276067339144b334590cb4046",
+  "run_id": "root-crypto58-native6-v2-20261017-114903",
+  "metadata_names": [
+    "native_node_crypto_hash_test.test.native node crypto SHA256 replays actual original58 observations",
+    "native_node_crypto_hash_test.test.native node crypto SHA256 retains independent opaque state and module roots through GC",
+    "native_node_crypto_hash_test.test.native node crypto SHA256 explicitly rejects algorithms and options beyond package usage",
+    "native_node_crypto_hash_test.test.native node crypto SHA256 every Zig allocation releases partial owner hash byte and encoding roots",
+    "native_node_crypto_hash_test.test.native node crypto SHA256 retains exact fresh native allocation identity through digest coercion",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "raw_runtime_results": [
+    {
+      "flags": 0,
+      "index": 0
+    },
+    {
+      "flags": 0,
+      "index": 1
+    },
+    {
+      "flags": 0,
+      "index": 2
+    },
+    {
+      "flags": 0,
+      "index": 3
+    },
+    {
+      "flags": 0,
+      "index": 4
+    },
+    {
+      "flags": 0,
+      "index": 5
+    }
+  ],
+  "raw_runtime_frame_count": 13,
+  "full_seal_comparisons": [
+    {
+      "before_final_drift": 0,
+      "group": "source",
+      "count": 10818,
+      "before_between_drift": 0
+    },
+    {
+      "before_final_drift": 0,
+      "group": "compiler",
+      "count": 19546,
+      "before_between_drift": 0
+    },
+    {
+      "before_final_drift": 0,
+      "group": "controls",
+      "count": 14,
+      "before_between_drift": 0
+    }
+  ],
+  "compiler_original_rows": 19546,
+  "fixture_count": 1004,
+  "artifact_rows": 2,
+  "executable_sha256": "7E85B8B8954CC01C397B830E2FECB56B87B3A412379FC0D4EC54134196FA7538",
+  "owners": [
+    {
+      "exit_code": 0,
+      "created_utc": "2026-10-17T11:49:18.3421581Z",
+      "pid": 40120,
+      "phase": "compile",
+      "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864"
+    },
+    {
+      "exit_code": 0,
+      "created_utc": "2026-10-17T11:49:29.3913633Z",
+      "pid": 3868,
+      "phase": "metadata",
+      "executable_sha256": "7E85B8B8954CC01C397B830E2FECB56B87B3A412379FC0D4EC54134196FA7538"
+    },
+    {
+      "exit_code": 0,
+      "created_utc": "2026-10-17T11:49:39.0701125Z",
+      "pid": 44796,
+      "phase": "runtime",
+      "executable_sha256": "7E85B8B8954CC01C397B830E2FECB56B87B3A412379FC0D4EC54134196FA7538"
+    }
+  ],
+  "recorded_inner_absences": 3,
+  "recorded_outer_pid": 51712,
+  "outer_created_utc": "2026-10-17T11:49:03.7769994Z",
+  "outer_exit_code": 0,
+  "recorded_outer_absent": true,
+  "actual_grant_bound": true,
+  "outer_owner_only_allowlist_diff": true,
+  "first_negative_outer_pid": 21864,
+  "first_negative_outer_exit": 1,
+  "original_negative_hashes_verified": 11,
+  "original_compile_shadow_errors": 3,
+  "original58_packet_files_verified": 40,
+  "original58_sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074",
+  "compile_summary_quirk": "Unmodified result.json compile contains [{}, receipt]; compile.json is authoritative",
+  "audit_script_sha256": "177FFAE947D02C455522B22E43496839B28C4AB4A0F26C64D0ECE9ACB017163E",
+  "native_jobs_started_by_auditor": false,
+  "fresh_process_census_performed_by_auditor": false,
+  "qualified_scope": "Exact original58 package-used SHA256 adapter plus the six actual selected tests at exact42b",
+  "limitations": [
+    "No broader Node crypto, package manager, default SDK graph, current full Main/version or release qualification",
+    "Recorded absence is audited at the original receipt times; no new runtime/absence claim",
+    "Disposable compiler caches are mutable non-authority; local EXE/PDB excluded from public payload"
+  ]
+}

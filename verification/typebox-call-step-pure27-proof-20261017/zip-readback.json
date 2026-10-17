@@ -1,0 +1,14 @@
+{
+  "status": "complete_byte_exact_zip_readback",
+  "zip": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-pure27-public-packet-20261017\\root-typebox-pure27-3c0603d2-20261017.zip",
+  "zip_sha256": "2F3B56FAF203A98FD60BDF0E76B38F4338FD850D1A35C2F3A79A61DF37B3629E",
+  "zip_bytes": 7745682,
+  "payload_entries": 42,
+  "total_entries": 44,
+  "payload_uncompressed_bytes": 47575043.0,
+  "manifest_sha256": "F2C35F007DB854596E7C4FB15D55403D545BF57ED611FAC126AFA0A35CC831C7",
+  "all_payload_entry_hashes_checked": true,
+  "drift": [],
+  "publication_pending": true,
+  "new_node_generator_zig_native_jobs": false
+}
