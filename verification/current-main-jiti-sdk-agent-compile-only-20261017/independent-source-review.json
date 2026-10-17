@@ -1,0 +1,34 @@
+{
+  "status": "finite_source_review_closed",
+  "source": "8f69a877a59aeeb0d5b4afff460ced8b82a73b37",
+  "parent": "3bf975f10a068fd5f1f71b1056a28b903077edb5",
+  "files": [
+    {
+      "path": "build.zig",
+      "sha256": "DC584097914202614D4722EB22FE5BBC6275F4327C65DDA76B1502A957533762"
+    },
+    {
+      "path": "src/native_jiti_current_compile_only_root.zig",
+      "sha256": "1ECABBA17282CEB62DB02D8EB308984DD633D5F72FECCDCE053512DDC30AC761"
+    },
+    {
+      "path": "verification/current-main-jiti-sdk-agent-compile-only-20261017/README.md",
+      "sha256": "3791AC64FAA1B4CB1F07D65CD8609BF5BF22A725D474C51F0BFE6FB98B1D633A"
+    }
+  ],
+  "finite_checks": [
+    "Exact3file source delta and cleanhead; no product/C-H/Engine edits",
+    "58 retain groups/170 unique named exports; allactualpublicdeclarations found, no namedcomptime/anytype or nonfallible signature blocker",
+    "Two concrete real Agent prompt/continue comptimefactory wrappers provide remaining anchors",
+    "Actual ArgsTuple and error-union payload plus never-inline calls preserve real body retention; no synthetic Subject/namespace/input construction",
+    "Current QuickJS/ICU/YAML/Photon/durable/SQLite/catalog helper paths plus explicit actual TypeScript/tree-sitter link",
+    "Dedicated artifact install edge only, no run/query/reference edge; failing sentinel unchanged neverapprovedforexecution",
+    "Selected existing test/control bodies preserved; source inventory172 is not observedmetadata or runtimepass"
+  ],
+  "material_blockers": [],
+  "diff_check_exit": 0,
+  "compiler_ast_parser_executed": false,
+  "node_native_generator_executed": false,
+  "main_product_edited": false,
+  "limitations": "Source-only body-retention review; genuine runtime assembly and tests unqualified, later compiler may discover actual latent product errors"
+}
