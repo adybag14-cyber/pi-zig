@@ -10,7 +10,7 @@
   "expected_absent": true,
   "required_tty_native_backend_complete": false,
   "required_node_bootstrap_complete": false,
-  "required_lazy_provider_dependency_successor_pending": true,
+  "required_lazy_provider_dependency_successor_pending": false,
   "records": [
     {
       "role": "product",
@@ -100,7 +100,7 @@
       "role": "dependency",
       "path": "src/extensions/native_jiti_profile.zig",
       "size": 11933,
-      "sha256": "8E16C9C4BCD80B2FD3D9427FCB01C8F590F6C5EA2F4116405597D3FE261BF7A0"
+      "sha256": "8A21207AB03AE8F13C0F2A7401A5D3C9F88C6BEEEB7544BFDA2F0C78EB2A06E9"
     },
     {
       "role": "dependency",
@@ -165,8 +165,16 @@
     {
       "role": "protected",
       "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/prepared.json",
-      "size": 5017,
-      "sha256": "664CC79BC5A1F2C6443835E38DD5D0DD1D0124B62963041C425CE537DBA8B095"
+      "size": 5657,
+      "sha256": "FF22F1888EC6FC763F50C3C870BC21A339824C6BDBEF39F6A76FCE87A4279244"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/original-3fff-prepared.json",
+      "size": 6132,
+      "sha256": "CADCF722F37C82A28DBFC3E2DA4B972569138BB130C726BC2E71D82BEBB91B96"
     }
-  ]
+  ],
+  "required_lazy_provider_source_closed": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399/B07763D8/AuthFailure16CD",
+  "required_lazy_provider_intake_still_required": true
 }
