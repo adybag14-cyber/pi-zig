@@ -1,0 +1,405 @@
+{
+  "schema": 4,
+  "parent": "48c0f11e06afdc0744fcce051039dac85eb812f6",
+  "source_closed_prior": "9bb4ab16ae042036af69524a112f9fd123eb3c69",
+  "superseded_prior_scope": "the captured-flag entry guard and zero-entry control; Root CURRENT-producer clarification",
+  "scope": "remove ONLY flag-alone historical capture entry rejection, keep actualpendingfirst/historyisolation, add honest three-cause controls",
+  "records": [
+    {
+      "role": "protected",
+      "path": "build.zig",
+      "size": 347284,
+      "sha256": "5837DE41F1D08C520A38D049895A817F6BE71F11475AC7AB7CBD07928D815B05"
+    },
+    {
+      "role": "protected",
+      "path": "src/config.zig",
+      "size": 6367,
+      "sha256": "B95EDFAA640D3F8AAD96B0D1FF692D076C4862125FEFBF4B65D3D978116671D4"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/engine.zig",
+      "size": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_body.zig",
+      "size": 3920,
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_function.zig",
+      "size": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_migrations.zig",
+      "size": 12712,
+      "sha256": "ECCD0BC1320122CB16177ADAEE4C3E40ED8A83DADCFFFFAE1D7D91B1938FC755"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_schema.zig",
+      "size": 2768,
+      "sha256": "EF47535659EF039C7E620FA82AA3B460A53FCF893F79E58013FD8D962F660123"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_values.zig",
+      "size": 4638,
+      "sha256": "32F82289EE6AC03E7AA923BF0AEBFD27218746DD33AC8B6493BC2B8F1D1F3038"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "size": 7874,
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_durable.zig",
+      "size": 77196,
+      "sha256": "C1DD2A86CA27C632991B89408B153BE2577128DF9D2D33AD0829EA49EDCB6381"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_js_values.zig",
+      "size": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "size": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_node_module_callable.zig",
+      "size": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "role": "control",
+      "path": "src/native_chord_sqlite_portable_test.zig",
+      "size": 6254,
+      "sha256": "E0F6A29941809FBCBE656FE6596B6C13E5B3126477E0377C3289F7FD842A1C41"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority-manifest.json",
+      "size": 19507,
+      "sha256": "981E135E8B95B013B62ACCEE0CB6E52DDBB1E70BCAC523CA74DE73E80DA4E28E"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/LICENSE.txt",
+      "size": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/chord/package.json.txt",
+      "size": 1643,
+      "sha256": "1CFCCB1C93B8E96D1BE4AE8A19B4F10E545B9D3E0B9F005B199C3722DA0512F8"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/package.json.txt",
+      "size": 5309,
+      "sha256": "7877411C036932F74AF4226563FF37F121013A9F69D4F9CEB55F5CDBCF6E5C54"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+      "size": 6335,
+      "sha256": "428B68034173066227C8D2BEFF111E3A9852AFD9B4215E30BC4FF6C315F47B20"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/database.ts.txt",
+      "size": 1877,
+      "sha256": "E7F392B01995A12ABF83BA03209DEA25D2CCD26673BF79E2E4D41FD9CF2CD543"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/index.ts.txt",
+      "size": 289,
+      "sha256": "1FABC79DF58729F28BEEF38D25AF290E2A0A767E9B76CFAC517B3B0E331B3D63"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/migrations.ts.txt",
+      "size": 6615,
+      "sha256": "3BBFF65FE5630DDA9AF4DA43032CEC7648B401D6A7060F2D868CCB9A3FB49285"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/node.ts.txt",
+      "size": 7035,
+      "sha256": "4EB34B79D18B812B818F976737617593BBC3D25D0562B118810AED9E4EFC123A"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/schema.ts.txt",
+      "size": 2670,
+      "sha256": "45EE91B7658BB52BA9E3DB830A02C91CC118EF534FECB4330AEAF7A65DE5FB9B"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/CHANGELOG.md.txt",
+      "size": 18923,
+      "sha256": "1FF9E3869535DF3FD829474EB9778FECECA5EE131D90A3B1B2B47B650CEF72F5"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/package.json.txt",
+      "size": 2082,
+      "sha256": "C22C4EC33F676C06E41573367DAE4AF89FC816BCF11A8972121B58729E3E5B9C"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/README.md.txt",
+      "size": 8524,
+      "sha256": "371B46574F339A3970991A795F599227F73315640B6897CCF1C115B5D675B7B8"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/cloudflare.ts.txt",
+      "size": 5864,
+      "sha256": "2DEE7C2AEE058FD570FD8B0E0B9488F9382189362519C1A8EADF37FD6C0E0E28"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/database.ts.txt",
+      "size": 1861,
+      "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/index.ts.txt",
+      "size": 219,
+      "sha256": "BE968D2152471D455323BBFD06802EA73D1470B03B2123E2A4E1F680DA38B0E8"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/migrations.ts.txt",
+      "size": 1805,
+      "sha256": "BD21356D008B67C1C9C2DA00BB49FCF439822D0FE8C2AFAA17FAC075474BBC40"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/node.ts.txt",
+      "size": 6288,
+      "sha256": "87EEE26EC2CD23F0EC19FA785C4B985546D85CF791FD6454E75BBE643E6EAC68"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/schema.ts.txt",
+      "size": 406,
+      "sha256": "156D8191D7BCFCA84F04E3745323645B2102F270649FB9B2603985A812A12AF7"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/cloudflare.test.ts.txt",
+      "size": 5254,
+      "sha256": "31794743762C5280107A5B171439091ECCF353D339CCEA158BAFDA9E9AAB3373"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/helpers.ts.txt",
+      "size": 2345,
+      "sha256": "FF8FA49F17A6A85C8B4076CD7D7D7BF9F4F9F8B570325362D26DCE4ECC7CD002"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/migrations.test.ts.txt",
+      "size": 3999,
+      "sha256": "92781852CC08E850066320182D5578BCEDD7F51E331FF7D53C306E97F7311903"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/node.test.ts.txt",
+      "size": 6974,
+      "sha256": "0D19D1F9AFF5592C695CBC53ABFF0502B6175BEA7D9737037AF301F3232A0828"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/CHANGELOG.md.txt",
+      "size": 24017,
+      "sha256": "D17DF2DC6F8B07017F0F92DC39D5EEFD6F348A645F3ED8836C5C75A53391EB41"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+      "size": 712,
+      "sha256": "CDCF6D443E0A03296F74732B6EB1AD7C3EBD00FFE5A8F8BC4C66B65D72948D10"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/database.ts.txt",
+      "size": 97,
+      "sha256": "970E243D7589603DB5C5838155764A71B30B4730F70C29854C72BFC99927117E"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/index.ts.txt",
+      "size": 304,
+      "sha256": "C81D2041CBD6C217ECC1F8E5C2C90A1B4EA1E3DF8CDD6DC4362DC0EC73614310"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/migrations.ts.txt",
+      "size": 5389,
+      "sha256": "855356E8C4FBF1481A1E4587921374D04670242AE15889D3302A39442FD8E6DC"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/node.ts.txt",
+      "size": 998,
+      "sha256": "A71180A69E8D9225CCDBA50F8EB7E908A3454B6B537657BA18A964D891F29E1C"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/schema.ts.txt",
+      "size": 2415,
+      "sha256": "A5247F752DF8707D98B63A3F8E292124AE09AFA50B731935E3C2D4864370B1BE"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/storage.ts.txt",
+      "size": 35871,
+      "sha256": "6778529DADA8AC79D54328F7E8924D14A2A25BF33BEFC186C078482D27E8FE4A"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-cloudflare.test.ts.txt",
+      "size": 3780,
+      "sha256": "A216634489B1704A5C82D96720EBE675BBF9C0342447DFBD5C372DE5B55B54CD"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-facade.test.ts.txt",
+      "size": 9429,
+      "sha256": "629868B0D9879551685DE2DBCDF14861F9770FC25E9E45F1C1B0484D48013B52"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-migrations.test.ts.txt",
+      "size": 4183,
+      "sha256": "3014289C1457937831544B5E5FE8F42D5CBA6E34DD9346040A04FE06BA8F3D1A"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/tsconfig.json.txt",
+      "size": 3216,
+      "sha256": "864D1FADC39E9D117133A6735DF7E10EAEAFF2DEC82EE4A4B83DCA4CECE72037"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/git-tree-8efd314.json",
+      "size": 537688,
+      "sha256": "D7A39F108F264C4DC2DA3D890FAFC1CFC210E268AA2826F41D4D4B8877C6458A"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/git-tree-c268154.json",
+      "size": 540598,
+      "sha256": "5CCFFB3922EC4C013AFFA7CC517B42C3373422DCB122E409288161048488F1BD"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/moved-body-audit.json",
+      "size": 1444,
+      "sha256": "54F78AB896C8B174E3EF11BC2B7E0837C03F300244A1CAFF94A0554647FB08E6"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/official-compare.json",
+      "size": 116139,
+      "sha256": "AC10B894DFEC0B6ABD23E91AFA5C8454671BDE6F919676F447EC5EA5CA3CA179"
+    },
+    {
+      "role": "control",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/original-input.mjs",
+      "size": 2822,
+      "sha256": "E445D2C5ADCEF7E3153039D3FEAA017E7F51A149CCA8DFB241BE0A729203F8E2"
+    },
+    {
+      "role": "control",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/README.md",
+      "size": 9281,
+      "sha256": "F9BC303A4BAC6C9E4ABA65CF9D367C05D6D948040EAD4EF135336219991B385A"
+    },
+    {
+      "role": "authority-or-audit",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/scope-audit.json",
+      "size": 1943,
+      "sha256": "D8D664C2DFAB843FC46D60F7023CA5F8A568900C39E89BF604D077E93A90E199"
+    },
+    {
+      "role": "control",
+      "path": "src/native_chord_sqlite_lifetime_controls.zig",
+      "size": 14158,
+      "sha256": "AE1655B11FD438BC49CF977F4E392021E74262247AF4CB843875F8CB72D55EF3"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/prepared.json",
+      "size": 31327,
+      "sha256": "79759BA11739A2E2B4C46E8175E8C5C94FCFDD07B599F7489412B44E52E8D17F"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/prepared-v2.json",
+      "size": 32507,
+      "sha256": "EFFA7667AA167CF11F5E4F543B5898C22808EE15534C89E5553BC31BCD1C48DF"
+    },
+    {
+      "role": "superseded-historical-source-review",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/prepared-v3.json",
+      "size": 32567,
+      "sha256": "BD08F4AD4A11D1FE27F02DFED4FB7A2BB34412CE9E82661AF9E8AB1B2200C574"
+    },
+    {
+      "role": "superseded-historical-source-review",
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/independent-source-review.json",
+      "size": 3253,
+      "sha256": "A76442DCFC2AF501B194022CC882C0ADC699A9325E86AB3305CCF98C3FFC98E3"
+    }
+  ],
+  "production_changed_paths": [
+    "src/extensions/native_chord_sqlite_values.zig"
+  ],
+  "historical_diagnostic": "old capture/tag/flag has no CURRENTproducer ownership; bodyruns and history remainsunchanged on ordinary success",
+  "current_vm_event": "actual JS_HasException first; exact event outranks old diagnostic",
+  "new_current_producer": "actual native allocation producer during real RegExp coercion gets its own exact fresh fatal; oldhistoryunchanged",
+  "controls": [
+    "verifyHistoricalCapturedDataBodyRuns",
+    "verifyCurrentPendingWins",
+    "verifyCurrentProducerWins",
+    "verifyPriorJobIteratorRetirement unchanged"
+  ],
+  "iterator_schema_SQL_namespace_algorithms_unchanged": true,
+  "jobs_run": [],
+  "expected_absent": true,
+  "runtime_qualified": false,
+  "default_selection": false,
+  "shared_AF_C_delta_not_included": true
+}
