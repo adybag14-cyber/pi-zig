@@ -1863,7 +1863,7 @@ pub fn build(b: *std.Build) void {
     // and never activates the TTY modules in ordinary Engine/frontend startup.
     if (b.option(bool, "native-tty-assembly-controls", "Enable the actual TTY assembly qualification target") orelse false) {
         if (target.result.os.tag != .windows) @panic("Actual TTY assembly qualification currently requires Windows");
-        const tty_assembly_tests = b.addTest(.{ .name = "native-tty-assembly-controls", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tty_assembly_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TTY assembly"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+        const tty_assembly_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tty_assembly_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TTY assembly"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
         linkQuickJs(b, tty_assembly_tests.root_module, quickjs, sqlite_lib_dir);
         linkSqlite(tty_assembly_tests.root_module, sqlite_lib_dir, sqlite_library);
         linkTypeScriptParser(b, tty_assembly_tests.root_module, typescript_parser);

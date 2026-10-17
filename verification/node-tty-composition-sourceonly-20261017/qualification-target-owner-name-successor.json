@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "parent": "ebbf5076182f128f25edf2af25bbb644d470d3b3",
+  "status": "SOURCE_ONLY_TARGET_OWNER_NAME_CORRECTION_UNRUN",
+  "finding": "Custom addTest artifact name is not admitted by canonical607 owner cached executable basename test.exe guard",
+  "correction": "Remove addTest name only; preserve actual emitted default cached test.exe identity. No rename, owner allowlist or assertion change",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 350659,
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "bytes": 10589,
+      "sha256": "8456AB013A1F13C88AF1277D008FB999DD2D6050E39727B323512C5AD66F09AE"
+    }
+  ],
+  "prior_target": "02daf24721db4615fb4a973ef1e514ae88152a6c",
+  "source_declarations": 19,
+  "observed_metadata": null,
+  "actual_results": null,
+  "execution_grant": false
+}
