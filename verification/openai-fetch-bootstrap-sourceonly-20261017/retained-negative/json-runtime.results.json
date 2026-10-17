@@ -1,0 +1,68 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-core116-v3-prepared-20261017\\root-c3-core116-v3-20261017-121714\\json-out\\bin\\test.exe",
+  "binary_sha256": "8C3C540E6BD9C6CE69D53FD4DAA2EBEEB4BC3167283C5256DD59183EC4AD1FD7",
+  "version": "0.16.0",
+  "expected": 11,
+  "started": 11,
+  "completed": 11,
+  "results": [
+    {
+      "index": 0,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 1,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 2,
+      "flags": 1,
+      "passed": false
+    },
+    {
+      "index": 3,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 4,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 5,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 6,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 7,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 8,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 9,
+      "flags": 0,
+      "passed": true
+    },
+    {
+      "index": 10,
+      "flags": 0,
+      "passed": true
+    }
+  ],
+  "failed_or_skipped_or_logged_or_leaked": 1,
+  "owner_receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-core116-v3-prepared-20261017\\root-c3-core116-v3-20261017-121714\\json-runtime.json",
+  "status": "failed"
+}
