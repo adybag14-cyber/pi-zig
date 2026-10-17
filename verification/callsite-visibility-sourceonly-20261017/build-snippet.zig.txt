@@ -1,0 +1,11 @@
+const callsite_visibility_test = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/native_callsite_visibility_test.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+});
+linkQuickJs(b, callsite_visibility_test);
+callsite_visibility_test.linkLibC();
+callsite_visibility_test.linkSystemLibrary("sqlite3");
+callsite_visibility_test.root_module.addImport("catalog_tool", catalog_tool_module);

@@ -1,0 +1,45 @@
+{
+  "status": "source-only-fixture-successor-uncompiled-unrun",
+  "parent": "09e488135bcc118531203fb4b7d704573ae6c7f4",
+  "original_runtime": "evidence/root-module-graph-tla-query-native-prepared-20261017/root-module-tla-runtime-20261017-150153",
+  "original_stdout_sha256": "2C8AC103D22428A6CA147D360703F659914DBCF3F18C2C3678120C3FDED396F9",
+  "original_stderr_sha256": "B21FFC5538EE95473A4EDE615D106F097DC35606FE73D18736896D626B228F17",
+  "original_results": {
+    "records": 15,
+    "failure_index": 6,
+    "failure_flags": 1,
+    "other_fourteen_flags": 0
+  },
+  "query_product_changed": false,
+  "new_abi": false,
+  "names_unchanged": true,
+  "successor_compiled_metadata_count": null,
+  "jobs_launched": false,
+  "files": [
+    {
+      "path": "src/native_module_graph_tla_query_test.zig",
+      "bytes": 18408,
+      "sha256": "B76D43488D4AF2421E47D652713ABA5D7F0C49628ED31189134F950B421ED0E2"
+    },
+    {
+      "path": "verification/module-graph-tla-query-sourceonly-20261017/metadata-allowlist.json",
+      "bytes": 3867,
+      "sha256": "50877A4975973C1FA45DCB5038DAE0424F0F0FD11E897E4B3A2C617799817955"
+    },
+    {
+      "path": "verification/module-graph-tla-query-sourceonly-20261017/SERIALIZED-FIXTURE-CORRECTION.md",
+      "bytes": 2221,
+      "sha256": "B5EF36FBBAE86357E5213E342698C6FDEB860E0684BE1CB38FE0FE7061D3EC8C"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2225324,
+      "sha256": "650336151E9AF8080931C85CB64CDDC5A432247921B5A8916E10B4F6FA819692"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77155,
+      "sha256": "B87AD9DD32E266C02F9EF9FE6FFF8A2C57A2A96AB5E1A0187F647DE2DE489E29"
+    }
+  ]
+}

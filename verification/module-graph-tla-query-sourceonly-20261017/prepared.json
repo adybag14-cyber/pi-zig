@@ -1,0 +1,52 @@
+{
+  "status": "source-only-uncompiled-unrun",
+  "base": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "base_c_sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "base_h_sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+  "closed_source_proposal_commit": "dbf0f29b53ce42421a6c6dcc6bdd20a977aeac6f",
+  "closed_proposal_path": "verification/node-jiti-commonjs-core-sourceonly-20261017/TLA-GRAPH-QUERY-PROPOSAL.md",
+  "closed_proposal_sha256": "57275FF6D545B93B0A0DC048D2C353B6D64612FC1FCD9E83829807BF8DE4DB74",
+  "node24_module_job_sha256": "973E68F7B3E39D71FDE2C06A3E5D4392D167B6B67CBAF9214D39D4B841BC49F8",
+  "public_api_added": "JS_PiModuleGraphHasTLA",
+  "link_only_api_added": false,
+  "engine_or_main_edited": false,
+  "module_fields_added_or_modified_by_query": false,
+  "default_selection": false,
+  "metadata_count": null,
+  "named_prepared_native_controls": 14,
+  "original_expected_or_observed_added": false,
+  "node_compiler_native_generator_jobs": false,
+  "diff_check_exit": 0,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2225324,
+      "sha256": "650336151E9AF8080931C85CB64CDDC5A432247921B5A8916E10B4F6FA819692"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77155,
+      "sha256": "B87AD9DD32E266C02F9EF9FE6FFF8A2C57A2A96AB5E1A0187F647DE2DE489E29"
+    },
+    {
+      "path": "src/native_module_graph_tla_query_test.zig",
+      "bytes": 16185,
+      "sha256": "8A786F2A4FE19A5A42483D887EC1019C8CDD2A339E094FFB2F624ADA66A1C5B2"
+    },
+    {
+      "path": "verification/module-graph-tla-query-sourceonly-20261017/README.md",
+      "bytes": 3423,
+      "sha256": "97B78D5C8066A6D17B941144D6CD506D5A0B4E5C85A257BD0A70ADC3CEA27D62"
+    },
+    {
+      "path": "verification/module-graph-tla-query-sourceonly-20261017/CONTROL-SCOPE.md",
+      "bytes": 2920,
+      "sha256": "5DC466BC2916DBC4F648D1F5E3DED5E767E076CC4B3AB3D876A47302E88DB22B"
+    },
+    {
+      "path": "verification/module-graph-tla-query-sourceonly-20261017/build-snippet.zig.txt",
+      "bytes": 792,
+      "sha256": "64F9F01A8723C8DEE979D44663C7A7D470E8F0B4A5C02383BBC2159D1E28B0B8"
+    }
+  ]
+}

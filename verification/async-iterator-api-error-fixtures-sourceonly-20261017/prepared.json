@@ -1,0 +1,30 @@
+{
+  "parent": "4f89b59566217b00fcabff22bf93e2900b58906d",
+  "scope": "Test-only actual Error fixtures: JS_SetUncatchableError marks JS_CLASS_ERROR only. ErrorA owns one native cleanup token; no extra token alias survives transfer.",
+  "product_changed": false,
+  "execution": false,
+  "tests": 13,
+  "old_packets_preserved": true,
+  "pins": [
+    {
+      "path": "src/native_async_iterator_api_test.zig",
+      "sha256": "931D9D0A1756391A06E267E33898DA77AC0F4CE99808CF8CC5CD1134E10E97A1",
+      "bytes": 22042
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "625E2F3761BB5C5D6505017DB91DB42AC55C03F47A550734BFBD81558F4191B6",
+      "bytes": 2220275
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "5715EBE7875A932DE5076F135DBDDD764CAA3D88E55EC4BA2DAEBB5EE1052212",
+      "bytes": 76686
+    },
+    {
+      "path": "verification/async-iterator-api-cleanup-sourceonly-20261017/prepared.json",
+      "sha256": "472880BE976F549E320086F99923C10A6F0786160B563CB7377C5ABCC9E87ED2",
+      "bytes": 9700
+    }
+  ]
+}

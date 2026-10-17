@@ -1,0 +1,208 @@
+{
+  "status": "thin-existing-VM-acquisition-C3-source-only-uncompiled-unrun-Min-review-pending",
+  "baseline": "d19e0d206a05be23e37a1c53c8c9a503491d0d23",
+  "baseline_c_sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "baseline_h_sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+  "products": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "D06CE6EBD217519F22A64E72354ACDD8D2B009C7B378563BA9436FB486464574",
+      "bytes": 2220105
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "5715EBE7875A932DE5076F135DBDDD764CAA3D88E55EC4BA2DAEBB5EE1052212",
+      "bytes": 76686
+    },
+    {
+      "path": "src/extensions/native_async_iterator_api.zig",
+      "sha256": "E11F6E592B16B989E4717CA7D5639EC0B4DC026371F9CB2A8FD881AE9A684A9C",
+      "bytes": 350
+    },
+    {
+      "path": "src/native_async_iterator_api_test.zig",
+      "sha256": "5CF879F3A65751CCEF3B927CCA951574117D0AAD003D9561A24169A1DF1B8B57",
+      "bytes": 16343
+    },
+    {
+      "path": "build.zig",
+      "sha256": "2CFEABA792029B9C63D30403FE6AA1A896EA5B9FB2A3BF9481F56FB746BCBFC5",
+      "bytes": 342595
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/async-iterator-api-c3-sourceonly-20261017/README.md",
+      "sha256": "51A108D15DAD716D56931C2EFABD69CB9D9D04717F236FB7809A95CF9B366CE3",
+      "bytes": 4980
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "bytes": 7528
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "bytes": 1544
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "345A676225C989CCA017406968135CC796145EAD0543D230C500860227E7B696",
+      "bytes": 161794
+    },
+    {
+      "path": "src/extensions/native_agent_response.zig",
+      "sha256": "5377DB664B4C2192ECA737AEE53E204A4A878CE8355641F97C5F6AE50C966D20",
+      "bytes": 17680
+    },
+    {
+      "path": "src/extensions/native_agent_loop.zig",
+      "sha256": "7E4EE90C577FBCA6A3C025740D65C2514E7E16713C89B38D18962AA939FB398A",
+      "bytes": 26779
+    },
+    {
+      "path": "src/native_async_function_qualification_test.zig",
+      "sha256": "B928ABB16DBD7B199F063CBD0EE31FE8C5CA82E2C2AA563236821D40B965E4C2",
+      "bytes": 3801
+    }
+  ],
+  "original_source56": [
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/capture-language-reference.mjs",
+      "sha256": "9470CEBED3F753A5864C77B7321375AE5F83634329CE63D475CB67B26E893C9B",
+      "bytes": 1917
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/factory-consumer-changes.md",
+      "sha256": "05CCE7F65FFC366086D5E28C2524BBBD0878B47FF0D17E7C78A6306FC8BDBBEF",
+      "bytes": 3315
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/for-await-callers.mjs",
+      "sha256": "36EA5D987B13607157C91318E72865D56B806E66B8443854BA040BCDD4D7A83A",
+      "bytes": 6818
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/get-async-iterator.patch",
+      "sha256": "0CA1BB2F2E25F43ED8503AB12667E2AFCFEEAE45810305835DE19D18F13D5D9F",
+      "bytes": 1346
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/language-consumer.mjs",
+      "sha256": "4FF3E1E46F581554663EEA169C8D65F17F2C3F09110785B89EBD90828D0B92D8",
+      "bytes": 389
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/Prepare-OwnedReference.ps1",
+      "sha256": "F2F9E6B11F9FC327808D5C3FA52C54D1EBD6B97AA1FCFFC605157A092AE892DA",
+      "bytes": 1155
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/proposal-manifest.json",
+      "sha256": "DC26037C08A5A16F778977C290D8C77AD8545208ABFF2BB4ED34624EE0E6C3E7",
+      "bytes": 3275
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/proposed-native-test.zig",
+      "sha256": "15D0DADCEE93F7FE9B6F36B7F7E90265AC40433D4E0249A1730E2C713EA84474",
+      "bytes": 9608
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-api-proposal-20261016/README.md",
+      "sha256": "A9E8CB6B71D4DB9C8CB9B0438247D34F4D8908253DC6551A2D8B51E741D31589",
+      "bytes": 7669
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/absences-and-closure.json",
+      "sha256": "00CBE3EECE9D5ECCCBBE103C1FBC2927B79DCF808B2FF3B9120FFD4C23CFF863",
+      "bytes": 1368
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/capture-language56.mjs",
+      "sha256": "533850D570AA1FC7FC865D58500E5B6113EA2B156A7EBCBC0D014DE7E28BBA3A",
+      "bytes": 2618
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/CAPTURE-PLAN.md",
+      "sha256": "320FDD8B70B9727C9C53E9F45DD4DE5EF69D1FF0807631F1D2657032CE05881F",
+      "bytes": 12023
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/for-await-callers.mjs",
+      "sha256": "36EA5D987B13607157C91318E72865D56B806E66B8443854BA040BCDD4D7A83A",
+      "bytes": 6818
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/guarded-language56-start-fence.mjs",
+      "sha256": "0BE29595C35ED757385F443EF172F46B79D90912D5B83ABC9B8BCA1D271EC77D",
+      "bytes": 8438
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/language-consumer.mjs",
+      "sha256": "4FF3E1E46F581554663EEA169C8D65F17F2C3F09110785B89EBD90828D0B92D8",
+      "bytes": 389
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/node1774-original-manifest.json",
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "bytes": 352993
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/ordered-source56-case-ids.json",
+      "sha256": "7A188A6663F3E5C527BADE293C4D48B9521B8D8FEF7744E3F790F3EDA4BC9DB0",
+      "bytes": 1763
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/plan-manifest.json",
+      "sha256": "805926349132FA20241ABB8DA1C99B3AD0EEEE66A201EA834AD20180FFEA6C3F",
+      "bytes": 4329
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/Resolve-Language56Plan.ps1",
+      "sha256": "7D103CE52235CE5262011FAEC925B04E67C79A2E308D559F44121275330FD86E",
+      "bytes": 3268
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/worktrees/archive/ai-openai-http58-composition-20261016/verification/async-from-sync-node56-runtime-free-prepared-20261016/root-grant.template.json",
+      "sha256": "479DCCFEA864F47D493FF31FD6B16188FFB01E0FB6A129B71CAF56951A617B68",
+      "bytes": 1932
+    }
+  ],
+  "api": "JS_PiGetAsyncIterator(JSContext*,JSValueConst)",
+  "input": "borrowed same-runtime value, valid owner-thread context",
+  "output": "owned genuine VM iterator or JS_EXCEPTION",
+  "pending_entry": "ANY pending reason preserved; no getter/call work",
+  "pending_exit": "owned result freed with original reason protected; actual new fatal cleanup wins ordinary original",
+  "native_callback_contract_violation": "observed counts only; no internal-no-work claim",
+  "actual_vm_test_definitions": 12,
+  "build_steps": [
+    "build-native-async-iterator-api",
+    "test-native-async-iterator-api"
+  ],
+  "default_tests_modified": false,
+  "C4_or_CallSite_composed": false,
+  "native_or_Node_Source56_qualified": false,
+  "source_capture_grant": false,
+  "expected_files": [],
+  "observed_files": [],
+  "jobs_launched": false,
+  "main_Engine_modified": false
+}

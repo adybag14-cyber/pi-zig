@@ -1,0 +1,15 @@
+// Prepared only; Root resource grant and independent C review required.
+const module_graph_tla_query = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/native_module_graph_tla_query_test.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+    .filters = &.{"module graph TLA query"},
+    .use_llvm = use_llvm,
+});
+linkQuickJs(b, module_graph_tla_query.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(module_graph_tla_query.root_module, sqlite_lib_dir, sqlite_library);
+module_graph_tla_query.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-module-graph-tla-query-artifact", "Install prepared readonly module graph query controls")
+    .dependOn(&b.addInstallArtifact(module_graph_tla_query, .{}).step);

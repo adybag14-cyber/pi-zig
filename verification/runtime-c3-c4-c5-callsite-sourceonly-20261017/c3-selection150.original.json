@@ -1,0 +1,466 @@
+{
+  "status": "historical_actual_selection_authority_not_new_execution",
+  "candidate": "8a530f772b734d9a4ff3ffe45e940c6ad5185562",
+  "C2_baseline": "a3ea0d06",
+  "focused_entries": 34,
+  "core_entries": 116,
+  "total_entries": 150,
+  "unique_full_names": 98,
+  "named_occurrences": 134,
+  "unique_named": 96,
+  "storage_occurrences": 15,
+  "other_anonymous": [
+    "extension_engine_test.test_0"
+  ],
+  "duplicates": [
+    {
+      "name": "extensions.engine.test.extension calls a Zig host function through the direct C ABI",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.extension imports native object exports without a JavaScript bridge module",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine executes modern extension language without Node",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine interrupts infinite loops and supports cancellation",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine reports rejected promises and syntax errors",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine settles promises and async generator code",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity survives cleanup OOM with scoped user and stale controls",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity tags survive guest tampering proxies and u64 wrap",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native control pump settles an idle promise on its owner thread and bounds missing responses",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native DTO construction preserves nonfinite numbers and literal prototype and NUL keys",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native import metadata distinguishes hosted modules from explicitly selected entrypoints",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module allocation failures do not install hidden modules before retry",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module loader rejects missing dependencies and duplicate registrations",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module loader resolves relative imports and top level await",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native rejected promises retain the original reason when diagnostic conversion throws",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native require cannot expose private cached state or observe its getters",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.native_durable_storage.test_0",
+      "occurrences": 15
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+      "occurrences": 3
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional pending owner survives GC",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+      "occurrences": 2
+    }
+  ],
+  "groups": [
+    {
+      "lane": "focused",
+      "name": "start",
+      "count": 8,
+      "tests": [
+        "native_tla_fatal_delivery_test.test.native TLA fatal immediate genuine START is delivered and cached without retagging",
+        "native_tla_fatal_delivery_test.test.native TLA fatal Engine evalModule delivers fresh allocation error terminally",
+        "native_tla_fatal_delivery_test.test.native TLA fatal deferred async ancestor START escapes the actual dependency job",
+        "native_tla_fatal_delivery_test.test.native TLA fatal deferred synchronous ancestor escapes the actual dependency job",
+        "native_tla_fatal_delivery_test.test.native TLA fatal ordinary raw lookalike and historical errors remain exact rejected promises",
+        "native_tla_fatal_delivery_test.test.native TLA fatal injected Zig allocation cleanup reaches the real module boundary",
+        "native_tla_fatal_delivery_test.test.native TLA fatal bounded C attachment pressure has terminal outcomes and reusable cleanup",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\start-selected-tests.json",
+      "original_metadata_sha256": "728C32972A96189496091AA4EFF8A54442977B1C410B79AD03FCB27643E1F32E",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\result.json",
+      "authority_result_sha256": "443C9B4ECE07F8608B0B5BDBE3BEC3657A016F1D5A3F92C279D63AA9C4813186"
+    },
+    {
+      "lane": "focused",
+      "name": "resumed",
+      "count": 7,
+      "tests": [
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal cached module and reimport terminate with exact reason",
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal outer attachment failure prevents ordinary and fatal late body callbacks",
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal partial initial await setup retires queued inactive callback",
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal exact module association distinguishes duplicate physical names",
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal ordinary nonmodule async callbacks retain rejection and return behavior",
+        "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal resolving callback pending host hook reason is terminal and exact",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\resumed-selected-tests.json",
+      "original_metadata_sha256": "9085D897F4EB3920C39112291BF545304E8A4CA8FFDC4E7677A59888920B121B",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\result.json",
+      "authority_result_sha256": "443C9B4ECE07F8608B0B5BDBE3BEC3657A016F1D5A3F92C279D63AA9C4813186"
+    },
+    {
+      "lane": "focused",
+      "name": "resolving",
+      "count": 5,
+      "tests": [
+        "native_async_resolving_pending_test.test.native AF resolving pending START return hook must deliver exact fatal exception",
+        "native_async_resolving_pending_test.test.native AF resolving pending resumed return hook must fail the actual job",
+        "native_async_resolving_pending_test.test.native AF resolving pending START rejection tracker must deliver exact fatal exception",
+        "native_async_resolving_pending_test.test.native AF resolving pending resumed rejection tracker must fail the actual job",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\resolving-selected-tests.json",
+      "original_metadata_sha256": "429B2DFB914CCDABFC56E938247BC5DA48A6A45D9F63BABF97A3B60B3A60652D",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-focused-20261016\\result.json",
+      "authority_result_sha256": "443C9B4ECE07F8608B0B5BDBE3BEC3657A016F1D5A3F92C279D63AA9C4813186"
+    },
+    {
+      "lane": "focused",
+      "name": "inactive",
+      "count": 2,
+      "tests": [
+        "native_async_await_inactive_test.test.native AF Await inactive queued tracker callback survives GC and never resumes retired roots",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-continuation-v2-20261016\\inactive-selected-tests.json",
+      "original_metadata_sha256": "40A47C024164D6A7C6D304CE0A341B354121A5B8E4339B227D4F02BFA8F7C419",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-continuation-v2-20261016\\result.json",
+      "authority_result_sha256": "652AF3EB8EF90478BB01AAABF0CC68D1E5E97B8462AE62D55BC014BB8B505E14"
+    },
+    {
+      "lane": "focused",
+      "name": "shared",
+      "count": 12,
+      "tests": [
+        "native_shared_thenable_fatal_test.test.shared thenable fatal getter START and resumed native returns preserve active reason",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal deferred then call preserves paired hooks and exact pending reason across GC",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal BEFORE skips then and AFTER while AFTER fatal retains normal call order",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal original then failure wins distinct AFTER failure without retagging",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary raw historical and lookalike throws retain exact rejection values",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal flagged rejected data without pending exception stays ordinary data",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal normal hooks preserve replacement removal and new opaque identity",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary foreign callable and queued GC retain existing host context ownership",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary getter conversion tracker fails plain Promise resolve without AF masking",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary deferred rejection conversion tracker fails raw adoption job",
+        "native_shared_thenable_fatal_test.test.shared thenable fatal direct public scalar resolve and reject capture only active fatal callbacks",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-continuation-v2-20261016\\shared-selected-tests.json",
+      "original_metadata_sha256": "5E21A1A9C19A0CA896CB8CEDC6C5267CED3E8D536306A275B1489962BBEE2650",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-fatal-continuation-v2-20261016\\result.json",
+      "authority_result_sha256": "652AF3EB8EF90478BB01AAABF0CC68D1E5E97B8462AE62D55BC014BB8B505E14"
+    },
+    {
+      "lane": "core",
+      "name": "foundation",
+      "count": 6,
+      "tests": [
+        "native_highlight_legacy32_function_test.test.native legacy32 CJS function matches actual Original32 callers arguments poison descriptors freeze and GC",
+        "native_highlight_core_b45_test.test.native full eager21 highlight core matches genuine Original74 factories scanner output token trees classes and frontend",
+        "native_highlight_scope_test.test.native highlight inline roots nested actual grammar scanner completes128 levels and recovers",
+        "native_highlight_scope_test.test.native highlight inline roots match genuine Original deep7 exact caller self and distinct nested grammar results",
+        "native_highlight_core_profile_test.test.native highlight inline profile registration preserves proven host OOM and ordinary guest lookalikes",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\foundation-selected-tests.json",
+      "original_metadata_sha256": "39E7817EF55E79BE340EAD319832EF624618D99B61AD6535D80DFB24072E4D03",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "async26",
+      "count": 26,
+      "tests": [
+        "native_async_function_qualification_test.test.native borrowed view span retains backing and tracks DataView typed RAB detach and brand",
+        "extensions.native_durable_storage.test_0",
+        "native_async_function_body_test.test.native async body proposal matches genuine Node observations after independent review and Source capture",
+        "native_async_function_body_test.test.native async body proposal genuine brand strict receiver outer Promise and native toString",
+        "native_async_function_body_test.test.native async body proposal raw host OOM remains uncatchable rather than rejected Promise",
+        "native_async_function_body_test.test.native async body proposal Zig host allocation failures release captures and callbacks",
+        "native_async_function_body_test.test.native async body proposal stack capture preserves native name on start and resume",
+        "native_async_function_body_test.test.native async body proposal resumed native OOM escapes the job without Promise rejection",
+        "native_async_function_body_test.test.native async body proposal ordinary bound proxy and revoked callable source never read guest name",
+        "native_async_function_body_test.test.native async body proposal genuine C factory call and argument pressure failures remain reusable",
+        "native_async_function_body_test.test.native async body proposal actual C await handler allocation failure reaches native catch and retires",
+        "native_async_function_body_test.test.native async body proposal bounded C continuation reaction and job allocation pressure never loses suspension",
+        "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+        "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+        "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+        "native_async_generator_test.test.native async generator functional pending owner survives GC",
+        "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+        "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+        "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+        "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+        "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+        "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+        "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+        "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+        "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+        "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\async26-selected-tests.json",
+      "original_metadata_sha256": "1C0328721C9C0B48FBCFEEC8344A71F713C50CDE341BFB476510F8A3F486CF80",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "generator",
+      "count": 19,
+      "tests": [
+        "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+        "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+        "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+        "native_async_generator_test.test.native async generator functional pending owner survives GC",
+        "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+        "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+        "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+        "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+        "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+        "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+        "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+        "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+        "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+        "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+        "extensions.native_stream.test.native pi-ai EventStream exports preserve queue terminal result receiver and iterator cleanup",
+        "extensions.native_stream.test.native AssistantMessageEventStream genuine Source result-only producer retains more than64 events",
+        "extensions.native_stream.test.native provider validation accepts only exact event names numeric indices and JavaScript JSON number equality",
+        "extensions.native_stream.test.native provider cancellation retains supplied reason identity through throwing and hostile iterator cleanup",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-selected-tests.json",
+      "original_metadata_sha256": "FE079018C4FE4AC33DC86C1FDBCB90D09037F2403FAFADE4493037AB8528E862",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "generator-gpa",
+      "count": 2,
+      "tests": [
+        "native_async_generator_test.test.native async generator host GPA allocation sweep retains tagged OOM",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\generator-gpa-selected-tests.json",
+      "original_metadata_sha256": "39931F131353F1D619937F37735156509E9DBF675ECCC49A44B59563F3434C9B",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "json",
+      "count": 11,
+      "tests": [
+        "native_ai_json_parse_test.test.native AI JSON native arrow metadata constructor guards lexical receiver and captures match actual language functions",
+        "native_ai_json_parse_test.test.native AI JSON every host allocation releases ordinary and arrow callable captures",
+        "native_ai_json_parse_test.test.native AI JSON actual OpenAI factory owned HTTP20 matches full intermediate snapshots and callbacks",
+        "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+        "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+        "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+        "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+        "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+        "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+        "native_ai_json_parse_test.test.native AI JSON every host allocation preserves intrinsic parser hook ownership and trusted OOM origin",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\json-selected-tests.json",
+      "original_metadata_sha256": "9275205088961339674B883BF6D5E9756C7F889EB70CE6693A545736A308DE53",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "source51",
+      "count": 2,
+      "tests": [
+        "native_ai_ae7_json_transform_test.test.native ae7 JSON39 and thinking DROP12 match fresh genuine Source51 complete records",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\source51-selected-tests.json",
+      "original_metadata_sha256": "05EEFC10535FA980C73562611BA3B34A4003DD4CF7BA4AA989050B29271BFD2A",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "operators",
+      "count": 2,
+      "tests": [
+        "native_binary_operator_test.test.native binary operators preserve guest coercion BigInt exception and borrowed identity",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\operators-selected-tests.json",
+      "original_metadata_sha256": "A2B51BF1F8FE13DFC83D68904FB8AED4058562BBD78398C3B960BB91A55E1D25",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "engine",
+      "count": 20,
+      "tests": [
+        "extension_engine_test.test_0",
+        "extensions.engine.test.native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows",
+        "extensions.engine.test.native allocation original identity survives cleanup OOM with scoped user and stale controls",
+        "extensions.engine.test.native allocation original identity tags survive guest tampering proxies and u64 wrap",
+        "extensions.engine.test.native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error",
+        "extensions.engine.test.native control pump settles an idle promise on its owner thread and bounds missing responses",
+        "extensions.engine.test.native rejected promises retain the original reason when diagnostic conversion throws",
+        "extensions.engine.test.native DTO construction preserves nonfinite numbers and literal prototype and NUL keys",
+        "extensions.engine.test.native import metadata distinguishes hosted modules from explicitly selected entrypoints",
+        "extensions.engine.test.native require cannot expose private cached state or observe its getters",
+        "extensions.engine.test.native module allocation failures do not install hidden modules before retry",
+        "extensions.engine.test.linked C engine executes modern extension language without Node",
+        "extensions.engine.test.linked C engine settles promises and async generator code",
+        "extensions.engine.test.linked C engine reports rejected promises and syntax errors",
+        "extensions.engine.test.linked C engine interrupts infinite loops and supports cancellation",
+        "extensions.engine.test.native module loader resolves relative imports and top level await",
+        "extensions.engine.test.native module loader rejects missing dependencies and duplicate registrations",
+        "extensions.engine.test.extension calls a Zig host function through the direct C ABI",
+        "extensions.engine.test.extension imports native object exports without a JavaScript bridge module",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\engine-selected-tests.json",
+      "original_metadata_sha256": "569F7FDF5C87FE154EA029269750FA166988F64B7F8F681CAD2D80FE74CCC1E6",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "recovery",
+      "count": 23,
+      "tests": [
+        "native_highlight_root463_engine_recovery_test.test.native Root463 dispatch ordinary constructors bound calls raw errors and GC retain VM semantics",
+        "native_highlight_root463_engine_recovery_test.test.native Root463 dispatch ordinary VM stack overflow preserves recovery",
+        "extensions.engine.test.native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows",
+        "extensions.engine.test.native allocation original identity survives cleanup OOM with scoped user and stale controls",
+        "extensions.engine.test.native allocation original identity tags survive guest tampering proxies and u64 wrap",
+        "extensions.engine.test.native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error",
+        "extensions.engine.test.native control pump settles an idle promise on its owner thread and bounds missing responses",
+        "extensions.engine.test.native rejected promises retain the original reason when diagnostic conversion throws",
+        "extensions.engine.test.native DTO construction preserves nonfinite numbers and literal prototype and NUL keys",
+        "extensions.engine.test.native import metadata distinguishes hosted modules from explicitly selected entrypoints",
+        "extensions.engine.test.native require cannot expose private cached state or observe its getters",
+        "extensions.engine.test.native module allocation failures do not install hidden modules before retry",
+        "extensions.engine.test.linked C engine executes modern extension language without Node",
+        "extensions.engine.test.linked C engine settles promises and async generator code",
+        "extensions.engine.test.linked C engine reports rejected promises and syntax errors",
+        "extensions.engine.test.linked C engine interrupts infinite loops and supports cancellation",
+        "extensions.engine.test.native module loader resolves relative imports and top level await",
+        "extensions.engine.test.native module loader rejects missing dependencies and duplicate registrations",
+        "extensions.engine.test.extension calls a Zig host function through the direct C ABI",
+        "extensions.engine.test.extension imports native object exports without a JavaScript bridge module",
+        "extensions.native_durable_storage.test_0",
+        "native_highlight_legacy32_function_test.test.native legacy32 CJS function restores inactive frames after actual native enumeration cancellation",
+        "native_highlight_legacy32_function_test.test.native legacy32 CJS function targeted C VM heap budgets preserve recovery frames and release every memory owner"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\recovery-selected-tests.json",
+      "original_metadata_sha256": "F8909F6C16F6D87A1BECD1315E05B171261F03D27AA74764553DEF4F806AF639",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    },
+    {
+      "lane": "core",
+      "name": "sdk-boundary",
+      "count": 5,
+      "tests": [
+        "native_sdk_exception_boundary_test.test.native SDK boundary put captures the raw proxy reason over an old capture",
+        "native_sdk_exception_boundary_test.test.native SDK boundary length captures the coercion reason over an old capture",
+        "native_sdk_exception_boundary_test.test.native SDK boundary append captures the setter reason over an old capture",
+        "native_sdk_exception_boundary_test.test.native SDK boundary append retires its owned value when length fails",
+        "extensions.native_durable_storage.test_0"
+      ],
+      "original_metadata_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\sdk-boundary-selected-tests.json",
+      "original_metadata_sha256": "447D5150CFC463C508DBD04141AB1316E9DD22CFEF4F93AA9AA544E1BCE98B25",
+      "authority_result_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-promise-core-regression-20261016\\result.json",
+      "authority_result_sha256": "11493F035ACAD6374F6E156D0235E7AC7FB45580BB970740CC08A5D02BDC43DF"
+    }
+  ]
+}

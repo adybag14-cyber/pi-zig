@@ -1,0 +1,199 @@
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+index c9b544cb..c567ebbe 100644
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -39540,6 +39540,171 @@ int JS_ResolveModule(JSContext *ctx, JSValueConst obj)
+     return 0;
+ }
+ 
++typedef struct JSPiModuleGraphSlot {
++    JSModuleDef *module;
++    bool visited;
++} JSPiModuleGraphSlot;
++
++/* Every loop, including collision probes, uses the existing interrupt cadence.
++   A successful host poll must not hide an actually pending completion. */
++static int js_pi_module_graph_poll(JSContext *ctx)
++{
++    if (js_poll_interrupts(ctx) || JS_HasException(ctx))
++        return -1;
++    return 0;
++}
++
++static size_t js_pi_module_graph_hash(JSModuleDef *module)
++{
++    uintptr_t value = (uintptr_t)module;
++    value >>= 4;
++    value ^= value >> 16;
++    value *= (uintptr_t)0x9e3779b9U;
++    value ^= value >> 16;
++    return (size_t)value;
++}
++
++/* No ModuleDef is dereferenced here: even foreign input/edge pointers are only
++   hashed and compared against members inserted from this context's list. */
++static int js_pi_module_graph_slot(JSContext *ctx, JSPiModuleGraphSlot *table,
++                                  size_t capacity, JSModuleDef *module,
++                                  size_t *slot)
++{
++    size_t index = js_pi_module_graph_hash(module) & (capacity - 1);
++    size_t probe;
++    for (probe = 0; probe < capacity; probe++) {
++        if (js_pi_module_graph_poll(ctx))
++            return -1;
++        if (!table[index].module || table[index].module == module) {
++            *slot = index;
++            return 0;
++        }
++        index = (index + 1) & (capacity - 1);
++    }
++    JS_ThrowInternalError(ctx, "module graph membership table exhausted");
++    return -1;
++}
++
++int JS_PiModuleGraphHasTLA(JSContext *ctx, JSValueConst module, int *has_tla)
++{
++    struct list_head *el;
++    JSPiModuleGraphSlot *table = NULL;
++    JSModuleDef **work;
++    JSModuleDef *root, *current, *target;
++    size_t count = 0, capacity = 2, needed, table_bytes, work_bytes;
++    size_t index, slot, pending = 0;
++    int result = 0, i;
++
++    if (JS_HasException(ctx))
++        return -1;
++    if (!has_tla || JS_VALUE_GET_TAG(module) != JS_TAG_MODULE) {
++        JS_ThrowTypeError(ctx, "compiled module and output pointer required");
++        return -1;
++    }
++    root = JS_VALUE_GET_PTR(module); /* Borrowed, not yet dereferenced. */
++    list_for_each(el, &ctx->loaded_modules) {
++        if (js_pi_module_graph_poll(ctx))
++            return -1;
++        if (count == SIZE_MAX)
++            goto overflow;
++        count++;
++    }
++    if (!count) {
++        JS_ThrowTypeError(ctx, "module does not belong to this context");
++        return -1;
++    }
++    if (count > SIZE_MAX / 2)
++        goto overflow;
++    needed = count * 2;
++    while (capacity < needed) {
++        if (js_pi_module_graph_poll(ctx))
++            return -1;
++        if (capacity > SIZE_MAX / 2)
++            goto overflow;
++        capacity *= 2;
++    }
++    if (capacity > SIZE_MAX / sizeof(*table) ||
++        count > SIZE_MAX / sizeof(*work))
++        goto overflow;
++    table_bytes = capacity * sizeof(*table);
++    work_bytes = count * sizeof(*work);
++    if (table_bytes > SIZE_MAX - work_bytes)
++        goto overflow;
++    /* sizeof(slot) is a multiple of its pointer alignment, so the trailing
++       pointer worklist remains aligned. Both arrays share one charged block. */
++    table = js_malloc(ctx, table_bytes + work_bytes);
++    if (!table)
++        return -1;
++    if (JS_HasException(ctx))
++        goto fail;
++    work = (JSModuleDef **)((uint8_t *)table + table_bytes);
++    for (index = 0; index < capacity; index++) {
++        if (js_pi_module_graph_poll(ctx))
++            goto fail;
++        table[index].module = NULL;
++        table[index].visited = false;
++    }
++    list_for_each(el, &ctx->loaded_modules) {
++        if (js_pi_module_graph_poll(ctx))
++            goto fail;
++        target = list_entry(el, JSModuleDef, link);
++        if (js_pi_module_graph_slot(ctx, table, capacity, target, &slot))
++            goto fail;
++        if (table[slot].module) {
++            JS_ThrowInternalError(ctx, "duplicate context module membership");
++            goto fail;
++        }
++        table[slot].module = target;
++    }
++    if (js_pi_module_graph_slot(ctx, table, capacity, root, &slot))
++        goto fail;
++    if (!root || table[slot].module != root) {
++        JS_ThrowTypeError(ctx, "module does not belong to this context");
++        goto fail;
++    }
++    table[slot].visited = true;
++    work[pending++] = root;
++    while (pending) {
++        if (js_pi_module_graph_poll(ctx))
++            goto fail;
++        current = work[--pending]; /* Validated context member. */
++        if (!current->resolved || current->status == JS_MODULE_STATUS_LINKING) {
++            JS_ThrowTypeError(ctx, "module static graph is not fully resolved");
++            goto fail;
++        }
++        if (current->has_tla)
++            result = 1;
++        for (i = 0; i < current->req_module_entries_count; i++) {
++            if (js_pi_module_graph_poll(ctx))
++                goto fail;
++            target = current->req_module_entries[i].module;
++            if (js_pi_module_graph_slot(ctx, table, capacity, target, &slot))
++                goto fail;
++            if (!target || table[slot].module != target) {
++                JS_ThrowTypeError(ctx, "module static graph has an unresolved or foreign dependency");
++                goto fail;
++            }
++            if (!table[slot].visited) {
++                if (pending >= count) {
++                    JS_ThrowInternalError(ctx, "module graph worklist bound exceeded");
++                    goto fail;
++                }
++                table[slot].visited = true;
++                work[pending++] = target;
++            }
++        }
++    }
++    js_free(ctx, table); /* Native scratch only; no JS cleanup/callback. */
++    *has_tla = result;
++    return 0;
++overflow:
++    JS_ThrowOutOfMemory(ctx); /* Existing VM failure path; no new tag/policy. */
++    return -1;
++fail:
++    js_free(ctx, table); /* Leaves the exact current completion untouched. */
++    return -1;
++}
++
+ /*******************************************************************/
+ /* object list */
+ 
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+index a1b68928..60cb27cf 100644
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -1410,6 +1410,18 @@ JS_EXTERN JSValue JS_EvalFunction(JSContext *ctx, JSValue fun_obj);
+ /* load the dependencies of the module 'obj'. Useful when JS_ReadObject()
+    returns a module. */
+ JS_EXTERN int JS_ResolveModule(JSContext *ctx, JSValueConst obj);
++/* Read-only syntactic TLA query over an actual context-owned compiled module's
++   complete resolved static graph. Borrowed module/ctx; no load, binding link,
++   evaluation, jobs or module-state mutation. UNLINKED binding status is allowed
++   only when every reachable dependency is resolved; LINKING/partial graphs fail.
++   On success returns 0 and writes 0/1 to has_tla; on failure returns -1 with the
++   pending reason preserved and leaves *has_tla unchanged. The host must retain
++   ctx and prevent concurrent/reentrant module mutation/disposal. Only its trusted
++   non-reentrant interrupt handler may run; it must not call guest code or mutate
++   modules/context. Binding-link validation and Node require(esm) policy are
++   separate prerequisites; this query alone does not establish their precedence. */
++JS_EXTERN int JS_PiModuleGraphHasTLA(JSContext *ctx, JSValueConst module,
++                                    int *has_tla);
+ 
+ /* only exported for os.Worker() */
+ JS_EXTERN JSAtom JS_GetScriptOrModuleName(JSContext *ctx, int n_stack_levels);

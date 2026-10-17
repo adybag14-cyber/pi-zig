@@ -3289,6 +3289,71 @@ pub fn build(b: *std.Build) void {
         const installed_name = b.fmt("highlight-root10db-{s}{s}", .{ gate.name, if (target.result.os.tag == .windows) ".exe" else "" });
         b.step(b.fmt("build-highlight-root10db-{s}", .{gate.name}), "Install exact selected C33+9h qualification artifact without running tests").dependOn(&b.addInstallArtifact(gate.artifact, .{ .dest_sub_path = installed_name }).step);
     }
+
+    // Isolated VM composition. These steps install test artifacts only; they
+    // neither select a default module nor attach a test runner to a build step.
+    const vm_controls = b.step("build-native-vm-c4-c5-callsite-controls", "Install individual and combined readonly-query iterator and CallSite controls without execution");
+    const vm_control_specs = [_]struct { name: []const u8, root: []const u8, filters: []const []const u8 }{
+        .{ .name = "query", .root = "src/native_module_graph_tla_query_test.zig", .filters = &.{"module graph TLA query "} },
+        .{ .name = "iterator", .root = "src/native_async_iterator_api_test.zig", .filters = &.{"native async iterator API "} },
+        .{ .name = "callsite", .root = "src/native_callsite_visibility_test.zig", .filters = &.{"CallSite visibility "} },
+        .{ .name = "combined", .root = "src/native_c3_c4_c5_callsite_test.zig", .filters = &.{ "module graph TLA query ", "native async iterator API ", "CallSite visibility " } },
+    };
+    for (vm_control_specs) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry.root), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = entry.filters });
+        const installed_name = b.fmt("vm-c4-c5-callsite-{s}{s}", .{ entry.name, if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c4-c5-callsite-{s}", .{entry.name}), "Install exact isolated VM controls; metadata and runtime require separate grants").dependOn(&install.step);
+        vm_controls.dependOn(&install.step);
+    }
+
+    // The accepted C3 queued/binding eleven-entry addendum is separate from150.
+    const vm_current11 = b.step("build-native-vm-c3-current11", "Install the unchanged current C3 queued and binding controls without execution");
+    inline for (.{
+        .{ "queued", "src/native_dynamic_import_graph0_test.zig", "queued Graph0 import " },
+        .{ "binding", "src/native_extension_graph0_binding_test.zig", "actual Graph0 binding " },
+    }) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry[1]), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = &.{entry[2]} });
+        const installed_name = b.fmt("vm-c3-current11-{s}{s}", .{ entry[0], if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c3-current11-{s}", .{entry[0]}), "Install one genuine queued or binding C3 selection without execution").dependOn(&install.step);
+        vm_current11.dependOn(&install.step);
+    }
+
+    // Reuse the existing selected Compile objects, filters and original bodies.
+    // Distinct install names preserve every group instead of overwriting test.exe.
+    const vm_retained = b.step("build-native-vm-c3-retained150", "Install the original fifteen C3 regression groups without execution or qualification transfer");
+    const vm_retained_groups = [_]struct { name: []const u8, artifact: *std.Build.Step.Compile }{
+        .{ .name = "focused-start", .artifact = native_tla_fatal_tests },
+        .{ .name = "focused-resumed", .artifact = resumed_tla_tests },
+        .{ .name = "focused-resolving", .artifact = native_af_resolving_tests },
+        .{ .name = "focused-inactive", .artifact = native_await_inactive_tests },
+        .{ .name = "focused-shared", .artifact = shared_thenable_tests },
+        .{ .name = "core-foundation", .artifact = highlight_root55_foundation },
+        .{ .name = "core-async26", .artifact = native_async_qualification_tests },
+        .{ .name = "core-generator", .artifact = native_generator_tests },
+        .{ .name = "core-generator-gpa", .artifact = native_generator_gpa_tests },
+        .{ .name = "core-json", .artifact = ai_json_tests },
+        .{ .name = "core-source51", .artifact = ae7_json_transform_tests },
+        .{ .name = "core-operators", .artifact = native_binary_tests },
+        .{ .name = "core-engine", .artifact = engine_tests },
+        .{ .name = "core-recovery", .artifact = highlight_root463_recovery },
+        .{ .name = "core-sdk-boundary", .artifact = sdk_exception_boundary_tests },
+    };
+    for (vm_retained_groups) |group| {
+        const installed_name = b.fmt("vm-c3-retained-{s}{s}", .{ group.name, if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(group.artifact, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c3-retained-{s}", .{group.name}), "Install one unchanged C3 regression selection without execution").dependOn(&install.step);
+        vm_retained.dependOn(&install.step);
+    }
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

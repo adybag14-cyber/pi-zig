@@ -1,0 +1,74 @@
+{
+  "status": "source-only-uncompiled-unrun-unselected",
+  "base": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "base_c_sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "h_unchanged": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+  "node_primary_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "new_engine_fields": false,
+  "new_public_abi": false,
+  "bytecode_serialization_format_changed": false,
+  "module_failure_policy_changed": false,
+  "shared_nested_bytecode_guard_added": false,
+  "prepared_named_native_controls": 9,
+  "compiled_metadata_count": null,
+  "original_node_input_rows": 6,
+  "original_expected_observed_present": false,
+  "jobs_launched": false,
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2224235,
+      "sha256": "460FDDFB59C299279AEF7D351405DAA89A95AF7C3A2502A83A116B9DC8986CA6"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/native_callsite_visibility_test.zig",
+      "bytes": 11218,
+      "sha256": "1BDCBD9DAE6CAFE78602E7CE6525046B5C4430C96218B2823C06CC48CE2BEDC5"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/README.md",
+      "bytes": 5984,
+      "sha256": "DEFF74C3C35FDE04AA757F11DF9739F0281D21E61D73C9164C00C389576190C9"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/build-snippet.zig.txt",
+      "bytes": 449,
+      "sha256": "A287BD25F3D7D8F40F2046462D0B266093F3489F23EE1D9E611366F5332F56FE"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/reference-node24-input.mjs",
+      "bytes": 3120,
+      "sha256": "602C1128D15063456C62D83147900FBACD9AFF196B2CA8B843FED355A632EAF6"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/fixtures/module-probe.mjs",
+      "bytes": 236,
+      "sha256": "459668374020099D679D210AF9F8DA1BC995AFF0B51F48F228AD498621E67F82"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/authority/node24-v8-builtins-callsite.cc.txt",
+      "bytes": 7827,
+      "sha256": "70649D23EA5F39FA76E1A4ECB47AB9306C06C067D0CE9D2979657943B7C0097F"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/authority/node24-v8-isolate.cc.txt",
+      "bytes": 296824,
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/authority/node24-v8-builtins-x64.cc.txt",
+      "bytes": 202821,
+      "sha256": "3C3D44834A4D47DBB2F8ACDE81AB84B345104557D9731364D7CDE02539EF243C"
+    },
+    {
+      "path": "verification/callsite-visibility-sourceonly-20261017/authority/V8-LICENSE.txt",
+      "bytes": 3093,
+      "sha256": "6AB33AF8774A0F396EE3AEEB761E3229057682D6F9FA7F572E390C2CB3A6E509"
+    }
+  ]
+}

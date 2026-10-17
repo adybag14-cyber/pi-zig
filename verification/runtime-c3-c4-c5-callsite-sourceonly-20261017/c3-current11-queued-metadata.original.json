@@ -1,0 +1,30 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out\\bin\\test.exe",
+  "binary_sha256": "59E983050EE1761E864C808962824055FDC97A3AE3D32CDC003C7B5A0FE44014",
+  "version": "0.16.0",
+  "actual_count": 8,
+  "tests": [
+    "native_dynamic_import_graph0_test.test.queued Graph0 import public then read precedes lazy initialization and survives GC",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import throwing public then getter leaves genuine import queued",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import uses explicit captured base with absent and foreign ambient frames",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import concurrent TLA and guest import share namespace without extra completion",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import ordinary coercion and module failure preserve raw rejection identity",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import primitive basename admission and host owned queue teardown",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import captures distinct VM context and enqueue execution marker through GC",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "required_named": [
+    "native_dynamic_import_graph0_test.test.queued Graph0 import public then read precedes lazy initialization and survives GC",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import throwing public then getter leaves genuine import queued",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import uses explicit captured base with absent and foreign ambient frames",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import concurrent TLA and guest import share namespace without extra completion",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import ordinary coercion and module failure preserve raw rejection identity",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import primitive basename admission and host owned queue teardown",
+    "native_dynamic_import_graph0_test.test.queued Graph0 import captures distinct VM context and enqueue execution marker through GC"
+  ],
+  "imported_anonymous": [
+    "extensions.native_durable_storage.test_0"
+  ],
+  "count_known_before_metadata": false,
+  "method": "Actual query4/exit0 only; no run_test; canonical CI607 owner30s"
+}

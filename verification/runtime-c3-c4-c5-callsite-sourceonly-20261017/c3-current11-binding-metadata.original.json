@@ -1,0 +1,20 @@
+{
+  "binary": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out\\bin\\test.exe",
+  "binary_sha256": "EE105C8B0C53406C4761C579F5585E99A364968462CAE376B3768CA6CDB09B05",
+  "version": "0.16.0",
+  "actual_count": 3,
+  "tests": [
+    "native_extension_graph0_binding_test.test.actual Graph0 binding ordinary metadata and real queued module namespace cache",
+    "native_extension_graph0_binding_test.test.actual Graph0 binding invalid basename is synchronous and uncoerced",
+    "extensions.native_durable_storage.test_0"
+  ],
+  "required_named": [
+    "native_extension_graph0_binding_test.test.actual Graph0 binding ordinary metadata and real queued module namespace cache",
+    "native_extension_graph0_binding_test.test.actual Graph0 binding invalid basename is synchronous and uncoerced"
+  ],
+  "imported_anonymous": [
+    "extensions.native_durable_storage.test_0"
+  ],
+  "count_known_before_metadata": false,
+  "method": "Actual query4/exit0 only; no run_test; canonical CI607 owner30s"
+}
