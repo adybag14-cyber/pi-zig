@@ -92,15 +92,20 @@ validation, idempotency, atomic rollback, newer schema, live Proxy reads and
 expired transaction controls. No reference output or expected file exists.
 The three new Zig tests exercise real shared declarations without a fake SQL
 adapter; verifyActualMigrations requires the separately composed REAL database.
-The additive lifetime control delegates actual SQL transaction/run operations
-and pauses the real UPDATE completion. Both WeakRef targets are created in a
-prior job; the driver drains the actual queue, finishes that checkpoint and runs
-real VM GC before checking the inner record is retired while the outer record
-is still live. After real completion another checkpoint/GC checks the outer
-record retires. This avoids WeakRef kept-object same-job false evidence.
-The separate captured-fatal control creates a genuine native OOM capture, then
-calls the actual validator and checks exact reason/flag, zero prefix coercions
-and diagnostic balance. Both controls remain prepared/unrun.
+The additive lifetime control precreates its actual input iterators/WeakRefs in
+a setup checkpoint, then finishes that checkpoint before starting migration.
+It delegates actual SQL transaction/run operations and invokes real VM GC
+INSIDE the real UPDATE callback, before that callback returns, checking both
+retired job fields and temporary roots are gone. An actual UPDATE completion
+gate then checks inner-retired/outer-live, followed by outer-retired after real
+completion. Run both empty and nonempty statement histories. This avoids
+WeakRef kept-object same-job false evidence.
+The separate captured-fatal control marks the ACTUAL pending native OOM Error
+using the normal fatal-delivery event policy before capture, then calls the
+actual validator and checks same reason/flag and zero prefix coercions through
+raw own-data inspection, without guest recovery after fatal. A third entrypoint
+places a distinct actual VM event above that older captured fatal and verifies
+the current event wins. All diagnostic counters balance; controls are unrun.
 Further admitted controls must include inherited/Proxy getter/error order,
 iterator close overrides, old flagged rejected DATA, fresh OOM/interrupt/pending
 events, allocation failure and teardown/GC on the actual complete adapter graph.
@@ -122,6 +127,9 @@ iterator/next temporaries end before those callbacks; releases the prior
 migration binding when advancing; and rejects a preexisting captured fatal
 before detachment. Active outer records remain live until their actual close
 or completion. No original observation/authority/expected body is rewritten.
-prepared-v2.json pins the actual cumulative successor, including its two new
-causal controls. Ordinary/fresh throw-event classification remains separate
+prepared-v2.json preserves the intermediate4434 successor. prepared-v3.json pins
+the final finite ordering/control revision: actual pending normalization inside
+Captures.enter FIRST, then the captured-fatal guard before detachment. Its raw
+controls verify both distinct reasons and the exact live slot precedence.
+Ordinary/fresh throw-event classification remains separate
 from rejected DATA; no whole-adapter/runtime claim transfers from this review.
