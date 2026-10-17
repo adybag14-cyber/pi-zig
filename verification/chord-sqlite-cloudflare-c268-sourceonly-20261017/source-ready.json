@@ -1,0 +1,34 @@
+{
+  "status": "independently_source_closed_provenance_only_uncompiled_unrun",
+  "reviewed_source": "7293c342a9415668f787beb707730cccc323dc4c",
+  "reviewed_manifest": {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/prepared-corrective-successor.json",
+    "bytes": 7966,
+    "sha256": "4A076E126A1CE913973752879B24D2F193DA8B5AF34A93CA15FF3DC67E257B7E"
+  },
+  "review": {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/independent-body-source-review.json",
+    "bytes": 3569,
+    "sha256": "571BD7B1F60E52ECC6621B1C59CFE7C20BF5B1DE84DCDDDB3C02783AE827C2C8"
+  },
+  "metadata_files": [
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/SOURCE-READY.md",
+      "bytes": 2720,
+      "sha256": "334D1E69C518CF85ED8262A3EDB3A607ABB394F36C50AD11F1C3325D5B1E33BF"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/accepted-8efd-upstream-MIT-LICENSE",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    }
+  ],
+  "product_or_control_changes": false,
+  "required_C_ABI_composition": true,
+  "required_real_storage_capability": true,
+  "actual_metadata_count": null,
+  "jobs_run": [],
+  "runtime_qualified": false,
+  "public_activation": false,
+  "push_performed": false
+}

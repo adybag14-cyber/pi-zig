@@ -1,0 +1,198 @@
+{
+  "status": "actual_cloudflare_adapter_source_only_pending_independent_peer_uncompiled_unrun",
+  "base": "14775669ca4ad1155957114fec9bdd40b659ca3c",
+  "parent": "2028d2e1aa4522a7eeff5e62d62550e2cecba411",
+  "official_source_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "official_adapter_sha256": "2DEE7C2AEE058FD570FD8B0E0B9488F9382189362519C1A8EADF37FD6C0E0E28",
+  "files": [
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare.zig",
+      "bytes": 22260,
+      "sha256": "975CB7EEBA3DAB1E5D8C5C12F1C175ED34661E7A0E61A9F7595E5E1C9DE32396"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare_values.zig",
+      "bytes": 11874,
+      "sha256": "D68B5D715A6ED80ABFD0B9ADA61EC5D1E56CCB5907915D819D94EBE1645C9902"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare_row_keys.zig",
+      "bytes": 3550,
+      "sha256": "ACECE98AEB7C7B61D3E24FF709A583A105E948ABCAC67466D194A871007DE22D"
+    },
+    {
+      "path": "src/extensions/fixtures/chord-sqlite-cloudflare-c268-observer.mjs",
+      "bytes": 6428,
+      "sha256": "9EEAB22F83C01F2AD0348F7DE6D7AC45F28FCD7CDB368DB6CF91B7508A096607"
+    },
+    {
+      "path": "src/native_chord_sqlite_cloudflare_controls.zig",
+      "bytes": 7680,
+      "sha256": "9C5F3C94F0E2840F3C8FF08983C3AE5DA02C14CCBC469F1C8F571B6258A8B252"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/CLOUDFLARE-SCOPE.md",
+      "bytes": 7196,
+      "sha256": "AB0BA9D64B18BCF845441823DF428824778181AD30D259DBD5A5CFB3A1B23D5B"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/MESSAGE-DERIVED-RECEIVER-REVIEW.md",
+      "bytes": 947,
+      "sha256": "CF386F56EC6838C9A5D0CAB63B89F36925A138FD378854D19ED58253DA3BD0A8"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority-pins.json",
+      "bytes": 2376,
+      "sha256": "2229DF40CDE77F95876B61D8C9E506DE3D54158BABFDDFA86B511807A5A6455E"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/reference-input.mjs",
+      "bytes": 485,
+      "sha256": "E20353BBD20B16D1F42CE8CCEB9742947DD49EFD5AFDD4E87B759D5F9266521C"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/src/sqlite/cloudflare.ts.txt",
+      "bytes": 5864,
+      "sha256": "2DEE7C2AEE058FD570FD8B0E0B9488F9382189362519C1A8EADF37FD6C0E0E28"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/src/sqlite/database.ts.txt",
+      "bytes": 1861,
+      "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/test/sqlite/cloudflare.test.ts.txt",
+      "bytes": 5254,
+      "sha256": "31794743762C5280107A5B171439091ECCF353D339CCEA158BAFDA9E9AAB3373"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+      "bytes": 712,
+      "sha256": "CDCF6D443E0A03296F74732B6EB1AD7C3EBD00FFE5A8F8BC4C66B65D72948D10"
+    }
+  ],
+  "unchanged_dependencies": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "src/extensions/native_ai_provider_values.zig",
+      "bytes": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 3920,
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_mlly_function.zig",
+      "bytes": 14905,
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "bytes": 4558,
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0"
+    },
+    {
+      "path": "src/extensions/native_source_for_in.zig",
+      "bytes": 4543,
+      "sha256": "C5111151AEE672690409D0521D0FC34667B0DC3B5D3330E96A8661C1B2C2072A"
+    },
+    {
+      "path": "src/extensions/native_jiti_budget.zig",
+      "bytes": 1767,
+      "sha256": "B3ECB37B66C11A0FDC343BAC9BA6D259EAB796463065825F4EED29E457AE35A8"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 347284,
+      "sha256": "5837DE41F1D08C520A38D049895A817F6BE71F11475AC7AB7CBD07928D815B05"
+    }
+  ],
+  "retained_inert_prerequisite": [
+    {
+      "path": "src/native_chord_sqlite_receiver_get_test.zig",
+      "bytes": 5405,
+      "sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/receiver-get-prerequisite.patch",
+      "bytes": 1425,
+      "sha256": "725AEFE4EE587C8EBB2FAC06CDBB2BDCC87BE5D12A8F626CDCAA84E44AC4ED05"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/RECEIVER-GET-PREREQUISITE.md",
+      "bytes": 2404,
+      "sha256": "B711994223F3124B5A4CBAA2E6E45C7D5729C97B7ADC078DAD570D7737DED676"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/prepared-receiver-get-prerequisite.json",
+      "bytes": 1659,
+      "sha256": "5BD38A46C2D12502ABC3F8C34C15E2CB448602B0379068F391B4A5F0075AE529"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/prepared-receiver-get-v2.json",
+      "bytes": 2091,
+      "sha256": "91B4A1CAD2D9CBA74F9E5442776D4277477C32F3FB0EAE1121A569FEB50E61FA"
+    }
+  ],
+  "relative_import_or_embed_checks": 15,
+  "required_native_symbol": "JS_PiGetPropertyReceiver: separately reviewed inert patch725AEF; not linked/active here",
+  "factory": "native_chord_sqlite_cloudflare.create(engine) -> owned carrier {DurableObjectSqliteDatabase}; assembly once per realm; same class reexports",
+  "storage_capability": "Real supplied Durable Object storage.sql.exec and storage.transaction; no D1, fake Cloudflare environment or Node/durable backend alias",
+  "prepared_original_observation_rows": 14,
+  "native_named_metadata_controls": 2,
+  "native_additional_real_binding_pending_profiles": 2,
+  "separate_raw_ABI_named_controls": 4,
+  "actual_compiled_metadata_count": null,
+  "native_controls_run": false,
+  "original_capture_run": false,
+  "expected_and_observed_absent": [
+    "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/original-capture.json",
+    "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/expected.json",
+    "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/native-observed.json",
+    "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/original-output.json"
+  ],
+  "Main_Engine_C_H_shared_helpers_build_changed": false,
+  "installed_or_default_selection": false,
+  "GPA_or_memory_baseline": null,
+  "runtime_or_Cloudflare_environment_qualified": false,
+  "jobs_run": [],
+  "reviewed_shared_namespace_owner": "Operators87335f0f: actual carriers and SAME-class registration separate, not copied",
+  "unqualified_boundaries": [
+    "Actual Source/native capture and complete supplied Cloudflare environment",
+    "Reflection text, broad adversarial proxy/prototype for-in policy inherited from existing helper",
+    "Shared AF and aggregate allocation/VM/parser/GPA/budget execution",
+    "Mixed direct host OOM with unrelated primitive/plain-object pending reason",
+    "Required C receiver-get actual Root composition and future exact-head compile/runtime gates"
+  ]
+}

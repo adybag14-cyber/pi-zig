@@ -1,0 +1,13 @@
+# Source-ready Cloudflare SQLite leaf
+
+Actual product/control source is independently closed at7293c342a9415668f787beb707730cccc323dc4c. The copied independent-body-source-review.json is byte-exact SHA256571BD7B1F60E52ECC6621B1C59CFE7C20BF5B1DE84DCDDDB3C02783AE827C2C8. This later commit adds provenance only; no reviewed product/control or historical manifest bytes change.
+
+API: native_chord_sqlite_cloudflare.create(engine) returns an owned carrier exposing only DurableObjectSqliteDatabase. Operators' actual assembler calls once per realm and publishes the SAME class in both chord/sqlite/cloudflare and durable/storage/sqlite/cloudflare. Supply real Durable Object storage.sql.exec/storage.transaction at construction. No fake environment, D1 alias, Node/durable backend or synthetic SQL result is installed.
+
+The separate inert receiver-Get ABI prerequisite2028d2e1 is independently Min source-closed, explicitly message-derived in the retained review note. Root must compose its seven-line C wrapper/two-line header declaration into current C rather than copy old entire C/H files. It is not active or linked in this branch. Actual public namespace assembly and genuine Durable opener remain separate owner work.
+
+prepared-corrective-successor.json pins current implementation/control bytes and33 payload/retained rows; prepared-adapter.json retains3301 negative/source provenance. Source bodies, four official current primary files, earlier Source inputs and all unrun control assertions remain preserved. Three named metadata/constructor tests, two actual-storage pending profiles, three actual-storage transaction failure profiles and four separate raw ABI tests are prepared; none has compiled metadata or a passing runtime result. Fourteen genuine original observation rows are prepared only; no original capture/expected/native-observed file exists. Genuine real-storage availability, reference/native/GPA/VM memory observations, shared AF/for-in frontiers and full chord/durable/default SDK qualification remain unqualified.
+
+The retained accepted8efd upstream MIT LICENSE is copied byte-exact SHA2560457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48 from the accepted8efd snapshot, with Mario Zechner2025 notice. It is explicitly historical accepted license provenance, not an assertion that an unseen c268 license file was fetched. Current chord package metadata declares MIT; exact current module and test source pins remain in authority-pins.json.
+
+No compiler, parser, AST, formatter, Node, native/GPA, generator or reference execution occurred. Main, active C/H/Engine, shared helpers, build and installed/default selection remain untouched. No push or production activation occurred.
