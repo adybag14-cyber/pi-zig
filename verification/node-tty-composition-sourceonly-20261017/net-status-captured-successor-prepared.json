@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "parent": "5c10fd59ee9fb66f3689b031669265926ef02383",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "finding": "Successful integer-status native property operation can publish a NEW captured event with empty VM exception slot, including direct unframed host assembly",
+  "correction": "After own enumeration and each consuming Define, collect newly nonnull captured slot isolated by Cleanup.begin plus actual Bfb checkNativeEntry before any next getter/default/return. Raw owned-result normalization applies same boundary before checked and retirement.",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_assembly_cleanup.zig",
+      "bytes": 4809,
+      "sha256": "2AD3D060EED5A9DD9DBAA157756D9B722F24385DD10CDF769BD3F446118AD9BF"
+    },
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 36097,
+      "sha256": "C2DBE3E1469952E4D699602F51DF2A71F8654748F80294A33456C0DECE975720"
+    },
+    {
+      "path": "src/native_node_tty_net_status_event_control.zig",
+      "bytes": 7279,
+      "sha256": "90F25C65EB22BBC7EBA1863F4D30DB655185508B787B5E1734BA3D09E40C6295"
+    }
+  ],
+  "controls": [
+    "Real canonical net enumerable default getter returns sole native holder without pending; final default overwrite finalizes holder inside successful consuming Define",
+    "Actual checked(throwNativeOutOfMemoryFatal) captures new B with empty VM slot; next genuine node:module.default getter remains unread; exact B/freeonce/no-publication/no-Hub mutation; same actual inputs restored retry",
+    "Control prepares direct unframed host call and actual NativeInvocation profiles; no synthetic namespace or fake positive capability"
+  ],
+  "preserves": [
+    "EngineCCCC31A0 and alias closure2E073 unchanged",
+    "Original5c10 and earlier source manifests immutable",
+    "Source20/14, Main, shared C/H/Engine/helpers unchanged"
+  ],
+  "execution_grant": false,
+  "actual_results": null
+}

@@ -39,10 +39,15 @@ pub const Cleanup = struct {
     /// RAW result boundary: Engine.checked itself may retire a successful
     /// value with an actual pending event. Intercept before it can do so.
     pub fn takeOwned(self: *Cleanup, owned: c.JSValue, generation: u64) !c.JSValue {
-        if (c.JS_HasException(self.engine.context)) {
+        // begin escrowed older history. A newly captured event from this raw
+        // operation must stop the next getter even with an empty VM slot.
+        if (c.JS_HasException(self.engine.context) or self.engine.captured_exception != null) {
             self.collect(generation); self.release(owned);
             return error.JavaScriptException;
         }
+        self.engine.checkNativeEntry() catch |err| {
+            self.collect(generation); self.release(owned); return err;
+        };
         return self.engine.checked(owned);
     }
     pub fn scope(self: *Cleanup, value: *v.Scope) void {

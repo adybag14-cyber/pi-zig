@@ -270,20 +270,30 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
                 if (status < 0) { cleanup.collect(generation); return error.JavaScriptException; }
                 // This array owns atoms only, no JS descriptor-field values.
                 defer c.JS_FreePropertyEnum(engine.context, properties, count);
-                if (c.JS_HasException(engine.context)) { cleanup.collect(generation); return error.JavaScriptException; }
+                try statusBoundary(engine, cleanup, status, generation);
                 for (0..count) |index| {
                     const read_generation = engine.native_allocation_generation;
                     const value = try cleanup.takeOwned(c.JS_GetProperty(engine.context, object, properties[index].atom), read_generation);
                     const define_generation = engine.native_allocation_generation;
                     const defined = c.JS_DefinePropertyValue(engine.context, record, properties[index].atom, value, c.JS_PROP_C_W_E);
                     // Define consumes value on BOTH success and failure.
-                    if (defined < 0 or c.JS_HasException(engine.context)) { cleanup.collect(define_generation); return error.JavaScriptException; }
+                    try statusBoundary(engine, cleanup, defined, define_generation);
                 }
             }
             const generation = engine.native_allocation_generation;
             const defined = c.JS_DefinePropertyValueStr(engine.context, record, "default", c.JS_DupValue(engine.context, object), c.JS_PROP_C_W_E);
-            if (defined < 0 or c.JS_HasException(engine.context)) { cleanup.collect(generation); return error.JavaScriptException; }
+            try statusBoundary(engine, cleanup, defined, generation);
             return c.JS_DupValue(engine.context, record);
+        }
+        fn statusBoundary(engine: *v.em.Engine, cleanup: *Cleanup, status: c_int, generation: u64) !void {
+            // A successful native integer hook can have captured a NEW actual
+            // event with no VM pending value. Older history is outside both
+            // slots; stop here before another getter/default construction.
+            if (status < 0 or c.JS_HasException(engine.context) or engine.captured_exception != null) {
+                cleanup.collect(generation); return error.JavaScriptException;
+            }
+            // Also preserve a producer retained only by a live Bfb invocation.
+            engine.checkNativeEntry() catch |err| { cleanup.collect(generation); return err; };
         }
         fn prepare(engine: *v.em.Engine, state: *State, inputs: Inputs, temporaries: *Temporaries, cleanup: *Cleanup) !void {
             const s = &temporaries.scope;
