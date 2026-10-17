@@ -1,0 +1,43 @@
+{
+  "status": "finite_source_review_closed_after_exact_null_shim_correction",
+  "original_source": "a077f24aeeaaac9c4c590f683d74060cca0e4fc1",
+  "reviewed_source": "8fa656fe8bb3711a5b2daaa8f59b8522ab524308",
+  "upstream": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "upstream_version": "1.3.0",
+  "original_manifest_sha256": "C4F96107734EB5500AD0E2B97CBE9D2B81D10B17B029099C578DAD775231FD08",
+  "correction_manifest_sha256": "C5C80A517F54D1D486B5048A5AFE72BA21F0328D715DD391F3131A9C9CA12163",
+  "corrected_product_sha256": "1E32E4B76B082D7D0C03FD288119DC3202DF3709AFD7D6AF551165B619FC52B3",
+  "finding": {
+    "original": "Two c.JS_NULL NewObjectProto arguments repeat actual prior cImport union macro compile failure",
+    "fix": "Both use existing c.pi_js_null() shim; no C/Engine changes",
+    "closed": true
+  },
+  "actual_source_review": [
+    "Pi8efd sdk.ts imports and setDefaultStreamFn(streamSimple) module side effect",
+    "Pi8efd model-runtime.ts canonical AI/model-operations/provider imports",
+    "Pi8efd compat.ts API table registration before builtinModels and shared registry reset",
+    "Pi8efd transcript/models imports share normalizeContext binding",
+    "native_sdk_application_assembly forwards actual imported identities to unchanged native_sdk_default_real_assembly",
+    "ordinary factory compose and session/sharedAI retain true existing callback dependencies; no fallback SDK.Kind class is introduced",
+    "Engine cache private-registration guards and deinit release cached owned values",
+    "Scope borrowed/owned roots, map insertion failure duplicate release and construction unwind; no new pending-event/continuation state or swallowed raw reason"
+  ],
+  "seals": {
+    "original_rows": 37,
+    "unchanged_rows_matching": 36,
+    "expected_historical_product_superseded": 1,
+    "correction_rows": 26,
+    "correction_mismatches": 0,
+    "clean_exact_successor": true,
+    "diff_check_exit": 0
+  },
+  "limitations": [
+    "Source-only, uncompiled and unexecuted; no runtime or whole-application qualification",
+    "New entrypoints remain host-only/unselected; actual Agent/platform/resource-loader inputs required",
+    "Existing genuine AF Agent, Source27/fullsession/descriptor/provider transport/cancellation/host-allocation/GC/application gates remain pending",
+    "Prepared controls do not prove pending callback retirement or all induced OOM outcomes"
+  ],
+  "jobs_executed": false,
+  "parser_ast_executed": false,
+  "main_product_edited": false
+}
