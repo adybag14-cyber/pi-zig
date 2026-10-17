@@ -55,10 +55,10 @@ test "native classic stream and decoder brands cannot be redirected to another n
     try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-stream-brand-control"});
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); const global = try scope.own(c.JS_GetGlobalObject(engine.context));
     try @import("extensions/native_node_stream.zig").install(engine, try scope.get(global, "process"));
-    const owner = try @import("extensions/native_node_stream.zig").owner(engine); const opaque = try scope.get(owner, "Stream");
+    const owner = try @import("extensions/native_node_stream.zig").owner(engine); const opaque_function = try scope.get(owner, "Stream");
     try scope.put(global, "streamBrandOwner", owner);
     try scope.put(global, "decoderBrandOwner", engine.native_module_values.get("pi-native:node-string-decoder").?);
-    try scope.put(global, "differentNativeOpaque", opaque); try scope.put(global, "differentNativeClass", c.JS_NewUint32(engine.context, c.JS_GetClassID(opaque)));
+    try scope.put(global, "differentNativeOpaque", opaque_function); try scope.put(global, "differentNativeClass", c.JS_NewUint32(engine.context, c.JS_GetClassID(opaque_function)));
     const result = try engine.evalModule(
         "import {Readable} from 'node:stream';import {StringDecoder} from 'node:string_decoder';import {Buffer} from 'node:buffer';"
         ++ "for(const [owner,names]of [[streamBrandOwner,['readStateClass','writeStateClass']],[decoderBrandOwner,['stateClass','stateSymbol']]])for(const name of names){const before=owner[name],d=Object.getOwnPropertyDescriptor(owner,name);if(d.writable||d.configurable||Reflect.set(owner,name,differentNativeClass)||Reflect.deleteProperty(owner,name)||owner[name]!==before)throw Error('native brand admission is mutable')}"
