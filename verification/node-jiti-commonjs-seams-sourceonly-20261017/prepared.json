@@ -1,0 +1,163 @@
+{
+  "status": "source-only-incomplete-composition-uncompiled-unrun",
+  "base_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+  "node_version": "24.14.0",
+  "node_source": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "product_files": [
+    {
+      "path": "src/extensions/native_node_builtin_catalog.zig",
+      "bytes": 2701,
+      "sha256": "C0B75047F4B739B2DA6F20E855B3DF1589939E5A242BDEC850CD3015DF355904"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_extensions.zig",
+      "bytes": 8355,
+      "sha256": "A146B55949DC047EB2A8F53563B920BE1F2EF73EE4D3AFB5497A779AC9975274"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_find_path.zig",
+      "bytes": 9349,
+      "sha256": "C361729F5B0D8E80469F72104641A69543AFDE725B87337FE2B283AA332A7AC0"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_lookup.zig",
+      "bytes": 11186,
+      "sha256": "5D298B1B8303441336F394DD28BB3B2DA83259775B357970C13700C8B4AB921F"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_packages.zig",
+      "bytes": 10261,
+      "sha256": "A24B5548D7CD919F918C9164041FED7D142BCCADA4C7C42A233D788D2112921D"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_paths_init.zig",
+      "bytes": 4011,
+      "sha256": "CCE78894E77C8FB02EBFC615357A20C78B9BF9A74A60C0194B71B53712F080D7"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_require_function.zig",
+      "bytes": 3780,
+      "sha256": "7467EAAECD19729CAF9BE4DF74BE2CDFE6A7EE72EC2A2D8D46685409ED07A9DB"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_resolve_filename.zig",
+      "bytes": 8939,
+      "sha256": "0FB70BEC8878267D8C503E9062E3EB0ECC575C7E6054A35513C4A31722E000AD"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_try_files.zig",
+      "bytes": 5389,
+      "sha256": "09F40C8FEEAD84067D1BECA8D0453EB8A4A049CAA891E7CC73275E2717579096"
+    }
+  ],
+  "packet_files": [
+    {
+      "path": "verification/node-jiti-commonjs-seams-sourceonly-20261017/README.md",
+      "bytes": 4613,
+      "sha256": "A35CEA0E233621D48C7FA0A5D3F0082EF2533C72DA9BA8D4BD68338559BC5686"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-seams-sourceonly-20261017/CAPTURE-PLAN.md",
+      "bytes": 2202,
+      "sha256": "FBF578697672606BCAA6DE6E7D507BEE83EABDD98D48BC80327006DD02CC6F04"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-seams-sourceonly-20261017/reference-input.mjs",
+      "bytes": 9472,
+      "sha256": "C8A44058689AEA991DAE49ED8C7014BE1A653CD4580452CC5CDD1EDD41992417"
+    }
+  ],
+  "retained_primary_authority": [
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__cjs__loader.js.txt",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__helpers.js.txt",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 15131,
+      "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/primary-authority.json",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 3386,
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4"
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/LICENSE.txt",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ],
+  "unchanged_base_protected_files": [
+    {
+      "path": "src/extensions/commonjs.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 17895,
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 13642,
+      "sha256": "A67A8A9472C0A7EC4A3CDB9C0ABEFD3CF3BB4BBB46BD2EA17462847FDE73FEF4"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/module_resolver.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 28650,
+      "sha256": "7791250D05F7EAFD2E902AE93E7EAB6F1F5482497F702E7E6BB97E534F67A673"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 125803,
+      "sha256": "03D61D9E6D96F12BCC2FF614380B90DBBE636E95905777C1A4E12345DF773A21"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 2218664,
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "source_head": "8b36501abcc98563e7ba78c7c417fb024d672361",
+      "bytes": 75537,
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    }
+  ],
+  "required_original_builtin_table_present": false,
+  "required_original_capture_grant_present": false,
+  "expected_files": [],
+  "observed_files": [],
+  "compiler_or_node_or_native_jobs_launched": false,
+  "engine_c_h_or_default_selection_changed": false,
+  "full_node_commonjs_or_jiti_qualified": false,
+  "real_composition_dependencies": [
+    "original ordered Node builtin table",
+    "actual private CJS initialization and filesystem/package reader state",
+    "Node ERR_INVALID_ARG_TYPE and ERR_INVALID_ARG_VALUE constructors",
+    "actual Node24 ESM package imports/exports and finalization",
+    "actual private stat/realpath caches",
+    "actual Module._load/require/_compile and private first-parent access",
+    "native addon process.dlopen/NAPI",
+    "source review and exact original capture before native qualification"
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "status": "independent_source_review_closed",
+  "source_head": "37e27a0d34cd77611363b24c1e309a437e713e98",
+  "reviewer": "/root/models_auth_failure_resume",
+  "prepared_sha256": "9D46849F9C3CC3F0C5F345ECE5CE1A34CABBD7657A01604F94D4B34D818F4E3C",
+  "original_collector_sha256": "C8A44058689AEA991DAE49ED8C7014BE1A653CD4580452CC5CDD1EDD41992417",
+  "scope": "Consumed CommonJS resolver/lookup/extension bodies and narrow fatal budget corrections",
+  "original_capture_pending": true,
+  "controls_executed": false,
+  "default_selected": false,
+  "full_Module_load_compile_NAPI_assembly_complete": false
+}

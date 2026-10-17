@@ -1,0 +1,15 @@
+// Prepared source only. Root must review/intake; no runtime build step.
+const node_commonjs_corrections = b.addTest(.{
+    .root_module = b.createModule(.{
+        .root_source_file = b.path("src/native_node_commonjs_corrections_test.zig"),
+        .target = target,
+        .optimize = optimize,
+    }),
+    .filters = &.{"CommonJS local"},
+    .use_llvm = use_llvm,
+});
+linkQuickJs(b, node_commonjs_corrections.root_module, quickjs, sqlite_lib_dir);
+linkSqlite(node_commonjs_corrections.root_module, sqlite_lib_dir, sqlite_library);
+node_commonjs_corrections.root_module.addImport("catalog_tool", catalog_tool);
+b.step("build-native-node-commonjs-corrections-artifact", "Install prepared CommonJS local interruption controls")
+    .dependOn(&b.addInstallArtifact(node_commonjs_corrections, .{}).step);
