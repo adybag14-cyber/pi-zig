@@ -59,9 +59,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
-      "length": 6594,
-      "sha256": "4DC0EB004029BC3A187E2C036A05DA96275156C09AC0861AD3B552266D3A28C4",
-      "git_blob": "6b1651c250b95213c6ba267aad8fe5d3cec32868"
+      "length": 6669,
+      "sha256": "86F74DFAC4E39225D9B78443EB23A64BDB8DD125995FB9C97A392A6756456728",
+      "git_blob": "f9c7be9eeef4beacc33e02be516f9b0117e60b91"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
@@ -438,5 +438,6 @@
     "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-b80-original.json",
     "sha256": "F3E871000C085461B946A1F9636372BF1EDDF541E0854E90D14229EED8FE5CA1",
     "status": "b80 package row overstates AF migration; current source inspection proves all33 package methods already genuine AF; product bytes unchanged"
-  }
+  },
+  "minimatch_binding_correction": "Original PackageManager consumes named minimatch10.2.6; native_minimatch_namespace.create().minimatch; no default export or alias matcher; source-only/unqualified as confirmed owner"
 }
