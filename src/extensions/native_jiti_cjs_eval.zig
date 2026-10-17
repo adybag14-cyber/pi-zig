@@ -51,8 +51,8 @@ fn invokeValues(engine: *v.em.Engine, compiled: c.JSValue, module: c.JSValue, ne
     const directory = try s.call(dirname, c.pi_js_undefined(), &.{try s.get(module, "filename")});
     const imported = try s.get(nested_jiti, "import");
     const resolve = try s.get(nested_jiti, "esmResolve");
-    return engine.checked(c.JS_Call(engine.context, compiled, c.pi_js_undefined(), 7,
-        &.{ exports, require, module, filename, directory, imported, resolve }));
+    const wrapper_args = [_]c.JSValue{ exports, require, module, filename, directory, imported, resolve };
+    return engine.checked(c.JS_Call(engine.context, compiled, c.pi_js_undefined(), wrapper_args.len, @constCast(&wrapper_args)));
 }
 fn exactFailure(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror {
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {

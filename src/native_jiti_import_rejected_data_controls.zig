@@ -131,7 +131,7 @@ fn beforeJob(context: ?*c.JSContext, before: bool, marker: c.JSValue, raw: ?*any
 /// before any application execution-context hook is installed. It never
 /// replaces or tears down another owner's hook. Actual subject remains real.
 fn eventWins(engine: *v.em.Engine, actual: Subject, old_data: c.JSValue, event_reason: c.JSValue, kind: Event) !void {
-    const marker = try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)); defer engine.freeValue(marker);
+    const marker = try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())); defer engine.freeValue(marker);
     var hook: Hook = .{ .engine = engine, .kind = kind, .marker = marker, .reason = event_reason, .observed = c.pi_js_undefined() };
     defer engine.freeValue(hook.observed);
     c.JS_SetUncatchableError(engine.context, old_data);
