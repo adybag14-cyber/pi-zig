@@ -55,7 +55,7 @@ fn checkMode(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, r
     const big = c.JS_ToBool(engine.context, roots[0]) == 1;
     const mask = if (big) try scope.own(try engine.checked(c.JS_NewBigInt64(engine.context, 0o170000))) else c.JS_NewInt32(engine.context, 0o170000);
     const value = try scope.own(try arithmetic.binary(engine, .bit_and, try scope.get(receiver, "mode"), mask));
-    const compared = if (big) try scope.call(try scope.global("BigInt"), c.pi_js_undefined(), &.{property}) else property;
+    const compared = if (big) try scope.call(engine.intrinsic_bigint_constructor, c.pi_js_undefined(), &.{property}) else property;
     return c.pi_js_bool(engine.context, @intFromBool(c.JS_IsStrictEqual(engine.context, value, compared)));
 }
 fn dateInvoke(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int) callconv(.c) c.JSValue {
@@ -227,9 +227,9 @@ fn integer(engine: *em.Engine, value: i128, big: bool) !c.JSValue {
     defer engine.gpa.free(decimal);
     const text = try engine.checked(c.JS_NewStringLen(engine.context, decimal.ptr, decimal.len));
     defer engine.freeValue(text);
-    const constructor = try js.global(engine, "BigInt");
-    defer engine.freeValue(constructor);
-    return js.call(engine, constructor, c.pi_js_undefined(), &.{text});
+    // Node's stats binding/primordial BigInt do not consult a later guest
+    // global replacement. Engine retains this real intrinsic from bootstrap.
+    return js.call(engine, engine.intrinsic_bigint_constructor, c.pi_js_undefined(), &.{text});
 }
 fn statSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     return readStats(engine, args, roots, true);

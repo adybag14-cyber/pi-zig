@@ -1,0 +1,108 @@
+{
+  "status": "source-only-uncompiled-unrun",
+  "reviewed_lstat_baseline": "719f74cf08772fad17c78e28cd942fc9db34a64f",
+  "windows_mode_commit": "0bbc09a76c7a3402fbf65d36dd25bd801fd003a3",
+  "source_node": "24.14.0/f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "products": [
+    {
+      "bytes": 18427,
+      "sha256": "04875A03E66ED2F54458F469B55E3470A2A1BABE36E793D36ABAB01455982E45",
+      "reviewed_lstat_blob": "1d97d9190ed72b2aa342e849e56e0d3cb4f0c7e7",
+      "path": "src/extensions/native_file_stat.zig"
+    },
+    {
+      "bytes": 21880,
+      "sha256": "9718CE373657264DF0A65E6840B163C920F762B10B015536203B5F988C57EE59",
+      "reviewed_lstat_blob": "a7d965b6b2c8b7c1ef666d84af9385bb59f7bd43",
+      "path": "src/extensions/node_fs_metadata.zig"
+    }
+  ],
+  "protected": [
+    {
+      "reviewed_lstat_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "path": "src/extensions/engine.zig"
+    },
+    {
+      "reviewed_lstat_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "path": "src/extensions/engine_abi.c"
+    },
+    {
+      "reviewed_lstat_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "path": "src/extensions/engine_abi.h"
+    },
+    {
+      "reviewed_lstat_blob": "8a317c650660be6ccd5d3cd5201404b678fd12b3",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "path": "src/extensions/commonjs.zig"
+    },
+    {
+      "reviewed_lstat_blob": "390157c1ae6264e314137b799b269e8c0f18f366",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "path": "src/extensions/native_node_function.zig"
+    },
+    {
+      "reviewed_lstat_blob": "48d11a684029c7b37259fbe02e61ae624c7691dd",
+      "sha256": "ADCD4950FDB2C7090DFC9BD82E671533E3857FB53C754E166FDCF87D933DC53E",
+      "path": "src/extensions/native_node_lstat_error.zig"
+    },
+    {
+      "reviewed_lstat_blob": "23e32e590ca88f5d2a38fa70e3bf6aeda2f9309e",
+      "sha256": "5923707D1ABAF6CE5E07645174A2FEC5F3C65E62BB7BA06BEEA506250D11FFCE",
+      "path": "verification/node-lstat-sourceonly-20261017/prepared.json"
+    },
+    {
+      "reviewed_lstat_blob": "00c34a84b8cb7332d6077c7992b3cce7f145a0c7",
+      "sha256": "AFD5C2A6E44113173EF3834BE1D5BBD05E5B8A4A69B97677528052EE420CB66F",
+      "path": "verification/node-lstat-sourceonly-20261017/source-caller.mjs"
+    }
+  ],
+  "new_packet": [
+    {
+      "bytes": 2366,
+      "sha256": "3128FE82AE79B2DFD1DC42A61C3A5A68E0C3804F0B9A8FD79A8C045866B712A3",
+      "path": "verification/node-metadata-primordial-followup-sourceonly-20261017/controls.json"
+    },
+    {
+      "bytes": 2058,
+      "sha256": "1969B4EA92D96D71500E4EA1244B78C8D201EACE8176D8089A3368104856A3A4",
+      "path": "verification/node-metadata-primordial-followup-sourceonly-20261017/README.md"
+    },
+    {
+      "bytes": 3062,
+      "sha256": "F8BF08891F37E393FF986A3EDD04F99B9E03C2CFB88F707F480BB44704D7DAA6",
+      "path": "verification/node-metadata-primordial-followup-sourceonly-20261017/source-caller.mjs"
+    },
+    {
+      "bytes": 27046,
+      "sha256": "7A3925649BFD2CE222849B928EF8AC0BBD0B8CCC46369A6C0B20B71905644BF3",
+      "path": "verification/node-metadata-primordial-followup-sourceonly-20261017/authority/node-internal-fs-utils.js.txt"
+    },
+    {
+      "bytes": 21700,
+      "sha256": "6C9FC969AABDB7403F89EB44545A5AA0E90BEC8385C71D4B2F70F54A0A8591F8",
+      "path": "verification/node-metadata-primordial-followup-sourceonly-20261017/authority/node-primordials.js.txt"
+    }
+  ],
+  "primary_windows_mode": {
+    "symbol": "fs__stat_assign_statbuf",
+    "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+    "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-win-fs.c.txt"
+  },
+  "primary_bigint_capture": {
+    "borrowed_intrinsic_freed_by_metadata": false,
+    "node_fsutils": "lib/internal/fs/utils.js destructures BigInt from primordials and _checkModeProperty uses it",
+    "engine_change": false,
+    "node_primordials": "lib/internal/per_context/primordials.js captures original=globalThis[name] during bootstrap",
+    "engine_reused": "Engine.init JS_GetPropertyStr(initial global,BigInt), retained intrinsic_bigint_constructor; captured before guest evaluation, released by existing Engine lifetime"
+  },
+  "source_rows_when_setup_succeeds": 15,
+  "native_controls": 8,
+  "expected_files": [],
+  "observed_files": [],
+  "jobs_launched": false,
+  "old_proof_files_rewritten": false,
+  "main_c_h_engine_changes": false
+}
