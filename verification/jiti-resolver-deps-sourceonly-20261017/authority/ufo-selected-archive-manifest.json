@@ -1,0 +1,62 @@
+{
+  "name": "ufo",
+  "version": "1.6.4",
+  "selected_by": "Actual jiti2.7 runtime pnpm lock; mlly dist imports ufo externally",
+  "gitHead": "f06c800d0c59f2a4a1b9ba65eb6cb61a84419be6",
+  "uri": "https://registry.npmjs.org/ufo/-/ufo-1.6.4.tgz",
+  "integrity": "sha512-JFNbkD1Svwe0KvGi8GOeLcP4kAWQ609twvCdcHxq1oSL8svv39ZuSvajcD8B+5D0eL4+s1Is2D/O6KN3qcTeRA==",
+  "archive_sha256": "B060E20D485EF8F6A8B9D58DC0FB28E8B9607DFEABF2B6007A73E60F012E6AB0",
+  "file_count": 8,
+  "files": [
+    {
+      "original_path": "package/LICENSE",
+      "inert_path": "ufo-1.6.4\\LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "original_path": "package/dist/index.cjs",
+      "inert_path": "ufo-1.6.4\\dist\\index.cjs.txt",
+      "sha256": "5FD54C9B0443AF32217E4262E92778A4619A126A10AF94ECC4FBE134160B7377",
+      "bytes": 21080
+    },
+    {
+      "original_path": "package/dist/index.d.cts",
+      "inert_path": "ufo-1.6.4\\dist\\index.d.cts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    },
+    {
+      "original_path": "package/package.json",
+      "inert_path": "ufo-1.6.4\\package.json.txt",
+      "sha256": "4EF029B2BDE70C3007F3520D3D4BA14B754E4E8C4DEFA8D58A8E53434EBDF028",
+      "bytes": 1250
+    },
+    {
+      "original_path": "package/README.md",
+      "inert_path": "ufo-1.6.4\\README.md.txt",
+      "sha256": "E1E73226D840B47332B904542D1066EAE4B6F89839B6A455945B102BAF65B4DC",
+      "bytes": 12619
+    },
+    {
+      "original_path": "package/dist/index.mjs",
+      "inert_path": "ufo-1.6.4\\dist\\index.mjs.txt",
+      "sha256": "893199FAF3AAFC1B2A03018DE7C87738BCD78ED5153E7C2767D62E09B323B042",
+      "bytes": 19892
+    },
+    {
+      "original_path": "package/dist/index.d.mts",
+      "inert_path": "ufo-1.6.4\\dist\\index.d.mts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    },
+    {
+      "original_path": "package/dist/index.d.ts",
+      "inert_path": "ufo-1.6.4\\dist\\index.d.ts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    }
+  ],
+  "unselected_reference": "ufo1.6.3 mlly build-lock authority preserved; never used as jiti runtime",
+  "source_executed": false
+}

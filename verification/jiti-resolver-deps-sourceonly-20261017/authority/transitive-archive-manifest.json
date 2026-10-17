@@ -1,0 +1,198 @@
+[
+  {
+    "name": "import-meta-resolve",
+    "version": "4.2.0",
+    "uri": "https://registry.npmjs.org/import-meta-resolve/-/import-meta-resolve-4.2.0.tgz",
+    "integrity": "sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==",
+    "archive_sha256": "89D5895C64D5B1099DF79BA1F6CF3F054FD0265CB5E17ACB94DE84D46BC01085",
+    "file_count": 21,
+    "files": [
+      {
+        "original_path": "package/license",
+        "inert_path": "import-meta-resolve-4.2.0\\license.txt",
+        "sha256": "8770A1A4B69EE722636643E81340CE4A8F0B8415B1C568487EDC9062338BFCC7",
+        "bytes": 3493
+      },
+      {
+        "original_path": "package/lib/errors.js",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\errors.js.txt",
+        "sha256": "1D34BBDF963B8B99A14EFDAB5079C40AF5479A696CFCFE94AF91E122721ADEFA",
+        "bytes": 13538
+      },
+      {
+        "original_path": "package/lib/get-format.js",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\get-format.js.txt",
+        "sha256": "FFC08FD48638244F1B308DB9E697D3A545A66848C16F82938AB9B088335C4263",
+        "bytes": 3521
+      },
+      {
+        "original_path": "package/index.js",
+        "inert_path": "import-meta-resolve-4.2.0\\index.js.txt",
+        "sha256": "2264946BC18B04FD021FD28C4315B38BB5344B7DF24164D2A339658108180AC8",
+        "bytes": 1362
+      },
+      {
+        "original_path": "package/lib/package-json-reader.js",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\package-json-reader.js.txt",
+        "sha256": "B7D3A5C669B8AFE7308248CDBA652C792518297F04335B696EDCD4A3136C359A",
+        "bytes": 4435
+      },
+      {
+        "original_path": "package/lib/resolve.js",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\resolve.js.txt",
+        "sha256": "61CEEEEA76B473D43CAF62AAAB4EF28110E4F8F3CE055CBCB8F78AD406CAFA83",
+        "bytes": 34732
+      },
+      {
+        "original_path": "package/lib/utils.js",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\utils.js.txt",
+        "sha256": "C6D4CDE552DFB9B1DEB2574EE11899A3FC3FE684BC32FBB85483F01BB22E4177",
+        "bytes": 1188
+      },
+      {
+        "original_path": "package/package.json",
+        "inert_path": "import-meta-resolve-4.2.0\\package.json.txt",
+        "sha256": "41E75CAC3CC4460B5E442CD4AB60907BA24A01B8A081C3FD8A84371B8F76D39B",
+        "bytes": 2237
+      },
+      {
+        "original_path": "package/lib/errors.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\errors.d.ts.map.txt",
+        "sha256": "7E92CAE70C4B9FC409FCBD9BDF1321C619ECACAD82172278B1739ED5CF92F211",
+        "bytes": 734
+      },
+      {
+        "original_path": "package/lib/get-format.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\get-format.d.ts.map.txt",
+        "sha256": "A8157400C58F3DB309DA645FBCF9FF420DE914BA4BEF045C65FBBBF7E9331EA1",
+        "bytes": 317
+      },
+      {
+        "original_path": "package/index.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\index.d.ts.map.txt",
+        "sha256": "A57172C8AFE87FEBE6A1558B7EA766EB7D7AA03C9ED75F41596B8E8D105BBFDB",
+        "bytes": 192
+      },
+      {
+        "original_path": "package/lib/package-json-reader.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\package-json-reader.d.ts.map.txt",
+        "sha256": "12A3AF486C2BCE87E432FDEF83E0842B52A33E2BCD1738232D0BF37C21D4CD72",
+        "bytes": 545
+      },
+      {
+        "original_path": "package/lib/resolve.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\resolve.d.ts.map.txt",
+        "sha256": "B215A72344BBF7F70477AA5B1E1082781C7F60C14099F69F64A28010FD79E41F",
+        "bytes": 401
+      },
+      {
+        "original_path": "package/lib/utils.d.ts.map",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\utils.d.ts.map.txt",
+        "sha256": "9FBF8B6DCC15EC8FB4B39B5692CB06355944B58CC146E6A8CC9DCA76E9ABF74E",
+        "bytes": 172
+      },
+      {
+        "original_path": "package/readme.md",
+        "inert_path": "import-meta-resolve-4.2.0\\readme.md.txt",
+        "sha256": "932CAE2095AAF3D9F9774D592EC6659F6B2B1AB7C4837A21F9AD05C1F34532FF",
+        "bytes": 7682
+      },
+      {
+        "original_path": "package/lib/errors.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\errors.d.ts.txt",
+        "sha256": "776822840BBBAA052460038966ECD0816FE0FDB6F2E8030398F82DCEA69DEBAE",
+        "bytes": 1327
+      },
+      {
+        "original_path": "package/lib/get-format.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\get-format.d.ts.txt",
+        "sha256": "8DDF61BA026247504DF78DDA31EFB8E91EA0640F0A10D2BEAE2C957C0A9797A0",
+        "bytes": 395
+      },
+      {
+        "original_path": "package/index.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\index.d.ts.txt",
+        "sha256": "946A2F0F21B8B76613AA7FC83DAC4EC074525B188488DF8872D5686398BC4FFA",
+        "bytes": 754
+      },
+      {
+        "original_path": "package/lib/package-json-reader.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\package-json-reader.d.ts.txt",
+        "sha256": "0A87B891CE3621AE4D33CEF7DE2D5EA491B29B8CB64DD721177FFC7BAA4FEFBE",
+        "bytes": 960
+      },
+      {
+        "original_path": "package/lib/resolve.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\resolve.d.ts.txt",
+        "sha256": "FFCE3278D6A3E1E328A1018933BB977FDA839F41D6D54A3F60FFD055322FF985",
+        "bytes": 1028
+      },
+      {
+        "original_path": "package/lib/utils.d.ts",
+        "inert_path": "import-meta-resolve-4.2.0\\lib\\utils.d.ts.txt",
+        "sha256": "01D8F3F73ABC55B06B46D37A5FBC4B974667D543994C1E1A95A35D4D5D2B4B71",
+        "bytes": 183
+      }
+    ],
+    "source_executed": false
+  },
+  {
+    "name": "ufo",
+    "version": "1.6.3",
+    "uri": "https://registry.npmjs.org/ufo/-/ufo-1.6.3.tgz",
+    "integrity": "sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==",
+    "archive_sha256": "17CF1908F276F024099F160AC06C6DE17622EB0580F9AF90D91FBEFE5D9AD245",
+    "file_count": 8,
+    "files": [
+      {
+        "original_path": "package/LICENSE",
+        "inert_path": "ufo-1.6.3\\LICENSE.txt",
+        "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+        "bytes": 1078
+      },
+      {
+        "original_path": "package/dist/index.cjs",
+        "inert_path": "ufo-1.6.3\\dist\\index.cjs.txt",
+        "sha256": "BE94F73C9236DF68CF678DA5EC285309ACDF23B8CFE1308657B37B1527E45EF6",
+        "bytes": 21091
+      },
+      {
+        "original_path": "package/dist/index.d.cts",
+        "inert_path": "ufo-1.6.3\\dist\\index.d.cts.txt",
+        "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+        "bytes": 18770
+      },
+      {
+        "original_path": "package/package.json",
+        "inert_path": "ufo-1.6.3\\package.json.txt",
+        "sha256": "BAD224C9BBCBC6303CBCED2A8A2C0B1C339BBE8F90DA4DE7E209B4B74BE25F96",
+        "bytes": 1252
+      },
+      {
+        "original_path": "package/README.md",
+        "inert_path": "ufo-1.6.3\\README.md.txt",
+        "sha256": "E1E73226D840B47332B904542D1066EAE4B6F89839B6A455945B102BAF65B4DC",
+        "bytes": 12619
+      },
+      {
+        "original_path": "package/dist/index.mjs",
+        "inert_path": "ufo-1.6.3\\dist\\index.mjs.txt",
+        "sha256": "29F65B5DBD36134DD75BE3C21D502A7EB77B973CC726D7F6B763AB9F4C19E305",
+        "bytes": 19903
+      },
+      {
+        "original_path": "package/dist/index.d.mts",
+        "inert_path": "ufo-1.6.3\\dist\\index.d.mts.txt",
+        "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+        "bytes": 18770
+      },
+      {
+        "original_path": "package/dist/index.d.ts",
+        "inert_path": "ufo-1.6.3\\dist\\index.d.ts.txt",
+        "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+        "bytes": 18770
+      }
+    ],
+    "source_executed": false
+  }
+]

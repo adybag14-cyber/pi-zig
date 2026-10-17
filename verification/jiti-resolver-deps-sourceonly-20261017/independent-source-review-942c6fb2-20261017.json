@@ -1,0 +1,53 @@
+{
+  "status": "finite_source_review_closed_uncompiled_unrun",
+  "reviewed_head": "942c6fb236b81821411bb89c8da2e6c872329d40",
+  "reviewed_worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\jiti-resolver-dependencies",
+  "final_manifest_sha256": "5F4EA50A746FECD2832D398049E6D2D4007865097E5D8275FF27DCF459F8259F",
+  "retained_normal_close_manifest_sha256": "EEB1776CDAD36C0C896C8B8E6C0ED5107AFEDC9D1F93FF61863581F84590B688",
+  "retained_boundary_manifest_sha256": "8BA0911B32C8A5F81E639E6D55C1EF72A3F5E52885C42F25F583612C3B921BD4",
+  "historical_initial_manifest_sha256": "994A2C0CF5853A06FD8265695F90707A244FD1015C89CCFAE5979CC5E875855C",
+  "reviewed_corrections": [
+    "Namespace-local ordinary/arrow/method adapter covers constructor setup and callback, aggregate roots, pending-first exact fatal delivery and ordinary capture transfer",
+    "Throw-completion cleanup classifies fresh return getter/call failures at their own boundaries and preserves primary ownership",
+    "All three successful search/prefix/extension breaks use actual normal IteratorClose with live getter/call and object-result validation",
+    "Synchronous private stack frames pop on all exits; Engine-matched ordinary provenance floors use modular distances and retain later fresh or already-trusted fatal reasons",
+    "Public URL wrapper private guards also honor the same provenance floor",
+    "Finalization resolves Object.defineProperty before descriptor String argument evaluation",
+    "Actual get-format protocol/extension maps, receivers and file/data/node/http dispatch replace the abbreviated helper",
+    "Post-decrement converts its old value with the pinned owned PiToNumeric result, decrements the numeric value and tests that exact old completion"
+  ],
+  "source_checks": {
+    "final_product_and_retained_rows": 29,
+    "hash_mismatches": 0,
+    "primary_authority_rows": 89,
+    "primary_authority_drift": 0,
+    "retained_fixture_rows": 17,
+    "retained_fixture_drift": 0,
+    "expected_paths_absent": 3,
+    "diff_check_exit": 0,
+    "clean_exact_head": true,
+    "shared_engine_c_h_node_helpers_unchanged": true,
+    "pathe_source_unchanged_by_mlly_successors": true
+  },
+  "prepared_only": {
+    "native_test_declarations": 21,
+    "actual_import_entrypoints": 4,
+    "public_url_reentry_profiles": 4,
+    "original_subject_counts": [51, 8, 15],
+    "original_supplement_uses_genuine_node_url_default_and_syncBuiltinESMExports": true,
+    "expected_or_observed_results_created": false,
+    "actual_metadata_count": null
+  },
+  "unqualified": [
+    "Compilation and native/original execution, allocator/GC/runtime behavior",
+    "V8 internal-error stack and reflection protocol",
+    "Deep adversarial native recursion and broad replacement-global/proxy/nonstandard-method behavior outside the finite reviewed cases",
+    "Complete Node filesystem/URL/platform error parity and actual dependency composition",
+    "Unconsumed asynchronous/full mlly exports and default Jiti loader selection"
+  ],
+  "reviewer_native_node_compiler_ast_parser_generator_jobs": false,
+  "reviewer_product_or_main_edits": false,
+  "execution_grant_issued": false,
+  "runtime_or_release_qualified": false,
+  "historical_negative_packets_preserved": true
+}
