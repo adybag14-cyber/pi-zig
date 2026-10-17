@@ -4,9 +4,9 @@
   "products": [
     {
       "path": "src/extensions/native_file_stat.zig",
-      "bytes": 18571,
+      "bytes": 18505,
       "baseline_blob": "084bbd74f917f9c2643020260bce1977d729ffc9",
-      "sha256": "7F6C4AE774FF2CE28D51960E88E6DD1BB8FDAFA84EA7218FCC9FEB7C70FB634D"
+      "sha256": "0A0D3059669EFCBF47564AE3207E3142FB70725673C31AC96310EABD2A2DA716"
     },
     {
       "path": "src/extensions/node_fs_metadata.zig",
@@ -142,7 +142,7 @@
   "jobs_started": false,
   "known_existing_stat_windows_directory_execute_bits_gap": "reported separately; stat.read existing behavior preserved; new lstat follows actual libuv permissions",
   "scope": "actual lstatSync/native final-component metadata seam; not full Node fs/permissions qualification",
-  "review_corrections": "Successor preserves899 immutable packet; fixes latched Windows error transport +1464 retry/handle order, Linux statx unsupported fallback and leaf-local fatal/raw exception exit. No old generic helpers/C/Engine/stat rollback.",
+  "review_corrections": "Successor preserves899 immutable packet; fixes latched Windows error transport +1464 retry/handle order, Linux statx unsupported fallback and leaf-local fatal/raw exception exit. No old generic helpers/C/Engine/stat rollback. Single centralized retry owner additionally prevents a second follow attempt when the first follow fails with1464/4390.",
   "static_primary_uv_checks": {
     "enum_numbers": 44,
     "runtime_execution": false,

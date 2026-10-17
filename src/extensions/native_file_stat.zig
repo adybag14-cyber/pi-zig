@@ -113,8 +113,7 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool, failure: 
             else => error.FileStatOpenFailed,
         };
     }
-    var handle_open = true;
-    defer if (handle_open) { _ = Native.CloseHandle(handle); };
+    defer _ = Native.CloseHandle(handle);
     var info: Native.Information = undefined;
     if (Native.GetFileInformationByHandle(handle, &info) == 0) return windowsFailure(failure);
     var basic: Native.Basic = undefined;
@@ -126,13 +125,11 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool, failure: 
     // libuv retries non-link reparse tags (including volume mount points)
     // with ordinary stat, rather than reporting every reparse point as a link.
     if (!follow and basic.attributes & 0x400 != 0 and link_length == null) {
-        handle_open = false;
-        _ = Native.CloseHandle(handle);
-        var target = try windowsStat(gpa, path, true, failure);
-        // read's older Windows directory execute bits are not part of libuv's
-        // lstat result, including the non-link reparse retry.
-        target.mode &= ~@as(u32, 0o111);
-        return target;
+        // One retry owner only: return through the deferred close, then let
+        // readLink perform its single follow request. That follow cannot retry
+        // itself when it fails with another unsupported/not-reparse code.
+        if (failure) |slot| slot.* = 1464;
+        return error.FileStatInformationFailed;
     }
     return .{
         .dev = info.volume_serial,
