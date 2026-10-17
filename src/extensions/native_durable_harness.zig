@@ -19,7 +19,7 @@ fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     c.JS_FreeValueRT(runtime, self.session);
     c.JS_FreeValueRT(runtime, self.options);
     if (self.on_report) |callback| c.JS_FreeValueRT(runtime, callback);
-    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |value| c.JS_FreeValueRT(runtime, value);
+    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |host_value| c.JS_FreeValueRT(runtime, host_value);
     engine.gpa.destroy(self);
 }
 fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc) callconv(.c) void {
@@ -28,7 +28,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     c.JS_MarkValue(runtime, self.session, marker);
     c.JS_MarkValue(runtime, self.options, marker);
     if (self.on_report) |callback| c.JS_MarkValue(runtime, callback, marker);
-    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |value| c.JS_MarkValue(runtime, value, marker);
+    inline for (.{ "host_settings", "host_models", "scheduler_registry" }) |name| if (@field(self, name)) |host_value| c.JS_MarkValue(runtime, host_value, marker);
 }
 pub fn install(engine: *Engine, exports: c.JSValue) !void {
     if (engine.native_durable_harness_class == 0) _ = c.JS_NewClassID(engine.runtime, &engine.native_durable_harness_class);
