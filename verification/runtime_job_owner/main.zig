@@ -14,8 +14,8 @@ pub fn main(init: std.process.Init.Minimal) void {
     const watchdog = allocator.create(common.Watchdog) catch { w.ExitProcess(111); };
     watchdog.* = .{ .hard_ms = .init(deadline.hard_ms) };
     watchdog.start() catch { w.ExitProcess(111); };
-    dispatch(&storage, args, deadline, watchdog) catch |err| {
-        _ = err; // No synchronous pipe write can extend the final failure path.
+    dispatch(&storage, args, deadline, watchdog) catch {
+        // No synchronous pipe write can extend the final failure path.
         // No stack/allocator destruction while a timed-out native thread or I/O
         // can still reference it. OS closes only this process's owned handles;
         // sole fresh job kill-on-close contains its workload on every failure.

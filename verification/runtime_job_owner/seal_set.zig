@@ -35,7 +35,7 @@ pub const Set = struct {
     outcome: Outcome = .{},
 
     pub fn run(self: *Set) void {
-        inline for (std.meta.tags(Check)) |check| {
+        inline for (comptime std.meta.tags(Check)) |check| {
             const result = &self.outcome.results[@intFromEnum(check)];
             if (w.GetTickCount64() >= self.deadline.cutoff_ms) {
                 result.error_name = "FinalSealDeadline";
