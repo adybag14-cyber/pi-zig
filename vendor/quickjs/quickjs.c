@@ -32984,23 +32984,16 @@ static JSValue js_dynamic_import_job(JSContext *ctx,
     return JS_UNDEFINED;
 }
 
-static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
-                                 JSValueConst options)
+/* Consumes basename_val on every path. Guest import captures it before any
+   capability allocation or specifier/options coercion. */
+static JSValue js_dynamic_import_with_base(JSContext *ctx, JSValue basename_val,
+                                          JSValueConst specifier,
+                                          JSValueConst options)
 {
-    JSAtom basename;
-    JSValue promise, resolving_funcs[2], basename_val, err, ret;
+    JSValue promise, resolving_funcs[2], err, ret;
     JSValue specifier_str = JS_UNDEFINED, attributes = JS_UNDEFINED;
     JSValue attributes_obj = JS_UNDEFINED;
     JSValue args[5];
-
-    basename = JS_GetScriptOrModuleName(ctx, 0);
-    if (basename == JS_ATOM_NULL)
-        basename_val = JS_NULL;
-    else
-        basename_val = JS_AtomToValue(ctx, basename);
-    JS_FreeAtom(ctx, basename);
-    if (JS_IsException(basename_val))
-        return basename_val;
 
     promise = JS_NewPromiseCapability(ctx, resolving_funcs);
     if (JS_IsException(promise)) {
@@ -33086,6 +33079,32 @@ done:
     JS_FreeValue(ctx, ret);
     JS_FreeValue(ctx, err);
     goto done;
+}
+
+static JSValue js_dynamic_import(JSContext *ctx, JSValueConst specifier,
+                                 JSValueConst options)
+{
+    JSAtom basename;
+    JSValue basename_val;
+
+    basename = JS_GetScriptOrModuleName(ctx, 0);
+    if (basename == JS_ATOM_NULL)
+        basename_val = JS_NULL;
+    else
+        basename_val = JS_AtomToValue(ctx, basename);
+    JS_FreeAtom(ctx, basename);
+    if (JS_IsException(basename_val))
+        return basename_val;
+    return js_dynamic_import_with_base(ctx, basename_val, specifier, options);
+}
+
+JSValue JS_PiDynamicImportGraph0(JSContext *ctx, JSValueConst physical_basename,
+                                JSValueConst specifier)
+{
+    if (!JS_IsString(physical_basename))
+        return JS_ThrowTypeError(ctx, "dynamic import basename must be a string");
+    return js_dynamic_import_with_base(ctx, JS_DupValue(ctx, physical_basename),
+                                       specifier, JS_UNDEFINED);
 }
 
 static void js_set_module_evaluated(JSContext *ctx, JSModuleDef *m)

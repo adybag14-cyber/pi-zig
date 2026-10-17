@@ -1416,6 +1416,15 @@ JS_EXTERN JSAtom JS_GetScriptOrModuleName(JSContext *ctx, int n_stack_levels);
 /* only exported for os.Worker() */
 JS_EXTERN JSValue JS_LoadModule(JSContext *ctx, const char *basename,
                                 const char *filename);
+/* Borrowed primitive-string physical_basename; borrowed specifier uses the
+   existing synchronous import() ToString. Returns the owned intrinsic import
+   Promise and queues the existing graph0 import job with omitted options/attrs.
+   Does not consult an ambient script/private origin or retain the host context;
+   the host must keep ctx alive through job execution and cleanup. Physical path
+   and NUL admission belong to the caller. Existing import failure policy applies. */
+JS_EXTERN JSValue JS_PiDynamicImportGraph0(JSContext *ctx,
+                                          JSValueConst physical_basename,
+                                          JSValueConst specifier);
 
 /* C function definition */
 typedef enum JSCFunctionEnum {  /* XXX: should rename for namespace isolation */

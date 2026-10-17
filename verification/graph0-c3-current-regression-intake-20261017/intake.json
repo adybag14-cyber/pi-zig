@@ -1,0 +1,26 @@
+{
+  "status": "qualified_component_source_intake",
+  "candidate_head": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "retained_regression_execution_entries": 150,
+  "retained_unique_full_names": 98,
+  "focused_added_execution_entries": 11,
+  "focused_named": 9,
+  "focused_storage": 2,
+  "original_test_assertions_unchanged": true,
+  "scope": "Additive owned-basename queued import primitive with intrinsic Promise and explicit context; retained C2 regression and C3 focused tests",
+  "default_Graph2_selected": false,
+  "whole_application_qualified": false,
+  "raw_public_packets_pending_copy": true,
+  "files": [
+    {
+      "before": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+      "path": "vendor/quickjs/quickjs.c",
+      "after": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "before": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "path": "vendor/quickjs/quickjs.h",
+      "after": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    }
+  ]
+}

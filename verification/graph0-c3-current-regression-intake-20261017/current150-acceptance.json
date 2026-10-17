@@ -1,0 +1,778 @@
+{
+  "status": "same_head_current150_execution_entries_accepted",
+  "audited_utc": "2026-10-17T13:16:04.9144525+00:00",
+  "head": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "focused_run": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914",
+  "focused_actual_entries": 34,
+  "focused_groups": [
+    {
+      "name": "start",
+      "count": 8,
+      "raw_metadata": {
+        "bytes": 976,
+        "sha256": "4588A35E1087DAA29D61E34989CCDC14304306FC37A1236CCA72F48639E5D2C2",
+        "version": "0.16.0",
+        "names": [
+          "native_tla_fatal_delivery_test.test.native TLA fatal immediate genuine START is delivered and cached without retagging",
+          "native_tla_fatal_delivery_test.test.native TLA fatal Engine evalModule delivers fresh allocation error terminally",
+          "native_tla_fatal_delivery_test.test.native TLA fatal deferred async ancestor START escapes the actual dependency job",
+          "native_tla_fatal_delivery_test.test.native TLA fatal deferred synchronous ancestor escapes the actual dependency job",
+          "native_tla_fatal_delivery_test.test.native TLA fatal ordinary raw lookalike and historical errors remain exact rejected promises",
+          "native_tla_fatal_delivery_test.test.native TLA fatal injected Zig allocation cleanup reaches the real module boundary",
+          "native_tla_fatal_delivery_test.test.native TLA fatal bounded C attachment pressure has terminal outcomes and reusable cleanup",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 238,
+        "sha256": "685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 8,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          },
+          {
+            "index": 5,
+            "flags": 0
+          },
+          {
+            "index": 6,
+            "flags": 0
+          },
+          {
+            "index": 7,
+            "flags": 0
+          }
+        ]
+      },
+      "artifact_rows": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-out\\bin\\test.exe",
+          "sha256": "A3DFBEA347BC712ACB485B8A03EF55F9499D8694F282C9FE8A1B11F1A5AA8FC5"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-out\\bin\\test.pdb",
+          "sha256": "60B69ACCA1E16F5B39E5A16E1A2ABCF4DF7C2227072C12DDC34EC5BAF65476A6"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    },
+    {
+      "name": "resumed",
+      "count": 7,
+      "raw_metadata": {
+        "bytes": 933,
+        "sha256": "E21A8D1275630106227149392CF72AA9C74BE767632C7CA5E82050E042243951",
+        "version": "0.16.0",
+        "names": [
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal cached module and reimport terminate with exact reason",
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal outer attachment failure prevents ordinary and fatal late body callbacks",
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal partial initial await setup retires queued inactive callback",
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal exact module association distinguishes duplicate physical names",
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal ordinary nonmodule async callbacks retain rejection and return behavior",
+          "native_tla_resumed_fatal_delivery_test.test.native TLA resumed fatal resolving callback pending host hook reason is terminal and exact",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 210,
+        "sha256": "F416339F2F2FA36AB1C9D4A833B1F069C5BB941C0E0A19255328A9486DCB96C9",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 7,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          },
+          {
+            "index": 5,
+            "flags": 0
+          },
+          {
+            "index": 6,
+            "flags": 0
+          }
+        ]
+      },
+      "artifact_rows": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-out\\bin\\test.exe",
+          "sha256": "4780BACD9B10BCE9D6FF60B4A37DEFDF500FBA8F1F7C0B7A673500DF42864430"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-out\\bin\\test.pdb",
+          "sha256": "E126096525048F55ECB0AD3DF550EE91012ADF65B17DF327B1C03B5A37069806"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    },
+    {
+      "name": "resolving",
+      "count": 5,
+      "raw_metadata": {
+        "bytes": 596,
+        "sha256": "14CCAAEAE04743BFCC6E4202841BF1A16157918AC7C9DDDF56CD6BFBFEA03CD2",
+        "version": "0.16.0",
+        "names": [
+          "native_async_resolving_pending_test.test.native AF resolving pending START return hook must deliver exact fatal exception",
+          "native_async_resolving_pending_test.test.native AF resolving pending resumed return hook must fail the actual job",
+          "native_async_resolving_pending_test.test.native AF resolving pending START rejection tracker must deliver exact fatal exception",
+          "native_async_resolving_pending_test.test.native AF resolving pending resumed rejection tracker must fail the actual job",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 154,
+        "sha256": "12A99A350E13E5B1473CCD10A9F634131784CE356DA4809961160DC19B0DBAD8",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 5,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          }
+        ]
+      },
+      "artifact_rows": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-out\\bin\\test.exe",
+          "sha256": "731D796415F5E1216FB3F4904B0168851A72C077846A9012F9D56BF0464FDBBC"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-out\\bin\\test.pdb",
+          "sha256": "B0F7D366478CA99DF94F1BE89D730A5FABFD8FE8A049C97E8FF9486E38387C03"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    },
+    {
+      "name": "inactive",
+      "count": 2,
+      "raw_metadata": {
+        "bytes": 219,
+        "sha256": "51BF0D39A9320FBC28AC90031FB1CBE2A8470553FE74555CAD9EF75B6707ACAD",
+        "version": "0.16.0",
+        "names": [
+          "native_async_await_inactive_test.test.native AF Await inactive queued tracker callback survives GC and never resumes retired roots",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 70,
+        "sha256": "872DBF10BBAA7BD98ED3F8AB82BCD9F64C5BEDB7D61653F6DDD2BE39DC54FB63",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 2,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          }
+        ]
+      },
+      "artifact_rows": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-out\\bin\\test.exe",
+          "sha256": "828CA982B9CA13FBB47FFCE9DE47F8956DC06596561C5FF4D1C1FC59D0EB8D3B"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-out\\bin\\test.pdb",
+          "sha256": "CB84A6732C06DB75920B7967F3865EF7B975B9DFBDBF4D5F334BFB9A9F95EC32"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    },
+    {
+      "name": "shared",
+      "count": 12,
+      "raw_metadata": {
+        "bytes": 1635,
+        "sha256": "830209832E9647492373CA800A57157B59BD3DE7ADA9CC0C38E968237DDFDA98",
+        "version": "0.16.0",
+        "names": [
+          "native_shared_thenable_fatal_test.test.shared thenable fatal getter START and resumed native returns preserve active reason",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal deferred then call preserves paired hooks and exact pending reason across GC",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal BEFORE skips then and AFTER while AFTER fatal retains normal call order",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal original then failure wins distinct AFTER failure without retagging",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary raw historical and lookalike throws retain exact rejection values",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal flagged rejected data without pending exception stays ordinary data",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal normal hooks preserve replacement removal and new opaque identity",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary foreign callable and queued GC retain existing host context ownership",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary getter conversion tracker fails plain Promise resolve without AF masking",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal ordinary deferred rejection conversion tracker fails raw adoption job",
+          "native_shared_thenable_fatal_test.test.shared thenable fatal direct public scalar resolve and reject capture only active fatal callbacks",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 350,
+        "sha256": "A6D5D17483B06112ABC45B475F0D9E03E2BD45B14471AB3CFD9BD25C2F44F1E8",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 12,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          },
+          {
+            "index": 5,
+            "flags": 0
+          },
+          {
+            "index": 6,
+            "flags": 0
+          },
+          {
+            "index": 7,
+            "flags": 0
+          },
+          {
+            "index": 8,
+            "flags": 0
+          },
+          {
+            "index": 9,
+            "flags": 0
+          },
+          {
+            "index": 10,
+            "flags": 0
+          },
+          {
+            "index": 11,
+            "flags": 0
+          }
+        ]
+      },
+      "artifact_rows": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-out\\bin\\test.exe",
+          "sha256": "C7C7149F4195B398E143B9A979916172D2B0035DF1A75DE27E5CE04EA7E553D6"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-out\\bin\\test.pdb",
+          "sha256": "56651DBCB3CB46C6151904256091139F81D2B2151CCB5C0FA541B159AAD7405D"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    }
+  ],
+  "focused_seals": [
+    {
+      "phase": "final.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "inactive-after.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "inactive-between.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "resolving-after.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "resolving-between.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "resumed-after.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "resumed-between.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "shared-after.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "shared-between.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "start-after.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "start-between.json",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    }
+  ],
+  "focused_owners": [
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-compile.json",
+      "pid": 16812,
+      "created_utc": "2026-10-17T13:09:25.0764846Z",
+      "exit_code": 0,
+      "elapsed_seconds": 9.3456595,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-tla-fatal-delivery -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-metadata.json",
+      "pid": 52800,
+      "created_utc": "2026-10-17T13:09:35.0035873Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1641181,
+      "deadline_seconds": 30,
+      "binary_sha256": "A3DFBEA347BC712ACB485B8A03EF55F9499D8694F282C9FE8A1B11F1A5AA8FC5",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-runtime.json",
+      "pid": 37736,
+      "created_utc": "2026-10-17T13:09:44.5361575Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.6135164,
+      "deadline_seconds": 120,
+      "binary_sha256": "A3DFBEA347BC712ACB485B8A03EF55F9499D8694F282C9FE8A1B11F1A5AA8FC5",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\start-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-compile.json",
+      "pid": 52488,
+      "created_utc": "2026-10-17T13:09:54.7239521Z",
+      "exit_code": 0,
+      "elapsed_seconds": 9.4045353,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-tla-resumed-fatal-delivery -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-metadata.json",
+      "pid": 8512,
+      "created_utc": "2026-10-17T13:10:04.6971361Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1820553,
+      "deadline_seconds": 30,
+      "binary_sha256": "4780BACD9B10BCE9D6FF60B4A37DEFDF500FBA8F1F7C0B7A673500DF42864430",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-runtime.json",
+      "pid": 50204,
+      "created_utc": "2026-10-17T13:10:14.264581Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2345817,
+      "deadline_seconds": 120,
+      "binary_sha256": "4780BACD9B10BCE9D6FF60B4A37DEFDF500FBA8F1F7C0B7A673500DF42864430",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resumed-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-compile.json",
+      "pid": 44844,
+      "created_utc": "2026-10-17T13:10:23.9119075Z",
+      "exit_code": 0,
+      "elapsed_seconds": 9.4124154,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-af-resolving-pending -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-metadata.json",
+      "pid": 53164,
+      "created_utc": "2026-10-17T13:10:33.8747684Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.173907,
+      "deadline_seconds": 30,
+      "binary_sha256": "731D796415F5E1216FB3F4904B0168851A72C077846A9012F9D56BF0464FDBBC",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-runtime.json",
+      "pid": 52280,
+      "created_utc": "2026-10-17T13:10:43.0769487Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2303368,
+      "deadline_seconds": 120,
+      "binary_sha256": "731D796415F5E1216FB3F4904B0168851A72C077846A9012F9D56BF0464FDBBC",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\resolving-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-compile.json",
+      "pid": 35424,
+      "created_utc": "2026-10-17T13:10:53.6679237Z",
+      "exit_code": 0,
+      "elapsed_seconds": 10.2549086,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-af-await-inactive -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-metadata.json",
+      "pid": 21516,
+      "created_utc": "2026-10-17T13:11:04.5952771Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2297769,
+      "deadline_seconds": 30,
+      "binary_sha256": "828CA982B9CA13FBB47FFCE9DE47F8956DC06596561C5FF4D1C1FC59D0EB8D3B",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-runtime.json",
+      "pid": 45672,
+      "created_utc": "2026-10-17T13:11:15.1822907Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2131648,
+      "deadline_seconds": 120,
+      "binary_sha256": "828CA982B9CA13FBB47FFCE9DE47F8956DC06596561C5FF4D1C1FC59D0EB8D3B",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\inactive-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-compile.json",
+      "pid": 49448,
+      "created_utc": "2026-10-17T13:11:24.6082265Z",
+      "exit_code": 0,
+      "elapsed_seconds": 10.8976587,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-shared-thenable-fatal -Doptimize=Debug -Duse-llvm=true -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-metadata.json",
+      "pid": 8988,
+      "created_utc": "2026-10-17T13:11:36.1896203Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2396076,
+      "deadline_seconds": 30,
+      "binary_sha256": "C7C7149F4195B398E143B9A979916172D2B0035DF1A75DE27E5CE04EA7E553D6",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-runtime.json",
+      "pid": 42276,
+      "created_utc": "2026-10-17T13:11:46.485359Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.4059195,
+      "deadline_seconds": 120,
+      "binary_sha256": "C7C7149F4195B398E143B9A979916172D2B0035DF1A75DE27E5CE04EA7E553D6",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914\\shared-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    }
+  ],
+  "focused_outer": {
+    "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914-outer.json",
+    "pid": 46824,
+    "created_utc": "2026-10-17T13:09:14.1264368Z",
+    "exit_code": 0,
+    "elapsed_seconds": 174.5727235,
+    "deadline_seconds": 7800,
+    "binary_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+    "actual_command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\Run-FocusedPromiseC3.ps1 -RootGrantPath C:\\Users\\adyba\\pi-zig\\evidence\\root-c3-focused34-c83-prepared-20261017\\root-c3-focused34-c83-20261017-130914-grant.json -RunId root-c3-focused34-c83-20261017-130914",
+    "original_identity_absent": true,
+    "absence_method": "PID absent"
+  },
+  "focused_postseal": true,
+  "accepted_core_audit_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-core116-json11-independent-async-review-20261017\\audit.json",
+  "accepted_core_audit_sha256": "E2ED28277630495175D99CE0387054B25BE1458C1BB04CB68CACE1DB9B3D49E2",
+  "accepted_core_run": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-json11-corev4-prepared-20261017\\root-c3-core116-v4-20261017-125810",
+  "core_entries": 116,
+  "core_raw_streams_rechecked_unchanged": true,
+  "focused_core_source_compiler_rows_equal": true,
+  "current_execution_entries": 150,
+  "unique_full_names": 98,
+  "named_occurrences": 134,
+  "unique_named": 96,
+  "storage_executions": 15,
+  "other_anonymous": [
+    "extension_engine_test.test_0"
+  ],
+  "duplicate_full_names": [
+    {
+      "name": "extensions.engine.test.extension calls a Zig host function through the direct C ABI",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.extension imports native object exports without a JavaScript bridge module",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine executes modern extension language without Node",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine interrupts infinite loops and supports cancellation",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine reports rejected promises and syntax errors",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.linked C engine settles promises and async generator code",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity survives cleanup OOM with scoped user and stale controls",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity tags allocate nothing under exhausted VM heap and retain no old error",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native allocation original identity tags survive guest tampering proxies and u64 wrap",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native control pump settles an idle promise on its owner thread and bounds missing responses",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native DTO construction preserves nonfinite numbers and literal prototype and NUL keys",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native durable VM native allocation exception tracking distinguishes fresh identity user replacements and later rethrows",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native import metadata distinguishes hosted modules from explicitly selected entrypoints",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module allocation failures do not install hidden modules before retry",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module loader rejects missing dependencies and duplicate registrations",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native module loader resolves relative imports and top level await",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native rejected promises retain the original reason when diagnostic conversion throws",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.engine.test.native require cannot expose private cached state or observe its getters",
+      "occurrences": 2
+    },
+    {
+      "name": "extensions.native_durable_storage.test_0",
+      "occurrences": 15
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON actual OpenAI request builder matches genuine b06 HTTP20 payloads",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON genuine b06 delegates observe intrinsic diagnostics and preserve caller and reviver error identity",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON helpers and native partial fallback match33 genuine b06 observations",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON OpenAI decoder matches genuine b06 HTTP20 terminal results and event shapes",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON ordinary no-hook parse retains single coercion reviver behavior and native error identity",
+      "occurrences": 3
+    },
+    {
+      "name": "native_ai_json_parse_test.test.native AI JSON private hooks restore prior owner callback across nested scopes and retain roots after GC",
+      "occurrences": 3
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional completed return handler OOM drains reentrant trailing request",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional cross realm callback and iterator result ownership",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional owner retirement and unreachable owner cycles finalize exactly once",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional pending owner survives GC",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional queued next return throw retain ownership and assimilate thenables",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional raw VM allocation failures reject and retire without dangling frame",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional real intrinsic brand prototype raw yield and explicit await",
+      "occurrences": 2
+    },
+    {
+      "name": "native_async_generator_test.test.native async generator functional rejection getters start return and abrupt close preserve raw errors",
+      "occurrences": 2
+    }
+  ],
+  "separate_JSON11_not_added_to_union": true,
+  "old8a_focused_not_reused": true,
+  "limits": [
+    "Exact current c83 C3 focused34+core116 regression scope only; not150 unique tests",
+    "Separate earlier JSON11 is redundant execution evidence, not new unique tests",
+    "No full application/SDK/default/TypeBox396/Graph2/runtime-restoration claim",
+    "No jobs or Main edits; full saved seals and current artifacts audited; no fresh full compiler rehash"
+  ]
+}

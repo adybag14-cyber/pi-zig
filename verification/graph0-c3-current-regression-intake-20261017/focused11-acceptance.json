@@ -1,0 +1,271 @@
+{
+  "status": "current_c83_focused11_raw_pass_accepted",
+  "audited_utc": "2026-10-17T13:22:36.4263837+00:00",
+  "head": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "run": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913",
+  "groups": [
+    {
+      "name": "queued",
+      "actual_count": 8,
+      "raw_metadata": {
+        "bytes": 1012,
+        "sha256": "BE42702C83F0DA2E7E8A322CF08134433DF83EC38CF6D0D22594E87B8DF9E3AC",
+        "version": "0.16.0",
+        "names": [
+          "native_dynamic_import_graph0_test.test.queued Graph0 import public then read precedes lazy initialization and survives GC",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import throwing public then getter leaves genuine import queued",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import uses explicit captured base with absent and foreign ambient frames",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import concurrent TLA and guest import share namespace without extra completion",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import ordinary coercion and module failure preserve raw rejection identity",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import primitive basename admission and host owned queue teardown",
+          "native_dynamic_import_graph0_test.test.queued Graph0 import captures distinct VM context and enqueue execution marker through GC",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 238,
+        "sha256": "685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 8,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          },
+          {
+            "index": 5,
+            "flags": 0
+          },
+          {
+            "index": 6,
+            "flags": 0
+          },
+          {
+            "index": 7,
+            "flags": 0
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out\\bin\\test.exe",
+          "sha256": "59E983050EE1761E864C808962824055FDC97A3AE3D32CDC003C7B5A0FE44014"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out\\bin\\test.pdb",
+          "sha256": "4B2F5BB76825F733EB538C941B537366FA1B9752F04986739E6EF6517B3AE764"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    },
+    {
+      "name": "binding",
+      "actual_count": 3,
+      "raw_metadata": {
+        "bytes": 327,
+        "sha256": "DB2AE0B1D36A63315D3C6470C41692A6495E27140883E6D925361B71F712EE73",
+        "version": "0.16.0",
+        "names": [
+          "native_extension_graph0_binding_test.test.actual Graph0 binding ordinary metadata and real queued module namespace cache",
+          "native_extension_graph0_binding_test.test.actual Graph0 binding invalid basename is synchronous and uncoerced",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "bytes": 98,
+        "sha256": "33ED66EE95600A2E1783CF21EA51E3BB0A714099B2B9C70073DD6D4B216E072B",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 3,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "relative": "bin/test.exe",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out\\bin\\test.exe",
+          "sha256": "EE105C8B0C53406C4761C579F5585E99A364968462CAE376B3768CA6CDB09B05"
+        },
+        {
+          "relative": "bin/test.pdb",
+          "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out\\bin\\test.pdb",
+          "sha256": "C82A59C9BAAF49A8AFAFC3238F0324FB45676D424E8CF7718C09569CFB6D9575"
+        }
+      ],
+      "metadata_stderr_bytes": 0,
+      "runtime_stderr_bytes": 0
+    }
+  ],
+  "actual_execution_entries": 11,
+  "named_controls": 9,
+  "storage_executions": 2,
+  "original_summary_total": null,
+  "original_summary_not_rewritten": true,
+  "source_compiler_equal_current150": true,
+  "source_count": 10658,
+  "compiler_count": 19546,
+  "seals": [
+    {
+      "phase": "queued-between",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "queued-after",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "binding-between",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "binding-after",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    },
+    {
+      "phase": "final",
+      "source_count": 10658,
+      "compiler_count": 19546,
+      "drift": 0
+    }
+  ],
+  "owners": [
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-compile.json",
+      "pid": 49504,
+      "created_utc": "2026-10-17T13:19:26.801315Z",
+      "exit_code": 0,
+      "elapsed_seconds": 10.0334743,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-dynamic-import-graph0 -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-metadata.json",
+      "pid": 43432,
+      "created_utc": "2026-10-17T13:19:37.4929892Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1807504,
+      "deadline_seconds": 30,
+      "binary_sha256": "59E983050EE1761E864C808962824055FDC97A3AE3D32CDC003C7B5A0FE44014",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime.json",
+      "pid": 11692,
+      "created_utc": "2026-10-17T13:19:47.1714714Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2412708,
+      "deadline_seconds": 120,
+      "binary_sha256": "59E983050EE1761E864C808962824055FDC97A3AE3D32CDC003C7B5A0FE44014",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-compile.json",
+      "pid": 33904,
+      "created_utc": "2026-10-17T13:19:56.7606224Z",
+      "exit_code": 0,
+      "elapsed_seconds": 9.6197525,
+      "deadline_seconds": 1320,
+      "binary_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-graph0-binding -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\global-cache --summary all",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-metadata.json",
+      "pid": 30816,
+      "created_utc": "2026-10-17T13:20:06.9092912Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.1717961,
+      "deadline_seconds": 30,
+      "binary_sha256": "EE105C8B0C53406C4761C579F5585E99A364968462CAE376B3768CA6CDB09B05",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime.json",
+      "pid": 52960,
+      "created_utc": "2026-10-17T13:20:16.8298367Z",
+      "exit_code": 0,
+      "elapsed_seconds": 0.2188754,
+      "deadline_seconds": 120,
+      "binary_sha256": "EE105C8B0C53406C4761C579F5585E99A364968462CAE376B3768CA6CDB09B05",
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-out\\bin\\test.exe\" --listen=-",
+      "original_identity_absent": true,
+      "absence_method": "PID absent"
+    }
+  ],
+  "outer": {
+    "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-outer.json",
+    "pid": 28788,
+    "created_utc": "2026-10-17T13:19:13.5199473Z",
+    "exit_code": 0,
+    "elapsed_seconds": 81.9874039,
+    "deadline_seconds": 3300,
+    "binary_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+    "actual_command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\Run-Graph0C3Native.ps1 -RootGrantPath C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-grant.json -RunId root-c3-current11-20261017-131913",
+    "original_identity_absent": true,
+    "absence_method": "PID absent"
+  },
+  "postseal": true,
+  "saved_native_roots_after": 0,
+  "current150_acceptance_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-independent-async-review-20261017\\acceptance.json",
+  "current150_acceptance_sha256": "2EECCCB444AEAD66F0ECDDC0076718C3B672FA821BDB03097B6E6C9F05AAD60E",
+  "limits": [
+    "Actual11 derived from raw8+3, not null summary; nine named controls plus storage twice",
+    "Current150 remains150/98; focused11 is a separate C3 gate, not eleven more unique regressions",
+    "No Main intake/publication/full SDK/default/Graph2/runtime-restoration claim by this audit",
+    "No jobs/Main edits; saved full seals/current artifacts checked; no fresh full compiler rehash"
+  ]
+}
