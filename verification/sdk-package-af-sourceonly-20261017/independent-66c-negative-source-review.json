@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "status": "finite_source_review_open_concrete_owned_unwind_finding",
+  "reviewer": "/root/async_c_review_resume",
+  "reviewed_utc": "2026-10-17T22:00:42.4365168+00:00",
+  "auth_product_commit": "32a2200475d42930ad6fe37b15e63d9bfa23f0d8",
+  "auth_prerequisite_doc_commit": "d5bcc71e0da18b96491797c275dce3f137c2d580",
+  "auth_original_manifest_sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6",
+  "auth_prerequisite_manifest_sha256": "18F417260D9090C194AC59CA31E7F91F88DB2F206CCD2BFE82CACC6DB13EB0AD",
+  "package_commit": "66c263d15b616a14fb79976c7a7e8b45d9e2c9a9",
+  "package_manifest_sha256": "3F9C3AA896E27585C4178E749367BD3E9AA2F270E60AAD7AE445A779F13EF722",
+  "checks": {
+    "auth_payload": 9,
+    "auth_protected": 12,
+    "auth_hash_length_drift": [],
+    "package_SHA_pins": 58,
+    "package_SHA_drift": [],
+    "package_new_test_declarations": 5,
+    "new_execution": false
+  },
+  "finding": {
+    "scope": "Ordinary actual exception ownership across new AF body and nested continuation scope retirement",
+    "status": "Static reachable route; not executed",
+    "route": "An actual credential getter can return a sole-owned native carrier, then a later Source option check throws ordinaryA. Generic Scope.deinit runs before methodBody.failed/reloadBody catch transfers capturedA. Carrier finalization may publish ordinaryB. Bfb NativeInvocation retains first fatal only; it does not escrow ordinaryA. Under the mandatory pending-first AF1116 semantics, currentB can replace the not-yet-transferred actionA. The new package progressBody raw Scope.deinit before p.failure has the corresponding ownership frontier.",
+    "required_resolution": "Root decision for a leaf-local owned-unwind boundary before cleanup, including nested scopes, or explicit narrower unqualified cleanup boundary. No blanket captured-history classification, rejected DATA flag clearing, shared Scope/Engine/C edit or assertion weakening is authorized by this finding.",
+    "causal_control": "Genuine actual class/method and sole native carrier finalizer, contrasting ordinaryB cleanup (retain actualA) and fatalB cleanup (promote exactB), no ToString/coercion and balanced scopes/invocation. Must use the required current AF C semantics, not the old DA14 baseline."
+  },
+  "auth_reviewed_semantics": [
+    "Six actual Auth async methods plus storage callbacks and memory IIFE use real AF; return expressions adopt through RETURN and only actual Source await sites emit AWAIT.",
+    "list saves its Object.entries callee before the await argument; no-signal fallback stays direct return adoption, path-backed wait releases readers through Source finally; trust resolver is reread after its actual await.",
+    "Rejected input remains borrowed DATA with no tag/flag classifier or flag clear; failed actual producer ordinary capture transfers ownership after the body returns, subject to the open unwind finding.",
+    "d5 prerequisite explicitly states DA14/A79 cannot qualify marked AF THROW DATA; Root must compose reviewed AF1116/Bfb semantics without replacing later C wholesale."
+  ],
+  "package_reviewed_semantics": [
+    "All33 already genuineAF methods are preserved;14 body entry checks precede native stage/property allocation.",
+    "Borrowed rejection guard ignores DATA tags/flags; withProgress start remains outside try, operation/complete failures enter its live Error/String/message/emitter catch, failures inside that catch replace without recatching.",
+    "66c only removes the added test artifact name to preserve canonical test.exe; Source-only five test declarations/11 original caller rows and actual class-fragment limits remain."
+  ],
+  "limits": [
+    "Neither source unit is closed by this receipt. No runtime, metadata, GPA, full SDK or default qualification is established.",
+    "Inherited constructor/collection/iterator and excluded package synchronous catch-generation/actual transport scopes are not reopened or represented as fixed.",
+    "No functions/controllers/probes/parser/compiler/Node/native tests or Main edits were performed. Product files remain owner-frozen."
+  ],
+  "execution_authorized": false,
+  "runtime_qualified": false
+}

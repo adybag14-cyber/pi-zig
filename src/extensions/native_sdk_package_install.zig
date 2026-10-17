@@ -35,6 +35,7 @@ fn remoteCommand(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSVal
     return v.js.call(engine, run_capture, manager, &.{ try s.text("git"), arg(args, 1), options });
 }
 fn operation(engine: *v.em.Engine, manager: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     if (completion == .fulfilled) return .{ .returned = c.pi_js_undefined() };
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[4]) < 0) return v.js.capture(engine);
@@ -56,6 +57,7 @@ fn progress(s: *Scope, manager: c.JSValue, imports: c.JSValue, kind: Method, par
     return s.call(with_progress, manager, &.{ try s.text(if (kind == .install) "install" else if (kind == .remove) "remove" else "pull"), source, message, callback });
 }
 fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const kind: Method = @enumFromInt(raw); const imports = roots[0];
     if (completion == .rejected) {
         if (kind == .refreshTemporaryGitSource) { var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(state.*, "generation")) < 0) return v.js.capture(engine); try package_catch.guard(engine, input, boundary); return .{ .returned = c.pi_js_undefined() }; }

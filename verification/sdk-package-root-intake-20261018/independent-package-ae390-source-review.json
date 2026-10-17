@@ -1,0 +1,369 @@
+{
+  "schema": 1,
+  "status": "FINITE SOURCE UNIT CLOSED; uncompiled/unrun",
+  "reviewer": "async_c_review_resume",
+  "candidate": "ae390760654c87e095c1eef9197c942eb92c72e3",
+  "preserved_negative": "66c263d15b616a14fb79976c7a7e8b45d9e2c9a9",
+  "manifest_sha256": "E3AE7BAC34C2628544A9BDE53F384FF904ED00D5428EAB06378A9A0BA209554C",
+  "settings_sha256": "6EF35E4B19E014F3D42DE0E29C63B4F374ED294AF8A4647860EEE9929DFEA7F9",
+  "helper_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "test_sha256": "5996A85C2F7E41BC1806B24B2AFC02FD62552492792BEEC70265464216400C40",
+  "core_receipt_sha256": "0D1EB5E1E31EDE1A1B4F7D34D3DB23AFE6E80CB0EC2CDA76D578E0D791CE8029",
+  "scope": [
+    "Prior finite 66c DATA guard, bool ABI, early AF entry, Source withProgress ordering review retained",
+    "New progressBody ownership adapter over actual progressStep and exact closed 7335 SDK helper",
+    "Additive actual class-fragment progress Error.message sole-carrier control"
+  ],
+  "findings": [],
+  "checks": [
+    "Actual progressStep outcome supplied untried to finishAction before original inline32/overflow roots retire; no defer Scope.deinit remains in this body",
+    "Start notification remains outside operation/complete catch, actual operation Await and live catch getter/callee/receiver ordering retained",
+    "No new Promise or fake completed class/provider; Source error remains owned through native cleanup",
+    "Actual Error.message getter transfers sole native carrier into production progress scope; delegated real progress callback retains type only",
+    "Ordinary cleanup B must leave original rejected A; real pending marked fatal C promotes; exact identity, start/error events, one finalizer and no escaping invocation frame asserted",
+    "Existing five test bodies and original eleven caller input authority unchanged; helper copied byte-exact from closed core",
+    "Canonical build artifact correction and explicit C1116/Bfb prerequisite retained"
+  ],
+  "static_native_declarations": [
+    "SDK package AF real progress body original caller and native class identity",
+    "SDK package AF rejected marked and fresh private DATA reaches progress error unchanged",
+    "SDK package AF actual npm command preserves live lookup argument receiver and awaited void",
+    "SDK package AF rejection guard ignores DATA tags but preserves actual pending first",
+    "SDK package AF actual completion callback GPA failure bypasses error notification and guest catch",
+    "SDK package AF actual progress catch message cleanup preserves Source error or fresh fatal"
+  ],
+  "pin_count": 64,
+  "pin_drift": [],
+  "pins": [
+    {
+      "path": "build.zig",
+      "length": 350149,
+      "sha256": "0962EA2F144D102B289E2BD87A5478FFB7D69FF5C61E18F12F6DB388A8113F4B"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_assembly.zig",
+      "length": 7931,
+      "sha256": "77DA91F8D3B1E6A361A19D8DA61E90214619D068B0916A3AD44C94C375CCACF2"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_catch.zig",
+      "length": 1873,
+      "sha256": "50AC14BBEF92E901F15F4AD3161C125F4CA6FA762DB8198F43F1506884B912F3"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_commands.zig",
+      "length": 12315,
+      "sha256": "6401F4168C7D2BE2402A53FEE1B4073222CFDB4F3D2447D339F834407ADFCB4C"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_concurrency.zig",
+      "length": 4545,
+      "sha256": "A10DF7D17FDAF0B5D2A28379F6A1D4BC5ED5F87CBF99834B277C15CD99EB0086"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_extension_sources.zig",
+      "length": 5443,
+      "sha256": "32D5D0DE61B9CC82CDAC8A60737DF790ACECB43EFAEC3485408008BEB7FB172D"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_git.zig",
+      "length": 13222,
+      "sha256": "F7B7CA2B3B3649CC6AC53D6D9F745A7DF9563B651C3D7CF7E5E61900C8E3D9E0"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_install.zig",
+      "length": 10923,
+      "sha256": "F3A171E668A87A088AB02600F2360A25BD62206E018CB882F677D0C15752FBC6"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_resolve.zig",
+      "length": 9140,
+      "sha256": "FA773C8007F9A8C7ED683BFC673172D99917853F2B8301781F307172AEF939F8"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_resolve_sources.zig",
+      "length": 9441,
+      "sha256": "DED94DE2AC68897B9350BF31D88E89E86FC3E45DA9CB91E86B38ABDFBB8E3998"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_settings.zig",
+      "length": 17720,
+      "sha256": "6EF35E4B19E014F3D42DE0E29C63B4F374ED294AF8A4647860EEE9929DFEA7F9"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_updates.zig",
+      "length": 17291,
+      "sha256": "167DE057E043D024EF857DFABD5A624FE68C7B6F14C99450ED34690A6B1DDD85"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_versions.zig",
+      "length": 18151,
+      "sha256": "D0CBF8302891B19AC54BCCE0E8835FE7235E1F988FE56E45E651C0D856AB192C"
+    },
+    {
+      "path": "src/native_sdk_package_af_test.zig",
+      "length": 16282,
+      "sha256": "5996A85C2F7E41BC1806B24B2AFC02FD62552492792BEEC70265464216400C40"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "length": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/README.md",
+      "length": 5854,
+      "sha256": "6FD8282013000EFD02304A08E08958850F7B9C221021CDA1F11B045781E590A2"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/CONTROLS.md",
+      "length": 3849,
+      "sha256": "CFD4479328502CB0EDC3AA4625E740D11B7E63691DFFE1F2C57949D08122428C"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/observe-package-progress.mjs",
+      "length": 3085,
+      "sha256": "BFE32B4487061E9758AE6176D7D1D3579652C7639BAFBCC776C553B170B6792B"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/authority/package-manager.ts",
+      "length": 87307,
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/authority/LICENSE",
+      "length": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/prepared-66c-ordinary-unwind-negative.json",
+      "length": 22004,
+      "sha256": "3F9C3AA896E27585C4178E749367BD3E9AA2F270E60AAD7AE445A779F13EF722"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/independent-66c-negative-source-review.json",
+      "length": 4249,
+      "sha256": "37A734A761350D98326263AAD8B7C93B9BCCA2661E8BB0F44DF92D23F3012D79"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/independent-core-7335-source-review.json",
+      "length": 16404,
+      "sha256": "0D1EB5E1E31EDE1A1B4F7D34D3DB23AFE6E80CB0EC2CDA76D578E0D791CE8029"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "length": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "length": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "length": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "length": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "length": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_ai_provider_values.zig",
+      "length": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "length": 163154,
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "length": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "length": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "length": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_agent_executor_fatal.zig",
+      "length": 5090,
+      "sha256": "5B133CD26AEDB994DC8BB732530094BCB56D4A123950ABF437E5694A61FA9837"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_transport.zig",
+      "length": 14884,
+      "sha256": "FEE3E1D05ACDDCBDF92C910BF64252FF4543687AE9A0C8BB4FE8B01B6ACB8283"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_manager.zig",
+      "length": 2684,
+      "sha256": "98B4033E663FA64675003825A6163321EB119B5E823CDB034D08B92EEF5E9130"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_paths.zig",
+      "length": 4089,
+      "sha256": "2A2FCDCBFECC2C75A4A339529C740C6CB04757BD409C51C32E411CFC1E728F4F"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_declaration_order.zig",
+      "length": 3571,
+      "sha256": "D4F21D229075DFFAFD4A5F4491B19F1BEB25D2C60C39DDB90C2D980CF3DBF9B6"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_catch_test.zig",
+      "length": 6056,
+      "sha256": "0D2300973792E1DD4B4CF5516C64713510BE3D8F8F0374B9D42BD52E5371A7D9"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "length": 20482,
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "length": 36355,
+      "sha256": "59A6AF908B1A67AF1BFA25EE9B19F1F3E17ABD82CBDC646C6294F9330618E1E0"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "length": 22497,
+      "sha256": "E479DB781EA8EF2A7C3ABC0E2541EECBC63D30C4585F3504682B856842B4B9CE"
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "length": 3348,
+      "sha256": "F2A6CF17D8391E15B9B3FFF38834B0848D5C4F52BE2F012AF725B6C2C35759C4"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "length": 3079,
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "length": 2325,
+      "sha256": "4690317E1B5CD9AC028BBBA232A1CFC99B6A1ED82B2F2ECFD12BC7C60A620FFB"
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "length": 11751,
+      "sha256": "66BFB9D9437390A00CCC68537945C65A703A6DB9BF09240FE91817405CF4DFA1"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_loader_assembly.zig",
+      "length": 6282,
+      "sha256": "BBD9D48B4268EC6DD3CEEDFE0116F2CE24971982A1D89AB0D8403EC35C6706EF"
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_production.zig",
+      "length": 40706,
+      "sha256": "E8F032BE1F6D81211366AEAE81B27B8228E64172C1FA7B20D581AA1F7C36E351"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "length": 5203,
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54"
+    },
+    {
+      "path": "src/extensions/native_minimatch_namespace.zig",
+      "length": 9569,
+      "sha256": "5403D7F30AF956F6671E86D9BE2C4F2CB86CFA0AC3B1E7F55FBA7828353386D8"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-class-0fb.input.mjs",
+      "length": 1039,
+      "sha256": "07F144E0258484C635C1CB3C5B6C35004A9B58D19C80F9B463A558D975D031C1"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-catch-lifetime-0fb.input.mjs",
+      "length": 2214,
+      "sha256": "DA948BFB9C164A905EADE7731364BA69BB33F6B82DB82BE638279DD5D0B73282"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-concurrency-0fb.input.mjs",
+      "length": 2378,
+      "sha256": "D910F69623E1BA6C7DED36B85C4E2FA4115AD87517C41251BB4DE4456D3EEAE6"
+    },
+    {
+      "path": "src/extensions/fixtures/package-manager-getters-0fb.input.mjs",
+      "length": 2779,
+      "sha256": "CBCA067579BEA1DF426EAF2577105C78C7521FAA2F01A09B2BADD6E5A6AAE09E"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-factory-production-4954.json",
+      "length": 17496,
+      "sha256": "EBA5A58F5A33C7675E11CF7A931DCE06EBB9D9DE25E59CEAD4324A58C83F3FCD"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-prototype-original-5ab.json",
+      "length": 52166,
+      "sha256": "568FED2491FF6ACC777E88F07149E2A77FDB52BF5DEA00F71C9E54F84B0B93FC"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "length": 125917,
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342"
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "length": 252606,
+      "sha256": "65D3F685042D07F5DA04680B5E63E64816C00330B6F128E96B77C5D51633C426"
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "length": 172219,
+      "sha256": "DAAC6E0A83095102CDD67A9224218259610D7121EF0CD377B1A8F1F24688CA6B"
+    },
+    {
+      "path": "src/main.zig",
+      "length": 455641,
+      "sha256": "95EAD70D4C953B0E9AA3A1D71D8AC1D41EF71BA0C138AECA04F9A159582BF301"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "length": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "length": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/authority/package-manager.ts",
+      "length": 87307,
+      "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310"
+    },
+    {
+      "path": "verification/sdk-package-af-sourceonly-20261017/authority/LICENSE",
+      "length": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    }
+  ],
+  "limits": [
+    "No runtime metadata or executable result; six prepared declarations uncompiled/unrun",
+    "Full package/SDK/bootstrap, actual child transport and live external Promise qualification excluded",
+    "Remaining inherited scopes and synchronous whole-catch generation audit excluded; this is the finite admitted package delta, not blanket unwind safety",
+    "Root must compose actual current AF1116/Bfb semantics; old protected C baseline provides no marked rejection DATA qualification",
+    "No Source expected/golden authored, no execution grant, Main or Engine/Scope/C edits"
+  ],
+  "execution_authorized": null,
+  "executed": null,
+  "main_modified": null
+}

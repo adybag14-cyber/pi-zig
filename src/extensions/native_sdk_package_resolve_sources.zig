@@ -23,6 +23,7 @@ fn next(s: *Scope, job: c.JSValue) !?c.JSValue { var scope: IteratorScope = .{ .
 fn clearEntry(s: *Scope, job: c.JSValue) !void { inline for (.{ "pkg", "scope", "source", "resolvedSource", "resolvedScope", "parsed", "filter", "metadata", "missing", "path", "npm" }) |field| try v.remove(s, job, field); }
 fn installParsed(s: *Scope, manager: c.JSValue, roots: []const c.JSValue) !c.JSValue { return s.invoke(manager, "installParsedSource", &.{ roots[1], roots[2] }); }
 fn missing(engine: *v.em.Engine, manager: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) }; var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
         if (s.truthy(try imported(&s, roots[0], "isOfflineModeEnabled", &.{}))) return .{ .returned = c.pi_js_bool(engine.context, 0) };
@@ -71,6 +72,7 @@ fn evaluate(s: *Scope, manager: c.JSValue, args: []const c.JSValue, imports: c.J
     return loop(s, manager, args, imports, job);
 }
 fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const job = if (completion == .start) try body.init(&s, state) else state.*;
     if (completion == .rejected) { retained.closePreserving(engine, job); return .{ .thrown = c.JS_DupValue(engine.context, input) }; }
     return evaluate(&s, manager, args, roots[0], job, completion, input) catch |err| { retained.closePreserving(engine, job); return err; };

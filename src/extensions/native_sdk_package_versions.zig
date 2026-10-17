@@ -100,6 +100,7 @@ fn evaluate(s: *Scope, manager: c.JSValue, args: []const c.JSValue, imports: c.J
     }
 }
 fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     var s: Scope = .{ .engine = engine }; defer s.deinit(); const job = if (completion == .start) try body.init(&s, state) else state.*; if (completion == .start) try catching(&s, job, 0);
     if (completion == .rejected) return failure(&s, manager, job, input);
     var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine);
