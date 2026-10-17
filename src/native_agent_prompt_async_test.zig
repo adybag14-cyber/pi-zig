@@ -9,7 +9,9 @@ pub fn compareActualSource(engine: *em.Engine, actual_agent: c.JSValue, original
     const observer = try s.own(try engine.evalModule(@embedFile("../verification/agent-routing-genuine-af-sourceonly-20261017/observer.mjs"), "actual-agent-routing-observer.mjs"));
     const pending = try s.call(try s.get(observer, "observeAgentRouting"), c.pi_js_undefined(), &.{actual_agent});
     const result = try s.own(try engine.awaitValue(pending));
-    const reference = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, original_reference.ptr, original_reference.len, "original-agent-routing.json")));
+    const terminated_reference = try engine.gpa.dupeZ(u8, original_reference);
+    defer engine.gpa.free(terminated_reference);
+    const reference = try s.own(try engine.checked(c.JS_ParseJSON(engine.context, terminated_reference.ptr, original_reference.len, "original-agent-routing.json")));
     try std.testing.expect(s.equal(try s.get(reference, "authority"), try s.text("actual-Pi1.3-8efd-Agent-routing")));
     try std.testing.expect(s.equal(try s.get(try s.get(reference, "rows"), "length"), c.JS_NewInt32(engine.context, 15)));
     const json = try s.global("JSON"); const stringify = try s.get(json, "stringify");
