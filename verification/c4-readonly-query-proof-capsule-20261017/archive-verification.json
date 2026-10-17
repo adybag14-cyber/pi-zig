@@ -1,0 +1,674 @@
+{
+  "status": "all_archive_members_decompressed_hash_and_size_exact",
+  "zip_sha256": "C684D7CD298399869F88BDDBF84DFC1CBA19ED0E7ABF6FC4D164B70A32722926",
+  "repeat_zip_sha256": "C684D7CD298399869F88BDDBF84DFC1CBA19ED0E7ABF6FC4D164B70A32722926",
+  "repeated_zip_identical": true,
+  "member_count": 132,
+  "sha256_mismatches": 0,
+  "size_mismatches": 0,
+  "members": [
+    {
+      "member": "audit/Audit-C4Query.ps1",
+      "sha256": "54973D8100F8D871E51A12968258306B8F77F23DBD502DBBC6EDDDAB52BC94C6",
+      "bytes": 10551
+    },
+    {
+      "member": "audit/raw-audit.json",
+      "sha256": "42E3AF94EA6949724718580DDC8C7E879C8D32C7FCECF6EBE2AD1265E1A2DE0E",
+      "bytes": 5683
+    },
+    {
+      "member": "controls/candidate-09e/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "bytes": 3354
+    },
+    {
+      "member": "controls/candidate-09e/tools/ci/native_qualification_ci.ps1",
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "bytes": 11699
+    },
+    {
+      "member": "controls/candidate-b814/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "bytes": 3354
+    },
+    {
+      "member": "controls/candidate-b814/tools/ci/native_qualification_ci.ps1",
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "bytes": 11699
+    },
+    {
+      "member": "controls/container/.pi-zig-workspace.json",
+      "sha256": "D551DA72833FA330C8365A625E4FDD6D2693456BAC5333C080E9657D1E38DFBF",
+      "bytes": 817
+    },
+    {
+      "member": "controls/container/evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "bytes": 4665338
+    },
+    {
+      "member": "controls/container/path-relocations.json",
+      "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5",
+      "bytes": 109801
+    },
+    {
+      "member": "proof/negative/Get-ModelsNativeCandidates.ps1",
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "bytes": 1786
+    },
+    {
+      "member": "proof/negative/README.md",
+      "sha256": "47DAA3F719FC594A991CBAC759332D2107E47944C02F13275835F911F893343C",
+      "bytes": 4163
+    },
+    {
+      "member": "proof/negative/Run-ModuleGraphTlaQuery.ps1",
+      "sha256": "1A9399D040857AB365EC886342E0A5A555387BA62B2A74B77A4AFFF8430C7D98",
+      "bytes": 21669
+    },
+    {
+      "member": "proof/negative/build-query-grant.template.json",
+      "sha256": "ADCB6E965F7B0D62F03F018AD033145045B271BDC5D5BDBA6A92A2FE9A19A184",
+      "bytes": 825
+    },
+    {
+      "member": "proof/negative/functions.draft.txt",
+      "sha256": "17447B9C6F9E998955F2B0E631A0EC99410AEB8DC310189B9EA28E5CD9BE8059",
+      "bytes": 8644
+    },
+    {
+      "member": "proof/negative/metadata-allowlist.json",
+      "sha256": "EB2C523037ACE034E851764273782EF18E168265AF7EF7CD2D8DEFB5F61A57EF",
+      "bytes": 3867
+    },
+    {
+      "member": "proof/negative/outer-owned-process.ps1",
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "bytes": 11658
+    },
+    {
+      "member": "proof/negative/prepared-manifest.json",
+      "sha256": "57C0C7606F0E0C26A5D4688FA73F473AC9797A8EEBAE4E78DB64218F36044BC9",
+      "bytes": 1933
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358-grant.json",
+      "sha256": "1F4C062EEEBC9A17363B7DDA4E2BDEF4EE3A4C43CF1033FC60098583D343AE65",
+      "bytes": 897
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358-outer-absence.json",
+      "sha256": "D1941B4C9D1746CC33698216D4E14C64559E41AF4BCFA506DF611D0F71F2DCD2",
+      "bytes": 398
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358-outer.json",
+      "sha256": "D9B61A33CA0161DCCD691F4B6790F0C2088249521B96D495A2AE474676DD4A28",
+      "bytes": 1721
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358-outer.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358-outer.stdout.bin",
+      "sha256": "84470D22B342EB7200B67BEC56E60B4298D7FA04C8C1BDBA2535944E0314ECAB",
+      "bytes": 7937
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/artifacts-before.json",
+      "sha256": "6C289500537416E87A8584536CADF4A86E1EE2F89F1988D986FE53C5CE56F32C",
+      "bytes": 826
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/artifacts-between.json",
+      "sha256": "69F818E9195CF03621FA995C6435CF941F54B7ACF33D5876C7A66C2E09C26DBE",
+      "bytes": 968
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/artifacts-final.json",
+      "sha256": "F97293370897F85BD68BAFAC599415ED2480B97695F0915298A1CE8E92D0B409",
+      "bytes": 968
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/before.json",
+      "sha256": "9C63BDC6FEFA74E9228B396AA02C4FE94465FB8858D2745C0E44A0669B09A478",
+      "bytes": 9611347
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/between.json",
+      "sha256": "61A4481CE1A37A0E0AA1C31994E77A2E2F4D000B696939702884BD476D72F9F5",
+      "bytes": 9611347
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/compile-admission.json",
+      "sha256": "B4EC31EF87D9A3936FA9B11D4DF4629288BFAD710A80218E221D7617456A0B3B",
+      "bytes": 179
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/compile.json",
+      "sha256": "14A4013B53EF5ED3F9C80D3091BE7BAB70D9BC57AC5312A3007531C203F12384",
+      "bytes": 2283
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/compile.stderr.log",
+      "sha256": "887BAE653598FAE5F8B3279DF2CFCE5210F031308A4162D92B60434A30A31EB5",
+      "bytes": 14091
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/final.json",
+      "sha256": "AFEA29C38DEF1E59FEB8B6A9CF84C5804371090AC2455567DFA4E759008A5770",
+      "bytes": 9611347
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/initial-admission.json",
+      "sha256": "D2A9A299F348695808A17C042EE0F03559E43F8E6E2144AA64B6E565A0102C0A",
+      "bytes": 179
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/metadata-admission.json",
+      "sha256": "5C7988EBF0A45957FB7210A5C0668F1396D19F984C846A32E80436745549EBBA",
+      "bytes": 179
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/metadata.json",
+      "sha256": "7B8522461D3C94A33B29435DBD388905DA4F6EE03D73D43529AEB7B08074CF20",
+      "bytes": 1255
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/metadata.stdout.bin",
+      "sha256": "B274AD9CFAF117EDB3089BBAB5CD80B6A773DC42613D206D41A24F0C70576A51",
+      "bytes": 1944
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/owner-absence.json",
+      "sha256": "3E449EFE68812FFF1EBAB7D936865E3AFF7F5CB8FAC0762DC5DFDDF14D08C868",
+      "bytes": 614
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/process-census-final.relevant-derived.json",
+      "sha256": "45FC8B78D09953FD74CAA003F3A9AF04B7067CB6E863F367961BDDF915A045B0",
+      "bytes": 2966
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/result.json",
+      "sha256": "84470D22B342EB7200B67BEC56E60B4298D7FA04C8C1BDBA2535944E0314ECAB",
+      "bytes": 7937
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/root-grant.json",
+      "sha256": "1F4C062EEEBC9A17363B7DDA4E2BDEF4EE3A4C43CF1033FC60098583D343AE65",
+      "bytes": 897
+    },
+    {
+      "member": "proof/negative/root-module-tla-build-query-20261017-145358/selected-tests.json",
+      "sha256": "EFCAB32A861DB3C4D516E7A09AB7B6C63684C9D9433A943718EFBF2400C68A36",
+      "bytes": 4336
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153-grant.json",
+      "sha256": "5360BC73B8C65B25BC69AC345B285EBC9D1DC6966D62D04D7AA349994E7D74F3",
+      "bytes": 2288
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153-outer-absence.json",
+      "sha256": "A1B87355F5E66C0E52B176C74B5BEFEFDB4555E17F6DEE0A12E009DA7B9FF628",
+      "bytes": 394
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153-outer.json",
+      "sha256": "E0B5813AFC481E9D31D403A6E891D8B9E40B4B7DE640EFBFF10B95D4E19C6256",
+      "bytes": 1787
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153-outer.stderr.log",
+      "sha256": "C5A92E871FBC679F8A133B5B986F644BF9D2903DB0F1B732C0D99138FBA5A3A2",
+      "bytes": 350
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153-outer.stdout.bin",
+      "sha256": "3E988A26F4CFC403A290FF3BB7FEA6AD0CBE9539F106C77F537406AAF98AE002",
+      "bytes": 5374
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/artifacts-before.json",
+      "sha256": "37BF842F13AB7111D8016D28992FCCB8C7D7BF545E73D2C07203BBFEADBD3E21",
+      "bytes": 968
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/artifacts-between.json",
+      "sha256": "82067AAEBFFDFBCCE7B3D8C8E85942A310579A46724EFEECFB50469246CD81EF",
+      "bytes": 968
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/artifacts-final.json",
+      "sha256": "F1F5F3D9EBA988F48E4B33355D6EB00718A165DACC8007D11DE3AF4BCB0A1177",
+      "bytes": 968
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/before.json",
+      "sha256": "C887AD93CFE6ABBF7ACA31DA01201B6163C000D8BA5B75524D133F22188E7E04",
+      "bytes": 9615110
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/between.json",
+      "sha256": "576280C190FDCB88C5CAD8D8D5A5C08D789E75D7F6E82D9A6E6A525124158020",
+      "bytes": 9615110
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/final.json",
+      "sha256": "13A6E00E590BFBAE6E4A83451564142C5EF0CC893315633056ED72562BE1EB4B",
+      "bytes": 9615110
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/initial-admission.json",
+      "sha256": "6E5E448A28BDDED20CC9D82DF77BCBC99B9506DB021D5A3CC59FE65F72F80C70",
+      "bytes": 179
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/owner-absence.json",
+      "sha256": "CF7025C9DFDEF789556A864CAE44F6C2077E09AFD52D9875F3A37E190AD66625",
+      "bytes": 914
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/process-census-final.relevant-derived.json",
+      "sha256": "88AB3E46FA70C65F63325F84CD2ECFC0AD3486385DE698D30696ECC33A35C5C3",
+      "bytes": 2788
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/result.json",
+      "sha256": "3E988A26F4CFC403A290FF3BB7FEA6AD0CBE9539F106C77F537406AAF98AE002",
+      "bytes": 5374
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/root-grant.json",
+      "sha256": "5360BC73B8C65B25BC69AC345B285EBC9D1DC6966D62D04D7AA349994E7D74F3",
+      "bytes": 2288
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/runtime-admission.json",
+      "sha256": "A0D04DEB481C65E847C80083E71AC6D829900300CC0757648064394A61663EED",
+      "bytes": 179
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/runtime.json",
+      "sha256": "5EA689495FE38F027BA3C145660E72FC480F7B3C0E99687DD7045E765E432CA7",
+      "bytes": 1256
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/runtime.results.json",
+      "sha256": "9BB8ECA58EB4AC2795C009E836DB57E81E10B602C65FD1498AACCD15D30A02FF",
+      "bytes": 1733
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/runtime.stderr.log",
+      "sha256": "B21FFC5538EE95473A4EDE615D106F097DC35606FE73D18736896D626B228F17",
+      "bytes": 567
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/runtime.stdout.bin",
+      "sha256": "2C8AC103D22428A6CA147D360703F659914DBCF3F18C2C3678120C3FDED396F9",
+      "bytes": 434
+    },
+    {
+      "member": "proof/negative/root-module-tla-runtime-20261017-150153/selected-tests.json",
+      "sha256": "EFCAB32A861DB3C4D516E7A09AB7B6C63684C9D9433A943718EFBF2400C68A36",
+      "bytes": 4336
+    },
+    {
+      "member": "proof/negative/runtime-only-grant.template.json",
+      "sha256": "41714088918FF39DAAA906E3C54895AA22EBF967B01969F97D311B75B7A336DA",
+      "bytes": 1706
+    },
+    {
+      "member": "proof/qualified/Get-ModelsNativeCandidates.ps1",
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "bytes": 1786
+    },
+    {
+      "member": "proof/qualified/README.md",
+      "sha256": "67A2BE1742B7D5D9662DB1C2B1B584E35BC59E7E928CCBF296B6925C6AC719D8",
+      "bytes": 734
+    },
+    {
+      "member": "proof/qualified/Run-ModuleGraphTlaQuery.ps1",
+      "sha256": "FE730D4AB2F43CCCD82BDBDD001BB5C4C534C9251602276689EE9EAEA5B0E5ED",
+      "bytes": 21681
+    },
+    {
+      "member": "proof/qualified/build-query-grant.template.json",
+      "sha256": "7ED397FFBF7FEC5ACA30B45376426C3CA197BE8F078A72469BE878F1A6DF5890",
+      "bytes": 825
+    },
+    {
+      "member": "proof/qualified/metadata-allowlist.json",
+      "sha256": "EB2C523037ACE034E851764273782EF18E168265AF7EF7CD2D8DEFB5F61A57EF",
+      "bytes": 3867
+    },
+    {
+      "member": "proof/qualified/outer-owned-process.ps1",
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "bytes": 11658
+    },
+    {
+      "member": "proof/qualified/prepared-manifest.json",
+      "sha256": "27794C6B3EFE42069756321AEB68D8556EB37923F15D69F8E30DD64C1DB6FF7C",
+      "bytes": 1505
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452-grant.json",
+      "sha256": "01242D9A8CA4CC49EA6C6535F040B1EE6CCA55419DBA2D10674F8D0D1E0ECEA2",
+      "bytes": 908
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452-outer-absence.json",
+      "sha256": "6AF8430C679A857D6F22FCFD835FB28AD455D6539A153E7E31900A13B147C91F",
+      "bytes": 421
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452-outer.json",
+      "sha256": "E9554331B63AC932A56758CA37932955E6350BEAFE38BF88008FCF1B2417B9B3",
+      "bytes": 1813
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452-outer.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452-outer.stdout.bin",
+      "sha256": "10827A7FC6676CC9DE7239D3B1336BC0D1F487757A89006D7A41C31971CEDD42",
+      "bytes": 8110
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/artifacts-before.json",
+      "sha256": "DA6FB329F36494F093D1CC9BB4974D6AACF6909CDCC261FF2E0FB1BA89648154",
+      "bytes": 895
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/artifacts-between.json",
+      "sha256": "400F521E5BDCA09CFD1F83215E2A2E54515AF2A613DB11F6C2DFE26C815CB777",
+      "bytes": 1037
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/artifacts-final.json",
+      "sha256": "61D9F7EA6CF03A013AF6194B22D8A5096481A9BC9E47E9D11441BFC59C2CE6FC",
+      "bytes": 1037
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/before.json",
+      "sha256": "677BEB7DEF3C76BEA0EF397C12DA7E5B01399F1E2448D63E12D13C0BD41A8FA9",
+      "bytes": 9740268
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/between.json",
+      "sha256": "F767EB4E97FC2F7F2A7C39C32F67DBCE28A6D5758C16ACAF81AFC6201E0643D4",
+      "bytes": 9740268
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/compile-admission.json",
+      "sha256": "D98F7B08AAB741ADD812EE74AC60E34E4740D866AFD34B02B2F07091F17F0BDA",
+      "bytes": 179
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/compile.json",
+      "sha256": "985CF6F53BC1C2A5DA7814D03EDF5C988CC1313DBF97800A1516B7AF8562A99E",
+      "bytes": 2433
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/compile.stderr.log",
+      "sha256": "F0FD2E978B33BE1418C411BCCB5F9F1FBDB340B5A74754B1B675803D91A42DDB",
+      "bytes": 14081
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/compile.stdout.bin",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/final.json",
+      "sha256": "A60726DA371397B22FA7B8C831AF2C32FBE967E639687A521F3A704B444D4EB2",
+      "bytes": 9740268
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/initial-admission.json",
+      "sha256": "710605771D0242742884C76F1BB402B91007ED25B4645D39901C3D1F35C7FAA2",
+      "bytes": 179
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/metadata-admission.json",
+      "sha256": "8D41A70503D2FE3D60144B2FBC4B6A1EE940127D652AD96D4763BB8FF2302BF8",
+      "bytes": 179
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/metadata.json",
+      "sha256": "2EC3E1D7ACE57FA68B31DB4FAF483648E4E8082527E36E1CD1E2FA31C0ABE230",
+      "bytes": 1336
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/metadata.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/metadata.stdout.bin",
+      "sha256": "B274AD9CFAF117EDB3089BBAB5CD80B6A773DC42613D206D41A24F0C70576A51",
+      "bytes": 1944
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/owner-absence.json",
+      "sha256": "237F346C35A9593F9EC17045EF0F59BB9750174C8C70710F26B28415CB5A2374",
+      "bytes": 660
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/process-census-final.relevant-derived.json",
+      "sha256": "CFDCF9EE2BD70F202760F2E6D6156D5D60590BBD9383C91946159ECD2B5CCBF0",
+      "bytes": 3103
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/result.json",
+      "sha256": "10827A7FC6676CC9DE7239D3B1336BC0D1F487757A89006D7A41C31971CEDD42",
+      "bytes": 8110
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/root-grant.json",
+      "sha256": "01242D9A8CA4CC49EA6C6535F040B1EE6CCA55419DBA2D10674F8D0D1E0ECEA2",
+      "bytes": 908
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-build-query-20261017-151452/selected-tests.json",
+      "sha256": "E12B97C92EE0E50056050EF068E70AF60925ACB90F1CC241DA02999D0A15FF1E",
+      "bytes": 4359
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118-grant.json",
+      "sha256": "B9EA5D0782BF808B48449A9F4CFEB14AD20DC10282B4F626AC50A59177D3F16A",
+      "bytes": 2310
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118-outer-absence.json",
+      "sha256": "7EB0F68CBD369F05AA9904C5A615CA79455FA97FF5723860B5E7D01E24E71225",
+      "bytes": 417
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118-outer.json",
+      "sha256": "C2B9C207D611A627556033F67B9FBAEBB11C58AD28B8F862BF72F8CFE4DB84E0",
+      "bytes": 1798
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118-outer.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118-outer.stdout.bin",
+      "sha256": "67607F508AEC723DC4FF643FE754EC458F6DAA74B2E91835BB3749036B4D9C7A",
+      "bytes": 7253
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/artifacts-before.json",
+      "sha256": "37EAF9520500269B56831574ECC7FC77B1B480117B97A3FDAD0217C73A850ADF",
+      "bytes": 1037
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/artifacts-between.json",
+      "sha256": "C0EA96A98CC375C5B258882D9AD69F6C6F1B1FE4D3AC7B1E08FFC81A680FFFB6",
+      "bytes": 1037
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/artifacts-final.json",
+      "sha256": "44A972577D9E2CEC9A4651BBF44DA4D8E9C7F39F0D81A28D1BD2439F8293B832",
+      "bytes": 1037
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/before.json",
+      "sha256": "F5DA6DB49A2E8C9F5B3AF6DB1436B29991CA52069AF41F2CFE7D7228B851AF10",
+      "bytes": 9744353
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/between.json",
+      "sha256": "83856AD248303F4226AFCCCFE09C15D886AA12E818A03918C9B28BCFE56436F0",
+      "bytes": 9744353
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/final.json",
+      "sha256": "AFE457F4826A7A8C4293D580A9CBC9D67A7348253B636740BA03D20D9731B24E",
+      "bytes": 9744353
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/initial-admission.json",
+      "sha256": "10A2608CABB6BA8CC8B6A433D1DF3C44FA441E66F0466EB33A792AC7B816198E",
+      "bytes": 179
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/owner-absence.json",
+      "sha256": "6D9BBF581EDC897E778CC10C942BB05A727D8794B8F4C1DDDA304959FAFDB767",
+      "bytes": 983
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/process-census-final.relevant-derived.json",
+      "sha256": "D34E0C9EBE3F1BDA4E5F041FF8E062063CB6DB8FC8CEE55C0684717E6DBA63FE",
+      "bytes": 2904
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/result.json",
+      "sha256": "67607F508AEC723DC4FF643FE754EC458F6DAA74B2E91835BB3749036B4D9C7A",
+      "bytes": 7253
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/root-grant.json",
+      "sha256": "B9EA5D0782BF808B48449A9F4CFEB14AD20DC10282B4F626AC50A59177D3F16A",
+      "bytes": 2310
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/runtime-admission.json",
+      "sha256": "AA94504EF4C33969782AE7F9156D10A9976577BC6260D68E7049787244BBC51E",
+      "bytes": 179
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/runtime.json",
+      "sha256": "E228D84B8CF87A75E6BDBAC3618A12C8C19F53378AFC5471E8D4BD0C8AB96B01",
+      "bytes": 1337
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/runtime.results.json",
+      "sha256": "96FF07B1887E4495884608B598BA43D73A61FF78E16C07FAF5CC9C10C641E81D",
+      "bytes": 1778
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/runtime.stderr.log",
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "bytes": 0
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/runtime.stdout.bin",
+      "sha256": "4B9A9A80D81E89402A042A3A0C957E43838C4839D36104822A007BC34EE31971",
+      "bytes": 434
+    },
+    {
+      "member": "proof/qualified/root-module-tla-fixturefix-runtime-20261017-152118/selected-tests.json",
+      "sha256": "E12B97C92EE0E50056050EF068E70AF60925ACB90F1CC241DA02999D0A15FF1E",
+      "bytes": 4359
+    },
+    {
+      "member": "proof/qualified/runtime-only-grant.template.json",
+      "sha256": "8BDEECA7885AF1D0B4803762270338775174F4CDDBA5953243B796FDD2977BB5",
+      "bytes": 1706
+    },
+    {
+      "member": "source-capsule/09e/src/native_module_graph_tla_query_test.zig.txt",
+      "sha256": "8A786F2A4FE19A5A42483D887EC1019C8CDD2A339E094FFB2F624ADA66A1C5B2",
+      "bytes": 16185
+    },
+    {
+      "member": "source-capsule/b814/build.zig.txt",
+      "sha256": "2036819B1694ED178B2B5592A6F6CA595A81390E782D3C701D008E3D8DCD877A",
+      "bytes": 342434
+    },
+    {
+      "member": "source-capsule/b814/src/native_module_graph_tla_query_test.zig.txt",
+      "sha256": "B76D43488D4AF2421E47D652713ABA5D7F0C49628ED31189134F950B421ED0E2",
+      "bytes": 18408
+    },
+    {
+      "member": "source-capsule/b814/vendor/quickjs/quickjs.c.txt",
+      "sha256": "650336151E9AF8080931C85CB64CDDC5A432247921B5A8916E10B4F6FA819692",
+      "bytes": 2225324
+    },
+    {
+      "member": "source-capsule/b814/vendor/quickjs/quickjs.h.txt",
+      "sha256": "B87AD9DD32E266C02F9EF9FE6FFF8A2C57A2A96AB5E1A0187F647DE2DE489E29",
+      "bytes": 77155
+    },
+    {
+      "member": "source-capsule/b814/verification/CONTROL-SCOPE.md",
+      "sha256": "5DC466BC2916DBC4F648D1F5E3DED5E767E076CC4B3AB3D876A47302E88DB22B",
+      "bytes": 2920
+    },
+    {
+      "member": "source-capsule/b814/verification/README.md",
+      "sha256": "97B78D5C8066A6D17B941144D6CD506D5A0B4E5C85A257BD0A70ADC3CEA27D62",
+      "bytes": 3423
+    },
+    {
+      "member": "source-capsule/b814/verification/SERIALIZED-FIXTURE-CORRECTION.md",
+      "sha256": "B5EF36FBBAE86357E5213E342698C6FDEB860E0684BE1CB38FE0FE7061D3EC8C",
+      "bytes": 2221
+    },
+    {
+      "member": "source-capsule/b814/verification/build-snippet.zig.txt",
+      "sha256": "64F9F01A8723C8DEE979D44663C7A7D470E8F0B4A5C02383BBC2159D1E28B0B8",
+      "bytes": 792
+    },
+    {
+      "member": "source-capsule/b814/verification/metadata-allowlist.json",
+      "sha256": "50877A4975973C1FA45DCB5038DAE0424F0F0FD11E897E4B3A2C617799817955",
+      "bytes": 3867
+    },
+    {
+      "member": "source-capsule/b814/verification/prepared-serialized-fixture-correction.json",
+      "sha256": "13EE340BA75E67873C95500DC176C51DEC31DF1F82CA6D9659E7B2774A1F332D",
+      "bytes": 1716
+    },
+    {
+      "member": "source-capsule/b814/verification/prepared.json",
+      "sha256": "B77F68F1BDB65970E32FD1E486DCCA42913C1AA6AB2D2AAB07D819E8837F3EA2",
+      "bytes": 2231
+    }
+  ],
+  "original_payload_posthash_drift": 0,
+  "four_private_censuses_retained_local": true,
+  "no_runtime_or_query_executed": true
+}
