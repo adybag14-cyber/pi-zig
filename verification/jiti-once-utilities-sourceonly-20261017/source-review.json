@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "source_head": "28782e38834bf9457c4db4910952cfa63d8a15ef",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "finite combined source review closed; no remaining reported structural or initialization blocker",
+  "shared_source": "3fffb1168d1d8f4b9cc192b5d65e4fe52c4aa623",
+  "initialization_source_closed": "2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed",
+  "manifest_sha256": "55AC3EE84BE30F4F712BC4B0025AEF139C379DF6BEE78421AC35330FDE4B26AA",
+  "manifest_records": 27,
+  "physical_hash_length_drift": 0,
+  "shared_product_sha256": "5B7C64E5C822B7182D3788398808B7AEAFABCDFAC9F93F7E35BCE0882E193C56",
+  "shared_controls_sha256": "AEBFEB65D81B59D186624421D513274C7699C8B6DC20282ACA5A96F26A651723",
+  "qualified_reused_raw_binding_sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406",
+  "jobs_run": [],
+  "expected_absent": true,
+  "full_subject_available": false,
+  "default_selection": false,
+  "native_qualified": false,
+  "missing_genuine_dependencies": [
+    "completed TTY/native backend",
+    "actual complete Node createRequire/wrapSafe/compiler/bootstrap graph"
+  ],
+  "root_intake_scope": "only six product/control leaves plus scoped proof packets; preserve Root newer Pathe/MLLY/profile/Engine/C/H/AF/build bytes"
+}
