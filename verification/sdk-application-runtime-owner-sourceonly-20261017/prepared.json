@@ -15,9 +15,9 @@
   "products": [
     {
       "path": "build.zig",
-      "length": 350274,
-      "sha256": "C7CAD6F9D59C05B12E034AFC46A00E131BDC7848154D0669B619BFE4E39E5395",
-      "git_blob": "45cd6f53316456e0815c2edc6bd781608a46cc11"
+      "length": 350228,
+      "sha256": "53E8DD658F2E00E29AEE583116AFE038B8116F322B141CD93D564F569A2E9C42",
+      "git_blob": "2a35fbddc3db566553533736c26560b06c02f574"
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
@@ -439,5 +439,11 @@
     "sha256": "F3E871000C085461B946A1F9636372BF1EDDF541E0854E90D14229EED8FE5CA1",
     "status": "b80 package row overstates AF migration; current source inspection proves all33 package methods already genuine AF; product bytes unchanged"
   },
-  "minimatch_binding_correction": "Original PackageManager consumes named minimatch10.2.6; native_minimatch_namespace.create().minimatch; no default export or alias matcher; source-only/unqualified as confirmed owner"
+  "minimatch_binding_correction": "Original PackageManager consumes named minimatch10.2.6; native_minimatch_namespace.create().minimatch; no default export or alias matcher; source-only/unqualified as confirmed owner",
+  "canonical_test_artifact_correction": {
+    "historical_manifest_sha256": "BB4821EF33E946A48C8BAE04FEDC7989C709020E6F63D22C987AE9C7160DED76",
+    "test_bytes_unchanged": true,
+    "change": "Remove only new addTest.name so cached executable retains canonical test.exe admitted by607; no native run/controller/metadata authority",
+    "historical_source_head": "0f7120a29cb59e3e17f8d38e418ee4de44942ee5"
+  }
 }
