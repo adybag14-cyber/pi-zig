@@ -56,7 +56,7 @@ test "native async iterator API invalid values and iterator results are actual V
 test "native async iterator API preserves pending ordinary and fatal entry without getters" {
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
     const input = try engine.eval("globalThis.iteratorEntryReads=0;({get [Symbol.asyncIterator](){iteratorEntryReads++;throw Error('unexpected')}})", "iterator-entry-control.js", c.JS_EVAL_TYPE_GLOBAL); defer engine.freeValue(input);
-    for (.{ false, true }) |fatal| {
+    for ([_]bool{ false, true }) |fatal| {
         const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
         if (fatal) c.JS_SetUncatchableError(engine.context, reason);
         try std.testing.expect(c.JS_IsUncatchableError(reason) == fatal);
@@ -156,7 +156,7 @@ test "native async iterator API flagged returned data without pending is not a f
     try std.testing.expect(!c.JS_HasException(engine.context) and c.JS_IsUncatchableError(value));
 }
 test "native async iterator API new pending reason cleanup and callback convention control" {
-    for (.{ @as(c_int, 0), @as(c_int, 1) }) |mode| {
+    for ([_]c_int{ 0, 1 }) |mode| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         getter_calls = 0; method_calls = 0; result_finalized = false; result_class = 0;
         _ = c.JS_NewClassID(engine.runtime, &result_class);
@@ -233,7 +233,7 @@ fn cleanupMethod(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValu
     return result; // Deliberate native callback convention violation control.
 }
 test "native async iterator API nested result and displaced finalizers preserve first fatal" {
-    for (.{ false, true }) |fatal_first| {
+    for ([_]bool{ false, true }) |fatal_first| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         cleanup_context = engine.context; defer cleanup_context = null;
         incoming_fatal = fatal_first; original_marked = false; cleanup_counts = .{ 0, 0, 0 }; cleanup_classes = .{ 0, 0, 0 };
