@@ -89,7 +89,7 @@ fn values(engine: *v.em.Engine, imports: Imports, options: c.JSValue) !c.JSValue
     defer engine.gpa.free(rewritten);
     const code = lowering.lower(engine.gpa, rewritten, .{ .typescript = typescript, .async_mode = asynchronous, .no_interop = !interop_default, .resource=prepared.resource }) catch |err| return rejectedCompilation(engine, err, compile_generation);
     defer engine.gpa.free(code);
-    const generated = if(s.truthy(retain)) try engine.gpa.dupe(u8,code) else generator.pretty(engine.gpa,code) catch|err|return rejectedCompilation(engine,err,compile_generation);
+    const generated = if(s.truthy(retain)) try engine.gpa.dupe(u8,code) else generator.pretty(engine.gpa,code) catch |err| return rejectedCompilation(engine,err,compile_generation);
     defer engine.gpa.free(generated);
     var code_value=try s.text(generated);
     if(inline_map)code_value=try s.own(try generator.inlineMap(engine,code_value,descriptor.value));

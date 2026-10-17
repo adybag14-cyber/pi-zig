@@ -21,8 +21,8 @@ fn outer(engine: *em.Engine, comptime continuing: bool, agent: c.JSValue, args: 
     const options = if (!continuing and (args.len < 2 or c.JS_IsUndefined(args[1]))) try s.object() else if (args.len > 1) args[1] else c.pi_js_undefined();
     try s.put(owner, "options", options);
     const lifecycle = try p.get(&s, agent, "runWithLifecycle");
-    const executor = try s.own(try createExecutor(engine, continuing, agent, messages, options, loop));
-    return p.wait(&s, owner, lifecycle, agent, &.{executor}, 0);
+    const actual_executor = try s.own(try createExecutor(engine, continuing, agent, messages, options, loop));
+    return p.wait(&s, owner, lifecycle, agent, &.{actual_executor}, 0);
 }
 fn createExecutor(engine: *em.Engine, comptime continuing: bool, agent: c.JSValue, messages: c.JSValue, options: c.JSValue, loop: c.JSValue) !c.JSValue {
     const Adapter = struct {
