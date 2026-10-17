@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "source_closed_head": "9bb4ab16ae042036af69524a112f9fd123eb3c69",
+  "native_base": "14775669ca4ad1155957114fec9bdd40b659ca3c",
+  "target_upstream": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "status": "independent finite source review closed",
+  "review_sha256": "A76442DCFC2AF501B194022CC882C0ADC699A9325E86AB3305CCF98C3FFC98E3",
+  "prepared_v3_sha256": "BD08F4AD4A11D1FE27F02DFED4FB7A2BB34412CE9E82661AF9E8AB1B2200C574",
+  "final_records": 61,
+  "drift": 0,
+  "products": [
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_migrations.zig",
+      "size": 12712,
+      "sha256": "ECCD0BC1320122CB16177ADAEE4C3E40ED8A83DADCFFFFAE1D7D91B1938FC755"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_schema.zig",
+      "size": 2768,
+      "sha256": "EF47535659EF039C7E620FA82AA3B460A53FCF893F79E58013FD8D962F660123"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite_values.zig",
+      "size": 4779,
+      "sha256": "AE81B9A0E0F92C943847AC0DCD30EDDBC75415D947DC6B64AFD6566114ECAD86"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "size": 7874,
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_durable.zig",
+      "size": 77196,
+      "sha256": "C1DD2A86CA27C632991B89408B153BE2577128DF9D2D33AD0829EA49EDCB6381"
+    }
+  ],
+  "required_actual_dependencies": [
+    "native Node adapter/direct-C DatabaseSync",
+    "native Cloudflare adapter + explicit-receiver Get ABI",
+    "genuine node:fs/promises.mkdir"
+  ],
+  "shared_af_flagged_data_primitive_frontier": "separate unqualified gate; data untouched by this leaf",
+  "source_metadata_update_pending_compatible_intake": true,
+  "default_selector_calls_new_installer": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "native_qualified": false,
+  "whole_application_qualified": false
+}

@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "status": "finite_SOURCE_closed_no_remaining_scoped_blocker",
+  "head": "9bb4ab16ae042036af69524a112f9fd123eb3c69",
+  "original_head": "87335f0f659d5e36fa2988a4b4dda4b5bd3b6673",
+  "intermediate_head": "4434ef8928faac1dc0ac731972f4243011d1b29e",
+  "manifest_sha256": "BD08F4AD4A11D1FE27F02DFED4FB7A2BB34412CE9E82661AF9E8AB1B2200C574",
+  "raw_Git_pins_checked": {
+    "original": 58,
+    "intermediate": 60,
+    "final": 61,
+    "mismatches": 0
+  },
+  "closed_findings": [
+    "Rejected Await DATA is preserved without private-generation classification or uncatchable-bit mutation; removed unused savedgeneration allocations",
+    "Completed/closed inner and outer IteratorRecords retire from jobfields; short creation/Step/Close scopes retire result/done/iterator/callee roots before laterSQL callbacks; prior migration binding cleared onadvance",
+    "Actual VM pending reason normalized FIRST, then preexisting captureduncatchable reason rejected before detachment/body; ordinary capture isolation retains previous ownership policy"
+  ],
+  "source_semantics_reviewed": [
+    "Pinned actual schema RegExp/coercion/livecallee/Error-before-template order",
+    "Live migration length/index/optionalversion and contiguousvalidation before database transaction lookup",
+    "Actual transaction callback/SQL/Await order, currentVersion checks and repeat row.version reads",
+    "Actual nested IteratorRecords, no invented Close on abruptStep/value, inner-before-outer Close, original throw completion wins ordinary Close error while currentfatal bypasses",
+    "Oncegraph same input/export identities, reentry refusal, completedcache ownership and failclosedpartialregistration; Durable reexports same real values before registration",
+    "Inputcarriers require actual Node and Cloudflare factories; no DB emulator or successful SQL stand-in supplies production capability"
+  ],
+  "prepared_controls_reviewed": [
+    "Explicit actual markednativeOOM establishes guard precondition before raw host constructor/call observation; own descriptor numeric reads check zero prefixcoercion with no guest recovery",
+    "Distinct actual pending InternalError vs older capturednativefatal proves exact currentevent precedence",
+    "Priorcheckpoint precreated iterator targets plus cleared factory strong references; actual nativeGC INSIDE later delegated realUPDATE before callbackreturn checks retired inner temporary+job roots; outer remains active then retires after real completion; freshDB required for each empty/nonempty case"
+  ],
+  "preserved_limits": [
+    "All tests/originalcapture/native/GPA/GC execution remains UNRUN; no expected output exists",
+    "Actual Node/Cloudflare adapters, genuine asyncmkdir and complete storage subject still separate dependencies, defaultselectionoff",
+    "SharedAF/C .thrown flaggedDATA promotion remains explicitly unqualified; leaf does not mutate data to hide it",
+    "No wholeSqliteStorage/backend/runtime or c268application version alignment claim"
+  ],
+  "historical_87335_4434_seals_preserved": true,
+  "jobs_started_by_reviewer": 0,
+  "Main_product_shared_edits_by_reviewer": false,
+  "execution_authorized": false,
+  "runtime_pass_claim": false
+}
