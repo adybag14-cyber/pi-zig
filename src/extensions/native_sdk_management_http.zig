@@ -242,9 +242,10 @@ fn copyDescriptor(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom
     // Capture the actual Get/copy outcome BEFORE descriptor field releases.
     // Neither caught DATA nor a new ordinary finalizer overwrites Source A.
     var completion = owned.Completion.initVoid(s.engine, copyDescriptorBody(s, result, boxed, atom, &descriptor));
-    completion.release(descriptor.value);
-    completion.release(descriptor.getter);
+    // Preserve the previous three defers' actual LIFO native release order.
     completion.release(descriptor.setter);
+    completion.release(descriptor.getter);
+    completion.release(descriptor.value);
     return completion.finishVoid();
 }
 fn spreadInit(s: *Scope, initial: c.JSValue) !c.JSValue {

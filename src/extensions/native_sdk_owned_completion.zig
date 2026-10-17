@@ -74,7 +74,9 @@ pub const Completion = struct {
 
     pub fn initAction(engine: *em.Engine, result: anyerror!p.af.Action) Completion {
         var selected: ?p.af.Action = null;
-        if (result) |action| selected = action else |err| {
+        if (result) |action| {
+            selected = action;
+        } else |err| {
             // Surface actual pending/current invocation events independently
             // BEFORE inspecting a failed-operation diagnostic ownership slot.
             _ = engine.nativeCallbackResult(c.pi_js_undefined());
@@ -126,7 +128,7 @@ pub const Completion = struct {
         self.owner.engine.enterNativeInvocation(&self.invocation);
         if (self.pending) |first| {
             self.pending = null;
-            const later = if (c.JS_HasException(self.owner.engine.context)) c.JS_GetException(self.owner.engine.context) else null;
+            const later: ?c.JSValue = if (c.JS_HasException(self.owner.engine.context)) c.JS_GetException(self.owner.engine.context) else null;
             _ = c.JS_Throw(self.owner.engine.context, first); // Empty slot.
             self.owner.events(null);
             if (later) |reason| { const generation = self.owner.merge(reason, null); self.owner.events(generation); }

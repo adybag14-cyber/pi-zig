@@ -23,9 +23,9 @@
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
-      "length": 24342,
-      "sha256": "3E6A88FE74938C44632D1E83D78B22879EDEED8F159C3548C2280D0991A4C406",
-      "git_blob": "e420956fc6b208663d9494ae43eb5a23ffd9fcec"
+      "length": 24419,
+      "sha256": "A59F39BF40B03E31A1D8A1DB2679B0DDB49D4BEBA400794DEF3EC549A035390C",
+      "git_blob": "a3b10690750ba9a6c5560956240fee817e1484f4"
     },
     {
       "path": "src/extensions/native_sdk_runtime_imports.zig",
@@ -53,9 +53,9 @@
     },
     {
       "path": "src/extensions/native_sdk_owned_completion.zig",
-      "length": 11320,
-      "sha256": "9F9E53F715727B406E418A33E32EB878575BBD7F95B9583837F205117BABBAD7",
-      "git_blob": "b5dbf77889ea3e627493ec767b0d0299947485f4"
+      "length": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346"
     },
     {
       "path": "src/native_sdk_owned_completion_test.zig",
@@ -115,9 +115,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
-      "length": 9811,
-      "sha256": "FE447592058A034C4D6DE8CA11999089F447C7B6B97A85B13874457C96AEB495",
-      "git_blob": "2b322c095daccb68b16a8a5ce607d280a5d25b00"
+      "length": 10429,
+      "sha256": "8C4F6B5EA888B610EEFDB7A34F0C228C26DCE4C1DD0062F3B46657F277E5AF83",
+      "git_blob": "a665493259e794c54865a657d5cff860de0676ff"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
@@ -136,6 +136,12 @@
       "length": 25361,
       "sha256": "2E14F780EBE2FC567CEED3C098F3A8B7F679387384541EB202A68EBBD09D4491",
       "git_blob": "5c3d72aa7ded493b13d03728dab6c67aa82cebb6"
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-c827-release-order-negative.json",
+      "length": 26165,
+      "sha256": "E4ADF366B7AA32340AB554182CC6FDF5BD1EAC03EDADD4CF39108D7A2C2451DA",
+      "git_blob": "a0275b81bb6b652c5f21104805c8e1273d7c9224"
     }
   ],
   "protected": [
@@ -552,6 +558,8 @@
     "actual_proxy_soleholder_control_prepared": true,
     "negative_manifest": "2E14F780EBE2FC567CEED3C098F3A8B7F679387384541EB202A68EBBD09D4491",
     "negative_source": "fb8a5be9bf1cdc047f162bbb20e453b17c2f5711",
-    "outcome_recorded_before_descriptor_fields": true
+    "outcome_recorded_before_descriptor_fields": true,
+    "preserved_native_release_order": "setter/getter/value, original3defer LIFO",
+    "order_negative_source": "c82794f5962dd7d30190a2aad8948c0d0f278746"
   }
 }
