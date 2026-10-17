@@ -1,0 +1,43 @@
+{
+  "status": "actual_public_four_files_and_all155_zip_entries_verified",
+  "public_commit": "65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7",
+  "local_intake_commit": "8046e3ac9cb256021300d24eb9bddc15b6151db0",
+  "scope": "C2 d460 finite compile/link only, explicit unsealed cache exception; no Main/runtime qualification",
+  "files": [
+    {
+      "path": "verification/jiti-controls-compile-only-c2-d460-proof-20261017/README.md",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7/verification/jiti-controls-compile-only-c2-d460-proof-20261017/README.md",
+      "bytes": 4317,
+      "sha256": "4E29951FACBA0D9C481EF7887369596DAA81637E0224D2E85CEBE3EC902BD87D",
+      "matches_reviewed_local_8046": true
+    },
+    {
+      "path": "verification/jiti-controls-compile-only-c2-d460-proof-20261017/compile83-c2-d460-raw-proof-20261017.zip",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7/verification/jiti-controls-compile-only-c2-d460-proof-20261017/compile83-c2-d460-raw-proof-20261017.zip",
+      "bytes": 23163693,
+      "sha256": "BD844B9FBD8286E20A38A24F77EC5AE0F84037C1AC7275E52422694F36981905",
+      "matches_reviewed_local_8046": true
+    },
+    {
+      "path": "verification/jiti-controls-compile-only-c2-d460-proof-20261017/public-manifest.json",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7/verification/jiti-controls-compile-only-c2-d460-proof-20261017/public-manifest.json",
+      "bytes": 36537,
+      "sha256": "980858C8D0FB2592D4E4203970376A04272AA9DC1276B3452842D654F228EE95",
+      "matches_reviewed_local_8046": true
+    },
+    {
+      "path": "verification/jiti-controls-compile-only-c2-d460-proof-20261017/package-verification.json",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7/verification/jiti-controls-compile-only-c2-d460-proof-20261017/package-verification.json",
+      "bytes": 800,
+      "sha256": "8DAE07F3236A7DA421738015C473089F3913E58A94488317739BD61F21BBECE2",
+      "matches_reviewed_local_8046": true
+    }
+  ],
+  "ZIP_entries_decompressed_rehashed": 155,
+  "entry_mismatches": 0,
+  "public_payloads_exclude_executable_PDB_caches": true,
+  "reviewer_pushed": false,
+  "reviewer_Main_edited": false,
+  "native_Node_compiler_AST_jobs": false,
+  "checked_utc": "2026-10-17T15:00:53.8509893+00:00"
+}
