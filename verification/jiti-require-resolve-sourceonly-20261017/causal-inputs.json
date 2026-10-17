@@ -1,0 +1,159 @@
+{
+  "status": "prepared-unrun",
+  "authority": "jiti2.7.0 fd3bb289b75ed207edfb686d671ed50144f7e90f",
+  "expected_exists": false,
+  "observed_exists": false,
+  "source_caller_public_rows": 29,
+  "direct_source_boundaries": [
+    {
+      "id": "native-regexp-short-circuit",
+      "target": "jitiResolve",
+      "input": "Actual ctx.isNativeRe.test returns truthy; options is a throwing proxy.",
+      "observe": "Returns exact id before reading any option, alias, URL or resolving."
+    },
+    {
+      "id": "tsconfig-recursion-try-and-skip",
+      "target": "jitiResolve",
+      "input": "Actual configured tsconfig maps one missing and one present fixture, with candidates supplied by real get-tsconfig matcher.",
+      "observe": "Candidate order, try:true and skipTsConfigPaths:true override spread options; first truthy candidate return closes iterator once."
+    },
+    {
+      "id": "condition-array-prototype-hooks",
+      "target": "jitiResolve",
+      "input": "Owned Array.prototype.filter and iterator observers delegate to their actual saved builtins; conditions includes explicit empty array.",
+      "observe": "Literal/filter(Boolean) precedes for-of; empty array is truthy and attempted first, then exact node/require and node/import order or reverse for async."
+    },
+    {
+      "id": "last-raw-resolver-error",
+      "target": "jitiResolve",
+      "input": "Missing owned module with actual mlly then actual Node require.resolve failing; later extension catches also fail.",
+      "observe": "Final thrown reason is the direct native resolve error, not the last ignored extension error or a synthesized replacement."
+    },
+    {
+      "id": "parent-directory-and-url-distinction",
+      "target": "jitiResolve",
+      "input": "Real parentURL physical directory, file URL string, URL object and an owned symlink directory.",
+      "observe": "isDir uses lstat string rule and skips file:// or non-string; only actual directory gets pathe.join(_index.js)."
+    },
+    {
+      "id": "extension-fallback-order-and-path-spread",
+      "target": "jitiResolve",
+      "input": "Actual native resolver with owned extensions ['.ts','.tsx']; options.paths owns an iterable yielding two actual search roots and options has enumerable symbols/getters.",
+      "observe": "Direct resolve reads only options.paths; fallback spreads all own enumerable keys, overwrites paths with dirname(mlly.fileURLToPath(parent)), then iterator values."
+    },
+    {
+      "id": "captured-next-and-close",
+      "target": "jitiResolve",
+      "input": "Owned additionalExts iterable logs Symbol.iterator, next getter, next calls and return. Real resolution succeeds during second body.",
+      "observe": "Captured next called with iterator receiver; successful early return closes once. A next/done/value failure leaves iterator open; body throw closes with original ordinary reason precedence."
+    },
+    {
+      "id": "regexp-module-identity",
+      "target": "jitiResolve",
+      "input": "Owned RegExp.prototype.test/replace observers delegate to actual original builtins across two resolver calls.",
+      "observe": "The JS_EXT_RE and TS_EXT_RE receiver identities persist across calls; JavaScript extension substitution reads actual string.replace hook."
+    },
+    {
+      "id": "require-protocol-ordered-getters",
+      "target": "jitiRequire",
+      "input": "Owned id object has startsWith getters/calls and parentCache getter logs; deliberately fails on later protocol test.",
+      "observe": "Parent cache expression precedes first startsWith; node,file,data checks short circuit in actual order without eager primitive conversion."
+    },
+    {
+      "id": "virtual-live-getters-and-in",
+      "target": "jitiRequire",
+      "input": "Actual ctx.opts.virtualModules is an owned accessor/proxy with inherited module; debug observer delegates actual debug.",
+      "observe": "Condition uses two virtualModules reads and in; debug occurs before third virtualModules lookup and module read; async read occurs afterwards."
+    },
+    {
+      "id": "promise-resolve-callee-before-interop",
+      "target": "jitiRequire",
+      "input": "Virtual async branch uses owned Promise.resolve getter observer and module.default getter; both delegate genuine builtins/values.",
+      "observe": "Promise global/resolve callee is acquired before interop argument reads; returns exact Promise.resolve call result."
+    },
+    {
+      "id": "native-raw-then-return",
+      "target": "nativeImportOrRequire",
+      "input": "A deliberately owned nativeImport hook returns a user thenable whose then returns an owned marker; this is hostile input to the genuine helper, not a production dependency substitute.",
+      "observe": "Returns exact then marker without Promise adoption; ctx receiver, normalization and callback getter order remain visible."
+    },
+    {
+      "id": "try-native-raw-then-catch",
+      "target": "jitiRequire",
+      "input": "TryNative branch with an owned thenable/control hook; then returns a value with an owned catch hook; hooks invoke genuine interop/fallback callbacks.",
+      "observe": "Returns exact catch return; no Await. Sync throw from nativeImport/then/catch enters outer ordinary catch and falls through using already-assigned id."
+    },
+    {
+      "id": "try-native-async-retry-context-spread",
+      "target": "jitiRequire",
+      "input": "Actual native import rejects for owned fixture, then transform path succeeds; ctx and ctx.opts have owned enumerable getter/symbol probes.",
+      "observe": "Fallback debug template before context spread, then later ctx.opts spread, tryNative:false override; actual recursive require receives current id and original opts."
+    },
+    {
+      "id": "cache-read-and-loaded-order",
+      "target": "jitiRequire",
+      "input": "Owned actual parent cache record getters and actual native cache record loaded/export getters.",
+      "observe": "Parent hit checks same filename twice; native cache only when moduleCache truthy; loaded read before exports; no file read after hit."
+    },
+    {
+      "id": "eval-options-late-async-get",
+      "target": "jitiRequire",
+      "input": "Owned options.async getter changes after actual utf8 read; real frontend eval receives ordinary eval options.",
+      "observe": "Read happens before evalOptions construction/id/filename/ext/cache then final live async read; raw eval return identity retained."
+    },
+    {
+      "id": "ts-test-callee-before-filename-getter",
+      "target": "jitiResolve",
+      "input": "Owned ctx.filename getter replaces TS_EXT_RE.test while the previously obtained real test method delegates to its original builtin.",
+      "observe": "The old callable executes this time; the next separate test re-reads the new method."
+    },
+    {
+      "id": "ts-test-callee-before-parent-getter",
+      "target": "jitiResolve",
+      "input": "First TS test is false; owned ctx.parentModule or module.filename getter replaces TS_EXT_RE.test.",
+      "observe": "Second test callable is acquired before either parent/filename getter and before fallback empty string."
+    }
+  ],
+  "native_fault_controls": [
+    {
+      "id": "fresh-rejected-host-identity",
+      "input": "Granted native callback creates private-tagged reason inside nativeImport operation boundary and returns Promise rejection with that same value.",
+      "observe": "Exact reason escapes, no debug fallback/recursive require or ordinary iterator cleanup."
+    },
+    {
+      "id": "historical-private-tag-is-ordinary",
+      "input": "Reject a real previously created tagged reason older than the nativeImport boundary.",
+      "observe": "Ordinary Source fallback runs; historical tag alone does not qualify fatal."
+    },
+    {
+      "id": "flagged-rejected-data-no-pending-fatal",
+      "input": "Reject historical ordinary data with the old uncatchable flag set and no current pending fatal completion.",
+      "observe": "Flag on data is not inferred to be a pending fatal; ordinary Source fallback remains."
+    },
+    {
+      "id": "user-lookalike-is-ordinary",
+      "input": "Reject owned Error/object with OOM name/message/prototype/public generation property but no private allocation tag.",
+      "observe": "Source fallback remains ordinary and receives exact value."
+    },
+    {
+      "id": "pending-fatal-at-synchronous-boundary",
+      "input": "Granted callback actually throws a current pending trusted fatal while resolver/native operation is executing.",
+      "observe": "Same pending fatal escapes; no catch normalization, replacement allocation, fallback or guest cleanup."
+    },
+    {
+      "id": "wrap-generation-rule",
+      "input": "Granted host sets generation near u64 wrap, creates fresh tagged reason across wrap and tests older equal/zero/distant tags.",
+      "observe": "Use existing private-tag unsigned wrapping span rule; exact fresh reason only."
+    },
+    {
+      "id": "callback-gc-roots",
+      "input": "Release external ctx/id/options/dependency references while actual native import remains pending; force granted full GC, then fulfill/reject.",
+      "observe": "Function-data roots retain exact source captures and callbacks; after release/final GC aggregate owner memory returns to baseline."
+    },
+    {
+      "id": "body-and-iterator-close-error-identity",
+      "input": "Owned iterator body throws ordinary first reason, return getter/call throws ordinary second reason; separate granted fresh-fatal return failure.",
+      "observe": "Ordinary body reason wins ordinary close errors; actual fresh fatal overrides and retains exact identity; no fake expected outputs."
+    }
+  ]
+}

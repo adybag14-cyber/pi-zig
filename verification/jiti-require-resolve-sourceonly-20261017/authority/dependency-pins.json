@@ -1,0 +1,20 @@
+{
+  "mlly": {
+    "integrity": "sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==",
+    "repository": {
+      "url": "git+https://github.com/unjs/mlly.git",
+      "type": "git"
+    },
+    "gitHead": "c5ce4e5596761b9d2b063bcf82a5160d76e8c2cf",
+    "version": "1.8.2"
+  },
+  "pathe": {
+    "integrity": "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==",
+    "repository": {
+      "url": "git+https://github.com/unjs/pathe.git",
+      "type": "git"
+    },
+    "gitHead": null,
+    "version": "2.0.3"
+  }
+}
