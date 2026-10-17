@@ -1,0 +1,23 @@
+{
+  "status": "source_review_closed_no_runtime_qualification",
+  "reviewed_source_head": "bf58d104adc0957fec5ba9cb17b47d482ad4b4a8",
+  "source_base": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "reviewer": "/root/models_refresh_resume",
+  "prepared_sha256": "FB0F10BD4788DBC501B9441C67B3EFCDF74D55C01CD8D2FD6A3E0A9EF0E26403",
+  "attestation_origin": "Actual collaboration message received from independent reviewer; recorded by implementation owner, not a runtime result",
+  "independent_review_message": "Finite utilities SOURCE review CLOSED at exact clean bf58d104adc0957fec5ba9cb17b47d482ad4b4a8, prepared FB0F10BD4788DBC501B9441C67B3EFCDF74D55C01CD8D2FD6A3E0A9EF0E26403. 34 pins zero drift plus yocto archive SRI/seven payloads byte exact; utils Source C0B8 independently matches prior copy. Fatal budget/local advance, fips/hash-chain lifetime, success-only control restore findings closed; no remaining scoped blocker. Consumed five utils/six colors/MD5 profile reviewed, prior SHA25691FB unchanged/not widened; real TTY/FIPS/default graph plus broader crypto remain unqualified. Original29 input unchanged, two primitive plus two budget tests/three actual-input entrypoints UNRUN, expected absent. No jobs/edits by reviewer.",
+  "source_fix_history": [
+    "54c3e40c0f270d3c48364e83c3edbcc4de19c8b6",
+    "4fc2cdb05fd969e3ca8d96ae8e1f9fde036af67c",
+    "caaca635901510df790f8a3e021e436e175aa4b5",
+    "bf58d104adc0957fec5ba9cb17b47d482ad4b4a8"
+  ],
+  "original_input_sha256": "BD03AC24D4BA1A8D317E173DD7B4522CA8982C835E0032EAD06482A50324C3CD",
+  "expected_absent": true,
+  "native_compiled": false,
+  "native_executed": false,
+  "source_captured": false,
+  "prior_sha256_proof_widened": false,
+  "default_graph_selected": false,
+  "main_c_engine_shared_helper_changes": false
+}

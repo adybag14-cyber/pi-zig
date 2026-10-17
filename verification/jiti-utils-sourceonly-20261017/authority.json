@@ -1,0 +1,141 @@
+{
+  "jiti_version": "2.7.0",
+  "jiti_commit": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+  "jiti_utils_sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954",
+  "yoctocolors_version": "2.1.2",
+  "yoctocolors_git_head": "ab9da8d65ff69b6dc107cfc048e3769d3a450de4",
+  "yoctocolors_archive_uri": "https://registry.npmjs.org/yoctocolors/-/yoctocolors-2.1.2.tgz",
+  "yoctocolors_locked_integrity": "sha512-CzhO+pFNo8ajLM2d2IW/R93ipy99LWjtwblvC1RsoSUMZgyLbYFr221TnSNT7GjGdYui6P459mw9JH/g/zW2ug==",
+  "yoctocolors_archive_sha256": "3C1BA40B75FC88178AD265101DA843D5405384224DDCAC35DDCF67CDA2EA84F0",
+  "original_node_builtin_capture": "evidence/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+  "original_node_builtin_capture_sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+  "source_primary_files": [
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/jiti-pnpm-lock.yaml",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/jiti-utils.ts",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/node24-crypto.js.txt",
+      "bytes": 9071,
+      "sha256": "CD867BEA2112A5715B172816351157371A1303725E3B4B02C70D668BD03F2178"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/node24-internal_crypto_hash.js.txt",
+      "bytes": 7729,
+      "sha256": "4E0EDACC059658E605A2A48241D6DAE3221CDA18FC652684436A96E9EBBF22F2"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2.registry.json",
+      "bytes": 2081,
+      "sha256": "E7B11ACC4428EB13A7D085F966E4F73F8BD02D8340F56856656ACEC6D8F70638"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2.tgz",
+      "bytes": 3982,
+      "sha256": "3C1BA40B75FC88178AD265101DA843D5405384224DDCAC35DDCF67CDA2EA84F0"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/base.d.ts",
+      "bytes": 1328,
+      "sha256": "16F981F8373A483293F51FC30117B9365BE609ADF2E453FB7310A931BC5041FF"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/base.js",
+      "bytes": 3169,
+      "sha256": "3F98AB9DFD4528240FDEE85B4C4ED392BEA28F20AC9BD3A4896FD4AC08C936D6"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/index.d.ts",
+      "bytes": 65,
+      "sha256": "D1CC9289766F3874CB06FBC04C8292262E608DB3B2EA3D78D8B797BF5965446A"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/index.js",
+      "bytes": 65,
+      "sha256": "D1CC9289766F3874CB06FBC04C8292262E608DB3B2EA3D78D8B797BF5965446A"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/license",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/package.json",
+      "bytes": 1234,
+      "sha256": "6C99B30ADD34C85C4DF54D81835A263D2F25C1111A1288FA3AA535B162B28FA3"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority/yoctocolors-2.1.2/readme.md",
+      "bytes": 3531,
+      "sha256": "3BD3F58D6C77E6D71AF1D5C701E711D42A6B0501D3D240B80C4B29DF958E2372"
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "src/extensions/native_node_crypto_hash.zig",
+      "git_blob": "770bc2f0979cb5ae02a9e0217b708fa77a45a618",
+      "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487"
+    },
+    {
+      "path": "src/extensions/fixtures/node-crypto-sha256-package.input.txt",
+      "git_blob": "79ecdb67bc88be38af22a6ade1e635f87d94463d",
+      "sha256": "A9722654D1FCF6B3F00638B59F9D4EAA829549CC996EE7BE36808E24D7E2DA26"
+    },
+    {
+      "path": "src/extensions/fixtures/node-crypto-sha256-package.json",
+      "git_blob": "a0212075c3c555821912b7dc476e9d75cfd96596",
+      "sha256": "5062712D48821C749D5D9E416A9DC1CB6A7F15748AB5F64F9D2DC17AB3481074"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "git_blob": "824a2f6ce190333527ea812dc978e3fd213fead1",
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "git_blob": "dc74667547037fd639eb4e9d7f6204ea2c626787",
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "git_blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "git_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "git_blob": "d53be37fcd49dafac09dd179d2b84708257c3d8c",
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "git_blob": "1fe806fe1373f0e1ea97cf15587e9614783b15e7",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "build.zig",
+      "git_blob": "cfaa2e6a4ad1f8e12295e9936f1cbd0d8bab5af3",
+      "sha256": "F7AAAE8301AC0C7F9442B30ECD8B48951845A15F9D53DD7D3F16DA7C9366925A"
+    }
+  ]
+}

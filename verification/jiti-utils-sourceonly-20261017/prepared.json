@@ -1,0 +1,77 @@
+{
+  "status": "source_only_prepared_peer_review_pending",
+  "base": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "products": [
+    {
+      "path": "src/extensions/native_jiti_colors.zig",
+      "bytes": 4826,
+      "sha256": "DB52800B2F0843FD15FD52425308501223C3470C8D953170F2B09FBBEA6BCBA5"
+    },
+    {
+      "path": "src/extensions/native_jiti_crypto.zig",
+      "bytes": 6352,
+      "sha256": "9CE4A00F033FCFA81F603269E2121040EB4559AD3B04B25D6B8C13C8D381CCD3"
+    },
+    {
+      "path": "src/extensions/native_jiti_utils.zig",
+      "bytes": 12479,
+      "sha256": "2B8A1196A378977CE5ED9A19849C248BCF3D05CED17816491F58E5011D1CA333"
+    },
+    {
+      "path": "src/native_jiti_utils_controls.zig",
+      "bytes": 11304,
+      "sha256": "2D4C088CCCBF54CA4CEDDCC656740E27DCB7F834A4BA98485C1E204EC4979DB7"
+    },
+    {
+      "path": "src/extensions/native_jiti_budget.zig",
+      "bytes": 1763,
+      "sha256": "92B9A9176BCDA36A658E21133D5A2CD75B172EE6DE1B25B26EFF001E86937C96"
+    }
+  ],
+  "controls": [
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/authority.json",
+      "bytes": 6362,
+      "sha256": "25176EA1C9CD3239B8F5088765FEBF9C9F1608A59252C22E363199DF4E2F27A2"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/original-reference.mjs",
+      "bytes": 3044,
+      "sha256": "45E2EEF155E28B57FF80D70D20B5EDDFB6E69A48FBE2864A2F834D3A7546368E"
+    },
+    {
+      "path": "verification/jiti-utils-sourceonly-20261017/README.md",
+      "bytes": 6923,
+      "sha256": "62A1E247615B3CE3E7A1FAD95BA8940F01618E576E1CD0F3F6D2A4D0C95B106A"
+    },
+    {
+      "path": "src/extensions/fixtures/jiti-utils-2_7.input.mjs",
+      "bytes": 3157,
+      "sha256": "BD03AC24D4BA1A8D317E173DD7B4522CA8982C835E0032EAD06482A50324C3CD"
+    }
+  ],
+  "original_rows": 29,
+  "reference_profiles": [
+    "actual-default",
+    "guest-colors-enabled",
+    "guest-fips-true",
+    "guest-fips-throw"
+  ],
+  "native_primitive_tests": 2,
+  "native_actual_input_entrypoints": 3,
+  "expected": "src/extensions/fixtures/jiti-utils-2_7.expected.json",
+  "expected_absent": true,
+  "sha256_proof_widened": false,
+  "actual_native_fips_backend": "Zig std.crypto hashes; no enabled FIPS provider",
+  "actual_default_graph_selected": false,
+  "runtime_restored": false,
+  "source_captured": false,
+  "node_jobs": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "fmt_ast_executed": false,
+  "generators_executed": false,
+  "main_edited": false,
+  "c_engine_shared_helpers_changed": false,
+  "native_budget_controls": 2
+}
