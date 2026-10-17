@@ -1,0 +1,38 @@
+{
+  "status":"prepared-unrun",
+  "expected_files":[],
+  "supported_execution_inputs":[
+    {"id":"readonly-javascript","ts":false,"source":"export const value=42; export default function extension(){return value}"},
+    {"id":"typed-default-extension","ts":true,"source":"import type { ExtensionAPI } from './types-only-absent'; export default function extension(pi: ExtensionAPI){return typeof pi}","args":["owned"]},
+    {"id":"live-named-import","ts":true,"source":"import {value,bump} from './dep.cjs'; export default function extension(){const before=value;bump();return [before,value]}","files":{"dep.cjs":"exports.value=1;exports.bump=function(){exports.value++};"}},
+    {"id":"meta-paths-grouped","ts":true,"source":"export default function extension(){return [import.meta.filename,import.meta.url,import.meta.dirname]}"},
+    {"id":"meta-env-dummy","ts":true,"source":"export default function extension(){return import.meta.env.PI_JITI_DEFAULT_OWNED_VALUE}"},
+    {"id":"meta-resolve-real-builtin","ts":true,"source":"export default function extension(){return import.meta.resolve('node:fs')}"},
+    {"id":"parenthesized-comment-meta","ts":true,"source":"export default function extension(){return (/*owned*/import.meta).url}"},
+    {"id":"async-real-import","ts":true,"async":true,"source":"import {value} from './dep.cjs'; export default function extension(){return value}","files":{"dep.cjs":"exports.value=42;"}},
+    {"id":"strict-top-level-this","ts":true,"source":"export const seen=this;export default function extension(){return seen===undefined}"},
+    {"id":"anonymous-default-name","ts":true,"source":"export default function(value?:unknown){return arguments.length}","args":["owned"]},
+    {"id":"named-class-method","ts":true,"source":"export class Named{read(){return 42}}export default function extension(){return new Named().read()}"},
+    {"id":"shebang-outer-transform-boundary","ts":true,"source":"#!/usr/bin/env node\nexport default function extension(){return 42}"}
+  ],
+  "declared_native_frontier_inputs":[
+    {"id":"default-import","ts":true,"source":"import value from './dep.cjs';export default function extension(){return value}"},
+    {"id":"namespace-import","ts":true,"source":"import * as ns from './dep.cjs';export const value=ns.value;"},
+    {"id":"mutable-export","ts":true,"source":"export let value=1;"},
+    {"id":"computed-identifier-meta","ts":true,"source":"export const value=import.meta[url];"},
+    {"id":"computed-string-meta","ts":true,"source":"export const value=import.meta['url'];"},
+    {"id":"optional-meta","ts":true,"source":"export const value=import.meta?.url;"},
+    {"id":"meta-direct-write","ts":true,"source":"import.meta.env={owned:true};export const value=1;"},
+    {"id":"meta-delete","ts":true,"source":"export const value=delete import.meta.url;"},
+    {"id":"env-process-binding-frontier","ts":true,"source":"const process={env:{owned:true}};export const value=import.meta.env;"},
+    {"id":"jsx","ts":true,"jsx":true,"source":"export const view=<div/>;"},
+    {"id":"decorator","ts":true,"source":"@owned export class Named{}"},
+    {"id":"resource-management","ts":true,"source":"using owned=open();export const value=1;"},
+    {"id":"source-maps","ts":true,"babel":{"sourceMaps":"inline"},"source":"export const value=1;"},
+    {"id":"custom-plugin-option","ts":true,"babel":{"plugins":[]},"source":"export const value=1;"},
+    {"id":"retain-lines-false","ts":true,"retainLines":false,"source":"export const value=1;"},
+    {"id":"malformed-source-diagnostic","ts":true,"source":"export const value = ;"},
+    {"id":"typescript-enum","ts":true,"source":"enum Owned{A,B};export const value=Owned.A;"},
+    {"id":"bare-meta","ts":true,"source":"export const value=import.meta;"}
+  ]
+}

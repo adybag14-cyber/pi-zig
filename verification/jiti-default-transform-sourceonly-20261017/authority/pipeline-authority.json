@@ -1,0 +1,63 @@
+{
+  "jiti_git_head": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+  "files": [
+    {
+      "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/src/babel.ts",
+      "bytes": 3387,
+      "sha256": "7D264191F08781378C8D47E2ABA5B678500D955351BC03E10BCCD1D3F47E8DB1",
+      "file": "jiti-babel.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/src/plugins/transform-module/index.ts",
+      "bytes": 10799,
+      "sha256": "AB651FC24EE98690BFC364BA28D0591BFCB13D15E1038FB0662AF2F7E1DD6F1C",
+      "file": "jiti-transform-module.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/src/transform.ts",
+      "bytes": 796,
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705",
+      "file": "jiti-transform.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/pnpm-lock.yaml",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C",
+      "file": "jiti-pnpm-lock.yaml"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/packages/babel-helper-module-transforms/src/index.ts",
+      "bytes": 17780,
+      "sha256": "B9A57FB1FE227D871CE4CEBBDDC8CDC16B99F6C00A56A51A5AE9502807E29E8B",
+      "file": "babel-module-index.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/packages/babel-helper-module-transforms/src/normalize-and-load-metadata.ts",
+      "bytes": 19064,
+      "sha256": "13219F28FF526300E4D036C3CF8451110D15E895269F605B15300F5FFB907678",
+      "file": "babel-metadata.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/packages/babel-helper-module-transforms/src/rewrite-live-references.ts",
+      "bytes": 18127,
+      "sha256": "E46EE6FBD8197D3056DD09BE2B090D872FF9AA1000F4C57ED41D1E14A034A016",
+      "file": "babel-live-references.ts.txt"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/LICENSE",
+      "bytes": 1106,
+      "sha256": "117DA2AF0D4CE0FE1C8E19B5CFF9DCD806ADF973D328D27B11D4448C4FF24F76",
+      "file": "babel-LICENSE"
+    },
+    {
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.29.0/packages/babel-traverse/src/path/conversion.ts",
+      "bytes": 31489,
+      "file": "babel-split-export.ts.txt",
+      "sha256": "861EAEAB91AA067D999F3556588998CC89DB185487FFE2BE100E356CBEC38D44"
+    }
+  ],
+  "jiti_version": "2.7.0",
+  "dependency_code_executed": false,
+  "babel_helper_module_transforms": "7.28.6",
+  "runtime_revalidated": false
+}

@@ -1,0 +1,15 @@
+{
+  "status":"prepared-unrun",
+  "expected_files":[],
+  "observed_files":[],
+  "native_control_specifications":[
+    {"id":"actual-default-no-custom-transform","input":"Actual native_jiti_default_transform declaration is the backend for the real outer jiti transform/cache/frontend graph.","observe":"No identity/custom transform alias or JavaScript Babel host; actual TS/module/meta generation returns own {code} object and executes through evaluateLowered with real Module/import bindings."},
+    {"id":"original-code-and-function-text-retained","input":"Later granted genuine default Babel Source12 programs versus native candidate.","observe":"Compare full code and actual Function.prototype.toString text as well as values/names/lengths. Code-format/introspection/stack differences remain negatives; no silent projection or full parity claim."},
+    {"id":"meta-source-visitor-order","input":"Original ordinary meta path reads in filename/url/dirname occurrence order; real mlly/pathe imports and an owned JSON.stringify observer delegating actual builtin.","observe":"Compilation groups URL calls before dirname before filename, gets JSON.stringify before path arguments, and preserves exact literal/fallback semantics."},
+    {"id":"env-resolve-real-runtime-bindings","input":"Owned dummy env and actual nested jitiESMResolve; no fabricated namespace/identity resolver.","observe":"Generated process.env and jitiESMResolve paths read/call real runtime bindings, with unsupported source process identifiers rejected before execution."},
+    {"id":"prepare-getters-and-raw-reasons","input":"Owned retainLines/babel/interop/async/filename/jsx/ts getters plus actual outer spread data source.","observe":"Preparation getter order, conditional second reads, bare/method receivers and raw original preparation throws; no invented Babel error normalization."},
+    {"id":"unsupported-preexecution-canary","input":"Declared native-frontier options/syntax contain an ordinary global canary statement.","observe":"Reject with PI_UNSUPPORTED_JITI_DEFAULT_TRANSFORM before Module publication/user execution. Do not fabricate Babel ParseError locations/marker or substitute unchanged source."},
+    {"id":"fresh-fatal-compile-and-graph-roots","input":"Separately granted GPA/actual parser allocation failure, fresh private-tagged path-helper throw, historical/lookalike reason, and GC after external import refs drop.","observe":"Trusted current fatal preserves exact identity; ordinary compile-helper reason is retained as unsupported cause; actual captured path functions remain live with aggregate release after final GC."},
+    {"id":"actual-parser-build-seam","input":"Existing real TypeScript parser linked via build.zig linkTypeScriptParser; protected2EAD type eraser and2C86 module lowerer.","observe":"No fake AST/parser host or compile success claim from source inspection. Actual semantic/native qualification waits for Root grant."}
+  ]
+}

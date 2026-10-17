@@ -1,0 +1,126 @@
+{
+  "source": "pinned jiti2.7 source and original predecessor license artifacts",
+  "code_executed": false,
+  "files": [
+    {
+      "path": "babel-LICENSE",
+      "sha256": "117DA2AF0D4CE0FE1C8E19B5CFF9DCD806ADF973D328D27B11D4448C4FF24F76",
+      "bytes": 1106
+    },
+    {
+      "path": "babel-live-references.ts.txt",
+      "sha256": "E46EE6FBD8197D3056DD09BE2B090D872FF9AA1000F4C57ED41D1E14A034A016",
+      "bytes": 18127
+    },
+    {
+      "path": "babel-metadata.ts.txt",
+      "sha256": "13219F28FF526300E4D036C3CF8451110D15E895269F605B15300F5FFB907678",
+      "bytes": 19064
+    },
+    {
+      "path": "babel-module-index.ts.txt",
+      "sha256": "B9A57FB1FE227D871CE4CEBBDDC8CDC16B99F6C00A56A51A5AE9502807E29E8B",
+      "bytes": 17780
+    },
+    {
+      "path": "babel-split-export.ts.txt",
+      "sha256": "861EAEAB91AA067D999F3556588998CC89DB185487FFE2BE100E356CBEC38D44",
+      "bytes": 31489
+    },
+    {
+      "path": "import-meta-env-babel-0.4.2.tgz",
+      "sha256": "BF22698C6AF90350055D0CB2F628B06816DDB2D17E4A8A61734E0A5317CFC502",
+      "bytes": 5199
+    },
+    {
+      "path": "import-meta-env-upstream-LICENSE",
+      "sha256": "393E2C26023692D2206F17DB2487B7EDC1AA745209ABEAC931E7ECF934D3FC99",
+      "bytes": 1063
+    },
+    {
+      "path": "import-meta-env.ts.txt",
+      "sha256": "C45A48C74AD139181F6C7984164C4B0F82D77EE07907FF1BBCE317895AAEA8BC",
+      "bytes": 1394
+    },
+    {
+      "path": "import-meta-paths-2.1.1.tgz",
+      "sha256": "C7C2CE40A3338ECBBB125BC85E83B13B235883FFE26A76F9C58E1CAD32051B6C",
+      "bytes": 2927
+    },
+    {
+      "path": "import-meta-paths-package-LICENSE",
+      "sha256": "199E483959005F03334D1D576B7D745F71EB7AC84076D2CA01E403194D8EF956",
+      "bytes": 1622
+    },
+    {
+      "path": "import-meta-paths-upstream-LICENSE",
+      "sha256": "199E483959005F03334D1D576B7D745F71EB7AC84076D2CA01E403194D8EF956",
+      "bytes": 1622
+    },
+    {
+      "path": "import-meta-paths.ts.txt",
+      "sha256": "1257A786A3DEC7999A2318D2364D123C1A53BBA6EB91CEA48C469B75C2C2D29D",
+      "bytes": 2864
+    },
+    {
+      "path": "import-meta-resolve.ts.txt",
+      "sha256": "2EA8B7E17EB166889AB6F6BB1F31CDBF08038A3D1A9499FA8892D135DE4FCAF4",
+      "bytes": 1100
+    },
+    {
+      "path": "jiti-babel.ts.txt",
+      "sha256": "7D264191F08781378C8D47E2ABA5B678500D955351BC03E10BCCD1D3F47E8DB1",
+      "bytes": 3387
+    },
+    {
+      "path": "jiti-pnpm-lock.yaml",
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C",
+      "bytes": 158470
+    },
+    {
+      "path": "jiti-transform-module.ts.txt",
+      "sha256": "AB651FC24EE98690BFC364BA28D0591BFCB13D15E1038FB0662AF2F7E1DD6F1C",
+      "bytes": 10799
+    },
+    {
+      "path": "jiti-transform.ts.txt",
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705",
+      "bytes": 796
+    },
+    {
+      "path": "LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "path": "pipeline-authority.json",
+      "sha256": "F60C1A0C914B6EC7A871C3E53582C4AE546343B90C519F1C66782448B9AF7234",
+      "bytes": 2734
+    },
+    {
+      "path": "primary-authority.json",
+      "sha256": "D781F8802D01D6470AE0435D208C5652FEFE9E164C046139E3ED3509DCC3BDAE",
+      "bytes": 3230
+    },
+    {
+      "path": "reference-package-pins.json",
+      "sha256": "042E770DCA6189FF9C5AB66FF7EFD91715A1B01AE9F8FFC58D59410AB215335E",
+      "bytes": 1989
+    },
+    {
+      "path": "src__eval.ts.txt",
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "bytes": 7360
+    },
+    {
+      "path": "src__utils.ts.txt",
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954",
+      "bytes": 5009
+    },
+    {
+      "path": "third-party-pins.json",
+      "sha256": "38249DA4735DB7E4C07AEE5F38D7DAE3D60104BDC5F44ECDCBD8EE6BBE154109",
+      "bytes": 759
+    }
+  ]
+}
