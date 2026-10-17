@@ -210,11 +210,63 @@ test "native Await DATA genuine resumed allocator failure remains a host fatal e
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
 }
 
+// Test-only checkpoint calibration. Each call takes the real JS_CallInternal
+// poll once and returns undefined without guest reentry or queued jobs.
+const CancelResumeControl = struct {
+    var resumed_entries: usize = 0;
+    const max_calibration_calls: usize = 100_000;
+
+    fn noop(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+        return c.pi_js_undefined();
+    }
+
+    fn onePoll(engine: *em.Engine, function: c.JSValue) !void {
+        const value = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null));
+        defer engine.freeValue(value);
+        try std.testing.expect(c.JS_IsUndefined(value));
+    }
+
+    fn untilInterruptCallback(engine: *em.Engine, function: c.JSValue) !usize {
+        const before = engine.interrupts;
+        var calls: usize = 0;
+        while (engine.interrupts == before and calls < max_calibration_calls) {
+            try onePoll(engine, function);
+            calls += 1;
+        }
+        // A missing callback is a failed control, never cancellation success.
+        try std.testing.expect(engine.interrupts == before + 1);
+        return calls;
+    }
+
+    fn resumableBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+        if (completion != .start) resumed_entries += 1;
+        return allocateOnResume(engine, receiver, args, roots, state, completion, input);
+    }
+};
+
 test "native Await DATA genuine cancellation before resumed job remains host fatal" {
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
-    const function = try af.createResumable(engine, "cancelBeforeResume", 0, allocateOnResume, &.{}); defer engine.freeValue(function);
+    CancelResumeControl.resumed_entries = 0;
+    const function = try af.createResumable(engine, "cancelBeforeResume", 0, CancelResumeControl.resumableBody, &.{}); defer engine.freeValue(function);
     const pending = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null)); defer engine.freeValue(pending);
-    engine.cancelled.store(true, .release);
+    try std.testing.expect(c.JS_IsJobPending(engine.runtime));
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
+    try std.testing.expectEqual(@as(usize, 0), CancelResumeControl.resumed_entries);
+    const noop = try engine.checked(c.JS_NewCFunction(engine.context, CancelResumeControl.noop, "cancelPollControl", 0)); defer engine.freeValue(noop);
+    // Observe one reset, then derive a complete period from the next actual
+    // noncancelled host callback. No private VM counters or budgets are written.
+    _ = try CancelResumeControl.untilInterruptCallback(engine, noop);
+    const period = try CancelResumeControl.untilInterruptCallback(engine, noop);
+    try std.testing.expect(period > 0);
+    const reset_callbacks = engine.interrupts;
+    for (0..period - 1) |_| try CancelResumeControl.onePoll(engine, noop);
+    try std.testing.expectEqual(reset_callbacks, engine.interrupts);
+    try std.testing.expect(c.JS_IsJobPending(engine.runtime));
+    try std.testing.expectEqual(@as(usize, 0), CancelResumeControl.resumed_entries);
+    // The next poll is the real Await reaction handler's JS_Call entry, before
+    // js_async_function_resolve_call/native resume and before our resumed body.
+    engine.cancel();
+    defer engine.cancelled.store(false, .release);
     var context: ?*c.JSContext = null;
     const status = c.JS_ExecutePendingJob(engine.runtime, &context);
     engine.cancelled.store(false, .release);
@@ -222,6 +274,7 @@ test "native Await DATA genuine cancellation before resumed job remains host fat
     const reason = c.JS_GetException(context orelse engine.context); defer engine.freeValue(reason);
     try std.testing.expect(c.JS_IsUncatchableError(reason));
     try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, pending));
+    try std.testing.expectEqual(@as(usize, 0), CancelResumeControl.resumed_entries);
 }
 
 test "native Await DATA escaping flagged completion must reject raw reason without new host event" {
