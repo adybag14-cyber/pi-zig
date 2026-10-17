@@ -1,7 +1,7 @@
 # pi-zig
 
 The Pi 1.x update is in progress on this branch. The current source target
-is `8efd314fa3d3232ce197d8d7a6a5660530b9d83e` (package version 1.3.0), newer
+is `c268154ca1171c2f9eefe75d3d7372a68aada2d5` (package version 1.3.0), newer
 than [the v1.3.0 release](https://github.com/earendil-works/pi/releases/tag/v1.3.0).
 Zig **0.16.0** remains pinned. Repository implementation work uses Zig and narrow
 linked C dependencies; user-authored JavaScript/TypeScript extension compatibility
@@ -19,8 +19,15 @@ live runtime/tool getters and NVIDIA default are now intaken as reviewed source;
 their native execution and schema introspection updates remain pending. See
 [the 8efd source record](verification/upstream-8efd-compat-sourceonly-20261016/README.md).
 The checked-in CLI and extension API identity now target 1.3.0 at the pinned
-8efd source. That version alignment is source-reviewed; current CLI/MCP/header
+current source target. That version alignment is source-reviewed; current CLI/MCP/header
 execution and complete application certification remain pending.
+The c268 change moves portable SQLite drivers and migrations into
+`@earendil-works/chord/sqlite` with Durable compatibility reexports. The native
+Node, Cloudflare and portable source units are reviewed; their combined runtime,
+real dependencies and default application qualification remain pending.
+The scheduled whole-tree contract still uses its historical 97195 baseline.
+No c268 native-generated contract exists yet; the separately granted native
+capture/check workflow is recorded in [the c268 target preparation](verification/c268-authority-docs-contracts-sourceonly-20261017/README.md).
 Full Pi 1.x parity and release
 certification remain incomplete, and production extension discovery retains its
 legacy Node bridge while native parity and lifecycle work continues.

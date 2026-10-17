@@ -1,3 +1,29 @@
+# Whole-tree contracts and the c268 source target
+
+The reviewed source target is
+`c268154ca1171c2f9eefe75d3d7372a68aada2d5` (Pi 1.3.0). Its native-generated
+whole-tree contract is **pending**. No `tree-c268154c.json` has been created or
+hand-edited. All existing immutable `tree-*.json` files remain unchanged.
+
+The scheduled workflow currently checks `tree-97195ec3.json` (2,017 records).
+Read-only analysis of the pinned official c268 Git tree predicts 1,941 tracked
+records. Against that scheduled baseline the expected structural delta is 107
+added, 183 removed and 310 changed paths. The immediate 8efd-to-c268 change is
+different: 10 added, zero removed and 15 changed paths. These are prospective
+counts from source metadata, **not executed native checker results**.
+
+After a separate Root grant, use the existing native maintenance commands
+`capture-upstream-contract <clean-detached-c268-checkout> <full-c268-commit>
+<new-manifest>` and `verify-upstream-contract <checkout> <new-manifest>`.
+The [c268 preparation record](../c268-authority-docs-contracts-sourceonly-20261017/README.md)
+contains the exact pinned command plan, input hashes and acceptance conditions.
+Switch the scheduled workflow's manifest path only after that real capture and
+verification have passed and their source/evidence has been reviewed. This
+documentation change does not bypass drift or release gates, regenerate the
+model catalog, or certify native/application parity.
+
+The following descriptions and target labels are historical observations.
+
 The whole-tree contract records every tracked upstream path, mode, object kind
 and Git object identity at the reviewed Pi commit. It detects added packages,
 removed APIs, content changes, symlink/executable mode changes and submodule
