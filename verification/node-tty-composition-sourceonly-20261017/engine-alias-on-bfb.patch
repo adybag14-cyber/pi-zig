@@ -1,0 +1,112 @@
+diff --git a/src/extensions/engine.zig b/src/extensions/engine.zig
+index e0724e9d..9b6a653d 100644
+--- a/src/extensions/engine.zig
++++ b/src/extensions/engine.zig
+@@ -203,6 +203,9 @@ pub const Engine = struct {
+     host_await_deadline_ms: ?i64 = null,
+     modules: std.StringHashMapUnmanaged([:0]u8) = .empty,
+     native_module_names: std.StringHashMapUnmanaged(void) = .empty,
++    /// Explicit bare Node builtin aliases resolve to ONE canonical C module.
++    /// Both strings are owned; no additional JS value/namespace is allocated.
++    native_builtin_aliases: std.StringHashMapUnmanaged([]const u8) = .empty,
+     native_module_values: std.StringHashMapUnmanaged(c.JSValue) = .empty,
+     native_namespace_counter: u64 = 0,
+     native_tool_validator_cache: ?c.JSValue = null,
+@@ -402,6 +405,9 @@ pub const Engine = struct {
+         var native_modules = self.native_module_names.keyIterator();
+         while (native_modules.next()) |name| self.gpa.free(name.*);
+         self.native_module_names.deinit(self.gpa);
++        var aliases = self.native_builtin_aliases.iterator();
++        while (aliases.next()) |entry| { self.gpa.free(entry.key_ptr.*); self.gpa.free(entry.value_ptr.*); }
++        self.native_builtin_aliases.deinit(self.gpa);
+         const gpa = self.gpa;
+         gpa.destroy(self);
+     }
+@@ -429,7 +435,7 @@ pub const Engine = struct {
+     /// Register native-loader input; source is extension input, not host code.
+     pub fn registerModule(self: *Engine, name: []const u8, source: []const u8) !void {
+         if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
+-        if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
++        if (self.modules.contains(name) or self.native_module_names.contains(name) or self.native_builtin_aliases.contains(name)) return error.DuplicateExtensionModule;
+         const key = try self.gpa.dupe(u8, name);
+         errdefer self.gpa.free(key);
+         const terminated = try self.gpa.dupeZ(u8, source);
+@@ -439,13 +445,24 @@ pub const Engine = struct {
+ 
+     pub fn setSourceLoader(self: *Engine, loader: SourceLoader) void {
+         self.source_loader = loader;
+-        const normalizer: ?*const c.JSModuleNormalizeFunc = if (loader.normalize != null) normalizeModule else null;
++        self.refreshModuleLoader();
++    }
++    fn refreshModuleLoader(self: *Engine) void {
++        const custom = if (self.source_loader) |loader| loader.normalize != null else false;
++        const normalizer: ?*const c.JSModuleNormalizeFunc = if (custom or self.native_builtin_aliases.count() != 0) normalizeModule else null;
+         c.JS_SetModuleLoaderFunc(self.runtime, normalizer, moduleLoader, self);
+     }
+ 
+     fn normalizeModule(context: ?*c.JSContext, base: [*c]const u8, name: [*c]const u8, context_data: ?*anyopaque) callconv(.c) [*c]u8 {
+         const self: *Engine = @ptrCast(@alignCast(context_data.?));
+         const specifier = std.mem.span(name);
++        if (c.JS_HasException(context)) return null;
++        const alias_normalize = @import("native_builtin_alias_normalize.zig");
++        if (self.native_builtin_aliases.get(specifier)) |canonical| return alias_normalize.duplicate(context, canonical);
++        // Installing/replacing a user loader preserves canonical builtin
++        // aliases; all other requests retain the original normalization path.
++        if (self.source_loader == null or self.source_loader.?.normalize == null)
++            return alias_normalize.defaultFilename(context, std.mem.span(base), specifier);
+         const registered = self.native_module_names.contains(specifier);
+         // Node builtins always use native host bindings. Schema packages may
+         // instead come from an extension project's user-installed ESM input.
+@@ -473,6 +490,21 @@ pub const Engine = struct {
+     pub fn registerValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !void {
+         _ = try self.createValueModule(name, exports);
+     }
++    /// Alias only an already registered canonical node: builtin. Never a
++    /// second C module, forwarding namespace, loader wrapper or guest getter.
++    pub fn registerBuiltinAlias(self: *Engine, alias: []const u8, canonical: []const u8) !void {
++        self.native_exception_diagnostics_suppressed += 1; defer self.native_exception_diagnostics_suppressed -= 1;
++        if (c.JS_HasException(self.context)) { self.captureException(self.context); return error.JavaScriptException; }
++        if (!std.mem.startsWith(u8, canonical, "node:") or canonical.len == 5 or !std.mem.eql(u8, alias, canonical[5..]) or std.mem.indexOfScalar(u8, canonical, 0) != null) return error.InvalidNativeBuiltinAlias;
++        if (std.fs.path.isAbsolute(alias) or alias[0] == '.' or std.mem.indexOfScalar(u8, alias, '\\') != null or std.mem.indexOfScalar(u8, alias, ':') != null) return error.InvalidNativeBuiltinAlias;
++        if (!self.native_module_names.contains(canonical) or !self.native_module_values.contains(canonical) or self.native_builtin_aliases.contains(canonical)) return error.RequiredCanonicalNativeBuiltin;
++        if (self.modules.contains(alias) or self.native_module_names.contains(alias) or self.native_builtin_aliases.contains(alias)) return error.DuplicateExtensionModule;
++        const owned_alias = try self.gpa.dupe(u8, alias); errdefer self.gpa.free(owned_alias);
++        const owned_canonical = try self.gpa.dupe(u8, canonical); errdefer self.gpa.free(owned_canonical);
++        try self.native_builtin_aliases.ensureUnusedCapacity(self.gpa, 1);
++        self.native_builtin_aliases.putAssumeCapacity(owned_alias, owned_canonical);
++        self.refreshModuleLoader();
++    }
+     /// Native namespaces use the engine's real ESM exotic object, including its
+     /// readonly bindings and descriptors. No JavaScript shim is evaluated.
+     pub fn valueNamespace(self: *Engine, exports: c.JSValue) !c.JSValue {
+@@ -497,7 +529,7 @@ pub const Engine = struct {
+ 
+     fn createValueModule(self: *Engine, name: []const u8, exports: c.JSValue) !*c.JSModuleDef {
+         if (name.len == 0 or std.mem.indexOfScalar(u8, name, 0) != null) return error.InvalidNativeModuleName;
+-        if (self.modules.contains(name) or self.native_module_names.contains(name)) return error.DuplicateExtensionModule;
++        if (self.modules.contains(name) or self.native_module_names.contains(name) or self.native_builtin_aliases.contains(name)) return error.DuplicateExtensionModule;
+         const terminated = try self.gpa.dupeZ(u8, name);
+         defer self.gpa.free(terminated);
+         // Finish host allocations before installing an immutable C module.
+@@ -571,6 +603,7 @@ pub const Engine = struct {
+     }
+ 
+     pub fn normalizeRequire(self: *Engine, base: []const u8, name: []const u8) ![]u8 {
++        if (self.native_builtin_aliases.get(name)) |canonical| return self.gpa.dupe(u8, canonical);
+         const schema_package = std.mem.eql(u8, name, "typebox") or std.mem.startsWith(u8, name, "typebox/") or std.mem.eql(u8, name, "@sinclair/typebox") or std.mem.startsWith(u8, name, "@sinclair/typebox/");
+         if (self.native_module_names.contains(name) and self.native_module_values.contains(name) and !schema_package) return self.gpa.dupe(u8, name);
+         const loader = self.source_loader orelse return error.NativeModuleLoaderUnavailable;
+@@ -580,10 +613,11 @@ pub const Engine = struct {
+ 
+     pub fn requireBuiltin(self: *Engine, name: []const u8) !?c.JSValue {
+         if (std.fs.path.isAbsolute(name)) return null;
++        const canonical = self.native_builtin_aliases.get(name) orelse name;
+         // The value cache also holds host-private state. Only explicitly
+         // registered module names are part of the guest require surface.
+-        if (!self.native_module_names.contains(name)) return null;
+-        const namespace = self.native_module_values.get(name) orelse return null;
++        if (!self.native_module_names.contains(canonical)) return null;
++        const namespace = self.native_module_values.get(canonical) orelse return null;
+         const default = try self.checked(c.JS_GetPropertyStr(self.context, namespace, "default"));
+         if (!c.JS_IsUndefined(default)) return default;
+         self.freeValue(default);

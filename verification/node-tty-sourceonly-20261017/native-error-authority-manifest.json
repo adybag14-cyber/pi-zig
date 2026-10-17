@@ -1,0 +1,34 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "authority": [
+    {
+      "path": "authority/libuv-win-error.c",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/error.c",
+      "bytes": 8817,
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8"
+    },
+    {
+      "path": "authority/libuv-errno-reference.h.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/include/uv/errno.h",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "authority/libuv-api-reference.h.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/include/uv.h",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    }
+  ],
+  "readonly_source_comparison": {
+    "original_cases": 100,
+    "native_cases": 100,
+    "case_drift": 0,
+    "numeric_drift": 0,
+    "message_drift": 0
+  },
+  "selected": false,
+  "compiled": false,
+  "controls_executed": false
+}

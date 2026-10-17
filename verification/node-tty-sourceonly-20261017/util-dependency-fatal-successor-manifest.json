@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "parent": "a2c3d117929909ff8115865846730cec8cbc5099",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "executed": false,
+  "controls": "prepared/unrun",
+  "pending_review": "descriptor-local native fatal cleanup refinement",
+  "policy": [
+    "Hold actual selected reason outside pending and captured slots across EVERY owned release",
+    "Current uncatchable or fresh actual native allocation tag from per-operation generation; historical capture flags are not current authority",
+    "First actual cleanup fatal promotes over ordinary first event; first chosen fatal survives later fatal",
+    "Drain both newly-produced slots and rank current VM event then newly-captured event before releasing either displaced owner",
+    "No shared Scope/Engine/h.success change"
+  ],
+  "native_profiles": [
+    "ordinary A with ordinary replacement B",
+    "ordinary A with first raw actual native OOM B and later raw native OOM C",
+    "actual uncatchable A with later raw actual native OOM B/C",
+    "prior native fatal captured history with current ordinary A"
+  ],
+  "rows": [
+    {
+      "path": "src/extensions/native_node_util_error_name.zig",
+      "bytes": 4625,
+      "sha256": "B9811DCDB1C0352615E0F7D6C072DB31C9717BC9788682D5AB5A193E13FD63E7"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "bytes": 46545,
+      "sha256": "3A08CCF01FD7FC70CE4129276D8DC1E742243CA12D8D9516066041C5FC18DA7B"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect_primitive.zig",
+      "bytes": 7666,
+      "sha256": "603C060FD65175878E796525C0E4212F65515236E618B1BDF7CDD8FC4D044E7D"
+    },
+    {
+      "path": "src/extensions/native_node_util_tty_dependencies.zig",
+      "bytes": 2351,
+      "sha256": "EB6A7A08493422D660FBFE250C90F49930BCD2898C6097E8B08FD1B92428EE7F"
+    },
+    {
+      "path": "src/native_node_util_pending_descriptor_test.zig",
+      "bytes": 9914,
+      "sha256": "1A66997F8358C11507201F6CFEF13688243E7DABCFDEDBF5BB4D8129F3375E80"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-util-error-paths.mjs",
+      "bytes": 5107,
+      "sha256": "EEFDD84A1C3662F82A70C4FC2A79ABF67DDF2096BB271015372B53140633F0D2"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/UTIL-TTY-DEPENDENCIES-SOURCE.md",
+      "bytes": 6265,
+      "sha256": "93566BE009542F527F2FDBB967FF4D591166EC664C1E4997CE7D18EFC4CBDD1C"
+    }
+  ]
+}

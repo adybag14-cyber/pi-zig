@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "parent": "ed19614c228ed0c555f051efe703aa963e954572",
+  "status": "SOURCE_ONLY_PREPARED_UNRUN",
+  "scope": "Actual host allocation failure plus old captured sentinel and sticky publication identity; no product changes",
+  "payload": [
+    {
+      "path": "src/native_node_tty_assembly_publication_control.zig",
+      "bytes": 3684,
+      "sha256": "753CF87C59A7D81C29EACE2BFF00EAA297E40EB161A75A2B328CC71F516CEF56"
+    }
+  ],
+  "inputs": "Fresh actual canonical composition/Engine; fail_after=0 finite first public allocation profile; later indices record actual partial-name observations without assumed positions",
+  "execution_grant": false,
+  "target_present": false,
+  "expected_outputs_present": false
+}

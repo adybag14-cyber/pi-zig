@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "parent": "db6fb97c3a5e3911c8f9ac031300b67b7cd0725d",
+  "supersedes_console_sha256": "F7963482BF3E51E431F8CD70C5A9A2F8A201BD2F98F975A2A10C1375A119EDBE",
+  "status": "SOURCE_ONLY_PREPARED_UNREVIEWED_UNRUN",
+  "scope": "Thread qualification admission only into SAME canonical closepool pre-open reservation for actual CRT fd>=3; stdio0..2 DirectHandle pool unchanged",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "bytes": 17834,
+      "sha256": "0F2CEA5443A2FCE83D97F17912214AE15441C79D87453660CBD667C788DE3051"
+    }
+  ],
+  "dependency": "Filesystem-owned additive canonical Pool.reserveForQualification and actual CRT ClosePacket.performForQualification; no substitute pool",
+  "default_activation": false,
+  "execution_grant": false
+}

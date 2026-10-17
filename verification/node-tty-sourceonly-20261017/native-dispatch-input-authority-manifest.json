@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "authority": [
+    {
+      "path": "authority/string_bytes.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/string_bytes.cc",
+      "bytes": 23915,
+      "sha256": "2251ED7F7AC53B8CEFC214D007B6776148F7A3B543496D0C2E4B9A0B592B39D9"
+    },
+    {
+      "path": "authority/stream-base-commons.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/internal/stream_base_commons.js",
+      "bytes": 7070,
+      "sha256": "898B8C327EB3AC6140E1BE1BF6584C353625488F0CCB6F579F465974C120456D"
+    },
+    {
+      "path": "authority/libuv-idna.c",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/idna.c",
+      "bytes": 12836,
+      "sha256": "8DDA206C0A115D54BA0C447D44CD734DAE7811A91B8527D110E82957B7BFBC9E"
+    }
+  ],
+  "selected": false,
+  "compiled": false,
+  "controls_executed": false,
+  "expected_values": []
+}

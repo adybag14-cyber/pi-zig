@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "parent": "9c5a65a425a0708af774384e9a768a029cff1795",
+  "original_source_manifest_sha256": "5B1BB506F3BDD9A51596BFB5FDBC8B81F94E7977F851129D9CA57F8F65C6D6F8",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "executed": false,
+  "peer_review": "pending exact corrective bytes",
+  "controls": "prepared/unrun; no expected packet",
+  "changes": [
+    "Drain first actual pending descriptor/property-key event before any owned field release; restore same reason using local h.success policy",
+    "Return same sealed defaults object from direct defaultOptions setter",
+    "Genuine native exotic descriptor plus pending first event and replacement-throwing field finalizer causal host control; no build target",
+    "Original setter.call identity and mutable default numericSeparator controls; fallback verified from retained source, no erroneous false override"
+  ],
+  "unchanged_authority_manifest": "verification/node-tty-sourceonly-20261017/util-dependency-authority-manifest.json",
+  "rows": [
+    {
+      "path": "src/extensions/native_node_util_error_name.zig",
+      "bytes": 4625,
+      "sha256": "B9811DCDB1C0352615E0F7D6C072DB31C9717BC9788682D5AB5A193E13FD63E7"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "bytes": 43411,
+      "sha256": "299422B0176223097493E5B24494F083E962D52E9355359BB4D3C3096C4EF615"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect_primitive.zig",
+      "bytes": 7666,
+      "sha256": "603C060FD65175878E796525C0E4212F65515236E618B1BDF7CDD8FC4D044E7D"
+    },
+    {
+      "path": "src/extensions/native_node_util_tty_dependencies.zig",
+      "bytes": 2351,
+      "sha256": "EB6A7A08493422D660FBFE250C90F49930BCD2898C6097E8B08FD1B92428EE7F"
+    },
+    {
+      "path": "src/native_node_util_pending_descriptor_test.zig",
+      "bytes": 4907,
+      "sha256": "7E4580A0EB713FF5E6B3CEF0E450D15D7A4C947DAFC6548D043D0CA8CA588CC7"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-util-error-paths.mjs",
+      "bytes": 5107,
+      "sha256": "EEFDD84A1C3662F82A70C4FC2A79ABF67DDF2096BB271015372B53140633F0D2"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/UTIL-TTY-DEPENDENCIES-SOURCE.md",
+      "bytes": 6265,
+      "sha256": "93566BE009542F527F2FDBB967FF4D591166EC664C1E4997CE7D18EFC4CBDD1C"
+    }
+  ]
+}

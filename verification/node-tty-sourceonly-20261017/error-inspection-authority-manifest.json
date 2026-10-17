@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "purpose": "Original internal/errors formatting dependency for continuing actual TTY error registration",
+  "path": "authority/internal-util-inspect.js",
+  "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/internal/util/inspect.js",
+  "bytes": 92944,
+  "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597",
+  "production_host_javascript": false,
+  "executed": false,
+  "expected_values": []
+}

@@ -1,0 +1,50 @@
+{
+  "schema": 1,
+  "parent": "2da8a9e4a8c64f206ec8957356e7fecb7a766591",
+  "scope": "actual Windows getSystemErrorName and finite consumed inspect/format dependency",
+  "source_only": true,
+  "selected": false,
+  "peer_closed": false,
+  "compiled": false,
+  "executed": false,
+  "controls": "prepared/unrun",
+  "expected_packet": "absent",
+  "unsupported": "explicit capabilities in UTIL-TTY-DEPENDENCIES-SOURCE.md",
+  "rows": [
+    {
+      "path": "src/extensions/native_node_util_error_name.zig",
+      "bytes": 4625,
+      "sha256": "B9811DCDB1C0352615E0F7D6C072DB31C9717BC9788682D5AB5A193E13FD63E7"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "bytes": 42503,
+      "sha256": "7550438D7412F7D2FA1F958C51148F360DAC557FA7C92F4810BC0891E8CE5F68"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect_primitive.zig",
+      "bytes": 7666,
+      "sha256": "603C060FD65175878E796525C0E4212F65515236E618B1BDF7CDD8FC4D044E7D"
+    },
+    {
+      "path": "src/extensions/native_node_util_tty_dependencies.zig",
+      "bytes": 2351,
+      "sha256": "EB6A7A08493422D660FBFE250C90F49930BCD2898C6097E8B08FD1B92428EE7F"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/UTIL-TTY-DEPENDENCIES-SOURCE.md",
+      "bytes": 6265,
+      "sha256": "93566BE009542F527F2FDBB967FF4D591166EC664C1E4997CE7D18EFC4CBDD1C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-util-error-paths.mjs",
+      "bytes": 3749,
+      "sha256": "16CE71A51665488D0CAD95FC4FBDAEE002541995E17553A7A652F875FD3C8018"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/util-dependency-authority-manifest.json",
+      "bytes": 1869,
+      "sha256": "096421B7DE6A6E1A250B1BAFD52C1C83C96FA117E6FC1B80840F11D7F9AC88D4"
+    }
+  ]
+}

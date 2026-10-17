@@ -1,0 +1,76 @@
+{
+  "schema": 1,
+  "parent": "edd289975db2dce3f511d6e546b9404559e70c8a",
+  "root_engine_authority": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "status": "SOURCE_ONLY_ALIAS_PROPOSAL_UNREVIEWED_UNCOMPILED_UNRUN",
+  "scope": "Explicit canonical builtin alias API plus TTY actualnamespace/CJS/hostrequire identity; no sharedC/H/defaultactivation",
+  "payload": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 88705,
+      "sha256": "B4B06E1AE392556305B33913F05C04FDACFDB6B2494038150EEA893A995B2041"
+    },
+    {
+      "path": "src/extensions/native_builtin_alias_normalize.zig",
+      "bytes": 2274,
+      "sha256": "F07DECD53D42665D1443921FC04271FBE35499F45C5AE98DC39FF14B5919AFF7"
+    },
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 28529,
+      "sha256": "9EEB75DDF6504FAA930757026020ABDA2DE862310F262EBA4018D9F23C7595F8"
+    },
+    {
+      "path": "src/native_node_tty_builtin_alias_control.zig",
+      "bytes": 7407,
+      "sha256": "F81E83433882278C2A3A27C447B7EC1D85C4CBFEFC73A751ED316B3D94360F3F"
+    },
+    {
+      "path": "src/native_node_tty_assembly_identity_control.zig",
+      "bytes": 8159,
+      "sha256": "5E57FC4297BD5E329405E9F01643F373BDE22F5132F77595EA197D9FA3BF16D4"
+    },
+    {
+      "path": "src/native_node_tty_assembly_publication_control.zig",
+      "bytes": 3732,
+      "sha256": "974CDBA861E0FF23C82A30F8361926723AFC10920F629C309CA48EAA53F6C815"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/original-alias-identity.mjs",
+      "bytes": 997,
+      "sha256": "1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/BUILTIN-ALIAS-SOURCE.md",
+      "bytes": 4812,
+      "sha256": "05F030729C1ADF6C76DA9BEB03E60483AFD08CE64EE039DB1F79ABF65336B335"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/authority-quickjs-default-normalizer.c.txt",
+      "bytes": 1594,
+      "sha256": "EF00AD001C29407F68D61CE1E0360BFD2C172B3FF9F8EF78A063528794F75215"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/alias-bfb-projection.json",
+      "bytes": 932,
+      "sha256": "F97C22B7E2F0188D1194FC14A8A7059C859375C9EE3100F3953658A0F75E31FF"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/engine-alias-on-bfb.patch",
+      "bytes": 8344,
+      "sha256": "3B76749A9FBA59D34535CFB2927728B9BF53C6EBD62917CD54785CC5D5C82A4B"
+    }
+  ],
+  "quickjs_authority": {
+    "path": "vendor/quickjs/quickjs.c",
+    "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+    "function": "js_default_module_normalize_name",
+    "start_character": 1057040,
+    "characters": 1594
+  },
+  "bfb_projection": "Exact canonical Bfb patch applies/reverses inprivateindex; reversal restores whole original Bfb tree; no oldEnginewholefileintake",
+  "execution_grant": false,
+  "expected_outputs_present": false,
+  "actual_metadata": null,
+  "dependency_packet": "FS59764 Socket/Hub/wake/closepool sourcepeer pending; actual Bfb prerequisite before concrete instantiation"
+}

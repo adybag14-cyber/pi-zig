@@ -65,17 +65,7 @@ fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roo
     return c.JS_DupValue(engine.context, value);
 }
 fn constructor(scope: *Scope) !c.JSValue {
-    const engine = scope.engine; if (engine.native_module_values.get(cache_key)) |cached| return cached;
-    const error_type = try scope.get(try core.owner(engine), "Error"); const symbol = try scope.own(try engine.checked(c.JS_NewSymbol(engine.context, "kIsNodeError", false)));
-    const base_proto = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, try scope.get(error_type, "prototype"))));
-    const base = try scope.own(try class.constructor(engine, "SystemError", 2, base_proto, construct, &.{ error_type, symbol, c.pi_js_bool(engine.context, 0) }));
-    if (c.JS_SetPrototype(engine.context, base, error_type) < 0) return js.capture(engine);
-    try define(scope, base_proto, "toString", try scope.own(try fnc.createMethod(engine, "toString", 0, toString, &.{})), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
-    const proto = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, base_proto)));
-    const node = try scope.own(try class.constructor(engine, "NodeError", 1, proto, construct, &.{ error_type, symbol, c.pi_js_bool(engine.context, 1) }));
-    if (c.JS_SetPrototype(engine.context, node, base) < 0) return js.capture(engine);
-    const retained = c.JS_DupValue(engine.context, node); errdefer engine.freeValue(retained);
-    try engine.native_module_values.put(engine.gpa, cache_key, retained); return node;
+    return scope.own(try @import("native_node_system_errors.zig").constructor(scope.engine, "ERR_SYSTEM_ERROR"));
 }
 pub fn retryFailure(scope: *Scope, vector: bool) !c.JSValue {
     var args = [_]c.JSValue{try scope.text(if (vector) "writev failed" else "write failed")};

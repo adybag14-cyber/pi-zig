@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "parent": "b99bfa627e5c84e70c60b173dd9f051a9aafbb80",
+  "supersedes_console_sha256": "0F2CEA5443A2FCE83D97F17912214AE15441C79D87453660CBD667C788DE3051",
+  "status": "SOURCE_ONLY_PREPARED_UNREVIEWED_UNRUN",
+  "scope": "Carry exact per-Lease qualification entitlement matching SAME canonical reserved close ticket; defaultguard preserved for startIo/beginClose/run",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "bytes": 17896,
+      "sha256": "D562152520B40FC59A7433DB7E9944E2419E9BF56A46C8364576CDEEC1C432BB"
+    }
+  ],
+  "dependency": "Filesystem-owned Lease.qualification_admission and immutable ticket equality before submit; exact successor pending source review",
+  "default_activation": false,
+  "execution_grant": false
+}

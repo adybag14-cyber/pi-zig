@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "prepared original input specification; unrun; expected absent",
+  "reference": "Node24.14 retained original libuv uv_tty_try_write after actual uv_tty_set_vterm_state(UV_TTY_UNSUPPORTED)",
+  "subject": "real private console native Decoder.writeBlocking with the same explicit reference legacy mode",
+  "owner": "Root must provide two actual independently owned private console screen buffers in the same isolated console-host process; no user terminal or framed worker pipe",
+  "observations": ["actual write return/error", "GetConsoleScreenBufferInfo", "GetConsoleCursorInfo", "ReadConsoleOutputW characters and attributes", "write callback/backpressure ordering through actual TTY classes in a separate original caller control"],
+  "cases": [
+    {"name":"split color sequence", "chunks_utf8":["before\u001b", "[3", "1mred\u001b[0m after"]},
+    {"name":"all supported SGR color/brightness/inverse commands", "chunks_utf8":["\u001b[30;40mA\u001b[37;47mB\u001b[1mC\u001b[2mD\u001b[5mE\u001b[7mF\u001b[21mG\u001b[22mH\u001b[25mI\u001b[27mJ\u001b[39mK\u001b[49mL\u001b[90;100mM\u001b[97;107mN\u001b[mO"]},
+    {"name":"relative and absolute caret with virtual viewport bounds", "chunks_utf8":["\u001b[2A\u001b[B\u001b[3C\u001b[D\u001b[E\u001b[F\u001b[5G\u001b[2;3H\u001b[1;1f\u001b[65535A\u001b[65535C"]},
+    {"name":"erase line and screen modes", "chunks_utf8":["0123456789\u001b[4G\u001b[K\u001b[1K\u001b[2K\u001b[J\u001b[1J\u001b[2J"]},
+    {"name":"invalid erase argument still flushes preceding text", "chunks_utf8":["prefix\u001b[9Jsuffix\u001b[9Kend"]},
+    {"name":"save and restore only actual Source attributes", "chunks_utf8":["\u001b[1;5m\u001b7\u001b[2;31m\u001b[5;8H\u001b8\u001b[s\u001b[1;1H\u001b[u"]},
+    {"name":"cursor visibility and all accepted shape arguments", "chunks_utf8":["\u001b[?25l\u001b[?25h\u001b[0 q\u001b[1 q\u001b[2 q\u001b[3 q\u001b[4 q\u001b[5 q\u001b[6 q\u001b[7 q"]},
+    {"name":"invalid DECSCUSR first byte and later final", "chunks_utf8":["\u001b[2 !AZ", "\u001b[2 \nqZ"]},
+    {"name":"CSI unsigned-short final-digit wrap and next digit", "chunks_utf8":["\u001b[65539;31mA", "\u001b[655399mB", "\u001b[65540mC"]},
+    {"name":"exact four argument maximum and ignored unsupported color profile", "chunks_utf8":["\u001b[1;2;3;4;31mA\u001b[38;2;1;2;3mB\u001b[38;5;196mC"]},
+    {"name":"quoted unsupported string control across writes", "chunks_utf8":["A\u001b]title\"quoted\u0007", "inside\\\"still\"\u0007B\u001bPignored\u001b", "\\C"]},
+    {"name":"double escape and unsupported single-character controls", "chunks_utf8":["A\u001b\u001b[31mB\u001bMC\u001b!D"]},
+    {"name":"Unicode CSI versus invalid raw continuation byte", "chunks_hex":["c2", "9b33316d41", "9b33316d42"]},
+    {"name":"decoder reparse entering escape sequence", "chunks_hex":["e2", "1b5b33316d41", "e282", "ac1b5b306d"]},
+    {"name":"EOL carry survives ignored and interpreted escape codes", "chunks_utf8":["A\n", "\u001b[31m\rB\r", "\u001b[0m\nC"]},
+    {"name":"buffer flush and split escape at 8192 UTF16 boundary", "repeat_prefix":{"utf8":"x","count":8191}, "chunks_utf8":["\u001b[31m", "\u20ac\ud83d\ude00\u001b[0m"]},
+    {"name":"full reset uses captured initial screen and cursor state", "chunks_utf8":["\u001b[1;5;31mtext\u001b[?25l\u001b[3 q\u001bcafter"]}
+  ],
+  "additional_actual_native_failures": [
+    "Use a genuine owned console screen-buffer handle whose admitted OS access denies output; record actual API errors and parser carry after failed text followed by style/visibility/shape. Never fabricate Win32 errors or close an active owned IO handle.",
+    "For Source's resize retries, observe actual ERROR_INVALID_PARAMETER from a real owned private-console resize interleaving before claiming that branch. A nondeterministic attempt without this observation is not an accepted retry control.",
+    "A failed real GetConsoleScreenBufferInfo is terminal in the subject; the original move helper's subsequent uninitialized-memory use has no deterministic result to invent. Retain this explicit source safety deviation."
+  ]
+}

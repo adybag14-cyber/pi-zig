@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "parent": "7468bc69b0a5d35eee2e9a775bd94359543fef92",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "findings": [
+    "Normalize actual owned requireBuiltin result through local success/pending boundary before Scope ownership/nextgetter",
+    "Remove eager live os.default/release getter preflight; require real registration only, Source color callback stays lazy",
+    "Escrow capture history; rank actual events outside bothslots; retire each new assembly Scope/ownedroot separately; fresh cleanup nativefatal promotes ordinary and firstfatal remains"
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 28505,
+      "sha256": "D3AAB412CF19837505F3127DB2E9842F5E89C1AC75B368E1B60CD47F44F4C006"
+    },
+    {
+      "path": "src/extensions/native_node_tty_assembly_cleanup.zig",
+      "bytes": 3580,
+      "sha256": "32349190D50C9B48352C29AF00E9E692AB2987C9F826645A83201D15306173FB"
+    },
+    {
+      "path": "src/native_node_tty_assembly_event_control.zig",
+      "bytes": 11968,
+      "sha256": "26908236A0720D50F3B42366A181DE14BD18AFDEAB29B0EF4141ADC5E72EE632"
+    }
+  ],
+  "controls": [
+    "Actual node:module.default returns success+pending; actual next createRequire getter mustremainunread",
+    "Actual node:module.default returns sole nativeholder; createRequire getter throws B; finalizer ordinaryC cannotreplaceB",
+    "Same soleholder profile finalizer raises actual freshnativeOOM; promotedwinner exactidentity/rawtag/slots-empty/freeonce",
+    "Actual os.release getter throws; assembly reads0, firstactualWindows depth callreads1/exactreason"
+  ],
+  "execution_grant": false,
+  "actual_results": null,
+  "old_manifests_preserved": true,
+  "alias_engine_proposal": "Separate next unit authorized by Root; not in this corrective scope"
+}

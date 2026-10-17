@@ -1,0 +1,423 @@
+{
+  "source": "aba264e0e88ad7e69f2e2e2443df82207fd6869c",
+  "base": "9a34f1b200df4c62264198ee38a359c0fed9757e",
+  "copied": 76,
+  "already_exact": 7,
+  "rows": [
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "action": "new_missing",
+      "sha256": "48DD621F398687C52E465E84304EA7138655FD282CCD56761948E42242ED58D8"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_owner.zig",
+      "action": "new_missing",
+      "sha256": "A9F37F469EB3FA6DC7743919A9BC2CDEB34126EB0BF3E41711C2265343D10136"
+    },
+    {
+      "path": "src/extensions/native_node_tty.zig",
+      "action": "new_missing",
+      "sha256": "E2F7496C14C027A4C9C166FC37FC02D3C5B5B297E57E713DA7F9E28B68C68B9F"
+    },
+    {
+      "path": "src/extensions/native_node_system_errors.zig",
+      "action": "new_missing",
+      "sha256": "25473EB44A8A45E5F38F08FB6C7B9836DEEE8FAA95FD635B2A5CBF3581EDFCB6"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "action": "new_missing",
+      "sha256": "36AEDD6E26B998641BEF85CDE34E2D83FEF2872714C354CD12867A39D6E703D1"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect.zig",
+      "action": "new_missing",
+      "sha256": "3A08CCF01FD7FC70CE4129276D8DC1E742243CA12D8D9516066041C5FC18DA7B"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_close.zig",
+      "action": "new_missing",
+      "sha256": "7D1C36DF528F33B5B00B02316ABD53D1932147A6C16A7B92FA36E6EE1AE6C052"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_factory.zig",
+      "action": "new_missing",
+      "sha256": "9EE2C0651BA8832CF15D092C9FDEE2D80EC14A52ED897ABA35BC2300F144AB1F"
+    },
+    {
+      "path": "src/extensions/native_node_tty_values.zig",
+      "action": "new_missing",
+      "sha256": "E7EBFF62ACFEF87BA1DFF926B0014A826EF835639F3FDD59125AB766D58E50B5"
+    },
+    {
+      "path": "src/extensions/native_node_error_class.zig",
+      "action": "new_missing",
+      "sha256": "DEAD34C0AB9E6D3315433057FE74F0F81746583C11B5B54DC7E1FCD39028A934"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_keys.zig",
+      "action": "new_missing",
+      "sha256": "A18ED3F4EA1F85E24B3549C3CCD123A2C8AFE934B1E2C36AADF0BC37FF340CD1"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_output.zig",
+      "action": "new_missing",
+      "sha256": "A2422C74988EB628FB5EBB656F077DF0A71821F6B576066C5005DF82C2F73390"
+    },
+    {
+      "path": "src/extensions/native_node_tty_frontend_mode.zig",
+      "action": "new_missing",
+      "sha256": "9D32192D0ABDDFE8EF153833ACBC26B49C52625F73BE9E58ABCDF67F2A273CBF"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_errors.zig",
+      "action": "new_missing",
+      "sha256": "D69C13E94FFE4F8CC343DF1806A8BD7AE4587BD912410540446DB0F0C4DEA46D"
+    },
+    {
+      "path": "src/extensions/native_node_util_error_name.zig",
+      "action": "new_missing",
+      "sha256": "B9811DCDB1C0352615E0F7D6C072DB31C9717BC9788682D5AB5A193E13FD63E7"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_modes.zig",
+      "action": "new_missing",
+      "sha256": "00B8F708447DAB38B7D3A854B5EA729C7DB1E0B4FF7433046C0437946EB14600"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "action": "new_missing",
+      "sha256": "26E0C56F5E88BE1D094E3DC4A53D42286DEC33815A109DADC5958041C9EA0068"
+    },
+    {
+      "path": "src/extensions/native_node_tty_error_messages.zig",
+      "action": "new_missing",
+      "sha256": "ED6773D4F3BED294BD69A85B589A11E26FDC3BD0CC8303484533E8A1C867E254"
+    },
+    {
+      "path": "src/extensions/native_node_util_inspect_primitive.zig",
+      "action": "new_missing",
+      "sha256": "603C060FD65175878E796525C0E4212F65515236E618B1BDF7CDD8FC4D044E7D"
+    },
+    {
+      "path": "src/extensions/native_node_tty_binding.zig",
+      "action": "new_missing",
+      "sha256": "54518A5A8B77DEF3805C89501B1C7A24DC155BFD13F6529B500D66EACB44724D"
+    },
+    {
+      "path": "src/extensions/native_node_tty_errors.zig",
+      "action": "new_missing",
+      "sha256": "446F5A28858D9032025ACF235EE6237E0CCF5F369225780E887B2B84EB97B61E"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_legacy.zig",
+      "action": "new_missing",
+      "sha256": "37B7E8603302AE303455BB56FFDD4A33145A735E9E0BF03D7A1349195417CB31"
+    },
+    {
+      "path": "src/extensions/native_node_util_tty_dependencies.zig",
+      "action": "new_missing",
+      "sha256": "EB6A7A08493422D660FBFE250C90F49930BCD2898C6097E8B08FD1B92428EE7F"
+    },
+    {
+      "path": "src/extensions/native_node_tty_dispatch.zig",
+      "action": "new_missing",
+      "sha256": "A01538AD68631F74063BCB5B43B975794A2D9883BB38AAEAB88A200FEA8A56FB"
+    },
+    {
+      "path": "src/extensions/native_node_tty_colors.zig",
+      "action": "new_missing",
+      "sha256": "9E295B7372F204C87A485548EA97B60E0B91CA4518378EC44901C9A64163C6B1"
+    },
+    {
+      "path": "src/native_node_tty_factory_boundary_test.zig",
+      "action": "new_missing",
+      "sha256": "37608A1B66C096FACCF87FEF77F6BB856549C855345450D86A1FF3C698C07911"
+    },
+    {
+      "path": "src/native_node_system_error_identity_test.zig",
+      "action": "new_missing",
+      "sha256": "5DFDAA6D20C9EE8719190CB8128CEE654941B9839DFC4EE18C7090DA5BE23058"
+    },
+    {
+      "path": "src/native_node_util_pending_descriptor_test.zig",
+      "action": "new_missing",
+      "sha256": "CF63C6ED578DDF980C1429BC25F5AE3A774974C214DC59AAFCDCBBB34967FA93"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "DF7218F77554E82F3CF2034760A160FECCB3807DFDACA6EC277EC92B3688F262"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/error-inspection-authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "63465B5623F83510396C7538019297A6E2B05DDDBD561320CEF5360BFA9729EA"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/NATIVE-BINDING-PROPOSAL.md",
+      "action": "new_missing",
+      "sha256": "AAF92406A6D48CF609E3D8C04678C47504FA2736730B9F7B284F1D07F38090DA"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/native-continuation-authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "738FFD6B79FC0245B1EE37D71F67F197DD7A14D6783948E01D741B389922E772"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/NATIVE-CONTROLS-PREPARED.md",
+      "action": "new_missing",
+      "sha256": "7BC23DE5D6A3B9EA21A2862626E1995D7764A29E42289EE592C63E8AD80110A9"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/native-dispatch-input-authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "21EC57BFC0B54E25B396053E5945B6D72841EBC694CCB4065637E080E7AD1EE5"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/native-error-authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "C84A5F46A4E4999902E89F2E7F8392736907B4B226097D0C4035DB3169B8807B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-console-output.mjs",
+      "action": "new_missing",
+      "sha256": "159DD2A87590A58155C7CE48F1EF68515F1D61DDE27B4E22EB726847E62D1302"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-consumers.mjs",
+      "action": "new_missing",
+      "sha256": "585A0E068F70012778D26FD1FA7259C0858D02BAAE4B8487EFC490F8B173CBA6"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-error-registration.mjs",
+      "action": "new_missing",
+      "sha256": "0B380FCA1FF7BC513A3043165B82E3D39AFF10E762D72631424D52215156FDA9"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-legacy-console-inputs.json",
+      "action": "new_missing",
+      "sha256": "E4C59C461CC012AB5DBA4E7ACE4EF2CDDC0012BE62A4E5A78CA59BE3C381B61C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-readline-callbacks.mjs",
+      "action": "already_exact",
+      "sha256": "C0F94C98070ADE7D3C3B3ECE279D6B31138281B4152ED9BA78189D12CB04F0DC"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-util-error-paths.mjs",
+      "action": "new_missing",
+      "sha256": "EEFDD84A1C3662F82A70C4FC2A79ABF67DDF2096BB271015372B53140633F0D2"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/readline-callbacks-cleanup-successor-manifest.json",
+      "action": "already_exact",
+      "sha256": "A09EC1A2E2BD410AB78FB88631EE674009DC2085738B4A5D986DDC9A1B44221A"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/readline-callbacks-hide-successor-manifest.json",
+      "action": "already_exact",
+      "sha256": "C800AE1745A1A288C71B85CA396588BA64F16D3EB875F32A3A689392ED6C5768"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/readline-callbacks-source-manifest.json",
+      "action": "already_exact",
+      "sha256": "E7BBD9DEDD616489BD0BEDE3A65FCDC0039DAC05D6DA1153258C024AA8CEF56B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/READLINE-CALLBACKS-SOURCE.md",
+      "action": "already_exact",
+      "sha256": "20D24247AB723132578CBB10505B5B58D3CF39B302D89327CD1AE37176B4B42B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/SHARED-ERROR-ADAPTER-PROPOSAL.md",
+      "action": "new_missing",
+      "sha256": "3C0CE01BB22654ECB008AA83E91D81824E4BC9CB878ACC633AF5A9EAA6A4099B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/SOURCE-IMPLEMENTATION.md",
+      "action": "new_missing",
+      "sha256": "6E61D49282E7D0704E2899593EB5CB6BAFAA62DF2E8538CB359EE84ABD5A6F06"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/util-dependency-authority-manifest.json",
+      "action": "new_missing",
+      "sha256": "096421B7DE6A6E1A250B1BAFD52C1C83C96FA117E6FC1B80840F11D7F9AC88D4"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/util-dependency-fatal-successor-manifest.json",
+      "action": "new_missing",
+      "sha256": "A7EE93F159768DDBA33DD64E75D5F750371F86FBB9554EA38D17F1122012FB89"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/util-dependency-review-successor-manifest.json",
+      "action": "new_missing",
+      "sha256": "21FC92EF3F2EF4FC35F89B44BACAAFF5872332C6A2BF3DF6DCF0F3A5354BAA7E"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/util-dependency-source-manifest.json",
+      "action": "new_missing",
+      "sha256": "5B1BB506F3BDD9A51596BFB5FDBC8B81F94E7977F851129D9CA57F8F65C6D6F8"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/UTIL-TTY-DEPENDENCIES-SOURCE.md",
+      "action": "new_missing",
+      "sha256": "93566BE009542F527F2FDBB967FF4D591166EC664C1E4997CE7D18EFC4CBDD1C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/warning-and-cache.mjs",
+      "action": "new_missing",
+      "sha256": "9D9D3D0C93B15EC0A9111AAB38E53FD3ED11D6FE9210FCAEBFAC004EFE04E8DB"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/windows-factory-errors-source-manifest.json",
+      "action": "new_missing",
+      "sha256": "1F752F49905BD9E3E76545BB90A548D3671A85A2059E10D26BC91B78E2FB71D7"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/WINDOWS-FACTORY-ERRORS-SOURCE.md",
+      "action": "new_missing",
+      "sha256": "9F583384A2963A8D6BC35C7D05832FD0BE664BD9EF57D7434023B68CBB4C6DC4"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/windows-legacy-output-source-manifest.json",
+      "action": "new_missing",
+      "sha256": "7C69BCB6FB8AC36AB127CD1310612A11437A9273B37135020B4E4E73B49FC6FF"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/WINDOWS-LEGACY-OUTPUT-SOURCE.md",
+      "action": "new_missing",
+      "sha256": "1D33510537CAD508178CFAE66E8B1B2F93A477BB4E47AC53F8ECE88E33449166"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/env.cc",
+      "action": "new_missing",
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-errors.js",
+      "action": "new_missing",
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-callbacks.js",
+      "action": "already_exact",
+      "sha256": "AF9B691F147976BCA019361B7BE1095C7EF8C059353CD948E518327F2B3D6F8F"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-readline-utils.js",
+      "action": "already_exact",
+      "sha256": "A0B8B7CB13DA3DF61BADE053AEBDD15D031CA8767399F726F047BCB5692D0FAF"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-tty.js",
+      "action": "new_missing",
+      "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-util-inspect.js",
+      "action": "new_missing",
+      "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-util.js",
+      "action": "new_missing",
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/internal-validators.js",
+      "action": "new_missing",
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-api-reference.h.txt",
+      "action": "new_missing",
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-errno-reference.h.txt",
+      "action": "new_missing",
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-idna.c",
+      "action": "new_missing",
+      "sha256": "8DDA206C0A115D54BA0C447D44CD734DAE7811A91B8527D110E82957B7BFBC9E"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-error.c",
+      "action": "new_missing",
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-handle.c",
+      "action": "new_missing",
+      "sha256": "36778077A3AD0FB0EE55CCDBA904E7393F74601BE72BE989110BE4EE26FF753D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-reference.h.txt",
+      "action": "new_missing",
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-stream.c",
+      "action": "new_missing",
+      "sha256": "C6BBFD9AE2948BFD4409D547F5F07B6C8495E4F0AE8E3F5D5C0117918E35B822"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-tty.c",
+      "action": "new_missing",
+      "sha256": "5DF3F88899BC4C6D85F80B54D4F4F14453359996A2C42693DE38EF90C5B9941D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/LICENSE.txt",
+      "action": "new_missing",
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/net.js",
+      "action": "new_missing",
+      "sha256": "347D5DB0206F222E11223E7B515457F837B400BD915070618883B6AA27496719"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/stream_base.cc",
+      "action": "new_missing",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/stream_wrap.cc",
+      "action": "new_missing",
+      "sha256": "FCA1B10EC090A78AC3CDA6496C4E6A47E340555113D9E2B5B5174E6C6D30ACB8"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/stream-base-commons.js",
+      "action": "new_missing",
+      "sha256": "898B8C327EB3AC6140E1BE1BF6584C353625488F0CCB6F579F465974C120456D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/string_bytes.cc",
+      "action": "new_missing",
+      "sha256": "2251ED7F7AC53B8CEFC214D007B6776148F7A3B543496D0C2E4B9A0B592B39D9"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/tty_wrap.cc",
+      "action": "new_missing",
+      "sha256": "9B0A591DD9970276EB5283D065D2E3E2646CA8972F9E3B2BA83D3579C4CB8710"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/tty.js",
+      "action": "new_missing",
+      "sha256": "9D05C1F3CBACB47623D49EEB09DD185CCA4D80BCDFB4ED769FDE90E0535FFE7B"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/util.js",
+      "action": "new_missing",
+      "sha256": "ACDB4AF5BEE8A080517799E8A37D2B89AA751B856CADC1B715584ECA8FA63626"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/uv.cc",
+      "action": "new_missing",
+      "sha256": "6B94AA57A608384DF2E563A5F841CB29C7553ABE5A3008AB9DDBC4A70876D989"
+    }
+  ]
+}

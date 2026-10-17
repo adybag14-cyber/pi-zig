@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_PRIVATE_INDEX_PROJECTION_NO_COMPILE",
+  "base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "base_engine_git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+  "base_engine_sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+  "prospective_tree": "cf2c1006cd9a00f49be57d9f9fba0a61652fa159",
+  "prospective_engine_sha256": "C04A16D26138C02D0162FF5D51D1DB3D68F5B06754873BAE9619567EADEEC875",
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\node-tty-alias-bfb-projection-sourceonly-20261017\\engine-alias-on-bfb.patch",
+    "sha256": "3B76749A9FBA59D34535CFB2927728B9BF53C6EBD62917CD54785CC5D5C82A4B"
+  },
+  "reversed_tree": "5141ffb694042427f314e86e240276041c78ff02",
+  "base_tree": "5141ffb694042427f314e86e240276041c78ff02",
+  "exact_reversal_preserves_all_bfb_changes": true,
+  "main_edits": false,
+  "execution_grant": false
+}

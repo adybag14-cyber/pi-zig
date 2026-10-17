@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "parent": "8bc0deafe5a4a4f8f72c30a67d7db1a566653465",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "finding": "Trusted direct host OutOfMemory must not become catchable ordinary cleanup event",
+  "correction": "If trusted OOM and no already selected NEW fatal, synthesize actual native allocation event then rank; existing first actual fatal survives without second synthesis; history remains outside currenteventclassification",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_assembly_cleanup.zig",
+      "bytes": 4026,
+      "sha256": "BFE43E095D61C726D618A45AB2679A632335967358FEDA4004EF546C9B0BC7EF"
+    },
+    {
+      "path": "src/native_node_tty_assembly_event_control.zig",
+      "bytes": 14487,
+      "sha256": "B13725E0D3732F9CB09B0826CC0AB72468C4D27DC8EF97A3FD7B4BDF0E89F972"
+    }
+  ],
+  "controls": [
+    "Forward genuine createRequire then arm actual failing GPA; sole native module holder finalizer ordinaryC cannotdowngrade trustedOOM",
+    "Same actual failingGPA profile with freshnativeOOM finalizerB; exactfirstfatalidentity and generationdelta1 verifies no second synthesis"
+  ],
+  "execution_grant": false,
+  "actual_results": null
+}

@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "scope": "Windows TTY factory and finite actual error registration; source-only",
+  "parent": "48bda3fb3b93f7ea0bfee2b156ea7c2e59c5d1d7",
+  "selected": false,
+  "executed": false,
+  "original_controls": "prepared/unrun; expected absent",
+  "reviewed_backend": false,
+  "dependencies": [
+    "actual canonical Socket/Hub/Scheduler/Wake/ClosePool module types",
+    "genuine internal/util/inspect exports and public util.getSystemErrorName",
+    "proposed shared SystemError registry and separately reviewed Body adapter",
+    "real embedded frontend original-mode authority where present"
+  ],
+  "rows": [
+    {
+      "path": "src/extensions/native_node_tty_binding.zig",
+      "bytes": 16194,
+      "sha256": "54518A5A8B77DEF3805C89501B1C7A24DC155BFD13F6529B500D66EACB44724D"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_owner.zig",
+      "bytes": 28353,
+      "sha256": "B3C97BC741740598883B28A97971D77B454C58462F95E614E973A2781CAA6E4D"
+    },
+    {
+      "path": "src/extensions/native_node_tty_errors.zig",
+      "bytes": 8389,
+      "sha256": "446F5A28858D9032025ACF235EE6237E0CCF5F369225780E887B2B84EB97B61E"
+    },
+    {
+      "path": "src/extensions/native_node_tty_error_messages.zig",
+      "bytes": 10760,
+      "sha256": "ED6773D4F3BED294BD69A85B589A11E26FDC3BD0CC8303484533E8A1C867E254"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_factory.zig",
+      "bytes": 3827,
+      "sha256": "9EE2C0651BA8832CF15D092C9FDEE2D80EC14A52ED897ABA35BC2300F144AB1F"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-error-registration.mjs",
+      "bytes": 2890,
+      "sha256": "04B146304BE3236653E600D4E868668AEAE269AA143FF8FEBB48ECCC241866AE"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/WINDOWS-FACTORY-ERRORS-SOURCE.md",
+      "bytes": 4123,
+      "sha256": "9F583384A2963A8D6BC35C7D05832FD0BE664BD9EF57D7434023B68CBB4C6DC4"
+    }
+  ]
+}

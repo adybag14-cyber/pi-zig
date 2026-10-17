@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_UNREVIEWED_UNCOMPILED_UNRUN",
+  "root_base": "9a34f1b200df4c62264198ee38a359c0fed9757e",
+  "reviewed_import_checkpoint": "b8b9310dca5a1e9baf5ab4b2250a0d544335b1cb",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 24396,
+      "sha256": "BE8595BCD8D63473F22BE166DC456764CE257466514FFCB1CF6A67DD4FF78F1D"
+    },
+    {
+      "path": "src/extensions/native_node_tty_frontend_assembly.zig",
+      "bytes": 3716,
+      "sha256": "C195ECB182B563E46122912F93841062A2989DE2BCF8FE8E8250A84424B827CE"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "bytes": 17582,
+      "sha256": "F7963482BF3E51E431F8CD70C5A9A2F8A201BD2F98F975A2A10C1375A119EDBE"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "bytes": 11152,
+      "sha256": "D68DC0445EEA4FEA535617B774BA88962DF7DD1CB0B0C1884EE6189161EC6B25"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_owner.zig",
+      "bytes": 29999,
+      "sha256": "68BACC6F60C86E43E6A0FAC4630151526E8FB99320769216FEE46D58A5BFFFC1"
+    },
+    {
+      "path": "src/native_node_tty_assembly_identity_control.zig",
+      "bytes": 7585,
+      "sha256": "68F8572573E4C855D674DB72651175750AC7506C712FABB48FEC8C3347579EBE"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/original-builtin-identities.mjs",
+      "bytes": 2261,
+      "sha256": "6EC91BA74898F90CB6269D838A1A003A12D0FA87CB5B717714FBD386D2D92E4F"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/ASSEMBLY-SOURCE.md",
+      "bytes": 6556,
+      "sha256": "BE43DD8658049F7A5230A3C907BFFDE79F18197BE86549C040EF07143C9AFBBD"
+    }
+  ],
+  "default_activation": false,
+  "execution_grant": false,
+  "actual_metadata": null,
+  "expected_outputs_present": false,
+  "dependencies": "Exact canonical Socket/Hub/wake/Scheduler/ClosePool closure and concrete target pending; no placeholder instantiation",
+  "preserved": "Main/shared Engine/C/H/stream core and historical proofs untouched"
+}

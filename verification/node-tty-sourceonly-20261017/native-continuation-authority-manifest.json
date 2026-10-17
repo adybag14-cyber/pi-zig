@@ -1,0 +1,29 @@
+{
+  "schema": 1,
+  "source_only": true,
+  "previous_authority_manifest": "authority-manifest.json",
+  "authority": [
+    {
+      "path": "authority/stream_base.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/stream_base.cc",
+      "bytes": 28310,
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "authority/stream_wrap.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/stream_wrap.cc",
+      "bytes": 13099,
+      "sha256": "FCA1B10EC090A78AC3CDA6496C4E6A47E340555113D9E2B5B5174E6C6D30ACB8"
+    },
+    {
+      "path": "authority/net.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/net.js",
+      "bytes": 70232,
+      "sha256": "347D5DB0206F222E11223E7B515457F837B400BD915070618883B6AA27496719"
+    }
+  ],
+  "native_selected": false,
+  "compiled": false,
+  "controls_executed": false,
+  "expected_values": []
+}

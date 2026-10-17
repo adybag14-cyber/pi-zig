@@ -1,0 +1,56 @@
+{
+  "schema": 1,
+  "parent": "fc8dfdb15aa10feda3c1e15291e9149ea4ed28d0",
+  "scope": "actual supported libuv legacy Windows console output/parser and native integration",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "executed": false,
+  "controls": "17 actual original input specifications; unrun",
+  "reference_driver": "not authored/executed; Root original linked-libuv closure/review/grant required",
+  "expected_packet": "absent",
+  "safety_deviation": "Actual GetConsoleScreenBufferInfo failure is terminal; do not read original uninitialized info",
+  "shared_C_header_Engine_edits": false,
+  "rows": [
+    {
+      "path": "src/extensions/native_node_tty_windows_legacy.zig",
+      "bytes": 17594,
+      "sha256": "37B7E8603302AE303455BB56FFDD4A33145A735E9E0BF03D7A1349195417CB31"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_output.zig",
+      "bytes": 8686,
+      "sha256": "A2422C74988EB628FB5EBB656F077DF0A71821F6B576066C5005DF82C2F73390"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "bytes": 17107,
+      "sha256": "48DD621F398687C52E465E84304EA7138655FD282CCD56761948E42242ED58D8"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/WINDOWS-LEGACY-OUTPUT-SOURCE.md",
+      "bytes": 4951,
+      "sha256": "1D33510537CAD508178CFAE66E8B1B2F93A477BB4E47AC53F8ECE88E33449166"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/original-legacy-console-inputs.json",
+      "bytes": 4089,
+      "sha256": "E4C59C461CC012AB5DBA4E7ACE4EF2CDDC0012BE62A4E5A78CA59BE3C381B61C"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-reference.h.txt",
+      "bytes": 33836,
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/libuv-win-tty.c",
+      "bytes": 79053,
+      "sha256": "5DF3F88899BC4C6D85F80B54D4F4F14453359996A2C42693DE38EF90C5B9941D"
+    },
+    {
+      "path": "verification/node-tty-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ]
+}

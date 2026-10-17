@@ -1,0 +1,60 @@
+{
+  "schema": 1,
+  "origin": "https://github.com/nodejs/node/tree/v24.14.0",
+  "execution": false,
+  "windows_errno_source_inventory": {
+    "source_count": 85,
+    "authored_count": 85,
+    "missing": 0,
+    "extra": 0,
+    "numeric_drift": 0,
+    "method": "read-only regex inventory; no generator/compiler/runtime"
+  },
+  "rows": [
+    {
+      "path": "authority/util.js",
+      "bytes": 16456,
+      "sha256": "ACDB4AF5BEE8A080517799E8A37D2B89AA751B856CADC1B715584ECA8FA63626"
+    },
+    {
+      "path": "authority/internal-util.js",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "path": "authority/uv.cc",
+      "bytes": 5261,
+      "sha256": "6B94AA57A608384DF2E563A5F841CB29C7553ABE5A3008AB9DDBC4A70876D989"
+    },
+    {
+      "path": "authority/internal-util-inspect.js",
+      "bytes": 92944,
+      "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597"
+    },
+    {
+      "path": "authority/internal-errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "authority/internal-validators.js",
+      "bytes": 19090,
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "authority/libuv-api-reference.h.txt",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "authority/libuv-errno-reference.h.txt",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "authority/LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ]
+}

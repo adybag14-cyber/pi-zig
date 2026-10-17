@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "node_version": "24.14.0",
+  "base": "65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7",
+  "source_only": true,
+  "selected": false,
+  "compiled": false,
+  "ast_checked": false,
+  "reference_controls_executed": false,
+  "runtime_pass": false,
+  "expected_values_present": false,
+  "authority": [
+    {
+      "path": "authority/tty.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/tty.js",
+      "bytes": 5045,
+      "sha256": "9D05C1F3CBACB47623D49EEB09DD185CCA4D80BCDFB4ED769FDE90E0535FFE7B"
+    },
+    {
+      "path": "authority/internal-tty.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/internal/tty.js",
+      "bytes": 7150,
+      "sha256": "996AE301EE60854817401545811FD908C332CD3ED071C6A498D211CCDD9A932D"
+    },
+    {
+      "path": "authority/internal-validators.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/internal/validators.js",
+      "bytes": 19090,
+      "sha256": "AD6BCC8FE41AFAD0DF0C0D92A5700F4F1797BFCFBD934F00EEA918694DF4539D"
+    },
+    {
+      "path": "authority/internal-errors.js",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/internal/errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "authority/tty_wrap.cc",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/tty_wrap.cc",
+      "bytes": 5690,
+      "sha256": "9B0A591DD9970276EB5283D065D2E3E2646CA8972F9E3B2BA83D3579C4CB8710"
+    },
+    {
+      "path": "authority/libuv-win-tty.c",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/tty.c",
+      "bytes": 79053,
+      "sha256": "5DF3F88899BC4C6D85F80B54D4F4F14453359996A2C42693DE38EF90C5B9941D"
+    },
+    {
+      "path": "authority/libuv-win-handle.c",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/handle.c",
+      "bytes": 3987,
+      "sha256": "36778077A3AD0FB0EE55CCDBA904E7393F74601BE72BE989110BE4EE26FF753D"
+    },
+    {
+      "path": "authority/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/LICENSE",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    }
+  ],
+  "retained_builtin_authority": {
+    "path": "evidence/web-body-node24-source-first-20261015-node-builtin-authorities.json",
+    "sha256": "0CD86676BB2A46A4E772D1FD8BB3D00FCA658383BC388846DCC796547DC79263",
+    "tty_lf_equal": true,
+    "internal_tty_lf_equal": true
+  }
+}
