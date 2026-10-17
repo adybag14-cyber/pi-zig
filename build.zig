@@ -1382,6 +1382,12 @@ pub fn build(b: *std.Build) void {
     native_async_body_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-async-function-body-proposal", "Compile reviewed native AsyncFunction body proposal after genuine Source capture").dependOn(&native_async_body_tests.step);
     b.step("test-native-async-function-body-proposal", "Qualify reviewed genuine native AsyncFunction brand return Await realm and ownership").dependOn(&b.addRunArtifact(native_async_body_tests).step);
+    const agent_af_correction_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_af_correction_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Agent AF correction"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_af_correction_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(agent_af_correction_tests.root_module, sqlite_lib_dir, sqlite_library);
+    agent_af_correction_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-agent-af-corrections", "Compile actual Agent constructor fatal and iterator interrupt controls after separate admission").dependOn(&agent_af_correction_tests.step);
+    b.step("test-native-agent-af-corrections", "Run reviewed actual VM Agent AF fatal-boundary controls").dependOn(&b.addRunArtifact(agent_af_correction_tests).step);
     const native_async_qualification_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_function_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{ "native async body proposal", "native async generator functional", "native AI JSON actual OpenAI request builder", "native AI JSON OpenAI decoder", "native AI JSON helpers and native partial fallback", "native AI JSON genuine b06 delegates", "native AI JSON private hooks", "native AI JSON ordinary no-hook", "native borrowed view span" }, .use_llvm = use_llvm });
     linkQuickJs(b, native_async_qualification_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(native_async_qualification_tests.root_module, sqlite_lib_dir, sqlite_library);

@@ -33,7 +33,15 @@ pub fn set(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) 
 }
 pub fn construct(s: *Scope, constructor: c.JSValue, args: []const c.JSValue) !c.JSValue {
     const generation = s.engine.native_allocation_generation;
-    return s.own(try guard(s.engine, generation, s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, @intCast(args.len), @constCast(args.ptr)))));
+    const result = try guard(s.engine, generation, s.engine.checked(c.JS_CallConstructor(s.engine.context, constructor, @intCast(args.len), @constCast(args.ptr))));
+    var owned = true; errdefer if (owned) s.engine.freeValue(result);
+    if (c.JS_HasException(s.engine.context)) return pendingFirst(s.engine, error.JavaScriptException);
+    // The actual global Promise constructor can consume an executor exception
+    // into its rejected idle Promise. Only a fresh PRIVATE reason deliberately
+    // marked uncatchable by that native callback is a trusted success-path exit.
+    if (s.engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) try body.rethrowRecognizedAllocation(s.engine, reason, generation);
+    owned = false; // Scope.own consumes/frees result even if its GPA append fails.
+    return s.own(result);
 }
 pub fn init(s: *Scope, slot: *c.JSValue) !c.JSValue {
     const owner = try s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null())));

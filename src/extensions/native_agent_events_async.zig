@@ -38,7 +38,13 @@ fn next(s: *p.Scope, owner: c.JSValue) !af.Action {
     if (s.engine.cancelled.load(.acquire) or (steps % 256 == 0 and blk: {
         s.engine.interrupts +|= 1;
         break :blk s.engine.interrupts > s.engine.options.interrupt_budget;
-    })) { _ = try s.engine.checked(c.JS_ThrowInternalError(s.engine.context, "interrupted")); unreachable; }
+    })) {
+        _ = c.JS_ThrowInternalError(s.engine.context, "interrupted");
+        const reason = c.JS_GetException(s.engine.context);
+        c.JS_SetUncatchableError(s.engine.context, reason);
+        _ = try s.engine.checked(c.JS_Throw(s.engine.context, reason));
+        unreachable;
+    }
     try s.put(owner, "steps", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, steps))));
     // Iterator step/result/done/value failures precede the Source loop body and
     // must not invoke return. The captured next method is never reread.
