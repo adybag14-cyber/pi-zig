@@ -1,0 +1,15 @@
+{
+  "status":"prepared-unrun",
+  "expected_files":[],
+  "observed_files":[],
+  "native_controls":[
+    {"id":"windows-stat-directory-no-execute-bits","input":"Real owned Windows directory, actual statSync/lstatSync numeric and BigInt paths.","observe":"Compare actual full mode/permission bits to later genuine Node24.14 observations; no directory-type-only proxy assertion."},
+    {"id":"readonly-file-directory-permissions","input":"Real owned writable and readonly files/directories, original permissions restored.","observe":"Actual Windows attribute-driven 0666/0444 calculation and no injected directory0111; POSIX real permission bits remain OS-derived."},
+    {"id":"throwing-global-bigint-getter","input":"Replace global BigInt with an owned throwing getter after actual module bootstrap.","observe":"Actual statSync/lstatSync bigint values and existing BigIntStats methods do not read guest global; original descriptor restored."},
+    {"id":"replaced-global-bigint-function","input":"Replace global BigInt with an owned logging function returning999n.","observe":"No replacement calls or altered metadata values; actual bootstrap intrinsic remains in use."},
+    {"id":"mode-receiver-and-property-coercion","input":"Actual returned BigIntStats _checkModeProperty called with mode getter receiver and property Symbol.toPrimitive returning directory type.","observe":"Mode getter/conversion order and hint match original source; proper receiver is retained."},
+    {"id":"raw-property-reason","input":"Actual BigIntStats method receives an owned property whose primitive conversion throws a raw object.","observe":"Exact ordinary object identity propagates; no globalBigInt getter, replacement error or fabricated value."},
+    {"id":"intrinsic-gc-lifetime","input":"Drop/replace globalBigInt then separately granted GC before numeric-to-BigInt stats creation/method call.","observe":"Engine's existing bootstrap-owned intrinsic stays live without a new root or freeing the borrowed Engine reference."},
+    {"id":"shared-stat-lstat-regression","input":"Run later granted actual Node/native mode+mutation controls over both shared callbacks and previously prepared symlink/junction controls.","observe":"The separate followup fixes both public routes without losing the reviewed lstat nofollow/error/fatal behavior; no old expected files rewritten."}
+  ]
+}
