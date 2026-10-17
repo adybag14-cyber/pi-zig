@@ -1,0 +1,10 @@
+{
+  "status": "reviewed_source_only",
+  "source_head": "ab062642bf75be48f509f13adbf921b264b622ed",
+  "reviewed_semantic_base": "b670ec34d53471f25e81e387048d5506a334123d",
+  "reviewer": "/root/body_validation_resume",
+  "patch_sha256": "45D301A40255DDAEF494C6366DA468944164A325A78930271F3ECF6B6357AA16",
+  "controls_executed": false,
+  "runtime_qualified": false,
+  "scope": "Actual buffered JS array ownership and callback ordering; preserves Root lexical/cast fixes"
+}

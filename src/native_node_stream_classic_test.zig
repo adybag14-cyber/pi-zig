@@ -67,3 +67,51 @@ test "native classic stream and decoder brands cannot be redirected to another n
         "native-stream-native-brand-boundary.mjs",
     ); engine.freeValue(result);
 }
+
+test "native classic writableBuffer exposes real queued entries for Socket byte accounting" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-writable-buffer-control"});
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try @import("extensions/native_node_stream.zig").install(engine, try scope.get(global, "process"));
+    try scope.put(global, "nativeCollect", try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, collect, "nativeCollect", 0))));
+    const result = try engine.evalModule(
+        "import {Writable,Duplex} from 'node:stream';import {finished} from 'node:stream/promises';import {Buffer} from 'node:buffer';"
+        ++ "const pending=[],seen=[];let original=0,replacement=0;const w=new Writable({decodeStrings:false,write(chunk,encoding,cb){seen.push([chunk,encoding]);pending.push(cb)}});const first=Buffer.from([1,2]);w.write(first);w.write('é','utf8',()=>original++);const a=w.writableBuffer,b=w.writableBuffer;if(a===b||a.length!==1||a[0]!==b[0]||a[0].chunk!=='é'||a[0].encoding!=='utf8'||typeof a[0].callback!=='function'||w._writableState.getBuffer()[0]!==a[0])throw Error('real pending entry snapshot');a[0].chunk='ø';a[0].callback=()=>replacement++;nativeCollect();pending.shift()();if(seen.length!==2||seen[1][0]!=='ø'||seen[1][1]!=='utf8'||w.writableBuffer.length!==0)throw Error('queued entry was copied or active item exposed');w.end();pending.shift()();await finished(w);if(original!==0||replacement!==1||w.writableBuffer.length!==0)throw Error('queued callback identity');"
+        ++ "let vector,complete;const v=new Writable({write(c,e,cb){cb()},writev(entries,cb){vector=entries;complete=cb}});v.cork();v.write(Buffer.from([3]));v.write(Buffer.from([4]));const q=v.writableBuffer;v.uncork();if(vector[0]!==q[0]||vector[1]!==q[1]||v.writableBuffer.length!==0)throw Error('writev copied actual queue entries');v.end();complete();await finished(v);"
+        ++ "let release,terminal,encodingReads=0;const marker={};const failed=new Writable({write(c,e,cb){release=cb}});failed.on('error',()=>{});failed.write(Buffer.from([1]));failed.write(Buffer.from([2]),e=>terminal=e);Object.defineProperty(failed.writableBuffer[0],'encoding',{get(){encodingReads++;throw Error('terminal path read encoding')}});const settled=finished(failed).catch(e=>e);failed.destroy(marker);release();await settled;if(terminal!==marker||encodingReads!==0)throw Error('queued terminal callback read wrong fields');"
+        ++ "for(const type of [Writable,Duplex]){const d=Object.getOwnPropertyDescriptor(type.prototype,'writableBuffer');if(d.configurable||d.enumerable||d.set!==undefined)throw Error('writableBuffer descriptor');const marker={};if(d.get.call({_writableState:{getBuffer(){return marker}}})!==marker||d.get.call({_writableState:null})!==null||d.get.call({})!==undefined)throw Error('live getBuffer lookup/falsy result')}export const proof=true;",
+        "native-writable-buffer-socket-seam.mjs",
+    ); engine.freeValue(result); engine.finishJob(); c.JS_RunGC(engine.runtime);
+}
+
+test "native writable buffered entry mutation releases replaced queued values before dispatch" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-writable-entry-gc-control"});
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try @import("extensions/native_node_stream.zig").install(engine, try scope.get(global, "process"));
+    const setup = try engine.evalModule("import {Writable} from 'node:stream';globalThis.gcWriter=new Writable({objectMode:true,write(c,e,cb){cb()}});gcWriter.cork();globalThis.replacedChunk={};globalThis.replacedEncoding={};globalThis.replacedCallback=function(){};globalThis.chunkWeak=new WeakRef(replacedChunk);globalThis.encodingWeak=new WeakRef(replacedEncoding);globalThis.callbackWeak=new WeakRef(replacedCallback);gcWriter.write(replacedChunk,replacedEncoding,replacedCallback);const entry=gcWriter.writableBuffer[0];entry.chunk={current:true};entry.encoding='utf8';entry.callback=()=>{};replacedChunk=null;replacedEncoding=null;replacedCallback=null;export const proof=true;", "native-writable-entry-gc-setup.mjs"); engine.freeValue(setup);
+    // Real VM weak-reference retirement, independent of finalizer callback
+    // scheduling. Only the mutable queued entry may retain these old values.
+    c.JS_ClearKeptObjects(engine.runtime); c.JS_RunGC(engine.runtime);
+    const check = try engine.evalModule("if(chunkWeak.deref()!==undefined||encodingWeak.deref()!==undefined||callbackWeak.deref()!==undefined)throw Error('replaced queued values retain duplicate native roots');if(gcWriter.writableBuffer.length!==1||!gcWriter.writableBuffer[0].chunk.current)throw Error('current queued entry retired');export const proof=true;", "native-writable-entry-gc-check.mjs"); engine.freeValue(check);
+}
+
+test "native scalar buffer slot retires before throwing chunk length and preserves null snapshot" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-writable-null-slot-control"});
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try @import("extensions/native_node_stream.zig").install(engine, try scope.get(global, "process"));
+    const result = try engine.evalModule("import {Writable} from 'node:stream';const marker={};let snapshot,writes=0;const w=new Writable({decodeStrings:false,write(c,e,cb){writes++;cb()}});w.cork();w.write('aa');w.writableBuffer[0].chunk={get length(){snapshot=w.writableBuffer;throw marker}};let caught;try{w.uncork()}catch(e){caught=e}const after=w.writableBuffer;if(caught!==marker||writes!==0||snapshot.length!==1||snapshot[0]!==null||after.length!==1||after[0]!==null||w._writableState.bufferedIndex!==0||!w._writableState.bufferProcessing)throw Error('scalar retirement/throw boundary differs from Source');export const proof=true;", "native-writable-null-before-length.mjs"); engine.freeValue(result);
+}
+
+test "native terminal buffered callbacks observe all entries until reset after callback loop" {
+    const engine = try em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit();
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"native-writable-terminal-buffer-control"});
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); const global = try scope.own(c.JS_GetGlobalObject(engine.context));
+    try @import("extensions/native_node_stream.zig").install(engine, try scope.get(global, "process"));
+    const result = try engine.evalModule("import {Writable} from 'node:stream';import {finished} from 'node:stream/promises';import {Buffer} from 'node:buffer';const marker={},seen=[];let release;const w=new Writable({write(c,e,cb){release=cb}});w.on('error',()=>{});w.write(Buffer.from([1]));w.write(Buffer.from([2]),e=>seen.push([e,w.writableBuffer]));w.write(Buffer.from([3]),e=>seen.push([e,w.writableBuffer]));const original=w.writableBuffer;w.end(e=>seen.push([e,w.writableBuffer]));const completion=finished(w).catch(e=>e);w.destroy(marker);release();await completion;if(seen.length!==3)throw Error('terminal callbacks lost');for(const [e,buffer]of seen)if(e!==marker||buffer.length!==2||buffer[0]!==original[0]||buffer[1]!==original[1])throw Error('terminal callback observed prematurely retired buffer');if(w.writableBuffer.length!==0||w._writableState.bufferedIndex!==0)throw Error('terminal buffer did not reset after callbacks');export const proof=true;", "native-writable-terminal-array-retention.mjs"); engine.freeValue(result); engine.finishJob();
+}

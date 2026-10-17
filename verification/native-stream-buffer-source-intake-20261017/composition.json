@@ -1,0 +1,49 @@
+{
+  "schema": "pi-zig-stream-writable-buffer-root675-source-only-v1",
+  "root": "C:\\Users\\adyba\\pi-zig\\main",
+  "root_base": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "observed_actual_root_head": "4c498582fa6c951c463bca4ae9540e8cedcb8f38",
+  "actual_root_stream_files_identical_to675": true,
+  "candidate": "ab062642bf75be48f509f13adbf921b264b622ed",
+  "reviewed_semantics": "b670ec34d53471f25e81e387048d5506a334123d",
+  "patch": "C:\\Users\\adyba\\pi-zig\\evidence\\native-stream-writable-buffer-root675252b2-to-ab062642-source-only-20261017.patch",
+  "patch_sha256": "45D301A40255DDAEF494C6366DA468944164A325A78930271F3ECF6B6357AA16",
+  "apply_check_actual_root_exit": 0,
+  "apply_check675_private_index_exit": 0,
+  "apply_check_diagnostics": [],
+  "virtual675_tree": "72ec702c65e1e03817af1d54647bddd2c0321d76",
+  "changed_count": 2,
+  "paths": [
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "blob": "6877c748135c4803e3b225fc41f5351c25170456",
+      "sha256": "31D3CE24AF80452CC717DEE9BEB0F0A41C3DC68C141DEF08436FB7B7355FFB48"
+    },
+    {
+      "path": "src/native_node_stream_classic_test.zig",
+      "blob": "1dff88843f60193217c82ec2edfc9d3520fd4de1",
+      "sha256": "945247F173A78DCF5E241E1B12F26CC4471607F2D793F127D482F603BD8AADCD"
+    }
+  ],
+  "preserved_root_core_differences": [
+    "finalize/mark local state -> stream_state",
+    "tick parameter callback -> callback_fn",
+    "constructor enum array index explicit @intCast"
+  ],
+  "classic_test_opaque_function_rename_preserved": true,
+  "normalizing_only_root_core_names_and_index_cast_matches_reviewed_b670_text": true,
+  "reviewed_b670_core_sha256": "4300248E61411E0504CA16F93CD0007EA0D3E8F2CA33FC5605961340716A6190",
+  "reviewed_b670_test_sha256": "945247F173A78DCF5E241E1B12F26CC4471607F2D793F127D482F603BD8AADCD",
+  "new_source_behavior_beyond_reviewed_b670": false,
+  "all_other_root675_git_objects_preserved": true,
+  "diff_check_exit": 0,
+  "diff_check": [],
+  "retained_private_index": "C:\\Users\\adyba\\pi-zig\\evidence\\native-stream-writable-buffer-root675252b2-ab062642-virtual.index",
+  "retained_private_index_sha256": "1A5E856BDC21A4CA5EC13190D8C78A178DC271A0195294E61DE9A528F816244B",
+  "root_worktree_or_index_edited": false,
+  "source_fixtures_or_expected_edited": false,
+  "C_header_Engine_edited": false,
+  "controls_run": false,
+  "Node_Zig_native_jobs": false,
+  "fmt_AST_run": false
+}

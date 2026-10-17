@@ -33,6 +33,11 @@ pub const State = struct {
     after_info: c.JSValue,
     transform_callback: c.JSValue,
     destroy_record: c.JSValue,
+    buffered: c.JSValue,
+    has_buffered: bool = false,
+    buffered_index: usize = 0,
+    all_buffers: bool = true,
+    all_noop: bool = true,
     queue: std.ArrayList(Item) = .empty,
     end_callbacks: std.ArrayList(c.JSValue) = .empty,
     pipes: std.ArrayList(c.JSValue) = .empty,
@@ -93,7 +98,7 @@ const Op = enum(c_int) {
 };
 fn finalize(rt: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const stream_state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record }) |root| c.JS_FreeValueRT(rt, root);
+    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record, stream_state.buffered }) |root| c.JS_FreeValueRT(rt, root);
     for (stream_state.queue.items) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
     if (stream_state.current) |item| { c.JS_FreeValueRT(rt, item.chunk); c.JS_FreeValueRT(rt, item.encoding); c.JS_FreeValueRT(rt, item.callback); }
     for (stream_state.end_callbacks.items) |root| c.JS_FreeValueRT(rt, root);
@@ -103,7 +108,7 @@ fn finalize(rt: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
 }
 fn mark(rt: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const stream_state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record }) |root| c.JS_MarkValue(rt, root, visit);
+    inline for (.{ stream_state.owner, stream_state.error_value, stream_state.decoder_value, stream_state.default_encoding, stream_state.text_encoding, stream_state.after_info, stream_state.transform_callback, stream_state.destroy_record, stream_state.buffered }) |root| c.JS_MarkValue(rt, root, visit);
     for (stream_state.queue.items) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
     if (stream_state.current) |item| { c.JS_MarkValue(rt, item.chunk, visit); c.JS_MarkValue(rt, item.encoding, visit); c.JS_MarkValue(rt, item.callback, visit); }
     for (stream_state.end_callbacks.items) |root| c.JS_MarkValue(rt, root, visit);
@@ -187,6 +192,29 @@ fn addItem(s: *State, chunk: c.JSValue, enc: c.JSValue, cb: c.JSValue, length: u
     errdefer item.free(s.engine);
     if (front) try s.queue.insert(s.engine.gpa, 0, item) else try s.queue.append(s.engine.gpa, item);
     s.length += length;
+}
+fn getBuffer(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    const selected: *State = @ptrCast(@alignCast(c.JS_GetOpaque(receiver, try classId(&scope, .writable)) orelse return error.RequiredRealNativeNodeStreamState));
+    if (selected.engine != engine or selected.side != .writable) return error.RequiredRealNativeNodeStreamState;
+    const result = if (!selected.has_buffered) try scope.array() else try scope.call(try scope.get(try owner(engine), "arraySlice"), try scope.own(c.JS_DupValue(engine.context, selected.buffered)), &.{c.JS_NewInt64(engine.context, @intCast(selected.buffered_index))});
+    return c.JS_DupValue(engine.context, result);
+}
+fn bufferedValues(engine: *em.Engine, buffered: c.JSValue, index: usize, failed_write: bool) !Item {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    const entry = entry: {
+        const held = c.JS_DupValue(engine.context, buffered); defer engine.freeValue(held);
+        break :entry try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, held, @intCast(index))));
+    };
+    const chunk = try scope.get(entry, "chunk");
+    const enc = if (failed_write) c.pi_js_undefined() else try scope.get(entry, "encoding");
+    const callback_value = try scope.get(entry, "callback");
+    // No duplicate queued values survive live entry mutation. Only the Source
+    // dispatch/destructuring locals get owned values, and entry is dropped now.
+    return .{ .chunk = c.JS_DupValue(engine.context, chunk), .encoding = c.JS_DupValue(engine.context, enc), .callback = c.JS_DupValue(engine.context, callback_value), .size = 0 };
+}
+fn resetBuffer(s: *State) void {
+    s.set(&s.buffered, c.pi_js_null()); s.has_buffered = false; s.buffered_index = 0; s.all_buffers = true; s.all_noop = true;
 }
 fn canPush(s: *State) bool { return !s.ended and (s.length < s.high_water_mark or s.length == 0); }
 fn readableEvent(scope: *Scope, stream: c.JSValue, s: *State) !void {
@@ -328,47 +356,69 @@ fn write(scope: *Scope, stream: c.JSValue, chunk_arg: c.JSValue, enc_arg: c.JSVa
         const reason = try scope.own(try errorValue(scope, "Error", if (s.ending) "ERR_STREAM_WRITE_AFTER_END" else "ERR_STREAM_DESTROYED", if (s.ending) "write after end" else "Cannot call write after a stream was destroyed"));
         try tick(scope, cb, &.{reason}); try failed(scope, stream, reason, true); return false;
     }
-    try addItem(s, chunk, enc, cb, length, false);
-    s.pending_callbacks += 1;
-    if (!s.writing and s.corked == 0 and s.constructed and !s.processing and s.queue.items.len == 1) try doWrite(scope, stream, s, s.queue.orderedRemove(0), false, c.pi_js_undefined()) else try clearBuffer(scope, stream, s);
+    s.length += length; s.pending_callbacks += 1;
+    if (s.writing or s.corked != 0 or !s.constructed or !nullish(s.error_value)) {
+        if (!s.has_buffered) { const array = try scope.array(); s.set(&s.buffered, array); s.has_buffered = true; }
+        const target = try scope.own(c.JS_DupValue(scope.engine.context, s.buffered)); const append = try scope.get(target, "push");
+        const entry = try scope.object(); try scope.put(entry, "chunk", chunk); try scope.put(entry, "encoding", enc); try scope.put(entry, "callback", cb);
+        _ = try scope.call(append, target, &.{entry});
+        if (s.all_buffers and !scope.equal(enc, try scope.text("buffer"))) s.all_buffers = false;
+        if (s.all_noop and !scope.equal(cb, try scope.get(try owner(scope.engine), "nop"))) s.all_noop = false;
+    } else {
+        const item: Item = .{ .chunk = c.JS_DupValue(scope.engine.context, chunk), .encoding = c.JS_DupValue(scope.engine.context, enc), .callback = c.JS_DupValue(scope.engine.context, cb), .size = length };
+        try doWrite(scope, stream, s, item, false, c.pi_js_undefined());
+    }
     const more = s.length < s.high_water_mark or s.length == 0;
     if (!more) s.need_drain = true;
     return more and !s.destroyed and nullish(s.error_value);
 }
 fn clearBuffer(scope: *Scope, stream: c.JSValue, s: *State) !void {
-    if (s.processing or s.writing or s.corked != 0 or !s.constructed or s.destroyed) return;
-    s.processing = true; defer s.processing = false;
-    while (s.queue.items.len > 0 and !s.writing and !s.destroyed and s.corked == 0) {
-        const writev = try scope.get(stream, "_writev");
-        var item: Item = undefined;
-        var vector = false;
-        if (s.queue.items.len > 1 and c.JS_IsFunction(scope.engine.context, writev)) {
-            const entries = try scope.array(); var all_buffers = true; var length: usize = 0;
-            for (s.queue.items, 0..) |entry, i| {
-                const object = try scope.object(); try scope.put(object, "chunk", entry.chunk); try scope.put(object, "encoding", entry.encoding); try scope.put(object, "callback", entry.callback); try scope.index(entries, @intCast(i), object);
-                all_buffers = all_buffers and try buffer.isBuffer(scope.engine, entry.chunk); length += entry.size;
-            }
-            try scope.put(entries, "allBuffers", c.pi_js_bool(scope.engine.context, @intFromBool(all_buffers)));
-            const aggregate = try scope.own(try fnc.createArrow(scope.engine, "callback", 1, vectorCallback, &.{entries}));
-            s.pending_callbacks -= s.queue.items.len - 1;
-            for (s.queue.items) |entry| entry.free(scope.engine);
-            s.queue.clearRetainingCapacity();
-            item = .{ .chunk = c.JS_DupValue(scope.engine.context, entries), .encoding = c.JS_DupValue(scope.engine.context, try scope.text("")), .callback = c.JS_DupValue(scope.engine.context, aggregate), .size = length }; vector = true;
-        } else item = s.queue.orderedRemove(0);
-        try doWrite(scope, stream, s, item, vector, writev);
+    if (s.processing or s.writing or s.corked != 0 or !s.constructed or s.destroyed or !s.has_buffered) return;
+    const buffered = try scope.own(c.JS_DupValue(scope.engine.context, s.buffered)); const start = s.buffered_index;
+    const count = try size(scope, buffered); if (start == count) return;
+    var index = start; s.processing = true;
+    // Source intentionally leaves processing/index/null slots at the throwing
+    // boundary. Do not finally-reset these observable fields on a guest throw.
+    const multiple = count > start and count - start > 1;
+    const writev = if (multiple) try scope.get(stream, "_writev") else c.pi_js_undefined();
+    if (multiple and scope.truthy(writev)) {
+        s.pending_callbacks -= count - start - 1;
+        const aggregate = if (s.all_noop) try scope.get(try owner(scope.engine), "nop") else try scope.own(try fnc.createArrow(scope.engine, "callback", 1, vectorCallback, &.{ buffered, c.JS_NewInt64(scope.engine.context, @intCast(start)) }));
+        const entries = if (s.all_noop and start == 0) buffered else try scope.call(try scope.get(try owner(scope.engine), "arraySlice"), buffered, &.{c.JS_NewInt64(scope.engine.context, @intCast(start))});
+        try scope.set(entries, "allBuffers", c.pi_js_bool(scope.engine.context, @intFromBool(s.all_buffers)));
+        const item: Item = .{ .chunk = c.JS_DupValue(scope.engine.context, entries), .encoding = c.JS_DupValue(scope.engine.context, try scope.text("")), .callback = c.JS_DupValue(scope.engine.context, aggregate), .size = s.length };
+        try doWrite(scope, stream, s, item, true, writev);
+        resetBuffer(s);
+    } else {
+        while (true) {
+            var item = try bufferedValues(scope.engine, buffered, index, false);
+            var transferred = false; defer if (!transferred) item.free(scope.engine);
+            // Source retires the array entry before chunk.length. getBuffer
+            // during that getter or _write sees null until bufferedIndex moves.
+            if (c.JS_SetPropertyUint32(scope.engine.context, buffered, @intCast(index), c.pi_js_null()) < 0) return js.capture(scope.engine);
+            index += 1;
+            item.size = if (s.object_mode) 1 else try size(scope, item.chunk);
+            transferred = true; try doWrite(scope, stream, s, item, false, c.pi_js_undefined());
+            if (index >= try size(scope, buffered) or s.writing) break;
+        }
+        if (index == try size(scope, buffered)) resetBuffer(s)
+        else if (index > 256) {
+            _ = try scope.call(try scope.get(try owner(scope.engine), "arraySplice"), buffered, &.{ c.JS_NewInt32(scope.engine.context, 0), c.JS_NewInt64(scope.engine.context, @intCast(index)) }); s.buffered_index = 0;
+        } else s.buffered_index = index;
     }
+    s.processing = false;
 }
-fn doWrite(scope: *Scope, stream: c.JSValue, s: *State, item: Item, vector: bool, writev: c.JSValue) !void {
+fn doWrite(scope: *Scope, stream: c.JSValue, s: *State, item: Item, vector: bool, _: c.JSValue) !void {
     s.current = item; s.writing = true; s.expect_callback = true; s.sync = true; s.write_generation +%= 1;
     const done = try callback(scope, stream, .write_done, try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, s.write_generation))));
-    if (vector) _ = try scope.call(writev, stream, &.{ item.chunk, done }) else _ = try scope.invoke(stream, "_write", &.{ item.chunk, item.encoding, done });
+    if (vector) _ = try scope.invoke(stream, "_writev", &.{ item.chunk, done }) else _ = try scope.invoke(stream, "_write", &.{ item.chunk, item.encoding, done });
     s.sync = false;
 }
 fn vectorCallback(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
-    const length = try size(&scope, roots[0]);
-    for (0..length) |i| {
-        const entry = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, roots[0], @intCast(i))));
+    var index: u64 = 0; if (c.JS_ToIndex(engine.context, &index, roots[1]) < 0) return js.capture(engine);
+    while (index < try size(&scope, roots[0])) : (index += 1) {
+        const entry = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, roots[0], @intCast(index))));
         _ = try scope.call(try scope.get(entry, "callback"), c.pi_js_undefined(), &.{arg(args, 0)});
     }
     return c.pi_js_undefined();
@@ -386,12 +436,15 @@ fn afterWrite(scope: *Scope, stream: c.JSValue, s: *State, cb: c.JSValue, count:
 }
 fn errorBuffer(scope: *Scope, _: c.JSValue, s: *State, reason: c.JSValue) !void {
     if (s.writing) return;
-    while (s.queue.items.len > 0) {
-        const entry = s.queue.orderedRemove(0); defer entry.free(scope.engine);
-        s.length -= entry.size; if (s.pending_callbacks != 0) s.pending_callbacks -= 1;
+    var index = s.buffered_index;
+    while (s.has_buffered and index < try size(scope, s.buffered)) : (index += 1) {
+        var entry = try bufferedValues(scope.engine, s.buffered, index, true); defer entry.free(scope.engine);
+        entry.size = if (s.object_mode) 1 else try size(scope, entry.chunk);
+        s.length -= entry.size;
         _ = try scope.call(entry.callback, c.pi_js_undefined(), &.{reason});
     }
     while (s.end_callbacks.items.len > 0) { const cb = s.end_callbacks.orderedRemove(0); defer scope.engine.freeValue(cb); _ = try scope.call(cb, c.pi_js_undefined(), &.{reason}); }
+    resetBuffer(s);
 }
 fn writeDone(scope: *Scope, stream: c.JSValue, generation: c.JSValue, reason: c.JSValue) !void {
     const s = try required(scope, stream, .writable); var token: u64 = 0;
@@ -505,7 +558,7 @@ fn newState(scope: *Scope, stream: c.JSValue, side: Side, options: c.JSValue, du
     const object = try scope.own(try scope.engine.checked(c.JS_NewObjectProtoClass(scope.engine.context, try scope.get(module, if (side == .readable) "readStatePrototype" else "writeStatePrototype"), try classId(scope, side))));
     const initial_encoding = try scope.text("utf8");
     const s = try scope.engine.gpa.create(State);
-    s.* = .{ .engine = scope.engine, .side = side, .owner = c.JS_DupValue(scope.engine.context, module), .error_value = c.pi_js_null(), .decoder_value = c.pi_js_null(), .default_encoding = c.JS_DupValue(scope.engine.context, initial_encoding), .text_encoding = c.pi_js_null(), .after_info = c.pi_js_null(), .transform_callback = c.pi_js_null(), .destroy_record = c.pi_js_null() };
+    s.* = .{ .engine = scope.engine, .side = side, .owner = c.JS_DupValue(scope.engine.context, module), .error_value = c.pi_js_null(), .decoder_value = c.pi_js_null(), .default_encoding = c.JS_DupValue(scope.engine.context, initial_encoding), .text_encoding = c.pi_js_null(), .after_info = c.pi_js_null(), .transform_callback = c.pi_js_null(), .destroy_record = c.pi_js_null(), .buffered = c.pi_js_null() };
     _ = c.JS_SetOpaque(object, s);
     s.object_mode = scope.truthy(try optional(scope, options, "objectMode"));
     if (duplex and scope.truthy(try optional(scope, options, if (side == .readable) "readableObjectMode" else "writableObjectMode"))) s.object_mode = true;
@@ -791,6 +844,10 @@ fn property(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
     const name = try engine.toString(roots[0]); defer engine.gpa.free(name);
     const internal = scope.truthy(roots[1]); const setting = scope.truthy(roots[2]);
+    if (!internal and !setting and std.mem.eql(u8, name, "writableBuffer")) {
+        const selected = try scope.get(receiver, "_writableState");
+        return c.JS_DupValue(engine.context, if (scope.truthy(selected)) try scope.invoke(selected, "getBuffer", &.{}) else selected);
+    }
     const side: Side = if (std.mem.startsWith(u8, name, "writable")) .writable else .readable;
     var s: ?*State = null;
     if (internal) {
@@ -824,6 +881,10 @@ fn property(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
         else if (std.mem.eql(u8, name, "emitClose")) current.emit_close = enabled
         else if (std.mem.eql(u8, name, "autoDestroy")) current.auto_destroy = enabled
         else if (std.mem.eql(u8, name, "decodeStrings")) current.decode_strings = enabled
+        else if (std.mem.eql(u8, name, "buffered")) { current.set(&current.buffered, value); current.has_buffered = enabled; }
+        else if (std.mem.eql(u8, name, "allBuffers")) current.all_buffers = enabled
+        else if (std.mem.eql(u8, name, "allNoop")) current.all_noop = enabled
+        else if (std.mem.eql(u8, name, "bufferProcessing")) current.processing = enabled
         else if (std.mem.eql(u8, name, "errored")) current.set(&current.error_value, value)
         else if (std.mem.eql(u8, name, "decoder")) current.set(&current.decoder_value, value)
         else if (std.mem.eql(u8, name, "encoding")) current.set(&current.text_encoding, value)
@@ -834,6 +895,7 @@ fn property(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
             if (std.mem.eql(u8, name, "length")) current.length = @intCast(number)
             else if (std.mem.eql(u8, name, "highWaterMark")) current.high_water_mark = @intCast(number)
             else if (std.mem.eql(u8, name, "corked")) current.corked = @intCast(number);
+            if (std.mem.eql(u8, name, "bufferedIndex")) current.buffered_index = @intCast(number);
         }
         return c.pi_js_undefined();
     }
@@ -849,6 +911,12 @@ fn property(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, ro
     if (std.mem.eql(u8, name, "defaultEncoding")) return c.JS_DupValue(engine.context, current.default_encoding);
     if (std.mem.eql(u8, name, "corked") or std.mem.eql(u8, name, "writableCorked")) return c.JS_NewInt64(engine.context, @intCast(current.corked));
     if (std.mem.eql(u8, name, "pendingcb")) return c.JS_NewInt64(engine.context, @intCast(current.pending_callbacks));
+    if (std.mem.eql(u8, name, "buffered")) return c.JS_DupValue(engine.context, if (current.has_buffered) current.buffered else try scope.array());
+    if (std.mem.eql(u8, name, "bufferedIndex")) return c.JS_NewInt64(engine.context, @intCast(current.buffered_index));
+    if (std.mem.eql(u8, name, "bufferedRequestCount")) return if (current.has_buffered) @import("native_image_arithmetic.zig").binary(engine, .subtract, try scope.get(current.buffered, "length"), c.JS_NewInt64(engine.context, @intCast(current.buffered_index))) else c.JS_NewInt32(engine.context, 0);
+    if (std.mem.eql(u8, name, "allBuffers")) return c.pi_js_bool(engine.context, @intFromBool(current.all_buffers));
+    if (std.mem.eql(u8, name, "allNoop")) return c.pi_js_bool(engine.context, @intFromBool(current.all_noop));
+    if (std.mem.eql(u8, name, "bufferProcessing")) return c.pi_js_bool(engine.context, @intFromBool(current.processing));
     const flag = if (std.mem.eql(u8, name, "destroyed")) current.destroyed
         else if (std.mem.eql(u8, name, "closed")) current.closed
         else if (std.mem.eql(u8, name, "ended") or std.mem.eql(u8, name, "writableEnded")) current.ended
@@ -876,7 +944,7 @@ fn accessor(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, internal: 
     const value = try scope.text(std.mem.span(name));
     const get = try scope.own(try fnc.createMethod(scope.engine, "get", 0, property, &.{ value, c.pi_js_bool(scope.engine.context, @intFromBool(internal)), c.pi_js_bool(scope.engine.context, 0) }));
     const set = if (writable) try scope.own(try fnc.createMethod(scope.engine, "set", 1, property, &.{ value, c.pi_js_bool(scope.engine.context, @intFromBool(internal)), c.pi_js_bool(scope.engine.context, 1) })) else c.pi_js_undefined();
-    if (c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom, c.JS_DupValue(scope.engine.context, get), c.JS_DupValue(scope.engine.context, set), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
+    if (c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom, c.JS_DupValue(scope.engine.context, get), c.JS_DupValue(scope.engine.context, set), if (std.mem.eql(u8, name, "writableBuffer")) 0 else c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
 }
 fn method(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, length: c_int, op: Op) !c.JSValue {
     const function = try scope.own(try fnc.create(scope.engine, name, length, dispatch, &.{ c.pi_js_null(), c.JS_NewInt32(scope.engine.context, @intFromEnum(op)) }));
@@ -893,6 +961,8 @@ pub fn install(engine: *em.Engine, process: c.JSValue) !void {
     try scope.put(module, "process", process); try scope.put(module, "byteHwm", c.JS_NewInt32(engine.context, if (@import("builtin").os.tag == .windows) 16384 else 65536)); try scope.put(module, "objectHwm", c.JS_NewInt32(engine.context, 16));
     inline for (.{ "Error", "TypeError", "RangeError", "AggregateError" }) |name| try scope.put(module, name, try scope.global(name));
     try scope.put(module, "arrayPush", try scope.get(try scope.get(try scope.global("Array"), "prototype"), "push"));
+    try scope.put(module, "arraySlice", try scope.get(try scope.get(try scope.global("Array"), "prototype"), "slice"));
+    try scope.put(module, "arraySplice", try scope.get(try scope.get(try scope.global("Array"), "prototype"), "splice"));
     try scope.put(module, "numberParseInt", try scope.global("parseInt"));
     try scope.put(module, "nop", try scope.own(try fnc.createArrow(engine, "nop", 0, noop, &.{})));
     const emitter = try scope.get(engine.native_module_values.get("node:events").?, "EventEmitter"); try scope.put(module, "EventEmitter", emitter);
@@ -907,6 +977,11 @@ pub fn install(engine: *em.Engine, process: c.JSValue) !void {
         // must never be selected by guest assignment/redefinition of an ID.
         if (c.JS_DefinePropertyValueStr(engine.context, module, class_name, c.JS_NewUint32(engine.context, id), 0) < 0) return js.capture(engine);
         const prototype = try scope.object(); try scope.put(module, proto_name, prototype);
+        if (side == .writable) try scope.put(prototype, "getBuffer", try scope.own(try fnc.create(engine, "getBuffer", 0, getBuffer, &.{})));
+        if (side == .writable) {
+            inline for (.{ "buffered", "bufferedIndex", "allBuffers", "allNoop", "bufferProcessing" }) |name| try accessor(&scope, prototype, name, true, true);
+            try accessor(&scope, prototype, "bufferedRequestCount", true, false);
+        }
         inline for (.{ "length", "highWaterMark", "objectMode", "destroyed", "closed", "errored", "ended", "endEmitted", "flowing", "reading", "sync", "needReadable", "needDrain", "ending", "finished", "prefinished", "writing", "corked", "pendingcb", "constructed", "autoDestroy", "emitClose", "decodeStrings", "defaultEncoding", "decoder", "encoding", "readable", "writable" }) |name| try accessor(&scope, prototype, name, true, true);
     }
     const names = [_][*:0]const u8{ "Stream", "Readable", "Writable", "Duplex", "Transform", "PassThrough" };
@@ -927,7 +1002,7 @@ pub fn install(engine: *em.Engine, process: c.JSValue) !void {
         if (kind == .writable) {
             _ = try method(&scope, prototype, "pipe", 0, .cannot_pipe);
             inline for (.{ "write", "end", "cork", "uncork", "setDefaultEncoding", "_write" }, .{ Op.write, Op.end, Op.cork, Op.uncork, Op.set_default_encoding, Op.default_write }, .{ 3, 3, 0, 0, 1, 3 }) |n, op, length| _ = try method(&scope, prototype, n, length, op);
-            inline for (.{ "writable", "writableLength", "writableHighWaterMark", "writableObjectMode", "writableEnded", "writableFinished", "writableNeedDrain", "writableCorked", "writableAborted" }) |n| try accessor(&scope, prototype, n, false, false);
+            inline for (.{ "writable", "writableBuffer", "writableLength", "writableHighWaterMark", "writableObjectMode", "writableEnded", "writableFinished", "writableNeedDrain", "writableCorked", "writableAborted" }) |n| try accessor(&scope, prototype, n, false, false);
         }
         if (kind == .readable or kind == .writable) {
             _ = try method(&scope, prototype, "destroy", 2, .destroy); _ = try method(&scope, prototype, "_destroy", 2, .default_destroy);
@@ -936,7 +1011,7 @@ pub fn install(engine: *em.Engine, process: c.JSValue) !void {
         if (kind == .duplex) {
             const writable = try scope.get(try scope.get(module, "Writable"), "prototype");
             inline for (.{ "write", "end", "cork", "uncork", "setDefaultEncoding", "_write" }) |n| try scope.put(prototype, n, try scope.get(writable, n));
-            inline for (.{ "writable", "writableLength", "writableHighWaterMark", "writableObjectMode", "writableEnded", "writableFinished", "writableNeedDrain", "writableCorked", "writableAborted", "destroyed", "closed", "errored" }) |n| try accessor(&scope, prototype, n, false, std.mem.eql(u8, n, "destroyed"));
+            inline for (.{ "writable", "writableBuffer", "writableLength", "writableHighWaterMark", "writableObjectMode", "writableEnded", "writableFinished", "writableNeedDrain", "writableCorked", "writableAborted", "destroyed", "closed", "errored" }) |n| try accessor(&scope, prototype, n, false, std.mem.eql(u8, n, "destroyed"));
         }
         if (kind == .transform) {
             _ = try method(&scope, prototype, "_read", 0, .transform_read); _ = try method(&scope, prototype, "_write", 3, .transform_write); _ = try method(&scope, prototype, "_transform", 3, .default_transform);
