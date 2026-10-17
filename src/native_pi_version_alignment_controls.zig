@@ -25,6 +25,18 @@ pub fn verifyActualNativeConfiguration(engine: *em.Engine, actual: configuration
     const expected_value = try engine.checked(em.c.JS_NewStringLen(engine.context, expected.ptr, expected.len));
     defer engine.freeValue(expected_value);
     try std.testing.expect(em.c.JS_IsStrictEqual(engine.context, expected_value, header));
+    const units = [_]u16{ 0xd800, 0, 0xdc00 };
+    const unusual_version = try engine.checked(em.c.JS_NewStringUTF16(engine.context, &units, units.len));
+    defer engine.freeValue(unusual_version);
+    const unusual_header = try js.invoke(engine, namespace, "getPiUserAgent", &.{unusual_version});
+    defer engine.freeValue(unusual_header);
+    for (units, 0..) |unit, index| {
+        const code = try js.invoke(engine, unusual_header, "charCodeAt", &.{em.c.JS_NewUint32(engine.context, @intCast(3 + index))});
+        defer engine.freeValue(code);
+        var actual_unit: u32 = undefined;
+        if (em.c.JS_ToUint32(engine.context, &actual_unit, code) < 0) return js.capture(engine);
+        try std.testing.expectEqual(@as(u32, unit), actual_unit);
+    }
     // Native header dispatch must not poison the original Source-profile cache.
     inputs.user_agent_runtime = .source;
     const source_namespace = try configuration.create(engine, inputs);
