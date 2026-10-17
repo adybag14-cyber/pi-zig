@@ -1,12 +1,26 @@
 //! Source loader.ts551–733 orchestration. Real lazy module imports are required
 //! bindings, not a fabricated jiti object or an empty virtual module registry.
 //! Graph2/default-interop composition and production selection remain separate.
+//! Local revision2: rejected Await DATA is distinct from a current VM event.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = v.Scope;
 const body = @import("native_async_body.zig");
 const af = body.native;
 const cache = @import("native_sdk_extension_cache.zig");
+const Captures = struct {
+    engine: *v.em.Engine,
+    prior: ?c.JSValue,
+    fn enter(engine: *v.em.Engine) Captures {
+        const previous = engine.captured_exception;
+        engine.captured_exception = null;
+        return .{ .engine = engine, .prior = previous };
+    }
+    fn deinit(self: *Captures) void {
+        if (self.engine.captured_exception == null) self.engine.captured_exception = self.prior else if (self.prior) |reason| self.engine.freeValue(reason);
+        self.prior = null;
+    }
+};
 pub const Inputs = struct {
     initializer: @import("native_sdk_extension_initializer.zig").Inputs,
     /// Actual original lazy getCreateJiti; must resolve the real createJiti.
@@ -38,10 +52,17 @@ fn stage(s: *Scope, job: c.JSValue) !Stage {
 }
 fn trusted(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
     if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+    if (err == error.JavaScriptException) {
+        // A still-pending actual event is normalized before consulting this
+        // invocation's new capture. The prior diagnostic slot is isolated.
+        if (c.JS_HasException(engine.context)) {
+            const capture_error = v.js.capture(engine);
+            if (capture_error != error.JavaScriptException) return capture_error;
+        }
+        const reason = engine.captured_exception orelse return error.MissingExtensionLoaderCurrentCapturedReason;
         if (c.JS_IsUncatchableError(reason)) return err;
         try body.rethrowRecognizedAllocation(engine, reason, generation);
-    };
+    }
 }
 fn take(engine: *v.em.Engine, err: anyerror, generation: u64) !c.JSValue {
     try trusted(engine, err, generation);
@@ -57,13 +78,16 @@ fn failure(engine: *v.em.Engine, err: anyerror, generation: u64) !af.Action {
     return body.failureSince(engine, err, generation);
 }
 fn reject(s: *Scope, job: c.JSValue, reason: c.JSValue) !void {
-    if (c.JS_IsUncatchableError(reason)) {
-        _ = try s.engine.checked(c.JS_Throw(s.engine.context, c.JS_DupValue(s.engine.context, reason)));
-        unreachable;
-    }
+    if (c.JS_HasException(s.engine.context)) return v.js.capture(s.engine);
     var generation: u64 = 0;
     if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(job, "generation")) < 0) return v.js.capture(s.engine);
     try body.rethrowRecognizedAllocation(s.engine, reason, generation);
+    if (c.JS_HasException(s.engine.context)) return v.js.capture(s.engine);
+    // No active VM event or exact fresh private allocation cause exists.
+    // This is rejected DATA, even when it has a historical hidden fatal bit.
+    // C2 Action.THROW would otherwise reinterpret that old bit as a new event.
+    // Source catch formatting/IteratorClose also receives the SAME raw object.
+    c.JS_ClearUncatchableError(s.engine.context, reason);
 }
 fn imported(s: *Scope, imports: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
     return s.call(try s.get(imports, name), c.pi_js_undefined(), args);
@@ -101,6 +125,10 @@ fn publicLoad(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots
     return v.js.call(engine, function, c.pi_js_undefined(), &.{ arg(args, 0), arg(args, 1), arg(args, 2), arg(args, 3), roots[1] });
 }
 fn moduleBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var captures = Captures.enter(engine); defer captures.deinit();
+    // The qualified AF trampoline suppresses diagnostics before this private
+    // callback. An execution-context hook may already have left a real event.
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const generation = engine.native_allocation_generation;
     return moduleInner(engine, args, roots[0], state, completion, input) catch |err| return failure(engine, err, generation);
 }
@@ -162,6 +190,8 @@ fn caught(s: *Scope, reason: c.JSValue) !af.Action {
     return errorResult(s, try s.concat(try s.text("Failed to load extension: "), try s.stringify(message)));
 }
 fn extensionBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var captures = Captures.enter(engine); defer captures.deinit();
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const generation = engine.native_allocation_generation;
     return extensionInner(engine, args, roots[0], state, completion, input) catch |err| {
         try trusted(engine, err, generation);
@@ -213,6 +243,8 @@ fn extensionInner(engine: *v.em.Engine, args: []const c.JSValue, imports: c.JSVa
     }
 }
 fn internalBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var captures = Captures.enter(engine); defer captures.deinit();
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const generation = engine.native_allocation_generation;
     return internalInner(engine, args, roots[0], state, completion, input) catch |err| {
         try trusted(engine, err, generation);
