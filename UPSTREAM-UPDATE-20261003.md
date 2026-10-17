@@ -1,5 +1,28 @@
 # Active Pi upstream update
 
+## Current target and version alignment - 17 October 2026
+
+Status: active, incomplete migration. The accepted Source target is Pi 1.3.0
+`8efd314fa3d3232ce197d8d7a6a5660530b9d83e`. All four original public package
+manifests declare 1.3.0. Zig 0.16.0 remains pinned. Current native configuration,
+package metadata, bare CLI version output and MCP adapter version now align with
+that target in the source-only version checkpoint. Management headers identify
+the actual Zig runtime; the Source SDK configuration keeps package-derived
+VERSION with an explicit native header profile rather than inventing Node data.
+
+This is identity alignment, not a completed release or whole-application parity
+claim. The actual current Source probe and native controls remain unrun, with no
+new expected observations. The historical 6fb lifecycle fixture still records
+its original 1.1.0 and its assertions remain unchanged. Catalog ae7 provenance,
+old artifact/release manifests and earlier component proofs also retain their
+exact original source identities; none was relabeled as an 8efd qualification.
+The deleted runtime remains unavailable pending its complete original manifest.
+
+See [the scoped version record](verification/pi-version-8efd-sourceonly-20261017/README.md)
+for changed boundaries, untouched environment contracts, prepared controls and
+remaining capture/physical/release gates. Entries below are historical and are
+preserved verbatim, including their then-current targets and observations.
+
 ## Integrated migration - 15 October 2026
 
 Status: active, incomplete migration. The reviewed target is Pi 1.3.0 main
