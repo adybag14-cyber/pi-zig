@@ -1,0 +1,137 @@
+{
+  "schema": 1,
+  "source_base": "53af8708129b2b1a786769062ea86df1a1b00a8e",
+  "review_scope": "finite two-helper initialization pending-success guards + actual-delegate controls",
+  "shared_products_unchanged": "3fffb1168d1d8f4b9cc192b5d65e4fe52c4aa623",
+  "shared_seal": "719df5534d457c61383b7f4319c46f9ac9f03db3",
+  "root_observed": "80e6181d3ea62382934fd057188b0cfd511d2066",
+  "root_helper_baselines_identical": true,
+  "no_dependency_whole_file_intake": true,
+  "actual_subject_available": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "native_qualified": false,
+  "default_selection": false,
+  "records": [
+    {
+      "role": "product",
+      "path": "src/extensions/native_jiti_colors.zig",
+      "size": 5656,
+      "sha256": "819FC8FF6B5EDE56717B2F0A5DB5A5062DA0B7EC281F90DAFD331748FDE3C70E"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_jiti_utils.zig",
+      "size": 13169,
+      "sha256": "126351AEF7838A4B47A687A92568EE9E15BA933BC45E1FBD6527FCED9DE44288"
+    },
+    {
+      "role": "control",
+      "path": "src/native_jiti_initialization_pending_controls.zig",
+      "size": 13519,
+      "sha256": "EB38DF6268DC58DEF6B0C93123F7B36FE4DBE1135D32141EDAE566F939110FF8"
+    },
+    {
+      "role": "control",
+      "path": "verification/jiti-init-pending-sourceonly-20261017/README.md",
+      "size": 4202,
+      "sha256": "B4E1ECFE912A3A16BE06C6F89F04C823EFA36B5D0511E6F61AABF59BA761D74E"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_shared_dependencies.zig",
+      "size": 13788,
+      "sha256": "5B7C64E5C822B7182D3788398808B7AEAFABCDFAC9F93F7E35BCE0882E193C56"
+    },
+    {
+      "role": "protected",
+      "path": "src/native_jiti_shared_dependencies_controls.zig",
+      "size": 12191,
+      "sha256": "AEBFEB65D81B59D186624421D513274C7699C8B6DC20282ACA5A96F26A651723"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_public_factory.zig",
+      "size": 7914,
+      "sha256": "D39EB02C95A32D144D7D76B7D1EEFE41D1CB9A74D54987EF1E5CA7D69C3A3CD7"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_import_meta.zig",
+      "size": 8881,
+      "sha256": "077EE8FCB4CD0FC10B81617DB2D5222291D4617169544FD97E1C6680E54DE98A"
+    },
+    {
+      "role": "protected",
+      "path": "src/native_jiti_public_factory_controls.zig",
+      "size": 19139,
+      "sha256": "9087801B7ACA04356E7F8DB9163BC60602FA5DDC3CCCAC5D96C318CB02E42FE1"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_jiti_profile.zig",
+      "size": 11933,
+      "sha256": "8A21207AB03AE8F13C0F2A7401A5D3C9F88C6BEEEB7544BFDA2F0C78EB2A06E9"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_pathe.zig",
+      "size": 36414,
+      "sha256": "3CB4E151483030AA544B50ACA1F6CF2EC2740113C2F13B1EA3B90F392E4253DA"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_mlly_resolve.zig",
+      "size": 13489,
+      "sha256": "86613BC9CD05DC749484B53DF1F761B3D3E422F720D24D4AF776427CACEA338D"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/engine.zig",
+      "size": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_function.zig",
+      "size": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_body.zig",
+      "size": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_node_module_callable.zig",
+      "size": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "role": "protected",
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/prepared.json",
+      "size": 6555,
+      "sha256": "7F9894CEF719BE103A433E42DA278E4FFC8F648176DEE6BDC7E82F02AB3CF2A2"
+    },
+    {
+      "role": "protected",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/prepared.json",
+      "size": 5657,
+      "sha256": "FF22F1888EC6FC763F50C3C870BC21A339824C6BDBEF39F6A76FCE87A4279244"
+    }
+  ]
+}

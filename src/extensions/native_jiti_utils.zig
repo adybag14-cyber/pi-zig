@@ -12,9 +12,20 @@ fn nil(value: c.JSValue) bool { return c.JS_IsNull(value) or c.JS_IsUndefined(va
 fn put(engine: *v.em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
+fn initializationValue(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
+    if (c.JS_HasException(engine.context)) {
+        const pending_reason = c.JS_GetException(engine.context);
+        engine.freeValue(owned);
+        return engine.checked(c.JS_Throw(engine.context, pending_reason));
+    }
+    return owned;
+}
+fn initializationGet(s: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return s.own(try initializationValue(s.engine, try v.js.get(s.engine, receiver, name)));
+}
 fn capture(s: *Scope, owner: c.JSValue, namespace: c.JSValue, comptime names: anytype) !void {
     inline for (names) |name| {
-        const value = try s.get(namespace, name);
+        const value = try initializationGet(s, namespace, name);
         if (!c.JS_IsFunction(s.engine.context, value)) return error.RequiredActualJitiUtilityImport;
         try put(s.engine, owner, name, value);
     }
@@ -36,12 +47,13 @@ fn discardCall(engine: *v.em.Engine, function: c.JSValue, receiver: c.JSValue, a
 pub fn create(engine: *v.em.Engine, actual: Inputs) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try capture(&s, owner, actual.filesystem, .{ "lstatSync", "accessSync", "readFileSync" });
     try capture(&s, owner, actual.paths, .{"join"});
     try capture(&s, owner, actual.colors, .{ "gray", "green", "blue", "yellow", "cyan", "red" });
-    try put(engine, owner, "constants", try s.get(actual.filesystem, "constants"));
+    try put(engine, owner, "constants", try initializationGet(&s, actual.filesystem, "constants"));
     try put(engine, owner, "crypto", actual.node_crypto);
     try put(engine, owner, "fipsMode", c.pi_js_undefined());
     const map = try s.object();
@@ -49,7 +61,8 @@ pub fn create(engine: *v.em.Engine, actual: Inputs) !c.JSValue {
         const text = try s.text(entry[0]);
         // Literal property creation bypasses inherited setters. The real color
         // calls happen at module initialization even when ctx.opts.debug=false.
-        const value = try v.js.call(engine, try s.get(owner, entry[1]), c.pi_js_undefined(), &.{text});
+        const function = try initializationGet(&s, owner, entry[1]);
+        const value = try initializationValue(engine, try v.js.call(engine, function, c.pi_js_undefined(), &.{text}));
         defer engine.freeValue(value);
         try put(engine, map, entry[0], value);
     }

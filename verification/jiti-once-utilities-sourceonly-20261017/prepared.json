@@ -1,0 +1,182 @@
+{
+  "schema": 1,
+  "source_base": "399db4821e3dc427f0863983983275a1dfa132e5",
+  "scope": "additive actual once-created shared jiti dependencies + concrete profile.prepare caller",
+  "qualified_raw_binding_sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406",
+  "qualified_raw_binding_source": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "full_subject_available": false,
+  "default_selection": false,
+  "jobs_run": [],
+  "expected_absent": true,
+  "required_tty_native_backend_complete": false,
+  "required_node_bootstrap_complete": false,
+  "required_lazy_provider_dependency_successor_pending": false,
+  "records": [
+    {
+      "role": "product",
+      "path": "src/extensions/native_jiti_shared_dependencies.zig",
+      "size": 13788,
+      "sha256": "5B7C64E5C822B7182D3788398808B7AEAFABCDFAC9F93F7E35BCE0882E193C56"
+    },
+    {
+      "role": "product",
+      "path": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "size": 1247,
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406"
+    },
+    {
+      "role": "control",
+      "path": "src/native_jiti_shared_dependencies_controls.zig",
+      "size": 12191,
+      "sha256": "AEBFEB65D81B59D186624421D513274C7699C8B6DC20282ACA5A96F26A651723"
+    },
+    {
+      "role": "control",
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/README.md",
+      "size": 6695,
+      "sha256": "22FDEDF0AFE07FFB58DA98AF51DF8035D7F4683A07EB722A22FC8A98D34D73EC"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_pathe.zig",
+      "size": 36414,
+      "sha256": "3CB4E151483030AA544B50ACA1F6CF2EC2740113C2F13B1EA3B90F392E4253DA"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_mlly_resolve.zig",
+      "size": 13489,
+      "sha256": "86613BC9CD05DC749484B53DF1F761B3D3E422F720D24D4AF776427CACEA338D"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_mlly_values.zig",
+      "size": 13010,
+      "sha256": "FF04FAA7786C54665187BCB493FFD1E3A0F9A93CD9F5DB789429D4F92F078CD2"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_mlly_urls.zig",
+      "size": 4760,
+      "sha256": "FFB5EC98DB759A62C5B19A9023A6B1D0F7D112AB7338856513B7C884D259B94C"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_mlly_function.zig",
+      "size": 14905,
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_mlly_syntax.zig",
+      "size": 3884,
+      "sha256": "EB08DF47846926FD15121656C1EF177ECDE7A65AD785BCFCAD9A819805ADEEAE"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_jiti_crypto.zig",
+      "size": 6352,
+      "sha256": "9CE4A00F033FCFA81F603269E2121040EB4559AD3B04B25D6B8C13C8D381CCD3"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_node_crypto_hash.zig",
+      "size": 14185,
+      "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_jiti_colors.zig",
+      "size": 5656,
+      "sha256": "819FC8FF6B5EDE56717B2F0A5DB5A5062DA0B7EC281F90DAFD331748FDE3C70E"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_jiti_utils.zig",
+      "size": 13169,
+      "sha256": "126351AEF7838A4B47A687A92568EE9E15BA933BC45E1FBD6527FCED9DE44288"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_jiti_profile.zig",
+      "size": 11933,
+      "sha256": "8A21207AB03AE8F13C0F2A7401A5D3C9F88C6BEEEB7544BFDA2F0C78EB2A06E9"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_ai_provider_values.zig",
+      "size": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "role": "dependency",
+      "path": "src/extensions/native_js_values.zig",
+      "size": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/engine.zig",
+      "size": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_function.zig",
+      "size": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_async_body.zig",
+      "size": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.c",
+      "size": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "role": "protected",
+      "path": "vendor/quickjs/quickjs.h",
+      "size": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "size": 20907,
+      "sha256": "6E2CC076EE61546349D986B93093C11A06CAD8E627ED0254D7431B7112BE86C1"
+    },
+    {
+      "role": "protected",
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "size": 10005,
+      "sha256": "C351ECBE107DF52529564D69DF974E5DF814F09959E0F90ACD7F912542D8554C"
+    },
+    {
+      "role": "protected",
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/prepared.json",
+      "size": 5199,
+      "sha256": "8C8F7FFB49CB03B9564F807DDDF28C4AC1C793A09FEC06066B74A2C90BB1A01D"
+    },
+    {
+      "role": "protected",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/prepared.json",
+      "size": 5657,
+      "sha256": "FF22F1888EC6FC763F50C3C870BC21A339824C6BDBEF39F6A76FCE87A4279244"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/original-3fff-prepared.json",
+      "size": 6132,
+      "sha256": "CADCF722F37C82A28DBFC3E2DA4B972569138BB130C726BC2E71D82BEBB91B96"
+    }
+  ],
+  "required_lazy_provider_source_closed": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399/B07763D8/AuthFailure16CD",
+  "required_lazy_provider_intake_still_required": true,
+  "finite_initialization_source_closed": "2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed",
+  "historical_719_seal_sha256": "7F9894CEF719BE103A433E42DA278E4FFC8F648176DEE6BDC7E82F02AB3CF2A2"
+}

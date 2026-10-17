@@ -1,0 +1,278 @@
+{
+  "schema": 1,
+  "root_base": "6205bad48b9455e14715829f19d367d01924cade",
+  "source_head": "591f3d35812a83e53dd67b4c93c108d35561df99",
+  "virtual_tree": "7df50eccdb89ca7d04978ef3adbc209baeb5cda2",
+  "private_index_check": "read-tree/apply --cached --check/apply/write-tree; exact selected path set",
+  "payload_count": 16,
+  "existing_change_count": 2,
+  "new_path_count": 14,
+  "patch_sha256": "1EC9374A4403349F9835A55FAF5F3EFC3229EF2B60C7D05C60B24C171C0C722E",
+  "records": [
+    {
+      "path": "src/extensions/native_jiti_shared_dependencies.zig",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 13788,
+      "sha256": "5B7C64E5C822B7182D3788398808B7AEAFABCDFAC9F93F7E35BCE0882E193C56"
+    },
+    {
+      "path": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 1247,
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406"
+    },
+    {
+      "path": "src/extensions/native_jiti_colors.zig",
+      "classification": "reviewed-existing-change",
+      "before_sha256": "DB52800B2F0843FD15FD52425308501223C3470C8D953170F2B09FBBEA6BCBA5",
+      "size": 5656,
+      "sha256": "819FC8FF6B5EDE56717B2F0A5DB5A5062DA0B7EC281F90DAFD331748FDE3C70E"
+    },
+    {
+      "path": "src/extensions/native_jiti_utils.zig",
+      "classification": "reviewed-existing-change",
+      "before_sha256": "2B8A1196A378977CE5ED9A19849C248BCF3D05CED17816491F58E5011D1CA333",
+      "size": 13169,
+      "sha256": "126351AEF7838A4B47A687A92568EE9E15BA933BC45E1FBD6527FCED9DE44288"
+    },
+    {
+      "path": "src/native_jiti_shared_dependencies_controls.zig",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 12191,
+      "sha256": "AEBFEB65D81B59D186624421D513274C7699C8B6DC20282ACA5A96F26A651723"
+    },
+    {
+      "path": "src/native_jiti_initialization_pending_controls.zig",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 13519,
+      "sha256": "EB38DF6268DC58DEF6B0C93123F7B36FE4DBE1135D32141EDAE566F939110FF8"
+    },
+    {
+      "path": "verification/jiti-init-pending-sourceonly-20261017/README.md",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 4202,
+      "sha256": "B4E1ECFE912A3A16BE06C6F89F04C823EFA36B5D0511E6F61AABF59BA761D74E"
+    },
+    {
+      "path": "verification/jiti-init-pending-sourceonly-20261017/prepared.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 4845,
+      "sha256": "302333FD504026E99758584BB341922695ECF429D21FC3590C1241A0ADA8CDFA"
+    },
+    {
+      "path": "verification/jiti-init-pending-sourceonly-20261017/public-readback.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 2036,
+      "sha256": "702E59035519943D8CA0F02A31BC978929398EC00BE1292576043F504D4F03FA"
+    },
+    {
+      "path": "verification/jiti-init-pending-sourceonly-20261017/source-review.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 2082,
+      "sha256": "4DACF0DC12A4284D74B0B890796C9FF037D5D90E02956F70F8142864BADF65C7"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/README.md",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 6695,
+      "sha256": "22FDEDF0AFE07FFB58DA98AF51DF8035D7F4683A07EB722A22FC8A98D34D73EC"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/original-3fff-prepared.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 6132,
+      "sha256": "CADCF722F37C82A28DBFC3E2DA4B972569138BB130C726BC2E71D82BEBB91B96"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/original-719-prepared.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 6555,
+      "sha256": "7F9894CEF719BE103A433E42DA278E4FFC8F648176DEE6BDC7E82F02AB3CF2A2"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/prepared.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 6742,
+      "sha256": "55AC3EE84BE30F4F712BC4B0025AEF139C379DF6BEE78421AC35330FDE4B26AA"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/public-readback.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 5444,
+      "sha256": "E1B597CCD6BC3B94031D8D04621B9EEC918B57BB84927A57C65B4D66DA42A899"
+    },
+    {
+      "path": "verification/jiti-once-utilities-sourceonly-20261017/source-review.json",
+      "classification": "new-path",
+      "before_sha256": null,
+      "size": 1292,
+      "sha256": "6924F7C643B3FAD4FE2AB4CE37078A4B5657FF5B9A450022B8B8EED496C26A07"
+    }
+  ],
+  "literal_imports": [
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_ai_provider_values.zig",
+      "resolved": "src/extensions/native_ai_provider_values.zig",
+      "virtual_index_entry": "100644 4033c59939cb358c99b2591825547dd808214685 0\tsrc/extensions/native_ai_provider_values.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_jiti_profile.zig",
+      "resolved": "src/extensions/native_jiti_profile.zig",
+      "virtual_index_entry": "100644 45c4509a4e30674c1706c6b2a1ee9526a31edf31 0\tsrc/extensions/native_jiti_profile.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_pathe.zig",
+      "resolved": "src/extensions/native_pathe.zig",
+      "virtual_index_entry": "100644 92b4a5639d55416230c4234eec8871f5bbf0259c 0\tsrc/extensions/native_pathe.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_mlly_resolve.zig",
+      "resolved": "src/extensions/native_mlly_resolve.zig",
+      "virtual_index_entry": "100644 80ad363a4c827f991493a0b7f5589eef2c60531c 0\tsrc/extensions/native_mlly_resolve.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_mlly_syntax.zig",
+      "resolved": "src/extensions/native_mlly_syntax.zig",
+      "virtual_index_entry": "100644 3c5135b67385ad83ec4def3a07d2fb758508dafc 0\tsrc/extensions/native_mlly_syntax.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_jiti_crypto.zig",
+      "resolved": "src/extensions/native_jiti_crypto.zig",
+      "virtual_index_entry": "100644 2653c8be0eba617486dcb52450e9364a997b1686 0\tsrc/extensions/native_jiti_crypto.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_jiti_colors.zig",
+      "resolved": "src/extensions/native_jiti_colors.zig",
+      "virtual_index_entry": "100644 f1640874d740b16394eebd11a778031697181f4b 0\tsrc/extensions/native_jiti_colors.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_jiti_utils.zig",
+      "resolved": "src/extensions/native_jiti_utils.zig",
+      "virtual_index_entry": "100644 3647ec9ff0234a5bcc08902d62cf8a9a1c485d2c 0\tsrc/extensions/native_jiti_utils.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_shared_dependencies.zig",
+      "literal": "native_extension_dynamic_import_graph0.zig",
+      "resolved": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "virtual_index_entry": "100644 40351fa873d3df6782222a66f896a30dc476dfbd 0\tsrc/extensions/native_extension_dynamic_import_graph0.zig"
+    },
+    {
+      "importer": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "literal": "engine.zig",
+      "resolved": "src/extensions/engine.zig",
+      "virtual_index_entry": "100644 f00a5a3c6ac791a861ca899b83a93dad2daaef41 0\tsrc/extensions/engine.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_colors.zig",
+      "literal": "native_ai_provider_values.zig",
+      "resolved": "src/extensions/native_ai_provider_values.zig",
+      "virtual_index_entry": "100644 4033c59939cb358c99b2591825547dd808214685 0\tsrc/extensions/native_ai_provider_values.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_colors.zig",
+      "literal": "native_node_module_callable.zig",
+      "resolved": "src/extensions/native_node_module_callable.zig",
+      "virtual_index_entry": "100644 824a2f6ce190333527ea812dc978e3fd213fead1 0\tsrc/extensions/native_node_module_callable.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_colors.zig",
+      "literal": "native_jiti_budget.zig",
+      "resolved": "src/extensions/native_jiti_budget.zig",
+      "virtual_index_entry": "100644 509c997b570a4b6f7dd893733424751fa0ea76c1 0\tsrc/extensions/native_jiti_budget.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_utils.zig",
+      "literal": "native_ai_provider_values.zig",
+      "resolved": "src/extensions/native_ai_provider_values.zig",
+      "virtual_index_entry": "100644 4033c59939cb358c99b2591825547dd808214685 0\tsrc/extensions/native_ai_provider_values.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_utils.zig",
+      "literal": "native_node_module_callable.zig",
+      "resolved": "src/extensions/native_node_module_callable.zig",
+      "virtual_index_entry": "100644 824a2f6ce190333527ea812dc978e3fd213fead1 0\tsrc/extensions/native_node_module_callable.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_utils.zig",
+      "literal": "native_async_body.zig",
+      "resolved": "src/extensions/native_async_body.zig",
+      "virtual_index_entry": "100644 ad79be421d1ce9764eb3a9d4152ba896431a3689 0\tsrc/extensions/native_async_body.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_utils.zig",
+      "literal": "native_jiti_budget.zig",
+      "resolved": "src/extensions/native_jiti_budget.zig",
+      "virtual_index_entry": "100644 509c997b570a4b6f7dd893733424751fa0ea76c1 0\tsrc/extensions/native_jiti_budget.zig"
+    },
+    {
+      "importer": "src/extensions/native_jiti_utils.zig",
+      "literal": "native_jiti_budget.zig",
+      "resolved": "src/extensions/native_jiti_budget.zig",
+      "virtual_index_entry": "100644 509c997b570a4b6f7dd893733424751fa0ea76c1 0\tsrc/extensions/native_jiti_budget.zig"
+    },
+    {
+      "importer": "src/native_jiti_shared_dependencies_controls.zig",
+      "literal": "extensions/native_ai_provider_values.zig",
+      "resolved": "src/extensions/native_ai_provider_values.zig",
+      "virtual_index_entry": "100644 4033c59939cb358c99b2591825547dd808214685 0\tsrc/extensions/native_ai_provider_values.zig"
+    },
+    {
+      "importer": "src/native_jiti_shared_dependencies_controls.zig",
+      "literal": "extensions/native_jiti_shared_dependencies.zig",
+      "resolved": "src/extensions/native_jiti_shared_dependencies.zig",
+      "virtual_index_entry": "100644 e2117fd68a347b07fc2a71ae4938981e1aa2f550 0\tsrc/extensions/native_jiti_shared_dependencies.zig"
+    },
+    {
+      "importer": "src/native_jiti_initialization_pending_controls.zig",
+      "literal": "extensions/native_ai_provider_values.zig",
+      "resolved": "src/extensions/native_ai_provider_values.zig",
+      "virtual_index_entry": "100644 4033c59939cb358c99b2591825547dd808214685 0\tsrc/extensions/native_ai_provider_values.zig"
+    },
+    {
+      "importer": "src/native_jiti_initialization_pending_controls.zig",
+      "literal": "extensions/native_jiti_colors.zig",
+      "resolved": "src/extensions/native_jiti_colors.zig",
+      "virtual_index_entry": "100644 f1640874d740b16394eebd11a778031697181f4b 0\tsrc/extensions/native_jiti_colors.zig"
+    },
+    {
+      "importer": "src/native_jiti_initialization_pending_controls.zig",
+      "literal": "extensions/native_jiti_utils.zig",
+      "resolved": "src/extensions/native_jiti_utils.zig",
+      "virtual_index_entry": "100644 3647ec9ff0234a5bcc08902d62cf8a9a1c485d2c 0\tsrc/extensions/native_jiti_utils.zig"
+    },
+    {
+      "importer": "src/native_jiti_initialization_pending_controls.zig",
+      "literal": "extensions/native_jiti_shared_dependencies.zig",
+      "resolved": "src/extensions/native_jiti_shared_dependencies.zig",
+      "virtual_index_entry": "100644 e2117fd68a347b07fc2a71ae4938981e1aa2f550 0\tsrc/extensions/native_jiti_shared_dependencies.zig"
+    }
+  ],
+  "literal_missing": [],
+  "jobs_run": [],
+  "default_selection": false,
+  "native_qualified": false,
+  "genuine_tty_backend_complete": false,
+  "genuine_node_bootstrap_complete": false,
+  "preserved": "all paths outside exact16-file payload including Root Pathe/MLLY/profile/AF/Core/Engine/C/H/build"
+}

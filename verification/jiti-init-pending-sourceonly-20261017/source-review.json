@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "source_head": "2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "source review closed; no remaining blocker in finite scope",
+  "scope": "colors/utils constructor pending-success boundaries and causal real-delegating prepared controls only",
+  "manifest_sha256": "302333FD504026E99758584BB341922695ECF429D21FC3590C1241A0ADA8CDFA",
+  "manifest_records": 20,
+  "physical_hash_length_drift": 0,
+  "products": [
+    {
+      "path": "src/extensions/native_jiti_colors.zig",
+      "size": 5656,
+      "sha256": "819FC8FF6B5EDE56717B2F0A5DB5A5062DA0B7EC281F90DAFD331748FDE3C70E",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed/src/extensions/native_jiti_colors.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_utils.zig",
+      "size": 13169,
+      "sha256": "126351AEF7838A4B47A687A92568EE9E15BA933BC45E1FBD6527FCED9DE44288",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/2c57e50d23d798f01ab51ad1f71d99cc06fcb9ed/src/extensions/native_jiti_utils.zig"
+    }
+  ],
+  "controls_sha256": "EB38DF6268DC58DEF6B0C93123F7B36FE4DBE1135D32141EDAE566F939110FF8",
+  "reviewed_properties": [
+    "pending event owned before guest success cleanup and Scope.own",
+    "TTY getter/call guards precede later effects",
+    "all15 initialization color callbacks guard before map write and next callback",
+    "direct entries balance diagnostic suppression",
+    "real delegate controls arm failing allocator after actual successful return and pending event",
+    "same backing allocator restored before assertions",
+    "actual Shared reservation rollback prepared"
+  ],
+  "jobs_run": [],
+  "expected_absent": true,
+  "actual_subject_available": false,
+  "native_qualified": false,
+  "default_selection": false,
+  "excluded": [
+    "runtime formatter and utility methods",
+    "full TTY/backend/bootstrap qualification",
+    "unrun controls",
+    "C/H/Engine/Main/shared policy changes"
+  ]
+}
