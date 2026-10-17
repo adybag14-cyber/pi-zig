@@ -1,0 +1,20 @@
+{
+  "status": "deterministic_two_archives_all_decompressed_members_verified",
+  "archive": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native29-identity-paired-independent-audit-20261017\\capsule-v2\\native29-qualified-14700-proof.zip",
+    "bytes": 17219652,
+    "sha256": "D4CDB87BC1F6B7C34993DB00FDABE6D6A60C1F3C411D18A0554F68EBBCEB5C15"
+  },
+  "second_archive": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\native29-identity-paired-independent-audit-20261017\\deterministic-second.zip",
+    "bytes": 17219652,
+    "sha256": "D4CDB87BC1F6B7C34993DB00FDABE6D6A60C1F3C411D18A0554F68EBBCEB5C15"
+  },
+  "member_count": 255,
+  "all_members_readback_zero_drift": true,
+  "all_source_payloads_and_private_original_ledgers_unchanged": true,
+  "derived_ledger_count": 31,
+  "removed_discovery_rows": 7312.0,
+  "no_binary_PDB_cache_or_unrelated_full_census_payload": true,
+  "no_jobs_or_Main_writes": true
+}

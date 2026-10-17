@@ -1,0 +1,260 @@
+{
+  "schema": 2,
+  "status": "source_only_shared_kernel_retirement_and_birth_bound_reuse_policy_controls",
+  "source_head": "cc42fc0e8ace9c0a0a7b5f0a56df9017c4871def",
+  "preserved_base_map_sha256": "30500DCF709979E15AC8F10D52586DB23B7AF5732D64617F155FB6DDA2DA2A51",
+  "identifier_only_commit": "2689c52815a456bb7f3f61c84711c852039b26a7",
+  "semantic_fixture_commit": "3371625b2eec3dd2a5c021678c3f2714b13d5fdf",
+  "controller36_changed": true,
+  "changed_paths": [
+    "verification/runtime_job_owner/grant.zig",
+    "verification/runtime_job_owner/controls/gate.zig",
+    "verification/runtime_job_owner/controls/tests.zig"
+  ],
+  "files": [
+    {
+      "relative": "verification/runtime_job_owner/absence.zig",
+      "bytes": 4285,
+      "sha256": "F4041EB85D23F677489BB995BF7A06B1B1709871E768D346966F7E147F37489A"
+    },
+    {
+      "relative": "verification/runtime_job_owner/admission.zig",
+      "bytes": 7071,
+      "sha256": "D426AE97DA28054D2A47FE92CB5D17CC0B356DF077648455F1DFB5C5EA57669F"
+    },
+    {
+      "relative": "verification/runtime_job_owner/build.zig",
+      "bytes": 640,
+      "sha256": "3CB5854699CECD0B5618D86F8FB765DA8F856B289CBC35FC4ACDDB3E771596DD"
+    },
+    {
+      "relative": "verification/runtime_job_owner/cache.zig",
+      "bytes": 3369,
+      "sha256": "FAE32E1A3E21F833B7E2590ED3332D5C57A0013A4A18DEE54C590B119E6AE658"
+    },
+    {
+      "relative": "verification/runtime_job_owner/command.zig",
+      "bytes": 3866,
+      "sha256": "D056B1E23042E9C083E7466051860F545DDE4A78F3259FC792001D14D5F4494B"
+    },
+    {
+      "relative": "verification/runtime_job_owner/common.zig",
+      "bytes": 6068,
+      "sha256": "71208CE9B488EDD1980B864032B292D0F6E47169DB6F852FA9CC5972B337746D"
+    },
+    {
+      "relative": "verification/runtime_job_owner/completion.zig",
+      "bytes": 658,
+      "sha256": "232565D3CF2E87DC4E0A05E7A184FF5F728CA3AE720D9430B00995AF7BAEB621"
+    },
+    {
+      "relative": "verification/runtime_job_owner/CONTROLS.md",
+      "bytes": 4711,
+      "sha256": "125F49B7C996DC5BEB1725FB3AF4C7FFA860FA735F4399C6D4A9DFB7FB989A64"
+    },
+    {
+      "relative": "verification/runtime_job_owner/deadline.zig",
+      "bytes": 2319,
+      "sha256": "9BA27E7963827C7CBCBC6437A3E9792BFDE0F06851DCF127E254F3F9D78F1382"
+    },
+    {
+      "relative": "verification/runtime_job_owner/files.zig",
+      "bytes": 8340,
+      "sha256": "EA9ECEA6C80D84ECB512F573E9815B5F47C17BF8EDC2D9335DB06D93F277D255"
+    },
+    {
+      "relative": "verification/runtime_job_owner/grant.zig",
+      "bytes": 15651,
+      "sha256": "4B27D25A27CD50CD6F55B50DA3FCC54869728D0B5D2EF2C9ED8442C8DD476B2A"
+    },
+    {
+      "relative": "verification/runtime_job_owner/HOSTED-REPRODUCTION-ASSESSMENT.md",
+      "bytes": 5430,
+      "sha256": "BB7F76F7DFA8CE1ECBB31C6B43578A686DA3F8AAC95F523F59DCF23FBCFBD84E"
+    },
+    {
+      "relative": "verification/runtime_job_owner/inputs.zig",
+      "bytes": 7661,
+      "sha256": "BF7B2BD453E26A31487EE15E3850D0E56F920AD026B3E7D2D81C6F71ED3A911D"
+    },
+    {
+      "relative": "verification/runtime_job_owner/job.zig",
+      "bytes": 5853,
+      "sha256": "C8F4997DB41CC1D3A4B9AA37CFDD1C2BF8FE3E9E748CB929C38B89D87C5468DE"
+    },
+    {
+      "relative": "verification/runtime_job_owner/junctions.zig",
+      "bytes": 10251,
+      "sha256": "711F4B5262CFCC09B51CB91CBA03BF8E39D430C682F0055BA8E28BCDC9A7A43A"
+    },
+    {
+      "relative": "verification/runtime_job_owner/main.zig",
+      "bytes": 3238,
+      "sha256": "91A73D45A38A06B62761798F184414521464538C33E4AF95EA5C3B9BE4B3250A"
+    },
+    {
+      "relative": "verification/runtime_job_owner/manifest.zig",
+      "bytes": 8669,
+      "sha256": "6B45AAD566372DC77090437C74079485170B1572A340F09CF77FB42674A8D6D8"
+    },
+    {
+      "relative": "verification/runtime_job_owner/metadata.zig",
+      "bytes": 16785,
+      "sha256": "EC5D270619767A72A328E35D1852359ED792D5E2F7944960E0DF4B28164FB346"
+    },
+    {
+      "relative": "verification/runtime_job_owner/npm.cmd.source",
+      "bytes": 106,
+      "sha256": "974EF12D7C4FAE8527FC0CB1C1F9FEEF9B313A1CF963054EDBF70AD7EB15CBE6"
+    },
+    {
+      "relative": "verification/runtime_job_owner/overlapped.zig",
+      "bytes": 7652,
+      "sha256": "AB569FBACA7F20CEA25CDCCE8938CD56CE9F7CBA477F7169B818EA5A93E4D59F"
+    },
+    {
+      "relative": "verification/runtime_job_owner/persistence.zig",
+      "bytes": 7637,
+      "sha256": "3C5C6B85F9960A666DC057DFF1865DC4FC959337CF7A91E1F00458AA89E41D63"
+    },
+    {
+      "relative": "verification/runtime_job_owner/phase.zig",
+      "bytes": 6136,
+      "sha256": "C8F93AE0B3EC31B7EAB0F7FADE2C4611C85FA4412E56C537CA8207399EB3845D"
+    },
+    {
+      "relative": "verification/runtime_job_owner/pipes.zig",
+      "bytes": 5265,
+      "sha256": "974E803885570539EC38683035ECAAA0AB86C7651A4840CD11DA8C8D128C2239"
+    },
+    {
+      "relative": "verification/runtime_job_owner/process.zig",
+      "bytes": 13348,
+      "sha256": "073E69CD925E6C371B42D9590E44A0E40C4C186914C2D02273A357E1A987ED66"
+    },
+    {
+      "relative": "verification/runtime_job_owner/PROSPECTIVE-TOOLS.md",
+      "bytes": 4770,
+      "sha256": "7508A318F2E0C25EE52EAC03238FFE25BAA470BECE9C69F02BB2FD91C60CD60E"
+    },
+    {
+      "relative": "verification/runtime_job_owner/protocol.zig",
+      "bytes": 7473,
+      "sha256": "9DEB05B6F81D71282D5393AD4141FC07E0621CE9B3490E07382E3B754005F9BC"
+    },
+    {
+      "relative": "verification/runtime_job_owner/README.md",
+      "bytes": 7309,
+      "sha256": "2ED689196CA213F0898800EE135B9941EC5FB4F8F84F73A73766E59515D4436F"
+    },
+    {
+      "relative": "verification/runtime_job_owner/receipts.zig",
+      "bytes": 5537,
+      "sha256": "020B20CA9C707B405E52903EEEC17DB3D5796CDCC5D0C5C704FFC3F82393A183"
+    },
+    {
+      "relative": "verification/runtime_job_owner/seal_set.zig",
+      "bytes": 18012,
+      "sha256": "965611F1E3BB99ADC17908E6A2AE09E531F3A852D3519A3910F8937CB53A8E29"
+    },
+    {
+      "relative": "verification/runtime_job_owner/security.zig",
+      "bytes": 2351,
+      "sha256": "71BA8D7380CF9AE7CE79F94DD32F49C0B776103BBE9F0B1EF8C43168CDAFE610"
+    },
+    {
+      "relative": "verification/runtime_job_owner/storage.zig",
+      "bytes": 1856,
+      "sha256": "CA41D1B8C8C624DEF2A919997A119A2665C67AF76114F18E2D7F4977906C7A60"
+    },
+    {
+      "relative": "verification/runtime_job_owner/supervisor.zig",
+      "bytes": 40271,
+      "sha256": "3CD228C7EED1F0FA70E1DEB6F96EC335A699659B43522170A0BABE179A672908"
+    },
+    {
+      "relative": "verification/runtime_job_owner/tools.zig",
+      "bytes": 10056,
+      "sha256": "4B7DA2B6843C4E140CFC6C0E16DA1462DCF49D3BB6826C102FF96435F0EF289F"
+    },
+    {
+      "relative": "verification/runtime_job_owner/transport.zig",
+      "bytes": 4090,
+      "sha256": "BFAEFC3681C67ABC6850B30611B12E49117387D4B0FCC574B0224CEEA96028C6"
+    },
+    {
+      "relative": "verification/runtime_job_owner/win32.zig",
+      "bytes": 11252,
+      "sha256": "0FB54FA0B9712D25A312527AD200726E3406D0CF8F708B937A44EEF47C575357"
+    },
+    {
+      "relative": "verification/runtime_job_owner/worker.zig",
+      "bytes": 12467,
+      "sha256": "DB0DABDC1A899DAB1CB3AAD01F36605A3252E59B8D344902099D5E7DFD98C111"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/README.md",
+      "bytes": 6576,
+      "sha256": "7E9E3C62383E1334C5A077B6FFB03729F04C0F1D9F9FC65458AE756BF8C1C474"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/actor.zig",
+      "bytes": 14092,
+      "sha256": "5FF9C0349D46586B3620064D9C5CE01186C0C273716CAC3A24EDF0C4FF548451"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/gate.zig",
+      "bytes": 5064,
+      "sha256": "197992513B18A19FFE4685746352BDA85F033D57F800175F140850C43FB6C212"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/ledger.zig",
+      "bytes": 2193,
+      "sha256": "D42F7E71F152C94CF7F66978DBA38BEC6105EAB971A48DC552DB4A0295815203"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/support.zig",
+      "bytes": 24537,
+      "sha256": "1230A0D20CE1537BBAA5D63BB281E5587A523483FA6C3C8E333F0D2CE7507748"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls/tests.zig",
+      "bytes": 47940,
+      "sha256": "3BD2299E6EF3E8CC25CA7828E9200D71ABE0008EE3C8026E465F2F3B22CAE3D1"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls_actor.zig",
+      "bytes": 126,
+      "sha256": "F6FE4EB8E92A9A622A4C71271A232DBD35155F3E7F2AF37D3F0A3F3F3C80B5C7"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls_tests.zig",
+      "bytes": 121,
+      "sha256": "518E9DC6C8E248CA83D2B1CAC9D65AB25DA0005733A97A356ED600CF4FAAA800"
+    },
+    {
+      "relative": "verification/runtime_job_owner/controls_build.zig",
+      "bytes": 1067,
+      "sha256": "D946D34AE6FF005288A7D2959E9D9B93965FD0C22EB6AF6485BFDBA99984D1BA"
+    }
+  ],
+  "planned_test_declarations": 29,
+  "actual_metadata_status": "unobserved_for_identity_lease_successor",
+  "runtime_status": "unexecuted_identity_lease_successor_prior_a5_all_prebody_lease_rejection",
+  "authority_complete": false,
+  "build_script_only_commit": "5c778a7e514dc43c191d7bb512e35ede4456c2dc",
+  "capture_comparison_only_commit": "3e956c99f3e9c0b771218d957efa796ac6fdcd2c",
+  "metadata_diagnostic_only_commit": "7606789781afefaa8da31f6a6375b9ed2ac8909f",
+  "junction_original_commit": "a6437c1e5f4bfa05d0b83db6edbab67ff5f9c4e1",
+  "junction_carried_commit": "fd4d614cd5ac0038622c0adda9d487d9d1619fad",
+  "property_diagnostic_commit": "a3598c6ea3ff21daa3fba99f8b5bb3f27e37e5ae",
+  "kernel_image_authority_commit": "f3cec55072278b10df4b8598da1f3a10b948671f",
+  "kernel_image_unit_commit": "891182fba021744e644279f4dfbfec08db4fc69c",
+  "lexical_capture_commit": "f3f260bacef8420099db72339197ad2a07e79e1c",
+  "detached_pipe_only_commit": "2956e44901802e8727cd41bef217751f883feb1d",
+  "preserved_packet_v12_map_sha256": "A85ED1FCA905453C00F92B22632CFBED7347E285224B3EB6F136FE770A8DB1B7",
+  "clock_gate_fixture_commit": "bff2ff95d4bac7f1c2413696c3d9a9bab310b42e",
+  "preserved_packet_v13_map_sha256": "8A4E5B41CBC4F25C3F653C7988F10E2DB695A73B1DB8CA448575F8B59CA40A77",
+  "released_identity_policy_commit": "cc42fc0e8ace9c0a0a7b5f0a56df9017c4871def",
+  "preserved_packet_v14_map_sha256": "C5012D270F30F70D47E3871C48D4AFF5CA197781F3DDC02BF6CE2FEE3855AFC7"
+}

@@ -1,0 +1,182 @@
+[
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\absence.zig",
+    "sha256": "F4041EB85D23F677489BB995BF7A06B1B1709871E768D346966F7E147F37489A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\admission.zig",
+    "sha256": "D426AE97DA28054D2A47FE92CB5D17CC0B356DF077648455F1DFB5C5EA57669F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\build.zig",
+    "sha256": "3CB5854699CECD0B5618D86F8FB765DA8F856B289CBC35FC4ACDDB3E771596DD"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\cache.zig",
+    "sha256": "FAE32E1A3E21F833B7E2590ED3332D5C57A0013A4A18DEE54C590B119E6AE658"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\command.zig",
+    "sha256": "D056B1E23042E9C083E7466051860F545DDE4A78F3259FC792001D14D5F4494B"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\common.zig",
+    "sha256": "71208CE9B488EDD1980B864032B292D0F6E47169DB6F852FA9CC5972B337746D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\completion.zig",
+    "sha256": "232565D3CF2E87DC4E0A05E7A184FF5F728CA3AE720D9430B00995AF7BAEB621"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\CONTROLS.md",
+    "sha256": "125F49B7C996DC5BEB1725FB3AF4C7FFA860FA735F4399C6D4A9DFB7FB989A64"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\deadline.zig",
+    "sha256": "9BA27E7963827C7CBCBC6437A3E9792BFDE0F06851DCF127E254F3F9D78F1382"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\files.zig",
+    "sha256": "EA9ECEA6C80D84ECB512F573E9815B5F47C17BF8EDC2D9335DB06D93F277D255"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\grant.zig",
+    "sha256": "4B27D25A27CD50CD6F55B50DA3FCC54869728D0B5D2EF2C9ED8442C8DD476B2A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\HOSTED-REPRODUCTION-ASSESSMENT.md",
+    "sha256": "BB7F76F7DFA8CE1ECBB31C6B43578A686DA3F8AAC95F523F59DCF23FBCFBD84E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\inputs.zig",
+    "sha256": "BF7B2BD453E26A31487EE15E3850D0E56F920AD026B3E7D2D81C6F71ED3A911D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\job.zig",
+    "sha256": "C8F4997DB41CC1D3A4B9AA37CFDD1C2BF8FE3E9E748CB929C38B89D87C5468DE"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\junctions.zig",
+    "sha256": "711F4B5262CFCC09B51CB91CBA03BF8E39D430C682F0055BA8E28BCDC9A7A43A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\main.zig",
+    "sha256": "91A73D45A38A06B62761798F184414521464538C33E4AF95EA5C3B9BE4B3250A"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\manifest.zig",
+    "sha256": "6B45AAD566372DC77090437C74079485170B1572A340F09CF77FB42674A8D6D8"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\metadata.zig",
+    "sha256": "EC5D270619767A72A328E35D1852359ED792D5E2F7944960E0DF4B28164FB346"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\npm.cmd.source",
+    "sha256": "974EF12D7C4FAE8527FC0CB1C1F9FEEF9B313A1CF963054EDBF70AD7EB15CBE6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\overlapped.zig",
+    "sha256": "AB569FBACA7F20CEA25CDCCE8938CD56CE9F7CBA477F7169B818EA5A93E4D59F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\persistence.zig",
+    "sha256": "3C5C6B85F9960A666DC057DFF1865DC4FC959337CF7A91E1F00458AA89E41D63"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\phase.zig",
+    "sha256": "C8F93AE0B3EC31B7EAB0F7FADE2C4611C85FA4412E56C537CA8207399EB3845D"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\pipes.zig",
+    "sha256": "974E803885570539EC38683035ECAAA0AB86C7651A4840CD11DA8C8D128C2239"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\process.zig",
+    "sha256": "073E69CD925E6C371B42D9590E44A0E40C4C186914C2D02273A357E1A987ED66"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\PROSPECTIVE-TOOLS.md",
+    "sha256": "7508A318F2E0C25EE52EAC03238FFE25BAA470BECE9C69F02BB2FD91C60CD60E"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\protocol.zig",
+    "sha256": "9DEB05B6F81D71282D5393AD4141FC07E0621CE9B3490E07382E3B754005F9BC"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\README.md",
+    "sha256": "2ED689196CA213F0898800EE135B9941EC5FB4F8F84F73A73766E59515D4436F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\receipts.zig",
+    "sha256": "020B20CA9C707B405E52903EEEC17DB3D5796CDCC5D0C5C704FFC3F82393A183"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\seal_set.zig",
+    "sha256": "965611F1E3BB99ADC17908E6A2AE09E531F3A852D3519A3910F8937CB53A8E29"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\security.zig",
+    "sha256": "71BA8D7380CF9AE7CE79F94DD32F49C0B776103BBE9F0B1EF8C43168CDAFE610"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\storage.zig",
+    "sha256": "CA41D1B8C8C624DEF2A919997A119A2665C67AF76114F18E2D7F4977906C7A60"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\supervisor.zig",
+    "sha256": "3CD228C7EED1F0FA70E1DEB6F96EC335A699659B43522170A0BABE179A672908"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\tools.zig",
+    "sha256": "4B7DA2B6843C4E140CFC6C0E16DA1462DCF49D3BB6826C102FF96435F0EF289F"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\transport.zig",
+    "sha256": "BFAEFC3681C67ABC6850B30611B12E49117387D4B0FCC574B0224CEEA96028C6"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\win32.zig",
+    "sha256": "0FB54FA0B9712D25A312527AD200726E3406D0CF8F708B937A44EEF47C575357"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\worker.zig",
+    "sha256": "DB0DABDC1A899DAB1CB3AAD01F36605A3252E59B8D344902099D5E7DFD98C111"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\README.md",
+    "sha256": "7E9E3C62383E1334C5A077B6FFB03729F04C0F1D9F9FC65458AE756BF8C1C474"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\actor.zig",
+    "sha256": "5FF9C0349D46586B3620064D9C5CE01186C0C273716CAC3A24EDF0C4FF548451"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\gate.zig",
+    "sha256": "197992513B18A19FFE4685746352BDA85F033D57F800175F140850C43FB6C212"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\ledger.zig",
+    "sha256": "D42F7E71F152C94CF7F66978DBA38BEC6105EAB971A48DC552DB4A0295815203"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\support.zig",
+    "sha256": "1230A0D20CE1537BBAA5D63BB281E5587A523483FA6C3C8E333F0D2CE7507748"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls\\tests.zig",
+    "sha256": "3BD2299E6EF3E8CC25CA7828E9200D71ABE0008EE3C8026E465F2F3B22CAE3D1"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls_actor.zig",
+    "sha256": "F6FE4EB8E92A9A622A4C71271A232DBD35155F3E7F2AF37D3F0A3F3F3C80B5C7"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls_tests.zig",
+    "sha256": "518E9DC6C8E248CA83D2B1CAC9D65AB25DA0005733A97A356ED600CF4FAAA800"
+  },
+  {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\ignore\\verification\\runtime_job_owner\\controls_build.zig",
+    "sha256": "D946D34AE6FF005288A7D2959E9D9B93965FD0C22EB6AF6485BFDBA99984D1BA"
+  }
+]

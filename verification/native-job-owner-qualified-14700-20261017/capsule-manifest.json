@@ -1,0 +1,2006 @@
+{
+  "status": "prepared_for_Root_intake_publication_pending",
+  "source_head": "14700e0b79d94996d2634f9486e7ebcfe1dbedfd",
+  "member_count": 255,
+  "members": [
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/artifacts-before.json",
+      "bytes": 1631,
+      "sha256": "32C3175AC4B384546195E27FED6BE06ED753857B2CDB37FAD66CA3E637105E7C",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control02-job-reject_identity-ledger.jsonl.derivation.json",
+      "bytes": 890,
+      "sha256": "12A63B9CD2310531C02EBD429EE56A37D41F5C20A7D43E6B4E80E1930C4B02F2",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control02-job-reject/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control03-create-death/identity-ledger.project-filtered.jsonl",
+      "bytes": 4265,
+      "sha256": "83D28E38E36D3ABD17A2671CBA9567D7164263E61BCF33AB2EF99CB96AC685BD",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control03-create-death_identity-ledger.jsonl.derivation.json",
+      "bytes": 894,
+      "sha256": "1528B3170CAACE6ADD21CA6782B2EEC03AB03943DD8A80458DA20A8F8E6ACDE3",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control03-create-death/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control04-late-metadata/identity-ledger.project-filtered.jsonl",
+      "bytes": 1206,
+      "sha256": "3BEEFE784C53D835055382BFE2C743D674172C39BDBE83D4065A98E0DD57A391",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control04-late-metadata_identity-ledger.jsonl.derivation.json",
+      "bytes": 896,
+      "sha256": "AED84D186F1A96A31B78CF0D78A4C16D03D4A04BAF55CA58B1A41057D0DFCD63",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control04-late-metadata/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control05-metadata-one-shot/identity-ledger.project-filtered.jsonl",
+      "bytes": 1466,
+      "sha256": "A20784DB28539E7B4B0A467B57B80FB4342536ABB6586C88FEE56FBDB0063E78",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control05-metadata-one-shot_identity-ledger.jsonl.derivation.json",
+      "bytes": 904,
+      "sha256": "9A21FD0B45AB7066604F212579565291D4D3AD29C0BAE4393661B0E7591729DE",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control05-metadata-one-shot/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control06-failed-create/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control06-failed-create_identity-ledger.jsonl.derivation.json",
+      "bytes": 896,
+      "sha256": "115900FFF2DA83B12B2BFF47B79D0463B081FC4224CA8969F022DB664FE519AB",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control02-job-reject/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "9D43C0B94E63E5BC379695D0C3784BCBD9C9581C4D685E98280B49E1299904D4",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control06-failed-create/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control07-zero-write_identity-ledger.jsonl.derivation.json",
+      "bytes": 890,
+      "sha256": "B52567963AB3FD7B2760F6F1B239511B73103BF25129D2A0706298E9DD0BE4D0",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control07-zero-write/stdout.bin",
+      "bytes": 4097,
+      "sha256": "252A3370C1B76874608DF4BDDCEC49B44DF2367EA4B618AA7A5ACB4B35709C97",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control08-exact-cap/identity-ledger.project-filtered.jsonl",
+      "bytes": 4297,
+      "sha256": "6309A5C72887201B1FFED5F4CC454F73F63120E5EAF7DD87385606CA29B11A0B",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control08-exact-cap_identity-ledger.jsonl.derivation.json",
+      "bytes": 888,
+      "sha256": "10ABDDF6BC9E46E0C242B7F450728AF70884680BED38287002153FB6CEEC41E8",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control08-exact-cap/stdout.bin",
+      "bytes": 8388608,
+      "sha256": "7014AE0F2FC0FEE42A440B97859207EFB72FFEE09D4864F7433F1BF756A17ACA",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control09-over-cap/identity-ledger.project-filtered.jsonl",
+      "bytes": 4311,
+      "sha256": "BFA817C91DA9A245FDC3CCE2B9BA43288D2EF23FEA434DC930E5D886A2941484",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control09-over-cap_identity-ledger.jsonl.derivation.json",
+      "bytes": 886,
+      "sha256": "18B196927063D3491855BE82AE0B51CC4A6982CBE0F51497EF3D51B1596E35BB",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control09-over-cap/stdout.bin",
+      "bytes": 8388608,
+      "sha256": "7014AE0F2FC0FEE42A440B97859207EFB72FFEE09D4864F7433F1BF756A17ACA",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control10-cancel-read/identity-ledger.project-filtered.jsonl",
+      "bytes": 1132,
+      "sha256": "5CE36CE3409307ABCA9F91A45B145F794C9D61D0CBFC5809FDA06F291186444F",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control10-cancel-read_identity-ledger.jsonl.derivation.json",
+      "bytes": 892,
+      "sha256": "6A702C184BC6375457C591C069F234109AFA0951FD31AFE46ED9AC07572C000F",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control10-cancel-read/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control11-stalled-persistence/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control11-stalled-persistence_identity-ledger.jsonl.derivation.json",
+      "bytes": 908,
+      "sha256": "32EB57CCE13B41CEAE87BBBFBAC320E3A5112E76F4AB9E9F506F860C8EF6282E",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control07-zero-write/identity-ledger.project-filtered.jsonl",
+      "bytes": 4295,
+      "sha256": "B624B20B8048DEB8B0E7E58CC76EE10605D0400635FAAA841D577AA957366245",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control11-stalled-persistence/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control01-family/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control01-family/identity-ledger.project-filtered.jsonl",
+      "bytes": 21284,
+      "sha256": "3CB7DA8E299F8F14A8DA7DB435E9BD0468E6F2F7948F70DC5A2C58DFE7CD3EA3",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/fixture-grant.template.json",
+      "bytes": 1168,
+      "sha256": "E8172995292B2AB215DDE5C80B9B532DA620B7760DC38AA581D32D7A3FB4A05D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/independent-source-review.json",
+      "bytes": 8476,
+      "sha256": "589166EAAC69D6BAADE212A29D00C32ED00C0E9145325F7D1C73244E13B7CEE1",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/prepared.json",
+      "bytes": 6193,
+      "sha256": "DCDC574875C9CE30D6E4A29E305909E9A78B51AAB0FDC4C49C0D61E31B6F9BE9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/README.md",
+      "bytes": 3331,
+      "sha256": "9AACB1CDE9836695D9D0B1124AB011EDA2A6A6CF4A2BBFBCF7EA211B2CE1F9F9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/runtime-root-grant.template.json",
+      "bytes": 1198,
+      "sha256": "BBCD2D3B5A52DC845DB82C95760F9D7B443BB029AB39977813D292AF061F9655",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/build-query-root-grant.template.json",
+      "bytes": 1210,
+      "sha256": "563864CF2B9C0CA1521D050B9B17C26EA7987C7A20B509CFB8379BD29AC20582",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/final-source-readiness.json",
+      "bytes": 1620,
+      "sha256": "AA1AE77D196E10998965A8DE7BEECAAC8BAEECF18E103174F8B7DA12A0C26BA1",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/fixture-grant.template.json",
+      "bytes": 1173,
+      "sha256": "89107346BB7B64CA076065CAFE9DA2DCB71ADE814B2DA6A63C32D50D43E0E5BA",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/independent-source-review.json",
+      "bytes": 3130,
+      "sha256": "DC9D6F03C78D38DA049D4AC5A16AE5E5F24D84A3FD3C54B80A1B8E3E91ED4D53",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/prepared.json",
+      "bytes": 6684,
+      "sha256": "E332674F57416AD800106F65389394EC76169B95B85CAB9017D948E5FFE7EA8F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/README.md",
+      "bytes": 4883,
+      "sha256": "85C1B5FF75E50D390C5329F876693EB1AD9B1988D0BC1C24A7ADDBEB7BC107C8",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-identity-lease-prospective-20261017/runtime-root-grant.template.json",
+      "bytes": 1202,
+      "sha256": "29BBBD395278EDC65E850EB428189A4BE25E13B7248BB9B7A8F9B441F60793BD",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "diagnostic/authorized-six-PID-later-kernel-observation.json",
+      "bytes": 3921,
+      "sha256": "3AB68D7E4C3BA0A280F9EB03ACC674358100D7AFB6E301B47CE64B36925F1965",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control01-family_identity-ledger.jsonl.derivation.json",
+      "bytes": 883,
+      "sha256": "30D4C79BA10889B1783ED297EDBD97FDFECEBBA755142A8776AC35BB0D1786F6",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "source-review/identity-lease-independent-review.json",
+      "bytes": 3130,
+      "sha256": "DC9D6F03C78D38DA049D4AC5A16AE5E5F24D84A3FD3C54B80A1B8E3E91ED4D53",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "owners/CI607.ps1",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "owners/Protocol39F.ps1",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "owners/outer53E5.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "source-history/2956e44901802e8727cd41bef217751f883feb1d.patch.txt",
+      "bytes": 2251,
+      "sha256": "67D7F43A9DB9C0F1D2C76331B051E100CEDA89150B59A9C658DA9642FBCB1FEC",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "source-history/bff2ff95d4bac7f1c2413696c3d9a9bab310b42e.patch.txt",
+      "bytes": 3558,
+      "sha256": "7232D7BD465831C5E94C279590959861525F3EF8061AAFEEC728CF5FA3A35C9E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "source-history/cc42fc0e8ace9c0a0a7b5f0a56df9017c4871def.patch.txt",
+      "bytes": 17271,
+      "sha256": "E01A2CF7F7A218667DBC131E5750BE964FDA225F42395E7393FA8399FEC57EB3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-23548-134367364793600005.jsonl",
+      "bytes": 2611,
+      "sha256": "8D837166211CC68F006C4929DC8070D6638F24BB518F6C2501A1917579DD96A9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-26956-134367364800231503.jsonl",
+      "bytes": 2601,
+      "sha256": "F11C001981217D4494E101477AF212172BDAC6FB310923325EC7EA6661B89585",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-48964-134367364780564853.jsonl",
+      "bytes": 2510,
+      "sha256": "D609107F10DCE0A24A5B11A81F2B1815496A149CF34D99073C98994EB5041C00",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-61360-134367364775673902.jsonl",
+      "bytes": 2568,
+      "sha256": "759763F1E586B92CC2225EA9F5BDD64C9A532E1B9DFC5663052881F60AEB6D59",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-61660-134367364516421815.jsonl",
+      "bytes": 2599,
+      "sha256": "26A9DC1448E0EEFAB95B0C46285D52A78DF45504B7C50F303F8D6B222F82DDD0",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-62704-134367364523099999.jsonl",
+      "bytes": 2589,
+      "sha256": "8647CA10703A8149D9539A4D959BC3897BE47D1D5A7820C1665136D8D950A8E7",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/descendant-66216-134367364753281603.jsonl",
+      "bytes": 2843,
+      "sha256": "DC7628F6FFA8139D156A5B88AC0D5D89AF0D51FBA7976B4E19D0786B1C8D8F95",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "authority/compiler19546-original.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/final-source-readiness.json",
+      "bytes": 1564,
+      "sha256": "93C43B9BB404E7649D8005A3A6FB7CEE02C75798154F74CAAE9EFCD82E11F51F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control12-idle-append/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control12-idle-append/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control23-native-census/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control23-owned-sentinel/identity-ledger.project-filtered.jsonl",
+      "bytes": 4249,
+      "sha256": "83152FD60C8247F3785F62FD83CA0514C1E7EE70797F3209ED1D0B659D3EC889",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control23-owned-sentinel_identity-ledger.jsonl.derivation.json",
+      "bytes": 898,
+      "sha256": "D23A9CF6B01FEE2001AFA59982992F478C3ACF5759854D4C5758205FA83A1085",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control23-owned-sentinel/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control24-protected-sentinel/identity-ledger.project-filtered.jsonl",
+      "bytes": 4277,
+      "sha256": "2F90C50CF5F00C93696BC0E062B0C81E822E7735589A07C74B6A3A7BCCDB7F56",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control24-protected-sentinel_identity-ledger.jsonl.derivation.json",
+      "bytes": 906,
+      "sha256": "CB48623B3DF4EB1764CEEAF7BF11EB037BFC830F1EE71CB9C2D5D31EDBFC1459",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control24-protected-sentinel/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control24-unverifiable-native/identity-ledger.project-filtered.jsonl",
+      "bytes": 1836,
+      "sha256": "E89715DD140912117294089DC8BD5EF208036A4F8909AD5121C0D5F9590CD127",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control24-unverifiable-native_identity-ledger.jsonl.derivation.json",
+      "bytes": 908,
+      "sha256": "320B3928C16CCDB59D028BB8787ADC9D0D291A48ED64385C569077201F2F80C8",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control24-unverifiable-native/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control25-explicit-environment/identity-ledger.project-filtered.jsonl",
+      "bytes": 4294,
+      "sha256": "872C3A8816560DCDD1684803F5451190BA114407E9BB9FFDD9C9D514BF0F44E6",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control25-explicit-environment_identity-ledger.jsonl.derivation.json",
+      "bytes": 910,
+      "sha256": "8458AB0CD7859B9BE9C169E7C48A8E5BDE10FFC819C198DA238C0CFF07BE1F22",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control25-explicit-environment/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control23-native-census_identity-ledger.jsonl.derivation.json",
+      "bytes": 896,
+      "sha256": "CCA28CC3F3A71786298E0E61A8B9C6C49D13D3C57ED6EF57C8FD09FF2077E067",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control26-full-file-drift/identity-ledger.project-filtered.jsonl",
+      "bytes": 198304,
+      "sha256": "443336440175E0655E944CEA0F295ED878B934162EC31AA8B18BF1BD5FC3AA54",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control26-full-file-drift/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control27-post-comparison-drift/identity-ledger.project-filtered.jsonl",
+      "bytes": 17696,
+      "sha256": "D5EC8256DBEFB33542D419A18BC27BE4715C985953D4D8B383493BB6004E5095",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control27-post-comparison-drift_identity-ledger.jsonl.derivation.json",
+      "bytes": 914,
+      "sha256": "134B0E2DF036E9131953EE07E0FD2658C32BFB85AC7082762897B8EEE39046CA",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control27-post-comparison-drift/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control28-broken-junction/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control28-broken-junction_identity-ledger.jsonl.derivation.json",
+      "bytes": 900,
+      "sha256": "DE05376FB5A58C3370E7D95FE49143CE434C6D4553BB4CF6256253CA7D8A0842",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control28-broken-junction/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control29-job-close/identity-ledger.project-filtered.jsonl",
+      "bytes": 4495,
+      "sha256": "1A11E58424C5C7657677F3882EA8D79BFE65A949E9A7DFDCF588386479C1A710",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control29-job-close_identity-ledger.jsonl.derivation.json",
+      "bytes": 888,
+      "sha256": "20C2F45F855D95C97AD097D3B5CC08D9B0758A6E56272AC8B00BC8624228083B",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control29-job-close/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "causal-control22/actual-retired-held-owner.json",
+      "bytes": 70,
+      "sha256": "EB586D0AEF2CFA0BD916896159F7B049F61167091D34518AEAA22EE3F8152FE4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "causal-control22/actual-retired-held-lease.json",
+      "bytes": 292,
+      "sha256": "D7E2258A3B63282817B138219599A5DB0686816628F7F2A069B9BC68A0A40BE1",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "causal-control22/live-previous-pid-grant.json",
+      "bytes": 1474,
+      "sha256": "569AD055C6D2413922765B8032C77A49DE8CEC76A6E13F07B0DC7509A71B0345",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control26-full-file-drift_identity-ledger.jsonl.derivation.json",
+      "bytes": 903,
+      "sha256": "AB046923579D546EB3219C9F68D954E606049B3F5589C37842252B1416CE4279",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "privacy/control12-idle-append_identity-ledger.jsonl.derivation.json",
+      "bytes": 892,
+      "sha256": "05E62E8CAD6A131BAF71A97068756C0190778482FE3E14E1AD6805C7224B06B9",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control23-native-census/identity-ledger.project-filtered.jsonl",
+      "bytes": 2355,
+      "sha256": "223579B0277BB82EA4C5016522D127CC2EB2F750595B07AA38014F9ECB151A82",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control22-stale-grant_identity-ledger.jsonl.derivation.json",
+      "bytes": 892,
+      "sha256": "EC71DDB7F927C2BADE5132E1ECD5D939DE81D96BB93FC7915E5C0471CBC04E06",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control13-queue-one-shot/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control13-queue-one-shot_identity-ledger.jsonl.derivation.json",
+      "bytes": 898,
+      "sha256": "10823AE67EAD3D324CBFAF97B5DF78A30E004C6DD66CA716F502CEEABC423CB1",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control13-queue-one-shot/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control14-persistence-bounds/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control14-persistence-bounds_identity-ledger.jsonl.derivation.json",
+      "bytes": 906,
+      "sha256": "6257556202FA711705618A00CAC8951E5F6CC8D052A910821E3A1E0EEB4E6D67",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control14-persistence-bounds/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control15-protocol-reject/identity-ledger.project-filtered.jsonl",
+      "bytes": 4261,
+      "sha256": "FEDD5839C82561218B87ECD80B21E72E86CE82EC3A1C9EEB5EEA99002F2C7016",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control15-protocol-reject_identity-ledger.jsonl.derivation.json",
+      "bytes": 900,
+      "sha256": "87F9443CAA7154A0417171943D17928DD0E41ECE245EB322332FC5AD9651EAE8",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control15-protocol-reject/stdout.bin",
+      "bytes": 1,
+      "sha256": "BBEEBD879E1DFF6918546DC0C179FDDE505F2A21591C9A9C96E36B054EC5AF83",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control16-wrong-remote-handle/identity-ledger.project-filtered.jsonl",
+      "bytes": 4232,
+      "sha256": "0305DF656A374F4DADA89A7E8CB8041FE8ACBD76855C9725F6035AA5D6D07B78",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control16-wrong-remote-handle_identity-ledger.jsonl.derivation.json",
+      "bytes": 908,
+      "sha256": "99EB095360CC11D669578B8C9512155A89CD3F1E32FED12A8D672CD75CCB256B",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control16-wrong-remote-handle/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control17-retained-grandchild/identity-ledger.project-filtered.jsonl",
+      "bytes": 4302,
+      "sha256": "F58186E9098008B6849F032512944525F6FFBEE85A21A94234DE0730555CA46F",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control22-stale-grant/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "privacy/control17-retained-grandchild_identity-ledger.jsonl.derivation.json",
+      "bytes": 908,
+      "sha256": "9B7B0B83F5F1F2CF8003C9AD9A89B30668F1B32CC8B40AF9747D7002F2C0E66B",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control18-no-advisory-assumption/identity-ledger.project-filtered.jsonl",
+      "bytes": 4255,
+      "sha256": "40B653BE6CA2F67BA801C9D78A57239251244BB890D7D65AA257C5EF8AE8488B",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control18-no-advisory-assumption_identity-ledger.jsonl.derivation.json",
+      "bytes": 914,
+      "sha256": "B51F86784E690D5DF95E845370C817BE1C86F38822191649630EC819879567A6",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control18-no-advisory-assumption/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control19-real-cap/identity-ledger.project-filtered.jsonl",
+      "bytes": 4501,
+      "sha256": "389EC05460E45F4DFA30D32F2889DC2A998CBAAFE3C55EB6F7A004F00FD33361",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control19-real-cap_identity-ledger.jsonl.derivation.json",
+      "bytes": 886,
+      "sha256": "CC55C288B084FE5D85A65AFF5743AFAE59D09753825E56FED7F9DFF561D48342",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control19-real-cap/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control20-deadline-boundaries/identity-ledger.project-filtered.jsonl",
+      "bytes": 1103,
+      "sha256": "1D118B30D17D407DC431F56C7FCD53CC0A316241EAFE1B13CEEC77F18641EC5E",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control20-deadline-boundaries_identity-ledger.jsonl.derivation.json",
+      "bytes": 908,
+      "sha256": "C48295CFCFFA696C690DCF53ACB92E9862D3E67DFB1718BBFFC28B7BADF27972",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control20-deadline-boundaries/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control21-retained-exit-handles/identity-ledger.project-filtered.jsonl",
+      "bytes": 9245,
+      "sha256": "2973C3FAC159AD4A34B4ECD80F94A1865DFA3FDA66245C48F9FA0F5C5341C74A",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "privacy/control21-retained-exit-handles_identity-ledger.jsonl.derivation.json",
+      "bytes": 913,
+      "sha256": "81599C0A5810575A6D9B074A4934E9574A122C6A6A47BF13B0037CF132B7272D",
+      "kind": "derived_explicitly_labeled"
+    },
+    {
+      "name": "observations/control21-retained-exit-handles/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "observations/control22-stale-grant/identity-ledger.project-filtered.jsonl",
+      "bytes": 4783,
+      "sha256": "8A90F784A46DEF086492D5C267254C9B15966E5B6974B913626C34FE325ED4F0",
+      "kind": "derived_project_only_ledger_preserving_kept_raw_lines"
+    },
+    {
+      "name": "observations/control17-retained-grandchild/stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "causal-control22/unauthorized-grant.json",
+      "bytes": 1486,
+      "sha256": "DAA401B2AB5FC94CEB8690DFCD71D8C2468FC6D45A28A1138D59A133BE3A0E18",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-clock-gate-prospective-20261017/build-query-root-grant.template.json",
+      "bytes": 1206,
+      "sha256": "A67309D9CE10D99E2EA78C52B0DC9C5622DD30B58491BE0FCF7663196F56CEC3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/README.md",
+      "bytes": 3175,
+      "sha256": "5E4E54833AAF42846B2DDF63E239B7DE9C04B7C02F589B1E8BD7D826526810BA",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/runtime.json",
+      "bytes": 1226,
+      "sha256": "8DCF0070A2F3938B0FA30496882D532A2DA9CC3FBE393EEEDECC9D948129500E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/runtime.results.json",
+      "bytes": 2789,
+      "sha256": "A6298A442EC94048D0964E8F84793E0567EEAAB6C7BC45AD805AC4B79F5D1463",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/runtime.stderr.log",
+      "bytes": 1332,
+      "sha256": "D6FF238E4BA5350EC756618BDD8510CB3850C2C915BBD50DFC6451C89C1426EF",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/runtime.stdout.bin",
+      "bytes": 826,
+      "sha256": "8358C23137FD22FC322F38A6EFA29493D4BF2F743D612C7BC8F76CAA7D44DD73",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-outer.json",
+      "bytes": 1811,
+      "sha256": "F7BA80E7123F9FD295FFC2D5C7F1363167DA55414F6E252A60208B2C5D410A5C",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-outer-absence.json",
+      "bytes": 392,
+      "sha256": "B823C1D10242520D1F340780399FB9B38DD9542E04E94B91E68459FA49057E2D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-outer.stdout.bin",
+      "bytes": 941,
+      "sha256": "364B64524721F1E504F764EBC0A5E38EDE550185631F890AE10E622D5E8835A4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-outer.stderr.log",
+      "bytes": 320,
+      "sha256": "FE026631CD6914CDB8B0400CCB5CBD258EC25E8AFAE3EF2F8ACBF27E22D12A0D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-grant.json",
+      "bytes": 2098,
+      "sha256": "F14BAD5D5181FCD41F88B4A469C5C82080439E2418A72AAEDE20F77E7B312D32",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-fixture-grant.json",
+      "bytes": 1694,
+      "sha256": "479FB93E5B6D40B7EB6C1802183826379D5967DA622D2C5F02650D95FCA19AA2",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-native29-detached-runtime-20261017-174139-lease.json",
+      "bytes": 1393,
+      "sha256": "6F7DF200003F853BD85A687434F44C901DD6BFB03BDD893006B06910E802C685",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/artifacts-before.json",
+      "bytes": 1636,
+      "sha256": "AD5C4D232C04C5DBF4C91001A1F4AE85F4835262EC2AAFAF598B1F778320A2B4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/artifacts-final.json",
+      "bytes": 1636,
+      "sha256": "6014E948CD2BBF3133F3278FADE42BB9CDC2C940721344075899A73A3B9527DF",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/runtime-admission.json",
+      "bytes": 155,
+      "sha256": "D6D79C8A5EB67C3591F4329D6192CA5B843548DEA18C8725243F6F700EE80D5A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/before.json",
+      "bytes": 9256276,
+      "sha256": "4CE3045D4EC3402CEC8328BE2FF7C2579DF071C51DD5E9992AF7C360931FEF1D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/initial-admission.json",
+      "bytes": 155,
+      "sha256": "D45CFA8EC1610A2BDBD35B44634BD1C383CD30AC16C1A77F8386FC9FD2219FD6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/metadata-name-comparison.json",
+      "bytes": 6817,
+      "sha256": "C55F3894DD269A949A5E9846E9E716A9B4B97C936DF569821AE48AA76A3B3D70",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/native-roots-final.json",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/owner-absence.json",
+      "bytes": 161,
+      "sha256": "1D10A303734314054EDC756298230B8E9C36CEFF3E0E82347A7EE1BD651518DD",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/result.json",
+      "bytes": 941,
+      "sha256": "8EE4D0194AEF8B7B6567CF8C8CE0467324C9718BF5F3037E939A6352F52B0C57",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-grant.json",
+      "bytes": 2055,
+      "sha256": "185A78086659BD2FB6E3D907E9070F7AADE825FCD2C44B6D58BCDFD251BCCA26",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/runtime-admission.json",
+      "bytes": 155,
+      "sha256": "D640723509D9DCB986948F5001B9461D026D62589F5A3DA253B37BF1B222FA7A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/runtime.json",
+      "bytes": 1226,
+      "sha256": "25FC52F86B3EB5A5A571A1BAC38CADD9142AEEF4978C27ABB6A8AD3C92A47F88",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/runtime.results.json",
+      "bytes": 2819,
+      "sha256": "59EEC9A5FAC72C2AC8A354B4723F5904F2D513CF61A93DE1CBF4D14BBFA0458D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/runtime.stderr.log",
+      "bytes": 20620,
+      "sha256": "971FB767E436BB6E60E680292A4026831C4A5180261DC1DC82159F053680D088",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/runtime.stdout.bin",
+      "bytes": 826,
+      "sha256": "194E9968AE63F9852D367F791F6534936B3FBE53F0C2CECC0A4F1D89A79FDE90",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-outer.json",
+      "bytes": 1719,
+      "sha256": "9E060068157AFA3A79B79BC7A6C2F139050CF098DD96A13778A337F5347A4BA1",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-outer-absence.json",
+      "bytes": 1970,
+      "sha256": "30023CD83471EAB1FF14E05D83A144439EAF6E0A167CB088BA1A1FBE9AF4A477",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/final.json",
+      "bytes": 9256276,
+      "sha256": "A2DF1F7BB52201D0B52CF43A31FB6D7E8080C64A7387E97B04AF8782372B2BE9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-outer.stdout.bin",
+      "bytes": 941,
+      "sha256": "8EE4D0194AEF8B7B6567CF8C8CE0467324C9718BF5F3037E939A6352F52B0C57",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/root-grant.json",
+      "bytes": 2098,
+      "sha256": "F14BAD5D5181FCD41F88B4A469C5C82080439E2418A72AAEDE20F77E7B312D32",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/owner-absence.json",
+      "bytes": 161,
+      "sha256": "374EDE748CFFF276EC71CC5C4C804B7AC3BAC1D29735BE11BB0F6AE62D8E253B",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/artifacts-final.json",
+      "bytes": 1631,
+      "sha256": "62B5AF6B4062E02F7B7B354F6BE1CDC33AFC682D967B32305645E7B6F78956ED",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/before.json",
+      "bytes": 9253715,
+      "sha256": "62D3A1D9566EB27F351BBCDB14F42BEC4855C582A769CFDC465AA15349C07D7A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/final.json",
+      "bytes": 9253715,
+      "sha256": "136B290D92251977B54742F9785341BE7021C846A3C4D6F726D2701AB15E5810",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/initial-admission.json",
+      "bytes": 155,
+      "sha256": "9A28DDA620E6E45FEC62A3022CAFC3F7A4B0BBD09AD08B692628C28CF7FB03D0",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/metadata-name-comparison.json",
+      "bytes": 6817,
+      "sha256": "A2DF64CF3972A8F92FA6E09B2F984943C1C2DDA2819E1284A69E309144A3CB4F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/native-roots-final.json",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/owner-absence.json",
+      "bytes": 161,
+      "sha256": "59E8DC7477EDF519B7DAF1CAF5F8918DC3DA6642D0FC2ED70353EE8956DD811D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/result.json",
+      "bytes": 941,
+      "sha256": "0F988BA38299A972AA0C7936CDE947CF0A0773C0AC58B9B4DAFF0728312AA25E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-grant.json",
+      "bytes": 2122,
+      "sha256": "FBCDE8CE0FE57E4311E40A6B7E8F4AAE612C386736519468DBC31F377A9CEBF3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/runtime-admission.json",
+      "bytes": 155,
+      "sha256": "D65D130C31929A3172FAF423688EFE3B45E89EC490C48E77926027E6C9F873F3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/runtime.json",
+      "bytes": 1223,
+      "sha256": "4A16041BD15381B82BF23EAD990B776E1A25797E74C7016F7C8E47C825F4F305",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/runtime.results.json",
+      "bytes": 2796,
+      "sha256": "DAB444CFC6D3AF9D67BFD8254E6643E5F862EA1BE0E832B7D2027DA09F307EA9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/runtime.stderr.log",
+      "bytes": 29340,
+      "sha256": "920734BE3647BFEC2DE07929241F685AED7D043DA74576C577BF3E72B333FFE6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/result.json",
+      "bytes": 941,
+      "sha256": "364B64524721F1E504F764EBC0A5E38EDE550185631F890AE10E622D5E8835A4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/runtime.stdout.bin",
+      "bytes": 826,
+      "sha256": "742B5550B5C6FAAF6AF7AE2EA204F9BC1C6DC74FEFB633CDDC85A3A6068FDF1F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-outer-absence.json",
+      "bytes": 414,
+      "sha256": "C10798274F25A788D69E93D8E21D1FB64C4A05E8A5DAFCC16E5385B9086F39D2",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-outer.stdout.bin",
+      "bytes": 941,
+      "sha256": "0F988BA38299A972AA0C7936CDE947CF0A0773C0AC58B9B4DAFF0728312AA25E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-outer.stderr.log",
+      "bytes": 307,
+      "sha256": "D4B262040358425E6F58927773FCBA5900C4B954341E1883FC26FE79ED3C88A6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-grant.json",
+      "bytes": 2122,
+      "sha256": "FBCDE8CE0FE57E4311E40A6B7E8F4AAE612C386736519468DBC31F377A9CEBF3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-fixture-grant.json",
+      "bytes": 1782,
+      "sha256": "D789770FB05FB3C6B9CB1889B2B210FB2D99C5D93318F6C070A18BFD8397FAA2",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-previous-lease-terminal.json",
+      "bytes": 2194,
+      "sha256": "C64E505236350DA4AC209DB210F6489A000C95DA4CF427A13361B4092755D7C0",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/artifacts-before.json",
+      "bytes": 1636,
+      "sha256": "5C4B0B88C17418EF64FA213FCB0D6AF6CBECE781A402E26E3396A889B023655E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/artifacts-final.json",
+      "bytes": 1636,
+      "sha256": "23D9060078CCB3E37F5DDE36AD119049B90746FF5444D6AC81EFC5CBFA7E01A1",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/before.json",
+      "bytes": 9255016,
+      "sha256": "AFA9092F9D677476251FAB1643B314A7F954802543BC39EB211F47DBD8644447",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/final.json",
+      "bytes": 9255016,
+      "sha256": "978FD31ECA5B8D5569169ADC1EABB9533F9160B7AA21CF2C59B24B6620330C64",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/initial-admission.json",
+      "bytes": 155,
+      "sha256": "6697A7E13584366D1032F12B2FA3EB2058C79064355CAF124BE29EB4621A9AE7",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/metadata-name-comparison.json",
+      "bytes": 6817,
+      "sha256": "206856A622F5858D8ACC63FE5C155A11A3F5C9141C604C1DFA131D244720422C",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-detached-runtime-20261017-174139/native-roots-final.json",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-lineage-runtime-retry-20261017-171419/root-native29-lineage-runtime-retry-20261017-171419-outer.json",
+      "bytes": 1839,
+      "sha256": "990A0424BD508BF8C4FA8B9016DDC0A8B5FBBEF708A149659C817CEE1A246894",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/runtime-root-grant.template.json",
+      "bytes": 1196,
+      "sha256": "D5B67268C032078F632AADB83372E103BF2E05C44656B6DB8D4D80236BB474F6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-outer.stderr.log",
+      "bytes": 317,
+      "sha256": "9D5AB4E065FF02A71458BE920A3B70BB80D21C532520D05230BCEB5E28F2C231",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-fixture-grant.json",
+      "bytes": 1643,
+      "sha256": "AFC730C01132A4BFA723B3EC837231F0AFF9FFBCA4D3F5B26FB6CD2A7DFC20E9",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/metadata-name-comparison.json",
+      "bytes": 6817,
+      "sha256": "065F08CD2101237843AA2FA19F9EBE44AC532409952F08E0524B40BFBA6EBF7E",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/native-roots-final.json",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/owner-absence.json",
+      "bytes": 161,
+      "sha256": "3CE5B2D504A6DC552D644CEB470783C67A8652ADCF1027FA43CE6EB311DDA404",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/result.json",
+      "bytes": 3981,
+      "sha256": "7931DA27912AC1EC1838834744E033B9C4AFE5CAA196EE8F851995F17E6D6AC3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-grant.json",
+      "bytes": 2050,
+      "sha256": "95B1E133972ED97E3C0A792BA428531ABD407F6BB06D18EF01764A23AAAC5D67",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/runtime-admission.json",
+      "bytes": 155,
+      "sha256": "3994ED6B1CA44F384EF0402D25D147802853667BDB691938FB3B955057A13C65",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/runtime.json",
+      "bytes": 1223,
+      "sha256": "599EB9259DCFA637AC789DC7102EA63DEA26600DD464FB598C7FCA069E661094",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/runtime.results.json",
+      "bytes": 2787,
+      "sha256": "9FECDE40C2A351A89CEDDC6B34F7124516D7DF78CB00F1892419BD4118D520D6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/runtime.stdout.bin",
+      "bytes": 826,
+      "sha256": "A9D6A9BF8AF895192E6DD0BF4ACECD1FDECFF167BBE1DA5248E07924D078340B",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-outer.json",
+      "bytes": 1642,
+      "sha256": "D85798B788C70AD9FC9804F57392C683F1C9C16A54457430FC501ACD138A2698",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-outer-absence.json",
+      "bytes": 1893,
+      "sha256": "F2FFF811F28E0618562BAC5D909E36B3C8CEDEB6C303EAE1DD66601DDF07751D",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-outer.stdout.bin",
+      "bytes": 3981,
+      "sha256": "7931DA27912AC1EC1838834744E033B9C4AFE5CAA196EE8F851995F17E6D6AC3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/initial-admission.json",
+      "bytes": 155,
+      "sha256": "9574F46B628A0E8E5F4E09E179B8CDA6D11AA87112D1457E8F797A46DFD4C290",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-fixture-grant.json",
+      "bytes": 1601,
+      "sha256": "B0E5FDC31E9728F0E9EE2D254C6202A72CA9942C55AA94888F721159C4074173",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-lease.json",
+      "bytes": 1281,
+      "sha256": "864063400885BF9ECB5F5F463F17215F8CFD36A03C9BA1E4F19BFBCFA3629D88",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "audit/Audit-SavedBuildQuery.ps1",
+      "bytes": 13126,
+      "sha256": "654C3ED9C1292B2E566386364CA4E7AA0ED67445241FB8CDE8D24556A0116185",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "audit/buildquery-raw-audit.json",
+      "bytes": 24288,
+      "sha256": "9DF493E49ECC2BF81083B632F809078EC5ADFD72DBC4E79C2D5F5BC9A56AF87C",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "audit/Audit-SavedRuntime.ps1",
+      "bytes": 12678,
+      "sha256": "671E4ECD1CFA85DCA16C4A474AF09F882B7CA1F0561784BA412F43CEC55472D3",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "audit/paired-raw-audit.json",
+      "bytes": 24844,
+      "sha256": "57F7318D31D4D500EFDCAB845F4876346D0AFFFEF6CD82E8C9E9FFC568CC1BB0",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "audit/Package-QualifiedProof.ps1",
+      "bytes": 10932,
+      "sha256": "5541D190DCC9FDEF7F13CC1ED09EE6E54F90622AD88486FFD054F55AE9D255CB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/build-query-root-grant.template.json",
+      "bytes": 1204,
+      "sha256": "CF698E41E65068968D3222D8DBBC17107B1C3835DFC307EE6A5EB8D63DAE05E2",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/final-source-readiness.json",
+      "bytes": 1447,
+      "sha256": "A8ABA0C8A2FD3A54ACF79E90F55517F69A9C4453CFAC24A7707A65C894365562",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/fixture-grant.template.json",
+      "bytes": 1143,
+      "sha256": "7A9A2913EADCA28B8DA06E3CF579BC0BBBFB7C6D0CAAF00179D499A014D87D2A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/historical-byte-readback.json",
+      "bytes": 2307,
+      "sha256": "1486F4300C484D2A655B7BB50D770E8AE8F90DA03A2626F95C002DB9F19BD307",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/independent-source-review.json",
+      "bytes": 4909,
+      "sha256": "9829582D42200C988DB4FC112C8A423F734C8563EAF2917ACEDC84414ACF53CB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "preparation/native29-detached-pipe-prospective-20261017/prepared.json",
+      "bytes": 2677,
+      "sha256": "EA3C35DF1AFCAEC10DED8BFF0C4B57C125B49D3AA32CAF8ED6B7285311E9BCBE",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/root-native29-identity-runtime-20261017-184718-grant.json",
+      "bytes": 2050,
+      "sha256": "95B1E133972ED97E3C0A792BA428531ABD407F6BB06D18EF01764A23AAAC5D67",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-grant.json",
+      "bytes": 2055,
+      "sha256": "185A78086659BD2FB6E3D907E9070F7AADE825FCD2C44B6D58BCDFD251BCCA26",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/final.json",
+      "bytes": 9257591,
+      "sha256": "8505F327AEAE21F5023C2837E5A44B2DB691AA5178265BF198DE0661C1B242CD",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/artifacts-final.json",
+      "bytes": 1631,
+      "sha256": "6F9F9B466892AADC60CA59F8C1C12FA1D0777115579023313C8D82AB48F4AC94",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-clockgate-runtime-20261017-181821/root-native29-clockgate-runtime-20261017-181821-lease.json",
+      "bytes": 2315,
+      "sha256": "E43DE52DB8A521CF17337C61901ADE2303E7FBD6E217917F3D3A97E38B66F3B6",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/actual-metadata.json",
+      "bytes": 3883,
+      "sha256": "9D274B17B7DC0376C4A9B9DDA36006B86D1AED7EC6E28E6F8E90249C9C7ED348",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/artifacts-before.json",
+      "bytes": 1489,
+      "sha256": "77506542DB972F9D7EF86ADCD4F3589F6C98EB80372F96084107D9F6B6763DD2",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/artifacts-between.json",
+      "bytes": 1631,
+      "sha256": "61E5807B0B3DD0A4B8485A1EE9327A3EA9CDB4297BA9AAE26C6B949C12BB7061",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/artifacts-final.json",
+      "bytes": 1631,
+      "sha256": "D98BAA59AD06928E25787FB024FFFCFA233A7E954A4DA2ED89777E909BB6FAD8",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/before.json",
+      "bytes": 9256579,
+      "sha256": "A6F3EF16256F02A15AA7C73A295C929A55ABBBD95F3DE473556CF488B812F70A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/between.json",
+      "bytes": 9256579,
+      "sha256": "C422C54F9EA22C6C4F096F3AA1C4D837711558E5CA87B6923FFF26ACA9E21E25",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/compile-admission.json",
+      "bytes": 155,
+      "sha256": "9020023FD0D1A1838EFF6FA5515CFF041258D82974E2ECC04F21C5F1A85FB866",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/compile.json",
+      "bytes": 2181,
+      "sha256": "B48328596D5A6C774F103B0369834000158B16DA58CFAF1CA3162D3AD7882525",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/compile.stderr.log",
+      "bytes": 252,
+      "sha256": "EC9EF046301151A7053A555E2B142528DC1B70848047FD758839D23BAB80A5FB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/final.json",
+      "bytes": 9256579,
+      "sha256": "FF1C70911ED2EB35B65F32DC070C4B15383F7BE69543175582AB9F3D304F55E4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/initial-admission.json",
+      "bytes": 155,
+      "sha256": "581016FA011A16531695183ECB3C646389EEB4DDAA83AEA1586FCB40E0601EDA",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/before.json",
+      "bytes": 9257591,
+      "sha256": "B311B943461954F83E3DB7E757FDB2372797ED8DE87977734D1EAFFBFAB18E90",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/metadata-admission.json",
+      "bytes": 155,
+      "sha256": "B66F8F0ACF3A9DAD9DE78F5F91A0ACDA2B4E9F70E24FC7998C0465A9428B9C5B",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/metadata.json",
+      "bytes": 1222,
+      "sha256": "04064D6CABF90C6C2F7BBC14A5728A69AA70A037C13D53C3BED3D8DD3765D90A",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/metadata.stdout.bin",
+      "bytes": 3385,
+      "sha256": "F964D36C44BF494C5E36FD2D46931C127ABC97F185E9447EF996EC7FD6354380",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/native-roots-final.json",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/owner-absence.json",
+      "bytes": 318,
+      "sha256": "EDCE87D453CD230B7EE69DCB1881A083C3DE1EE41BE58F54478AC2F2D486F366",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/result.json",
+      "bytes": 7357,
+      "sha256": "DB0757B81E6EC94036537E551CAC898CF9B6087D3A29F02B23FB73ABBC1D3EBB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-grant.json",
+      "bytes": 1274,
+      "sha256": "517914386F190676CC9D9BBE20A08244E1AF9D8687FE45EB9E19D244D91F3321",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-native29-identity-buildquery-20261017-184305-outer.json",
+      "bytes": 1651,
+      "sha256": "B5C1E2C5AEF8FBF86918A78B1ED71B22AC712A30265CC711785CEE9B20EC25A4",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-native29-identity-buildquery-20261017-184305-outer-absence.json",
+      "bytes": 1904,
+      "sha256": "9FCD7B99E57DB54FB90F393BDA99575E80DE2981F9FAF73631FEBAC17082F3FE",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-native29-identity-buildquery-20261017-184305-outer.stdout.bin",
+      "bytes": 7357,
+      "sha256": "DB0757B81E6EC94036537E551CAC898CF9B6087D3A29F02B23FB73ABBC1D3EBB",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-native29-identity-buildquery-20261017-184305-outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/root-native29-identity-buildquery-20261017-184305-grant.json",
+      "bytes": 1274,
+      "sha256": "517914386F190676CC9D9BBE20A08244E1AF9D8687FE45EB9E19D244D91F3321",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-runtime-20261017-184718/artifacts-before.json",
+      "bytes": 1631,
+      "sha256": "4F9B8EE33BF1B978427507C3F0E534A6F61CB93B7C4D336F67D9C5168AE1F69C",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "runs/root-native29-identity-buildquery-20261017-184305/metadata-name-comparison.json",
+      "bytes": 6817,
+      "sha256": "776A53C2BE58A46E4A989AF97F8CEDA33AE9F75243FF582B25A72FE0B16935EF",
+      "kind": "byte_exact_original"
+    },
+    {
+      "name": "capsule-scope-and-privacy.json",
+      "bytes": 30226,
+      "sha256": "9A49C0A566C97C06DA8A5846F6B6B18AEDDB32C8555B19923EDF88B26FA58804",
+      "kind": "derived_explicitly_labeled"
+    }
+  ],
+  "privacy": [
+    {
+      "public_member": "observations/control01-family/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control01-family\\identity-ledger.jsonl",
+        "bytes": 58250,
+        "sha256": "6D52254C47E54DEC8160EE4BBD00C1F9593ACC00F7148D94E8E57601F4D98DE4"
+      },
+      "original_rows": 257,
+      "kept_rows": 36,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control02-job-reject/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control02-job-reject\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "2BE2B34389E4EB019D697266DCF3A7F7C4DDF65C75CDFAD4091EF465D89809FB"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control03-create-death/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control03-create-death\\identity-ledger.jsonl",
+        "bytes": 41231,
+        "sha256": "670B940B378C32840190F0AC013241E0EB8AA9E794FB0E46AF7D6BB264BBB8B4"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control04-late-metadata/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control04-late-metadata\\identity-ledger.jsonl",
+        "bytes": 38172,
+        "sha256": "E6504D80180B2FA081376963F4C8715A40E4B57BE0596FF8008546413C7BFB27"
+      },
+      "original_rows": 225,
+      "kept_rows": 4,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control05-metadata-one-shot/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control05-metadata-one-shot\\identity-ledger.jsonl",
+        "bytes": 38432,
+        "sha256": "C63AA1D571FFE79A833F7BE503F8189BFFB7B36003684FDF9127498D642F5E0C"
+      },
+      "original_rows": 226,
+      "kept_rows": 5,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control06-failed-create/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control06-failed-create\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "142ED38F9D4936770D5FE9B1EFDA657F32A4F106F0EE9804719B1A3DC9027162"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control07-zero-write/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control07-zero-write\\identity-ledger.jsonl",
+        "bytes": 41457,
+        "sha256": "B2C665CBD99B8B5ACE94A3E5380330A0C694D51BACC2959C5E53D98BE0B344B2"
+      },
+      "original_rows": 233,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 225,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control08-exact-cap/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control08-exact-cap\\identity-ledger.jsonl",
+        "bytes": 41263,
+        "sha256": "02B76D56AD60937D153447E600E39CD16AA2B2355EE1A18C10C9D3A0DB69BED3"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control09-over-cap/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control09-over-cap\\identity-ledger.jsonl",
+        "bytes": 41471,
+        "sha256": "9438D01316239FBFE749FB9D30D75DB1C50DFF97AAFD1BDCC47E8B09092E41B4"
+      },
+      "original_rows": 233,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 225,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control10-cancel-read/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control10-cancel-read\\identity-ledger.jsonl",
+        "bytes": 38098,
+        "sha256": "697C3A78C329EFE763C3193C098329497AF8293D2B4E21C94A14E79E2C34CEBF"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control11-stalled-persistence/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control11-stalled-persistence\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "142ED38F9D4936770D5FE9B1EFDA657F32A4F106F0EE9804719B1A3DC9027162"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control12-idle-append/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control12-idle-append\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "142ED38F9D4936770D5FE9B1EFDA657F32A4F106F0EE9804719B1A3DC9027162"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control13-queue-one-shot/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control13-queue-one-shot\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "142ED38F9D4936770D5FE9B1EFDA657F32A4F106F0EE9804719B1A3DC9027162"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control14-persistence-bounds/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control14-persistence-bounds\\identity-ledger.jsonl",
+        "bytes": 38069,
+        "sha256": "142ED38F9D4936770D5FE9B1EFDA657F32A4F106F0EE9804719B1A3DC9027162"
+      },
+      "original_rows": 224,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control15-protocol-reject/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control15-protocol-reject\\identity-ledger.jsonl",
+        "bytes": 41227,
+        "sha256": "F1C4016AD051D446A42465D0D76BE29B548557B0DE04A428AE47D1DEAF4BE8D1"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control16-wrong-remote-handle/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control16-wrong-remote-handle\\identity-ledger.jsonl",
+        "bytes": 41198,
+        "sha256": "0F834F5E6BCD3B467A624D68A55E9915BE31810949D13E251031B30CCBE5E5E7"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control17-retained-grandchild/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control17-retained-grandchild\\identity-ledger.jsonl",
+        "bytes": 41268,
+        "sha256": "666EEB2E28F5C0EF8594C283D3B3685E1C3F5BE4DDBE02276FDFC3CD7FFD84EA"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control18-no-advisory-assumption/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control18-no-advisory-assumption\\identity-ledger.jsonl",
+        "bytes": 41221,
+        "sha256": "461E6A05FDC445E903BB1D10B7816E662C13F33973709922C7F29BDF940DABDE"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control19-real-cap/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control19-real-cap\\identity-ledger.jsonl",
+        "bytes": 41467,
+        "sha256": "9A0BAF8A55BE733EF0E23B45A989B83FBAF237A0B534E910784F31167BE9FE0E"
+      },
+      "original_rows": 230,
+      "kept_rows": 9,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control20-deadline-boundaries/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control20-deadline-boundaries\\identity-ledger.jsonl",
+        "bytes": 38215,
+        "sha256": "6B1994A55005E2F72F605C4D6E44EA8F20D0E3EDA7E9D2082C10C1560AEC0B56"
+      },
+      "original_rows": 227,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 224,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control21-retained-exit-handles/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control21-retained-exit-handles\\identity-ledger.jsonl",
+        "bytes": 46211,
+        "sha256": "5DBFFA1D378B6FE41947CBD212114AE599463101BFF324D43F1AF113478A391B"
+      },
+      "original_rows": 238,
+      "kept_rows": 17,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control22-stale-grant/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control22-stale-grant\\identity-ledger.jsonl",
+        "bytes": 41749,
+        "sha256": "FF3FDB3F41A4E183B853A808378DB271817C92CD6FD31721EA7925CA7ECDC611"
+      },
+      "original_rows": 230,
+      "kept_rows": 9,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control23-native-census/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control23-native-census\\identity-ledger.jsonl",
+        "bytes": 76287,
+        "sha256": "C4F305C48C79CE058AE76E6E779F1DA28CE54A47223113BF088A6F668922DC12"
+      },
+      "original_rows": 447,
+      "kept_rows": 5,
+      "withheld_unrelated_rows": 442,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control23-owned-sentinel/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control23-owned-sentinel\\identity-ledger.jsonl",
+        "bytes": 41215,
+        "sha256": "D28FE66B8CCA3823C88EA44608D9AFCFFAE796809EF6E1FBFB85EDC70EE1E255"
+      },
+      "original_rows": 229,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 221,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control24-protected-sentinel/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control24-protected-sentinel\\identity-ledger.jsonl",
+        "bytes": 41550,
+        "sha256": "9B80F43AA6FE1E90C34275348D1C8025EA80F6CC5432E753BE26515599771920"
+      },
+      "original_rows": 231,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 223,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control24-unverifiable-native/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control24-unverifiable-native\\identity-ledger.jsonl",
+        "bytes": 76578,
+        "sha256": "374767CFA02164C5FB0FF1E0D90F592B0C32FAC40F9F01C424F800178FCD989C"
+      },
+      "original_rows": 455,
+      "kept_rows": 5,
+      "withheld_unrelated_rows": 450,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control25-explicit-environment/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control25-explicit-environment\\identity-ledger.jsonl",
+        "bytes": 41567,
+        "sha256": "E8E23762FD8AFA98A39EE6D0615A44375323B489F1A3EA97A459911325B5559A"
+      },
+      "original_rows": 231,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 223,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control26-full-file-drift/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control26-full-file-drift\\identity-ledger.jsonl",
+        "bytes": 235109,
+        "sha256": "E49917C47A4A48455392A3E9612A30E6F7C7A802F97AF9A773A1E040745484BC"
+      },
+      "original_rows": 789,
+      "kept_rows": 569,
+      "withheld_unrelated_rows": 220,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control27-post-comparison-drift/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control27-post-comparison-drift\\identity-ledger.jsonl",
+        "bytes": 54501,
+        "sha256": "B367546DAF0DB403F4A095FEB82E14B2824F8D4F7DDA6A3DA001B9E034DF3A0E"
+      },
+      "original_rows": 393,
+      "kept_rows": 173,
+      "withheld_unrelated_rows": 220,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control28-broken-junction/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control28-broken-junction\\identity-ledger.jsonl",
+        "bytes": 37908,
+        "sha256": "1C3B702E1C52A3C1C3A084588AD334EE4C2EF5B42457B1D9981954AEA38AD618"
+      },
+      "original_rows": 223,
+      "kept_rows": 3,
+      "withheld_unrelated_rows": 220,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    },
+    {
+      "public_member": "observations/control29-job-close/identity-ledger.project-filtered.jsonl",
+      "original": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-native29-identity-runtime-20261017-184718-observations\\control29-job-close\\identity-ledger.jsonl",
+        "bytes": 41300,
+        "sha256": "C846210E3AB9195C7117F187CEF4901D58F1BA4AC6298C63B843F5BE65ACBCD2"
+      },
+      "original_rows": 228,
+      "kept_rows": 8,
+      "withheld_unrelated_rows": 220,
+      "kept_line_bytes_unchanged": true,
+      "filter": "Only discovery rows are filtered: metadata_unavailable requires named/path relevance or actual fixture actor identity; gone_before_probe requires actual actor identity; candidate requires own-attempt/blocking/actor identity. All other owned job/control events retained.",
+      "private_original_retained_local_unchanged": true,
+      "not_a_full_public_workstation_census": true
+    }
+  ],
+  "qualified_scope": "Native29 actual29/29 only",
+  "production_CLI_or_phase_runtime_or_recovery_claim": false
+}
