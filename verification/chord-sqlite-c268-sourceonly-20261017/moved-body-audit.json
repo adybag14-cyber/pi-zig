@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "driver_bodies": [
+    {
+      "kind": "node",
+      "source_marker": "const DEFAULT_WAL_AUTO_CHECKPOINT_PAGES",
+      "old_end_marker": "/** Open or create file-backed durable storage",
+      "exact_body_text_equal": true,
+      "old_utf8_sha256": "1D90BAB7D8D5B7D6D7AE13D13F8F031E98DDA6FF28C548DD0CC225E1468B0133",
+      "new_utf8_sha256": "1D90BAB7D8D5B7D6D7AE13D13F8F031E98DDA6FF28C548DD0CC225E1468B0133"
+    },
+    {
+      "kind": "cloudflare",
+      "source_marker": "/** Values a Durable Object SQL binding accepts and returns. */",
+      "old_end_marker": "/**\r\n * Open durable storage on a SQLite-backed Durable Object",
+      "exact_body_text_equal": true,
+      "old_utf8_sha256": "A81286324F8C9008E4544EB26D756F2090F6BCDB03C4D397B884B9F392FE3D48",
+      "new_utf8_sha256": "A81286324F8C9008E4544EB26D756F2090F6BCDB03C4D397B884B9F392FE3D48"
+    }
+  ],
+  "durable_node_reexports": [
+    "NodeSqliteDatabase",
+    "openNodeSqliteDatabase"
+  ],
+  "durable_cloudflare_reexports": [
+    "DurableObjectSqliteDatabase"
+  ],
+  "portable_runtime_exports": [
+    "applySqliteMigrations",
+    "validateSqliteSchemaPrefix"
+  ],
+  "durable_apply_migrations_is_distinct_wrapper": true,
+  "portable_migration_error_messages": "SQLite ...; old Durable SQLite prefix was intentionally removed by currentSource",
+  "type_only_exports_not_fabricated_as_runtime_values": true,
+  "jobs_run": []
+}
