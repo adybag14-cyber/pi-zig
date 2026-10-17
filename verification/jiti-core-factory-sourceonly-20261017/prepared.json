@@ -1,0 +1,313 @@
+{
+  "status": "actual_internal_jiti_core_frontend_source_only_prepared_unrun",
+  "base": "81a05f164e198d4ad4bdc37379817f28d8b7bc3e",
+  "body_api_revision": 2,
+  "products": [
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "bytes": 21521,
+      "sha256": "84BF31967422CF040DDD2AF8784B764CB3DFFE35EEF7D788D6744D9C208D40F8"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "bytes": 1295,
+      "sha256": "C79FAB61E10FA5B799709269A75CBE3AE6F50FD73F30118F692F26D879234ECA"
+    },
+    {
+      "path": "src/extensions/native_jiti_escape_regexp.zig",
+      "bytes": 2518,
+      "sha256": "596050570E5FAF55438F1EE5D1C477387115EEE6EB7A9BEFF97AC781C02855DA"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "bytes": 12432,
+      "sha256": "B8FC56E214C7E89949B623958176EFCF88C3D9F7AA94735784803EE6B9B252A4"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "bytes": 10022,
+      "sha256": "8353C219AEAA21EB2561F5A9ABB10EC6356DD5CEB6385AEE9FEAF79A366688C7"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "bytes": 14886,
+      "sha256": "AF011548FEAD1038784193641611BEE13AD8076C34EC5CF29A57483C0C2577B2"
+    },
+    {
+      "path": "src/native_jiti_core_factory_controls.zig",
+      "bytes": 6742,
+      "sha256": "9A38A2E141F5B5763579C99E4CDC76A6E4460D361AFCD8C0CD5C8F79E76A2C19"
+    }
+  ],
+  "controls_and_authority": [
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/cache.ts",
+      "bytes": 2872,
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-primary.json",
+      "bytes": 981,
+      "sha256": "2E694F21C1288D5AFFD1FD57DFFFF2CB7D024C32E5765B717962BC07744F0DB7"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-index.js.txt",
+      "bytes": 469,
+      "sha256": "AF2065AD2F2D2B91946C2121E21618DAA3F4B18787AF9226F8C953CA54CCA2F5"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-license.txt",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-package.json.txt",
+      "bytes": 732,
+      "sha256": "6D7AE0240943E38CB8A8DD35242584B2C3415A2BCA83AA86497D3B7B1BEF08EF"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/pnpm-lock.yaml",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/transform.ts",
+      "bytes": 796,
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/utils.ts",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/causal-inputs.json",
+      "bytes": 6073,
+      "sha256": "DF3C24BB92CC6CCF84F9C53E83C27ABFF25EC4A2D8245956D5B35DE72B38C75C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/DEPENDENCIES.md",
+      "bytes": 5900,
+      "sha256": "0D769495D44EF10A2945F0F0BC5F532FD986B4AA1428E461730AC3FA7C9C4990"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/eval-boundary-input.mjs",
+      "bytes": 2834,
+      "sha256": "72D000F2F4485B28FD5133686662A4E4C2DA061912DFE14A70D801C22970E652"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/README.md",
+      "bytes": 7377,
+      "sha256": "A2C873C217096F4D03A53DA2E567AE61F3B569A5A5A38BF18309722CB92A03EC"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/REVIEWED-LIVE-IMPORT-API.md",
+      "bytes": 6211,
+      "sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478"
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "src/extensions/commonjs.zig",
+      "bytes": 17895,
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 86450,
+      "sha256": "9C8B67612AE1511A1C5A2BE01F7DFBEA46384D2D316C98CACC875E6A8C3C15E0"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-async-brand-4954.expected.json",
+      "bytes": 31162,
+      "sha256": "D0B06269EC1B29C9C8A679DB3E73305820FB0BD0667C9B288C0961EB4D80D2E5"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-loader-inputs-4954.expected.json",
+      "bytes": 43669,
+      "sha256": "14EEBD914A04DCBCBCEF24CD8D4509CB22A61FC2C18FB305B81ADE0E25C5DA00"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-model-dependencies-4954.expected.json",
+      "bytes": 11577,
+      "sha256": "2809D24B7150E1F14CCA82F1522AD1906943DF2A5202C49572FBC20167BC3E8C"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-module-policy-4954.expected.json",
+      "bytes": 62017,
+      "sha256": "0DDCAB7DC649CBA5AC7147C722CE0AB98C9465E9B74290F57CD92C1A1FE89F27"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-runtime-helpers-4954.expected.json",
+      "bytes": 9345,
+      "sha256": "94AEC310834B683D9F70D2F50498C84CFFF03D4EB9E8C5EC18674DC0569663C3"
+    },
+    {
+      "path": "src/extensions/module_resolver.zig",
+      "bytes": 28650,
+      "sha256": "7791250D05F7EAFD2E902AE93E7EAB6F1F5482497F702E7E6BB97E534F67A673"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 3936,
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_extension_import_adapter.zig",
+      "bytes": 27312,
+      "sha256": "4016ADA1056C51568647F17AAC82C41C2648871F79EFE8FACDAE5DDD74EAE6E3"
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_eval.zig",
+      "bytes": 3627,
+      "sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA"
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35118,
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0"
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "bytes": 3225,
+      "sha256": "D48CC79AC8A6F5B8DC45F495C35BAFE48CA87F89BD09D7F6DBEA7B8E5D5C3CE6"
+    },
+    {
+      "path": "src/extensions/native_jiti_interop.zig",
+      "bytes": 8837,
+      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cache.zig",
+      "bytes": 4815,
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D"
+    },
+    {
+      "path": "src/extensions/native_jiti_options.zig",
+      "bytes": 7054,
+      "sha256": "9CA32E5C7ABA46C0145C6D0E7EB7316DC855909CB17F60F81471CBF6E743BB77"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 5900,
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 13642,
+      "sha256": "A67A8A9472C0A7EC4A3CDB9C0ABEFD3CF3BB4BBB46BD2EA17462847FDE73FEF4"
+    },
+    {
+      "path": "src/extensions/native_node_module_paths.zig",
+      "bytes": 4599,
+      "sha256": "51473D87313D909D5B2E33FC00BADBAAA724966BD57F8462A88D885B85310EDF"
+    },
+    {
+      "path": "src/extensions/typescript.zig",
+      "bytes": 24307,
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9"
+    },
+    {
+      "path": "src/native_jiti_eval_module_controls.zig",
+      "bytes": 7148,
+      "sha256": "6F80BD2DB976DFD7CF34E82BA23873E4D18C66183527206B1C146521F021A669"
+    },
+    {
+      "path": "src/native_jiti_interop_cache_controls.zig",
+      "bytes": 15398,
+      "sha256": "45D6594D69282CE94FFACAFD4AE1D82E996451A3592ADEB5653A9F2150B7CB28"
+    },
+    {
+      "path": "src/native_jiti_options_controls.zig",
+      "bytes": 8483,
+      "sha256": "AFD2953D671308C613ECD1F3950CAF2611BE98390E31B1F0C344C45D3AFDF403"
+    },
+    {
+      "path": "src/native_node_module_constructor_controls.zig",
+      "bytes": 13284,
+      "sha256": "4C09A9B2804EDDF1A5703D7B7D04266FB557AAB7ECFAE01EB7B1200728D91C2F"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2232232,
+      "sha256": "15CB5267575DA7A6EB6DB7A952E81D9C21777C0D0DE5DECAA666C51612F52A50"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 78368,
+      "sha256": "9E734ED5B17A977128888A8BF3192D9987FCCB897829560E9812F8DB04800784"
+    },
+    {
+      "path": "verification/jiti-options-factory-sourceonly-20261017/options-reference-input.mjs",
+      "bytes": 6094,
+      "sha256": "5D54790A117F582156F606D4C284AE46491FBC184CC3AFFD414AB711A906223E"
+    },
+    {
+      "path": "verification/jiti-options-factory-sourceonly-20261017/prepared.json",
+      "bytes": 7977,
+      "sha256": "AEBF39959BAE425B0EAA752C5615E9D3EA1E64AD02F81F94AFE4353EF03F451B"
+    },
+    {
+      "path": "verification/jiti-transformed-eval-sourceonly-20261017/causal-inputs.json",
+      "bytes": 6066,
+      "sha256": "28730689DE663C2EFD03B2E99AE1A35AE9D69D78F115D9C2F3562ED96BCAA802"
+    },
+    {
+      "path": "verification/jiti-transformed-eval-sourceonly-20261017/prepared.json",
+      "bytes": 7857,
+      "sha256": "E9871626F9500C4C98E2DA6129C1F2E394370CB7A286F941AC4482CABFA7E58C"
+    }
+  ],
+  "source_authority": {
+    "jiti_version": "2.7.0",
+    "git": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+    "escape_string_regexp": "5.0.0",
+    "lock_sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C"
+  },
+  "reviewed_api_sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478",
+  "legacy_4d_native_admission_unchanged": true,
+  "lowered_api": "raw actual transformed JSValue; no lowering; Source wrap after publication outside compile catch, VM compile inside catch",
+  "canonical_require_cycle_linker_complete": false,
+  "all_actual_dependencies_present": false,
+  "full_public_create_jiti_complete": false,
+  "native_entrypoints_prepared": 7,
+  "source_boundary_inputs": 4,
+  "causal_rows": 17,
+  "expected_path": "src/extensions/fixtures/jiti-core-factory-2_7.expected.json",
+  "expected_written": false,
+  "source_executed": false,
+  "native_executed": false,
+  "formatter_executed": false,
+  "compiler_executed": false,
+  "default_selected": false
+}

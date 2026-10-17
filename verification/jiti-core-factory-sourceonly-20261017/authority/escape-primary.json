@@ -1,0 +1,26 @@
+{
+  "version": "5.0.0",
+  "registry_uri": "https://registry.npmjs.org/escape-string-regexp/5.0.0",
+  "git_head": "ba9a4473850cb367936417e97f1f2191b7cc67dd",
+  "archive_uri": "https://registry.npmjs.org/escape-string-regexp/-/escape-string-regexp-5.0.0.tgz",
+  "integrity": "sha512-/veY75JbMK4j1yjvuUxuVsiS/hr/4iHs9FTT6cgTexxdE0Ly/glccBAkloH/DofkjRbZU3bnoj38mOmhkZ0lHw==",
+  "archive_sha256": "C8B662AFE8AA2B852ECC27D766E584A502F8351FBBD890611F2509BF083D28E6",
+  "files": [
+    {
+      "path": "package__license",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "package__index.js",
+      "bytes": 469,
+      "sha256": "AF2065AD2F2D2B91946C2121E21618DAA3F4B18787AF9226F8C953CA54CCA2F5"
+    },
+    {
+      "path": "package__package.json",
+      "bytes": 732,
+      "sha256": "6D7AE0240943E38CB8A8DD35242584B2C3415A2BCA83AA86497D3B7B1BEF08EF"
+    }
+  ],
+  "executed": false
+}
