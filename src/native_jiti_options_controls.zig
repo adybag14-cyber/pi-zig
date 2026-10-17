@@ -1,4 +1,5 @@
 //! Prepared real realm options controls. No factory/context/cache is invented.
+const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const c = v.c;
 const options = @import("extensions/native_jiti_options.zig");
@@ -9,6 +10,32 @@ fn install(engine: *v.em.Engine, name: [*:0]const u8, value: c.JSValue) !void {
 fn subject(engine: *v.em.Engine) !void {
     const function = try options.create(engine); defer engine.freeValue(function);
     try install(engine, "ActualJitiOptions", function);
+}
+fn capturedSlotEmpty(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = v.em.Engine.fromContext(context.?);
+    return c.pi_js_bool(context, @intFromBool(engine.captured_exception == null));
+}
+/// Calls the actual host entry, deliberately bypassing ModuleCallable. Fresh
+/// real realm/control only; no fake factory or parser replaces implementation.
+pub fn verifyDirectHostCatchBeforeDiagnostics(engine: *v.em.Engine) !void {
+    try engine.bindFunction("ActualOptionsCapturedSlotEmpty", capturedSlotEmpty, 0);
+    const setup = try engine.evalModule(
+        \\const env=Object.getOwnPropertyDescriptor(process,'env'),parse=Object.getOwnPropertyDescriptor(JSON,'parse'),boolean=Object.getOwnPropertyDescriptor(globalThis,'Boolean'),originalParse=JSON.parse,originalBoolean=Boolean;
+        \\let coercions=0,thrown=false;const probes=[],marker={get toString(){coercions++;return()=> 'ordinary options marker'}};
+        \\Object.defineProperty(process,'env',{configurable:true,writable:true,value:{JITI_DEBUG:'owned-json-failure'}});
+        \\Object.defineProperty(JSON,'parse',{configurable:true,writable:true,value:function(value){if(value==='owned-json-failure'){thrown=true;throw marker}return originalParse(value)}});
+        \\Object.defineProperty(globalThis,'Boolean',{configurable:true,writable:true,value:function(value){if(thrown)probes.push(ActualOptionsCapturedSlotEmpty());return originalBoolean(value)}});
+        \\export const userOptions={};export function verify(){if(coercions!==0||probes.length===0||probes.some(value=>value!==true))throw Error('direct host JSON catch formatted/retained reason');return true}
+        \\export function restore(){Object.defineProperty(process,'env',env);Object.defineProperty(JSON,'parse',parse);Object.defineProperty(globalThis,'Boolean',boolean)}
+    , "jiti-options-direct-host-catch-setup.mjs");
+    defer engine.freeValue(setup);
+    const user = try v.js.get(engine, setup, "userOptions"); defer engine.freeValue(user);
+    const before = engine.native_exception_diagnostics_suppressed;
+    const result = try options.resolve(engine, user); defer engine.freeValue(result);
+    try std.testing.expectEqual(before, engine.native_exception_diagnostics_suppressed);
+    try std.testing.expect(engine.captured_exception == null);
+    const verified = try v.js.invoke(engine, setup, "verify", &.{}); defer engine.freeValue(verified);
+    const restored = try v.js.invoke(engine, setup, "restore", &.{}); defer engine.freeValue(restored);
 }
 pub fn verifyDefaultsOverridesAndCallable(engine: *v.em.Engine) !void {
     try subject(engine);

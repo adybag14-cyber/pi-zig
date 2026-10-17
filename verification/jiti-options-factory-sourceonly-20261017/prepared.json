@@ -4,13 +4,13 @@
   "products": [
     {
       "path": "src/extensions/native_jiti_options.zig",
-      "bytes": 6778,
-      "sha256": "73E915B7B0DCB9222DC6E02B6FAE1B1D3F32208AC7A83C53AE5E574023566BC7"
+      "bytes": 7054,
+      "sha256": "9CA32E5C7ABA46C0145C6D0E7EB7316DC855909CB17F60F81471CBF6E743BB77"
     },
     {
       "path": "src/native_jiti_options_controls.zig",
-      "bytes": 5899,
-      "sha256": "3E40A1E6EADE0C5A3B0E09C516ECD1FA9DC8237E13B501355093E0E2827BEAF6"
+      "bytes": 8483,
+      "sha256": "AFD2953D671308C613ECD1F3950CAF2611BE98390E31B1F0C344C45D3AFDF403"
     }
   ],
   "controls": [
@@ -21,8 +21,8 @@
     },
     {
       "path": "verification/jiti-options-factory-sourceonly-20261017/README.md",
-      "bytes": 3387,
-      "sha256": "3C921D6161E8FAC205C7018B5E7DA2AC57A007475B0374E8C5AFC38AD06FE1B4"
+      "bytes": 3874,
+      "sha256": "1B15BD27EE65F146440BB9B2EF91BA3C191E48E5DC3EF9FC30C7FC679FE618C8"
     },
     {
       "path": "verification/jiti-options-factory-sourceonly-20261017/authority/options.ts",
@@ -194,8 +194,8 @@
     }
   ],
   "protected_drift": 0,
-  "native_entrypoints": 3,
-  "native_guest_programs": 3,
+  "native_entrypoints": 4,
+  "native_guest_programs": 4,
   "genuine_reference_rows": 19,
   "expected": "src/extensions/fixtures/jiti-options-2_7.expected.json",
   "expected_absent": true,
@@ -210,5 +210,6 @@
   "default_selected": false,
   "main_edited": false,
   "engine_changed": false,
-  "c_changed": false
+  "c_changed": false,
+  "direct_host_diagnostic_boundary": "balanced local suppression, raw ordinary JSON reason released before real Boolean probe"
 }
