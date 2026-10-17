@@ -1859,6 +1859,21 @@ pub fn build(b: *std.Build) void {
     b.step("test-native-node-stream-classic", "Exercise actual classic streams against original consumers and fail closed until complete genuine Node Source20 capture").dependOn(&classic_stream_run.step);
     addCompileOnlyGroup(b, "build-hosted-native-node-stream-classic", &.{"test-native-node-stream-classic"});
     b.step("build-native-node-stream-classic-artifact", "Install the compiled classic stream test artifact for metadata-only verification").dependOn(&b.addInstallArtifact(classic_stream_tests, .{}).step);
+    // Explicit qualification surface only. It is absent from the default graph
+    // and never activates the TTY modules in ordinary Engine/frontend startup.
+    if (b.option(bool, "native-tty-assembly-controls", "Enable the actual TTY assembly qualification target") orelse false) {
+        if (target.result.os.tag != .windows) @panic("Actual TTY assembly qualification currently requires Windows");
+        const tty_assembly_tests = b.addTest(.{ .name = "native-tty-assembly-controls", .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tty_assembly_qualification_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TTY assembly"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
+        linkQuickJs(b, tty_assembly_tests.root_module, quickjs, sqlite_lib_dir);
+        linkSqlite(tty_assembly_tests.root_module, sqlite_lib_dir, sqlite_library);
+        linkTypeScriptParser(b, tty_assembly_tests.root_module, typescript_parser);
+        tty_assembly_tests.root_module.addImport("catalog_tool", catalog_tool);
+        @import("tools/build_native_transform_compression.zig").link(b, tty_assembly_tests.root_module);
+        const tty_assembly_run = b.addRunArtifact(tty_assembly_tests);
+        if (diagnostic_tests) tty_assembly_run.stdio = .inherit;
+        b.step("test-native-tty-assembly", "Exercise real frontend canonical TTY utility readline publication and current-event ownership").dependOn(&tty_assembly_run.step);
+        b.step("build-native-tty-assembly-artifact", "Install only the actual TTY assembly test artifact for separate metadata admission").dependOn(&b.addInstallArtifact(tty_assembly_tests, .{}).step);
+    }
     const classic_iterator_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_stream_iterator_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native classic iterator"}, .use_llvm = use_llvm, .test_runner = lifecycle_test_runner });
     linkQuickJs(b, classic_iterator_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(classic_iterator_tests.root_module, sqlite_lib_dir, sqlite_library);

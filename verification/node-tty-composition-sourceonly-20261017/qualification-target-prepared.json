@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "parent": "b2b0ff62475b44508099fffcf6b47ccbc862fdc0",
+  "status": "SOURCE_ONLY_CANDIDATE_TARGET_PREPARED_UNRUN",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 350699,
+      "sha256": "04E3393E0D003BC88CA3A490FC8D1225EBFB284D7CBADEA58AECC192D8602753"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "bytes": 10589,
+      "sha256": "8456AB013A1F13C88AF1277D008FB999DD2D6050E39727B323512C5AD66F09AE"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/QUALIFICATION-TARGET-PREPARED.md",
+      "bytes": 3407,
+      "sha256": "0DED4B36FF11F0972423FA4BD6D9293903DC1C9F6EE48C3BB94014B535323325"
+    }
+  ],
+  "source_declaration_count": 19,
+  "source_declaration_names": [
+    "native TTY assembly actual frontend canonical namespace and require identities",
+    "native TTY assembly initializing cache rejects actual getter reentry",
+    "native TTY assembly actual dependency getter failure permits same owner retry",
+    "native TTY assembly raw pending result stops next actual builtin getter",
+    "native TTY assembly raw owned pending result preserves first ordinary and actual fatal",
+    "native TTY assembly temporary finalizers preserve first ordinary and actual fatal",
+    "native TTY assembly trusted GPA failure cannot become catchable cleanup error",
+    "native TTY assembly actual OS release getter stays lazy",
+    "native TTY assembly failed immutable publication keeps identity and historical DATA",
+    "native TTY assembly builtin aliases preserve replaced user loader caller paths",
+    "native TTY assembly alias pending entry does not format reason or mutate map",
+    "native TTY assembly alias current fatal is distinct from same flagged historical DATA",
+    "native TTY assembly alias real GPA failure retries one canonical module",
+    "native TTY assembly aliases preserve actual linked C default relative normalization",
+    "native TTY assembly preserves genuine existing canonical and legacy net records",
+    "native TTY assembly refuses an actual other builtin as canonical net",
+    "native TTY assembly frontend raw process result protects ordinary and fresh fatal",
+    "native TTY assembly live net export event stops next field before adopter",
+    "native TTY assembly successful consuming define stops on new captured producer"
+  ],
+  "observed_metadata": null,
+  "actual_results": null,
+  "build_option": "native-tty-assembly-controls",
+  "default_option": false,
+  "compile_step": "build-native-tty-assembly-artifact",
+  "runtime_step": "test-native-tty-assembly",
+  "physical_console_qualification": false,
+  "dependency_intake": "Pending independent source closure and exact shared facade packet composition",
+  "execution_grant": false,
+  "original_expected_outputs_present": false
+}
