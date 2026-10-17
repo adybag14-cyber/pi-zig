@@ -1,0 +1,172 @@
+{
+  "schema": 1,
+  "negative_attempts_never_reclassified": true,
+  "attempts": [
+    {
+      "attempt": "root-await-data30-buildquery-20261017-195002",
+      "scope": "Original compile failure; not reclassified by later success",
+      "original_status": "failed",
+      "candidate_head": "e3a307445aba10376ebe20068d806301dabac68e",
+      "postseal": true,
+      "actual_compile_exit": 1,
+      "actual_metadata_exit": null,
+      "retained_private": [
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002/result.json",
+          "bytes": 10269,
+          "sha256": "AD53EC767513C43999817149434B1E6DAA084185D0BD230A314C38139D53265A",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile.json",
+          "bytes": 2173,
+          "sha256": "F879A4B3C38E5920F68E7F7B8788EAB5D350F2C027AF14F7B2E08D8C096B2EDB",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile.stderr.log",
+          "bytes": 19797,
+          "sha256": "857264DF709F3E68764D5D99E76F797BB2D4850137CD9708D9B5E0815AFD6317",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile-absence.json",
+          "bytes": 3146,
+          "sha256": "3D1FC255E82D91B063EA23B9ACA27297DB185542AF99464ED9D4EE303A846CEA",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002/final.json",
+          "bytes": 15516878,
+          "sha256": "414952D3567750E766675FDFB3F992D9C5F59DFF05451FF4B6BCD18F3FAB1844",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002-outer.json",
+          "bytes": 1602,
+          "sha256": "AFA95A1CB7A079F41F8359B8CE36858461EA1144F2DD62CAE08B4D6B9D9DDECD",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-buildquery-20261017-195002-outer-absence.json",
+          "bytes": 1782,
+          "sha256": "01AE9760A6F8A1106AAAFDB78F71859404699CDA957B97E1B48C168C0B20DE4B",
+          "original_retained_privately": true
+        }
+      ],
+      "unchanged_negative": true
+    },
+    {
+      "attempt": "root-await-data30-c03-buildquery-20261017-200434",
+      "scope": "Original build/query/absence negative; native compile and metadata exits0 do not convert rejected controller result into pass",
+      "original_status": "failed_absence",
+      "candidate_head": "c03b1c130a75c2dad1daed2e4a7833a1559fc621",
+      "postseal": true,
+      "actual_compile_exit": 0,
+      "actual_metadata_exit": 0,
+      "retained_private": [
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/result.json",
+          "bytes": 15586,
+          "sha256": "39232C92AC060143EF5E6B627A9C9AF310B99C554C95C8426F75D1017E2E5329",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile.json",
+          "bytes": 2071,
+          "sha256": "3ED8DABB505C016D0633E9CD29C20BCFDD2F279F6473FB29355068964257E6E6",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile.stderr.log",
+          "bytes": 14071,
+          "sha256": "6EC27E6360E4B21573EBC3EFB63E541B90FB11B084E2EE482CFB9C00FC59D5AE",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile-absence.json",
+          "bytes": 3046,
+          "sha256": "0DC94A7EE9FABB4BB4D41F685BEA2D2134655EE0D220BAE4C5EFE238BF79FC7E",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/final.json",
+          "bytes": 15521082,
+          "sha256": "9ECDF76C9DB76D5B1987827273EB57FD1606C05CEC1973C9BE2EAA88B2513745",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata.json",
+          "bytes": 1232,
+          "sha256": "9CB755CE99889E01F4EDEED575CF2D470847EDA0C877A08D9F6D929C649CBCE6",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata.stdout.bin",
+          "bytes": 4349,
+          "sha256": "844D526339CAA38C17D569FE6B33ED5F45BBC15E8F85AAD3D96B34551D94822C",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata-absence.json",
+          "bytes": 2151,
+          "sha256": "0C06CE04516301DBD099CF65B3F0E8E36FA2FBE62514B72B3EAE7EE73761ED41",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434-outer.json",
+          "bytes": 1632,
+          "sha256": "C8BEA0D2F03F5FCD2A5C85B748E70ED40042B9AF9BBCD18E6F41672FFA7E63C9",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434-outer-absence.json",
+          "bytes": 1813,
+          "sha256": "72190059B42B693B15937071303FCAB6B86FBC541957FF12FA606D8759CAB40C",
+          "original_retained_privately": true
+        }
+      ],
+      "unchanged_negative": true
+    },
+    {
+      "attempt": "root-await-data31-runtime-20261017-205608",
+      "scope": "Initial RuntimeOnly preflight rejected cache-entitlement pin before accepted205851 runtime; no runtime test execution is asserted for this attempt",
+      "original_owner_status": "failed",
+      "original_owner_exit": 1,
+      "retained_private": [
+        {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205608-grant.json",
+          "bytes": 3294,
+          "sha256": "D9DB4BF302A9B9ACD57CBC576DA8DC47BA2C7252A3C255F8DA70C09575F501C1",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.json",
+          "bytes": 1639,
+          "sha256": "17834D1EBC66B4878FDB8271452D907AD44EB5F277A47AB2991CED3072E38A2C",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer-absence.json",
+          "bytes": 1820,
+          "sha256": "52445B34D8C42DE4BE05D8848295E405B1F8F705F03E5678FA2E633C781D4390",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.stdout.bin",
+          "bytes": 0,
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+          "original_retained_privately": true
+        },
+        {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.stderr.log",
+          "bytes": 399,
+          "sha256": "D0DDF3534F19890640C7C27580573B53FD86883C210218D4B442074D27DD7606",
+          "original_retained_privately": true
+        }
+      ],
+      "unchanged_negative": true
+    }
+  ],
+  "private_logs_and_process_rows_omitted": true
+}

@@ -1,0 +1,305 @@
+{
+  "schema": 1,
+  "kind": "public_selected_field_projection_not_original_receipt",
+  "private_original": {
+    "id": "project/evidence/root-await-data31-runtime-independent-audit-20261017/independent-runtime-acceptance.json",
+    "bytes": 37547,
+    "sha256": "9775E77535B0D73CCF9A7088999FC8EF994DBDBBC825F6F83402BDF6F7009EF0",
+    "original_retained_privately": true
+  },
+  "selection": {
+    "status": "independently_accepted_selected_await_data31_runtime",
+    "accepted": true,
+    "reviewer": "/root/models_auth_failure_resume",
+    "candidate_head": "44616396656e3a0b708ea7795614de09cfad7bd6",
+    "scope": "Exact Bfb Await DATA30 plus one durable anonymous control over held42d four-file VM union; no whole SDK/Agent or VM frontier qualification",
+    "raw_protocol": {
+      "bytes": 882,
+      "version": "0.16.0",
+      "frames": 63,
+      "starts": 31,
+      "results": 31,
+      "all_flags_zero": true,
+      "no_extra_or_trailing_frames": true,
+      "ordered": [
+        {
+          "index": 0,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA old flags private tags and captured history enter catch unchanged"
+        },
+        {
+          "index": 1,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA fresh private reason created after actual suspension remains data across wrap"
+        },
+        {
+          "index": 2,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA actual Agent lifecycle executes catch handler and finally for flagged rejection"
+        },
+        {
+          "index": 3,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA actual new throw of the same marked object preserves current event"
+        },
+        {
+          "index": 4,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA pending event remains owned while actual captured diagnostic finalizer publishes fatal"
+        },
+        {
+          "index": 5,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA actual prompt continue abort and wait methods preserve fresh rejection identity"
+        },
+        {
+          "index": 6,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA genuine resumed allocator failure remains a host fatal event"
+        },
+        {
+          "index": 7,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA genuine cancellation before resumed job remains host fatal"
+        },
+        {
+          "index": 8,
+          "flags": 0,
+          "name": "native_await_rejection_data_test.test.native Await DATA escaping flagged completion must reject raw reason without new host event"
+        },
+        {
+          "index": 9,
+          "flags": 0,
+          "name": "extensions.native_durable_storage.test_0"
+        },
+        {
+          "index": 10,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer genuine Node function arrow class and SDK allocation failures cannot enter guest catch"
+        },
+        {
+          "index": 11,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer reentrant native capture retires nested diagnostic strings before commit"
+        },
+        {
+          "index": 12,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer recorded actual OOM identity survives legacy error union flag clearing"
+        },
+        {
+          "index": 13,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer current captured fatal survives real Node new receiver and class error unwind"
+        },
+        {
+          "index": 14,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer genuine GPA error followed by current captured cleanup fatal does not synthesize replacement"
+        },
+        {
+          "index": 15,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer invocation ignores marked DATA history but records same object actual new throw"
+        },
+        {
+          "index": 16,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer stack holder roots sole current reason through GC and pops before AF Await"
+        },
+        {
+          "index": 17,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer Node and class normalize actual cleanup event before successful result escapes"
+        },
+        {
+          "index": 18,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer Engine checked preserves actual pending before owned result and diagnostic cleanup"
+        },
+        {
+          "index": 19,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer newborn OOM is marked before old tracking native finalizer and wrap"
+        },
+        {
+          "index": 20,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer Engine capture owns actual event through diagnostic and displaced error finalizers"
+        },
+        {
+          "index": 21,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer Engine await capture does not infer fatal from marked rejection DATA"
+        },
+        {
+          "index": 22,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer cold class uses realm intrinsic prototype despite global Function replacement or pending getter"
+        },
+        {
+          "index": 23,
+          "flags": 0,
+          "name": "native_callback_producer_test.test.native Await DATA producer cold class pending entry precedes class id and armed GPA allocation"
+        },
+        {
+          "index": 24,
+          "flags": 0,
+          "name": "native_await_rejection_routes_test.test.native Await DATA actual SDK reader read cancel rejection retains reason and cleanup order"
+        },
+        {
+          "index": 25,
+          "flags": 0,
+          "name": "native_await_rejection_routes_test.test.native Await DATA actual Jiti import preserves marked rejection without flag clearing"
+        },
+        {
+          "index": 26,
+          "flags": 0,
+          "name": "native_await_rejection_routes_test.test.native Await DATA actual before tool hook enters Source Error catch for marked rejection"
+        },
+        {
+          "index": 27,
+          "flags": 0,
+          "name": "native_await_rejection_routes_test.test.native Await DATA actual event bus catches marked handler rejection and logs exact data"
+        },
+        {
+          "index": 28,
+          "flags": 0,
+          "name": "native_await_rejection_routes_test.test.native Await DATA actual provider retry zero attempts preserves marked raw rejection"
+        },
+        {
+          "index": 29,
+          "flags": 0,
+          "name": "native_async_throw_cleanup_test.test.native Await DATA C3 resumed input result displaced error and frame cleanup preserve first actual fatal"
+        },
+        {
+          "index": 30,
+          "flags": 0,
+          "name": "native_async_throw_cleanup_test.test.native Await DATA C3 actual pending entry precedes native body and armed GPA failure"
+        }
+      ]
+    },
+    "stderr": {
+      "bytes": 0,
+      "text": "",
+      "policy": "Empty stderr required and observed for all actual31"
+    },
+    "seals": [
+      {
+        "original": {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205851/before.json",
+          "bytes": 15528258,
+          "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+          "original_retained_privately": true
+        },
+        "counts": {
+          "source": 11891,
+          "tree": 11891,
+          "vendor": 1341,
+          "compiler": 19546,
+          "controls": 47
+        },
+        "drift": 0
+      },
+      {
+        "original": {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-before.json",
+          "bytes": 15528258,
+          "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+          "original_retained_privately": true
+        },
+        "counts": {
+          "source": 11891,
+          "tree": 11891,
+          "vendor": 1341,
+          "compiler": 19546,
+          "controls": 47
+        },
+        "drift": 0
+      },
+      {
+        "original": {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-after.json",
+          "bytes": 15528258,
+          "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+          "original_retained_privately": true
+        },
+        "counts": {
+          "source": 11891,
+          "tree": 11891,
+          "vendor": 1341,
+          "compiler": 19546,
+          "controls": 47
+        },
+        "drift": 0
+      },
+      {
+        "original": {
+          "id": "project/evidence/root-await-data31-runtime-20261017-205851/final.json",
+          "bytes": 15528258,
+          "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+          "original_retained_privately": true
+        },
+        "counts": {
+          "source": 11891,
+          "tree": 11891,
+          "vendor": 1341,
+          "compiler": 19546,
+          "controls": 47
+        },
+        "drift": 0
+      }
+    ],
+    "build_runtime_source_tool_join": "source/tree/vendor/compiler exact",
+    "current_hash_drift": {
+      "unique_paths": 31483,
+      "rehashed": 31483,
+      "differences": 0,
+      "candidate_head": "44616396656e3a0b708ea7795614de09cfad7bd6",
+      "candidate_clean": true
+    },
+    "saved_absence": {
+      "runtime_pid": 57756,
+      "runtime_absent": true,
+      "descendants": 0,
+      "global_native": 0,
+      "outer_pid": 66216,
+      "outer_fresh_absent": true,
+      "new_process_probe_performed": false
+    },
+    "limits": [
+      "Component 31-control runtime only; no CJS/EventStream/SDK or whole application/default activation qualification",
+      "No frame improvement, exhaustive allocation, dynamic stack measurement or runtime restoration claim",
+      "Batch120 deadline bounds each test at most120; no independent per-test timing",
+      "Saved process absence audited; no new native/CIM process calls launched"
+    ],
+    "Source20_original_reference_qualification": false,
+    "Source20_original_reference_status": "Separate original reference remains blocked before build; no Source20 capture or pass inferred from these31 native controls",
+    "actual_PID_reuse_observed": false,
+    "exact_held42d_four_file_VM_union": [
+      {
+        "path": "vendor/quickjs/quickjs.c",
+        "sha256": "CCDD4E497B77045C84FE1BC774855B2BB8A22D74C28C3C851EE48384F70D069D"
+      },
+      {
+        "path": "vendor/quickjs/quickjs.h",
+        "sha256": "DE1C05E99D18FC72A680B7A2476DC5B72DA57BFD15451B984697EF7228B9854A"
+      },
+      {
+        "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+        "sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A"
+      },
+      {
+        "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+        "sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14"
+      }
+    ],
+    "original_compiler_authority": {
+      "id": "project/evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "original_retained_privately": true
+    }
+  },
+  "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+}

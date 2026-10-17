@@ -1,0 +1,375 @@
+{
+  "schema": 1,
+  "kind": "original_private_evidence_hash_provenance",
+  "records": [
+    {
+      "id": "project/evidence/root-await31-independent-buildquery-20261017-205521.json",
+      "bytes": 5836,
+      "sha256": "63E7C4D3E9EBD0D949632ECAE250B5F2450ECFC7D14F86D396D9B95C60AD0D05",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile-absence.json",
+      "bytes": 3146,
+      "sha256": "3D1FC255E82D91B063EA23B9ACA27297DB185542AF99464ED9D4EE303A846CEA",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002/final.json",
+      "bytes": 15516878,
+      "sha256": "414952D3567750E766675FDFB3F992D9C5F59DFF05451FF4B6BCD18F3FAB1844",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002-outer.json",
+      "bytes": 1602,
+      "sha256": "AFA95A1CB7A079F41F8359B8CE36858461EA1144F2DD62CAE08B4D6B9D9DDECD",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002-outer-absence.json",
+      "bytes": 1782,
+      "sha256": "01AE9760A6F8A1106AAAFDB78F71859404699CDA957B97E1B48C168C0B20DE4B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/result.json",
+      "bytes": 15586,
+      "sha256": "39232C92AC060143EF5E6B627A9C9AF310B99C554C95C8426F75D1017E2E5329",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile.json",
+      "bytes": 2071,
+      "sha256": "3ED8DABB505C016D0633E9CD29C20BCFDD2F279F6473FB29355068964257E6E6",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile.stderr.log",
+      "bytes": 14071,
+      "sha256": "6EC27E6360E4B21573EBC3EFB63E541B90FB11B084E2EE482CFB9C00FC59D5AE",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/compile-absence.json",
+      "bytes": 3046,
+      "sha256": "0DC94A7EE9FABB4BB4D41F685BEA2D2134655EE0D220BAE4C5EFE238BF79FC7E",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/final.json",
+      "bytes": 15521082,
+      "sha256": "9ECDF76C9DB76D5B1987827273EB57FD1606C05CEC1973C9BE2EAA88B2513745",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata.json",
+      "bytes": 1232,
+      "sha256": "9CB755CE99889E01F4EDEED575CF2D470847EDA0C877A08D9F6D929C649CBCE6",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata.stdout.bin",
+      "bytes": 4349,
+      "sha256": "844D526339CAA38C17D569FE6B33ED5F45BBC15E8F85AAD3D96B34551D94822C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434/metadata-absence.json",
+      "bytes": 2151,
+      "sha256": "0C06CE04516301DBD099CF65B3F0E8E36FA2FBE62514B72B3EAE7EE73761ED41",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434-outer.json",
+      "bytes": 1632,
+      "sha256": "C8BEA0D2F03F5FCD2A5C85B748E70ED40042B9AF9BBCD18E6F41672FFA7E63C9",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-c03-buildquery-20261017-200434-outer-absence.json",
+      "bytes": 1813,
+      "sha256": "72190059B42B693B15937071303FCAB6B86FBC541957FF12FA606D8759CAB40C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205608-grant.json",
+      "bytes": 3294,
+      "sha256": "D9DB4BF302A9B9ACD57CBC576DA8DC47BA2C7252A3C255F8DA70C09575F501C1",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.json",
+      "bytes": 1639,
+      "sha256": "17834D1EBC66B4878FDB8271452D907AD44EB5F277A47AB2991CED3072E38A2C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer-absence.json",
+      "bytes": 1820,
+      "sha256": "52445B34D8C42DE4BE05D8848295E405B1F8F705F03E5678FA2E633C781D4390",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205608-outer.stderr.log",
+      "bytes": 399,
+      "sha256": "D0DDF3534F19890640C7C27580573B53FD86883C210218D4B442074D27DD7606",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/result.json",
+      "bytes": 18526,
+      "sha256": "D70BCDBB5DC12A8261F5931C92C2EE41F36D41464561C305BE1A5D74E2CD790C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/result.json",
+      "bytes": 18110,
+      "sha256": "BF98750C7889EF4FFAEC70EDEA4353F95522DE312C41750A79F3E703761AA9EE",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-raw-frame-observation.json",
+      "bytes": 4651,
+      "sha256": "E9EDAF7AA108E7ABD33AF474339FB336200BB5CFED56369E9CF186D624A1AEEE",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/commands.json",
+      "bytes": 1644,
+      "sha256": "14F8B26FCC3C229899B89D838DCCF0163D35332204CA08541F41AB7D43190CC7",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/commands.json",
+      "bytes": 5966,
+      "sha256": "ADD3ED2E1A6FC2EF8E4C86A7C08AAF9D396BE299F0851A711E2B6C215608D9EB",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile-admission.json",
+      "bytes": 580,
+      "sha256": "EA7C4E32B06510D03F8C055AB323736E8FD4E3968124714DBC5E179B90DC3C7A",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata-admission.json",
+      "bytes": 583,
+      "sha256": "4090872C34662BABA38353130761FF59D370BF37AEA430E856BA880AC59116C9",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-admission.json",
+      "bytes": 580,
+      "sha256": "C5A4E1F0ACB5A91D926040D3857B86C6D0C466A1872613C02A4CF3CED0C26EDD",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile.stderr.log",
+      "bytes": 19797,
+      "sha256": "857264DF709F3E68764D5D99E76F797BB2D4850137CD9708D9B5E0815AFD6317",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951-grant.json",
+      "bytes": 2521,
+      "sha256": "F0E2D26C5C29E57FEA30BBF1EC5D66CF607FBDE41F3B0CFC59D699E35C20D748",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002/compile.json",
+      "bytes": 2173,
+      "sha256": "F879A4B3C38E5920F68E7F7B8788EAB5D350F2C027AF14F7B2E08D8C096B2EDB",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/build-artifacts.json",
+      "bytes": 1854,
+      "sha256": "AC843EE306DA698EE9AD08BAC2AF2392D4D9A845B7CAED1ABF97C848B8FC19DA",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-independent-audit-20261017/independent-runtime-acceptance.json",
+      "bytes": 37547,
+      "sha256": "9775E77535B0D73CCF9A7088999FC8EF994DBDBBC825F6F83402BDF6F7009EF0",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/selected-tests.json",
+      "bytes": 4819,
+      "sha256": "C40B19A58B38D5420E6D23E2355728E92F59805D635EFD9533B269BAF9E475E4",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.results.json",
+      "bytes": 2877,
+      "sha256": "34152083368E601BBE5ED0D3B0142BA64479AC8B9BACE6DDDE52B71167015075",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.stdout.bin",
+      "bytes": 882,
+      "sha256": "A428D577C21595D2EA36D7F3B02BE9839EE2E6E603543BEC8C1CA547DC983E25",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata.stdout.bin",
+      "bytes": 4349,
+      "sha256": "844D526339CAA38C17D569FE6B33ED5F45BBC15E8F85AAD3D96B34551D94822C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/before.json",
+      "bytes": 15528258,
+      "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-before.json",
+      "bytes": 15528258,
+      "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-after.json",
+      "bytes": 15528258,
+      "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/final.json",
+      "bytes": 15528258,
+      "sha256": "B8B42A3E8E0C0180EA7AB4B4699BB1FD194006C5D8E33A938CD2A5DD22D1F24B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile.json",
+      "bytes": 2063,
+      "sha256": "C44F7A0FF1CF4B2AF10B8A8704BC02EB64BC08DA5DD6CB1097AAF03A01B2C72B",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata.json",
+      "bytes": 1232,
+      "sha256": "424CD54A22B2DC2D161B9377754F0D46B5DA9B054CC45BAA327FAF7A8F48CD9C",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.json",
+      "bytes": 1233,
+      "sha256": "A641670CD5175D13BC9F8D06CC777D70FD2A20E8C5A7BA34047FB9D81313D097",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951-outer.json",
+      "bytes": 1563,
+      "sha256": "C9BDC49286A221ABB256A9BEEDDBB8A2B0B2A95BA470580F71106F44DC0FFDD4",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851-outer.json",
+      "bytes": 1558,
+      "sha256": "32AAB80ACEA8ED55CE2FCE83E7D9AD7F028F9F97FB9DA74E1512D5CDED88130A",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile-absence.json",
+      "bytes": 3784,
+      "sha256": "630F5E331233A2B85717E6BBCCC6494DFABB767E6F46CB451FEE784FE06A630D",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata-absence.json",
+      "bytes": 2895,
+      "sha256": "66041FD553E6737AC502393A3938F9C65BB9F62C37B5A36AB8A150D6E265B92E",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-absence.json",
+      "bytes": 6425,
+      "sha256": "B2EFFB392D78A20EF552EDCE6F6A44E0640382147F49C83328114B85F043D180",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951-outer-absence.json",
+      "bytes": 1740,
+      "sha256": "C32DEB13250558B4BC9E9BEB8625876FE30B5ED983ADB81F275089D28723E198",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851-outer-absence.json",
+      "bytes": 1737,
+      "sha256": "998A429DF6EC612F3EEAB455B8CD51464B3A7D49EF91364083F9205433FC7A52",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/before.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile-before.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile-after.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata-before.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata-after.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-buildquery-20261017-204951/final.json",
+      "bytes": 15526599,
+      "sha256": "AD88BD91F771AF54125E39270490714C4FCDABDE24948D4693F692E16B607585",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data30-buildquery-20261017-195002/result.json",
+      "bytes": 10269,
+      "sha256": "AD53EC767513C43999817149434B1E6DAA084185D0BD230A314C38139D53265A",
+      "original_retained_privately": true
+    },
+    {
+      "id": "project/evidence/root-await-data31-runtime-20261017-205851-grant.json",
+      "bytes": 3293,
+      "sha256": "CFEC0109707805F4BA3A41715239900CE84279FD3E3176667685394CB7E76F4A",
+      "original_retained_privately": true
+    }
+  ],
+  "original_hashes_are_not_hashes_of_redacted_projections": true,
+  "original_files_untouched": true,
+  "environment_and_unrelated_census_not_distributed": true
+}

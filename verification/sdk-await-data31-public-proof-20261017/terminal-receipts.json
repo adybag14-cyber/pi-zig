@@ -1,0 +1,205 @@
+{
+  "schema": 1,
+  "owners": [
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile.json",
+        "bytes": 2063,
+        "sha256": "C44F7A0FF1CF4B2AF10B8A8704BC02EB64BC08DA5DD6CB1097AAF03A01B2C72B",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "executable": "project/toolchain/zig-x86_64-windows-0.16.0/zig.exe",
+        "executable_sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+        "arguments": [
+          "build",
+          "build-native-await-rejection-data-artifact",
+          "-Doptimize=Debug",
+          "-Duse-llvm=true",
+          "-Ddiagnostic-tests=false",
+          "-j1",
+          "--test-timeout",
+          "120s",
+          "--prefix",
+          "project/evidence/root-await-data31-buildquery-20261017-204951/installed",
+          "--cache-dir",
+          "project/evidence/root-await-data30-buildquery-20261017-195002/cache",
+          "--global-cache-dir",
+          "project/evidence/root-await-data30-buildquery-20261017-195002/global-cache",
+          "--summary",
+          "all"
+        ],
+        "working_directory": "project/worktrees/native-await-bfb-core42d-qualification-sourceonly-20261017",
+        "pid": 63452,
+        "retained_handle": 2208,
+        "created_utc": "2026-10-17T20:50:33.2925867Z",
+        "completed_utc": "2026-10-17T21:50:43.9676617+01:00",
+        "timeout_seconds": 1320,
+        "status": "passed",
+        "exit_code": 0,
+        "live_identity": {
+          "pid": 63452,
+          "created_utc": "2026-10-17T20:50:33.2925867Z",
+          "executable": "project/toolchain/zig-x86_64-windows-0.16.0/zig.exe",
+          "command_line_omitted": true
+        },
+        "identity_verification": "Retained native Process handle plus fresh executable/UTC start and exact live command line"
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata.json",
+        "bytes": 1232,
+        "sha256": "424CD54A22B2DC2D161B9377754F0D46B5DA9B054CC45BAA327FAF7A8F48CD9C",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "executable": "project/evidence/root-await-data30-buildquery-20261017-195002/cache/o/8014f1c3891143963b48853d2c48425c/test.exe",
+        "executable_sha256": "42DB9C5BF7203A51A1CA5EF93117E2D08A948B755675961B169D964FC059F676",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "project/worktrees/native-await-bfb-core42d-qualification-sourceonly-20261017",
+        "pid": 31252,
+        "retained_handle": 2468,
+        "created_utc": "2026-10-17T20:51:18.7951838Z",
+        "completed_utc": "2026-10-17T21:51:19.1619013+01:00",
+        "timeout_seconds": 30,
+        "status": "passed",
+        "exit_code": 0,
+        "live_identity": {
+          "pid": 31252,
+          "created_utc": "2026-10-17T20:51:18.7951838Z",
+          "executable": "project/evidence/root-await-data30-buildquery-20261017-195002/cache/o/8014f1c3891143963b48853d2c48425c/test.exe",
+          "command_line_omitted": true
+        },
+        "identity_verification": "Retained native Process handle plus fresh executable/UTC start and exact live command line"
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.json",
+        "bytes": 1233,
+        "sha256": "A641670CD5175D13BC9F8D06CC777D70FD2A20E8C5A7BA34047FB9D81313D097",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "executable": "project/evidence/root-await-data30-buildquery-20261017-195002/cache/o/8014f1c3891143963b48853d2c48425c/test.exe",
+        "executable_sha256": "42DB9C5BF7203A51A1CA5EF93117E2D08A948B755675961B169D964FC059F676",
+        "arguments": [
+          "--listen=-"
+        ],
+        "working_directory": "project/worktrees/native-await-bfb-core42d-qualification-sourceonly-20261017",
+        "pid": 57756,
+        "retained_handle": 2196,
+        "created_utc": "2026-10-17T20:59:26.8527915Z",
+        "completed_utc": "2026-10-17T21:59:27.4824659+01:00",
+        "timeout_seconds": 120,
+        "status": "passed",
+        "exit_code": 0,
+        "live_identity": {
+          "pid": 57756,
+          "created_utc": "2026-10-17T20:59:26.8527915Z",
+          "executable": "project/evidence/root-await-data30-buildquery-20261017-195002/cache/o/8014f1c3891143963b48853d2c48425c/test.exe",
+          "command_line_omitted": true
+        },
+        "identity_verification": "Retained native Process handle plus fresh executable/UTC start and exact live command line"
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951-outer.json",
+        "bytes": 1563,
+        "sha256": "C9BDC49286A221ABB256A9BEEDDBB8A2B0B2A95BA470580F71106F44DC0FFDD4",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "executable": "tools/powershell/pwsh.exe",
+        "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+        "arguments": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "project/evidence/await-data31-cancel-birth-aware-retry-prepared-20261017/Run-AwaitData31BirthAwareRetry.ps1",
+          "-RootGrant",
+          "project/evidence/root-await-data31-buildquery-20261017-204951-grant.json",
+          "-Mode",
+          "BuildQuery",
+          "-Group",
+          "await-data31"
+        ],
+        "working_directory": "project/",
+        "pid": 67280,
+        "retained_handle": 2276,
+        "created_utc": "2026-10-17T20:49:51.668091Z",
+        "completed_utc": "2026-10-17T21:51:55.8173776+01:00",
+        "timeout_seconds": 1800,
+        "status": "passed",
+        "exit_code": 0,
+        "live_identity": {
+          "pid": 67280,
+          "created_utc": "2026-10-17T20:49:51.668091Z",
+          "executable": "tools/powershell/pwsh.exe",
+          "command_line_omitted": true
+        },
+        "identity_verification": "Retained native Process handle plus fresh executable/UTC start and exact live command line"
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-runtime-20261017-205851-outer.json",
+        "bytes": 1558,
+        "sha256": "32AAB80ACEA8ED55CE2FCE83E7D9AD7F028F9F97FB9DA74E1512D5CDED88130A",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "executable": "tools/powershell/pwsh.exe",
+        "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+        "arguments": [
+          "-NoLogo",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "project/evidence/await-data31-cancel-birth-aware-retry-prepared-20261017/Run-AwaitData31BirthAwareRetry.ps1",
+          "-RootGrant",
+          "project/evidence/root-await-data31-runtime-20261017-205851-grant.json",
+          "-Mode",
+          "RuntimeOnly",
+          "-Group",
+          "await-data31"
+        ],
+        "working_directory": "project/",
+        "pid": 66216,
+        "retained_handle": 2268,
+        "created_utc": "2026-10-17T20:58:51.4627749Z",
+        "completed_utc": "2026-10-17T22:00:00.6901581+01:00",
+        "timeout_seconds": 600,
+        "status": "passed",
+        "exit_code": 0,
+        "live_identity": {
+          "pid": 66216,
+          "created_utc": "2026-10-17T20:58:51.4627749Z",
+          "executable": "tools/powershell/pwsh.exe",
+          "command_line_omitted": true
+        },
+        "identity_verification": "Retained native Process handle plus fresh executable/UTC start and exact live command line"
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    }
+  ]
+}

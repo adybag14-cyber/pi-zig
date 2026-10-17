@@ -1,0 +1,177 @@
+{
+  "schema": 1,
+  "kind": "public_selected_field_projection_not_original_receipt",
+  "private_original": {
+    "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime.results.json",
+    "bytes": 2877,
+    "sha256": "34152083368E601BBE5ED0D3B0142BA64479AC8B9BACE6DDDE52B71167015075",
+    "original_retained_privately": true
+  },
+  "selection": {
+    "binary_sha256": "42DB9C5BF7203A51A1CA5EF93117E2D08A948B755675961B169D964FC059F676",
+    "version": "0.16.0",
+    "expected": 31,
+    "started": 31,
+    "completed": 31,
+    "results": [
+      {
+        "index": 0,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 1,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 2,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 3,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 4,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 5,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 6,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 7,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 8,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 9,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 10,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 11,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 12,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 13,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 14,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 15,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 16,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 17,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 18,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 19,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 20,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 21,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 22,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 23,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 24,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 25,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 26,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 27,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 28,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 29,
+        "flags": 0,
+        "passed": true
+      },
+      {
+        "index": 30,
+        "flags": 0,
+        "passed": true
+      }
+    ],
+    "failed_or_skipped_or_logged_or_leaked": 0,
+    "status": "passed"
+  },
+  "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+}

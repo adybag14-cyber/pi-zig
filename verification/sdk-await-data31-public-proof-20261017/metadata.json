@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "kind": "public_selected_field_projection_not_original_receipt",
+  "private_original": {
+    "id": "project/evidence/root-await-data31-buildquery-20261017-204951/selected-tests.json",
+    "bytes": 4819,
+    "sha256": "C40B19A58B38D5420E6D23E2355728E92F59805D635EFD9533B269BAF9E475E4",
+    "original_retained_privately": true
+  },
+  "selection": {
+    "binary_sha256": "42DB9C5BF7203A51A1CA5EF93117E2D08A948B755675961B169D964FC059F676",
+    "version": "0.16.0",
+    "actual_count": 31,
+    "tests": [
+      "native_await_rejection_data_test.test.native Await DATA old flags private tags and captured history enter catch unchanged",
+      "native_await_rejection_data_test.test.native Await DATA fresh private reason created after actual suspension remains data across wrap",
+      "native_await_rejection_data_test.test.native Await DATA actual Agent lifecycle executes catch handler and finally for flagged rejection",
+      "native_await_rejection_data_test.test.native Await DATA actual new throw of the same marked object preserves current event",
+      "native_await_rejection_data_test.test.native Await DATA pending event remains owned while actual captured diagnostic finalizer publishes fatal",
+      "native_await_rejection_data_test.test.native Await DATA actual prompt continue abort and wait methods preserve fresh rejection identity",
+      "native_await_rejection_data_test.test.native Await DATA genuine resumed allocator failure remains a host fatal event",
+      "native_await_rejection_data_test.test.native Await DATA genuine cancellation before resumed job remains host fatal",
+      "native_await_rejection_data_test.test.native Await DATA escaping flagged completion must reject raw reason without new host event",
+      "extensions.native_durable_storage.test_0",
+      "native_callback_producer_test.test.native Await DATA producer genuine Node function arrow class and SDK allocation failures cannot enter guest catch",
+      "native_callback_producer_test.test.native Await DATA producer reentrant native capture retires nested diagnostic strings before commit",
+      "native_callback_producer_test.test.native Await DATA producer recorded actual OOM identity survives legacy error union flag clearing",
+      "native_callback_producer_test.test.native Await DATA producer current captured fatal survives real Node new receiver and class error unwind",
+      "native_callback_producer_test.test.native Await DATA producer genuine GPA error followed by current captured cleanup fatal does not synthesize replacement",
+      "native_callback_producer_test.test.native Await DATA producer invocation ignores marked DATA history but records same object actual new throw",
+      "native_callback_producer_test.test.native Await DATA producer stack holder roots sole current reason through GC and pops before AF Await",
+      "native_callback_producer_test.test.native Await DATA producer Node and class normalize actual cleanup event before successful result escapes",
+      "native_callback_producer_test.test.native Await DATA producer Engine checked preserves actual pending before owned result and diagnostic cleanup",
+      "native_callback_producer_test.test.native Await DATA producer newborn OOM is marked before old tracking native finalizer and wrap",
+      "native_callback_producer_test.test.native Await DATA producer Engine capture owns actual event through diagnostic and displaced error finalizers",
+      "native_callback_producer_test.test.native Await DATA producer Engine await capture does not infer fatal from marked rejection DATA",
+      "native_callback_producer_test.test.native Await DATA producer cold class uses realm intrinsic prototype despite global Function replacement or pending getter",
+      "native_callback_producer_test.test.native Await DATA producer cold class pending entry precedes class id and armed GPA allocation",
+      "native_await_rejection_routes_test.test.native Await DATA actual SDK reader read cancel rejection retains reason and cleanup order",
+      "native_await_rejection_routes_test.test.native Await DATA actual Jiti import preserves marked rejection without flag clearing",
+      "native_await_rejection_routes_test.test.native Await DATA actual before tool hook enters Source Error catch for marked rejection",
+      "native_await_rejection_routes_test.test.native Await DATA actual event bus catches marked handler rejection and logs exact data",
+      "native_await_rejection_routes_test.test.native Await DATA actual provider retry zero attempts preserves marked raw rejection",
+      "native_async_throw_cleanup_test.test.native Await DATA C3 resumed input result displaced error and frame cleanup preserve first actual fatal",
+      "native_async_throw_cleanup_test.test.native Await DATA C3 actual pending entry precedes native body and armed GPA failure"
+    ],
+    "group": "await-data31",
+    "candidate_head": "44616396656e3a0b708ea7795614de09cfad7bd6",
+    "method": "Actual query4/exit0 only; no run_test; CI607 owner30",
+    "runtime_started": false
+  },
+  "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+}

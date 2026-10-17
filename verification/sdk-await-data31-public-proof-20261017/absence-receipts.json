@@ -1,0 +1,146 @@
+{
+  "schema": 1,
+  "saved_observations_only": true,
+  "new_process_probe_performed": false,
+  "receipts": [
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951/compile-absence.json",
+        "bytes": 3784,
+        "sha256": "630F5E331233A2B85717E6BBCCC6494DFABB767E6F46CB451FEE784FE06A630D",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "phase": "compile",
+        "status": "closed",
+        "valid": true,
+        "owner_pid": 63452,
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": 0,
+        "global_native": 0,
+        "absence_error": null,
+        "readonly_absence": {
+          "status": "closed_original_absent",
+          "closed": true,
+          "current_owner_pid_present": 0,
+          "current_owned_descendants": 0,
+          "excluded_new_generation_count": 0,
+          "blocking_count": 0,
+          "no_control_authority": true,
+          "private_process_rows_omitted": true
+        }
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951/metadata-absence.json",
+        "bytes": 2895,
+        "sha256": "66041FD553E6737AC502393A3938F9C65BB9F62C37B5A36AB8A150D6E265B92E",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "phase": "metadata",
+        "status": "closed",
+        "valid": true,
+        "owner_pid": 31252,
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": 0,
+        "global_native": 0,
+        "absence_error": null,
+        "readonly_absence": {
+          "status": "closed_original_absent",
+          "closed": true,
+          "current_owner_pid_present": 0,
+          "current_owned_descendants": 0,
+          "excluded_new_generation_count": 0,
+          "blocking_count": 0,
+          "no_control_authority": true,
+          "private_process_rows_omitted": true
+        }
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-runtime-20261017-205851/runtime-absence.json",
+        "bytes": 6425,
+        "sha256": "B2EFFB392D78A20EF552EDCE6F6A44E0640382147F49C83328114B85F043D180",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "phase": "runtime",
+        "status": "closed",
+        "valid": true,
+        "owner_pid": 57756,
+        "current_owner_pid_present": 0,
+        "current_owned_descendants": 0,
+        "global_native": 0,
+        "absence_error": null,
+        "readonly_absence": {
+          "status": "closed_original_absent",
+          "closed": true,
+          "current_owner_pid_present": 0,
+          "current_owned_descendants": 0,
+          "excluded_new_generation_count": 0,
+          "blocking_count": 0,
+          "no_control_authority": true,
+          "private_process_rows_omitted": true
+        }
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-buildquery-20261017-204951-outer-absence.json",
+        "bytes": 1740,
+        "sha256": "C32DEB13250558B4BC9E9BEB8625876FE30B5ED983ADB81F275089D28723E198",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "utc": "2026-10-17T21:51:56.105606+01:00",
+        "pid": 67280,
+        "fresh_pid_present": false,
+        "terminal": {
+          "status": "passed",
+          "exit_code": 0,
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "created_utc": "2026-10-17T20:49:51.668091Z",
+          "completed_utc": "2026-10-17T21:51:55.8173776+01:00"
+        }
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "public_selected_field_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/root-await-data31-runtime-20261017-205851-outer-absence.json",
+        "bytes": 1737,
+        "sha256": "998A429DF6EC612F3EEAB455B8CD51464B3A7D49EF91364083F9205433FC7A52",
+        "original_retained_privately": true
+      },
+      "selection": {
+        "utc": "2026-10-17T22:00:01.0358585+01:00",
+        "pid": 66216,
+        "fresh_pid_present": false,
+        "terminal": {
+          "status": "passed",
+          "exit_code": 0,
+          "executable_sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+          "created_utc": "2026-10-17T20:58:51.4627749Z",
+          "completed_utc": "2026-10-17T22:00:00.6901581+01:00"
+        }
+      },
+      "omitted": "Unselected fields, private absolute paths, environment, unrelated process census and raw process rows are not published. Original private bytes are retained under the pinned SHA256."
+    }
+  ]
+}
