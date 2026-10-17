@@ -1,0 +1,23 @@
+{
+  "status": "source_only_uncompiled_unrun",
+  "root_base": "62940527130cbb773539a07ec71e61a40fe90863",
+  "body_commit": "4d7081469b25fc641f6c83f31af990965dde445c",
+  "dependency_source": "926d0840",
+  "body_added_paths": [
+    "src/extensions/native_jiti_eval_module.zig",
+    "src/native_jiti_eval_module_controls.zig",
+    "verification/jiti-transformed-eval-sourceonly-20261017/README.md",
+    "verification/jiti-transformed-eval-sourceonly-20261017/causal-inputs.json",
+    "verification/jiti-transformed-eval-sourceonly-20261017/prepared.json"
+  ],
+  "dependency_patch_sha256": "36B126AF79B25EA7D33BFB78941FB74541ECB72AA037FBD0166C24BEB6C41F0A",
+  "dependency_added_paths": 10,
+  "recursive_zig_import_census": 591,
+  "missing_literal_imports": 0,
+  "graph2_adapter_included": false,
+  "full_frontend_factory_resolver_complete": false,
+  "c_h_engine_build_modified": false,
+  "default_selected": false,
+  "tests_run": false,
+  "historical_manifest_pins_preserved": true
+}

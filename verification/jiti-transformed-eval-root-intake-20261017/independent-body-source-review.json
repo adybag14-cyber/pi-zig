@@ -1,0 +1,32 @@
+{
+  "source_head": "4d7081469b25fc641f6c83f31af990965dde445c",
+  "reviewer": "/root/body_validation_resume",
+  "status": "source_review_closed_no_remaining_admitted_scope_blocker",
+  "scope": "actual transformed-eval host body over real frontend-resolved inputs and actual bindings",
+  "corrections": [
+    "Reread actual Error binding after construction for live capture owner",
+    "Call retrieved actual captureStackTrace through VM without synthetic undefined guard",
+    "Immediately free ignored push/debug/onError/capture results; narrow method callee ownership"
+  ],
+  "manifest_rows_exact": 32,
+  "unit_products": 2,
+  "api12a_dependencies_byte_identical": 2,
+  "protected_files_exact": 24,
+  "controls_and_authorities_exact": 4,
+  "native_entrypoints": 5,
+  "causal_inputs": 13,
+  "finalization_probe": "genuine FinalizationRegistry and bounded actual VM GC/jobs; prepared ownership-only, no portable Node scheduling oracle",
+  "expected_absent": true,
+  "scoped_whitespace_passed": true,
+  "source_captured": false,
+  "fmt_ast": false,
+  "native_compiled": false,
+  "native_executed": false,
+  "node_executed": false,
+  "complete_frontend": false,
+  "complete_nested_factory": false,
+  "esm_eval_implemented": false,
+  "complete_public_create_jiti": false,
+  "graph2_defaultinterop_reclamation_qualified": false,
+  "default_selected": false
+}

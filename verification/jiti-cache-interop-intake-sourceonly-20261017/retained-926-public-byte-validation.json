@@ -1,0 +1,128 @@
+{
+  "head": "926d08402250aec386d674120172586186d1a038",
+  "all_exact": true,
+  "files": [
+    {
+      "path": "src/extensions/native_extension_import_adapter.zig",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/src/extensions/native_extension_import_adapter.zig",
+      "sha256": "4016ADA1056C51568647F17AAC82C41C2648871F79EFE8FACDAE5DDD74EAE6E3",
+      "bytes": 27312,
+      "exact": true
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/src/extensions/native_jiti_import.zig",
+      "sha256": "D48CC79AC8A6F5B8DC45F495C35BAFE48CA87F89BD09D7F6DBEA7B8E5D5C3CE6",
+      "bytes": 3225,
+      "exact": true
+    },
+    {
+      "path": "src/extensions/native_jiti_interop.zig",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/src/extensions/native_jiti_interop.zig",
+      "sha256": "70C742C7D516C5AA3758FEF6AE0C8893D367110A13C52B3BF404E36714D46497",
+      "bytes": 8837,
+      "exact": true
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cache.zig",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/src/extensions/native_jiti_module_cache.zig",
+      "sha256": "4D9FC37B3502481DF05F46B194EE6238F2B2D56ABF4A29410CEF4ABDBBDE1A0D",
+      "bytes": 4815,
+      "exact": true
+    },
+    {
+      "path": "src/native_jiti_interop_cache_controls.zig",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/src/native_jiti_interop_cache_controls.zig",
+      "sha256": "45D6594D69282CE94FFACAFD4AE1D82E996451A3592ADEB5653A9F2150B7CB28",
+      "bytes": 15398,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/README.md",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/README.md",
+      "sha256": "B65F163ED3A5F7F8EE2B61764449E046BC289308629BAC144D2DD78F2F07FA83",
+      "bytes": 7132,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/LICENSE.txt",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/jiti-2.7.0.tgz",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/jiti-2.7.0.tgz",
+      "sha256": "8DD0D365FB49C0E7CC42D6A00DF6FB2DA9056FC24492094346FC34ECDBCF28CA",
+      "bytes": 427320,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/package__LICENSE",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/package__LICENSE",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/package__dist__jiti.cjs",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/package__dist__jiti.cjs",
+      "sha256": "A0B3B8D5E06A0519C66B62179E29200533057920F6F11370546E979DACD24C49",
+      "bytes": 190082,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/package__package.json",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/package__package.json",
+      "sha256": "AAB8AAFC42D9AEEC14A6E2FE0E15EA1514C0C205A624055A7E776F2EC456283C",
+      "bytes": 4784,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/primary-authority.json",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/primary-authority.json",
+      "sha256": "D781F8802D01D6470AE0435D208C5652FEFE9E164C046139E3ED3509DCC3BDAE",
+      "bytes": 3230,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__eval.ts.txt",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/src__eval.ts.txt",
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "bytes": 7360,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__jiti.ts.txt",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/src__jiti.ts.txt",
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+      "bytes": 5500,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__require.ts.txt",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/src__require.ts.txt",
+      "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C",
+      "bytes": 4759,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/authority/src__utils.ts.txt",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/authority/src__utils.ts.txt",
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954",
+      "bytes": 5009,
+      "exact": true
+    },
+    {
+      "path": "verification/jiti-interop-cache-sourceonly-20261016/prepared.json",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/926d08402250aec386d674120172586186d1a038/verification/jiti-interop-cache-sourceonly-20261016/prepared.json",
+      "sha256": "8DB3BA0CDD0BAE9CB6A87C7955B1923687AE3C9632918C1C632AF6E6AEBCB58D",
+      "bytes": 5200,
+      "exact": true
+    }
+  ],
+  "checked_utc": "2026-10-16T21:23:34.9180306Z",
+  "native_qualification": false,
+  "source_review": "closed_no_further_scoped_blocker"
+}
