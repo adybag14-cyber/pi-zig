@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_EXPLICIT_CAPTURE_ERROR_UNION_COERCION_UNCOMPILED",
+  "parent": "5372a2c6f41c1503bd016fe800bcd0e24427e553",
+  "diagnostics": "evidence/root-tty19-5372-buildquery-20261017-223109/compile.stderr.log",
+  "diagnostics_sha256": "EDFB0C4743FFF9664190D18D6177FCF3ED9A1D3764B616322E294EBC1183F946",
+  "observed_errors": [
+    "Socket507 still expectederrorunionfoundanyerror afterreturnannotation",
+    "Provider75 samecapture-return boundary"
+  ],
+  "negative_preserved": "5372 annotation-only attempt didnotfixfirstreportedcapture-return; no passrelabel",
+  "correction": "Coerce eachbarejs.capture return in BOTHaffectedmodules to actualdeclaredpayload anyerror!T. All12 calls/order/guards/errdefer/capturedreason preserved",
+  "sites": [
+    "classId:c.JSClassID",
+    "bytes:[]constu8",
+    "construct:c.JSValue",
+    "property:c.JSValue",
+    "writtenBytes:3xc.JSValue",
+    "createProvider:4xProvider",
+    "acquireInner:*Bundle"
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "324EE7B5A2D097AF55B0D292B1813E4FB9479C8A8197EA6D71E439CCF15363B6"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "86CD9D62BD4FA91A629B75BD75467EFBD01B388B0BBF5C42122FACF60344BC85"
+    }
+  ],
+  "shared_capture_Scope_Engine_C_H_build_untouched": true,
+  "source_assertions": 19,
+  "assertions_changed": false,
+  "metadata": "UNOBSERVED",
+  "no_agent_jobs": true,
+  "execution_authorized": false
+}

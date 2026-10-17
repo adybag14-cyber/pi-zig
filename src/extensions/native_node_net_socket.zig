@@ -93,7 +93,7 @@ fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, visit: ?*const c.JS_MarkFunc)
     inline for (.{ "socket", "process", "buffer", "native_handle", "write_chunk", "write_callback", "final_callback", "destroy_callback", "destroy_reason" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
 }
 fn classId(engine: *js.Engine, value: c.JSValue) !c.JSClassID {
-    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, value) < 0) return js.capture(engine); return id;
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, value) < 0) return @as(anyerror!c.JSClassID, js.capture(engine)); return id;
 }
 fn stateFor(scope: *Scope, socket: c.JSValue, roots: []const c.JSValue) !*State {
     const holder = try scope.invoke(roots[0], "get", &.{socket});
@@ -115,7 +115,7 @@ fn bytes(scope: *Scope, value: c.JSValue) ![]const u8 {
     const generation = scope.engine.native_allocation_generation;
     const backing = try scope.ownSince(c.JS_GetTypedArrayBuffer(scope.engine.context, value, &offset, &length, &element), generation);
     var total: usize = 0; const data = c.JS_GetArrayBuffer(scope.engine.context, &total, backing);
-    if (c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
+    if (c.JS_HasException(scope.engine.context)) return @as(anyerror![]const u8, js.capture(scope.engine));
     if (offset > total or length > total - offset or (data == null and length != 0)) return error.NativeSocketDetachedBuffer;
     return if (length == 0) &.{} else data[offset .. offset + length];
 }
@@ -215,7 +215,7 @@ fn construct(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, cap
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
     const context = captures[0]; const constructor = try scope.get(context, "constructor");
     const instance = c.JS_IsInstanceOf(engine.context, socket, constructor);
-    if (instance < 0) return js.capture(engine);
+    if (instance < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (instance == 0) return c.JS_DupValue(engine.context, try scope.construct(constructor, args));
     const duplex = try scope.get(context, "Duplex"); const states = try scope.get(context, "states");
     const known_id = try scope.get(context, "classId"); const process = try scope.get(context, "process"); const buffer_ctor = try scope.get(context, "Buffer");
@@ -349,7 +349,7 @@ fn reference(engine: *js.Engine, socket: c.JSValue, _: []const c.JSValue, roots:
 }
 fn property(engine: *js.Engine, socket: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
-    var which: i32 = 0; if (c.JS_ToInt32(engine.context, &which, roots[2]) < 0) return js.capture(engine);
+    var which: i32 = 0; if (c.JS_ToInt32(engine.context, &which, roots[2]) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     return switch (which) {
         0 => c.JS_NewFloat64(engine.context, @floatFromInt(state.bytes_read)),
         1 => writtenBytes(&scope, state),
@@ -368,13 +368,13 @@ fn writtenBytes(scope: *Scope, state: *State) !c.JSValue {
     var total = @as(f64, @floatFromInt(state.bytes_dispatched)) + @as(f64, @floatFromInt(unsent));
     var index: u32 = 0;
     while (true) : (index += 1) {
-        var length: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &length, try scope.get(queued, "length")) < 0) return js.capture(scope.engine);
+        var length: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &length, try scope.get(queued, "length")) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         if (index >= length) break;
         const item = try scope.getIndex(queued, index);
         const chunk = try scope.get(item, "chunk"); const is_buffer = c.JS_IsInstanceOf(scope.engine.context, chunk, state.buffer);
-        if (is_buffer < 0) return js.capture(scope.engine);
+        if (is_buffer < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         const size = if (is_buffer == 1) try scope.get(chunk, "length") else try scope.invoke(state.buffer, "byteLength", &.{ chunk, try scope.get(item, "encoding") });
-        var count: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &count, size) < 0) return js.capture(scope.engine); total += count;
+        var count: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &count, size) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine)); total += count;
     }
     return c.JS_NewFloat64(scope.engine.context, total);
 }
@@ -504,7 +504,7 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
     const adopters = try engine.gpa.create(Adopters); adopters.* = .{ .engine = engine };
     _ = c.JS_SetOpaque(adopter_holder, adopters); adopters_attached = true;
     const duplex = try scope.get(actual_streams, "Duplex"); const prototype = try scope.object();
-    if (c.JS_SetPrototype(engine.context, prototype, try scope.get(duplex, "prototype")) < 0) return js.capture(engine);
+    if (c.JS_SetPrototype(engine.context, prototype, try scope.get(duplex, "prototype")) < 0) return @as(anyerror!Provider, js.capture(engine));
     const context = try scope.object();
     try scope.put(context, "nativeAdopters", adopter_holder);
     try scope.put(context, "Duplex", duplex); try scope.put(context, "states", states); try scope.put(context, "classId", known_id); try scope.put(context, "process", actual_process);
@@ -512,8 +512,8 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
     const constructor = try scope.own(try fnc.create(engine, "Socket", 1, construct, &.{ context, c.JS_NewUint32(engine.context, adopter_id) }));
     try scope.put(context, "constructor", constructor);
     try scope.set(constructor, "prototype", prototype);
-    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    if (c.JS_SetPrototype(engine.context, constructor, duplex) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!Provider, js.capture(engine));
+    if (c.JS_SetPrototype(engine.context, constructor, duplex) < 0) return @as(anyerror!Provider, js.capture(engine));
     // Source assigns anonymous ordinary function expressions to these members;
     // property assignment does not infer a function name from its member key.
     inline for (.{ "_read", "_write", "_final", "_destroy" }, .{ read, write, final, destroy }, .{ 1, 3, 1, 2 }) |name, callback, length| try scope.put(prototype, name, try scope.own(try fnc.create(engine, "", length, callback, &.{ states, known_id })));
@@ -523,7 +523,7 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
         const getter = try scope.own(if (index == 3) try fnc.createMethod(engine, getter_name, 0, property, &.{ states, known_id, c.JS_NewInt32(engine.context, index) }) else try fnc.create(engine, getter_name, 0, property, &.{ states, known_id, c.JS_NewInt32(engine.context, index) }));
         const atom = c.JS_NewAtom(engine.context, name); defer c.JS_FreeAtom(engine.context, atom);
         const flags = if (index == 3) c.JS_PROP_CONFIGURABLE else if (index == 0 or index == 1 or index == 5) c.JS_PROP_ENUMERABLE else 0;
-        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), flags) < 0) return js.capture(engine);
+        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), flags) < 0) return @as(anyerror!Provider, js.capture(engine));
     }
     return .{ .engine = engine, .constructor = c.JS_DupValue(engine.context, constructor), .states = c.JS_DupValue(engine.context, states), .id = id, .adopters = adopters };
 }

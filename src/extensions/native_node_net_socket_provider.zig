@@ -72,7 +72,7 @@ fn acquireInner(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c
     // Server, connect and createConnection are outside this admitted surface.
     inline for (.{ "Socket", "Stream" }) |name| {
         const status = c.JS_DefinePropertyValueStr(engine.context, net, name, c.JS_DupValue(engine.context, provider.constructor), c.JS_PROP_C_W_E);
-        try engine.checkNativeEntry(); if (status < 0) return js.capture(engine);
+        try engine.checkNativeEntry(); if (status < 0) return @as(anyerror!*Bundle, js.capture(engine));
     }
     var id: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &id);
     const definition: c.JSClassDef = .{ .class_name = "Canonical native Socket provider", .finalizer = finalize, .gc_mark = mark };
