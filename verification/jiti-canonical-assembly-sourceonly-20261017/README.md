@@ -59,7 +59,7 @@ Root intake must retain its existing equal copies rather than replace them.
 
 ## Prepared controls and limits
 
-Five native controls require completed actual module namespaces. They use the
+Six native controls require completed actual module namespaces. They use the
 canonical hard-wired entry, never generic Bodies injection: exact same require
 identity in both imports with captured frontend identity; missing dependency
 preflight without commit; mismatched real shared imports; exhausting the actual
@@ -74,6 +74,25 @@ baseline is deliberately avoided; strict release after dropping the live cycle
 is checked. This does not claim all VM/class-registry storage or Graph2 pinning
 is reclaimed. Full allocator-position failure, teardown/owner absence and actual
 Source caller/cycle execution remain native qualification obligations.
+
+Independent review of first bbf7 found one concrete entry blocker: an actual
+VM exception already pending could survive declaration/link/platform success
+and let the record become ready. The Source producer/AF/shared runtime provides
+no universal clean-entry guarantee. The source successor therefore captures
+that actual event under balanced diagnostic suppression before allocation in
+createCanonical, before host-record/preflight work in direct linkCanonical,
+and before host-record/phase/platform work in initialize. No input flag or
+historical diagnostic slot is used to infer this current event. Capture keeps
+the exact reason without allocation/coercion, phase mutation or platform call.
+
+The sixth control exercises all three direct entry boundaries with an actual
+non-OOM pending VM event, verifies exact captured reason, zero ledger change,
+balanced diagnostic count and no platform call. It then initializes the same
+linked graph successfully after test-driver event consumption, proving the
+entry guard did not mutate the initialization phase. The supplied actual
+platform function is observed by the original delegating Proxy input; it does
+not fabricate a return value. bbf7's original prepared manifest is retained in
+authority as the immutable prior source seal, not rewritten into a pass.
 
 Missing real namespace/policy inputs stay declared. In particular the actual
 nativeImportOrRequire declaration wrapper remains required by the frontend;

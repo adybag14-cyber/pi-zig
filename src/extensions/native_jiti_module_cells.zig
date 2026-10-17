@@ -228,9 +228,10 @@ fn requireInputs(supplied: RequireDependencies, actual_frontend: c.JSValue) requ
 /// its actual captures, including this record's REAL frontend declaration.
 /// No imported field is committed until that construction succeeds.
 pub fn linkCanonical(engine: *v.em.Engine, cells: *const Cells, supplied: CanonicalBindings) !void {
+    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const record = try hostRecord(engine, cells);
     if (record.phase != .declared) return error.JitiModuleCellsAlreadyLinked;
-    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try canonicalPreflight(engine, supplied);
     record.phase = .linking;
     errdefer record.phase = .declared;
@@ -252,13 +253,14 @@ pub fn linkCanonical(engine: *v.em.Engine, cells: *const Cells, supplied: Canoni
     record.phase = .linked;
 }
 pub fn initialize(engine: *v.em.Engine, cells: *const Cells) !void {
+    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const record = try hostRecord(engine, cells);
     if (record.phase != .linked) return error.JitiModuleCellsNotLinkedOrAlreadyInitialized;
     // A throwing/reentrant platform initializer cannot rerun this module's
     // initialization. Its unpublished graph is discarded by the assembler.
     record.phase = .initializing;
     errdefer record.phase = .failed;
-    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
     const value = v.js.call(engine, record.platform, c.pi_js_undefined(), &.{}) catch |err| {
         if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {

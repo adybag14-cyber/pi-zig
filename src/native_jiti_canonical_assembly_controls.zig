@@ -107,3 +107,57 @@ pub fn verifyActualCycleMarkingAndLedgerRelease(engine: *v.em.Engine, bindings: 
     c.JS_RunGC(engine.runtime);
     try std.testing.expect(c.pi_js_native_memory_used(engine.native_memory_owner) < held);
 }
+fn pendingEvent(engine: *v.em.Engine, reason: c.JSValue) !void {
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    try std.testing.expect(engine.captured_exception == null and engine.last_error == null);
+    c.JS_SetUncatchableError(engine.context, reason);
+    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+}
+fn verifyCapturedEvent(engine: *v.em.Engine, reason: c.JSValue, before_memory: usize, before_diagnostics: usize, actual_platform_counter: c.JSValue) !void {
+    const captured = engine.captured_exception orelse return error.MissingPendingAssemblyReason;
+    try same(engine, captured, reason);
+    try std.testing.expect(c.JS_IsUncatchableError(captured));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    try std.testing.expectEqual(before_memory, c.pi_js_native_memory_used(engine.native_memory_owner));
+    try std.testing.expectEqual(before_diagnostics, engine.native_exception_diagnostics_suppressed);
+    const calls = try v.js.get(engine, actual_platform_counter, "calls"); defer engine.freeValue(calls);
+    try same(engine, calls, c.JS_NewInt32(engine.context, 0));
+    const diagnostics = try v.js.get(engine, actual_platform_counter, "diagnosticReads"); defer engine.freeValue(diagnostics);
+    try same(engine, diagnostics, c.JS_NewInt32(engine.context, 0));
+    try std.testing.expect(engine.last_error == null);
+    // Test-driver consumption AFTER terminal-event assertions, not Source catch.
+    engine.captured_exception = null; engine.freeValue(captured);
+}
+/// Real non-OOM pending VM event (the C2 hook-entry condition), before each
+/// public assembly stage. The actual platform is observed by a delegating user
+/// Proxy probe, never a stub result; none of these negative cases may call it.
+/// Complete genuine inputs are required even though the guard precedes them.
+pub fn verifyPendingEventsBeforeConstructionAndInitialization(engine: *v.em.Engine, bindings: cells.CanonicalBindings, actual_pending_reason: c.JSValue, actual_platform_counter: c.JSValue) !void {
+    try std.testing.expectEqual(@as(u64, 0), c.pi_js_native_allocation_error_generation(actual_pending_reason));
+    const diagnostics = engine.native_exception_diagnostics_suppressed;
+    var before = c.pi_js_native_memory_used(engine.native_memory_owner);
+    try pendingEvent(engine, actual_pending_reason);
+    try std.testing.expectError(error.JavaScriptException, graph.createCanonical(engine, bindings));
+    try verifyCapturedEvent(engine, actual_pending_reason, before, diagnostics, actual_platform_counter);
+    var instance = try graph.declare(engine); defer instance.deinit(engine);
+    before = c.pi_js_native_memory_used(engine.native_memory_owner);
+    try pendingEvent(engine, actual_pending_reason);
+    try std.testing.expectError(error.JavaScriptException, cells.linkCanonical(engine, &instance, bindings));
+    try verifyCapturedEvent(engine, actual_pending_reason, before, diagnostics, actual_platform_counter);
+    try std.testing.expectError(error.JitiModuleCellsNotReady, cells.exports(engine, &instance));
+    try std.testing.expectError(error.JitiModuleCellsNotLinkedOrAlreadyInitialized, cells.initialize(engine, &instance));
+    // Direct staged link -> later init is a separate entry boundary/job.
+    try cells.linkCanonical(engine, &instance, bindings);
+    before = c.pi_js_native_memory_used(engine.native_memory_owner);
+    try pendingEvent(engine, actual_pending_reason);
+    try std.testing.expectError(error.JavaScriptException, cells.initialize(engine, &instance));
+    try verifyCapturedEvent(engine, actual_pending_reason, before, diagnostics, actual_platform_counter);
+    try std.testing.expectError(error.JitiModuleCellsNotReady, cells.exports(engine, &instance));
+    // A pending event did not move linked -> initializing/failed. Once the
+    // test driver consumes it, the same actual linked graph initializes once.
+    try cells.initialize(engine, &instance);
+    const exports = try cells.exports(engine, &instance);
+    defer engine.freeValue(exports.create_jiti); defer engine.freeValue(exports.eval_module);
+    const calls = try v.js.get(engine, actual_platform_counter, "calls"); defer engine.freeValue(calls);
+    try same(engine, calls, c.JS_NewInt32(engine.context, 1));
+}

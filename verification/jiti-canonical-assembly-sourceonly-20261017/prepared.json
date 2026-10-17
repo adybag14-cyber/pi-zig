@@ -1,17 +1,17 @@
 {
-  "status": "canonical_actual_require_frontend_assembly_source_only_prepared_unrun",
-  "source_base": "73b7c9a37998c84ebc9a6d3d96da7fd7630bbf6e",
-  "assembly_api_revision": 1,
+  "status": "canonical_actual_require_frontend_assembly_pending_entry_corrected_source_only_prepared_unrun",
+  "source_base": "bbf7e06b063a0bc4859470ac75e2be772095b670",
+  "assembly_api_revision": 2,
   "products": [
     {
       "path": "src/extensions/native_jiti_module_cells.zig",
-      "bytes": 17530,
-      "sha256": "15137260DD54E5609D29A5934469515C54C803F33387BB3B6E6EBEED6174B5E9"
+      "bytes": 17674,
+      "sha256": "710D9BBB97BFB8EFF690985AB12BA18739177F47F2CC254108AD0F25E6DD34B2"
     },
     {
       "path": "src/extensions/native_jiti_core_graph.zig",
-      "bytes": 2087,
-      "sha256": "6C9FC39A0CC85A439E4EC6D4A2D48525F63B30E043DC94496B9924D61DB9810E"
+      "bytes": 2159,
+      "sha256": "CC26BB99EFC7E85FFDBA654432BE1C731349FB91EFCACACFD467057EF1A1055D"
     },
     {
       "path": "src/extensions/native_jiti_core_factory.zig",
@@ -20,8 +20,8 @@
     },
     {
       "path": "src/native_jiti_canonical_assembly_controls.zig",
-      "bytes": 7853,
-      "sha256": "F55675DDCD8667D810167E7AC9163580294765F78A1177A5D8CC1385CC60B80D"
+      "bytes": 12143,
+      "sha256": "F949826200C03B8D9B8A9610847D11DB6B4D99B88CCF9EC9343588EAF4F800A6"
     }
   ],
   "unchanged_reviewed_dependencies": [
@@ -62,19 +62,29 @@
       "sha256": "F9967E28DEDFABD9AF57949DFB6DC97C2B96492AE306DA1E2F75ED18F082078C"
     },
     {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-bbf7-prepared.json",
+      "bytes": 18653,
+      "sha256": "3A3F417E15AB63176FF86E1C3D7909DA8B75BB186DA4F6539ABEBDA17D894D9C"
+    },
+    {
       "path": "verification/jiti-canonical-assembly-sourceonly-20261017/authority/retained-require-resolve-prepared.json",
       "bytes": 9836,
       "sha256": "6748DD648B371148C7488195B5D74DA692DDA136D10DE9E463DFD695BFE98372"
     },
     {
       "path": "verification/jiti-canonical-assembly-sourceonly-20261017/causal-inputs.json",
-      "bytes": 3233,
-      "sha256": "DCE73EA682C1A4FAB11ABA56202BF838278B600B5F6F884D69943B3BA75D0EA2"
+      "bytes": 3711,
+      "sha256": "E5AEB4E39B194769AFC07D59F9AE66C605C9867459D96F643204F65D0423BCB9"
+    },
+    {
+      "path": "verification/jiti-canonical-assembly-sourceonly-20261017/pending-platform-input.mjs",
+      "bytes": 749,
+      "sha256": "B7FD942A18641D26054D77F92F85D5BA414B27EE90BB268A1413B1E2F547E736"
     },
     {
       "path": "verification/jiti-canonical-assembly-sourceonly-20261017/README.md",
-      "bytes": 5695,
-      "sha256": "CBCB26CD8515DDD82633057EDE29DBE7B8994080A62E5A760D4A8C257D3C1E21"
+      "bytes": 7001,
+      "sha256": "C7940F0C9F0B95143481DA8456204EDA4DED6F2CC57F3735F4D539153AA27E90"
     }
   ],
   "protected_files": [
@@ -457,13 +467,20 @@
   "native_import_or_require_wrapper_still_required": true,
   "frontend_historical_rejection_data_blocker_open": true,
   "old_host_builder_not_default_selected": true,
-  "native_entrypoints_prepared": 5,
-  "causal_rows": 8,
+  "native_entrypoints_prepared": 6,
+  "causal_rows": 9,
   "expected_path": "src/extensions/fixtures/jiti-canonical-assembly.expected.json",
   "expected_written": false,
   "source_executed": false,
   "native_executed": false,
   "formatter_executed": false,
   "compiler_executed": false,
-  "default_selected": false
+  "default_selected": false,
+  "pending_vm_entry_guard_corrected": [
+    "createCanonical beforedeclare",
+    "linkCanonical beforehostrecord/preflight",
+    "initialize beforehostrecord/phase/platform"
+  ],
+  "prior_bbf7_review_blocker": "real pending VM exception could survive assembly and markready; original source seal retained, notaccepted",
+  "namespace_phase_unchanged_pending_control": true
 }

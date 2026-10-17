@@ -21,6 +21,7 @@ pub fn createCanonical(engine: *v.em.Engine, actual_imports: cells.CanonicalBind
     // Declaration/construction failures must not format Source error getters
     // before the actual cyclic imports have been completely linked.
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     var graph = try declare(engine); errdefer graph.deinit(engine);
     try cells.linkCanonical(engine, &graph, actual_imports);
     try cells.initialize(engine, &graph);
