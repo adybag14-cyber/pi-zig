@@ -183,16 +183,12 @@ fn asyncBody(engine: *em.Engine, session: c.JSValue, method: Method, state: *c.J
     defer scope.deinit();
     if (completion != .start) {
         if (completion == .rejected) {
-            var generation: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
-            try async_body.rethrowRecognizedAllocation(engine, input, generation);
+            try async_body.enterRejectedContinuation(engine);
             return .{ .thrown = c.JS_DupValue(engine.context, input) };
         }
         return .{ .returned = c.pi_js_undefined() };
     }
-    const generation = engine.native_allocation_generation;
-    const owner = try async_body.init(&scope, state);
-    try scope.put(owner, "nativeGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
+    _ = try async_body.init(&scope, state);
     if (method == .abort) {
         if (scope.truthy(try scope.get(session, "_isAgentRunActive"))) try scope.set(session, "_agentRunAbortRequested", c.pi_js_bool(engine.context, 1));
         inline for (.{ "abortRetry", "abortCompaction", "abortBranchSummary" }) |name| _ = try scope.invoke(session, name, &.{});

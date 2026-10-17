@@ -1,0 +1,42 @@
+{
+  "schema": "pi-zig-independent-finite-source-review-v1",
+  "reviewer": "/root/async_c_review_resume",
+  "completed_utc": "2026-10-17T18:25:43.6923464+00:00",
+  "status": "source_only_inert_union_closed",
+  "base": "7cfcf0513efa89390910bfb1e60a9b3c34cb053a",
+  "proposal_source": "2028d2e1aa4522a7eeff5e62d62550e2cecba411",
+  "prospective_tree": "2175b0322b40132bf4e230775e3d9ba81d12fede",
+  "proposal_pin_sha256": "42F8AA73A4CB7B717AA2001945AC8E9C74D8F58742B0F0E8EE6E607B739D32C3",
+  "patch_sha256": "9D6E9BA7BD96EF4E3F7360461310745586795BD55897000F3F9C50183CEDC47E",
+  "prospective_C_sha256": "877227718F6E61ADEF4E807292E9F5C05EF8012557D179AA87F260E8230042E7",
+  "prospective_H_sha256": "DE1C05E99D18FC72A680B7A2476DC5B72DA57BFD15451B984697EF7228B9854A",
+  "verification": {
+    "proposal_records": 4,
+    "record_size_hash_drift": 0,
+    "entire_tree_diff_paths": [
+      "vendor/quickjs/quickjs.c",
+      "vendor/quickjs/quickjs.h"
+    ],
+    "C_added_lines": 7,
+    "H_added_lines": 2,
+    "deleted_lines": 0,
+    "prospective_C_H_hashes_independently_derived_from_immutable_Git_blobs": true,
+    "derivation_base_C_H_hashes_match_known_7c": true,
+    "direct_internal_operation": "JS_GetPropertyInternal(ctx, base, atom, receiver, false)",
+    "semantics": "Borrowed base/receiver/atom; owned raw Get completion; actual accessor/Proxy receiver semantics",
+    "other_C3_C4_C5_CallSite_link_sort_bytes_unchanged": true,
+    "raw_controls": 4,
+    "raw_control_sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7"
+  },
+  "excluded": [
+    "Future native AF ordinary Action.THROW correction1116",
+    "CJS/regexp compiler successors",
+    "Any active product/default integration",
+    "Runtime or ABI qualification"
+  ],
+  "jobs": [],
+  "active_Main_Min_donor_edits": false,
+  "metadata_result": null,
+  "runtime_result": null,
+  "execution_grant": false
+}

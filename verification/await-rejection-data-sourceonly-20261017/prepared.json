@@ -1,0 +1,224 @@
+{
+  "schema": 1,
+  "status": "prepared-source-only-unexecuted",
+  "base_commit": "c720bdefde6a03b473b6c504bb90ffe2ddff7ec3",
+  "branch": "work/native-await-rejection-data-sourceonly-20261017",
+  "implementation": "Zig0.16; C3 adapter unchanged",
+  "source_authority": "Pi1.3 8efd314f snapshot; exact inert full files and MIT license",
+  "executed": false,
+  "execution_grant": false,
+  "compiler_parser_ast": false,
+  "source_capture": false,
+  "main_edited": false,
+  "c_h_engine_edited": false,
+  "producer_helpers_edited": false,
+  "native_only_host868": "frozen/unselected/unchanged",
+  "product_paths": [
+    "src/extensions/native_async_body.zig",
+    "src/extensions/native_agent_af_values.zig",
+    "src/extensions/native_agent_prompt_async.zig",
+    "src/extensions/native_sdk_session_control.zig"
+  ],
+  "products": [
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "5DE3AD087CE2300057A1AD94E10F20E8ABB42C16331DC940E8418B7BE16DA4A4",
+      "bytes": 5561
+    },
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "3FCF2B0C8FBCD28F9D1B409F9DB6B1BF570DA06AF45AD2AEABC82A77734D5421",
+      "bytes": 6218
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    }
+  ],
+  "owned": [
+    {
+      "path": "build.zig",
+      "sha256": "7DC0F044871F9DC67E147EBC2A21BF2211AF4AC12BAA142481D761080C3806C8",
+      "bytes": 348180
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "014D6ED8F069677191E8CD58CC797D30DD13B3C286D09C7DB161A369A8936C61",
+      "bytes": 16855
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/AUDIT.md",
+      "sha256": "AA654B65ED3AF2134F7999228A5B75FF57F0C45D6CEE519AE2B02BC7944B45B9",
+      "bytes": 3137
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/PRODUCER-ONLY-PROPOSAL.md",
+      "sha256": "89FA2A6813660F65772F71B396629E233B54830C5D1EC4B98173046CDF191896",
+      "bytes": 4427
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/README.md",
+      "sha256": "6354EA3D94160B2E000FD1C4474AFA6DF5FDD1E58AA908664A1802FE80D19208",
+      "bytes": 6598
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/source-observer.mjs",
+      "sha256": "FDE91A6349584444DE65DCBE0C60D1E996924295D32EC6BB12D2AFD0F6B9C86E",
+      "bytes": 2391
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/authority/agent-session.ts.txt",
+      "sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "bytes": 162151
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/authority/agent.ts.txt",
+      "sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+      "bytes": 19748
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/authority/LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "bytes": 5900
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0",
+      "bytes": 4558
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "0379422826A29E45DB28643A0AF16E4A9A8FF967A39E37DFD3FC531BC7A3A4EE",
+      "bytes": 163149
+    },
+    {
+      "path": "src/extensions/native_agent_executor_fatal.zig",
+      "sha256": "5B133CD26AEDB994DC8BB732530094BCB56D4A123950ABF437E5694A61FA9837",
+      "bytes": 5090
+    },
+    {
+      "path": "src/extensions/native_agent_events_async.zig",
+      "sha256": "98AC35AF7629E236DC1C935F5D165E75D892D4662B28B455ABF19CF78EAF751D",
+      "bytes": 6567
+    },
+    {
+      "path": "src/extensions/native_agent_lifecycle_async.zig",
+      "sha256": "4763AA7AC42DA3A05DC35259759593186A302862816B9005F74C67FAABA135B5",
+      "bytes": 4713
+    },
+    {
+      "path": "src/native_async_rejected_allocation_test.zig",
+      "sha256": "34FD3C57A1E4AD8066A04BF79D37257E532D312D8985B281335FFD3B3598B282",
+      "bytes": 7534
+    },
+    {
+      "path": "src/native_agent_af_correction_test.zig",
+      "sha256": "93F8D1BBE51CBBDA58F5E0B4A5EA1D60C9C8C0A4B68CAD4D5EFFE713614005F8",
+      "bytes": 8560
+    },
+    {
+      "path": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "153C6CF4D661602DC6CFE58EF37FBD029CD8708E00D39FCD3052C70BDDEB5F66",
+      "bytes": 21797
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hook_helpers.zig",
+      "sha256": "2EFF322A20FFF81651B5D521FEF2CDA48470C7A22E666039DC0A5E059DB7585E",
+      "bytes": 17314
+    },
+    {
+      "path": "src/extensions/native_sdk_session_settled.zig",
+      "sha256": "92F6A6E2384B66C463E03FE7565988B1DFA731F96CC158FDCE3ADC04EE85E3F7",
+      "bytes": 13418
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "sha256": "E135917642E56A10170D704FF7A460CE7EA20B222AFDB05CBA73A89BEAFEBBF0",
+      "bytes": 4827
+    },
+    {
+      "path": "src/extensions/fixtures/agent-full-methods-observer.mjs",
+      "sha256": "09AE2FEF3D5512D5A6EC201CD46BF860FFC9E095F5218F39A8DABEFAD38263C1",
+      "bytes": 9282
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "bytes": 533979
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-native.input.txt",
+      "sha256": "9897105D4290888FDF84F04D412CC93764555A9B5CA166BDEBD3EE19140BC60C",
+      "bytes": 5399
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-producer58-ae7.json",
+      "sha256": "CF5274301199C7FA86E670A387D1549ACD4805395C67A4034A88C337537D7650",
+      "bytes": 1334242
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.input.txt",
+      "sha256": "71780AA82F430CC0F762C763BD25CCE289D685D788F902FD0A35A9448AA01F59",
+      "bytes": 15452
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171",
+      "bytes": 12655
+    }
+  ],
+  "native_test_definitions": [
+    "test \"native Await DATA old flags private tags and captured history enter catch unchanged\" {",
+    "test \"native Await DATA fresh private reason created after actual suspension remains data across wrap\" {",
+    "test \"native Await DATA actual Agent lifecycle executes catch handler and finally for flagged rejection\" {",
+    "test \"native Await DATA actual new throw of the same marked object preserves current event\" {",
+    "test \"native Await DATA pending event remains owned while actual captured diagnostic finalizer publishes fatal\" {",
+    "test \"native Await DATA actual prompt continue abort and wait methods preserve fresh rejection identity\" {",
+    "test \"native Await DATA genuine resumed allocator failure remains a host fatal event\" {",
+    "test \"native Await DATA genuine cancellation before resumed job remains host fatal\" {",
+    "test \"native Await DATA escaping flagged completion must reject raw reason without new host event\" {"
+  ],
+  "native_test_count": 9,
+  "original_source_rows_prepared": 20,
+  "observed_expected_result_files": [],
+  "known_unfixed_frontier": "C3 JS_PI_AF_THROW promotes already-flagged DATA via pending-bit check; final normative VM test intentionally exposes current negative",
+  "old_test_negative": "native_async_rejected_allocation_test.zig unchanged; fresh resumed DATA fatal assertion is not corrected semantic authority",
+  "static_checks": [
+    "git diff --check passed; no compiler/AST/parser commands",
+    "exact protected changed-path exclusion checked",
+    "SHA256 and physical byte-length seals only"
+  ]
+}

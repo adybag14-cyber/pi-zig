@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "status": "prepared-source-only-unrun",
+  "base": "b6a8ca562e71a27f6a3f7d1bb7015ee30aef787d",
+  "original_c3_c": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "execution_grant": false,
+  "executed": false,
+  "main_edited": false,
+  "products": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+      "bytes": 2221803
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "87CF9D8D1C6C62F5244636F12F53450BC616A4F8F40F8BE931C4CACF931F406C",
+      "bytes": 16920
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2",
+      "bytes": 8619
+    }
+  ],
+  "owned": [
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/README.md",
+      "sha256": "9DCF6C5050F0001DA335CABF03CF260F8988FF8439842EE6849D200CEFCDDD28",
+      "bytes": 3259
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "5DE3AD087CE2300057A1AD94E10F20E8ABB42C16331DC940E8418B7BE16DA4A4",
+      "bytes": 5561
+    },
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "3FCF2B0C8FBCD28F9D1B409F9DB6B1BF570DA06AF45AD2AEABC82A77734D5421",
+      "bytes": 6218
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    },
+    {
+      "path": "build.zig",
+      "sha256": "7DC0F044871F9DC67E147EBC2A21BF2211AF4AC12BAA142481D761080C3806C8",
+      "bytes": 348180
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5",
+      "bytes": 9123
+    },
+    {
+      "path": "src/native_async_rejected_allocation_test.zig",
+      "sha256": "34FD3C57A1E4AD8066A04BF79D37257E532D312D8985B281335FFD3B3598B282",
+      "bytes": 7534
+    }
+  ],
+  "native_definitions": 11,
+  "original_reference_rows": 20,
+  "original_reference_execution": false,
+  "expected_observed_files": [],
+  "shared_c_scope": "AF-local native resume/call failure ownership only; H unchanged",
+  "b6a8_independent_receipt": "evidence/await-rejection-data-b6a8-independent-source-review-20261017.json",
+  "b6a8_receipt_sha256": "61563468A47DDFF4C6671DA9A35143454BF6360E6B51F5EE75EE8038A7EDDDB1"
+}

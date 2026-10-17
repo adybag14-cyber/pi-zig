@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "finite_native_AF_C3_THROW_pending_ownership_source_closed_unrun",
+  "candidate": "11161f0c00e989db0bdba3d5169f3f5b644fe077",
+  "base": "b6a8ca562e71a27f6a3f7d1bb7015ee30aef787d",
+  "reviewer": "/root/minimatch_native_resume",
+  "prepared_sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284",
+  "c_sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+  "header_unchanged": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+  "original_c3": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "immutable_product_owned_rows": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+      "bytes": 2221803,
+      "immutable_ref": "11161f0c00e989db0bdba3d5169f3f5b644fe077"
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "87CF9D8D1C6C62F5244636F12F53450BC616A4F8F40F8BE931C4CACF931F406C",
+      "bytes": 16920,
+      "immutable_ref": "11161f0c00e989db0bdba3d5169f3f5b644fe077"
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2",
+      "bytes": 8619,
+      "immutable_ref": "11161f0c00e989db0bdba3d5169f3f5b644fe077"
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/README.md",
+      "sha256": "9DCF6C5050F0001DA335CABF03CF260F8988FF8439842EE6849D200CEFCDDD28",
+      "bytes": 3259,
+      "immutable_ref": "11161f0c00e989db0bdba3d5169f3f5b644fe077"
+    }
+  ],
+  "immutable_pin_drift": 0,
+  "current_owner_worktree": "Later owner6d4c advances control-root imports for separate caller work. Review and future narrow intake use immutable1116 blobs, not current physical root.",
+  "review": [
+    "AF-local native resume/call ownership helper only; no generic bytecode AF, module/TLA/query/iterator/CallSite delta",
+    "THROW payload remains owned DATA and calls intrinsic outer reject directly; no payload JS_Throw, flag clear or tag inference",
+    "Actual pending taken before resumed body/action and every input/output/result release; native call pending refuses before frame allocation/body",
+    "Chosen actual reason held outside pending; finite take-clear-before-free drain promotes only ordinary-to-actual-fatal and preserves first fatal",
+    "Invocation inactive and frame/capability fields detached before per-value native state/receiver/argv/function/resolver release",
+    "Ordinary abrupt Await setup reenters rejected continuation with DATA; fatal retires without invented ordinary settlement",
+    "Return adoption, Await PromiseResolve and perform_promise_then remain intrinsic; callback exception-without-pending becomes explicit InternalError",
+    "Failed unpublished Promise/free(s) tail uses same owned reason drain; standard valid live same-runtime C API context/value lifetime remains required",
+    "Two actual VM controls use real Error markers, valid throwing getter, sole-owned I to A / R to fatalB / displaced A to C / state to D, firstfatal modes and armed GPA/pending prebody"
+  ],
+  "mandatory_companions": [
+    "Four reviewed b6a8 Zig DATA-boundary deltas, applied semantically over current files",
+    "Nine b6a8 genuine VM declarations plus two1116 additions; actual metadata unknown"
+  ],
+  "b6a8_peer_receipt_sha256": "61563468A47DDFF4C6671DA9A35143454BF6360E6B51F5EE75EE8038A7EDDDB1",
+  "boundaries": [
+    "Finite trusted native finalizers and valid C callback convention; cannot undo guest work inside invalid native callbacks",
+    "No global producer/PromiseResolve/bytecode AF or every Zig caller policy closure",
+    "No compilation/native/Source capture or Agent/SDK/runtime qualification"
+  ],
+  "actual_declared_native_controls": 11,
+  "metadata_count": null,
+  "execution_authorized": false,
+  "jobs": [],
+  "Main_edits": false,
+  "expected_authored": false
+}

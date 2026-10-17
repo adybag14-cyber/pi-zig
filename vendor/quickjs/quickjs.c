@@ -9706,6 +9706,13 @@ JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop)
     return JS_GetPropertyInternal(ctx, this_obj, prop, this_obj, false);
 }
 
+/* Borrowed base/receiver/atom; owned Get completion, including Proxy traps. */
+JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
+                               JSAtom prop, JSValueConst receiver)
+{
+    return JS_GetPropertyInternal(ctx, base, prop, receiver, false);
+}
+
 static JSValue JS_ThrowTypeErrorPrivateNotFound(JSContext *ctx, JSAtom atom)
 {
     return JS_ThrowTypeErrorAtom(ctx, "private class field '%s' does not exist",
@@ -22200,101 +22207,160 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     return output;
 }
 
+/* Only actual pending exceptions enter this owner. A body action payload,
+   fulfilled/rejected input or retained diagnostic is DATA even if marked. */
+typedef struct JSNativeAsyncPending {
+    bool present;
+    JSValue reason;
+} JSNativeAsyncPending;
+
+static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned)
+{
+    while (JS_HasException(ctx)) {
+        JSValue next = JS_GetException(ctx);
+        if (!owned->present) {
+            owned->present = true;
+            owned->reason = next;
+        } else if (!JS_IsUncatchableError(owned->reason) && JS_IsUncatchableError(next)) {
+            JSValue displaced = owned->reason;
+            owned->reason = next;
+            JS_FreeValue(ctx, displaced);
+        } else {
+            JS_FreeValue(ctx, next);
+        }
+    }
+}
+
+static void js_native_async_release(JSContext *ctx, JSValue value,
+                                    JSNativeAsyncPending *owned)
+{
+    js_native_async_take_pending(ctx, owned);
+    JS_FreeValue(ctx, value);
+    js_native_async_take_pending(ctx, owned);
+}
+
+static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
+                                   JSNativeAsyncPending *owned)
+{
+    JSValue state, receiver, function, resolves[2], *args;
+    int count, i;
+    js_native_async_take_pending(ctx, owned);
+    s->module = NULL;
+    if (!s->is_active)
+        return;
+    /* Detach before a native finalizer can reenter a queued reaction. */
+    s->is_active = false;
+    state = s->native_state; receiver = s->native_this;
+    function = s->native_function; args = s->native_argv;
+    count = s->native_argc;
+    resolves[0] = s->resolving_funcs[0]; resolves[1] = s->resolving_funcs[1];
+    s->native_state = s->native_this = s->native_function = JS_UNDEFINED;
+    s->native_argv = NULL; s->native_argc = 0;
+    s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
+    js_native_async_release(ctx, state, owned);
+    js_native_async_release(ctx, receiver, owned);
+    for (i = 0; i < count; i++)
+        js_native_async_release(ctx, args[i], owned);
+    js_free(ctx, args);
+    js_native_async_release(ctx, function, owned);
+    for (i = 0; i < 2; i++)
+        js_native_async_release(ctx, resolves[i], owned);
+}
+
 static bool js_native_async_function_resume(JSAsyncFunctionData *s,
     int completion, JSValueConst input)
 {
     JSContext *ctx = s->native_ctx;
-    JSValue output, result, promise, resolving_funcs[2], ignored_funcs[2];
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    JSValue output = JS_UNDEFINED, result, promise, resolving_funcs[2], ignored_funcs[2];
     JSValue resumed_input = JS_UNDEFINED;
-    int action = -1, i, status;
+    int action = -1, i, status, resolve_index;
 
  resume_body:
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present)
+        goto rejected_event;
     action = -1;
     output = js_native_async_function_step(s, completion, input, &action);
-    JS_FreeValue(ctx, resumed_input);
+    js_native_async_release(ctx, resumed_input, &owned);
     resumed_input = JS_UNDEFINED;
-    if (JS_IsException(output))
-        goto rejected;
+    if (JS_IsException(output) && !owned.present) {
+        JS_ThrowInternalError(ctx, "Native async callback returned exception without pending reason");
+        js_native_async_take_pending(ctx, &owned);
+    }
+    if (owned.present) {
+        js_native_async_release(ctx, output, &owned);
+        output = JS_UNDEFINED;
+        goto rejected_event;
+    }
     if (action == JS_PI_AF_THROW) {
-        JS_Throw(ctx, output);
-        goto rejected;
+        /* Ordinary Source throw-completion, including old flagged DATA.
+           Do not install it as an actual producer event or clear its flag. */
+        resolve_index = 1;
+        goto settle;
     }
     if (action == JS_PI_AF_RETURN) {
-        /* Genuine AsyncFunction return: the outer capability adopts output.
-           Returning a Promise never returns that Promise's identity. */
-        result = JS_Call(ctx, s->resolving_funcs[0], JS_UNDEFINED, 1, vc(&output));
-        if (JS_HasException(ctx) &&
-            JS_IsUncatchableError(ctx->rt->current_exception)) {
-            /* The intrinsic callback can return undefined despite a pending
-               fatal hook/enqueue reason. Retain it before any owned cleanup. */
-            JSValue error = JS_GetException(ctx);
-            JS_FreeValue(ctx, output);
-            JS_FreeValue(ctx, result);
-            js_async_function_terminate(ctx->rt, s);
-            JS_Throw(ctx, error);
-            return false;
-        }
-        JS_FreeValue(ctx, output);
-        if (JS_IsException(result))
-            goto rejected;
-        JS_FreeValue(ctx, result);
-        js_async_function_terminate(ctx->rt, s);
-        return true;
+        resolve_index = 0; /* genuine return-expression adoption */
+        goto settle;
     }
     if (action != JS_PI_AF_AWAIT) {
-        JS_FreeValue(ctx, output);
         JS_ThrowInternalError(ctx, "Invalid native async function action");
-        goto rejected;
+        js_native_async_release(ctx, output, &owned);
+        output = JS_UNDEFINED;
+        goto rejected_event;
     }
-    /* Use the same intrinsic PromiseResolve and perform_promise_then as the
-       existing bytecode Await path. No guest .then call or extra capability. */
+    /* Same intrinsic PromiseResolve/Await path, no guest .then or extra job. */
     promise = js_promise_resolve(ctx, ctx->promise_ctor, 1, vc(&output), 0);
-    JS_FreeValue(ctx, output);
-    if (JS_IsException(promise))
+    js_native_async_release(ctx, output, &owned);
+    output = JS_UNDEFINED;
+    if (JS_IsException(promise) || owned.present) {
+        js_native_async_release(ctx, promise, &owned);
         goto await_rejected;
+    }
     if (js_async_function_resolve_create(ctx, s, resolving_funcs)) {
-        JS_FreeValue(ctx, promise);
+        js_native_async_release(ctx, promise, &owned);
         goto await_rejected;
     }
     ignored_funcs[0] = ignored_funcs[1] = JS_UNDEFINED;
     status = perform_promise_then(ctx, promise, vc(resolving_funcs), vc(ignored_funcs));
-    JS_FreeValue(ctx, promise);
+    js_native_async_release(ctx, promise, &owned);
     for (i = 0; i < 2; i++)
-        JS_FreeValue(ctx, resolving_funcs[i]);
-    /* The shared settled-Promise helper currently leaves enqueue OOM in the
-       exception slot while returning zero. Do not lose this suspension. */
-    if (!status && !JS_HasException(ctx))
+        js_native_async_release(ctx, resolving_funcs[i], &owned);
+    if (!status && !owned.present)
         return true;
  await_rejected:
-    /* An abrupt PromiseResolve (e.g. a poisoned constructor) is thrown at
-       the actual await expression, where native catch/finally can handle it. */
-    if (!JS_IsUncatchableError(ctx->rt->current_exception)) {
-        resumed_input = JS_GetException(ctx);
+    if (!owned.present) {
+        JS_ThrowInternalError(ctx, "Native Await failed without pending reason");
+        js_native_async_take_pending(ctx, &owned);
+    }
+    if (!JS_IsUncatchableError(owned.reason)) {
+        resumed_input = owned.reason;
+        owned.present = false; owned.reason = JS_UNDEFINED;
         input = resumed_input;
         completion = JS_PI_AF_AWAIT_REJECTED;
         goto resume_body;
     }
- rejected:
-    if (JS_IsUncatchableError(ctx->rt->current_exception)) {
-        js_async_function_terminate(ctx->rt, s);
+ rejected_event:
+    if (JS_IsUncatchableError(owned.reason)) {
+        js_native_async_release(ctx, resumed_input, &owned);
+        js_native_async_retire(ctx, s, &owned);
+        JS_Throw(ctx, owned.reason); /* pending is empty; consumes owner */
         return false;
     }
-    output = JS_GetException(ctx);
-    result = JS_Call(ctx, s->resolving_funcs[1], JS_UNDEFINED, 1, vc(&output));
-    if (JS_HasException(ctx) &&
-        JS_IsUncatchableError(ctx->rt->current_exception)) {
-        JSValue error = JS_GetException(ctx);
-        JS_FreeValue(ctx, output);
-        JS_FreeValue(ctx, result);
-        js_async_function_terminate(ctx->rt, s);
-        JS_Throw(ctx, error);
+    output = owned.reason;
+    owned.present = false; owned.reason = JS_UNDEFINED;
+    resolve_index = 1;
+ settle:
+    result = JS_Call(ctx, s->resolving_funcs[resolve_index], JS_UNDEFINED, 1, vc(&output));
+    if (JS_IsException(result) && !JS_HasException(ctx))
+        JS_ThrowInternalError(ctx, "Native capability returned exception without pending reason");
+    js_native_async_release(ctx, output, &owned);
+    js_native_async_release(ctx, result, &owned);
+    js_native_async_retire(ctx, s, &owned);
+    if (owned.present) {
+        JS_Throw(ctx, owned.reason);
         return false;
     }
-    JS_FreeValue(ctx, output);
-    js_async_function_terminate(ctx->rt, s);
-    if (JS_IsException(result))
-        return false;
-    JS_FreeValue(ctx, result);
     return true;
 }
 
@@ -22530,10 +22596,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode;
     JSContext *ctx = b->realm;
     JSAsyncFunctionData *s;
-    JSValue promise, error;
-    bool fatal;
+    JSValue promise;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
     int i;
     (void)caller;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
         return JS_ThrowInternalError(ctx, "Invalid native async argument count");
     s = js_mallocz(ctx, sizeof(*s));
@@ -22566,13 +22634,12 @@ static JSValue js_native_async_function_call(JSContext *caller,
  failed:
     /* A newly failed resolving call may have settled promise with an owned
        return/rejection value. Preserve its fatal reason over that teardown. */
-    fatal = JS_HasException(ctx) &&
-                 JS_IsUncatchableError(ctx->rt->current_exception);
-    error = fatal ? JS_GetException(ctx) : JS_UNDEFINED;
-    JS_FreeValue(ctx, promise);
+    js_native_async_release(ctx, promise, &owned);
+    js_native_async_retire(ctx, s, &owned);
     js_async_function_free(ctx->rt, s);
-    if (fatal)
-        JS_Throw(ctx, error);
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present)
+        JS_Throw(ctx, owned.reason);
     return JS_EXCEPTION;
 }
 

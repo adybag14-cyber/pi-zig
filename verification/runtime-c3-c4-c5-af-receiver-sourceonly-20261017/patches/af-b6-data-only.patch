@@ -1,0 +1,124 @@
+diff --git a/src/extensions/native_agent_af_values.zig b/src/extensions/native_agent_af_values.zig
+index b4459026..8e76c651 100644
+--- a/src/extensions/native_agent_af_values.zig
++++ b/src/extensions/native_agent_af_values.zig
+@@ -51,14 +51,10 @@ pub fn init(s: *Scope, slot: *c.JSValue) !c.JSValue {
+ pub fn stage(s: *Scope, owner: c.JSValue) !i32 { var result: i32 = 0; if (c.JS_ToInt32(s.engine.context, &result, try s.get(owner, "stage")) < 0) return @import("native_js_values.zig").capture(s.engine); return result; }
+ pub fn wait(s: *Scope, owner: c.JSValue, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue, next: i32) !af.Action {
+     try s.put(owner, "stage", c.JS_NewInt32(s.engine.context, next));
+-    const generation = s.engine.native_allocation_generation;
+-    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation))));
+     return .{ .awaited = c.JS_DupValue(s.engine.context, try call(s, function, receiver, args)) };
+ }
+-pub fn rejected(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
+-    var generation: u64 = 0;
+-    if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(owner, "awaitGeneration")) < 0) return @import("native_js_values.zig").capture(s.engine);
+-    try body.rethrowRecognizedAllocation(s.engine, reason, generation);
++pub fn rejected(s: *Scope, _: c.JSValue, _: c.JSValue) !void {
++    try body.enterRejectedContinuation(s.engine);
+ }
+ pub fn caught(engine: *em.Engine, err: anyerror) !c.JSValue {
+     const current = pendingFirst(engine, err);
+diff --git a/src/extensions/native_agent_prompt_async.zig b/src/extensions/native_agent_prompt_async.zig
+index 37366cf8..445cd1f0 100644
+--- a/src/extensions/native_agent_prompt_async.zig
++++ b/src/extensions/native_agent_prompt_async.zig
+@@ -30,10 +30,7 @@ fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args:
+     if (completion == .fulfilled) return .{ .returned = c.pi_js_undefined() };
+     var s: Scope = .{ .engine = engine }; defer s.deinit();
+     if (completion == .rejected) {
+-        var generation: u64 = 0;
+-        if (c.JS_ToBigUint64(engine.context, &generation, try s.get(state.*, "awaitGeneration")) < 0) return v.js.capture(engine);
+-        // Rejected data's uncatchable bit alone is not a trusted boundary.
+-        try body.rethrowRecognizedAllocation(engine, input, generation);
++        try body.enterRejectedContinuation(engine);
+         return .{ .thrown = c.JS_DupValue(engine.context, input) };
+     }
+     const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+@@ -76,11 +73,10 @@ fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args:
+     const handler = try s.get(receiver, "runContinuation");
+     return awaitCall(&s, owner, handler, receiver, &.{});
+ }
+-fn awaitCall(s: *Scope, owner: c.JSValue, handler: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !af.Action {
++fn awaitCall(s: *Scope, _: c.JSValue, handler: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !af.Action {
+     // Callee lookup and argument preparation have finished. This generation
+     // belongs only to the selected call/Await, not earlier user getter work.
+     const generation = s.engine.native_allocation_generation;
+-    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation))));
+     const value = s.call(handler, receiver, args) catch |err| {
+         if (err == error.JavaScriptException) if (s.engine.captured_exception) |reason| {
+             try body.rethrowRecognizedAllocation(s.engine, reason, generation);
+diff --git a/src/extensions/native_async_body.zig b/src/extensions/native_async_body.zig
+index ad79be42..6a57bd6c 100644
+--- a/src/extensions/native_async_body.zig
++++ b/src/extensions/native_async_body.zig
+@@ -56,8 +56,10 @@ pub fn failureSince(engine: *v.em.Engine, err: anyerror, generation: u64) anyerr
+     return failure(engine, engine.nativeAllocationError(err, generation));
+ }
+ 
+-/// A rejected value is trusted only when its private allocation tag was born
+-/// inside the caller's explicit host boundary. Preserve Engine's unsigned wrap
++/// A captured failed operation is trusted only when its private allocation tag
++/// was born inside that operation's explicit host boundary. Settled Promise
++/// rejection DATA is not a failed producer event, even with a fresh private tag.
++/// Preserve Engine's unsigned wrap
+ /// rule and rethrow that exact value; never allocate a replacement error.
+ /// Historical or guest lookalike reasons return normally to Source's catch.
+ pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boundary_generation: u64) !void {
+@@ -70,3 +72,33 @@ pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boun
+     _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
+     unreachable;
+ }
++
++/// C3 delivers Await rejection input as borrowed DATA. Actual pending events
++/// take precedence; a retained diagnostic/captured value is not a new event.
++/// Never inspect, mark or clear flags/private tags on the rejection input.
++pub fn enterRejectedContinuation(engine: *v.em.Engine) !void {
++    if (!c.JS_HasException(engine.context)) return;
++    // Own the actual event outside both mutable slots while retiring the old
++    // diagnostic. Finite native finalizers may publish another pending event;
++    // ordinary cleanup cannot replace the first actual fatal. A diagnostic
++    // value released here is DATA, regardless of its own bit/private tag.
++    var chosen = c.JS_GetException(engine.context);
++    while (c.JS_HasException(engine.context) or engine.captured_exception != null) {
++        if (c.JS_HasException(engine.context)) {
++            const pending = c.JS_GetException(engine.context);
++            if (!c.JS_IsUncatchableError(chosen) and c.JS_IsUncatchableError(pending)) {
++                const displaced = chosen;
++                chosen = pending;
++                engine.freeValue(displaced);
++            } else engine.freeValue(pending);
++        } else {
++            const diagnostic = engine.captured_exception.?;
++            engine.captured_exception = null;
++            engine.freeValue(diagnostic);
++        }
++    }
++    // Consumes the owned reason. No diagnostic conversion or VM operation can
++    // replace it between this transfer and the adapter's JS_EXCEPTION exit.
++    engine.captured_exception = chosen;
++    return error.JavaScriptException;
++}
+diff --git a/src/extensions/native_sdk_session_control.zig b/src/extensions/native_sdk_session_control.zig
+index 8bdac77b..2a03c79e 100644
+--- a/src/extensions/native_sdk_session_control.zig
++++ b/src/extensions/native_sdk_session_control.zig
+@@ -183,16 +183,12 @@ fn asyncBody(engine: *em.Engine, session: c.JSValue, method: Method, state: *c.J
+     defer scope.deinit();
+     if (completion != .start) {
+         if (completion == .rejected) {
+-            var generation: u64 = 0;
+-            if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
+-            try async_body.rethrowRecognizedAllocation(engine, input, generation);
++            try async_body.enterRejectedContinuation(engine);
+             return .{ .thrown = c.JS_DupValue(engine.context, input) };
+         }
+         return .{ .returned = c.pi_js_undefined() };
+     }
+-    const generation = engine.native_allocation_generation;
+-    const owner = try async_body.init(&scope, state);
+-    try scope.put(owner, "nativeGeneration", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
++    _ = try async_body.init(&scope, state);
+     if (method == .abort) {
+         if (scope.truthy(try scope.get(session, "_isAgentRunActive"))) try scope.set(session, "_agentRunAbortRequested", c.pi_js_bool(engine.context, 1));
+         inline for (.{ "abortRetry", "abortCompaction", "abortBranchSummary" }) |name| _ = try scope.invoke(session, name, &.{});

@@ -1,0 +1,63 @@
+{
+  "schema": "pi-zig-independent-finite-source-review-v1",
+  "reviewer": "/root/async_c_review_resume",
+  "reviewed_utc": "2026-10-17T18:16:07.4628506+00:00",
+  "status": "finite_four_file_DATA_correction_source_closed_with_separate_C3_prerequisites",
+  "candidate": "b6a8ca562e71a27f6a3f7d1bb7015ee30aef787d",
+  "prepared_sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5",
+  "products": [
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "5DE3AD087CE2300057A1AD94E10F20E8ABB42C16331DC940E8418B7BE16DA4A4",
+      "bytes": 5561
+    },
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "3FCF2B0C8FBCD28F9D1B409F9DB6B1BF570DA06AF45AD2AEABC82A77734D5421",
+      "bytes": 6218
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    }
+  ],
+  "physical_product_owned_pin_count": 13,
+  "physical_product_owned_pin_mismatches": 0,
+  "immutable_protected_paths": 22,
+  "protected_paths_changed": 0,
+  "review": {
+    "Await_input_borrowed_DATA": "No private tag/generation/flag inference or mutation in rejected continuation entry",
+    "actual_pending": "Chosen owned reason moved outside VM and captured slots before cleanup; first actual fatal over ordinary, first fatal retained over later fatal",
+    "no_current_pending": "Retained captured diagnostic is not inspected or promoted",
+    "ownership": "Input duplicated into action only; actual pending reason consumed into captured slot; displaced/pending/diagnostic roots released with pending slot empty",
+    "producer_scope": "Synchronous failed-operation guards remain; no blanket producer-policy closure",
+    "Source": "Actual prompt/continue/abort/waitForIdle and lifecycle catch/finally semantics, inert Pi8efd authority",
+    "controls": "Nine actual VM definitions, actual resumed GPA denial/cancellation, wrap/GC/raw identity and sole diagnostic finalizer; no fake successful callback body"
+  },
+  "prepared_native_declarations": 9,
+  "actual_metadata": null,
+  "prepared_original_rows": 20,
+  "source_capture": null,
+  "known_C3_prerequisites": [
+    "Ordinary Action.THROW flagged DATA must reject capability directly rather than JS_Throw/flag promotion",
+    "Actual pending event must be owned before native_body callback; lifecycle reads private stage before Zig rejected helper, so helper alone is not a complete callback-entry guard"
+  ],
+  "known_negative_preserved": "Ninth regression intentionally exposes current C3 flagged ordinary THROW defect; old contradictory test remains historical negative source",
+  "excluded": [
+    "Uncommitted C3 successor/current dirty C",
+    "Other caller migrations listed in AUDIT.md",
+    "Whole callback/producer or SDK/runtime qualification"
+  ],
+  "C_H_Engine_AF_changes_in_b6": false,
+  "expected_observed_files_created": false,
+  "jobs": [],
+  "execution_grant": false,
+  "native_qualified": false,
+  "Main_edits": false
+}

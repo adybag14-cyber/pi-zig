@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "pending independent Async Source review",
+  "base": "7cfcf0513efa89390910bfb1e60a9b3c34cb053a",
+  "prospective_tree": "2175b0322b40132bf4e230775e3d9ba81d12fede",
+  "records": [
+    {
+      "path": "PROPOSAL.md",
+      "size": 3455,
+      "sha256": "0FF22FCE1C3AC3829E7CDF69E09AB4DA1056BCE1A861DAB50CAEBAB2A6332F6C"
+    },
+    {
+      "path": "proposal-manifest.json",
+      "size": 1674,
+      "sha256": "798B7254F54867D9BFAC669CF12CA07398E8A8E20BE8A7879390D3446ADF6875"
+    },
+    {
+      "path": "receiver-get-on-7c.patch",
+      "size": 1541,
+      "sha256": "9D6E9BA7BD96EF4E3F7360461310745586795BD55897000F3F9C50183CEDC47E"
+    },
+    {
+      "path": "original-receiver-get-controls.zig",
+      "size": 5405,
+      "sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7"
+    }
+  ],
+  "raw_control_test_count": 4,
+  "active_edits": false,
+  "jobs_run": [],
+  "runtime_qualified": false,
+  "default_selection": false
+}

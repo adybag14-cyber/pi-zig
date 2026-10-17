@@ -3358,6 +3358,23 @@ pub fn build(b: *std.Build) void {
         b.step(b.fmt("build-native-vm-c3-retained-{s}", .{group.name}), "Install one unchanged C3 regression selection without execution").dependOn(&install.step);
         vm_retained.dependOn(&install.step);
     }
+    // Additional DATA/receiver controls remain separate from the unchanged62.
+    const vm_af_receiver = b.step("build-native-vm-af-receiver-controls", "Install actual AF DATA and receiver Get controls without execution");
+    inline for (.{
+        .{ "af-throw", "src/native_await_rejection_data_test.zig", &[_][]const u8{"native Await DATA"} },
+        .{ "receiver-get", "src/native_receiver_get_test.zig", &[_][]const u8{"receiver Get"} },
+        .{ "af-receiver-combined", "src/native_af_receiver_composition_test.zig", &[_][]const u8{ "native Await DATA", "receiver Get", "VM AF receiver composition" } },
+    }) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry[1]), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = entry[2] });
+        const installed_name = b.fmt("vm-{s}{s}", .{ entry[0], if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-{s}", .{entry[0]}), "Install one actual additional VM selection without execution").dependOn(&install.step);
+        vm_af_receiver.dependOn(&install.step);
+    }
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
