@@ -1,0 +1,95 @@
+{
+  "negative_baseline": "72a49250e190cf9f79402250134c02556fa6847e",
+  "parent": "9b51e6aaa10758cb7f6b078dd7a9c87d419fe6dc",
+  "status": "source-corrections-inertC-uncompiled-unrun-review-pending",
+  "native_test_definitions": 6,
+  "Source_rows": 13,
+  "old_packet_preserved": true,
+  "C_H_Engine_build_changed": false,
+  "C_patch_applied": false,
+  "apply_check_only": true,
+  "generator_producer_exit_fixed": false,
+  "pins": [
+    {
+      "path": "src/extensions/native_promise_executor_fatal.zig",
+      "sha256": "AF1F8D8A5E2F3A402B27BB7A94F7749C427E4BB50E7D1CC3E935C06D954B71EE",
+      "bytes": 5853
+    },
+    {
+      "path": "src/native_event_stream_function_test.zig",
+      "sha256": "02E10F157303930DEC2EC8A655E5362E9F681C33D73F42B5809CEF58CC1A411D",
+      "bytes": 11500
+    },
+    {
+      "path": "src/extensions/native_async_generator_function.zig",
+      "sha256": "8C65BC03C15E2A5E2970066A51F298F6AA9A4A52CF6F1435B80181ECADCE1301",
+      "bytes": 4362
+    },
+    {
+      "path": "src/extensions/native_event_stream_core.zig",
+      "sha256": "508970F63BAD10F1C90A74F32E14BD7C84FBE1EF2E15E785A0A533A5AB995941",
+      "bytes": 13360
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "0CEA9590A5EA47288D8C435B33C34AF842F5FF271DBE852798045568BB36D9DC",
+      "bytes": 2553
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "build.zig",
+      "sha256": "C6C76F27E80BE573BC37330C0FC04C1770578876F18C8DFDEBB61DBD90523D6A",
+      "bytes": 342918
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/prepared.json",
+      "sha256": "7342079D1098A7486B9A18CF09917BEE02AF499551724808B2FB19B2CD019474",
+      "bytes": 5552
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/proposed-c-api.patch",
+      "sha256": "A30A79711F2420FC607E18FC815CC115ECB26D1D71857A443A535EBDF2A3CD59",
+      "bytes": 10902
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/observer.mjs",
+      "sha256": "9D77950368A5CAAFD1C9B87CB25490D503590655BBE341CB792A7A6D4769128C",
+      "bytes": 4824
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/reference-input.mjs",
+      "sha256": "42451C0390940970150619CD817ADED8825EB2DDAF1E8F8A67BF3DA603926F9C",
+      "bytes": 258
+    },
+    {
+      "path": "verification/event-stream-generator-function-corrections-sourceonly-20261017/proposed-c-api.patch",
+      "sha256": "D8864FE030B1AEE33C6E22505A84FC2537436B9DD81AE56FCA92BB878C27E474",
+      "bytes": 11906
+    },
+    {
+      "path": "verification/event-stream-generator-function-corrections-sourceonly-20261017/README.md",
+      "sha256": "19C5699275D5E85A30EFFDCA3FF71C03A96E3A7569228C25DF9DF8DFEA554F36",
+      "bytes": 2570
+    }
+  ],
+  "virtual_candidate": "C:\\Users\\adyba\\pi-zig\\evidence\\event-stream-generator-function-checked-virtual-c3-20261017"
+}

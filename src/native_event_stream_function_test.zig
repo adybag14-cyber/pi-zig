@@ -48,6 +48,24 @@ test "native EventStream Promise holder first callback fatal survives real subcl
     }
 }
 fn noop(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return c.pi_js_undefined(); }
+var late_fault: bool = false;
+fn delayedFault(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    if (!late_fault) return c.pi_js_undefined();
+    return nativeFault(engine, receiver, args, roots);
+}
+test "native EventStream holder does not retain later calls of an escaped executor" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const holder = try s.own(try fatal.create(engine)); late_fault = false;
+    const executor = try s.own(try functions.createArrow(engine, "", 1, delayedFault, &.{holder}));
+    const constructor = try s.global("Promise");
+    _ = try s.own(try fatal.constructOwned(engine, constructor, &.{executor}, holder));
+    late_fault = true;
+    try std.testing.expectError(error.JavaScriptException, engine.checked(c.JS_Call(engine.context, executor, c.pi_js_undefined(), 0, null)));
+    const good = try s.own(try functions.createArrow(engine, "", 1, noop, &.{}));
+    // A stale retained event would spuriously fail this independent call.
+    _ = try s.own(try fatal.constructOwned(engine, constructor, &.{good}, holder));
+}
 test "native EventStream Promise holder historical private and marked lookalike data are not new events" {
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
     var s: Scope = .{ .engine = engine }; defer s.deinit();
@@ -58,9 +76,45 @@ test "native EventStream Promise holder historical private and marked lookalike 
     for ([_]c.JSValue{ historical, lookalike }) |reason| {
         if (engine.captured_exception) |old| engine.freeValue(old); engine.captured_exception = c.JS_DupValue(engine.context, reason);
         const owner = try s.own(try fatal.create(engine));
-        try std.testing.expectEqual(error.JavaScriptException, fatal.recordFailure(engine, owner, error.JavaScriptException, engine.native_allocation_generation));
+        try std.testing.expect(fatal.recordFailure(engine, owner, error.JavaScriptException, engine.native_allocation_generation) == error.JavaScriptException);
         const executor = try s.own(try functions.createArrow(engine, "", 1, noop, &.{}));
         _ = try s.own(try fatal.constructOwned(engine, try s.global("Promise"), &.{executor}, owner));
+    }
+}
+var cleanup_context: ?*c.JSContext = null;
+var cleanup_class: c.JSClassID = 0;
+var pending_reason: c.JSValue = undefined;
+var cleanup_fatal: c.JSValue = undefined;
+var cleanup_count: usize = 0;
+fn resultFinalizer(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
+    cleanup_count += 1;
+    _ = c.JS_Throw(cleanup_context, c.JS_DupValue(cleanup_context, cleanup_fatal));
+}
+fn pendingConstructor(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const result = c.JS_NewObjectClass(context, cleanup_class);
+    if (c.JS_IsException(result)) return result;
+    _ = c.JS_Throw(context, c.JS_DupValue(context, pending_reason));
+    return result; // Deliberate native C-contract violation, not forgeable JS.
+}
+test "native EventStream holder actual native result finalizer promotes first pending fatal" {
+    for (.{ false, true }) |initial_fatal| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        cleanup_context = engine.context; cleanup_count = 0; cleanup_class = 0;
+        _ = c.JS_NewClassID(engine.runtime, &cleanup_class);
+        const definition: c.JSClassDef = .{ .class_name = "Native result cleanup causal control", .finalizer = resultFinalizer };
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_NewClass(engine.runtime, cleanup_class, &definition));
+        pending_reason = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        if (initial_fatal) c.JS_SetUncatchableError(engine.context, pending_reason);
+        cleanup_fatal = try s.own(try engine.checked(c.JS_NewError(engine.context))); c.JS_SetUncatchableError(engine.context, cleanup_fatal);
+        const constructor = try s.own(try engine.checked(c.JS_NewCFunction2(engine.context, pendingConstructor, "PendingNativeConstructor", 0, c.JS_CFUNC_constructor, 0)));
+        const holder = try s.own(try fatal.create(engine));
+        try std.testing.expectError(error.JavaScriptException, fatal.constructOwned(engine, constructor, &.{}, holder));
+        const actual = engine.captured_exception orelse return error.MissingNativeCleanupFatal;
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, if (initial_fatal) pending_reason else cleanup_fatal));
+        try std.testing.expect(c.JS_IsUncatchableError(actual));
+        try std.testing.expectEqual(@as(usize, 1), cleanup_count);
+        try std.testing.expect(!c.JS_HasException(engine.context));
     }
 }
 pub fn compareActualSource(engine: *em.Engine, actual_constructor: c.JSValue, bytes: []const u8) !void {

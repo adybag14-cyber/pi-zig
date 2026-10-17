@@ -4,7 +4,7 @@
 const em = @import("engine.zig");
 const c = em.c;
 const body = @import("native_async_body.zig");
-const Holder = struct { engine: *em.Engine, first: ?c.JSValue = null };
+const Holder = struct { engine: *em.Engine, first: ?c.JSValue = null, active: bool = false };
 fn data(owner: c.JSValue) *Holder { return @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?)); }
 fn finalizer(runtime: ?*c.JSRuntime, owner: c.JSValue) callconv(.c) void {
     const holder: *Holder = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return));
@@ -40,19 +40,31 @@ pub fn recordFailure(engine: *em.Engine, owner: c.JSValue, err: anyerror, genera
         const tagged = c.pi_js_native_allocation_error_generation(reason); const distance = tagged -% generation;
         const fresh = tagged != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation;
         if (c.JS_IsUncatchableError(reason) and (err == error.OutOfMemory or fresh)) {
-            const holder = data(owner); if (holder.first == null) holder.first = c.JS_DupValue(engine.context, reason);
+            const holder = data(owner); if (holder.active and holder.first == null) holder.first = c.JS_DupValue(engine.context, reason);
         }
     };
     return failure_error;
 }
 fn drain(engine: *em.Engine) void { while (c.JS_HasException(engine.context)) { const reason = c.JS_GetException(engine.context); engine.freeValue(reason); } }
+fn promotePending(engine: *em.Engine, selected: *c.JSValue, selected_fatal: *bool) void {
+    while (c.JS_HasException(engine.context)) {
+        const cleanup = c.JS_GetException(engine.context);
+        var displaced = cleanup;
+        if (!selected_fatal.* and c.JS_IsUncatchableError(cleanup)) {
+            displaced = selected.*; selected.* = cleanup; selected_fatal.* = true;
+        }
+        engine.freeValue(displaced);
+    }
+}
 /// Borrowed arguments and holder; owned return. The first callback fatal stays
 /// outside mutable exception slots while releasing all displaced ownership.
 pub fn constructOwned(engine: *em.Engine, constructor: c.JSValue, args: []const c.JSValue, owner: c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
+    data(owner).active = true;
     const result = c.JS_CallConstructor(engine.context, constructor, @intCast(args.len), @constCast(args.ptr));
+    data(owner).active = false; // Later retained-executor calls cannot pin a new event.
     if (data(owner).first) |first| {
         const reason = c.JS_DupValue(engine.context, first);
         const pending: ?c.JSValue = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else null;
@@ -63,7 +75,10 @@ pub fn constructOwned(engine: *em.Engine, constructor: c.JSValue, args: []const 
         c.JS_SetUncatchableError(engine.context, reason); return engine.checked(c.JS_Throw(engine.context, reason));
     }
     if (c.JS_HasException(engine.context) and !c.JS_IsException(result)) {
-        const reason = c.JS_GetException(engine.context); engine.freeValue(result); drain(engine);
+        var reason = c.JS_GetException(engine.context); var selected_fatal = c.JS_IsUncatchableError(reason);
+        const captured = engine.captured_exception; engine.captured_exception = null;
+        engine.freeValue(result); promotePending(engine, &reason, &selected_fatal);
+        if (captured) |old| { engine.freeValue(old); promotePending(engine, &reason, &selected_fatal); }
         return engine.checked(c.JS_Throw(engine.context, reason));
     }
     return engine.checked(result) catch |err| return failureSince(engine, err, generation);
