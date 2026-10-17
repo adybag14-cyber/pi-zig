@@ -25,8 +25,8 @@ static int js_pi_link_key_compare(JSContext *ctx, JSValueConst a,
         uint32_t x, y;
         if (js_pi_link_poll(ctx))
             return -1;
-        x = left->is_wide_char ? left->u.str16[i] : left->u.str8[i];
-        y = right->is_wide_char ? right->u.str16[i] : right->u.str8[i];
+        x = left->is_wide_char ? str16(left)[i] : str8(left)[i];
+        y = right->is_wide_char ? str16(right)[i] : str8(right)[i];
         if (x != y) {
             *comparison = x < y ? -1 : 1;
             return 0;
