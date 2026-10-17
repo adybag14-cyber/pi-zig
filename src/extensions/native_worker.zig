@@ -1676,6 +1676,7 @@ pub fn runSdkFileWithEnvironment(gpa: std.mem.Allocator, io: std.Io, script_path
     try console.install(engine, io);
     try text_encoding.install(engine);
     try text_decoder.install(engine);
+    try @import("native_web_fetch.zig").install(engine);
     try @import("native_process.zig").install(engine, io, environment, arguments);
     engine.native_console_stdout = true;
     var stdio: @import("native_stdio_frontend.zig").Frontend = undefined;
@@ -1786,6 +1787,7 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     try console.install(engine, io);
     try text_encoding.install(engine);
     try text_decoder.install(engine);
+    try @import("native_web_fetch.zig").install(engine);
     const bootstrap = if (startup_context) |value| try encoded(gpa, value) else null;
     defer if (bootstrap) |bytes| gpa.free(bytes);
     var output_buffer: [8192]u8 = undefined;

@@ -1,0 +1,199 @@
+{
+  "status": "source-only-bootstrap-correction-unrun",
+  "baseline": "d41215cdf57339b2f69f4158c2102203d6f0c177",
+  "retained_negative": {
+    "started": 11,
+    "binary_sha256": "8C3C540E6BD9C6CE69D53FD4DAA2EBEEB4BC3167283C5256DD59183EC4AD1FD7",
+    "files": [
+      {
+        "path": "json-runtime.results.json",
+        "sha256": "35CC58A2C46CD16520C2809459B0C337EC9917AB1FF148F9A19611BAB0BCB840",
+        "bytes": 1397
+      },
+      {
+        "path": "json-runtime.stderr.log",
+        "sha256": "B43ABD705B24BC16F5C8176FD76673D257C92B4E7B13E8F024A7744C357B09D1",
+        "bytes": 5466
+      },
+      {
+        "path": "json-runtime.stdout.bin",
+        "sha256": "2E60C60B47E99C061BA796AEFAA949E8AC4A5FEA27A8D0256AC0BC3698C23440",
+        "bytes": 322
+      }
+    ],
+    "expected": 11,
+    "passed": 10,
+    "failed_indexes": [
+      2
+    ],
+    "original_run": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-core116-v3-prepared-20261017\\root-c3-core116-v3-20261017-121714",
+    "completed": 11,
+    "source_head": "ee6ec985acf455004f9600e0ac6e6714a1c310bf"
+  },
+  "products": [
+    {
+      "baseline_blob": "7c05fe180bbcbe1df78f8651789af4a2e230b7fc",
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "bytes": 125917
+    },
+    {
+      "baseline_blob": "218efa4d7ff0210b251f689cc5a789bc13c9b1c4",
+      "path": "src/native_ai_json_parse_test.zig",
+      "sha256": "F564E15CBF6DF02B235CDE395F039636633712C47BAB12723E32852348E9359E",
+      "bytes": 30780
+    }
+  ],
+  "protected": [
+    {
+      "baseline_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "baseline_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "bytes": 7528
+    },
+    {
+      "baseline_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "bytes": 1544
+    },
+    {
+      "baseline_blob": "3014105210a06f488c64e13750184b3c0954d258",
+      "path": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "153C6CF4D661602DC6CFE58EF37FBD029CD8708E00D39FCD3052C70BDDEB5F66",
+      "bytes": 21797
+    },
+    {
+      "baseline_blob": "00d0a2babcbad6008f6de6abe109a3cf2b69e738",
+      "path": "src/extensions/native_ai_openai_client_options.zig",
+      "sha256": "9ED35977179ADD79C7968C58BF1628017F469019D22BD9311BEB6CB09B19CB2F",
+      "bytes": 6980
+    },
+    {
+      "baseline_blob": "f88ad462ee1927df20233fce2fac95d237c4ca61",
+      "path": "src/extensions/native_ai_openai_client_log.zig",
+      "sha256": "4CF7FB1D37C7E420921E16B6446E877A326BFDF7FE388A1F21229111F1D6B4CB",
+      "bytes": 8152
+    },
+    {
+      "baseline_blob": "c59c9a23bde9ac912bf27942302c053b287f5928",
+      "path": "src/extensions/native_ai_openai_sdk_headers.zig",
+      "sha256": "4228ECB54663C66CAD469EEC1402DD7FCE585F3D4213947D4411816D1019709B",
+      "bytes": 6367
+    },
+    {
+      "baseline_blob": "0dd9c76d0b08d34562a52d327bad4a0a4c5dc260",
+      "path": "src/extensions/native_ai_openai_sdk_request.zig",
+      "sha256": "F596896F5D0635867FE96CD54A4565DA60C640E26F6156B3DAB9803519CCC8E1",
+      "bytes": 39387
+    },
+    {
+      "baseline_blob": "80ee754e4dde04f071573b7ad61fd8a94731bc1a",
+      "path": "src/extensions/native_ai_openai_sdk_readable.zig",
+      "sha256": "2FB7ACF78D0242E85797378148831CF73745CE12C9DF9DDED27A8BE266694769",
+      "bytes": 7198
+    },
+    {
+      "baseline_blob": "093ad10b3a4ff825404ac7a8ebe15fd5ce2ffb6a",
+      "path": "src/extensions/native_web_fetch.zig",
+      "sha256": "B9862A61715D17A0D60DD85772DC122495112498B26547C698F989AD53A68CD8",
+      "bytes": 20400
+    },
+    {
+      "baseline_blob": "cf7a2b101b64398a2b65afdc0e3e5c8749ca39b3",
+      "path": "src/extensions/native_web_request.zig",
+      "sha256": "C15D1516ABD1571AB8ABE398DCEA355345D1E7A7A812F51B09BAE04C08C61D58",
+      "bytes": 36077
+    },
+    {
+      "baseline_blob": "cfeb2e67b9105d5b6e7c4a54625ee0fda3aa7b05",
+      "path": "src/extensions/native_web_response.zig",
+      "sha256": "3828EFFFB23EAD7290BFC6F797E74109BBD3080E0389423BC023ED1F1FB452BE",
+      "bytes": 25279
+    },
+    {
+      "baseline_blob": "479b3e7740b52705abe7b8fccbe3d23f6e20a4d5",
+      "path": "src/extensions/native_web_platform.zig",
+      "sha256": "0E38F9C7D651A3F444B5FB6E58A44322ECA90542E0C94203747AFE7EAEA290CA",
+      "bytes": 4112
+    },
+    {
+      "baseline_blob": "a48b27df38b7e45c3c8b553fe9cc792cfaf28623",
+      "path": "src/extensions/native_headers.zig",
+      "sha256": "DF67915149A842AB1E16C559E27FDC1D36C0EB65DF5EDB9E63245EA6B224D27A",
+      "bytes": 30039
+    },
+    {
+      "baseline_blob": "511b46236d1e379f219a5be26cba744d6d29140e",
+      "path": "src/extensions/abort_signal.zig",
+      "sha256": "D9509032BE0D4E9187D5E0044FD914E761E688B0BB5D2A8DE611A5186351B8C4",
+      "bytes": 36885
+    },
+    {
+      "baseline_blob": "e4aab35557db3d2afb8d5f95fcff9fbdee851af5",
+      "path": "src/extensions/timers.zig",
+      "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC",
+      "bytes": 52715
+    },
+    {
+      "baseline_blob": "e77af317a60c8026ff7c19e67bdd4a2b3d3a6c22",
+      "path": "src/extensions/fixtures/ai-openai-http-b06.json",
+      "sha256": "2D386948BAB831FE764A1EBB95982A7FE50E319AD93D67523417BAD1D3F258D0",
+      "bytes": 154439
+    },
+    {
+      "baseline_blob": "e32e9be80a8e2e0eafd20ca1b2272eb4d6a15d4c",
+      "path": "src/extensions/fixtures/ai-openai-http-b06.input.json",
+      "sha256": "914EA5EEA05CF1BED61B632C0316949307C724E5797E92D6A0C99F678D7DB677",
+      "bytes": 10513
+    },
+    {
+      "baseline_blob": "edaa10ebba1acf3e0e36c0866de53de9ed8afd6e",
+      "path": "src/extensions/fixtures/ai-openai-http-b45.json",
+      "sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC",
+      "bytes": 40056
+    },
+    {
+      "baseline_blob": "c92f5178c71eada1082f12ed5a8daffc4b584c36",
+      "path": "src/extensions/fixtures/ai-openai-http-b45.input.json",
+      "sha256": "2ABBC00B83460A9A60C7EBBF166CF039430EFF531B2444B0B9B31106A4A81407",
+      "bytes": 6314
+    },
+    {
+      "baseline_blob": "ddc9cef533745383ebd38542511925b517dbd5e5",
+      "path": "src/extensions/fixtures/ai-openai-sdk-producer16-ae7.json",
+      "sha256": "CA3EB48A9A7097EFDBBB19F24953B91402B8F4351E9F2AFDB3C6756DDA76B009",
+      "bytes": 10430
+    },
+    {
+      "baseline_blob": "cd3b463f43ee3b84430d10f6f6d07f67925eaf59",
+      "path": "src/extensions/fixtures/ai-openai-sdk-producer16-ae7.input.txt",
+      "sha256": "5632A008D6547A016F0E9FD3E9BD4383C73F1570752256E735C9B98137536FE4",
+      "bytes": 3440
+    }
+  ],
+  "diff": {
+    "added_lines": 4,
+    "sdk_factory_fallback_added": false,
+    "deleted_lines": 0,
+    "http20_expectations_changed": false,
+    "http20_assertions_changed": false,
+    "worker_owner_installs": 2,
+    "http20_setup_installs": 2
+  },
+  "prepared_controls": [
+    "Existing actualHTTP20 full20 event/intermediate/result/callback comparisons, allassertions retained",
+    "Actual runSdkFileWithEnvironment startup installsnativeWebglobals beforeuserentry",
+    "Actual extension runOwner startup installs same nativeWebglobals beforefactories",
+    "BareEngine SDK missing-global andexplicitoptions.fetch identity/precedence remainunchanged byconstruction, nofactory/Engine install"
+  ],
+  "new_execution_started": false,
+  "engine_c_h_http_framing_changed": false,
+  "metadata95d_tree_modified": false
+}

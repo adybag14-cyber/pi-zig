@@ -97,9 +97,11 @@ test "native AI JSON actual OpenAI factory owned HTTP20 matches full intermediat
         const engine = try em.Engine.init(gpa, .{ .host_await_timeout_ms = 10000 });
         defer engine.deinit();
         engine.native_io = std.testing.io;
+        try @import("extensions/timers.zig").install(engine, std.testing.io);
         try @import("extensions/text_encoding.zig").install(engine);
         try @import("extensions/text_decoder.zig").install(engine);
         try @import("extensions/console.zig").install(engine, std.testing.io);
+        try @import("extensions/native_web_fetch.zig").install(engine);
         const global = c.JS_GetGlobalObject(engine.context);
         defer engine.freeValue(global);
         try sdk.put(engine, global, "nativeOpenAI", try @import("extensions/native_ai_openai_factory.zig").create(engine));
