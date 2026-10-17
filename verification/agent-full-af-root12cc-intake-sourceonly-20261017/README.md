@@ -1,0 +1,7 @@
+# Exact Root12cc full-method AF intake
+
+Baseline12cc31356136cdbca5ee858a4d7a1873feabcd28 -> closedfc2b368231f7fee0823266cbc425ce9837b27645, selected paths ONLY. Nine actual Agent product paths plus four owned consumer proof files. No old Engine/C/H/async_body/scope/bootstrap/build or prompt-routing files copied. Root's existing prompt helper internal-bool fix is identical and excluded. Root's newer generic async_body, pi_js_null/bootstrap, SDK composition and scope ownership remain exact baseline blobs. Low-level0648 and EventStream72a are separate unqualified review units and not included.
+
+intake.patch is full-index plain-apply source; apply-check only passes current Main without applying. Main is not edited. The four source files carry the unchanged genuine Source32 observer/caller, complete comparison helper with dupeZ JSON input and actual boolean async-brand checks, and four genuine VM correction definitions. They require future separately authorized source/runtime gates. No expected data or default test/build target changes are included. The standalone correction target may be added later using current Root build helpers rather than replacing old build.zig.
+
+Independent source closure for exactfc2 is the Google3FBCA72A receipt. Original1ec/802/1138/fc2 packets are retained on their immutable public commits; this intake manifest records source blobs/hashes instead of copying older protected Root products. Runtime/fullAgent/default/wholeSDK remains unqualified.

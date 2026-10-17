@@ -1,0 +1,183 @@
+{
+  "baseline": "12cc31356136cdbca5ee858a4d7a1873feabcd28",
+  "source": "fc2b368231f7fee0823266cbc425ce9837b27645",
+  "status": "minimal-source-intake-patch-unapplied-uncompiled-unrun",
+  "product_paths": 9,
+  "owned_proof_paths": 4,
+  "patch_paths": [
+    "src/extensions/native_agent_af_values.zig",
+    "src/extensions/native_agent_complete.zig",
+    "src/extensions/native_agent_config_async.zig",
+    "src/extensions/native_agent_events_async.zig",
+    "src/extensions/native_agent_execution_async.zig",
+    "src/extensions/native_agent_executor_fatal.zig",
+    "src/extensions/native_agent_failure_async.zig",
+    "src/extensions/native_agent_lifecycle_async.zig",
+    "src/extensions/native_agent_loop_config.zig",
+    "src/native_agent_af_correction_test.zig",
+    "src/native_agent_full_async_test.zig",
+    "verification/agent-full-methods-genuine-af-sourceonly-20261017/observer.mjs",
+    "verification/agent-full-methods-genuine-af-sourceonly-20261017/reference-input.mjs"
+  ],
+  "protected_root_paths": [
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "baseline_blob": "37366cf8c6fb124e4316c942d9a633a21495fb01"
+    },
+    {
+      "path": "src/native_agent_prompt_async_test.zig",
+      "baseline_blob": "c2c8eeb1dc2d6d6d3f166918d60feeab77461459"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "baseline_blob": "ad79be421d1ce9764eb3a9d4152ba896431a3689"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "baseline_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "baseline_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "baseline_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "baseline_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41"
+    },
+    {
+      "path": "src/extensions/native_sdk_ai_imports.zig",
+      "baseline_blob": "7e4a175dc1069ecfbfdb6a32255cc37be6879ce9"
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "baseline_blob": "359bf116576c3a73b073faa2cd4669a83b124ede"
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "baseline_blob": "0314352e94a624f7ba42eb575e7b77bb464506dd"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hook_helpers.zig",
+      "baseline_blob": "163dcc06037ef14084dee6dc8710754189f4435b"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "baseline_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "baseline_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "build.zig",
+      "baseline_blob": "24c0c064f86dee8837753b09cb8672680545c544"
+    }
+  ],
+  "source_paths": [
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "b4459026926af389bff16256d325aefcb4056948",
+      "sha256": "C9F0821EA5442366369B66F5F0C278E497CE86FABC2173D179274BC8751F9758",
+      "bytes": 5962
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "f78f4627ed34819d46145992dab800bba525070f",
+      "sha256": "245926CB542A7E95977FFEB501139C001FE29C01826EFD28AF42CFB93AF706C2",
+      "bytes": 10081
+    },
+    {
+      "path": "src/extensions/native_agent_config_async.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "5f83c34f76cf13ac0654338f7548299fc20282eb",
+      "sha256": "9BCE203B5BDD401A1B08AE43E5FC1C00BA7AAEC3F2C2AC5CADA2DA9347619463",
+      "bytes": 2786
+    },
+    {
+      "path": "src/extensions/native_agent_events_async.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "c1091924c56f1b06da0921ac00d448a450af52e5",
+      "sha256": "98AC35AF7629E236DC1C935F5D165E75D892D4662B28B455ABF19CF78EAF751D",
+      "bytes": 6567
+    },
+    {
+      "path": "src/extensions/native_agent_execution_async.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "74f3dbee261872b407dcc7d8b738c522c8d42d1d",
+      "sha256": "371AD2817B82EF6E375DA9174532A1B86FDC7EA80BA9FF4E41D312AFD92CE3AB",
+      "bytes": 3984
+    },
+    {
+      "path": "src/extensions/native_agent_executor_fatal.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "0b3757b334dc4e13056826e650503dc11e392fd5",
+      "sha256": "5B133CD26AEDB994DC8BB732530094BCB56D4A123950ABF437E5694A61FA9837",
+      "bytes": 5090
+    },
+    {
+      "path": "src/extensions/native_agent_failure_async.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "ea9b2e2c71e27b2685f995f7988207f922a09e3c",
+      "sha256": "4A9BBBF00F8F01772FA6AA771E316A1B398350DA564E2E99870BFEB50AA40A4E",
+      "bytes": 3496
+    },
+    {
+      "path": "src/extensions/native_agent_lifecycle_async.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "ca932e3b581844db7d06e7c68fa2d4eb153ce05c",
+      "sha256": "4763AA7AC42DA3A05DC35259759593186A302862816B9005F74C67FAABA135B5",
+      "bytes": 4713
+    },
+    {
+      "path": "src/extensions/native_agent_loop_config.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "87c4a78393a97e89c87c8a7a6627c00c49374995",
+      "sha256": "46C21F5CC37CE10605036B0F96B1F26A095F67D64198975753ECEA574ADFDD49",
+      "bytes": 2575
+    },
+    {
+      "path": "src/native_agent_full_async_test.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "6e204be4e8880ad975ce84b1204a0c4350cbe13a",
+      "sha256": "DF37467A85E790BD0DB9E291F008BD30B03B72D92C5FF4401FB80D2E8F98EC80",
+      "bytes": 1988
+    },
+    {
+      "path": "src/native_agent_af_correction_test.zig",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "f64e240f7b6087ad915c1f12fb00c7ece39b904d",
+      "sha256": "93F8D1BBE51CBBDA58F5E0B4A5EA1D60C9C8C0A4B68CAD4D5EFFE713614005F8",
+      "bytes": 8560
+    },
+    {
+      "path": "verification/agent-full-methods-genuine-af-sourceonly-20261017/observer.mjs",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "172c59d992ae3a7b3a0f77c9f070f294d0162e4e",
+      "sha256": "09AE2FEF3D5512D5A6EC201CD46BF860FFC9E095F5218F39A8DABEFAD38263C1",
+      "bytes": 9282
+    },
+    {
+      "path": "verification/agent-full-methods-genuine-af-sourceonly-20261017/reference-input.mjs",
+      "source_commit": "fc2b368231f7fee0823266cbc425ce9837b27645",
+      "source_blob": "c94e3fc612b8afc1180464ddae85377c7c8fa8e9",
+      "sha256": "8E7A36BDF12446F30C36A2D068C2F70401AC939E3685B848330FFC562E5ED9E8",
+      "bytes": 270
+    }
+  ],
+  "patch_sha256": "11C87DB9A83E927189C2BB1238CCF11D7E2E11C0B47304DED43491D8171CABA7",
+  "apply_check_only": true,
+  "C_Engine_shared_async_body_build_changed": false,
+  "Source32_rows_unrun": true,
+  "native_VM_definitions": 4,
+  "native_VM_unrun": true,
+  "review_receipt": "evidence/agent-full-af-independent-google-review-fc2b3682-20261017.json",
+  "review_receipt_sha256": "3FBCA72A14FEEA5E09D261A609A96BF2F13E372C6165A61276722C75171B1CAE",
+  "low_level0648_excluded": true,
+  "EventStream72a_excluded": true
+}
