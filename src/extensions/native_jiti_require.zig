@@ -49,7 +49,10 @@ fn exportedNativeImport(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSVa
     const generation = engine.native_allocation_generation;
     const result = nativeImportOrRequire(engine, fromRoots(engine, roots), arg(args, 0), arg(args, 1), arg(args, 2)) catch |err| {
         if (err == error.JavaScriptException) {
-            if (engine.captured_exception == null and c.JS_HasException(engine.context)) _ = v.js.capture(engine);
+            if (engine.captured_exception == null and c.JS_HasException(engine.context)) {
+                const capture_error = v.js.capture(engine);
+                if (capture_error != error.JavaScriptException) return capture_error;
+            }
             const reason = engine.captured_exception orelse return error.MissingNativeImportCurrentCapturedReason;
             if (c.JS_IsUncatchableError(reason)) return err;
             try body.rethrowRecognizedAllocation(engine, reason, generation);
