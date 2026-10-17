@@ -1,0 +1,155 @@
+{
+  "status": "genuine-Agent-routing-AF-source-proposal-uncompiled-unrun-review-pending",
+  "baseline": "8fa656fe8bb3711a5b2daaa8f59b8522ab524308",
+  "upstream": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "products": [
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "C8D7A141A1DA9736090EBE04C8E1F43A8EAE63D6EFA1A2542611467D261F32E2",
+      "bytes": 6154
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "sha256": "D9E0B05BEB351BF2BA67CDA7A1ABB97C732226AD2C6AEFEA649FF4F3E92081B3",
+      "bytes": 9679
+    },
+    {
+      "path": "src/native_agent_prompt_async_test.zig",
+      "sha256": "A173B85DF9CA6AAD6CE75FD694488C96B1BE5B7114F7959CF299FB1B5BCAE125",
+      "bytes": 1847
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/README.md",
+      "sha256": "04EA90BCD8286828052D4EDA18AE7B0C965A460D4551395212DA0BBF37298816",
+      "bytes": 4519
+    },
+    {
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/observer.mjs",
+      "sha256": "FD30493132E6614DC3B4EAACF369E60AA373D5B2EE22236B295EE7896D0B0EE0",
+      "bytes": 4169
+    },
+    {
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/reference-input.mjs",
+      "sha256": "1C65EAE0356FFBFF4D137C3BE7DAF96BAFFE6E6D93BEBC7951D83481F8C45AE4",
+      "bytes": 260
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "bytes": 7528
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "bytes": 1544
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/native_agent_run.zig",
+      "sha256": "6C7AAA4F0B93265687D88FB1AB1B568DD79F23B635530C30049DE910084D4936",
+      "bytes": 8573
+    },
+    {
+      "path": "src/extensions/native_agent_lifecycle.zig",
+      "sha256": "32709F723726E810F797BC7C77F1A9A625DEBC9E294C8B44E5A10835165E4052",
+      "bytes": 5084
+    },
+    {
+      "path": "src/extensions/native_agent_failure.zig",
+      "sha256": "C814013159AAD898F03D18A11B33098A7C46492C2B6C87E192CA0C4D59734581",
+      "bytes": 3631
+    },
+    {
+      "path": "src/extensions/native_agent_events.zig",
+      "sha256": "E34650DF010E36DB22A1AC38F991C0B5C408EA8A0EE9002BA32DC850A0B06CE1",
+      "bytes": 6300
+    },
+    {
+      "path": "src/extensions/native_sdk_ai_imports.zig",
+      "sha256": "1E32E4B76B082D7D0C03FD288119DC3202DF3709AFD7D6AF551165B619FC52B3",
+      "bytes": 2859
+    },
+    {
+      "path": "src/extensions/native_sdk_application_assembly.zig",
+      "sha256": "4690317E1B5CD9AC028BBBA232A1CFC99B6A1ED82B2F2ECFD12BC7C60A620FFB",
+      "bytes": 2325
+    },
+    {
+      "path": "src/extensions/native_ai_transcript_context.zig",
+      "sha256": "95D592BBF2BE23E9DBF992BDA131D909F07D16F0CFF9C474F4575D9A074A5B0B",
+      "bytes": 3338
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "65D3F685042D07F5DA04680B5E63E64816C00330B6F128E96B77C5D51633C426",
+      "bytes": 252606
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "bytes": 125917
+    }
+  ],
+  "primary": [
+    {
+      "path": "C:/Users/adyba/pi-zig/upstream/snapshots/8efd314f-20261016/packages/agent/src/agent.ts",
+      "sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+      "bytes": 19748
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/upstream/snapshots/8efd314f-20261016/packages/agent/package.json",
+      "sha256": "67728D06E96459B7FE96C490B563865FB78F7EAFCECB708E7AE43E6DD857A324",
+      "bytes": 1032
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/upstream/snapshots/8efd314f-20261016/LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    }
+  ],
+  "source_rows": 15,
+  "native_entry": "compareActualSource(actualEngine,actualAgent,ownedOriginalReference)",
+  "remaining_async_methods": [
+    "runPromptMessages",
+    "runContinuation",
+    "runWithLifecycle",
+    "handleRunFailure",
+    "processEvents",
+    "run executor arrows"
+  ],
+  "expected_files": [],
+  "observed_files": [],
+  "jobs_launched": false,
+  "source_capture_grant": false,
+  "main_c_h_engine_modified": false,
+  "default_switch": false,
+  "full_Agent_application_qualified": false
+}
