@@ -32,8 +32,8 @@
     {
       "role": "control",
       "path": "src/native_jiti_public_factory_controls.zig",
-      "size": 14998,
-      "sha256": "BA8F8CF2A083CAE1320445317E832FE5F39D47770634CB3CBA9CE84433F48A49"
+      "size": 15034,
+      "sha256": "7AC76E9CFFB9C4BAC2F83663721364492DF71911EEF31B1CF326B9BEDEE7E817"
     },
     {
       "role": "control",
