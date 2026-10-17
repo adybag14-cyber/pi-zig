@@ -3680,13 +3680,23 @@ static JSAtom js_get_atom_index(JSRuntime *rt, JSAtomStruct *p)
     return i;
 }
 
+typedef enum {
+    PI_ATOM_FAILURE_NONE,
+    PI_ATOM_FAILURE_ALLOCATION,
+    PI_ATOM_FAILURE_CAPACITY,
+} JSPiAtomFailure;
+
 /* string case (internal). Return JS_ATOM_NULL if error. 'str' is
-   freed. */
-static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
+   freed. The optional failure output records the actual native producer. */
+static JSAtom __JS_NewAtomWithFailure(JSRuntime *rt, JSString *str, int atom_type,
+                                     JSPiAtomFailure *failure)
 {
     uint32_t h, h1, i;
     JSAtomStruct *p;
     int len;
+
+    if (failure)
+        *failure = PI_ATOM_FAILURE_NONE;
 
     if (atom_type < JS_ATOM_TYPE_SYMBOL) {
         /* str is not NULL */
@@ -3736,17 +3746,25 @@ static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
            preallocating space for predefined atoms (at least 504).
          */
         new_size = max_int(711, rt->atom_size * 3 / 2);
-        if (new_size > JS_ATOM_MAX)
+        if (new_size > JS_ATOM_MAX) {
+            if (failure)
+                *failure = PI_ATOM_FAILURE_CAPACITY;
             goto fail;
+        }
         new_array = js_realloc_rt(rt, rt->atom_array, sizeof(*new_array) * new_size);
-        if (!new_array)
+        if (!new_array) {
+            if (failure)
+                *failure = PI_ATOM_FAILURE_ALLOCATION;
             goto fail;
+        }
         /* Note: the atom 0 is not used */
         start = rt->atom_size;
         if (start == 0) {
             /* JS_ATOM_NULL entry */
             p = js_mallocz_rt(rt, sizeof(JSAtomStruct));
             if (!p) {
+                if (failure)
+                    *failure = PI_ATOM_FAILURE_ALLOCATION;
                 js_free_rt(rt, new_array);
                 goto fail;
             }
@@ -3780,8 +3798,11 @@ static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
             p = js_malloc_rt(rt, sizeof(JSString) +
                              (str->len << str->is_wide_char) +
                              1 - str->is_wide_char);
-            if (unlikely(!p))
+            if (unlikely(!p)) {
+                if (failure)
+                    *failure = PI_ATOM_FAILURE_ALLOCATION;
                 goto fail;
+            }
             JS_REF_COUNT(p) = 1;
             p->is_wide_char = str->is_wide_char;
             p->len = str->len;
@@ -3795,8 +3816,11 @@ static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
         }
     } else {
         p = js_malloc_rt(rt, sizeof(JSAtomStruct)); /* empty wide string */
-        if (!p)
+        if (!p) {
+            if (failure)
+                *failure = PI_ATOM_FAILURE_ALLOCATION;
             return JS_ATOM_NULL;
+        }
         JS_REF_COUNT(p) = 1;
         p->is_wide_char = 1;    /* Hack to represent NULL as a JSString */
         p->len = 0;
@@ -3834,6 +3858,11 @@ static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
     if (str)
         js_free_string(rt, str);
     return i;
+}
+
+static JSAtom __JS_NewAtom(JSRuntime *rt, JSString *str, int atom_type)
+{
+    return __JS_NewAtomWithFailure(rt, str, atom_type, NULL);
 }
 
 // XXX: `str` must be pure ASCII. No UTF-8 encoded strings
@@ -3932,13 +3961,31 @@ static JSAtom JS_NewAtomStr(JSContext *ctx, JSString *p)
 {
     JSRuntime *rt = ctx->rt;
     uint32_t n;
+
+    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx)) {
+        js_free_string(rt, p);
+        return JS_ATOM_NULL;
+    }
     if (is_num_string(&n, p)) {
         if (n <= JS_ATOM_MAX_INT) {
             js_free_string(rt, p);
             return __JS_AtomFromUInt32(n);
         }
     }
-    /* XXX: should generate an exception */
+    if (ctx->pi_compiler_diagnostic) {
+        JSPiAtomFailure failure;
+        JSAtom atom = __JS_NewAtomWithFailure(rt, p, JS_ATOM_TYPE_STRING, &failure);
+        if (!JS_HasException(ctx)) {
+            if (failure == PI_ATOM_FAILURE_ALLOCATION)
+                JS_ThrowOutOfMemory(ctx);
+            else if (failure == PI_ATOM_FAILURE_CAPACITY) {
+                ctx->pi_compiler_diagnostic->capacity_failed = true;
+                JS_ThrowInternalError(ctx, "compiler atom table exceeds VM capacity");
+            }
+        }
+        return atom;
+    }
+    /* Legacy callers retain the raw atom failure contract. */
     return __JS_NewAtom(rt, p, JS_ATOM_TYPE_STRING);
 }
 
@@ -25978,6 +26025,17 @@ static void emit_atom(JSParseState *s, JSAtom name)
     bc->size += 4;
 }
 
+/* Consume a local live atom even when an earlier opcode append failed. */
+static void emit_owned_atom(JSParseState *s, JSAtom name)
+{
+    if (s->pi_diagnostic) {
+        emit_atom(s, name); /* Claim the complete operand before duplication. */
+        JS_FreeAtom(s->ctx, name);
+    } else {
+        emit_u32(s, name); /* Legacy ownership transfer. */
+    }
+}
+
 static int update_label(JSFunctionDef *s, int label, int delta)
 {
     LabelSlot *ls;
@@ -28366,16 +28424,16 @@ static void put_lvalue(JSParseState *s, int opcode, int scope,
     switch(opcode) {
     case OP_scope_get_var:  /* val -- */
         emit_op(s, is_let ? OP_scope_put_var_init : OP_scope_put_var);
-        emit_u32(s, name);  /* has refcount */
+        emit_owned_atom(s, name);
         emit_u16(s, scope);
         break;
     case OP_get_field:
         emit_op(s, OP_put_field);
-        emit_u32(s, name);  /* name has refcount */
+        emit_owned_atom(s, name);
         break;
     case OP_scope_get_private_field:
         emit_op(s, OP_scope_put_private_field);
-        emit_u32(s, name);  /* name has refcount */
+        emit_owned_atom(s, name);
         emit_u16(s, scope);
         break;
     case OP_get_array_el:
