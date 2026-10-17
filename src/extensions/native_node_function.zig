@@ -2,10 +2,12 @@
 const std = @import("std");
 const js = @import("native_js_values.zig");
 const c = js.c;
+const heap = @import("native_typebox_continuation.zig");
 pub const Callback = *const fn (*js.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
 const State = struct { engine: *js.Engine, callback: Callback, values: []c.JSValue, constructible: bool, arrow: bool };
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    heap.unregister(owned.engine, value, owned);
     for (owned.values) |item| c.JS_FreeValueRT(runtime, item);
     owned.engine.gpa.free(owned.values);
     owned.engine.gpa.destroy(owned);
@@ -27,17 +29,37 @@ fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, a
     // are diagnosed by the outer Engine eval/await after this frame returns.
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    return invoke(engine, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| fail(engine, err);
+    return invoke(engine, function, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failFor(engine, function, err);
 }
-fn invoke(engine: *js.Engine, owned: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
-    if (!owned.constructible) return owned.callback(engine, if (owned.arrow) c.pi_js_undefined() else target, args, owned.values);
-    if (!constructing) return owned.callback(engine, target, args, owned.values);
+fn invoke(engine: *js.Engine, function: c.JSValue, owned: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
+    if (try heap.intercept(engine, function, provenance(function, owned), target, args, constructing)) |ack| return ack;
+    if (!owned.constructible) return invokeBody(engine, function, owned, if (owned.arrow) c.pi_js_undefined() else target, args);
+    if (!constructing) return invokeBody(engine, function, owned, target, args);
     const receiver = try @import("native_class.zig").object(engine, target);
     defer engine.freeValue(receiver);
-    const returned = try owned.callback(engine, receiver, args, owned.values);
+    const returned = try invokeBody(engine, function, owned, receiver, args);
     if (c.JS_IsObject(returned)) return returned;
     engine.freeValue(returned);
     return c.JS_DupValue(engine.context, receiver);
+}
+fn provenance(function: c.JSValue, owned: *State) heap.Provenance {
+    return .{ .state = owned, .callback = @intFromPtr(owned.callback), .class = c.JS_GetClassID(function), .roots = owned.values, .arrow = owned.arrow };
+}
+fn failFor(engine: *js.Engine, function: c.JSValue, err: anyerror) c.JSValue {
+    return if (heap.isPlanned(engine, function)) heap.fail(engine, err) else fail(engine, err);
+}
+fn invokeBody(engine: *js.Engine, function: c.JSValue, owned: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    if (try heap.invokeBody(engine, function, provenance(function, owned), receiver, args)) |result| return result;
+    return owned.callback(engine, receiver, args, owned.values);
+}
+/// Plan selection is explicit at the known generated creation point. The weak
+/// registry never discovers descriptors by name or callback-pointer scanning.
+pub fn createPlanned(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, arrow: bool, plan: *const heap.Plan) !c.JSValue {
+    const function = try createKind(engine, name, length, callback, values, !arrow, arrow);
+    errdefer engine.freeValue(function);
+    const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
+    try heap.register(engine, function, provenance(function, owned), plan);
+    return function;
 }
 pub fn create(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue) !c.JSValue {
     return createKind(engine, name, length, callback, values, true, false);

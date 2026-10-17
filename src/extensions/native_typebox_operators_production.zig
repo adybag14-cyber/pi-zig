@@ -16,7 +16,7 @@ try rt.bind(s, env, "context", native_values[0]);
 native_values[1] = rt.argument(args, 1);
 try rt.bind(s, env, "type", native_values[1]);
 try call_setup_0(s, env, c.pi_js_undefined(), native_values);
-native_values[9] = try rt.invoke(s, native_values[15], native_values[16], native_values[12..15]);
+try invokePrepared(s, native_values, 15, 12, 15, 9);
 return c.JS_DupValue(engine.context, native_values[9]);
 }
 fn f_1(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -723,7 +723,7 @@ defer engine.gpa.free(native_values);
 native_values[0] = rt.argument(args, 0);
 try rt.bind(s, env, "types", native_values[0]);
 try call_setup_2(s, env, receiver, native_values);
-native_values[5] = try rt.invoke(s, native_values[9], native_values[10], native_values[6..9]);
+try invokePrepared(s, native_values, 9, 6, 9, 5);
 return c.JS_DupValue(engine.context, native_values[5]);
 }
 fn f_31(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6118,10 +6118,10 @@ try rt.bind(s, env, "state", native_values[1]);
 native_values[2] = rt.argument(args, 2);
 try rt.bind(s, env, "types", native_values[2]);
 try call_setup_3(s, env, c.pi_js_undefined(), native_values);
-native_values[7] = try rt.invoke(s, native_values[16], native_values[17], native_values[12..15]);
+try invokePrepared(s, native_values, 16, 12, 15, 7);
 try rt.bind(s, env, "elements", native_values[7]);
 try call_setup_4(s, env, c.pi_js_undefined(), native_values);
-native_values[10] = try rt.invoke(s, native_values[18], native_values[19], native_values[15..16]);
+try invokePrepared(s, native_values, 18, 15, 16, 10);
 try rt.bind(s, env, "result", native_values[10]);
 native_values[11] = try rt.get(s, env, "result");
 return c.JS_DupValue(engine.context, native_values[11]);
@@ -6140,7 +6140,7 @@ try rt.bind(s, env, "state", native_values[1]);
 native_values[2] = rt.argument(args, 2);
 try rt.bind(s, env, "types", native_values[2]);
 try call_setup_5(s, env, receiver, native_values);
-native_values[8] = try rt.invoke(s, native_values[10], native_values[11], native_values[9..10]);
+try invokePrepared(s, native_values, 10, 9, 10, 8);
 return c.JS_DupValue(engine.context, native_values[8]);
 }
 fn f_298(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -6153,7 +6153,7 @@ defer engine.gpa.free(native_values);
 native_values[0] = rt.argument(args, 0);
 try rt.bind(s, env, "type", native_values[0]);
 try call_setup_6(s, env, c.pi_js_undefined(), native_values);
-native_values[5] = try rt.invoke(s, native_values[9], native_values[10], native_values[6..9]);
+try invokePrepared(s, native_values, 9, 6, 9, 5);
 return c.JS_DupValue(engine.context, native_values[5]);
 }
 fn f_299(engine: *rt.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9572,7 +9572,7 @@ try rt.bind(s, env, "state", native_values[1]);
 native_values[2] = rt.argument(args, 2);
 try rt.bind(s, env, "properties", native_values[2]);
 try call_setup_7(s, env, receiver, native_values);
-native_values[11] = try rt.invoke(s, native_values[15], native_values[16], native_values[13..15]);
+try invokePrepared(s, native_values, 15, 13, 15, 11);
 return c.JS_DupValue(engine.context, native_values[11]);
 }
 fn f_451(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -9592,7 +9592,7 @@ try rt.spreadObject(s, native_values[2], native_values[3]);
 native_values[4] = try rt.get(s, env, "key");
 native_values[5] = try rt.propertyKey(s, native_values[4]);
 try call_setup_9(s, env, c.pi_js_undefined(), native_values);
-native_values[13] = try rt.invoke(s, native_values[17], native_values[18], native_values[14..17]);
+try invokePrepared(s, native_values, 17, 14, 17, 13);
 try rt.property(s, native_values[2], native_values[5], native_values[13]);
 return c.JS_DupValue(engine.context, native_values[2]);
 }
@@ -14032,7 +14032,7 @@ try rt.bind(s, env, "type", native_values[2]);
 native_values[219] = try runBranch(s, env, receiver, native_values, 430);
 try rt.bind(s, env, "instantiatedType", native_values[219]);
 try call_setup_10(s, env, c.pi_js_undefined(), native_values);
-native_values[223] = try rt.invoke(s, native_values[322], native_values[323], native_values[320..322]);
+try invokePrepared(s, native_values, 322, 320, 322, 223);
 try rt.bind(s, env, "withModifiers", native_values[223]);
 native_values[224] = try rt.get(s, env, "withModifiers");
 return c.JS_DupValue(engine.context, native_values[224]);
@@ -14088,10 +14088,10 @@ try rt.bind(s, env, "target", native_values[2]);
 native_values[3] = rt.argument(args, 3);
 try rt.bind(s, env, "arguments_", native_values[3]);
 try call_setup_11(s, env, c.pi_js_undefined(), native_values);
-native_values[8] = try rt.invoke(s, native_values[76], native_values[77], native_values[55..58]);
+try invokePrepared(s, native_values, 76, 55, 58, 8);
 try rt.bind(s, env, "instantiatedArguments", native_values[8]);
 try call_setup_12(s, env, c.pi_js_undefined(), native_values);
-native_values[13] = try rt.invoke(s, native_values[78], native_values[79], native_values[58..61]);
+try invokePrepared(s, native_values, 78, 58, 61, 13);
 try rt.bind(s, env, "resolved", native_values[13]);
 native_values[14] = try rt.get(s, env, "resolved");
 native_values[15] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
@@ -14287,7 +14287,7 @@ try rt.bind(s, env, "state", native_values[0]);
 native_values[1] = rt.argument(args, 1);
 try rt.bind(s, env, "name", native_values[1]);
 try call_setup_13(s, env, c.pi_js_undefined(), native_values);
-native_values[7] = try rt.invoke(s, native_values[12], native_values[13], native_values[10..12]);
+try invokePrepared(s, native_values, 12, 10, 12, 7);
 try rt.bind(s, env, "result", native_values[7]);
 native_values[8] = try rt.get(s, env, "result");
 return c.JS_DupValue(engine.context, native_values[8]);
@@ -14414,10 +14414,10 @@ try rt.bind(s, env, "expression", native_values[4]);
 native_values[5] = rt.argument(args, 5);
 try rt.bind(s, env, "arguments_", native_values[5]);
 try call_setup_15(s, env, c.pi_js_undefined(), native_values);
-native_values[10] = try rt.invoke(s, native_values[45], native_values[46], native_values[33..36]);
+try invokePrepared(s, native_values, 45, 33, 36, 10);
 try rt.bind(s, env, "distributedArguments", native_values[10]);
 try call_setup_16(s, env, c.pi_js_undefined(), native_values);
-native_values[18] = try rt.invoke(s, native_values[47], native_values[48], native_values[36..42]);
+try invokePrepared(s, native_values, 47, 36, 42, 18);
 try rt.bind(s, env, "returnTypes", native_values[18]);
 native_values[31] = try runBranch(s, env, receiver, native_values, 450);
 try rt.bind(s, env, "result", native_values[31]);
@@ -14801,7 +14801,7 @@ try rt.bind(s, env, "expression", native_values[4]);
 native_values[5] = rt.argument(args, 5);
 try rt.bind(s, env, "distributedArguments", native_values[5]);
 try call_setup_17(s, env, receiver, native_values);
-native_values[12] = try rt.invoke(s, native_values[15], native_values[16], native_values[13..15]);
+try invokePrepared(s, native_values, 15, 13, 15, 12);
 return c.JS_DupValue(engine.context, native_values[12]);
 }
 fn f_661(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14816,7 +14816,7 @@ try rt.bind(s, env, "result", native_values[0]);
 native_values[1] = rt.argument(args, 1);
 try rt.bind(s, env, "arguments_", native_values[1]);
 try call_setup_18(s, env, c.pi_js_undefined(), native_values);
-native_values[9] = try rt.invoke(s, native_values[19], native_values[20], native_values[13..19]);
+try invokePrepared(s, native_values, 19, 13, 19, 9);
 try rt.bind(s, env, "returnType", native_values[9]);
 native_values[10] = try s.array();
 native_values[11] = try rt.get(s, env, "result");
@@ -14845,11 +14845,11 @@ try rt.bind(s, env, "expression", native_values[4]);
 native_values[5] = rt.argument(args, 5);
 try rt.bind(s, env, "arguments_", native_values[5]);
 try call_setup_19(s, env, c.pi_js_undefined(), native_values);
-native_values[7] = try rt.invoke(s, native_values[57], native_values[58], &.{});
+try invokePrepared(s, native_values, 57, 0, 0, 7);
 const completion_49 = try_block_0(s, env, receiver, native_values);
 errdefer if (completion_49) |returned| engine.freeValue(returned) else |_| {};
 try call_setup_20(s, env, c.pi_js_undefined(), native_values);
-native_values[42] = try rt.invoke(s, native_values[59], native_values[60], &.{});
+try invokePrepared(s, native_values, 59, 0, 0, 42);
 return completion_49;
 }
 fn f_663(engine: *rt.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14860,7 +14860,7 @@ const env = try rt.environment(s, roots[0]);
 const native_values = try engine.gpa.alloc(c.JSValue, 8);
 defer engine.gpa.free(native_values);
 try call_setup_21(s, env, c.pi_js_undefined(), native_values);
-native_values[1] = try rt.invoke(s, native_values[6], native_values[7], &.{});
+try invokePrepared(s, native_values, 6, 0, 0, 1);
 native_values[2] = try rt.get(s, env, "m258_instantiationCount");
 native_values[3] = try rt.update(s, native_values[2], true);
 try rt.assign(s, env, "m258_instantiationCount", native_values[3]);
@@ -14877,12 +14877,12 @@ const env = try rt.environment(s, roots[0]);
 const native_values = try engine.gpa.alloc(c.JSValue, 23);
 defer engine.gpa.free(native_values);
 try call_setup_22(s, env, c.pi_js_undefined(), native_values);
-native_values[10] = try rt.invoke(s, native_values[17], native_values[18], native_values[14..16]);
+try invokePrepared(s, native_values, 17, 14, 16, 10);
 if (s.truthy(native_values[10])) {
 return c.JS_DupValue(engine.context, c.pi_js_undefined());
 }
 try call_setup_24(s, env, c.pi_js_undefined(), native_values);
-native_values[13] = try rt.invoke(s, native_values[21], native_values[22], native_values[16..17]);
+try invokePrepared(s, native_values, 21, 16, 17, 13);
 return rt.throwValue(s, native_values[13]);
 }
 fn f_665(engine: *rt.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
@@ -14945,8 +14945,8 @@ native_values[3] = rt.argument(args, 3);
 try rt.bind(s, env, "arguments_", native_values[3]);
 native_values[4] = try rt.get(s, env, "m4_ShiftLeft");
 native_values[5] = try rt.get(s, env, "parameters");
-native_values[6] = try rt.function(s, "", 2, f_668, env, receiver, true);
-native_values[7] = try rt.function(s, "", 0, f_669, env, receiver, true);
+native_values[6] = try rt.plannedFunction(s, "", 2, f_668, env, receiver, true, &typebox_plan_668);
+native_values[7] = try rt.plannedFunction(s, "", 0, f_669, env, receiver, true, &typebox_plan_669);
 native_values[9] = native_values[5];
 native_values[10] = native_values[6];
 native_values[11] = native_values[7];
@@ -15031,8 +15031,8 @@ native_values[20] = try rt.invoke(s, native_values[13], c.pi_js_undefined(), nat
 try rt.bind(s, env, "instantiatedEquals", native_values[20]);
 native_values[21] = try rt.get(s, env, "m4_ShiftLeft");
 native_values[22] = try rt.get(s, env, "arguments_");
-native_values[23] = try rt.function(s, "", 2, f_671, env, receiver, true);
-native_values[24] = try rt.function(s, "", 0, f_672, env, receiver, true);
+native_values[23] = try rt.plannedFunction(s, "", 2, f_671, env, receiver, true, &typebox_plan_671);
+native_values[24] = try rt.plannedFunction(s, "", 0, f_672, env, receiver, true, &typebox_plan_672);
 native_values[32] = native_values[22];
 native_values[33] = native_values[23];
 native_values[34] = native_values[24];
@@ -15217,7 +15217,7 @@ native_values[0] = try rt.get(s, env, "m258_instantiationDepth");
 native_values[1] = try rt.update(s, native_values[0], false);
 try rt.assign(s, env, "m258_instantiationDepth", native_values[1]);
 try call_setup_25(s, env, c.pi_js_undefined(), native_values);
-native_values[4] = try rt.invoke(s, native_values[7], native_values[8], native_values[5..7]);
+try invokePrepared(s, native_values, 7, 5, 7, 4);
 if (s.truthy(native_values[4])) {
 try rt.assign(s, env, "m258_instantiationCount", c.JS_NewFloat64(engine.context, 0));
 }
@@ -39740,25 +39740,25 @@ return c.JS_DupValue(engine.context, native_values[3]);
 fn try_block_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!c.JSValue {
 const engine = s.engine;
 try call_setup_26(s, env, c.pi_js_undefined(), native_values);
-native_values[13] = try rt.invoke(s, native_values[61], native_values[62], native_values[43..47]);
+try invokePrepared(s, native_values, 61, 43, 47, 13);
 try rt.bind(s, env, "argumentsContext", native_values[13]);
 try call_setup_27(s, env, c.pi_js_undefined(), native_values);
-native_values[32] = try rt.invoke(s, native_values[63], native_values[64], native_values[49..52]);
+try invokePrepared(s, native_values, 63, 49, 52, 32);
 try rt.bind(s, env, "returnType", native_values[32]);
 try call_setup_29(s, env, c.pi_js_undefined(), native_values);
-native_values[40] = try rt.invoke(s, native_values[67], native_values[68], native_values[54..57]);
+try invokePrepared(s, native_values, 67, 54, 57, 40);
 return c.JS_DupValue(engine.context, native_values[40]);
 }
 fn branch_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_31(s, env, c.pi_js_undefined(), native_values);
-native_values[5] = try rt.invoke(s, native_values[38], native_values[39], native_values[29..30]);
+try invokePrepared(s, native_values, 38, 29, 30, 5);
 if (s.truthy(native_values[5])) {
 try call_setup_32(s, env, c.pi_js_undefined(), native_values);
-native_values[21] = try rt.invoke(s, native_values[40], native_values[41], native_values[30..35]);
+try invokePrepared(s, native_values, 40, 30, 35, 21);
 return .{ .value = native_values[21] };
 } else {
 try call_setup_33(s, env, c.pi_js_undefined(), native_values);
-native_values[26] = try rt.invoke(s, native_values[42], native_values[43], native_values[35..38]);
+try invokePrepared(s, native_values, 42, 35, 38, 26);
 return .{ .value = native_values[26] };
 }
 }
@@ -39879,10 +39879,10 @@ return .{ .value = native_values[4] };
 }
 fn branch_7(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_34(s, env, c.pi_js_undefined(), native_values);
-native_values[8] = try rt.invoke(s, native_values[644], native_values[645], native_values[436..438]);
+try invokePrepared(s, native_values, 644, 436, 438, 8);
 if (s.truthy(native_values[8])) {
 try call_setup_35(s, env, c.pi_js_undefined(), native_values);
-native_values[16] = try rt.invoke(s, native_values[646], native_values[647], native_values[438..442]);
+try invokePrepared(s, native_values, 646, 438, 442, 16);
 return .{ .value = native_values[16] };
 } else {
 return .{ .jump = 8 };
@@ -39890,10 +39890,10 @@ return .{ .jump = 8 };
 }
 fn branch_8(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_36(s, env, c.pi_js_undefined(), native_values);
-native_values[20] = try rt.invoke(s, native_values[648], native_values[649], native_values[442..444]);
+try invokePrepared(s, native_values, 648, 442, 444, 20);
 if (s.truthy(native_values[20])) {
 try call_setup_37(s, env, c.pi_js_undefined(), native_values);
-native_values[28] = try rt.invoke(s, native_values[650], native_values[651], native_values[444..448]);
+try invokePrepared(s, native_values, 650, 444, 448, 28);
 return .{ .value = native_values[28] };
 } else {
 return .{ .jump = 9 };
@@ -39901,10 +39901,10 @@ return .{ .jump = 9 };
 }
 fn branch_9(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_38(s, env, c.pi_js_undefined(), native_values);
-native_values[32] = try rt.invoke(s, native_values[652], native_values[653], native_values[448..450]);
+try invokePrepared(s, native_values, 652, 448, 450, 32);
 if (s.truthy(native_values[32])) {
 try call_setup_39(s, env, c.pi_js_undefined(), native_values);
-native_values[40] = try rt.invoke(s, native_values[654], native_values[655], native_values[450..454]);
+try invokePrepared(s, native_values, 654, 450, 454, 40);
 return .{ .value = native_values[40] };
 } else {
 return .{ .jump = 10 };
@@ -39912,10 +39912,10 @@ return .{ .jump = 10 };
 }
 fn branch_10(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_40(s, env, c.pi_js_undefined(), native_values);
-native_values[44] = try rt.invoke(s, native_values[656], native_values[657], native_values[454..456]);
+try invokePrepared(s, native_values, 656, 454, 456, 44);
 if (s.truthy(native_values[44])) {
 try call_setup_41(s, env, c.pi_js_undefined(), native_values);
-native_values[52] = try rt.invoke(s, native_values[658], native_values[659], native_values[456..460]);
+try invokePrepared(s, native_values, 658, 456, 460, 52);
 return .{ .value = native_values[52] };
 } else {
 return .{ .jump = 11 };
@@ -39923,10 +39923,10 @@ return .{ .jump = 11 };
 }
 fn branch_11(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_42(s, env, c.pi_js_undefined(), native_values);
-native_values[56] = try rt.invoke(s, native_values[660], native_values[661], native_values[460..462]);
+try invokePrepared(s, native_values, 660, 460, 462, 56);
 if (s.truthy(native_values[56])) {
 try call_setup_43(s, env, c.pi_js_undefined(), native_values);
-native_values[64] = try rt.invoke(s, native_values[662], native_values[663], native_values[462..466]);
+try invokePrepared(s, native_values, 662, 462, 466, 64);
 return .{ .value = native_values[64] };
 } else {
 return .{ .jump = 12 };
@@ -39934,10 +39934,10 @@ return .{ .jump = 12 };
 }
 fn branch_12(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_44(s, env, c.pi_js_undefined(), native_values);
-native_values[68] = try rt.invoke(s, native_values[664], native_values[665], native_values[466..468]);
+try invokePrepared(s, native_values, 664, 466, 468, 68);
 if (s.truthy(native_values[68])) {
 try call_setup_45(s, env, c.pi_js_undefined(), native_values);
-native_values[76] = try rt.invoke(s, native_values[666], native_values[667], native_values[468..472]);
+try invokePrepared(s, native_values, 666, 468, 472, 76);
 return .{ .value = native_values[76] };
 } else {
 return .{ .jump = 13 };
@@ -39945,10 +39945,10 @@ return .{ .jump = 13 };
 }
 fn branch_13(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_46(s, env, c.pi_js_undefined(), native_values);
-native_values[80] = try rt.invoke(s, native_values[668], native_values[669], native_values[472..474]);
+try invokePrepared(s, native_values, 668, 472, 474, 80);
 if (s.truthy(native_values[80])) {
 try call_setup_47(s, env, c.pi_js_undefined(), native_values);
-native_values[88] = try rt.invoke(s, native_values[670], native_values[671], native_values[474..478]);
+try invokePrepared(s, native_values, 670, 474, 478, 88);
 return .{ .value = native_values[88] };
 } else {
 return .{ .jump = 14 };
@@ -39956,10 +39956,10 @@ return .{ .jump = 14 };
 }
 fn branch_14(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_48(s, env, c.pi_js_undefined(), native_values);
-native_values[92] = try rt.invoke(s, native_values[672], native_values[673], native_values[478..480]);
+try invokePrepared(s, native_values, 672, 478, 480, 92);
 if (s.truthy(native_values[92])) {
 try call_setup_49(s, env, c.pi_js_undefined(), native_values);
-native_values[109] = try rt.invoke(s, native_values[674], native_values[675], native_values[480..487]);
+try invokePrepared(s, native_values, 674, 480, 487, 109);
 return .{ .value = native_values[109] };
 } else {
 return .{ .jump = 15 };
@@ -39967,10 +39967,10 @@ return .{ .jump = 15 };
 }
 fn branch_15(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_50(s, env, c.pi_js_undefined(), native_values);
-native_values[113] = try rt.invoke(s, native_values[676], native_values[677], native_values[487..489]);
+try invokePrepared(s, native_values, 676, 487, 489, 113);
 if (s.truthy(native_values[113])) {
 try call_setup_51(s, env, c.pi_js_undefined(), native_values);
-native_values[121] = try rt.invoke(s, native_values[678], native_values[679], native_values[489..493]);
+try invokePrepared(s, native_values, 678, 489, 493, 121);
 return .{ .value = native_values[121] };
 } else {
 return .{ .jump = 16 };
@@ -39978,10 +39978,10 @@ return .{ .jump = 16 };
 }
 fn branch_16(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_52(s, env, c.pi_js_undefined(), native_values);
-native_values[125] = try rt.invoke(s, native_values[680], native_values[681], native_values[493..495]);
+try invokePrepared(s, native_values, 680, 493, 495, 125);
 if (s.truthy(native_values[125])) {
 try call_setup_53(s, env, c.pi_js_undefined(), native_values);
-native_values[133] = try rt.invoke(s, native_values[682], native_values[683], native_values[495..499]);
+try invokePrepared(s, native_values, 682, 495, 499, 133);
 return .{ .value = native_values[133] };
 } else {
 return .{ .jump = 17 };
@@ -39989,10 +39989,10 @@ return .{ .jump = 17 };
 }
 fn branch_17(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_54(s, env, c.pi_js_undefined(), native_values);
-native_values[137] = try rt.invoke(s, native_values[684], native_values[685], native_values[499..501]);
+try invokePrepared(s, native_values, 684, 499, 501, 137);
 if (s.truthy(native_values[137])) {
 try call_setup_55(s, env, c.pi_js_undefined(), native_values);
-native_values[148] = try rt.invoke(s, native_values[686], native_values[687], native_values[501..506]);
+try invokePrepared(s, native_values, 686, 501, 506, 148);
 return .{ .value = native_values[148] };
 } else {
 return .{ .jump = 18 };
@@ -40000,10 +40000,10 @@ return .{ .jump = 18 };
 }
 fn branch_18(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_56(s, env, c.pi_js_undefined(), native_values);
-native_values[152] = try rt.invoke(s, native_values[688], native_values[689], native_values[506..508]);
+try invokePrepared(s, native_values, 688, 506, 508, 152);
 if (s.truthy(native_values[152])) {
 try call_setup_57(s, env, c.pi_js_undefined(), native_values);
-native_values[163] = try rt.invoke(s, native_values[690], native_values[691], native_values[508..513]);
+try invokePrepared(s, native_values, 690, 508, 513, 163);
 return .{ .value = native_values[163] };
 } else {
 return .{ .jump = 19 };
@@ -40011,10 +40011,10 @@ return .{ .jump = 19 };
 }
 fn branch_19(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_58(s, env, c.pi_js_undefined(), native_values);
-native_values[167] = try rt.invoke(s, native_values[692], native_values[693], native_values[513..515]);
+try invokePrepared(s, native_values, 692, 513, 515, 167);
 if (s.truthy(native_values[167])) {
 try call_setup_59(s, env, c.pi_js_undefined(), native_values);
-native_values[178] = try rt.invoke(s, native_values[694], native_values[695], native_values[515..520]);
+try invokePrepared(s, native_values, 694, 515, 520, 178);
 return .{ .value = native_values[178] };
 } else {
 return .{ .jump = 20 };
@@ -40022,10 +40022,10 @@ return .{ .jump = 20 };
 }
 fn branch_20(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_60(s, env, c.pi_js_undefined(), native_values);
-native_values[182] = try rt.invoke(s, native_values[696], native_values[697], native_values[520..522]);
+try invokePrepared(s, native_values, 696, 520, 522, 182);
 if (s.truthy(native_values[182])) {
 try call_setup_61(s, env, c.pi_js_undefined(), native_values);
-native_values[190] = try rt.invoke(s, native_values[698], native_values[699], native_values[522..526]);
+try invokePrepared(s, native_values, 698, 522, 526, 190);
 return .{ .value = native_values[190] };
 } else {
 return .{ .jump = 21 };
@@ -40033,10 +40033,10 @@ return .{ .jump = 21 };
 }
 fn branch_21(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_62(s, env, c.pi_js_undefined(), native_values);
-native_values[194] = try rt.invoke(s, native_values[700], native_values[701], native_values[526..528]);
+try invokePrepared(s, native_values, 700, 526, 528, 194);
 if (s.truthy(native_values[194])) {
 try call_setup_63(s, env, c.pi_js_undefined(), native_values);
-native_values[205] = try rt.invoke(s, native_values[702], native_values[703], native_values[528..533]);
+try invokePrepared(s, native_values, 702, 528, 533, 205);
 return .{ .value = native_values[205] };
 } else {
 return .{ .jump = 22 };
@@ -40044,10 +40044,10 @@ return .{ .jump = 22 };
 }
 fn branch_22(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_64(s, env, c.pi_js_undefined(), native_values);
-native_values[209] = try rt.invoke(s, native_values[704], native_values[705], native_values[533..535]);
+try invokePrepared(s, native_values, 704, 533, 535, 209);
 if (s.truthy(native_values[209])) {
 try call_setup_65(s, env, c.pi_js_undefined(), native_values);
-native_values[217] = try rt.invoke(s, native_values[706], native_values[707], native_values[535..539]);
+try invokePrepared(s, native_values, 706, 535, 539, 217);
 return .{ .value = native_values[217] };
 } else {
 return .{ .jump = 23 };
@@ -40055,10 +40055,10 @@ return .{ .jump = 23 };
 }
 fn branch_23(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_66(s, env, c.pi_js_undefined(), native_values);
-native_values[221] = try rt.invoke(s, native_values[708], native_values[709], native_values[539..541]);
+try invokePrepared(s, native_values, 708, 539, 541, 221);
 if (s.truthy(native_values[221])) {
 try call_setup_67(s, env, c.pi_js_undefined(), native_values);
-native_values[229] = try rt.invoke(s, native_values[710], native_values[711], native_values[541..545]);
+try invokePrepared(s, native_values, 710, 541, 545, 229);
 return .{ .value = native_values[229] };
 } else {
 return .{ .jump = 24 };
@@ -40066,10 +40066,10 @@ return .{ .jump = 24 };
 }
 fn branch_24(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_68(s, env, c.pi_js_undefined(), native_values);
-native_values[233] = try rt.invoke(s, native_values[712], native_values[713], native_values[545..547]);
+try invokePrepared(s, native_values, 712, 545, 547, 233);
 if (s.truthy(native_values[233])) {
 try call_setup_69(s, env, c.pi_js_undefined(), native_values);
-native_values[250] = try rt.invoke(s, native_values[714], native_values[715], native_values[547..554]);
+try invokePrepared(s, native_values, 714, 547, 554, 250);
 return .{ .value = native_values[250] };
 } else {
 return .{ .jump = 25 };
@@ -40077,10 +40077,10 @@ return .{ .jump = 25 };
 }
 fn branch_25(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_70(s, env, c.pi_js_undefined(), native_values);
-native_values[254] = try rt.invoke(s, native_values[716], native_values[717], native_values[554..556]);
+try invokePrepared(s, native_values, 716, 554, 556, 254);
 if (s.truthy(native_values[254])) {
 try call_setup_71(s, env, c.pi_js_undefined(), native_values);
-native_values[262] = try rt.invoke(s, native_values[718], native_values[719], native_values[556..560]);
+try invokePrepared(s, native_values, 718, 556, 560, 262);
 return .{ .value = native_values[262] };
 } else {
 return .{ .jump = 26 };
@@ -40088,10 +40088,10 @@ return .{ .jump = 26 };
 }
 fn branch_26(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_72(s, env, c.pi_js_undefined(), native_values);
-native_values[266] = try rt.invoke(s, native_values[720], native_values[721], native_values[560..562]);
+try invokePrepared(s, native_values, 720, 560, 562, 266);
 if (s.truthy(native_values[266])) {
 try call_setup_73(s, env, c.pi_js_undefined(), native_values);
-native_values[274] = try rt.invoke(s, native_values[722], native_values[723], native_values[562..566]);
+try invokePrepared(s, native_values, 722, 562, 566, 274);
 return .{ .value = native_values[274] };
 } else {
 return .{ .jump = 27 };
@@ -40099,10 +40099,10 @@ return .{ .jump = 27 };
 }
 fn branch_27(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_74(s, env, c.pi_js_undefined(), native_values);
-native_values[278] = try rt.invoke(s, native_values[724], native_values[725], native_values[566..568]);
+try invokePrepared(s, native_values, 724, 566, 568, 278);
 if (s.truthy(native_values[278])) {
 try call_setup_75(s, env, c.pi_js_undefined(), native_values);
-native_values[289] = try rt.invoke(s, native_values[726], native_values[727], native_values[568..573]);
+try invokePrepared(s, native_values, 726, 568, 573, 289);
 return .{ .value = native_values[289] };
 } else {
 return .{ .jump = 28 };
@@ -40110,10 +40110,10 @@ return .{ .jump = 28 };
 }
 fn branch_28(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_76(s, env, c.pi_js_undefined(), native_values);
-native_values[293] = try rt.invoke(s, native_values[728], native_values[729], native_values[573..575]);
+try invokePrepared(s, native_values, 728, 573, 575, 293);
 if (s.truthy(native_values[293])) {
 try call_setup_77(s, env, c.pi_js_undefined(), native_values);
-native_values[301] = try rt.invoke(s, native_values[730], native_values[731], native_values[575..579]);
+try invokePrepared(s, native_values, 730, 575, 579, 301);
 return .{ .value = native_values[301] };
 } else {
 return .{ .jump = 29 };
@@ -40121,10 +40121,10 @@ return .{ .jump = 29 };
 }
 fn branch_29(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_78(s, env, c.pi_js_undefined(), native_values);
-native_values[305] = try rt.invoke(s, native_values[732], native_values[733], native_values[579..581]);
+try invokePrepared(s, native_values, 732, 579, 581, 305);
 if (s.truthy(native_values[305])) {
 try call_setup_79(s, env, c.pi_js_undefined(), native_values);
-native_values[313] = try rt.invoke(s, native_values[734], native_values[735], native_values[581..585]);
+try invokePrepared(s, native_values, 734, 581, 585, 313);
 return .{ .value = native_values[313] };
 } else {
 return .{ .jump = 30 };
@@ -40132,10 +40132,10 @@ return .{ .jump = 30 };
 }
 fn branch_30(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_80(s, env, c.pi_js_undefined(), native_values);
-native_values[317] = try rt.invoke(s, native_values[736], native_values[737], native_values[585..587]);
+try invokePrepared(s, native_values, 736, 585, 587, 317);
 if (s.truthy(native_values[317])) {
 try call_setup_81(s, env, c.pi_js_undefined(), native_values);
-native_values[328] = try rt.invoke(s, native_values[738], native_values[739], native_values[587..592]);
+try invokePrepared(s, native_values, 738, 587, 592, 328);
 return .{ .value = native_values[328] };
 } else {
 return .{ .jump = 31 };
@@ -40143,10 +40143,10 @@ return .{ .jump = 31 };
 }
 fn branch_31(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_82(s, env, c.pi_js_undefined(), native_values);
-native_values[332] = try rt.invoke(s, native_values[740], native_values[741], native_values[592..594]);
+try invokePrepared(s, native_values, 740, 592, 594, 332);
 if (s.truthy(native_values[332])) {
 try call_setup_83(s, env, c.pi_js_undefined(), native_values);
-native_values[340] = try rt.invoke(s, native_values[742], native_values[743], native_values[594..598]);
+try invokePrepared(s, native_values, 742, 594, 598, 340);
 return .{ .value = native_values[340] };
 } else {
 return .{ .jump = 32 };
@@ -40154,10 +40154,10 @@ return .{ .jump = 32 };
 }
 fn branch_32(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_84(s, env, c.pi_js_undefined(), native_values);
-native_values[344] = try rt.invoke(s, native_values[744], native_values[745], native_values[598..600]);
+try invokePrepared(s, native_values, 744, 598, 600, 344);
 if (s.truthy(native_values[344])) {
 try call_setup_85(s, env, c.pi_js_undefined(), native_values);
-native_values[355] = try rt.invoke(s, native_values[746], native_values[747], native_values[600..605]);
+try invokePrepared(s, native_values, 746, 600, 605, 355);
 return .{ .value = native_values[355] };
 } else {
 return .{ .jump = 33 };
@@ -40165,10 +40165,10 @@ return .{ .jump = 33 };
 }
 fn branch_33(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_86(s, env, c.pi_js_undefined(), native_values);
-native_values[359] = try rt.invoke(s, native_values[748], native_values[749], native_values[605..607]);
+try invokePrepared(s, native_values, 748, 605, 607, 359);
 if (s.truthy(native_values[359])) {
 try call_setup_87(s, env, c.pi_js_undefined(), native_values);
-native_values[367] = try rt.invoke(s, native_values[750], native_values[751], native_values[607..611]);
+try invokePrepared(s, native_values, 750, 607, 611, 367);
 return .{ .value = native_values[367] };
 } else {
 return .{ .jump = 34 };
@@ -40176,10 +40176,10 @@ return .{ .jump = 34 };
 }
 fn branch_34(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_88(s, env, c.pi_js_undefined(), native_values);
-native_values[371] = try rt.invoke(s, native_values[752], native_values[753], native_values[611..613]);
+try invokePrepared(s, native_values, 752, 611, 613, 371);
 if (s.truthy(native_values[371])) {
 try call_setup_89(s, env, c.pi_js_undefined(), native_values);
-native_values[379] = try rt.invoke(s, native_values[754], native_values[755], native_values[613..617]);
+try invokePrepared(s, native_values, 754, 613, 617, 379);
 return .{ .value = native_values[379] };
 } else {
 return .{ .jump = 35 };
@@ -40187,10 +40187,10 @@ return .{ .jump = 35 };
 }
 fn branch_35(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_90(s, env, c.pi_js_undefined(), native_values);
-native_values[383] = try rt.invoke(s, native_values[756], native_values[757], native_values[617..619]);
+try invokePrepared(s, native_values, 756, 617, 619, 383);
 if (s.truthy(native_values[383])) {
 try call_setup_91(s, env, c.pi_js_undefined(), native_values);
-native_values[391] = try rt.invoke(s, native_values[758], native_values[759], native_values[619..623]);
+try invokePrepared(s, native_values, 758, 619, 623, 391);
 return .{ .value = native_values[391] };
 } else {
 return .{ .jump = 36 };
@@ -40198,10 +40198,10 @@ return .{ .jump = 36 };
 }
 fn branch_36(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_92(s, env, c.pi_js_undefined(), native_values);
-native_values[395] = try rt.invoke(s, native_values[760], native_values[761], native_values[623..625]);
+try invokePrepared(s, native_values, 760, 623, 625, 395);
 if (s.truthy(native_values[395])) {
 try call_setup_93(s, env, c.pi_js_undefined(), native_values);
-native_values[403] = try rt.invoke(s, native_values[762], native_values[763], native_values[625..629]);
+try invokePrepared(s, native_values, 762, 625, 629, 403);
 return .{ .value = native_values[403] };
 } else {
 return .{ .jump = 37 };
@@ -40209,10 +40209,10 @@ return .{ .jump = 37 };
 }
 fn branch_37(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_94(s, env, c.pi_js_undefined(), native_values);
-native_values[407] = try rt.invoke(s, native_values[764], native_values[765], native_values[629..631]);
+try invokePrepared(s, native_values, 764, 629, 631, 407);
 if (s.truthy(native_values[407])) {
 try call_setup_95(s, env, c.pi_js_undefined(), native_values);
-native_values[415] = try rt.invoke(s, native_values[766], native_values[767], native_values[631..635]);
+try invokePrepared(s, native_values, 766, 631, 635, 415);
 return .{ .value = native_values[415] };
 } else {
 return .{ .jump = 38 };
@@ -40220,14 +40220,14 @@ return .{ .jump = 38 };
 }
 fn branch_38(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_96(s, env, c.pi_js_undefined(), native_values);
-native_values[419] = try rt.invoke(s, native_values[768], native_values[769], native_values[635..637]);
+try invokePrepared(s, native_values, 768, 635, 637, 419);
 if (s.truthy(native_values[419])) {
 try call_setup_97(s, env, c.pi_js_undefined(), native_values);
-native_values[429] = try rt.invoke(s, native_values[770], native_values[771], native_values[637..641]);
+try invokePrepared(s, native_values, 770, 637, 641, 429);
 return .{ .value = native_values[429] };
 } else {
 try call_setup_98(s, env, c.pi_js_undefined(), native_values);
-native_values[434] = try rt.invoke(s, native_values[772], native_values[773], native_values[641..644]);
+try invokePrepared(s, native_values, 772, 641, 644, 434);
 return .{ .value = native_values[434] };
 }
 }
@@ -40269,12 +40269,12 @@ return .{ .value = native_values[20] };
 fn branch_40(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 const engine = s.engine;
 try call_setup_99(s, env, c.pi_js_undefined(), native_values);
-native_values[4] = try rt.invoke(s, native_values[11], native_values[12], native_values[9..10]);
+try invokePrepared(s, native_values, 11, 9, 10, 4);
 if (s.truthy(native_values[4])) {
 return .{ .value = c.pi_js_bool(engine.context, 0) };
 } else {
 try call_setup_100(s, env, c.pi_js_undefined(), native_values);
-native_values[7] = try rt.invoke(s, native_values[13], native_values[14], native_values[10..11]);
+try invokePrepared(s, native_values, 13, 10, 11, 7);
 return .{ .value = native_values[7] };
 }
 }
@@ -48643,10 +48643,10 @@ return .{ .value = native_values[17] };
 }
 fn branch_430(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_101(s, env, c.pi_js_undefined(), native_values);
-native_values[5] = try rt.invoke(s, native_values[324], native_values[325], native_values[225..226]);
+try invokePrepared(s, native_values, 324, 225, 226, 5);
 if (s.truthy(native_values[5])) {
 try call_setup_102(s, env, c.pi_js_undefined(), native_values);
-native_values[14] = try rt.invoke(s, native_values[326], native_values[327], native_values[226..230]);
+try invokePrepared(s, native_values, 326, 226, 230, 14);
 return .{ .value = native_values[14] };
 } else {
 return .{ .jump = 431 };
@@ -48654,10 +48654,10 @@ return .{ .jump = 431 };
 }
 fn branch_431(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_103(s, env, c.pi_js_undefined(), native_values);
-native_values[17] = try rt.invoke(s, native_values[328], native_values[329], native_values[230..231]);
+try invokePrepared(s, native_values, 328, 230, 231, 17);
 if (s.truthy(native_values[17])) {
 try call_setup_104(s, env, c.pi_js_undefined(), native_values);
-native_values[30] = try rt.invoke(s, native_values[330], native_values[331], native_values[235..237]);
+try invokePrepared(s, native_values, 330, 235, 237, 30);
 return .{ .value = native_values[30] };
 } else {
 return .{ .jump = 432 };
@@ -48665,10 +48665,10 @@ return .{ .jump = 432 };
 }
 fn branch_432(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_107(s, env, c.pi_js_undefined(), native_values);
-native_values[33] = try rt.invoke(s, native_values[336], native_values[337], native_values[237..238]);
+try invokePrepared(s, native_values, 336, 237, 238, 33);
 if (s.truthy(native_values[33])) {
 try call_setup_108(s, env, c.pi_js_undefined(), native_values);
-native_values[45] = try rt.invoke(s, native_values[338], native_values[339], native_values[238..242]);
+try invokePrepared(s, native_values, 338, 238, 242, 45);
 return .{ .value = native_values[45] };
 } else {
 return .{ .jump = 433 };
@@ -48676,10 +48676,10 @@ return .{ .jump = 433 };
 }
 fn branch_433(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_109(s, env, c.pi_js_undefined(), native_values);
-native_values[48] = try rt.invoke(s, native_values[340], native_values[341], native_values[242..243]);
+try invokePrepared(s, native_values, 340, 242, 243, 48);
 if (s.truthy(native_values[48])) {
 try call_setup_110(s, env, c.pi_js_undefined(), native_values);
-native_values[69] = try rt.invoke(s, native_values[342], native_values[343], native_values[250..253]);
+try invokePrepared(s, native_values, 342, 250, 253, 69);
 return .{ .value = native_values[69] };
 } else {
 return .{ .jump = 434 };
@@ -48687,10 +48687,10 @@ return .{ .jump = 434 };
 }
 fn branch_434(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_114(s, env, c.pi_js_undefined(), native_values);
-native_values[72] = try rt.invoke(s, native_values[350], native_values[351], native_values[253..254]);
+try invokePrepared(s, native_values, 350, 253, 254, 72);
 if (s.truthy(native_values[72])) {
 try call_setup_115(s, env, c.pi_js_undefined(), native_values);
-native_values[93] = try rt.invoke(s, native_values[352], native_values[353], native_values[261..264]);
+try invokePrepared(s, native_values, 352, 261, 264, 93);
 return .{ .value = native_values[93] };
 } else {
 return .{ .jump = 435 };
@@ -48698,10 +48698,10 @@ return .{ .jump = 435 };
 }
 fn branch_435(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_119(s, env, c.pi_js_undefined(), native_values);
-native_values[96] = try rt.invoke(s, native_values[360], native_values[361], native_values[264..265]);
+try invokePrepared(s, native_values, 360, 264, 265, 96);
 if (s.truthy(native_values[96])) {
 try call_setup_120(s, env, c.pi_js_undefined(), native_values);
-native_values[125] = try rt.invoke(s, native_values[362], native_values[363], native_values[275..279]);
+try invokePrepared(s, native_values, 362, 275, 279, 125);
 return .{ .value = native_values[125] };
 } else {
 return .{ .jump = 436 };
@@ -48709,10 +48709,10 @@ return .{ .jump = 436 };
 }
 fn branch_436(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_125(s, env, c.pi_js_undefined(), native_values);
-native_values[128] = try rt.invoke(s, native_values[372], native_values[373], native_values[279..280]);
+try invokePrepared(s, native_values, 372, 279, 280, 128);
 if (s.truthy(native_values[128])) {
 try call_setup_126(s, env, c.pi_js_undefined(), native_values);
-native_values[141] = try rt.invoke(s, native_values[374], native_values[375], native_values[284..286]);
+try invokePrepared(s, native_values, 374, 284, 286, 141);
 return .{ .value = native_values[141] };
 } else {
 return .{ .jump = 437 };
@@ -48720,10 +48720,10 @@ return .{ .jump = 437 };
 }
 fn branch_437(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_129(s, env, c.pi_js_undefined(), native_values);
-native_values[144] = try rt.invoke(s, native_values[380], native_values[381], native_values[286..287]);
+try invokePrepared(s, native_values, 380, 286, 287, 144);
 if (s.truthy(native_values[144])) {
 try call_setup_130(s, env, c.pi_js_undefined(), native_values);
-native_values[157] = try rt.invoke(s, native_values[382], native_values[383], native_values[291..293]);
+try invokePrepared(s, native_values, 382, 291, 293, 157);
 return .{ .value = native_values[157] };
 } else {
 return .{ .jump = 438 };
@@ -48731,10 +48731,10 @@ return .{ .jump = 438 };
 }
 fn branch_438(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_133(s, env, c.pi_js_undefined(), native_values);
-native_values[160] = try rt.invoke(s, native_values[388], native_values[389], native_values[293..294]);
+try invokePrepared(s, native_values, 388, 293, 294, 160);
 if (s.truthy(native_values[160])) {
 try call_setup_134(s, env, c.pi_js_undefined(), native_values);
-native_values[172] = try rt.invoke(s, native_values[390], native_values[391], native_values[299..301]);
+try invokePrepared(s, native_values, 390, 299, 301, 172);
 return .{ .value = native_values[172] };
 } else {
 return .{ .jump = 439 };
@@ -48742,10 +48742,10 @@ return .{ .jump = 439 };
 }
 fn branch_439(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_138(s, env, c.pi_js_undefined(), native_values);
-native_values[175] = try rt.invoke(s, native_values[398], native_values[399], native_values[301..302]);
+try invokePrepared(s, native_values, 398, 301, 302, 175);
 if (s.truthy(native_values[175])) {
 try call_setup_139(s, env, c.pi_js_undefined(), native_values);
-native_values[185] = try rt.invoke(s, native_values[400], native_values[401], native_values[305..306]);
+try invokePrepared(s, native_values, 400, 305, 306, 185);
 return .{ .value = native_values[185] };
 } else {
 return .{ .jump = 440 };
@@ -48753,10 +48753,10 @@ return .{ .jump = 440 };
 }
 fn branch_440(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_141(s, env, c.pi_js_undefined(), native_values);
-native_values[188] = try rt.invoke(s, native_values[404], native_values[405], native_values[306..307]);
+try invokePrepared(s, native_values, 404, 306, 307, 188);
 if (s.truthy(native_values[188])) {
 try call_setup_142(s, env, c.pi_js_undefined(), native_values);
-native_values[201] = try rt.invoke(s, native_values[406], native_values[407], native_values[311..313]);
+try invokePrepared(s, native_values, 406, 311, 313, 201);
 return .{ .value = native_values[201] };
 } else {
 return .{ .jump = 441 };
@@ -48764,10 +48764,10 @@ return .{ .jump = 441 };
 }
 fn branch_441(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_145(s, env, c.pi_js_undefined(), native_values);
-native_values[204] = try rt.invoke(s, native_values[412], native_values[413], native_values[313..314]);
+try invokePrepared(s, native_values, 412, 313, 314, 204);
 if (s.truthy(native_values[204])) {
 try call_setup_146(s, env, c.pi_js_undefined(), native_values);
-native_values[217] = try rt.invoke(s, native_values[414], native_values[415], native_values[318..320]);
+try invokePrepared(s, native_values, 414, 318, 320, 217);
 return .{ .value = native_values[217] };
 } else {
 native_values[218] = try rt.get(s, env, "type");
@@ -48831,25 +48831,25 @@ return .{ .value = native_values[36] };
 }
 fn branch_444(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_149(s, env, c.pi_js_undefined(), native_values);
-native_values[22] = try rt.invoke(s, native_values[80], native_values[81], native_values[61..62]);
+try invokePrepared(s, native_values, 80, 61, 62, 22);
 if (s.truthy(native_values[22])) {
 return .{ .jump = 445 };
 } else {
 try call_setup_150(s, env, c.pi_js_undefined(), native_values);
-native_values[52] = try rt.invoke(s, native_values[82], native_values[83], native_values[74..76]);
+try invokePrepared(s, native_values, 82, 74, 76, 52);
 return .{ .value = native_values[52] };
 }
 }
 fn branch_445(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_151(s, env, c.pi_js_undefined(), native_values);
-native_values[26] = try rt.invoke(s, native_values[84], native_values[85], native_values[62..64]);
+try invokePrepared(s, native_values, 84, 62, 64, 26);
 if (s.truthy(native_values[26])) {
 try call_setup_152(s, env, c.pi_js_undefined(), native_values);
-native_values[32] = try rt.invoke(s, native_values[86], native_values[87], native_values[65..67]);
+try invokePrepared(s, native_values, 86, 65, 67, 32);
 return .{ .value = native_values[32] };
 } else {
 try call_setup_154(s, env, c.pi_js_undefined(), native_values);
-native_values[48] = try rt.invoke(s, native_values[90], native_values[91], native_values[68..74]);
+try invokePrepared(s, native_values, 90, 68, 74, 48);
 return .{ .value = native_values[48] };
 }
 }
@@ -48930,7 +48930,7 @@ return .{ .value = native_values[16] };
 fn branch_449(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 const engine = s.engine;
 try call_setup_156(s, env, c.pi_js_undefined(), native_values);
-native_values[9] = try rt.invoke(s, native_values[29], native_values[30], native_values[27..29]);
+try invokePrepared(s, native_values, 29, 27, 29, 9);
 if (s.truthy(native_values[9])) {
 native_values[10] = try rt.get(s, env, "state");
 native_values[11] = try s.text("callstack");
@@ -48955,7 +48955,7 @@ return .{ .value = native_values[24] };
 fn branch_450(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 const engine = s.engine;
 try call_setup_157(s, env, c.pi_js_undefined(), native_values);
-native_values[24] = try rt.invoke(s, native_values[49], native_values[50], native_values[42..44]);
+try invokePrepared(s, native_values, 49, 42, 44, 24);
 if (s.truthy(native_values[24])) {
 native_values[25] = try rt.get(s, env, "returnTypes");
 native_values[26] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
@@ -48963,7 +48963,7 @@ native_values[27] = try rt.key(s, native_values[25], native_values[26]);
 return .{ .value = native_values[27] };
 } else {
 try call_setup_158(s, env, c.pi_js_undefined(), native_values);
-native_values[30] = try rt.invoke(s, native_values[51], native_values[52], native_values[44..45]);
+try invokePrepared(s, native_values, 51, 44, 45, 30);
 return .{ .value = native_values[30] };
 }
 }
@@ -49373,10 +49373,10 @@ return .{ .value = native_values[5] };
 }
 fn branch_469(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_159(s, env, c.pi_js_undefined(), native_values);
-native_values[4] = try rt.invoke(s, native_values[39], native_values[40], native_values[30..31]);
+try invokePrepared(s, native_values, 39, 30, 31, 4);
 if (s.truthy(native_values[4])) {
 try call_setup_160(s, env, c.pi_js_undefined(), native_values);
-native_values[8] = try rt.invoke(s, native_values[41], native_values[42], native_values[31..33]);
+try invokePrepared(s, native_values, 41, 31, 33, 8);
 return .{ .value = native_values[8] };
 } else {
 native_values[9] = try rt.get(s, env, "instantiatedType");
@@ -49385,10 +49385,10 @@ return .{ .value = native_values[9] };
 }
 fn branch_470(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_161(s, env, c.pi_js_undefined(), native_values);
-native_values[13] = try rt.invoke(s, native_values[43], native_values[44], native_values[33..34]);
+try invokePrepared(s, native_values, 43, 33, 34, 13);
 if (s.truthy(native_values[13])) {
 try call_setup_162(s, env, c.pi_js_undefined(), native_values);
-native_values[17] = try rt.invoke(s, native_values[45], native_values[46], native_values[34..36]);
+try invokePrepared(s, native_values, 45, 34, 36, 17);
 return .{ .value = native_values[17] };
 } else {
 native_values[18] = try rt.get(s, env, "withOptional");
@@ -49397,10 +49397,10 @@ return .{ .value = native_values[18] };
 }
 fn branch_471(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!BranchResult {
 try call_setup_163(s, env, c.pi_js_undefined(), native_values);
-native_values[22] = try rt.invoke(s, native_values[47], native_values[48], native_values[36..37]);
+try invokePrepared(s, native_values, 47, 36, 37, 22);
 if (s.truthy(native_values[22])) {
 try call_setup_164(s, env, c.pi_js_undefined(), native_values);
-native_values[26] = try rt.invoke(s, native_values[49], native_values[50], native_values[37..39]);
+try invokePrepared(s, native_values, 49, 37, 39, 26);
 return .{ .value = native_values[26] };
 } else {
 native_values[27] = try rt.get(s, env, "withReadonly");
@@ -51748,13 +51748,19 @@ const result = try branch_helpers[next](s, env, receiver, native_values);
 switch (result) { .jump => |child| next = child, .value => |value| return value }
 }
 }
+noinline fn invokePrepared(s: *rt.Scope, values: []c.JSValue, descriptor: usize, first_arg: usize, end_arg: usize, result: usize) anyerror!void {
+values[result] = try rt.invoke(s, values[descriptor], values[descriptor + 1], values[first_arg..end_arg]);
+}
+noinline fn constructPrepared(s: *rt.Scope, values: []c.JSValue, descriptor: usize, first_arg: usize, end_arg: usize, result: usize) anyerror!void {
+values[result] = try rt.construct(s, values[descriptor], values[first_arg..end_arg]);
+}
 noinline fn call_setup_0(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!void {
 native_values[2] = try rt.get(s, env, "m0_InstantiateType");
 native_values[15] = native_values[2];
 native_values[16] = c.pi_js_undefined();
 native_values[3] = try rt.get(s, env, "context");
 try call_setup_1(s, env, c.pi_js_undefined(), native_values);
-native_values[7] = try rt.invoke(s, native_values[17], native_values[18], native_values[10..12]);
+try invokePrepared(s, native_values, 17, 10, 12, 7);
 native_values[8] = try rt.get(s, env, "type");
 native_values[12] = native_values[3];
 native_values[13] = native_values[7];
@@ -51774,8 +51780,8 @@ native_values[1] = try rt.get(s, env, "m4_ShiftLeft");
 native_values[9] = native_values[1];
 native_values[10] = c.pi_js_undefined();
 native_values[2] = try rt.get(s, env, "types");
-native_values[3] = try rt.function(s, "", 2, f_31, env, receiver, true);
-native_values[4] = try rt.function(s, "", 0, f_32, env, receiver, true);
+native_values[3] = try rt.plannedFunction(s, "", 2, f_31, env, receiver, true, &typebox_plan_31);
+native_values[4] = try rt.plannedFunction(s, "", 0, f_32, env, receiver, true, &typebox_plan_32);
 native_values[6] = native_values[2];
 native_values[7] = native_values[3];
 native_values[8] = native_values[4];
@@ -51805,7 +51811,7 @@ native_values[5] = try rt.propertyKey(s, native_values[4]);
 native_values[6] = try rt.key(s, native_values[3], native_values[5]);
 native_values[10] = native_values[6];
 native_values[11] = native_values[3];
-native_values[7] = try rt.function(s, "", 1, f_298, env, receiver, true);
+native_values[7] = try rt.plannedFunction(s, "", 1, f_298, env, receiver, true, &typebox_plan_298);
 native_values[9] = native_values[7];
 }
 noinline fn call_setup_6(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!void {
@@ -51821,13 +51827,13 @@ native_values[8] = native_values[4];
 }
 noinline fn call_setup_7(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue) anyerror!void {
 try call_setup_8(s, env, c.pi_js_undefined(), native_values);
-native_values[5] = try rt.invoke(s, native_values[17], native_values[18], native_values[12..13]);
+try invokePrepared(s, native_values, 17, 12, 13, 5);
 native_values[6] = try s.text("reduce");
 native_values[7] = try rt.propertyKey(s, native_values[6]);
 native_values[8] = try rt.key(s, native_values[5], native_values[7]);
 native_values[15] = native_values[8];
 native_values[16] = native_values[5];
-native_values[9] = try rt.function(s, "", 2, f_451, env, receiver, true);
+native_values[9] = try rt.plannedFunction(s, "", 2, f_451, env, receiver, true, &typebox_plan_451);
 native_values[10] = try s.object();
 native_values[13] = native_values[9];
 native_values[14] = native_values[10];
@@ -51889,7 +51895,7 @@ native_values[2] = try rt.get(s, env, "m4_IsEqual");
 native_values[12] = native_values[2];
 native_values[13] = c.pi_js_undefined();
 try call_setup_14(s, env, c.pi_js_undefined(), native_values);
-native_values[5] = try rt.invoke(s, native_values[14], native_values[15], native_values[9..10]);
+try invokePrepared(s, native_values, 14, 9, 10, 5);
 native_values[6] = try rt.get(s, env, "name");
 native_values[10] = native_values[5];
 native_values[11] = native_values[6];
@@ -51936,7 +51942,7 @@ native_values[8] = try rt.propertyKey(s, native_values[7]);
 native_values[9] = try rt.key(s, native_values[6], native_values[8]);
 native_values[15] = native_values[9];
 native_values[16] = native_values[6];
-native_values[10] = try rt.function(s, "", 2, f_661, env, receiver, true);
+native_values[10] = try rt.plannedFunction(s, "", 2, f_661, env, receiver, true, &typebox_plan_661);
 native_values[11] = try s.array();
 native_values[13] = native_values[10];
 native_values[14] = native_values[11];
@@ -51979,7 +51985,7 @@ native_values[17] = native_values[0];
 native_values[18] = c.pi_js_undefined();
 native_values[1] = try rt.get(s, env, "m258_instantiationCount");
 try call_setup_23(s, env, c.pi_js_undefined(), native_values);
-native_values[6] = try rt.invoke(s, native_values[19], native_values[20], &.{});
+try invokePrepared(s, native_values, 19, 0, 0, 6);
 native_values[7] = try s.text("maxInstantiationCount");
 native_values[8] = try rt.propertyKey(s, native_values[7]);
 native_values[9] = try rt.key(s, native_values[6], native_values[8]);
@@ -52029,7 +52035,7 @@ native_values[63] = native_values[14];
 native_values[64] = c.pi_js_undefined();
 native_values[15] = try rt.get(s, env, "argumentsContext");
 try call_setup_28(s, env, c.pi_js_undefined(), native_values);
-native_values[30] = try rt.invoke(s, native_values[65], native_values[66], native_values[47..49]);
+try invokePrepared(s, native_values, 65, 47, 49, 30);
 native_values[31] = try rt.get(s, env, "expression");
 native_values[49] = native_values[15];
 native_values[50] = native_values[30];
@@ -52063,7 +52069,7 @@ native_values[67] = native_values[33];
 native_values[68] = c.pi_js_undefined();
 native_values[34] = try rt.get(s, env, "argumentsContext");
 try call_setup_30(s, env, c.pi_js_undefined(), native_values);
-native_values[38] = try rt.invoke(s, native_values[69], native_values[70], native_values[52..54]);
+try invokePrepared(s, native_values, 69, 52, 54, 38);
 native_values[39] = try rt.get(s, env, "returnType");
 native_values[54] = native_values[34];
 native_values[55] = native_values[38];
@@ -53034,9 +53040,9 @@ native_values[18] = try rt.get(s, env, "m38__Array_");
 native_values[330] = native_values[18];
 native_values[331] = c.pi_js_undefined();
 try call_setup_105(s, env, c.pi_js_undefined(), native_values);
-native_values[26] = try rt.invoke(s, native_values[332], native_values[333], native_values[231..234]);
+try invokePrepared(s, native_values, 332, 231, 234, 26);
 try call_setup_106(s, env, c.pi_js_undefined(), native_values);
-native_values[29] = try rt.invoke(s, native_values[334], native_values[335], native_values[234..235]);
+try invokePrepared(s, native_values, 334, 234, 235, 29);
 native_values[235] = native_values[26];
 native_values[236] = native_values[29];
 }
@@ -53099,11 +53105,11 @@ native_values[49] = try rt.get(s, env, "m39_Constructor");
 native_values[342] = native_values[49];
 native_values[343] = c.pi_js_undefined();
 try call_setup_111(s, env, c.pi_js_undefined(), native_values);
-native_values[57] = try rt.invoke(s, native_values[344], native_values[345], native_values[243..246]);
+try invokePrepared(s, native_values, 344, 243, 246, 57);
 try call_setup_112(s, env, c.pi_js_undefined(), native_values);
-native_values[65] = try rt.invoke(s, native_values[346], native_values[347], native_values[246..249]);
+try invokePrepared(s, native_values, 346, 246, 249, 65);
 try call_setup_113(s, env, c.pi_js_undefined(), native_values);
-native_values[68] = try rt.invoke(s, native_values[348], native_values[349], native_values[249..250]);
+try invokePrepared(s, native_values, 348, 249, 250, 68);
 native_values[250] = native_values[57];
 native_values[251] = native_values[65];
 native_values[252] = native_values[68];
@@ -53155,11 +53161,11 @@ native_values[73] = try rt.get(s, env, "m40__Function_");
 native_values[352] = native_values[73];
 native_values[353] = c.pi_js_undefined();
 try call_setup_116(s, env, c.pi_js_undefined(), native_values);
-native_values[81] = try rt.invoke(s, native_values[354], native_values[355], native_values[254..257]);
+try invokePrepared(s, native_values, 354, 254, 257, 81);
 try call_setup_117(s, env, c.pi_js_undefined(), native_values);
-native_values[89] = try rt.invoke(s, native_values[356], native_values[357], native_values[257..260]);
+try invokePrepared(s, native_values, 356, 257, 260, 89);
 try call_setup_118(s, env, c.pi_js_undefined(), native_values);
-native_values[92] = try rt.invoke(s, native_values[358], native_values[359], native_values[260..261]);
+try invokePrepared(s, native_values, 358, 260, 261, 92);
 native_values[261] = native_values[81];
 native_values[262] = native_values[89];
 native_values[263] = native_values[92];
@@ -53211,13 +53217,13 @@ native_values[97] = try rt.get(s, env, "m85_Dependent");
 native_values[362] = native_values[97];
 native_values[363] = c.pi_js_undefined();
 try call_setup_121(s, env, c.pi_js_undefined(), native_values);
-native_values[105] = try rt.invoke(s, native_values[364], native_values[365], native_values[265..268]);
+try invokePrepared(s, native_values, 364, 265, 268, 105);
 try call_setup_122(s, env, c.pi_js_undefined(), native_values);
-native_values[113] = try rt.invoke(s, native_values[366], native_values[367], native_values[268..271]);
+try invokePrepared(s, native_values, 366, 268, 271, 113);
 try call_setup_123(s, env, c.pi_js_undefined(), native_values);
-native_values[121] = try rt.invoke(s, native_values[368], native_values[369], native_values[271..274]);
+try invokePrepared(s, native_values, 368, 271, 274, 121);
 try call_setup_124(s, env, c.pi_js_undefined(), native_values);
-native_values[124] = try rt.invoke(s, native_values[370], native_values[371], native_values[274..275]);
+try invokePrepared(s, native_values, 370, 274, 275, 124);
 native_values[275] = native_values[105];
 native_values[276] = native_values[113];
 native_values[277] = native_values[121];
@@ -53284,9 +53290,9 @@ native_values[129] = try rt.get(s, env, "m41_Intersect");
 native_values[374] = native_values[129];
 native_values[375] = c.pi_js_undefined();
 try call_setup_127(s, env, c.pi_js_undefined(), native_values);
-native_values[137] = try rt.invoke(s, native_values[376], native_values[377], native_values[280..283]);
+try invokePrepared(s, native_values, 376, 280, 283, 137);
 try call_setup_128(s, env, c.pi_js_undefined(), native_values);
-native_values[140] = try rt.invoke(s, native_values[378], native_values[379], native_values[283..284]);
+try invokePrepared(s, native_values, 378, 283, 284, 140);
 native_values[284] = native_values[137];
 native_values[285] = native_values[140];
 }
@@ -53323,9 +53329,9 @@ native_values[145] = try rt.get(s, env, "m42__Object_");
 native_values[382] = native_values[145];
 native_values[383] = c.pi_js_undefined();
 try call_setup_131(s, env, c.pi_js_undefined(), native_values);
-native_values[153] = try rt.invoke(s, native_values[384], native_values[385], native_values[287..290]);
+try invokePrepared(s, native_values, 384, 287, 290, 153);
 try call_setup_132(s, env, c.pi_js_undefined(), native_values);
-native_values[156] = try rt.invoke(s, native_values[386], native_values[387], native_values[290..291]);
+try invokePrepared(s, native_values, 386, 290, 291, 156);
 native_values[291] = native_values[153];
 native_values[292] = native_values[156];
 }
@@ -53362,9 +53368,9 @@ native_values[161] = try rt.get(s, env, "m45_RecordFromPattern");
 native_values[390] = native_values[161];
 native_values[391] = c.pi_js_undefined();
 try call_setup_135(s, env, c.pi_js_undefined(), native_values);
-native_values[164] = try rt.invoke(s, native_values[392], native_values[393], native_values[294..295]);
+try invokePrepared(s, native_values, 392, 294, 295, 164);
 try call_setup_136(s, env, c.pi_js_undefined(), native_values);
-native_values[171] = try rt.invoke(s, native_values[394], native_values[395], native_values[296..299]);
+try invokePrepared(s, native_values, 394, 296, 299, 171);
 native_values[299] = native_values[164];
 native_values[300] = native_values[171];
 }
@@ -53382,7 +53388,7 @@ native_values[395] = c.pi_js_undefined();
 native_values[166] = try rt.get(s, env, "context");
 native_values[167] = try rt.get(s, env, "state");
 try call_setup_137(s, env, c.pi_js_undefined(), native_values);
-native_values[170] = try rt.invoke(s, native_values[396], native_values[397], native_values[295..296]);
+try invokePrepared(s, native_values, 396, 295, 296, 170);
 native_values[296] = native_values[166];
 native_values[297] = native_values[167];
 native_values[298] = native_values[170];
@@ -53406,7 +53412,7 @@ native_values[176] = try rt.get(s, env, "m92_Rest");
 native_values[400] = native_values[176];
 native_values[401] = c.pi_js_undefined();
 try call_setup_140(s, env, c.pi_js_undefined(), native_values);
-native_values[184] = try rt.invoke(s, native_values[402], native_values[403], native_values[302..305]);
+try invokePrepared(s, native_values, 402, 302, 305, 184);
 native_values[305] = native_values[184];
 }
 noinline fn call_setup_140(s: *rt.Scope, env: c.JSValue, _: c.JSValue, native_values: []c.JSValue) anyerror!void {
@@ -53435,9 +53441,9 @@ native_values[189] = try rt.get(s, env, "m95_Tuple");
 native_values[406] = native_values[189];
 native_values[407] = c.pi_js_undefined();
 try call_setup_143(s, env, c.pi_js_undefined(), native_values);
-native_values[197] = try rt.invoke(s, native_values[408], native_values[409], native_values[307..310]);
+try invokePrepared(s, native_values, 408, 307, 310, 197);
 try call_setup_144(s, env, c.pi_js_undefined(), native_values);
-native_values[200] = try rt.invoke(s, native_values[410], native_values[411], native_values[310..311]);
+try invokePrepared(s, native_values, 410, 310, 311, 200);
 native_values[311] = native_values[197];
 native_values[312] = native_values[200];
 }
@@ -53474,9 +53480,9 @@ native_values[205] = try rt.get(s, env, "m24_Union");
 native_values[414] = native_values[205];
 native_values[415] = c.pi_js_undefined();
 try call_setup_147(s, env, c.pi_js_undefined(), native_values);
-native_values[213] = try rt.invoke(s, native_values[416], native_values[417], native_values[314..317]);
+try invokePrepared(s, native_values, 416, 314, 317, 213);
 try call_setup_148(s, env, c.pi_js_undefined(), native_values);
-native_values[216] = try rt.invoke(s, native_values[418], native_values[419], native_values[317..318]);
+try invokePrepared(s, native_values, 418, 317, 318, 216);
 native_values[318] = native_values[213];
 native_values[319] = native_values[216];
 }
@@ -53531,7 +53537,7 @@ native_values[27] = try rt.get(s, env, "m82_CallConstruct");
 native_values[86] = native_values[27];
 native_values[87] = c.pi_js_undefined();
 try call_setup_153(s, env, c.pi_js_undefined(), native_values);
-native_values[30] = try rt.invoke(s, native_values[88], native_values[89], native_values[64..65]);
+try invokePrepared(s, native_values, 88, 64, 65, 30);
 native_values[31] = try rt.get(s, env, "instantiatedArguments");
 native_values[65] = native_values[30];
 native_values[66] = native_values[31];
@@ -53550,7 +53556,7 @@ native_values[91] = c.pi_js_undefined();
 native_values[34] = try rt.get(s, env, "context");
 native_values[35] = try rt.get(s, env, "state");
 try call_setup_155(s, env, c.pi_js_undefined(), native_values);
-native_values[38] = try rt.invoke(s, native_values[92], native_values[93], native_values[67..68]);
+try invokePrepared(s, native_values, 92, 67, 68, 38);
 native_values[39] = try rt.get(s, env, "type");
 native_values[40] = try s.text("parameters");
 native_values[41] = try rt.propertyKey(s, native_values[40]);
@@ -53656,6 +53662,11875 @@ native_values[25] = try s.object();
 native_values[37] = native_values[24];
 native_values[38] = native_values[25];
 }
+noinline fn typebox_pc_0_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_0_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[9] };
+}
+noinline fn typebox_pc_0_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[12..15], .result = 9, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_0_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[8];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_0_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[7];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_0_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[12] = native_values[3];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_0_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "type");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_0_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[4], .receiver = c.pi_js_undefined(), .args = native_values[10..12], .result = 7, .next = 6, .construct = false } };
+}
+noinline fn typebox_pc_0_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[11] = native_values[6];
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_0_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[5];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_0_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try s.array();
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_0_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try s.array();
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_0_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "m0_State");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_0_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "context");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_0_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_0_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[1]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_0_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_0_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_0_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_0_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 18 };
+}
+const typebox_steps_0 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_0_0, typebox_pc_0_1, typebox_pc_0_2, typebox_pc_0_3, typebox_pc_0_4, typebox_pc_0_5, typebox_pc_0_6, typebox_pc_0_7, typebox_pc_0_8, typebox_pc_0_9, typebox_pc_0_10, typebox_pc_0_11, typebox_pc_0_12, typebox_pc_0_13, typebox_pc_0_14, typebox_pc_0_15, typebox_pc_0_16, typebox_pc_0_17, typebox_pc_0_18, typebox_pc_0_19 };
+const typebox_plan_0: rt.Continuation.Plan = .{ .source_callback = f_0, .slots = 19, .entry = 19, .steps = &typebox_steps_0 };
+noinline fn typebox_pc_1_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_1_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[28] };
+}
+noinline fn typebox_pc_1_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[28] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_1_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[27]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_1_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[27] = native_values[21];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_1_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[30..35], .result = 21, .next = 4, .construct = false } };
+}
+noinline fn typebox_pc_1_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[34] = native_values[20];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_1_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[33] = native_values[16];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_1_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[32] = native_values[12];
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_1_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[8];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_1_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[30] = native_values[7];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_1_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[20] = try rt.key(s, native_values[17], native_values[19]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_1_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try rt.propertyKey(s, native_values[18]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_1_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try s.text("options");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_1_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[17] = try rt.get(s, env, "type");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_1_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try rt.key(s, native_values[13], native_values[15]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_1_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[15] = try rt.propertyKey(s, native_values[14]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_1_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[14] = try s.text("parameters");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_1_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "type");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_1_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try rt.key(s, native_values[9], native_values[11]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_1_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try rt.propertyKey(s, native_values[10]);
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_1_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[10] = try s.text("action");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_1_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "type");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_1_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "state");
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_1_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "context");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_1_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m0_InstantiateDeferred");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_1_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[27] = native_values[26];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_1_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[22], .receiver = c.pi_js_undefined(), .args = native_values[35..38], .result = 26, .next = 26, .construct = false } };
+}
+noinline fn typebox_pc_1_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[37] = native_values[25];
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_1_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[36] = native_values[24];
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_1_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[35] = native_values[23];
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_1_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[25] = try rt.get(s, env, "type");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_1_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[24] = try rt.get(s, env, "state");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_1_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[23] = try rt.get(s, env, "context");
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_1_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[22] = try rt.get(s, env, "m0_InstantiateImmediate");
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_1_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[5])) 25 else 34 };
+}
+noinline fn typebox_pc_1_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[29..30], .result = 5, .next = 35, .construct = false } };
+}
+noinline fn typebox_pc_1_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[29] = native_values[4];
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_1_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "type");
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_1_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m1_IsDeferred");
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_1_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[2]);
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_1_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_1_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_1_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_1_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_1_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 44 };
+}
+noinline fn typebox_pc_1_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 45 };
+}
+const typebox_steps_1 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_1_0, typebox_pc_1_1, typebox_pc_1_2, typebox_pc_1_3, typebox_pc_1_4, typebox_pc_1_5, typebox_pc_1_6, typebox_pc_1_7, typebox_pc_1_8, typebox_pc_1_9, typebox_pc_1_10, typebox_pc_1_11, typebox_pc_1_12, typebox_pc_1_13, typebox_pc_1_14, typebox_pc_1_15, typebox_pc_1_16, typebox_pc_1_17, typebox_pc_1_18, typebox_pc_1_19, typebox_pc_1_20, typebox_pc_1_21, typebox_pc_1_22, typebox_pc_1_23, typebox_pc_1_24, typebox_pc_1_25, typebox_pc_1_26, typebox_pc_1_27, typebox_pc_1_28, typebox_pc_1_29, typebox_pc_1_30, typebox_pc_1_31, typebox_pc_1_32, typebox_pc_1_33, typebox_pc_1_34, typebox_pc_1_35, typebox_pc_1_36, typebox_pc_1_37, typebox_pc_1_38, typebox_pc_1_39, typebox_pc_1_40, typebox_pc_1_41, typebox_pc_1_42, typebox_pc_1_43, typebox_pc_1_44, typebox_pc_1_45, typebox_pc_1_46 };
+const typebox_plan_1: rt.Continuation.Plan = .{ .source_callback = f_1, .slots = 44, .entry = 46, .steps = &typebox_steps_1 };
+noinline fn typebox_pc_9_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_9_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[435] };
+}
+noinline fn typebox_pc_9_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[16];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[9], .receiver = c.pi_js_undefined(), .args = native_values[438..442], .result = 16, .next = 2, .construct = false } };
+}
+noinline fn typebox_pc_9_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[441] = native_values[15];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_9_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[440] = native_values[14];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_9_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[439] = native_values[11];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_9_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[438] = native_values[10];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_9_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "options");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_9_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[14] = try rt.key(s, native_values[12], native_values[13]);
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_9_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[13] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_9_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "parameters");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_9_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "state");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_9_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "context");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_9_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "m5_AddImmutableInstantiate");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_9_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[28];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[21], .receiver = c.pi_js_undefined(), .args = native_values[444..448], .result = 28, .next = 15, .construct = false } };
+}
+noinline fn typebox_pc_9_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[447] = native_values[27];
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_9_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[446] = native_values[26];
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_9_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[445] = native_values[23];
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_9_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[444] = native_values[22];
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_9_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[27] = try rt.get(s, env, "options");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_9_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[26] = try rt.key(s, native_values[24], native_values[25]);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_9_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[25] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_9_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[24] = try rt.get(s, env, "parameters");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_9_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[23] = try rt.get(s, env, "state");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_9_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[22] = try rt.get(s, env, "context");
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_9_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "m6_RemoveImmutableInstantiate");
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_9_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[40];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[33], .receiver = c.pi_js_undefined(), .args = native_values[450..454], .result = 40, .next = 28, .construct = false } };
+}
+noinline fn typebox_pc_9_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[453] = native_values[39];
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_9_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[452] = native_values[38];
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_9_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[451] = native_values[35];
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_9_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[450] = native_values[34];
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_9_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[39] = try rt.get(s, env, "options");
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_9_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[38] = try rt.key(s, native_values[36], native_values[37]);
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_9_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[37] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_9_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[36] = try rt.get(s, env, "parameters");
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_9_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[35] = try rt.get(s, env, "state");
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_9_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[34] = try rt.get(s, env, "context");
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_9_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[33] = try rt.get(s, env, "m7_AddReadonlyInstantiate");
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_9_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[52];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[45], .receiver = c.pi_js_undefined(), .args = native_values[456..460], .result = 52, .next = 41, .construct = false } };
+}
+noinline fn typebox_pc_9_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[459] = native_values[51];
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_9_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[458] = native_values[50];
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_9_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[457] = native_values[47];
+return .{ .next = 44 };
+}
+noinline fn typebox_pc_9_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[456] = native_values[46];
+return .{ .next = 45 };
+}
+noinline fn typebox_pc_9_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[51] = try rt.get(s, env, "options");
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_9_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[50] = try rt.key(s, native_values[48], native_values[49]);
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_9_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[49] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_9_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[48] = try rt.get(s, env, "parameters");
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_9_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[47] = try rt.get(s, env, "state");
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_9_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[46] = try rt.get(s, env, "context");
+return .{ .next = 51 };
+}
+noinline fn typebox_pc_9_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[45] = try rt.get(s, env, "m8_RemoveReadonlyInstantiate");
+return .{ .next = 52 };
+}
+noinline fn typebox_pc_9_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[64];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[57], .receiver = c.pi_js_undefined(), .args = native_values[462..466], .result = 64, .next = 54, .construct = false } };
+}
+noinline fn typebox_pc_9_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[465] = native_values[63];
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_9_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[464] = native_values[62];
+return .{ .next = 56 };
+}
+noinline fn typebox_pc_9_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[463] = native_values[59];
+return .{ .next = 57 };
+}
+noinline fn typebox_pc_9_59(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[462] = native_values[58];
+return .{ .next = 58 };
+}
+noinline fn typebox_pc_9_60(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[63] = try rt.get(s, env, "options");
+return .{ .next = 59 };
+}
+noinline fn typebox_pc_9_61(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[62] = try rt.key(s, native_values[60], native_values[61]);
+return .{ .next = 60 };
+}
+noinline fn typebox_pc_9_62(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[61] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 61 };
+}
+noinline fn typebox_pc_9_63(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[60] = try rt.get(s, env, "parameters");
+return .{ .next = 62 };
+}
+noinline fn typebox_pc_9_64(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[59] = try rt.get(s, env, "state");
+return .{ .next = 63 };
+}
+noinline fn typebox_pc_9_65(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[58] = try rt.get(s, env, "context");
+return .{ .next = 64 };
+}
+noinline fn typebox_pc_9_66(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[57] = try rt.get(s, env, "m9_AddOptionalInstantiate");
+return .{ .next = 65 };
+}
+noinline fn typebox_pc_9_67(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[76];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_68(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[69], .receiver = c.pi_js_undefined(), .args = native_values[468..472], .result = 76, .next = 67, .construct = false } };
+}
+noinline fn typebox_pc_9_69(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[471] = native_values[75];
+return .{ .next = 68 };
+}
+noinline fn typebox_pc_9_70(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[470] = native_values[74];
+return .{ .next = 69 };
+}
+noinline fn typebox_pc_9_71(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[469] = native_values[71];
+return .{ .next = 70 };
+}
+noinline fn typebox_pc_9_72(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[468] = native_values[70];
+return .{ .next = 71 };
+}
+noinline fn typebox_pc_9_73(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[75] = try rt.get(s, env, "options");
+return .{ .next = 72 };
+}
+noinline fn typebox_pc_9_74(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[74] = try rt.key(s, native_values[72], native_values[73]);
+return .{ .next = 73 };
+}
+noinline fn typebox_pc_9_75(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[73] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 74 };
+}
+noinline fn typebox_pc_9_76(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[72] = try rt.get(s, env, "parameters");
+return .{ .next = 75 };
+}
+noinline fn typebox_pc_9_77(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[71] = try rt.get(s, env, "state");
+return .{ .next = 76 };
+}
+noinline fn typebox_pc_9_78(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[70] = try rt.get(s, env, "context");
+return .{ .next = 77 };
+}
+noinline fn typebox_pc_9_79(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[69] = try rt.get(s, env, "m10_RemoveOptionalInstantiate");
+return .{ .next = 78 };
+}
+noinline fn typebox_pc_9_80(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[88];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_81(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[81], .receiver = c.pi_js_undefined(), .args = native_values[474..478], .result = 88, .next = 80, .construct = false } };
+}
+noinline fn typebox_pc_9_82(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[477] = native_values[87];
+return .{ .next = 81 };
+}
+noinline fn typebox_pc_9_83(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[476] = native_values[86];
+return .{ .next = 82 };
+}
+noinline fn typebox_pc_9_84(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[475] = native_values[83];
+return .{ .next = 83 };
+}
+noinline fn typebox_pc_9_85(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[474] = native_values[82];
+return .{ .next = 84 };
+}
+noinline fn typebox_pc_9_86(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[87] = try rt.get(s, env, "options");
+return .{ .next = 85 };
+}
+noinline fn typebox_pc_9_87(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[86] = try rt.key(s, native_values[84], native_values[85]);
+return .{ .next = 86 };
+}
+noinline fn typebox_pc_9_88(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[85] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 87 };
+}
+noinline fn typebox_pc_9_89(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[84] = try rt.get(s, env, "parameters");
+return .{ .next = 88 };
+}
+noinline fn typebox_pc_9_90(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[83] = try rt.get(s, env, "state");
+return .{ .next = 89 };
+}
+noinline fn typebox_pc_9_91(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[82] = try rt.get(s, env, "context");
+return .{ .next = 90 };
+}
+noinline fn typebox_pc_9_92(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[81] = try rt.get(s, env, "m11_CapitalizeInstantiate");
+return .{ .next = 91 };
+}
+noinline fn typebox_pc_9_93(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[109];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_94(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[93], .receiver = c.pi_js_undefined(), .args = native_values[480..487], .result = 109, .next = 93, .construct = false } };
+}
+noinline fn typebox_pc_9_95(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[486] = native_values[108];
+return .{ .next = 94 };
+}
+noinline fn typebox_pc_9_96(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[485] = native_values[107];
+return .{ .next = 95 };
+}
+noinline fn typebox_pc_9_97(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[484] = native_values[104];
+return .{ .next = 96 };
+}
+noinline fn typebox_pc_9_98(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[483] = native_values[101];
+return .{ .next = 97 };
+}
+noinline fn typebox_pc_9_99(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[482] = native_values[98];
+return .{ .next = 98 };
+}
+noinline fn typebox_pc_9_100(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[481] = native_values[95];
+return .{ .next = 99 };
+}
+noinline fn typebox_pc_9_101(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[480] = native_values[94];
+return .{ .next = 100 };
+}
+noinline fn typebox_pc_9_102(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[108] = try rt.get(s, env, "options");
+return .{ .next = 101 };
+}
+noinline fn typebox_pc_9_103(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[107] = try rt.key(s, native_values[105], native_values[106]);
+return .{ .next = 102 };
+}
+noinline fn typebox_pc_9_104(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[106] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 3));
+return .{ .next = 103 };
+}
+noinline fn typebox_pc_9_105(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[105] = try rt.get(s, env, "parameters");
+return .{ .next = 104 };
+}
+noinline fn typebox_pc_9_106(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[104] = try rt.key(s, native_values[102], native_values[103]);
+return .{ .next = 105 };
+}
+noinline fn typebox_pc_9_107(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[103] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
+return .{ .next = 106 };
+}
+noinline fn typebox_pc_9_108(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[102] = try rt.get(s, env, "parameters");
+return .{ .next = 107 };
+}
+noinline fn typebox_pc_9_109(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[101] = try rt.key(s, native_values[99], native_values[100]);
+return .{ .next = 108 };
+}
+noinline fn typebox_pc_9_110(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[100] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 109 };
+}
+noinline fn typebox_pc_9_111(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[99] = try rt.get(s, env, "parameters");
+return .{ .next = 110 };
+}
+noinline fn typebox_pc_9_112(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[98] = try rt.key(s, native_values[96], native_values[97]);
+return .{ .next = 111 };
+}
+noinline fn typebox_pc_9_113(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[97] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 112 };
+}
+noinline fn typebox_pc_9_114(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[96] = try rt.get(s, env, "parameters");
+return .{ .next = 113 };
+}
+noinline fn typebox_pc_9_115(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[95] = try rt.get(s, env, "state");
+return .{ .next = 114 };
+}
+noinline fn typebox_pc_9_116(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[94] = try rt.get(s, env, "context");
+return .{ .next = 115 };
+}
+noinline fn typebox_pc_9_117(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[93] = try rt.get(s, env, "m28_ConditionalInstantiate");
+return .{ .next = 116 };
+}
+noinline fn typebox_pc_9_118(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[121];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_119(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[114], .receiver = c.pi_js_undefined(), .args = native_values[489..493], .result = 121, .next = 118, .construct = false } };
+}
+noinline fn typebox_pc_9_120(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[492] = native_values[120];
+return .{ .next = 119 };
+}
+noinline fn typebox_pc_9_121(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[491] = native_values[119];
+return .{ .next = 120 };
+}
+noinline fn typebox_pc_9_122(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[490] = native_values[116];
+return .{ .next = 121 };
+}
+noinline fn typebox_pc_9_123(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[489] = native_values[115];
+return .{ .next = 122 };
+}
+noinline fn typebox_pc_9_124(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[120] = try rt.get(s, env, "options");
+return .{ .next = 123 };
+}
+noinline fn typebox_pc_9_125(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[119] = try rt.key(s, native_values[117], native_values[118]);
+return .{ .next = 124 };
+}
+noinline fn typebox_pc_9_126(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[118] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 125 };
+}
+noinline fn typebox_pc_9_127(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[117] = try rt.get(s, env, "parameters");
+return .{ .next = 126 };
+}
+noinline fn typebox_pc_9_128(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[116] = try rt.get(s, env, "state");
+return .{ .next = 127 };
+}
+noinline fn typebox_pc_9_129(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[115] = try rt.get(s, env, "context");
+return .{ .next = 128 };
+}
+noinline fn typebox_pc_9_130(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[114] = try rt.get(s, env, "m147_ConstructorParametersInstantiate");
+return .{ .next = 129 };
+}
+noinline fn typebox_pc_9_131(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[133];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_132(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[126], .receiver = c.pi_js_undefined(), .args = native_values[495..499], .result = 133, .next = 131, .construct = false } };
+}
+noinline fn typebox_pc_9_133(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[498] = native_values[132];
+return .{ .next = 132 };
+}
+noinline fn typebox_pc_9_134(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[497] = native_values[131];
+return .{ .next = 133 };
+}
+noinline fn typebox_pc_9_135(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[496] = native_values[128];
+return .{ .next = 134 };
+}
+noinline fn typebox_pc_9_136(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[495] = native_values[127];
+return .{ .next = 135 };
+}
+noinline fn typebox_pc_9_137(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[132] = try rt.get(s, env, "options");
+return .{ .next = 136 };
+}
+noinline fn typebox_pc_9_138(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[131] = try rt.key(s, native_values[129], native_values[130]);
+return .{ .next = 137 };
+}
+noinline fn typebox_pc_9_139(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[130] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 138 };
+}
+noinline fn typebox_pc_9_140(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[129] = try rt.get(s, env, "parameters");
+return .{ .next = 139 };
+}
+noinline fn typebox_pc_9_141(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[128] = try rt.get(s, env, "state");
+return .{ .next = 140 };
+}
+noinline fn typebox_pc_9_142(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[127] = try rt.get(s, env, "context");
+return .{ .next = 141 };
+}
+noinline fn typebox_pc_9_143(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[126] = try rt.get(s, env, "m149_EvaluateInstantiate");
+return .{ .next = 142 };
+}
+noinline fn typebox_pc_9_144(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[148];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_145(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[138], .receiver = c.pi_js_undefined(), .args = native_values[501..506], .result = 148, .next = 144, .construct = false } };
+}
+noinline fn typebox_pc_9_146(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[505] = native_values[147];
+return .{ .next = 145 };
+}
+noinline fn typebox_pc_9_147(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[504] = native_values[146];
+return .{ .next = 146 };
+}
+noinline fn typebox_pc_9_148(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[503] = native_values[143];
+return .{ .next = 147 };
+}
+noinline fn typebox_pc_9_149(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[502] = native_values[140];
+return .{ .next = 148 };
+}
+noinline fn typebox_pc_9_150(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[501] = native_values[139];
+return .{ .next = 149 };
+}
+noinline fn typebox_pc_9_151(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[147] = try rt.get(s, env, "options");
+return .{ .next = 150 };
+}
+noinline fn typebox_pc_9_152(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[146] = try rt.key(s, native_values[144], native_values[145]);
+return .{ .next = 151 };
+}
+noinline fn typebox_pc_9_153(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[145] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 152 };
+}
+noinline fn typebox_pc_9_154(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[144] = try rt.get(s, env, "parameters");
+return .{ .next = 153 };
+}
+noinline fn typebox_pc_9_155(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[143] = try rt.key(s, native_values[141], native_values[142]);
+return .{ .next = 154 };
+}
+noinline fn typebox_pc_9_156(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[142] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 155 };
+}
+noinline fn typebox_pc_9_157(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[141] = try rt.get(s, env, "parameters");
+return .{ .next = 156 };
+}
+noinline fn typebox_pc_9_158(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[140] = try rt.get(s, env, "state");
+return .{ .next = 157 };
+}
+noinline fn typebox_pc_9_159(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[139] = try rt.get(s, env, "context");
+return .{ .next = 158 };
+}
+noinline fn typebox_pc_9_160(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[138] = try rt.get(s, env, "m150_ExcludeInstantiate");
+return .{ .next = 159 };
+}
+noinline fn typebox_pc_9_161(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[163];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_162(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[153], .receiver = c.pi_js_undefined(), .args = native_values[508..513], .result = 163, .next = 161, .construct = false } };
+}
+noinline fn typebox_pc_9_163(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[512] = native_values[162];
+return .{ .next = 162 };
+}
+noinline fn typebox_pc_9_164(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[511] = native_values[161];
+return .{ .next = 163 };
+}
+noinline fn typebox_pc_9_165(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[510] = native_values[158];
+return .{ .next = 164 };
+}
+noinline fn typebox_pc_9_166(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[509] = native_values[155];
+return .{ .next = 165 };
+}
+noinline fn typebox_pc_9_167(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[508] = native_values[154];
+return .{ .next = 166 };
+}
+noinline fn typebox_pc_9_168(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[162] = try rt.get(s, env, "options");
+return .{ .next = 167 };
+}
+noinline fn typebox_pc_9_169(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[161] = try rt.key(s, native_values[159], native_values[160]);
+return .{ .next = 168 };
+}
+noinline fn typebox_pc_9_170(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[160] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 169 };
+}
+noinline fn typebox_pc_9_171(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[159] = try rt.get(s, env, "parameters");
+return .{ .next = 170 };
+}
+noinline fn typebox_pc_9_172(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[158] = try rt.key(s, native_values[156], native_values[157]);
+return .{ .next = 171 };
+}
+noinline fn typebox_pc_9_173(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[157] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 172 };
+}
+noinline fn typebox_pc_9_174(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[156] = try rt.get(s, env, "parameters");
+return .{ .next = 173 };
+}
+noinline fn typebox_pc_9_175(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[155] = try rt.get(s, env, "state");
+return .{ .next = 174 };
+}
+noinline fn typebox_pc_9_176(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[154] = try rt.get(s, env, "context");
+return .{ .next = 175 };
+}
+noinline fn typebox_pc_9_177(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[153] = try rt.get(s, env, "m153_ExtractInstantiate");
+return .{ .next = 176 };
+}
+noinline fn typebox_pc_9_178(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[178];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_179(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[168], .receiver = c.pi_js_undefined(), .args = native_values[515..520], .result = 178, .next = 178, .construct = false } };
+}
+noinline fn typebox_pc_9_180(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[519] = native_values[177];
+return .{ .next = 179 };
+}
+noinline fn typebox_pc_9_181(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[518] = native_values[176];
+return .{ .next = 180 };
+}
+noinline fn typebox_pc_9_182(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[517] = native_values[173];
+return .{ .next = 181 };
+}
+noinline fn typebox_pc_9_183(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[516] = native_values[170];
+return .{ .next = 182 };
+}
+noinline fn typebox_pc_9_184(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[515] = native_values[169];
+return .{ .next = 183 };
+}
+noinline fn typebox_pc_9_185(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[177] = try rt.get(s, env, "options");
+return .{ .next = 184 };
+}
+noinline fn typebox_pc_9_186(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[176] = try rt.key(s, native_values[174], native_values[175]);
+return .{ .next = 185 };
+}
+noinline fn typebox_pc_9_187(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[175] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 186 };
+}
+noinline fn typebox_pc_9_188(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[174] = try rt.get(s, env, "parameters");
+return .{ .next = 187 };
+}
+noinline fn typebox_pc_9_189(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[173] = try rt.key(s, native_values[171], native_values[172]);
+return .{ .next = 188 };
+}
+noinline fn typebox_pc_9_190(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[172] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 189 };
+}
+noinline fn typebox_pc_9_191(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[171] = try rt.get(s, env, "parameters");
+return .{ .next = 190 };
+}
+noinline fn typebox_pc_9_192(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[170] = try rt.get(s, env, "state");
+return .{ .next = 191 };
+}
+noinline fn typebox_pc_9_193(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[169] = try rt.get(s, env, "context");
+return .{ .next = 192 };
+}
+noinline fn typebox_pc_9_194(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[168] = try rt.get(s, env, "m156_IndexInstantiate");
+return .{ .next = 193 };
+}
+noinline fn typebox_pc_9_195(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[190];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_196(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[183], .receiver = c.pi_js_undefined(), .args = native_values[522..526], .result = 190, .next = 195, .construct = false } };
+}
+noinline fn typebox_pc_9_197(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[525] = native_values[189];
+return .{ .next = 196 };
+}
+noinline fn typebox_pc_9_198(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[524] = native_values[188];
+return .{ .next = 197 };
+}
+noinline fn typebox_pc_9_199(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[523] = native_values[185];
+return .{ .next = 198 };
+}
+noinline fn typebox_pc_9_200(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[522] = native_values[184];
+return .{ .next = 199 };
+}
+noinline fn typebox_pc_9_201(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[189] = try rt.get(s, env, "options");
+return .{ .next = 200 };
+}
+noinline fn typebox_pc_9_202(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[188] = try rt.key(s, native_values[186], native_values[187]);
+return .{ .next = 201 };
+}
+noinline fn typebox_pc_9_203(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[187] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 202 };
+}
+noinline fn typebox_pc_9_204(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[186] = try rt.get(s, env, "parameters");
+return .{ .next = 203 };
+}
+noinline fn typebox_pc_9_205(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[185] = try rt.get(s, env, "state");
+return .{ .next = 204 };
+}
+noinline fn typebox_pc_9_206(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[184] = try rt.get(s, env, "context");
+return .{ .next = 205 };
+}
+noinline fn typebox_pc_9_207(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[183] = try rt.get(s, env, "m185_InstanceTypeInstantiate");
+return .{ .next = 206 };
+}
+noinline fn typebox_pc_9_208(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[205];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_209(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[195], .receiver = c.pi_js_undefined(), .args = native_values[528..533], .result = 205, .next = 208, .construct = false } };
+}
+noinline fn typebox_pc_9_210(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[532] = native_values[204];
+return .{ .next = 209 };
+}
+noinline fn typebox_pc_9_211(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[531] = native_values[203];
+return .{ .next = 210 };
+}
+noinline fn typebox_pc_9_212(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[530] = native_values[200];
+return .{ .next = 211 };
+}
+noinline fn typebox_pc_9_213(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[529] = native_values[197];
+return .{ .next = 212 };
+}
+noinline fn typebox_pc_9_214(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[528] = native_values[196];
+return .{ .next = 213 };
+}
+noinline fn typebox_pc_9_215(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[204] = try rt.get(s, env, "options");
+return .{ .next = 214 };
+}
+noinline fn typebox_pc_9_216(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[203] = try rt.key(s, native_values[201], native_values[202]);
+return .{ .next = 215 };
+}
+noinline fn typebox_pc_9_217(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[202] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 216 };
+}
+noinline fn typebox_pc_9_218(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[201] = try rt.get(s, env, "parameters");
+return .{ .next = 217 };
+}
+noinline fn typebox_pc_9_219(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[200] = try rt.key(s, native_values[198], native_values[199]);
+return .{ .next = 218 };
+}
+noinline fn typebox_pc_9_220(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[199] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 219 };
+}
+noinline fn typebox_pc_9_221(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[198] = try rt.get(s, env, "parameters");
+return .{ .next = 220 };
+}
+noinline fn typebox_pc_9_222(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[197] = try rt.get(s, env, "state");
+return .{ .next = 221 };
+}
+noinline fn typebox_pc_9_223(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[196] = try rt.get(s, env, "context");
+return .{ .next = 222 };
+}
+noinline fn typebox_pc_9_224(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[195] = try rt.get(s, env, "m187_InterfaceInstantiate");
+return .{ .next = 223 };
+}
+noinline fn typebox_pc_9_225(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[217];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_226(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[210], .receiver = c.pi_js_undefined(), .args = native_values[535..539], .result = 217, .next = 225, .construct = false } };
+}
+noinline fn typebox_pc_9_227(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[538] = native_values[216];
+return .{ .next = 226 };
+}
+noinline fn typebox_pc_9_228(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[537] = native_values[215];
+return .{ .next = 227 };
+}
+noinline fn typebox_pc_9_229(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[536] = native_values[212];
+return .{ .next = 228 };
+}
+noinline fn typebox_pc_9_230(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[535] = native_values[211];
+return .{ .next = 229 };
+}
+noinline fn typebox_pc_9_231(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[216] = try rt.get(s, env, "options");
+return .{ .next = 230 };
+}
+noinline fn typebox_pc_9_232(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[215] = try rt.key(s, native_values[213], native_values[214]);
+return .{ .next = 231 };
+}
+noinline fn typebox_pc_9_233(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[214] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 232 };
+}
+noinline fn typebox_pc_9_234(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[213] = try rt.get(s, env, "parameters");
+return .{ .next = 233 };
+}
+noinline fn typebox_pc_9_235(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[212] = try rt.get(s, env, "state");
+return .{ .next = 234 };
+}
+noinline fn typebox_pc_9_236(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[211] = try rt.get(s, env, "context");
+return .{ .next = 235 };
+}
+noinline fn typebox_pc_9_237(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[210] = try rt.get(s, env, "m197_KeyOfInstantiate");
+return .{ .next = 236 };
+}
+noinline fn typebox_pc_9_238(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[229];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_239(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[222], .receiver = c.pi_js_undefined(), .args = native_values[541..545], .result = 229, .next = 238, .construct = false } };
+}
+noinline fn typebox_pc_9_240(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[544] = native_values[228];
+return .{ .next = 239 };
+}
+noinline fn typebox_pc_9_241(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[543] = native_values[227];
+return .{ .next = 240 };
+}
+noinline fn typebox_pc_9_242(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[542] = native_values[224];
+return .{ .next = 241 };
+}
+noinline fn typebox_pc_9_243(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[541] = native_values[223];
+return .{ .next = 242 };
+}
+noinline fn typebox_pc_9_244(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[228] = try rt.get(s, env, "options");
+return .{ .next = 243 };
+}
+noinline fn typebox_pc_9_245(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[227] = try rt.key(s, native_values[225], native_values[226]);
+return .{ .next = 244 };
+}
+noinline fn typebox_pc_9_246(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[226] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 245 };
+}
+noinline fn typebox_pc_9_247(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[225] = try rt.get(s, env, "parameters");
+return .{ .next = 246 };
+}
+noinline fn typebox_pc_9_248(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[224] = try rt.get(s, env, "state");
+return .{ .next = 247 };
+}
+noinline fn typebox_pc_9_249(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[223] = try rt.get(s, env, "context");
+return .{ .next = 248 };
+}
+noinline fn typebox_pc_9_250(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[222] = try rt.get(s, env, "m11_LowercaseInstantiate");
+return .{ .next = 249 };
+}
+noinline fn typebox_pc_9_251(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[250];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_252(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[234], .receiver = c.pi_js_undefined(), .args = native_values[547..554], .result = 250, .next = 251, .construct = false } };
+}
+noinline fn typebox_pc_9_253(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[553] = native_values[249];
+return .{ .next = 252 };
+}
+noinline fn typebox_pc_9_254(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[552] = native_values[248];
+return .{ .next = 253 };
+}
+noinline fn typebox_pc_9_255(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[551] = native_values[245];
+return .{ .next = 254 };
+}
+noinline fn typebox_pc_9_256(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[550] = native_values[242];
+return .{ .next = 255 };
+}
+noinline fn typebox_pc_9_257(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[549] = native_values[239];
+return .{ .next = 256 };
+}
+noinline fn typebox_pc_9_258(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[548] = native_values[236];
+return .{ .next = 257 };
+}
+noinline fn typebox_pc_9_259(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[547] = native_values[235];
+return .{ .next = 258 };
+}
+noinline fn typebox_pc_9_260(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[249] = try rt.get(s, env, "options");
+return .{ .next = 259 };
+}
+noinline fn typebox_pc_9_261(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[248] = try rt.key(s, native_values[246], native_values[247]);
+return .{ .next = 260 };
+}
+noinline fn typebox_pc_9_262(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[247] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 3));
+return .{ .next = 261 };
+}
+noinline fn typebox_pc_9_263(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[246] = try rt.get(s, env, "parameters");
+return .{ .next = 262 };
+}
+noinline fn typebox_pc_9_264(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[245] = try rt.key(s, native_values[243], native_values[244]);
+return .{ .next = 263 };
+}
+noinline fn typebox_pc_9_265(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[244] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 2));
+return .{ .next = 264 };
+}
+noinline fn typebox_pc_9_266(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[243] = try rt.get(s, env, "parameters");
+return .{ .next = 265 };
+}
+noinline fn typebox_pc_9_267(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[242] = try rt.key(s, native_values[240], native_values[241]);
+return .{ .next = 266 };
+}
+noinline fn typebox_pc_9_268(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[241] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 267 };
+}
+noinline fn typebox_pc_9_269(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[240] = try rt.get(s, env, "parameters");
+return .{ .next = 268 };
+}
+noinline fn typebox_pc_9_270(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[239] = try rt.key(s, native_values[237], native_values[238]);
+return .{ .next = 269 };
+}
+noinline fn typebox_pc_9_271(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[238] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 270 };
+}
+noinline fn typebox_pc_9_272(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[237] = try rt.get(s, env, "parameters");
+return .{ .next = 271 };
+}
+noinline fn typebox_pc_9_273(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[236] = try rt.get(s, env, "state");
+return .{ .next = 272 };
+}
+noinline fn typebox_pc_9_274(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[235] = try rt.get(s, env, "context");
+return .{ .next = 273 };
+}
+noinline fn typebox_pc_9_275(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[234] = try rt.get(s, env, "m206_MappedInstantiate");
+return .{ .next = 274 };
+}
+noinline fn typebox_pc_9_276(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[262];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_277(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[255], .receiver = c.pi_js_undefined(), .args = native_values[556..560], .result = 262, .next = 276, .construct = false } };
+}
+noinline fn typebox_pc_9_278(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[559] = native_values[261];
+return .{ .next = 277 };
+}
+noinline fn typebox_pc_9_279(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[558] = native_values[260];
+return .{ .next = 278 };
+}
+noinline fn typebox_pc_9_280(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[557] = native_values[257];
+return .{ .next = 279 };
+}
+noinline fn typebox_pc_9_281(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[556] = native_values[256];
+return .{ .next = 280 };
+}
+noinline fn typebox_pc_9_282(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[261] = try rt.get(s, env, "options");
+return .{ .next = 281 };
+}
+noinline fn typebox_pc_9_283(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[260] = try rt.key(s, native_values[258], native_values[259]);
+return .{ .next = 282 };
+}
+noinline fn typebox_pc_9_284(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[259] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 283 };
+}
+noinline fn typebox_pc_9_285(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[258] = try rt.get(s, env, "parameters");
+return .{ .next = 284 };
+}
+noinline fn typebox_pc_9_286(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[257] = try rt.get(s, env, "state");
+return .{ .next = 285 };
+}
+noinline fn typebox_pc_9_287(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[256] = try rt.get(s, env, "context");
+return .{ .next = 286 };
+}
+noinline fn typebox_pc_9_288(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[255] = try rt.get(s, env, "m210_ModuleInstantiate");
+return .{ .next = 287 };
+}
+noinline fn typebox_pc_9_289(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[274];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_290(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[267], .receiver = c.pi_js_undefined(), .args = native_values[562..566], .result = 274, .next = 289, .construct = false } };
+}
+noinline fn typebox_pc_9_291(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[565] = native_values[273];
+return .{ .next = 290 };
+}
+noinline fn typebox_pc_9_292(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[564] = native_values[272];
+return .{ .next = 291 };
+}
+noinline fn typebox_pc_9_293(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[563] = native_values[269];
+return .{ .next = 292 };
+}
+noinline fn typebox_pc_9_294(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[562] = native_values[268];
+return .{ .next = 293 };
+}
+noinline fn typebox_pc_9_295(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[273] = try rt.get(s, env, "options");
+return .{ .next = 294 };
+}
+noinline fn typebox_pc_9_296(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[272] = try rt.key(s, native_values[270], native_values[271]);
+return .{ .next = 295 };
+}
+noinline fn typebox_pc_9_297(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[271] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 296 };
+}
+noinline fn typebox_pc_9_298(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[270] = try rt.get(s, env, "parameters");
+return .{ .next = 297 };
+}
+noinline fn typebox_pc_9_299(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[269] = try rt.get(s, env, "state");
+return .{ .next = 298 };
+}
+noinline fn typebox_pc_9_300(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[268] = try rt.get(s, env, "context");
+return .{ .next = 299 };
+}
+noinline fn typebox_pc_9_301(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[267] = try rt.get(s, env, "m212_NonNullableInstantiate");
+return .{ .next = 300 };
+}
+noinline fn typebox_pc_9_302(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[289];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_303(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[279], .receiver = c.pi_js_undefined(), .args = native_values[568..573], .result = 289, .next = 302, .construct = false } };
+}
+noinline fn typebox_pc_9_304(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[572] = native_values[288];
+return .{ .next = 303 };
+}
+noinline fn typebox_pc_9_305(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[571] = native_values[287];
+return .{ .next = 304 };
+}
+noinline fn typebox_pc_9_306(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[570] = native_values[284];
+return .{ .next = 305 };
+}
+noinline fn typebox_pc_9_307(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[569] = native_values[281];
+return .{ .next = 306 };
+}
+noinline fn typebox_pc_9_308(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[568] = native_values[280];
+return .{ .next = 307 };
+}
+noinline fn typebox_pc_9_309(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[288] = try rt.get(s, env, "options");
+return .{ .next = 308 };
+}
+noinline fn typebox_pc_9_310(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[287] = try rt.key(s, native_values[285], native_values[286]);
+return .{ .next = 309 };
+}
+noinline fn typebox_pc_9_311(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[286] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 310 };
+}
+noinline fn typebox_pc_9_312(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[285] = try rt.get(s, env, "parameters");
+return .{ .next = 311 };
+}
+noinline fn typebox_pc_9_313(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[284] = try rt.key(s, native_values[282], native_values[283]);
+return .{ .next = 312 };
+}
+noinline fn typebox_pc_9_314(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[283] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 313 };
+}
+noinline fn typebox_pc_9_315(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[282] = try rt.get(s, env, "parameters");
+return .{ .next = 314 };
+}
+noinline fn typebox_pc_9_316(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[281] = try rt.get(s, env, "state");
+return .{ .next = 315 };
+}
+noinline fn typebox_pc_9_317(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[280] = try rt.get(s, env, "context");
+return .{ .next = 316 };
+}
+noinline fn typebox_pc_9_318(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[279] = try rt.get(s, env, "m214_PickInstantiate");
+return .{ .next = 317 };
+}
+noinline fn typebox_pc_9_319(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[301];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_320(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[294], .receiver = c.pi_js_undefined(), .args = native_values[575..579], .result = 301, .next = 319, .construct = false } };
+}
+noinline fn typebox_pc_9_321(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[578] = native_values[300];
+return .{ .next = 320 };
+}
+noinline fn typebox_pc_9_322(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[577] = native_values[299];
+return .{ .next = 321 };
+}
+noinline fn typebox_pc_9_323(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[576] = native_values[296];
+return .{ .next = 322 };
+}
+noinline fn typebox_pc_9_324(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[575] = native_values[295];
+return .{ .next = 323 };
+}
+noinline fn typebox_pc_9_325(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[300] = try rt.get(s, env, "options");
+return .{ .next = 324 };
+}
+noinline fn typebox_pc_9_326(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[299] = try rt.key(s, native_values[297], native_values[298]);
+return .{ .next = 325 };
+}
+noinline fn typebox_pc_9_327(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[298] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 326 };
+}
+noinline fn typebox_pc_9_328(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[297] = try rt.get(s, env, "parameters");
+return .{ .next = 327 };
+}
+noinline fn typebox_pc_9_329(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[296] = try rt.get(s, env, "state");
+return .{ .next = 328 };
+}
+noinline fn typebox_pc_9_330(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[295] = try rt.get(s, env, "context");
+return .{ .next = 329 };
+}
+noinline fn typebox_pc_9_331(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[294] = try rt.get(s, env, "m218_ParametersInstantiate");
+return .{ .next = 330 };
+}
+noinline fn typebox_pc_9_332(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[313];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_333(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[306], .receiver = c.pi_js_undefined(), .args = native_values[581..585], .result = 313, .next = 332, .construct = false } };
+}
+noinline fn typebox_pc_9_334(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[584] = native_values[312];
+return .{ .next = 333 };
+}
+noinline fn typebox_pc_9_335(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[583] = native_values[311];
+return .{ .next = 334 };
+}
+noinline fn typebox_pc_9_336(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[582] = native_values[308];
+return .{ .next = 335 };
+}
+noinline fn typebox_pc_9_337(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[581] = native_values[307];
+return .{ .next = 336 };
+}
+noinline fn typebox_pc_9_338(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[312] = try rt.get(s, env, "options");
+return .{ .next = 337 };
+}
+noinline fn typebox_pc_9_339(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[311] = try rt.key(s, native_values[309], native_values[310]);
+return .{ .next = 338 };
+}
+noinline fn typebox_pc_9_340(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[310] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 339 };
+}
+noinline fn typebox_pc_9_341(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[309] = try rt.get(s, env, "parameters");
+return .{ .next = 340 };
+}
+noinline fn typebox_pc_9_342(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[308] = try rt.get(s, env, "state");
+return .{ .next = 341 };
+}
+noinline fn typebox_pc_9_343(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[307] = try rt.get(s, env, "context");
+return .{ .next = 342 };
+}
+noinline fn typebox_pc_9_344(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[306] = try rt.get(s, env, "m220_PartialInstantiate");
+return .{ .next = 343 };
+}
+noinline fn typebox_pc_9_345(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[328];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_346(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[318], .receiver = c.pi_js_undefined(), .args = native_values[587..592], .result = 328, .next = 345, .construct = false } };
+}
+noinline fn typebox_pc_9_347(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[591] = native_values[327];
+return .{ .next = 346 };
+}
+noinline fn typebox_pc_9_348(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[590] = native_values[326];
+return .{ .next = 347 };
+}
+noinline fn typebox_pc_9_349(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[589] = native_values[323];
+return .{ .next = 348 };
+}
+noinline fn typebox_pc_9_350(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[588] = native_values[320];
+return .{ .next = 349 };
+}
+noinline fn typebox_pc_9_351(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[587] = native_values[319];
+return .{ .next = 350 };
+}
+noinline fn typebox_pc_9_352(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[327] = try rt.get(s, env, "options");
+return .{ .next = 351 };
+}
+noinline fn typebox_pc_9_353(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[326] = try rt.key(s, native_values[324], native_values[325]);
+return .{ .next = 352 };
+}
+noinline fn typebox_pc_9_354(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[325] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 353 };
+}
+noinline fn typebox_pc_9_355(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[324] = try rt.get(s, env, "parameters");
+return .{ .next = 354 };
+}
+noinline fn typebox_pc_9_356(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[323] = try rt.key(s, native_values[321], native_values[322]);
+return .{ .next = 355 };
+}
+noinline fn typebox_pc_9_357(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[322] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 356 };
+}
+noinline fn typebox_pc_9_358(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[321] = try rt.get(s, env, "parameters");
+return .{ .next = 357 };
+}
+noinline fn typebox_pc_9_359(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[320] = try rt.get(s, env, "state");
+return .{ .next = 358 };
+}
+noinline fn typebox_pc_9_360(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[319] = try rt.get(s, env, "context");
+return .{ .next = 359 };
+}
+noinline fn typebox_pc_9_361(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[318] = try rt.get(s, env, "m228_OmitInstantiate");
+return .{ .next = 360 };
+}
+noinline fn typebox_pc_9_362(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[340];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_363(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[333], .receiver = c.pi_js_undefined(), .args = native_values[594..598], .result = 340, .next = 362, .construct = false } };
+}
+noinline fn typebox_pc_9_364(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[597] = native_values[339];
+return .{ .next = 363 };
+}
+noinline fn typebox_pc_9_365(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[596] = native_values[338];
+return .{ .next = 364 };
+}
+noinline fn typebox_pc_9_366(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[595] = native_values[335];
+return .{ .next = 365 };
+}
+noinline fn typebox_pc_9_367(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[594] = native_values[334];
+return .{ .next = 366 };
+}
+noinline fn typebox_pc_9_368(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[339] = try rt.get(s, env, "options");
+return .{ .next = 367 };
+}
+noinline fn typebox_pc_9_369(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[338] = try rt.key(s, native_values[336], native_values[337]);
+return .{ .next = 368 };
+}
+noinline fn typebox_pc_9_370(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[337] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 369 };
+}
+noinline fn typebox_pc_9_371(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[336] = try rt.get(s, env, "parameters");
+return .{ .next = 370 };
+}
+noinline fn typebox_pc_9_372(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[335] = try rt.get(s, env, "state");
+return .{ .next = 371 };
+}
+noinline fn typebox_pc_9_373(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[334] = try rt.get(s, env, "context");
+return .{ .next = 372 };
+}
+noinline fn typebox_pc_9_374(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[333] = try rt.get(s, env, "m231_ReadonlyObjectInstantiate");
+return .{ .next = 373 };
+}
+noinline fn typebox_pc_9_375(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[355];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_376(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[345], .receiver = c.pi_js_undefined(), .args = native_values[600..605], .result = 355, .next = 375, .construct = false } };
+}
+noinline fn typebox_pc_9_377(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[604] = native_values[354];
+return .{ .next = 376 };
+}
+noinline fn typebox_pc_9_378(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[603] = native_values[353];
+return .{ .next = 377 };
+}
+noinline fn typebox_pc_9_379(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[602] = native_values[350];
+return .{ .next = 378 };
+}
+noinline fn typebox_pc_9_380(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[601] = native_values[347];
+return .{ .next = 379 };
+}
+noinline fn typebox_pc_9_381(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[600] = native_values[346];
+return .{ .next = 380 };
+}
+noinline fn typebox_pc_9_382(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[354] = try rt.get(s, env, "options");
+return .{ .next = 381 };
+}
+noinline fn typebox_pc_9_383(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[353] = try rt.key(s, native_values[351], native_values[352]);
+return .{ .next = 382 };
+}
+noinline fn typebox_pc_9_384(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[352] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 383 };
+}
+noinline fn typebox_pc_9_385(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[351] = try rt.get(s, env, "parameters");
+return .{ .next = 384 };
+}
+noinline fn typebox_pc_9_386(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[350] = try rt.key(s, native_values[348], native_values[349]);
+return .{ .next = 385 };
+}
+noinline fn typebox_pc_9_387(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[349] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 386 };
+}
+noinline fn typebox_pc_9_388(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[348] = try rt.get(s, env, "parameters");
+return .{ .next = 387 };
+}
+noinline fn typebox_pc_9_389(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[347] = try rt.get(s, env, "state");
+return .{ .next = 388 };
+}
+noinline fn typebox_pc_9_390(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[346] = try rt.get(s, env, "context");
+return .{ .next = 389 };
+}
+noinline fn typebox_pc_9_391(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[345] = try rt.get(s, env, "m46_RecordInstantiate");
+return .{ .next = 390 };
+}
+noinline fn typebox_pc_9_392(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[367];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_393(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[360], .receiver = c.pi_js_undefined(), .args = native_values[607..611], .result = 367, .next = 392, .construct = false } };
+}
+noinline fn typebox_pc_9_394(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[610] = native_values[366];
+return .{ .next = 393 };
+}
+noinline fn typebox_pc_9_395(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[609] = native_values[365];
+return .{ .next = 394 };
+}
+noinline fn typebox_pc_9_396(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[608] = native_values[362];
+return .{ .next = 395 };
+}
+noinline fn typebox_pc_9_397(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[607] = native_values[361];
+return .{ .next = 396 };
+}
+noinline fn typebox_pc_9_398(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[366] = try rt.get(s, env, "options");
+return .{ .next = 397 };
+}
+noinline fn typebox_pc_9_399(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[365] = try rt.key(s, native_values[363], native_values[364]);
+return .{ .next = 398 };
+}
+noinline fn typebox_pc_9_400(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[364] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 399 };
+}
+noinline fn typebox_pc_9_401(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[363] = try rt.get(s, env, "parameters");
+return .{ .next = 400 };
+}
+noinline fn typebox_pc_9_402(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[362] = try rt.get(s, env, "state");
+return .{ .next = 401 };
+}
+noinline fn typebox_pc_9_403(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[361] = try rt.get(s, env, "context");
+return .{ .next = 402 };
+}
+noinline fn typebox_pc_9_404(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[360] = try rt.get(s, env, "m241_RequiredInstantiate");
+return .{ .next = 403 };
+}
+noinline fn typebox_pc_9_405(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[379];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_406(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[372], .receiver = c.pi_js_undefined(), .args = native_values[613..617], .result = 379, .next = 405, .construct = false } };
+}
+noinline fn typebox_pc_9_407(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[616] = native_values[378];
+return .{ .next = 406 };
+}
+noinline fn typebox_pc_9_408(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[615] = native_values[377];
+return .{ .next = 407 };
+}
+noinline fn typebox_pc_9_409(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[614] = native_values[374];
+return .{ .next = 408 };
+}
+noinline fn typebox_pc_9_410(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[613] = native_values[373];
+return .{ .next = 409 };
+}
+noinline fn typebox_pc_9_411(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[378] = try rt.get(s, env, "options");
+return .{ .next = 410 };
+}
+noinline fn typebox_pc_9_412(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[377] = try rt.key(s, native_values[375], native_values[376]);
+return .{ .next = 411 };
+}
+noinline fn typebox_pc_9_413(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[376] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 412 };
+}
+noinline fn typebox_pc_9_414(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[375] = try rt.get(s, env, "parameters");
+return .{ .next = 413 };
+}
+noinline fn typebox_pc_9_415(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[374] = try rt.get(s, env, "state");
+return .{ .next = 414 };
+}
+noinline fn typebox_pc_9_416(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[373] = try rt.get(s, env, "context");
+return .{ .next = 415 };
+}
+noinline fn typebox_pc_9_417(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[372] = try rt.get(s, env, "m249_ReturnTypeInstantiate");
+return .{ .next = 416 };
+}
+noinline fn typebox_pc_9_418(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[391];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_419(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[384], .receiver = c.pi_js_undefined(), .args = native_values[619..623], .result = 391, .next = 418, .construct = false } };
+}
+noinline fn typebox_pc_9_420(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[622] = native_values[390];
+return .{ .next = 419 };
+}
+noinline fn typebox_pc_9_421(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[621] = native_values[389];
+return .{ .next = 420 };
+}
+noinline fn typebox_pc_9_422(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[620] = native_values[386];
+return .{ .next = 421 };
+}
+noinline fn typebox_pc_9_423(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[619] = native_values[385];
+return .{ .next = 422 };
+}
+noinline fn typebox_pc_9_424(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[390] = try rt.get(s, env, "options");
+return .{ .next = 423 };
+}
+noinline fn typebox_pc_9_425(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[389] = try rt.key(s, native_values[387], native_values[388]);
+return .{ .next = 424 };
+}
+noinline fn typebox_pc_9_426(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[388] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 425 };
+}
+noinline fn typebox_pc_9_427(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[387] = try rt.get(s, env, "parameters");
+return .{ .next = 426 };
+}
+noinline fn typebox_pc_9_428(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[386] = try rt.get(s, env, "state");
+return .{ .next = 427 };
+}
+noinline fn typebox_pc_9_429(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[385] = try rt.get(s, env, "context");
+return .{ .next = 428 };
+}
+noinline fn typebox_pc_9_430(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[384] = try rt.get(s, env, "m251_TemplateLiteralInstantiate");
+return .{ .next = 429 };
+}
+noinline fn typebox_pc_9_431(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[403];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_432(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[396], .receiver = c.pi_js_undefined(), .args = native_values[625..629], .result = 403, .next = 431, .construct = false } };
+}
+noinline fn typebox_pc_9_433(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[628] = native_values[402];
+return .{ .next = 432 };
+}
+noinline fn typebox_pc_9_434(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[627] = native_values[401];
+return .{ .next = 433 };
+}
+noinline fn typebox_pc_9_435(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[626] = native_values[398];
+return .{ .next = 434 };
+}
+noinline fn typebox_pc_9_436(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[625] = native_values[397];
+return .{ .next = 435 };
+}
+noinline fn typebox_pc_9_437(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[402] = try rt.get(s, env, "options");
+return .{ .next = 436 };
+}
+noinline fn typebox_pc_9_438(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[401] = try rt.key(s, native_values[399], native_values[400]);
+return .{ .next = 437 };
+}
+noinline fn typebox_pc_9_439(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[400] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 438 };
+}
+noinline fn typebox_pc_9_440(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[399] = try rt.get(s, env, "parameters");
+return .{ .next = 439 };
+}
+noinline fn typebox_pc_9_441(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[398] = try rt.get(s, env, "state");
+return .{ .next = 440 };
+}
+noinline fn typebox_pc_9_442(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[397] = try rt.get(s, env, "context");
+return .{ .next = 441 };
+}
+noinline fn typebox_pc_9_443(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[396] = try rt.get(s, env, "m11_UncapitalizeInstantiate");
+return .{ .next = 442 };
+}
+noinline fn typebox_pc_9_444(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[415];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_445(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[408], .receiver = c.pi_js_undefined(), .args = native_values[631..635], .result = 415, .next = 444, .construct = false } };
+}
+noinline fn typebox_pc_9_446(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[634] = native_values[414];
+return .{ .next = 445 };
+}
+noinline fn typebox_pc_9_447(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[633] = native_values[413];
+return .{ .next = 446 };
+}
+noinline fn typebox_pc_9_448(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[632] = native_values[410];
+return .{ .next = 447 };
+}
+noinline fn typebox_pc_9_449(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[631] = native_values[409];
+return .{ .next = 448 };
+}
+noinline fn typebox_pc_9_450(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[414] = try rt.get(s, env, "options");
+return .{ .next = 449 };
+}
+noinline fn typebox_pc_9_451(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[413] = try rt.key(s, native_values[411], native_values[412]);
+return .{ .next = 450 };
+}
+noinline fn typebox_pc_9_452(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[412] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 451 };
+}
+noinline fn typebox_pc_9_453(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[411] = try rt.get(s, env, "parameters");
+return .{ .next = 452 };
+}
+noinline fn typebox_pc_9_454(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[410] = try rt.get(s, env, "state");
+return .{ .next = 453 };
+}
+noinline fn typebox_pc_9_455(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[409] = try rt.get(s, env, "context");
+return .{ .next = 454 };
+}
+noinline fn typebox_pc_9_456(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[408] = try rt.get(s, env, "m11_UppercaseInstantiate");
+return .{ .next = 455 };
+}
+noinline fn typebox_pc_9_457(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[429];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_458(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[420], .receiver = c.pi_js_undefined(), .args = native_values[637..641], .result = 429, .next = 457, .construct = false } };
+}
+noinline fn typebox_pc_9_459(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[640] = native_values[428];
+return .{ .next = 458 };
+}
+noinline fn typebox_pc_9_460(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[639] = native_values[425];
+return .{ .next = 459 };
+}
+noinline fn typebox_pc_9_461(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[638] = native_values[422];
+return .{ .next = 460 };
+}
+noinline fn typebox_pc_9_462(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[637] = native_values[421];
+return .{ .next = 461 };
+}
+noinline fn typebox_pc_9_463(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[428] = try rt.key(s, native_values[426], native_values[427]);
+return .{ .next = 462 };
+}
+noinline fn typebox_pc_9_464(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[427] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 463 };
+}
+noinline fn typebox_pc_9_465(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[426] = try rt.get(s, env, "parameters");
+return .{ .next = 464 };
+}
+noinline fn typebox_pc_9_466(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[425] = try rt.key(s, native_values[423], native_values[424]);
+return .{ .next = 465 };
+}
+noinline fn typebox_pc_9_467(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[424] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 466 };
+}
+noinline fn typebox_pc_9_468(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[423] = try rt.get(s, env, "parameters");
+return .{ .next = 467 };
+}
+noinline fn typebox_pc_9_469(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[422] = try rt.get(s, env, "state");
+return .{ .next = 468 };
+}
+noinline fn typebox_pc_9_470(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[421] = try rt.get(s, env, "context");
+return .{ .next = 469 };
+}
+noinline fn typebox_pc_9_471(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[420] = try rt.get(s, env, "m255_WithInstantiate");
+return .{ .next = 470 };
+}
+noinline fn typebox_pc_9_472(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[435] = native_values[434];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_9_473(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[430], .receiver = c.pi_js_undefined(), .args = native_values[641..644], .result = 434, .next = 472, .construct = false } };
+}
+noinline fn typebox_pc_9_474(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[643] = native_values[433];
+return .{ .next = 473 };
+}
+noinline fn typebox_pc_9_475(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[642] = native_values[432];
+return .{ .next = 474 };
+}
+noinline fn typebox_pc_9_476(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[641] = native_values[431];
+return .{ .next = 475 };
+}
+noinline fn typebox_pc_9_477(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[433] = try rt.get(s, env, "options");
+return .{ .next = 476 };
+}
+noinline fn typebox_pc_9_478(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[432] = try rt.get(s, env, "parameters");
+return .{ .next = 477 };
+}
+noinline fn typebox_pc_9_479(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[431] = try rt.get(s, env, "action");
+return .{ .next = 478 };
+}
+noinline fn typebox_pc_9_480(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[430] = try rt.get(s, env, "m1_Deferred");
+return .{ .next = 479 };
+}
+noinline fn typebox_pc_9_481(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[419])) 471 else 480 };
+}
+noinline fn typebox_pc_9_482(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[416], .receiver = c.pi_js_undefined(), .args = native_values[635..637], .result = 419, .next = 481, .construct = false } };
+}
+noinline fn typebox_pc_9_483(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[636] = native_values[418];
+return .{ .next = 482 };
+}
+noinline fn typebox_pc_9_484(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[635] = native_values[417];
+return .{ .next = 483 };
+}
+noinline fn typebox_pc_9_485(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[418] = try s.text("With");
+return .{ .next = 484 };
+}
+noinline fn typebox_pc_9_486(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[417] = try rt.get(s, env, "action");
+return .{ .next = 485 };
+}
+noinline fn typebox_pc_9_487(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[416] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 486 };
+}
+noinline fn typebox_pc_9_488(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[407])) 456 else 487 };
+}
+noinline fn typebox_pc_9_489(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[404], .receiver = c.pi_js_undefined(), .args = native_values[629..631], .result = 407, .next = 488, .construct = false } };
+}
+noinline fn typebox_pc_9_490(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[630] = native_values[406];
+return .{ .next = 489 };
+}
+noinline fn typebox_pc_9_491(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[629] = native_values[405];
+return .{ .next = 490 };
+}
+noinline fn typebox_pc_9_492(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[406] = try s.text("Uppercase");
+return .{ .next = 491 };
+}
+noinline fn typebox_pc_9_493(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[405] = try rt.get(s, env, "action");
+return .{ .next = 492 };
+}
+noinline fn typebox_pc_9_494(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[404] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 493 };
+}
+noinline fn typebox_pc_9_495(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[395])) 443 else 494 };
+}
+noinline fn typebox_pc_9_496(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[392], .receiver = c.pi_js_undefined(), .args = native_values[623..625], .result = 395, .next = 495, .construct = false } };
+}
+noinline fn typebox_pc_9_497(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[624] = native_values[394];
+return .{ .next = 496 };
+}
+noinline fn typebox_pc_9_498(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[623] = native_values[393];
+return .{ .next = 497 };
+}
+noinline fn typebox_pc_9_499(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[394] = try s.text("Uncapitalize");
+return .{ .next = 498 };
+}
+noinline fn typebox_pc_9_500(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[393] = try rt.get(s, env, "action");
+return .{ .next = 499 };
+}
+noinline fn typebox_pc_9_501(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[392] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 500 };
+}
+noinline fn typebox_pc_9_502(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[383])) 430 else 501 };
+}
+noinline fn typebox_pc_9_503(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[380], .receiver = c.pi_js_undefined(), .args = native_values[617..619], .result = 383, .next = 502, .construct = false } };
+}
+noinline fn typebox_pc_9_504(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[618] = native_values[382];
+return .{ .next = 503 };
+}
+noinline fn typebox_pc_9_505(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[617] = native_values[381];
+return .{ .next = 504 };
+}
+noinline fn typebox_pc_9_506(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[382] = try s.text("TemplateLiteral");
+return .{ .next = 505 };
+}
+noinline fn typebox_pc_9_507(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[381] = try rt.get(s, env, "action");
+return .{ .next = 506 };
+}
+noinline fn typebox_pc_9_508(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[380] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 507 };
+}
+noinline fn typebox_pc_9_509(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[371])) 417 else 508 };
+}
+noinline fn typebox_pc_9_510(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[368], .receiver = c.pi_js_undefined(), .args = native_values[611..613], .result = 371, .next = 509, .construct = false } };
+}
+noinline fn typebox_pc_9_511(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[612] = native_values[370];
+return .{ .next = 510 };
+}
+noinline fn typebox_pc_9_512(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[611] = native_values[369];
+return .{ .next = 511 };
+}
+noinline fn typebox_pc_9_513(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[370] = try s.text("ReturnType");
+return .{ .next = 512 };
+}
+noinline fn typebox_pc_9_514(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[369] = try rt.get(s, env, "action");
+return .{ .next = 513 };
+}
+noinline fn typebox_pc_9_515(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[368] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 514 };
+}
+noinline fn typebox_pc_9_516(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[359])) 404 else 515 };
+}
+noinline fn typebox_pc_9_517(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[356], .receiver = c.pi_js_undefined(), .args = native_values[605..607], .result = 359, .next = 516, .construct = false } };
+}
+noinline fn typebox_pc_9_518(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[606] = native_values[358];
+return .{ .next = 517 };
+}
+noinline fn typebox_pc_9_519(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[605] = native_values[357];
+return .{ .next = 518 };
+}
+noinline fn typebox_pc_9_520(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[358] = try s.text("Required");
+return .{ .next = 519 };
+}
+noinline fn typebox_pc_9_521(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[357] = try rt.get(s, env, "action");
+return .{ .next = 520 };
+}
+noinline fn typebox_pc_9_522(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[356] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 521 };
+}
+noinline fn typebox_pc_9_523(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[344])) 391 else 522 };
+}
+noinline fn typebox_pc_9_524(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[341], .receiver = c.pi_js_undefined(), .args = native_values[598..600], .result = 344, .next = 523, .construct = false } };
+}
+noinline fn typebox_pc_9_525(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[599] = native_values[343];
+return .{ .next = 524 };
+}
+noinline fn typebox_pc_9_526(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[598] = native_values[342];
+return .{ .next = 525 };
+}
+noinline fn typebox_pc_9_527(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[343] = try s.text("Record");
+return .{ .next = 526 };
+}
+noinline fn typebox_pc_9_528(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[342] = try rt.get(s, env, "action");
+return .{ .next = 527 };
+}
+noinline fn typebox_pc_9_529(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[341] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 528 };
+}
+noinline fn typebox_pc_9_530(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[332])) 374 else 529 };
+}
+noinline fn typebox_pc_9_531(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[329], .receiver = c.pi_js_undefined(), .args = native_values[592..594], .result = 332, .next = 530, .construct = false } };
+}
+noinline fn typebox_pc_9_532(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[593] = native_values[331];
+return .{ .next = 531 };
+}
+noinline fn typebox_pc_9_533(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[592] = native_values[330];
+return .{ .next = 532 };
+}
+noinline fn typebox_pc_9_534(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[331] = try s.text("ReadonlyObject");
+return .{ .next = 533 };
+}
+noinline fn typebox_pc_9_535(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[330] = try rt.get(s, env, "action");
+return .{ .next = 534 };
+}
+noinline fn typebox_pc_9_536(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[329] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 535 };
+}
+noinline fn typebox_pc_9_537(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[317])) 361 else 536 };
+}
+noinline fn typebox_pc_9_538(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[314], .receiver = c.pi_js_undefined(), .args = native_values[585..587], .result = 317, .next = 537, .construct = false } };
+}
+noinline fn typebox_pc_9_539(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[586] = native_values[316];
+return .{ .next = 538 };
+}
+noinline fn typebox_pc_9_540(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[585] = native_values[315];
+return .{ .next = 539 };
+}
+noinline fn typebox_pc_9_541(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[316] = try s.text("Omit");
+return .{ .next = 540 };
+}
+noinline fn typebox_pc_9_542(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[315] = try rt.get(s, env, "action");
+return .{ .next = 541 };
+}
+noinline fn typebox_pc_9_543(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[314] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 542 };
+}
+noinline fn typebox_pc_9_544(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[305])) 344 else 543 };
+}
+noinline fn typebox_pc_9_545(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[302], .receiver = c.pi_js_undefined(), .args = native_values[579..581], .result = 305, .next = 544, .construct = false } };
+}
+noinline fn typebox_pc_9_546(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[580] = native_values[304];
+return .{ .next = 545 };
+}
+noinline fn typebox_pc_9_547(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[579] = native_values[303];
+return .{ .next = 546 };
+}
+noinline fn typebox_pc_9_548(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[304] = try s.text("Partial");
+return .{ .next = 547 };
+}
+noinline fn typebox_pc_9_549(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[303] = try rt.get(s, env, "action");
+return .{ .next = 548 };
+}
+noinline fn typebox_pc_9_550(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[302] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 549 };
+}
+noinline fn typebox_pc_9_551(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[293])) 331 else 550 };
+}
+noinline fn typebox_pc_9_552(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[290], .receiver = c.pi_js_undefined(), .args = native_values[573..575], .result = 293, .next = 551, .construct = false } };
+}
+noinline fn typebox_pc_9_553(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[574] = native_values[292];
+return .{ .next = 552 };
+}
+noinline fn typebox_pc_9_554(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[573] = native_values[291];
+return .{ .next = 553 };
+}
+noinline fn typebox_pc_9_555(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[292] = try s.text("Parameters");
+return .{ .next = 554 };
+}
+noinline fn typebox_pc_9_556(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[291] = try rt.get(s, env, "action");
+return .{ .next = 555 };
+}
+noinline fn typebox_pc_9_557(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[290] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 556 };
+}
+noinline fn typebox_pc_9_558(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[278])) 318 else 557 };
+}
+noinline fn typebox_pc_9_559(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[275], .receiver = c.pi_js_undefined(), .args = native_values[566..568], .result = 278, .next = 558, .construct = false } };
+}
+noinline fn typebox_pc_9_560(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[567] = native_values[277];
+return .{ .next = 559 };
+}
+noinline fn typebox_pc_9_561(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[566] = native_values[276];
+return .{ .next = 560 };
+}
+noinline fn typebox_pc_9_562(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[277] = try s.text("Pick");
+return .{ .next = 561 };
+}
+noinline fn typebox_pc_9_563(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[276] = try rt.get(s, env, "action");
+return .{ .next = 562 };
+}
+noinline fn typebox_pc_9_564(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[275] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 563 };
+}
+noinline fn typebox_pc_9_565(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[266])) 301 else 564 };
+}
+noinline fn typebox_pc_9_566(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[263], .receiver = c.pi_js_undefined(), .args = native_values[560..562], .result = 266, .next = 565, .construct = false } };
+}
+noinline fn typebox_pc_9_567(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[561] = native_values[265];
+return .{ .next = 566 };
+}
+noinline fn typebox_pc_9_568(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[560] = native_values[264];
+return .{ .next = 567 };
+}
+noinline fn typebox_pc_9_569(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[265] = try s.text("NonNullable");
+return .{ .next = 568 };
+}
+noinline fn typebox_pc_9_570(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[264] = try rt.get(s, env, "action");
+return .{ .next = 569 };
+}
+noinline fn typebox_pc_9_571(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[263] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 570 };
+}
+noinline fn typebox_pc_9_572(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[254])) 288 else 571 };
+}
+noinline fn typebox_pc_9_573(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[251], .receiver = c.pi_js_undefined(), .args = native_values[554..556], .result = 254, .next = 572, .construct = false } };
+}
+noinline fn typebox_pc_9_574(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[555] = native_values[253];
+return .{ .next = 573 };
+}
+noinline fn typebox_pc_9_575(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[554] = native_values[252];
+return .{ .next = 574 };
+}
+noinline fn typebox_pc_9_576(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[253] = try s.text("Module");
+return .{ .next = 575 };
+}
+noinline fn typebox_pc_9_577(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[252] = try rt.get(s, env, "action");
+return .{ .next = 576 };
+}
+noinline fn typebox_pc_9_578(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[251] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 577 };
+}
+noinline fn typebox_pc_9_579(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[233])) 275 else 578 };
+}
+noinline fn typebox_pc_9_580(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[230], .receiver = c.pi_js_undefined(), .args = native_values[545..547], .result = 233, .next = 579, .construct = false } };
+}
+noinline fn typebox_pc_9_581(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[546] = native_values[232];
+return .{ .next = 580 };
+}
+noinline fn typebox_pc_9_582(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[545] = native_values[231];
+return .{ .next = 581 };
+}
+noinline fn typebox_pc_9_583(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[232] = try s.text("Mapped");
+return .{ .next = 582 };
+}
+noinline fn typebox_pc_9_584(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[231] = try rt.get(s, env, "action");
+return .{ .next = 583 };
+}
+noinline fn typebox_pc_9_585(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[230] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 584 };
+}
+noinline fn typebox_pc_9_586(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[221])) 250 else 585 };
+}
+noinline fn typebox_pc_9_587(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[218], .receiver = c.pi_js_undefined(), .args = native_values[539..541], .result = 221, .next = 586, .construct = false } };
+}
+noinline fn typebox_pc_9_588(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[540] = native_values[220];
+return .{ .next = 587 };
+}
+noinline fn typebox_pc_9_589(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[539] = native_values[219];
+return .{ .next = 588 };
+}
+noinline fn typebox_pc_9_590(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[220] = try s.text("Lowercase");
+return .{ .next = 589 };
+}
+noinline fn typebox_pc_9_591(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[219] = try rt.get(s, env, "action");
+return .{ .next = 590 };
+}
+noinline fn typebox_pc_9_592(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[218] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 591 };
+}
+noinline fn typebox_pc_9_593(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[209])) 237 else 592 };
+}
+noinline fn typebox_pc_9_594(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[206], .receiver = c.pi_js_undefined(), .args = native_values[533..535], .result = 209, .next = 593, .construct = false } };
+}
+noinline fn typebox_pc_9_595(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[534] = native_values[208];
+return .{ .next = 594 };
+}
+noinline fn typebox_pc_9_596(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[533] = native_values[207];
+return .{ .next = 595 };
+}
+noinline fn typebox_pc_9_597(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[208] = try s.text("KeyOf");
+return .{ .next = 596 };
+}
+noinline fn typebox_pc_9_598(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[207] = try rt.get(s, env, "action");
+return .{ .next = 597 };
+}
+noinline fn typebox_pc_9_599(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[206] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 598 };
+}
+noinline fn typebox_pc_9_600(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[194])) 224 else 599 };
+}
+noinline fn typebox_pc_9_601(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[191], .receiver = c.pi_js_undefined(), .args = native_values[526..528], .result = 194, .next = 600, .construct = false } };
+}
+noinline fn typebox_pc_9_602(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[527] = native_values[193];
+return .{ .next = 601 };
+}
+noinline fn typebox_pc_9_603(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[526] = native_values[192];
+return .{ .next = 602 };
+}
+noinline fn typebox_pc_9_604(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[193] = try s.text("Interface");
+return .{ .next = 603 };
+}
+noinline fn typebox_pc_9_605(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[192] = try rt.get(s, env, "action");
+return .{ .next = 604 };
+}
+noinline fn typebox_pc_9_606(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[191] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 605 };
+}
+noinline fn typebox_pc_9_607(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[182])) 207 else 606 };
+}
+noinline fn typebox_pc_9_608(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[179], .receiver = c.pi_js_undefined(), .args = native_values[520..522], .result = 182, .next = 607, .construct = false } };
+}
+noinline fn typebox_pc_9_609(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[521] = native_values[181];
+return .{ .next = 608 };
+}
+noinline fn typebox_pc_9_610(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[520] = native_values[180];
+return .{ .next = 609 };
+}
+noinline fn typebox_pc_9_611(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[181] = try s.text("InstanceType");
+return .{ .next = 610 };
+}
+noinline fn typebox_pc_9_612(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[180] = try rt.get(s, env, "action");
+return .{ .next = 611 };
+}
+noinline fn typebox_pc_9_613(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[179] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 612 };
+}
+noinline fn typebox_pc_9_614(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[167])) 194 else 613 };
+}
+noinline fn typebox_pc_9_615(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[164], .receiver = c.pi_js_undefined(), .args = native_values[513..515], .result = 167, .next = 614, .construct = false } };
+}
+noinline fn typebox_pc_9_616(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[514] = native_values[166];
+return .{ .next = 615 };
+}
+noinline fn typebox_pc_9_617(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[513] = native_values[165];
+return .{ .next = 616 };
+}
+noinline fn typebox_pc_9_618(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[166] = try s.text("Index");
+return .{ .next = 617 };
+}
+noinline fn typebox_pc_9_619(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[165] = try rt.get(s, env, "action");
+return .{ .next = 618 };
+}
+noinline fn typebox_pc_9_620(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[164] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 619 };
+}
+noinline fn typebox_pc_9_621(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[152])) 177 else 620 };
+}
+noinline fn typebox_pc_9_622(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[149], .receiver = c.pi_js_undefined(), .args = native_values[506..508], .result = 152, .next = 621, .construct = false } };
+}
+noinline fn typebox_pc_9_623(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[507] = native_values[151];
+return .{ .next = 622 };
+}
+noinline fn typebox_pc_9_624(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[506] = native_values[150];
+return .{ .next = 623 };
+}
+noinline fn typebox_pc_9_625(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[151] = try s.text("Extract");
+return .{ .next = 624 };
+}
+noinline fn typebox_pc_9_626(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[150] = try rt.get(s, env, "action");
+return .{ .next = 625 };
+}
+noinline fn typebox_pc_9_627(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[149] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 626 };
+}
+noinline fn typebox_pc_9_628(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[137])) 160 else 627 };
+}
+noinline fn typebox_pc_9_629(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[134], .receiver = c.pi_js_undefined(), .args = native_values[499..501], .result = 137, .next = 628, .construct = false } };
+}
+noinline fn typebox_pc_9_630(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[500] = native_values[136];
+return .{ .next = 629 };
+}
+noinline fn typebox_pc_9_631(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[499] = native_values[135];
+return .{ .next = 630 };
+}
+noinline fn typebox_pc_9_632(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[136] = try s.text("Exclude");
+return .{ .next = 631 };
+}
+noinline fn typebox_pc_9_633(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[135] = try rt.get(s, env, "action");
+return .{ .next = 632 };
+}
+noinline fn typebox_pc_9_634(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[134] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 633 };
+}
+noinline fn typebox_pc_9_635(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[125])) 143 else 634 };
+}
+noinline fn typebox_pc_9_636(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[122], .receiver = c.pi_js_undefined(), .args = native_values[493..495], .result = 125, .next = 635, .construct = false } };
+}
+noinline fn typebox_pc_9_637(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[494] = native_values[124];
+return .{ .next = 636 };
+}
+noinline fn typebox_pc_9_638(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[493] = native_values[123];
+return .{ .next = 637 };
+}
+noinline fn typebox_pc_9_639(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[124] = try s.text("Evaluate");
+return .{ .next = 638 };
+}
+noinline fn typebox_pc_9_640(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[123] = try rt.get(s, env, "action");
+return .{ .next = 639 };
+}
+noinline fn typebox_pc_9_641(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[122] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 640 };
+}
+noinline fn typebox_pc_9_642(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[113])) 130 else 641 };
+}
+noinline fn typebox_pc_9_643(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[110], .receiver = c.pi_js_undefined(), .args = native_values[487..489], .result = 113, .next = 642, .construct = false } };
+}
+noinline fn typebox_pc_9_644(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[488] = native_values[112];
+return .{ .next = 643 };
+}
+noinline fn typebox_pc_9_645(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[487] = native_values[111];
+return .{ .next = 644 };
+}
+noinline fn typebox_pc_9_646(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[112] = try s.text("ConstructorParameters");
+return .{ .next = 645 };
+}
+noinline fn typebox_pc_9_647(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[111] = try rt.get(s, env, "action");
+return .{ .next = 646 };
+}
+noinline fn typebox_pc_9_648(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[110] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 647 };
+}
+noinline fn typebox_pc_9_649(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[92])) 117 else 648 };
+}
+noinline fn typebox_pc_9_650(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[89], .receiver = c.pi_js_undefined(), .args = native_values[478..480], .result = 92, .next = 649, .construct = false } };
+}
+noinline fn typebox_pc_9_651(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[479] = native_values[91];
+return .{ .next = 650 };
+}
+noinline fn typebox_pc_9_652(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[478] = native_values[90];
+return .{ .next = 651 };
+}
+noinline fn typebox_pc_9_653(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[91] = try s.text("Conditional");
+return .{ .next = 652 };
+}
+noinline fn typebox_pc_9_654(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[90] = try rt.get(s, env, "action");
+return .{ .next = 653 };
+}
+noinline fn typebox_pc_9_655(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[89] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 654 };
+}
+noinline fn typebox_pc_9_656(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[80])) 92 else 655 };
+}
+noinline fn typebox_pc_9_657(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[77], .receiver = c.pi_js_undefined(), .args = native_values[472..474], .result = 80, .next = 656, .construct = false } };
+}
+noinline fn typebox_pc_9_658(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[473] = native_values[79];
+return .{ .next = 657 };
+}
+noinline fn typebox_pc_9_659(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[472] = native_values[78];
+return .{ .next = 658 };
+}
+noinline fn typebox_pc_9_660(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[79] = try s.text("Capitalize");
+return .{ .next = 659 };
+}
+noinline fn typebox_pc_9_661(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[78] = try rt.get(s, env, "action");
+return .{ .next = 660 };
+}
+noinline fn typebox_pc_9_662(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[77] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 661 };
+}
+noinline fn typebox_pc_9_663(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[68])) 79 else 662 };
+}
+noinline fn typebox_pc_9_664(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[65], .receiver = c.pi_js_undefined(), .args = native_values[466..468], .result = 68, .next = 663, .construct = false } };
+}
+noinline fn typebox_pc_9_665(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[467] = native_values[67];
+return .{ .next = 664 };
+}
+noinline fn typebox_pc_9_666(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[466] = native_values[66];
+return .{ .next = 665 };
+}
+noinline fn typebox_pc_9_667(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[67] = try s.text("RemoveOptional");
+return .{ .next = 666 };
+}
+noinline fn typebox_pc_9_668(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[66] = try rt.get(s, env, "action");
+return .{ .next = 667 };
+}
+noinline fn typebox_pc_9_669(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[65] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 668 };
+}
+noinline fn typebox_pc_9_670(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[56])) 66 else 669 };
+}
+noinline fn typebox_pc_9_671(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[53], .receiver = c.pi_js_undefined(), .args = native_values[460..462], .result = 56, .next = 670, .construct = false } };
+}
+noinline fn typebox_pc_9_672(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[461] = native_values[55];
+return .{ .next = 671 };
+}
+noinline fn typebox_pc_9_673(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[460] = native_values[54];
+return .{ .next = 672 };
+}
+noinline fn typebox_pc_9_674(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[55] = try s.text("AddOptional");
+return .{ .next = 673 };
+}
+noinline fn typebox_pc_9_675(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[54] = try rt.get(s, env, "action");
+return .{ .next = 674 };
+}
+noinline fn typebox_pc_9_676(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[53] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 675 };
+}
+noinline fn typebox_pc_9_677(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[44])) 53 else 676 };
+}
+noinline fn typebox_pc_9_678(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[41], .receiver = c.pi_js_undefined(), .args = native_values[454..456], .result = 44, .next = 677, .construct = false } };
+}
+noinline fn typebox_pc_9_679(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[455] = native_values[43];
+return .{ .next = 678 };
+}
+noinline fn typebox_pc_9_680(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[454] = native_values[42];
+return .{ .next = 679 };
+}
+noinline fn typebox_pc_9_681(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[43] = try s.text("RemoveReadonly");
+return .{ .next = 680 };
+}
+noinline fn typebox_pc_9_682(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[42] = try rt.get(s, env, "action");
+return .{ .next = 681 };
+}
+noinline fn typebox_pc_9_683(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[41] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 682 };
+}
+noinline fn typebox_pc_9_684(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[32])) 40 else 683 };
+}
+noinline fn typebox_pc_9_685(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[29], .receiver = c.pi_js_undefined(), .args = native_values[448..450], .result = 32, .next = 684, .construct = false } };
+}
+noinline fn typebox_pc_9_686(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[449] = native_values[31];
+return .{ .next = 685 };
+}
+noinline fn typebox_pc_9_687(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[448] = native_values[30];
+return .{ .next = 686 };
+}
+noinline fn typebox_pc_9_688(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[31] = try s.text("AddReadonly");
+return .{ .next = 687 };
+}
+noinline fn typebox_pc_9_689(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[30] = try rt.get(s, env, "action");
+return .{ .next = 688 };
+}
+noinline fn typebox_pc_9_690(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[29] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 689 };
+}
+noinline fn typebox_pc_9_691(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[20])) 27 else 690 };
+}
+noinline fn typebox_pc_9_692(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[17], .receiver = c.pi_js_undefined(), .args = native_values[442..444], .result = 20, .next = 691, .construct = false } };
+}
+noinline fn typebox_pc_9_693(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[443] = native_values[19];
+return .{ .next = 692 };
+}
+noinline fn typebox_pc_9_694(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[442] = native_values[18];
+return .{ .next = 693 };
+}
+noinline fn typebox_pc_9_695(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try s.text("RemoveImmutable");
+return .{ .next = 694 };
+}
+noinline fn typebox_pc_9_696(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[18] = try rt.get(s, env, "action");
+return .{ .next = 695 };
+}
+noinline fn typebox_pc_9_697(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[17] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 696 };
+}
+noinline fn typebox_pc_9_698(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[8])) 14 else 697 };
+}
+noinline fn typebox_pc_9_699(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = c.pi_js_undefined(), .args = native_values[436..438], .result = 8, .next = 698, .construct = false } };
+}
+noinline fn typebox_pc_9_700(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[437] = native_values[7];
+return .{ .next = 699 };
+}
+noinline fn typebox_pc_9_701(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[436] = native_values[6];
+return .{ .next = 700 };
+}
+noinline fn typebox_pc_9_702(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try s.text("AddImmutable");
+return .{ .next = 701 };
+}
+noinline fn typebox_pc_9_703(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "action");
+return .{ .next = 702 };
+}
+noinline fn typebox_pc_9_704(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 703 };
+}
+noinline fn typebox_pc_9_705(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "options", native_values[4]);
+return .{ .next = 704 };
+}
+noinline fn typebox_pc_9_706(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 705 };
+}
+noinline fn typebox_pc_9_707(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[3]);
+return .{ .next = 706 };
+}
+noinline fn typebox_pc_9_708(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 707 };
+}
+noinline fn typebox_pc_9_709(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "action", native_values[2]);
+return .{ .next = 708 };
+}
+noinline fn typebox_pc_9_710(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 709 };
+}
+noinline fn typebox_pc_9_711(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 710 };
+}
+noinline fn typebox_pc_9_712(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 711 };
+}
+noinline fn typebox_pc_9_713(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 712 };
+}
+noinline fn typebox_pc_9_714(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 713 };
+}
+noinline fn typebox_pc_9_715(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 714 };
+}
+const typebox_steps_9 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_9_0, typebox_pc_9_1, typebox_pc_9_2, typebox_pc_9_3, typebox_pc_9_4, typebox_pc_9_5, typebox_pc_9_6, typebox_pc_9_7, typebox_pc_9_8, typebox_pc_9_9, typebox_pc_9_10, typebox_pc_9_11, typebox_pc_9_12, typebox_pc_9_13, typebox_pc_9_14, typebox_pc_9_15, typebox_pc_9_16, typebox_pc_9_17, typebox_pc_9_18, typebox_pc_9_19, typebox_pc_9_20, typebox_pc_9_21, typebox_pc_9_22, typebox_pc_9_23, typebox_pc_9_24, typebox_pc_9_25, typebox_pc_9_26, typebox_pc_9_27, typebox_pc_9_28, typebox_pc_9_29, typebox_pc_9_30, typebox_pc_9_31, typebox_pc_9_32, typebox_pc_9_33, typebox_pc_9_34, typebox_pc_9_35, typebox_pc_9_36, typebox_pc_9_37, typebox_pc_9_38, typebox_pc_9_39, typebox_pc_9_40, typebox_pc_9_41, typebox_pc_9_42, typebox_pc_9_43, typebox_pc_9_44, typebox_pc_9_45, typebox_pc_9_46, typebox_pc_9_47, typebox_pc_9_48, typebox_pc_9_49, typebox_pc_9_50, typebox_pc_9_51, typebox_pc_9_52, typebox_pc_9_53, typebox_pc_9_54, typebox_pc_9_55, typebox_pc_9_56, typebox_pc_9_57, typebox_pc_9_58, typebox_pc_9_59, typebox_pc_9_60, typebox_pc_9_61, typebox_pc_9_62, typebox_pc_9_63, typebox_pc_9_64, typebox_pc_9_65, typebox_pc_9_66, typebox_pc_9_67, typebox_pc_9_68, typebox_pc_9_69, typebox_pc_9_70, typebox_pc_9_71, typebox_pc_9_72, typebox_pc_9_73, typebox_pc_9_74, typebox_pc_9_75, typebox_pc_9_76, typebox_pc_9_77, typebox_pc_9_78, typebox_pc_9_79, typebox_pc_9_80, typebox_pc_9_81, typebox_pc_9_82, typebox_pc_9_83, typebox_pc_9_84, typebox_pc_9_85, typebox_pc_9_86, typebox_pc_9_87, typebox_pc_9_88, typebox_pc_9_89, typebox_pc_9_90, typebox_pc_9_91, typebox_pc_9_92, typebox_pc_9_93, typebox_pc_9_94, typebox_pc_9_95, typebox_pc_9_96, typebox_pc_9_97, typebox_pc_9_98, typebox_pc_9_99, typebox_pc_9_100, typebox_pc_9_101, typebox_pc_9_102, typebox_pc_9_103, typebox_pc_9_104, typebox_pc_9_105, typebox_pc_9_106, typebox_pc_9_107, typebox_pc_9_108, typebox_pc_9_109, typebox_pc_9_110, typebox_pc_9_111, typebox_pc_9_112, typebox_pc_9_113, typebox_pc_9_114, typebox_pc_9_115, typebox_pc_9_116, typebox_pc_9_117, typebox_pc_9_118, typebox_pc_9_119, typebox_pc_9_120, typebox_pc_9_121, typebox_pc_9_122, typebox_pc_9_123, typebox_pc_9_124, typebox_pc_9_125, typebox_pc_9_126, typebox_pc_9_127, typebox_pc_9_128, typebox_pc_9_129, typebox_pc_9_130, typebox_pc_9_131, typebox_pc_9_132, typebox_pc_9_133, typebox_pc_9_134, typebox_pc_9_135, typebox_pc_9_136, typebox_pc_9_137, typebox_pc_9_138, typebox_pc_9_139, typebox_pc_9_140, typebox_pc_9_141, typebox_pc_9_142, typebox_pc_9_143, typebox_pc_9_144, typebox_pc_9_145, typebox_pc_9_146, typebox_pc_9_147, typebox_pc_9_148, typebox_pc_9_149, typebox_pc_9_150, typebox_pc_9_151, typebox_pc_9_152, typebox_pc_9_153, typebox_pc_9_154, typebox_pc_9_155, typebox_pc_9_156, typebox_pc_9_157, typebox_pc_9_158, typebox_pc_9_159, typebox_pc_9_160, typebox_pc_9_161, typebox_pc_9_162, typebox_pc_9_163, typebox_pc_9_164, typebox_pc_9_165, typebox_pc_9_166, typebox_pc_9_167, typebox_pc_9_168, typebox_pc_9_169, typebox_pc_9_170, typebox_pc_9_171, typebox_pc_9_172, typebox_pc_9_173, typebox_pc_9_174, typebox_pc_9_175, typebox_pc_9_176, typebox_pc_9_177, typebox_pc_9_178, typebox_pc_9_179, typebox_pc_9_180, typebox_pc_9_181, typebox_pc_9_182, typebox_pc_9_183, typebox_pc_9_184, typebox_pc_9_185, typebox_pc_9_186, typebox_pc_9_187, typebox_pc_9_188, typebox_pc_9_189, typebox_pc_9_190, typebox_pc_9_191, typebox_pc_9_192, typebox_pc_9_193, typebox_pc_9_194, typebox_pc_9_195, typebox_pc_9_196, typebox_pc_9_197, typebox_pc_9_198, typebox_pc_9_199, typebox_pc_9_200, typebox_pc_9_201, typebox_pc_9_202, typebox_pc_9_203, typebox_pc_9_204, typebox_pc_9_205, typebox_pc_9_206, typebox_pc_9_207, typebox_pc_9_208, typebox_pc_9_209, typebox_pc_9_210, typebox_pc_9_211, typebox_pc_9_212, typebox_pc_9_213, typebox_pc_9_214, typebox_pc_9_215, typebox_pc_9_216, typebox_pc_9_217, typebox_pc_9_218, typebox_pc_9_219, typebox_pc_9_220, typebox_pc_9_221, typebox_pc_9_222, typebox_pc_9_223, typebox_pc_9_224, typebox_pc_9_225, typebox_pc_9_226, typebox_pc_9_227, typebox_pc_9_228, typebox_pc_9_229, typebox_pc_9_230, typebox_pc_9_231, typebox_pc_9_232, typebox_pc_9_233, typebox_pc_9_234, typebox_pc_9_235, typebox_pc_9_236, typebox_pc_9_237, typebox_pc_9_238, typebox_pc_9_239, typebox_pc_9_240, typebox_pc_9_241, typebox_pc_9_242, typebox_pc_9_243, typebox_pc_9_244, typebox_pc_9_245, typebox_pc_9_246, typebox_pc_9_247, typebox_pc_9_248, typebox_pc_9_249, typebox_pc_9_250, typebox_pc_9_251, typebox_pc_9_252, typebox_pc_9_253, typebox_pc_9_254, typebox_pc_9_255, typebox_pc_9_256, typebox_pc_9_257, typebox_pc_9_258, typebox_pc_9_259, typebox_pc_9_260, typebox_pc_9_261, typebox_pc_9_262, typebox_pc_9_263, typebox_pc_9_264, typebox_pc_9_265, typebox_pc_9_266, typebox_pc_9_267, typebox_pc_9_268, typebox_pc_9_269, typebox_pc_9_270, typebox_pc_9_271, typebox_pc_9_272, typebox_pc_9_273, typebox_pc_9_274, typebox_pc_9_275, typebox_pc_9_276, typebox_pc_9_277, typebox_pc_9_278, typebox_pc_9_279, typebox_pc_9_280, typebox_pc_9_281, typebox_pc_9_282, typebox_pc_9_283, typebox_pc_9_284, typebox_pc_9_285, typebox_pc_9_286, typebox_pc_9_287, typebox_pc_9_288, typebox_pc_9_289, typebox_pc_9_290, typebox_pc_9_291, typebox_pc_9_292, typebox_pc_9_293, typebox_pc_9_294, typebox_pc_9_295, typebox_pc_9_296, typebox_pc_9_297, typebox_pc_9_298, typebox_pc_9_299, typebox_pc_9_300, typebox_pc_9_301, typebox_pc_9_302, typebox_pc_9_303, typebox_pc_9_304, typebox_pc_9_305, typebox_pc_9_306, typebox_pc_9_307, typebox_pc_9_308, typebox_pc_9_309, typebox_pc_9_310, typebox_pc_9_311, typebox_pc_9_312, typebox_pc_9_313, typebox_pc_9_314, typebox_pc_9_315, typebox_pc_9_316, typebox_pc_9_317, typebox_pc_9_318, typebox_pc_9_319, typebox_pc_9_320, typebox_pc_9_321, typebox_pc_9_322, typebox_pc_9_323, typebox_pc_9_324, typebox_pc_9_325, typebox_pc_9_326, typebox_pc_9_327, typebox_pc_9_328, typebox_pc_9_329, typebox_pc_9_330, typebox_pc_9_331, typebox_pc_9_332, typebox_pc_9_333, typebox_pc_9_334, typebox_pc_9_335, typebox_pc_9_336, typebox_pc_9_337, typebox_pc_9_338, typebox_pc_9_339, typebox_pc_9_340, typebox_pc_9_341, typebox_pc_9_342, typebox_pc_9_343, typebox_pc_9_344, typebox_pc_9_345, typebox_pc_9_346, typebox_pc_9_347, typebox_pc_9_348, typebox_pc_9_349, typebox_pc_9_350, typebox_pc_9_351, typebox_pc_9_352, typebox_pc_9_353, typebox_pc_9_354, typebox_pc_9_355, typebox_pc_9_356, typebox_pc_9_357, typebox_pc_9_358, typebox_pc_9_359, typebox_pc_9_360, typebox_pc_9_361, typebox_pc_9_362, typebox_pc_9_363, typebox_pc_9_364, typebox_pc_9_365, typebox_pc_9_366, typebox_pc_9_367, typebox_pc_9_368, typebox_pc_9_369, typebox_pc_9_370, typebox_pc_9_371, typebox_pc_9_372, typebox_pc_9_373, typebox_pc_9_374, typebox_pc_9_375, typebox_pc_9_376, typebox_pc_9_377, typebox_pc_9_378, typebox_pc_9_379, typebox_pc_9_380, typebox_pc_9_381, typebox_pc_9_382, typebox_pc_9_383, typebox_pc_9_384, typebox_pc_9_385, typebox_pc_9_386, typebox_pc_9_387, typebox_pc_9_388, typebox_pc_9_389, typebox_pc_9_390, typebox_pc_9_391, typebox_pc_9_392, typebox_pc_9_393, typebox_pc_9_394, typebox_pc_9_395, typebox_pc_9_396, typebox_pc_9_397, typebox_pc_9_398, typebox_pc_9_399, typebox_pc_9_400, typebox_pc_9_401, typebox_pc_9_402, typebox_pc_9_403, typebox_pc_9_404, typebox_pc_9_405, typebox_pc_9_406, typebox_pc_9_407, typebox_pc_9_408, typebox_pc_9_409, typebox_pc_9_410, typebox_pc_9_411, typebox_pc_9_412, typebox_pc_9_413, typebox_pc_9_414, typebox_pc_9_415, typebox_pc_9_416, typebox_pc_9_417, typebox_pc_9_418, typebox_pc_9_419, typebox_pc_9_420, typebox_pc_9_421, typebox_pc_9_422, typebox_pc_9_423, typebox_pc_9_424, typebox_pc_9_425, typebox_pc_9_426, typebox_pc_9_427, typebox_pc_9_428, typebox_pc_9_429, typebox_pc_9_430, typebox_pc_9_431, typebox_pc_9_432, typebox_pc_9_433, typebox_pc_9_434, typebox_pc_9_435, typebox_pc_9_436, typebox_pc_9_437, typebox_pc_9_438, typebox_pc_9_439, typebox_pc_9_440, typebox_pc_9_441, typebox_pc_9_442, typebox_pc_9_443, typebox_pc_9_444, typebox_pc_9_445, typebox_pc_9_446, typebox_pc_9_447, typebox_pc_9_448, typebox_pc_9_449, typebox_pc_9_450, typebox_pc_9_451, typebox_pc_9_452, typebox_pc_9_453, typebox_pc_9_454, typebox_pc_9_455, typebox_pc_9_456, typebox_pc_9_457, typebox_pc_9_458, typebox_pc_9_459, typebox_pc_9_460, typebox_pc_9_461, typebox_pc_9_462, typebox_pc_9_463, typebox_pc_9_464, typebox_pc_9_465, typebox_pc_9_466, typebox_pc_9_467, typebox_pc_9_468, typebox_pc_9_469, typebox_pc_9_470, typebox_pc_9_471, typebox_pc_9_472, typebox_pc_9_473, typebox_pc_9_474, typebox_pc_9_475, typebox_pc_9_476, typebox_pc_9_477, typebox_pc_9_478, typebox_pc_9_479, typebox_pc_9_480, typebox_pc_9_481, typebox_pc_9_482, typebox_pc_9_483, typebox_pc_9_484, typebox_pc_9_485, typebox_pc_9_486, typebox_pc_9_487, typebox_pc_9_488, typebox_pc_9_489, typebox_pc_9_490, typebox_pc_9_491, typebox_pc_9_492, typebox_pc_9_493, typebox_pc_9_494, typebox_pc_9_495, typebox_pc_9_496, typebox_pc_9_497, typebox_pc_9_498, typebox_pc_9_499, typebox_pc_9_500, typebox_pc_9_501, typebox_pc_9_502, typebox_pc_9_503, typebox_pc_9_504, typebox_pc_9_505, typebox_pc_9_506, typebox_pc_9_507, typebox_pc_9_508, typebox_pc_9_509, typebox_pc_9_510, typebox_pc_9_511, typebox_pc_9_512, typebox_pc_9_513, typebox_pc_9_514, typebox_pc_9_515, typebox_pc_9_516, typebox_pc_9_517, typebox_pc_9_518, typebox_pc_9_519, typebox_pc_9_520, typebox_pc_9_521, typebox_pc_9_522, typebox_pc_9_523, typebox_pc_9_524, typebox_pc_9_525, typebox_pc_9_526, typebox_pc_9_527, typebox_pc_9_528, typebox_pc_9_529, typebox_pc_9_530, typebox_pc_9_531, typebox_pc_9_532, typebox_pc_9_533, typebox_pc_9_534, typebox_pc_9_535, typebox_pc_9_536, typebox_pc_9_537, typebox_pc_9_538, typebox_pc_9_539, typebox_pc_9_540, typebox_pc_9_541, typebox_pc_9_542, typebox_pc_9_543, typebox_pc_9_544, typebox_pc_9_545, typebox_pc_9_546, typebox_pc_9_547, typebox_pc_9_548, typebox_pc_9_549, typebox_pc_9_550, typebox_pc_9_551, typebox_pc_9_552, typebox_pc_9_553, typebox_pc_9_554, typebox_pc_9_555, typebox_pc_9_556, typebox_pc_9_557, typebox_pc_9_558, typebox_pc_9_559, typebox_pc_9_560, typebox_pc_9_561, typebox_pc_9_562, typebox_pc_9_563, typebox_pc_9_564, typebox_pc_9_565, typebox_pc_9_566, typebox_pc_9_567, typebox_pc_9_568, typebox_pc_9_569, typebox_pc_9_570, typebox_pc_9_571, typebox_pc_9_572, typebox_pc_9_573, typebox_pc_9_574, typebox_pc_9_575, typebox_pc_9_576, typebox_pc_9_577, typebox_pc_9_578, typebox_pc_9_579, typebox_pc_9_580, typebox_pc_9_581, typebox_pc_9_582, typebox_pc_9_583, typebox_pc_9_584, typebox_pc_9_585, typebox_pc_9_586, typebox_pc_9_587, typebox_pc_9_588, typebox_pc_9_589, typebox_pc_9_590, typebox_pc_9_591, typebox_pc_9_592, typebox_pc_9_593, typebox_pc_9_594, typebox_pc_9_595, typebox_pc_9_596, typebox_pc_9_597, typebox_pc_9_598, typebox_pc_9_599, typebox_pc_9_600, typebox_pc_9_601, typebox_pc_9_602, typebox_pc_9_603, typebox_pc_9_604, typebox_pc_9_605, typebox_pc_9_606, typebox_pc_9_607, typebox_pc_9_608, typebox_pc_9_609, typebox_pc_9_610, typebox_pc_9_611, typebox_pc_9_612, typebox_pc_9_613, typebox_pc_9_614, typebox_pc_9_615, typebox_pc_9_616, typebox_pc_9_617, typebox_pc_9_618, typebox_pc_9_619, typebox_pc_9_620, typebox_pc_9_621, typebox_pc_9_622, typebox_pc_9_623, typebox_pc_9_624, typebox_pc_9_625, typebox_pc_9_626, typebox_pc_9_627, typebox_pc_9_628, typebox_pc_9_629, typebox_pc_9_630, typebox_pc_9_631, typebox_pc_9_632, typebox_pc_9_633, typebox_pc_9_634, typebox_pc_9_635, typebox_pc_9_636, typebox_pc_9_637, typebox_pc_9_638, typebox_pc_9_639, typebox_pc_9_640, typebox_pc_9_641, typebox_pc_9_642, typebox_pc_9_643, typebox_pc_9_644, typebox_pc_9_645, typebox_pc_9_646, typebox_pc_9_647, typebox_pc_9_648, typebox_pc_9_649, typebox_pc_9_650, typebox_pc_9_651, typebox_pc_9_652, typebox_pc_9_653, typebox_pc_9_654, typebox_pc_9_655, typebox_pc_9_656, typebox_pc_9_657, typebox_pc_9_658, typebox_pc_9_659, typebox_pc_9_660, typebox_pc_9_661, typebox_pc_9_662, typebox_pc_9_663, typebox_pc_9_664, typebox_pc_9_665, typebox_pc_9_666, typebox_pc_9_667, typebox_pc_9_668, typebox_pc_9_669, typebox_pc_9_670, typebox_pc_9_671, typebox_pc_9_672, typebox_pc_9_673, typebox_pc_9_674, typebox_pc_9_675, typebox_pc_9_676, typebox_pc_9_677, typebox_pc_9_678, typebox_pc_9_679, typebox_pc_9_680, typebox_pc_9_681, typebox_pc_9_682, typebox_pc_9_683, typebox_pc_9_684, typebox_pc_9_685, typebox_pc_9_686, typebox_pc_9_687, typebox_pc_9_688, typebox_pc_9_689, typebox_pc_9_690, typebox_pc_9_691, typebox_pc_9_692, typebox_pc_9_693, typebox_pc_9_694, typebox_pc_9_695, typebox_pc_9_696, typebox_pc_9_697, typebox_pc_9_698, typebox_pc_9_699, typebox_pc_9_700, typebox_pc_9_701, typebox_pc_9_702, typebox_pc_9_703, typebox_pc_9_704, typebox_pc_9_705, typebox_pc_9_706, typebox_pc_9_707, typebox_pc_9_708, typebox_pc_9_709, typebox_pc_9_710, typebox_pc_9_711, typebox_pc_9_712, typebox_pc_9_713, typebox_pc_9_714, typebox_pc_9_715 };
+const typebox_plan_9: rt.Continuation.Plan = .{ .source_callback = f_9, .slots = 774, .entry = 715, .steps = &typebox_steps_9 };
+noinline fn typebox_pc_30_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_30_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[5] };
+}
+noinline fn typebox_pc_30_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[1], .receiver = c.pi_js_undefined(), .args = native_values[6..9], .result = 5, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_30_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[8] = native_values[4];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_30_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[7] = native_values[3];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_30_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[6] = native_values[2];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_30_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[4] = try rt.plannedFunction(s, "", 0, f_32, env, receiver, true, &typebox_plan_32);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_30_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[3] = try rt.plannedFunction(s, "", 2, f_31, env, receiver, true, &typebox_plan_31);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_30_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "types");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_30_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[1] = try rt.get(s, env, "m4_ShiftLeft");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_30_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "types", native_values[0]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_30_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_30_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 11 };
+}
+const typebox_steps_30 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_30_0, typebox_pc_30_1, typebox_pc_30_2, typebox_pc_30_3, typebox_pc_30_4, typebox_pc_30_5, typebox_pc_30_6, typebox_pc_30_7, typebox_pc_30_8, typebox_pc_30_9, typebox_pc_30_10, typebox_pc_30_11, typebox_pc_30_12 };
+const typebox_plan_30: rt.Continuation.Plan = .{ .source_callback = f_30, .slots = 11, .entry = 12, .steps = &typebox_steps_30 };
+noinline fn typebox_pc_31_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_31_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[8] };
+}
+noinline fn typebox_pc_31_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[8] = c.pi_js_bool(engine.context, 0);
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_31_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[8] = native_values[7];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_31_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = c.pi_js_undefined(), .args = native_values[10..11], .result = 7, .next = 3, .construct = false } };
+}
+noinline fn typebox_pc_31_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[6];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_31_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "right");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_31_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "m0_CanInstantiate");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_31_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[4])) 2 else 7 };
+}
+noinline fn typebox_pc_31_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[9..10], .result = 4, .next = 8, .construct = false } };
+}
+noinline fn typebox_pc_31_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[3];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_31_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "left");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_31_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m12_IsRef");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_31_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "right", native_values[1]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_31_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_31_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "left", native_values[0]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_31_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_31_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 16 };
+}
+const typebox_steps_31 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_31_0, typebox_pc_31_1, typebox_pc_31_2, typebox_pc_31_3, typebox_pc_31_4, typebox_pc_31_5, typebox_pc_31_6, typebox_pc_31_7, typebox_pc_31_8, typebox_pc_31_9, typebox_pc_31_10, typebox_pc_31_11, typebox_pc_31_12, typebox_pc_31_13, typebox_pc_31_14, typebox_pc_31_15, typebox_pc_31_16, typebox_pc_31_17 };
+const typebox_plan_31: rt.Continuation.Plan = .{ .source_callback = f_31, .slots = 15, .entry = 17, .steps = &typebox_steps_31 };
+noinline fn typebox_pc_32_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_32_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+return .{ .returned = c.pi_js_bool(engine.context, 1) };
+}
+noinline fn typebox_pc_32_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 1 };
+}
+const typebox_steps_32 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_32_0, typebox_pc_32_1, typebox_pc_32_2 };
+const typebox_plan_32: rt.Continuation.Plan = .{ .source_callback = f_32, .slots = 0, .entry = 2, .steps = &typebox_steps_32 };
+noinline fn typebox_pc_33_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_33_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[21] };
+}
+noinline fn typebox_pc_33_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[21] = native_values[10];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_33_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[9], .receiver = c.pi_js_undefined(), .args = native_values[0..0], .result = 10, .next = 2, .construct = false } };
+}
+noinline fn typebox_pc_33_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "false_");
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_33_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[21] = native_values[20];
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_33_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[11], .receiver = c.pi_js_undefined(), .args = native_values[25..27], .result = 20, .next = 5, .construct = false } };
+}
+noinline fn typebox_pc_33_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[26] = native_values[19];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_33_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[25] = native_values[14];
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_33_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[18], .receiver = native_values[15], .args = native_values[24..25], .result = 19, .next = 8, .construct = false } };
+}
+noinline fn typebox_pc_33_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[24] = c.JS_NewFloat64(engine.context, 1);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_33_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try rt.key(s, native_values[15], native_values[17]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_33_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[17] = try rt.propertyKey(s, native_values[16]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_33_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try s.text("slice");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_33_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "array");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_33_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[14] = try rt.key(s, native_values[12], native_values[13]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_33_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[13] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_33_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "array");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_33_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "true_");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_33_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[8])) 4 else 18 };
+}
+noinline fn typebox_pc_33_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[22..24], .result = 8, .next = 19, .construct = false } };
+}
+noinline fn typebox_pc_33_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[23] = c.JS_NewFloat64(engine.context, 0);
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_33_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[22] = native_values[7];
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_33_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try rt.key(s, native_values[4], native_values[6]);
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_33_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try rt.propertyKey(s, native_values[5]);
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_33_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try s.text("length");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_33_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "array");
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_33_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_33_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "false_", native_values[2]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_33_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_33_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "true_", native_values[1]);
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_33_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_33_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "array", native_values[0]);
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_33_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_33_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 33 };
+}
+const typebox_steps_33 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_33_0, typebox_pc_33_1, typebox_pc_33_2, typebox_pc_33_3, typebox_pc_33_4, typebox_pc_33_5, typebox_pc_33_6, typebox_pc_33_7, typebox_pc_33_8, typebox_pc_33_9, typebox_pc_33_10, typebox_pc_33_11, typebox_pc_33_12, typebox_pc_33_13, typebox_pc_33_14, typebox_pc_33_15, typebox_pc_33_16, typebox_pc_33_17, typebox_pc_33_18, typebox_pc_33_19, typebox_pc_33_20, typebox_pc_33_21, typebox_pc_33_22, typebox_pc_33_23, typebox_pc_33_24, typebox_pc_33_25, typebox_pc_33_26, typebox_pc_33_27, typebox_pc_33_28, typebox_pc_33_29, typebox_pc_33_30, typebox_pc_33_31, typebox_pc_33_32, typebox_pc_33_33, typebox_pc_33_34 };
+const typebox_plan_33: rt.Continuation.Plan = .{ .source_callback = f_33, .slots = 27, .entry = 34, .steps = &typebox_steps_33 };
+noinline fn typebox_pc_296_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_296_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[11] };
+}
+noinline fn typebox_pc_296_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_296_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[10]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_296_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[8], .receiver = c.pi_js_undefined(), .args = native_values[15..16], .result = 10, .next = 3, .construct = false } };
+}
+noinline fn typebox_pc_296_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[15] = native_values[9];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_296_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "elements");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_296_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "m140_RestSpread");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_296_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "elements", native_values[7]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_296_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[12..15], .result = 7, .next = 8, .construct = false } };
+}
+noinline fn typebox_pc_296_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[6];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_296_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[5];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_296_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[12] = native_values[4];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_296_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "types");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_296_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "state");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_296_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "context");
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_296_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_296_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "types", native_values[2]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_296_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_296_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_296_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_296_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_296_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_296_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 22 };
+}
+const typebox_steps_296 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_296_0, typebox_pc_296_1, typebox_pc_296_2, typebox_pc_296_3, typebox_pc_296_4, typebox_pc_296_5, typebox_pc_296_6, typebox_pc_296_7, typebox_pc_296_8, typebox_pc_296_9, typebox_pc_296_10, typebox_pc_296_11, typebox_pc_296_12, typebox_pc_296_13, typebox_pc_296_14, typebox_pc_296_15, typebox_pc_296_16, typebox_pc_296_17, typebox_pc_296_18, typebox_pc_296_19, typebox_pc_296_20, typebox_pc_296_21, typebox_pc_296_22, typebox_pc_296_23 };
+const typebox_plan_296: rt.Continuation.Plan = .{ .source_callback = f_296, .slots = 20, .entry = 23, .steps = &typebox_steps_296 };
+noinline fn typebox_pc_297_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_297_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[8] };
+}
+noinline fn typebox_pc_297_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = native_values[3], .args = native_values[9..10], .result = 8, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_297_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[7];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_297_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[7] = try rt.plannedFunction(s, "", 1, f_298, env, receiver, true, &typebox_plan_298);
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_297_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try rt.key(s, native_values[3], native_values[5]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_297_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try rt.propertyKey(s, native_values[4]);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_297_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[4] = try s.text("map");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_297_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "types");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_297_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "types", native_values[2]);
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_297_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_297_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_297_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_297_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_297_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_297_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 14 };
+}
+const typebox_steps_297 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_297_0, typebox_pc_297_1, typebox_pc_297_2, typebox_pc_297_3, typebox_pc_297_4, typebox_pc_297_5, typebox_pc_297_6, typebox_pc_297_7, typebox_pc_297_8, typebox_pc_297_9, typebox_pc_297_10, typebox_pc_297_11, typebox_pc_297_12, typebox_pc_297_13, typebox_pc_297_14, typebox_pc_297_15 };
+const typebox_plan_297: rt.Continuation.Plan = .{ .source_callback = f_297, .slots = 12, .entry = 15, .steps = &typebox_steps_297 };
+noinline fn typebox_pc_298_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_298_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[5] };
+}
+noinline fn typebox_pc_298_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[1], .receiver = c.pi_js_undefined(), .args = native_values[6..9], .result = 5, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_298_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[8] = native_values[4];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_298_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[7] = native_values[3];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_298_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[6] = native_values[2];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_298_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "type");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_298_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "state");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_298_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "context");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_298_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[1] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_298_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[0]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_298_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_298_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 11 };
+}
+const typebox_steps_298 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_298_0, typebox_pc_298_1, typebox_pc_298_2, typebox_pc_298_3, typebox_pc_298_4, typebox_pc_298_5, typebox_pc_298_6, typebox_pc_298_7, typebox_pc_298_8, typebox_pc_298_9, typebox_pc_298_10, typebox_pc_298_11, typebox_pc_298_12 };
+const typebox_plan_298: rt.Continuation.Plan = .{ .source_callback = f_298, .slots = 11, .entry = 12, .steps = &typebox_steps_298 };
+noinline fn typebox_pc_303_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_303_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[2] };
+}
+noinline fn typebox_pc_303_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[2], native_values[7], native_values[8]);
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_303_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "visited");
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_303_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try rt.propertyKey(s, native_values[6]);
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_303_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try s.text("visited");
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_303_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[2], native_values[4], native_values[5]);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_303_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "callstack");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_303_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[4] = try rt.propertyKey(s, native_values[3]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_303_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[3] = try s.text("callstack");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_303_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[2] = try s.object();
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_303_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "visited", native_values[1]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_303_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_303_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "callstack", native_values[0]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_303_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_303_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 14 };
+}
+const typebox_steps_303 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_303_0, typebox_pc_303_1, typebox_pc_303_2, typebox_pc_303_3, typebox_pc_303_4, typebox_pc_303_5, typebox_pc_303_6, typebox_pc_303_7, typebox_pc_303_8, typebox_pc_303_9, typebox_pc_303_10, typebox_pc_303_11, typebox_pc_303_12, typebox_pc_303_13, typebox_pc_303_14, typebox_pc_303_15 };
+const typebox_plan_303: rt.Continuation.Plan = .{ .source_callback = f_303, .slots = 9, .entry = 15, .steps = &typebox_steps_303 };
+noinline fn typebox_pc_450_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_450_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[11] };
+}
+noinline fn typebox_pc_450_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[8], .receiver = native_values[5], .args = native_values[13..15], .result = 11, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_450_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[10];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_450_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[9];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_450_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[10] = try s.object();
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_450_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[9] = try rt.plannedFunction(s, "", 2, f_451, env, receiver, true, &typebox_plan_451);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_450_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[8] = try rt.key(s, native_values[5], native_values[7]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_450_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try rt.propertyKey(s, native_values[6]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_450_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try s.text("reduce");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_450_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[12..13], .result = 5, .next = 9, .construct = false } };
+}
+noinline fn typebox_pc_450_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[12] = native_values[4];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_450_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "properties");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_450_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m4_Keys");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_450_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "properties", native_values[2]);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_450_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_450_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_450_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_450_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_450_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_450_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 19 };
+}
+const typebox_steps_450 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_450_0, typebox_pc_450_1, typebox_pc_450_2, typebox_pc_450_3, typebox_pc_450_4, typebox_pc_450_5, typebox_pc_450_6, typebox_pc_450_7, typebox_pc_450_8, typebox_pc_450_9, typebox_pc_450_10, typebox_pc_450_11, typebox_pc_450_12, typebox_pc_450_13, typebox_pc_450_14, typebox_pc_450_15, typebox_pc_450_16, typebox_pc_450_17, typebox_pc_450_18, typebox_pc_450_19, typebox_pc_450_20 };
+const typebox_plan_450: rt.Continuation.Plan = .{ .source_callback = f_450, .slots = 19, .entry = 20, .steps = &typebox_steps_450 };
+noinline fn typebox_pc_451_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_451_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[2] };
+}
+noinline fn typebox_pc_451_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[2], native_values[5], native_values[13]);
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_451_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[14..17], .result = 13, .next = 2, .construct = false } };
+}
+noinline fn typebox_pc_451_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[16] = native_values[12];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_451_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[15] = native_values[8];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_451_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[7];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_451_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try rt.key(s, native_values[9], native_values[11]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_451_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try rt.propertyKey(s, native_values[10]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_451_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "key");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_451_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "properties");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_451_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "state");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_451_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "context");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_451_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_451_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try rt.propertyKey(s, native_values[4]);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_451_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "key");
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_451_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.spreadObject(s, native_values[2], native_values[3]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_451_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "result");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_451_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[2] = try s.object();
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_451_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "key", native_values[1]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_451_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_451_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[0]);
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_451_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_451_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 22 };
+}
+const typebox_steps_451 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_451_0, typebox_pc_451_1, typebox_pc_451_2, typebox_pc_451_3, typebox_pc_451_4, typebox_pc_451_5, typebox_pc_451_6, typebox_pc_451_7, typebox_pc_451_8, typebox_pc_451_9, typebox_pc_451_10, typebox_pc_451_11, typebox_pc_451_12, typebox_pc_451_13, typebox_pc_451_14, typebox_pc_451_15, typebox_pc_451_16, typebox_pc_451_17, typebox_pc_451_18, typebox_pc_451_19, typebox_pc_451_20, typebox_pc_451_21, typebox_pc_451_22, typebox_pc_451_23 };
+const typebox_plan_451: rt.Continuation.Plan = .{ .source_callback = f_451, .slots = 19, .entry = 23, .steps = &typebox_steps_451 };
+noinline fn typebox_pc_625_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_625_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[224] };
+}
+noinline fn typebox_pc_625_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[224] = try rt.get(s, env, "withModifiers");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_625_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "withModifiers", native_values[223]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_625_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[220], .receiver = c.pi_js_undefined(), .args = native_values[320..322], .result = 223, .next = 3, .construct = false } };
+}
+noinline fn typebox_pc_625_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[321] = native_values[222];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_625_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[320] = native_values[221];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_625_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[222] = try rt.get(s, env, "instantiatedType");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_625_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[221] = try rt.get(s, env, "type");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_625_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[220] = try rt.get(s, env, "m0_WithModifiers");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_625_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedType", native_values[219]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_625_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[14];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[226..230], .result = 14, .next = 11, .construct = false } };
+}
+noinline fn typebox_pc_625_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[229] = native_values[13];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_625_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[228] = native_values[9];
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_625_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[227] = native_values[8];
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_625_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[226] = native_values[7];
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_625_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[13] = try rt.key(s, native_values[10], native_values[12]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_625_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try rt.propertyKey(s, native_values[11]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_625_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try s.text("$ref");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_625_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "type");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_625_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "type");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_625_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "state");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_625_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "context");
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_625_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m257_RefInstantiate");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_625_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[30];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[18], .receiver = c.pi_js_undefined(), .args = native_values[235..237], .result = 30, .next = 25, .construct = false } };
+}
+noinline fn typebox_pc_625_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[236] = native_values[29];
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_625_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[235] = native_values[26];
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_625_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[27], .receiver = c.pi_js_undefined(), .args = native_values[234..235], .result = 29, .next = 28, .construct = false } };
+}
+noinline fn typebox_pc_625_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[234] = native_values[28];
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_625_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[28] = try rt.get(s, env, "type");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_625_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[27] = try rt.get(s, env, "m38_ArrayOptions");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_625_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[19], .receiver = c.pi_js_undefined(), .args = native_values[231..234], .result = 26, .next = 32, .construct = false } };
+}
+noinline fn typebox_pc_625_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[233] = native_values[25];
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_625_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[232] = native_values[21];
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_625_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[231] = native_values[20];
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_625_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[25] = try rt.key(s, native_values[22], native_values[24]);
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_625_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[24] = try rt.propertyKey(s, native_values[23]);
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_625_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[23] = try s.text("items");
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_625_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[22] = try rt.get(s, env, "type");
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_625_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "state");
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_625_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[20] = try rt.get(s, env, "context");
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_625_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[19] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_625_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[18] = try rt.get(s, env, "m38__Array_");
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_625_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[45];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[34], .receiver = c.pi_js_undefined(), .args = native_values[238..242], .result = 45, .next = 45, .construct = false } };
+}
+noinline fn typebox_pc_625_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[241] = native_values[44];
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_625_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[240] = native_values[40];
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_625_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[239] = native_values[36];
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_625_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[238] = native_values[35];
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_625_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[44] = try rt.key(s, native_values[41], native_values[43]);
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_625_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[43] = try rt.propertyKey(s, native_values[42]);
+return .{ .next = 51 };
+}
+noinline fn typebox_pc_625_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[42] = try s.text("arguments");
+return .{ .next = 52 };
+}
+noinline fn typebox_pc_625_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[41] = try rt.get(s, env, "type");
+return .{ .next = 53 };
+}
+noinline fn typebox_pc_625_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[40] = try rt.key(s, native_values[37], native_values[39]);
+return .{ .next = 54 };
+}
+noinline fn typebox_pc_625_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[39] = try rt.propertyKey(s, native_values[38]);
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_625_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[38] = try s.text("target");
+return .{ .next = 56 };
+}
+noinline fn typebox_pc_625_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[37] = try rt.get(s, env, "type");
+return .{ .next = 57 };
+}
+noinline fn typebox_pc_625_59(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[36] = try rt.get(s, env, "state");
+return .{ .next = 58 };
+}
+noinline fn typebox_pc_625_60(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[35] = try rt.get(s, env, "context");
+return .{ .next = 59 };
+}
+noinline fn typebox_pc_625_61(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[34] = try rt.get(s, env, "m258_CallInstantiate");
+return .{ .next = 60 };
+}
+noinline fn typebox_pc_625_62(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[69];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_63(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[49], .receiver = c.pi_js_undefined(), .args = native_values[250..253], .result = 69, .next = 62, .construct = false } };
+}
+noinline fn typebox_pc_625_64(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[252] = native_values[68];
+return .{ .next = 63 };
+}
+noinline fn typebox_pc_625_65(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[251] = native_values[65];
+return .{ .next = 64 };
+}
+noinline fn typebox_pc_625_66(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[250] = native_values[57];
+return .{ .next = 65 };
+}
+noinline fn typebox_pc_625_67(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[66], .receiver = c.pi_js_undefined(), .args = native_values[249..250], .result = 68, .next = 66, .construct = false } };
+}
+noinline fn typebox_pc_625_68(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[249] = native_values[67];
+return .{ .next = 67 };
+}
+noinline fn typebox_pc_625_69(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[67] = try rt.get(s, env, "type");
+return .{ .next = 68 };
+}
+noinline fn typebox_pc_625_70(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[66] = try rt.get(s, env, "m39_ConstructorOptions");
+return .{ .next = 69 };
+}
+noinline fn typebox_pc_625_71(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[58], .receiver = c.pi_js_undefined(), .args = native_values[246..249], .result = 65, .next = 70, .construct = false } };
+}
+noinline fn typebox_pc_625_72(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[248] = native_values[64];
+return .{ .next = 71 };
+}
+noinline fn typebox_pc_625_73(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[247] = native_values[60];
+return .{ .next = 72 };
+}
+noinline fn typebox_pc_625_74(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[246] = native_values[59];
+return .{ .next = 73 };
+}
+noinline fn typebox_pc_625_75(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[64] = try rt.key(s, native_values[61], native_values[63]);
+return .{ .next = 74 };
+}
+noinline fn typebox_pc_625_76(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[63] = try rt.propertyKey(s, native_values[62]);
+return .{ .next = 75 };
+}
+noinline fn typebox_pc_625_77(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[62] = try s.text("instanceType");
+return .{ .next = 76 };
+}
+noinline fn typebox_pc_625_78(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[61] = try rt.get(s, env, "type");
+return .{ .next = 77 };
+}
+noinline fn typebox_pc_625_79(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[60] = try rt.get(s, env, "state");
+return .{ .next = 78 };
+}
+noinline fn typebox_pc_625_80(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[59] = try rt.get(s, env, "context");
+return .{ .next = 79 };
+}
+noinline fn typebox_pc_625_81(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[58] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 80 };
+}
+noinline fn typebox_pc_625_82(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[50], .receiver = c.pi_js_undefined(), .args = native_values[243..246], .result = 57, .next = 81, .construct = false } };
+}
+noinline fn typebox_pc_625_83(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[245] = native_values[56];
+return .{ .next = 82 };
+}
+noinline fn typebox_pc_625_84(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[244] = native_values[52];
+return .{ .next = 83 };
+}
+noinline fn typebox_pc_625_85(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[243] = native_values[51];
+return .{ .next = 84 };
+}
+noinline fn typebox_pc_625_86(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[56] = try rt.key(s, native_values[53], native_values[55]);
+return .{ .next = 85 };
+}
+noinline fn typebox_pc_625_87(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[55] = try rt.propertyKey(s, native_values[54]);
+return .{ .next = 86 };
+}
+noinline fn typebox_pc_625_88(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[54] = try s.text("parameters");
+return .{ .next = 87 };
+}
+noinline fn typebox_pc_625_89(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[53] = try rt.get(s, env, "type");
+return .{ .next = 88 };
+}
+noinline fn typebox_pc_625_90(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[52] = try rt.get(s, env, "state");
+return .{ .next = 89 };
+}
+noinline fn typebox_pc_625_91(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[51] = try rt.get(s, env, "context");
+return .{ .next = 90 };
+}
+noinline fn typebox_pc_625_92(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[50] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 91 };
+}
+noinline fn typebox_pc_625_93(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[49] = try rt.get(s, env, "m39_Constructor");
+return .{ .next = 92 };
+}
+noinline fn typebox_pc_625_94(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[93];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_95(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[73], .receiver = c.pi_js_undefined(), .args = native_values[261..264], .result = 93, .next = 94, .construct = false } };
+}
+noinline fn typebox_pc_625_96(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[263] = native_values[92];
+return .{ .next = 95 };
+}
+noinline fn typebox_pc_625_97(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[262] = native_values[89];
+return .{ .next = 96 };
+}
+noinline fn typebox_pc_625_98(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[261] = native_values[81];
+return .{ .next = 97 };
+}
+noinline fn typebox_pc_625_99(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[90], .receiver = c.pi_js_undefined(), .args = native_values[260..261], .result = 92, .next = 98, .construct = false } };
+}
+noinline fn typebox_pc_625_100(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[260] = native_values[91];
+return .{ .next = 99 };
+}
+noinline fn typebox_pc_625_101(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[91] = try rt.get(s, env, "type");
+return .{ .next = 100 };
+}
+noinline fn typebox_pc_625_102(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[90] = try rt.get(s, env, "m40_FunctionOptions");
+return .{ .next = 101 };
+}
+noinline fn typebox_pc_625_103(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[82], .receiver = c.pi_js_undefined(), .args = native_values[257..260], .result = 89, .next = 102, .construct = false } };
+}
+noinline fn typebox_pc_625_104(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[259] = native_values[88];
+return .{ .next = 103 };
+}
+noinline fn typebox_pc_625_105(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[258] = native_values[84];
+return .{ .next = 104 };
+}
+noinline fn typebox_pc_625_106(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[257] = native_values[83];
+return .{ .next = 105 };
+}
+noinline fn typebox_pc_625_107(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[88] = try rt.key(s, native_values[85], native_values[87]);
+return .{ .next = 106 };
+}
+noinline fn typebox_pc_625_108(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[87] = try rt.propertyKey(s, native_values[86]);
+return .{ .next = 107 };
+}
+noinline fn typebox_pc_625_109(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[86] = try s.text("returnType");
+return .{ .next = 108 };
+}
+noinline fn typebox_pc_625_110(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[85] = try rt.get(s, env, "type");
+return .{ .next = 109 };
+}
+noinline fn typebox_pc_625_111(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[84] = try rt.get(s, env, "state");
+return .{ .next = 110 };
+}
+noinline fn typebox_pc_625_112(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[83] = try rt.get(s, env, "context");
+return .{ .next = 111 };
+}
+noinline fn typebox_pc_625_113(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[82] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 112 };
+}
+noinline fn typebox_pc_625_114(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[74], .receiver = c.pi_js_undefined(), .args = native_values[254..257], .result = 81, .next = 113, .construct = false } };
+}
+noinline fn typebox_pc_625_115(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[256] = native_values[80];
+return .{ .next = 114 };
+}
+noinline fn typebox_pc_625_116(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[255] = native_values[76];
+return .{ .next = 115 };
+}
+noinline fn typebox_pc_625_117(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[254] = native_values[75];
+return .{ .next = 116 };
+}
+noinline fn typebox_pc_625_118(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[80] = try rt.key(s, native_values[77], native_values[79]);
+return .{ .next = 117 };
+}
+noinline fn typebox_pc_625_119(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[79] = try rt.propertyKey(s, native_values[78]);
+return .{ .next = 118 };
+}
+noinline fn typebox_pc_625_120(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[78] = try s.text("parameters");
+return .{ .next = 119 };
+}
+noinline fn typebox_pc_625_121(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[77] = try rt.get(s, env, "type");
+return .{ .next = 120 };
+}
+noinline fn typebox_pc_625_122(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[76] = try rt.get(s, env, "state");
+return .{ .next = 121 };
+}
+noinline fn typebox_pc_625_123(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[75] = try rt.get(s, env, "context");
+return .{ .next = 122 };
+}
+noinline fn typebox_pc_625_124(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[74] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 123 };
+}
+noinline fn typebox_pc_625_125(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[73] = try rt.get(s, env, "m40__Function_");
+return .{ .next = 124 };
+}
+noinline fn typebox_pc_625_126(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[125];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_127(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[97], .receiver = c.pi_js_undefined(), .args = native_values[275..279], .result = 125, .next = 126, .construct = false } };
+}
+noinline fn typebox_pc_625_128(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[278] = native_values[124];
+return .{ .next = 127 };
+}
+noinline fn typebox_pc_625_129(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[277] = native_values[121];
+return .{ .next = 128 };
+}
+noinline fn typebox_pc_625_130(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[276] = native_values[113];
+return .{ .next = 129 };
+}
+noinline fn typebox_pc_625_131(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[275] = native_values[105];
+return .{ .next = 130 };
+}
+noinline fn typebox_pc_625_132(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[122], .receiver = c.pi_js_undefined(), .args = native_values[274..275], .result = 124, .next = 131, .construct = false } };
+}
+noinline fn typebox_pc_625_133(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[274] = native_values[123];
+return .{ .next = 132 };
+}
+noinline fn typebox_pc_625_134(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[123] = try rt.get(s, env, "type");
+return .{ .next = 133 };
+}
+noinline fn typebox_pc_625_135(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[122] = try rt.get(s, env, "m85_DependentOptions");
+return .{ .next = 134 };
+}
+noinline fn typebox_pc_625_136(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[114], .receiver = c.pi_js_undefined(), .args = native_values[271..274], .result = 121, .next = 135, .construct = false } };
+}
+noinline fn typebox_pc_625_137(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[273] = native_values[120];
+return .{ .next = 136 };
+}
+noinline fn typebox_pc_625_138(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[272] = native_values[116];
+return .{ .next = 137 };
+}
+noinline fn typebox_pc_625_139(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[271] = native_values[115];
+return .{ .next = 138 };
+}
+noinline fn typebox_pc_625_140(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[120] = try rt.key(s, native_values[117], native_values[119]);
+return .{ .next = 139 };
+}
+noinline fn typebox_pc_625_141(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[119] = try rt.propertyKey(s, native_values[118]);
+return .{ .next = 140 };
+}
+noinline fn typebox_pc_625_142(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[118] = try s.text("else");
+return .{ .next = 141 };
+}
+noinline fn typebox_pc_625_143(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[117] = try rt.get(s, env, "type");
+return .{ .next = 142 };
+}
+noinline fn typebox_pc_625_144(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[116] = try rt.get(s, env, "state");
+return .{ .next = 143 };
+}
+noinline fn typebox_pc_625_145(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[115] = try rt.get(s, env, "context");
+return .{ .next = 144 };
+}
+noinline fn typebox_pc_625_146(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[114] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 145 };
+}
+noinline fn typebox_pc_625_147(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[106], .receiver = c.pi_js_undefined(), .args = native_values[268..271], .result = 113, .next = 146, .construct = false } };
+}
+noinline fn typebox_pc_625_148(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[270] = native_values[112];
+return .{ .next = 147 };
+}
+noinline fn typebox_pc_625_149(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[269] = native_values[108];
+return .{ .next = 148 };
+}
+noinline fn typebox_pc_625_150(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[268] = native_values[107];
+return .{ .next = 149 };
+}
+noinline fn typebox_pc_625_151(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[112] = try rt.key(s, native_values[109], native_values[111]);
+return .{ .next = 150 };
+}
+noinline fn typebox_pc_625_152(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[111] = try rt.propertyKey(s, native_values[110]);
+return .{ .next = 151 };
+}
+noinline fn typebox_pc_625_153(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[110] = try s.text("then");
+return .{ .next = 152 };
+}
+noinline fn typebox_pc_625_154(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[109] = try rt.get(s, env, "type");
+return .{ .next = 153 };
+}
+noinline fn typebox_pc_625_155(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[108] = try rt.get(s, env, "state");
+return .{ .next = 154 };
+}
+noinline fn typebox_pc_625_156(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[107] = try rt.get(s, env, "context");
+return .{ .next = 155 };
+}
+noinline fn typebox_pc_625_157(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[106] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 156 };
+}
+noinline fn typebox_pc_625_158(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[98], .receiver = c.pi_js_undefined(), .args = native_values[265..268], .result = 105, .next = 157, .construct = false } };
+}
+noinline fn typebox_pc_625_159(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[267] = native_values[104];
+return .{ .next = 158 };
+}
+noinline fn typebox_pc_625_160(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[266] = native_values[100];
+return .{ .next = 159 };
+}
+noinline fn typebox_pc_625_161(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[265] = native_values[99];
+return .{ .next = 160 };
+}
+noinline fn typebox_pc_625_162(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[104] = try rt.key(s, native_values[101], native_values[103]);
+return .{ .next = 161 };
+}
+noinline fn typebox_pc_625_163(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[103] = try rt.propertyKey(s, native_values[102]);
+return .{ .next = 162 };
+}
+noinline fn typebox_pc_625_164(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[102] = try s.text("if");
+return .{ .next = 163 };
+}
+noinline fn typebox_pc_625_165(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[101] = try rt.get(s, env, "type");
+return .{ .next = 164 };
+}
+noinline fn typebox_pc_625_166(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[100] = try rt.get(s, env, "state");
+return .{ .next = 165 };
+}
+noinline fn typebox_pc_625_167(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[99] = try rt.get(s, env, "context");
+return .{ .next = 166 };
+}
+noinline fn typebox_pc_625_168(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[98] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 167 };
+}
+noinline fn typebox_pc_625_169(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[97] = try rt.get(s, env, "m85_Dependent");
+return .{ .next = 168 };
+}
+noinline fn typebox_pc_625_170(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[141];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_171(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[129], .receiver = c.pi_js_undefined(), .args = native_values[284..286], .result = 141, .next = 170, .construct = false } };
+}
+noinline fn typebox_pc_625_172(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[285] = native_values[140];
+return .{ .next = 171 };
+}
+noinline fn typebox_pc_625_173(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[284] = native_values[137];
+return .{ .next = 172 };
+}
+noinline fn typebox_pc_625_174(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[138], .receiver = c.pi_js_undefined(), .args = native_values[283..284], .result = 140, .next = 173, .construct = false } };
+}
+noinline fn typebox_pc_625_175(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[283] = native_values[139];
+return .{ .next = 174 };
+}
+noinline fn typebox_pc_625_176(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[139] = try rt.get(s, env, "type");
+return .{ .next = 175 };
+}
+noinline fn typebox_pc_625_177(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[138] = try rt.get(s, env, "m41_IntersectOptions");
+return .{ .next = 176 };
+}
+noinline fn typebox_pc_625_178(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[130], .receiver = c.pi_js_undefined(), .args = native_values[280..283], .result = 137, .next = 177, .construct = false } };
+}
+noinline fn typebox_pc_625_179(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[282] = native_values[136];
+return .{ .next = 178 };
+}
+noinline fn typebox_pc_625_180(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[281] = native_values[132];
+return .{ .next = 179 };
+}
+noinline fn typebox_pc_625_181(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[280] = native_values[131];
+return .{ .next = 180 };
+}
+noinline fn typebox_pc_625_182(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[136] = try rt.key(s, native_values[133], native_values[135]);
+return .{ .next = 181 };
+}
+noinline fn typebox_pc_625_183(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[135] = try rt.propertyKey(s, native_values[134]);
+return .{ .next = 182 };
+}
+noinline fn typebox_pc_625_184(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[134] = try s.text("allOf");
+return .{ .next = 183 };
+}
+noinline fn typebox_pc_625_185(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[133] = try rt.get(s, env, "type");
+return .{ .next = 184 };
+}
+noinline fn typebox_pc_625_186(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[132] = try rt.get(s, env, "state");
+return .{ .next = 185 };
+}
+noinline fn typebox_pc_625_187(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[131] = try rt.get(s, env, "context");
+return .{ .next = 186 };
+}
+noinline fn typebox_pc_625_188(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[130] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 187 };
+}
+noinline fn typebox_pc_625_189(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[129] = try rt.get(s, env, "m41_Intersect");
+return .{ .next = 188 };
+}
+noinline fn typebox_pc_625_190(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[157];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_191(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[145], .receiver = c.pi_js_undefined(), .args = native_values[291..293], .result = 157, .next = 190, .construct = false } };
+}
+noinline fn typebox_pc_625_192(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[292] = native_values[156];
+return .{ .next = 191 };
+}
+noinline fn typebox_pc_625_193(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[291] = native_values[153];
+return .{ .next = 192 };
+}
+noinline fn typebox_pc_625_194(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[154], .receiver = c.pi_js_undefined(), .args = native_values[290..291], .result = 156, .next = 193, .construct = false } };
+}
+noinline fn typebox_pc_625_195(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[290] = native_values[155];
+return .{ .next = 194 };
+}
+noinline fn typebox_pc_625_196(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[155] = try rt.get(s, env, "type");
+return .{ .next = 195 };
+}
+noinline fn typebox_pc_625_197(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[154] = try rt.get(s, env, "m42_ObjectOptions");
+return .{ .next = 196 };
+}
+noinline fn typebox_pc_625_198(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[146], .receiver = c.pi_js_undefined(), .args = native_values[287..290], .result = 153, .next = 197, .construct = false } };
+}
+noinline fn typebox_pc_625_199(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[289] = native_values[152];
+return .{ .next = 198 };
+}
+noinline fn typebox_pc_625_200(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[288] = native_values[148];
+return .{ .next = 199 };
+}
+noinline fn typebox_pc_625_201(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[287] = native_values[147];
+return .{ .next = 200 };
+}
+noinline fn typebox_pc_625_202(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[152] = try rt.key(s, native_values[149], native_values[151]);
+return .{ .next = 201 };
+}
+noinline fn typebox_pc_625_203(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[151] = try rt.propertyKey(s, native_values[150]);
+return .{ .next = 202 };
+}
+noinline fn typebox_pc_625_204(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[150] = try s.text("properties");
+return .{ .next = 203 };
+}
+noinline fn typebox_pc_625_205(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[149] = try rt.get(s, env, "type");
+return .{ .next = 204 };
+}
+noinline fn typebox_pc_625_206(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[148] = try rt.get(s, env, "state");
+return .{ .next = 205 };
+}
+noinline fn typebox_pc_625_207(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[147] = try rt.get(s, env, "context");
+return .{ .next = 206 };
+}
+noinline fn typebox_pc_625_208(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[146] = try rt.get(s, env, "m0_InstantiateProperties");
+return .{ .next = 207 };
+}
+noinline fn typebox_pc_625_209(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[145] = try rt.get(s, env, "m42__Object_");
+return .{ .next = 208 };
+}
+noinline fn typebox_pc_625_210(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[172];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_211(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[161], .receiver = c.pi_js_undefined(), .args = native_values[299..301], .result = 172, .next = 210, .construct = false } };
+}
+noinline fn typebox_pc_625_212(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[300] = native_values[171];
+return .{ .next = 211 };
+}
+noinline fn typebox_pc_625_213(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[299] = native_values[164];
+return .{ .next = 212 };
+}
+noinline fn typebox_pc_625_214(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[165], .receiver = c.pi_js_undefined(), .args = native_values[296..299], .result = 171, .next = 213, .construct = false } };
+}
+noinline fn typebox_pc_625_215(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[298] = native_values[170];
+return .{ .next = 214 };
+}
+noinline fn typebox_pc_625_216(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[297] = native_values[167];
+return .{ .next = 215 };
+}
+noinline fn typebox_pc_625_217(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[296] = native_values[166];
+return .{ .next = 216 };
+}
+noinline fn typebox_pc_625_218(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[168], .receiver = c.pi_js_undefined(), .args = native_values[295..296], .result = 170, .next = 217, .construct = false } };
+}
+noinline fn typebox_pc_625_219(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[295] = native_values[169];
+return .{ .next = 218 };
+}
+noinline fn typebox_pc_625_220(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[169] = try rt.get(s, env, "type");
+return .{ .next = 219 };
+}
+noinline fn typebox_pc_625_221(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[168] = try rt.get(s, env, "m45_RecordValue");
+return .{ .next = 220 };
+}
+noinline fn typebox_pc_625_222(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[167] = try rt.get(s, env, "state");
+return .{ .next = 221 };
+}
+noinline fn typebox_pc_625_223(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[166] = try rt.get(s, env, "context");
+return .{ .next = 222 };
+}
+noinline fn typebox_pc_625_224(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[165] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 223 };
+}
+noinline fn typebox_pc_625_225(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[162], .receiver = c.pi_js_undefined(), .args = native_values[294..295], .result = 164, .next = 224, .construct = false } };
+}
+noinline fn typebox_pc_625_226(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[294] = native_values[163];
+return .{ .next = 225 };
+}
+noinline fn typebox_pc_625_227(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[163] = try rt.get(s, env, "type");
+return .{ .next = 226 };
+}
+noinline fn typebox_pc_625_228(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[162] = try rt.get(s, env, "m45_RecordPattern");
+return .{ .next = 227 };
+}
+noinline fn typebox_pc_625_229(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[161] = try rt.get(s, env, "m45_RecordFromPattern");
+return .{ .next = 228 };
+}
+noinline fn typebox_pc_625_230(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[185];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_231(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[176], .receiver = c.pi_js_undefined(), .args = native_values[305..306], .result = 185, .next = 230, .construct = false } };
+}
+noinline fn typebox_pc_625_232(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[305] = native_values[184];
+return .{ .next = 231 };
+}
+noinline fn typebox_pc_625_233(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[177], .receiver = c.pi_js_undefined(), .args = native_values[302..305], .result = 184, .next = 232, .construct = false } };
+}
+noinline fn typebox_pc_625_234(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[304] = native_values[183];
+return .{ .next = 233 };
+}
+noinline fn typebox_pc_625_235(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[303] = native_values[179];
+return .{ .next = 234 };
+}
+noinline fn typebox_pc_625_236(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[302] = native_values[178];
+return .{ .next = 235 };
+}
+noinline fn typebox_pc_625_237(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[183] = try rt.key(s, native_values[180], native_values[182]);
+return .{ .next = 236 };
+}
+noinline fn typebox_pc_625_238(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[182] = try rt.propertyKey(s, native_values[181]);
+return .{ .next = 237 };
+}
+noinline fn typebox_pc_625_239(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[181] = try s.text("items");
+return .{ .next = 238 };
+}
+noinline fn typebox_pc_625_240(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[180] = try rt.get(s, env, "type");
+return .{ .next = 239 };
+}
+noinline fn typebox_pc_625_241(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[179] = try rt.get(s, env, "state");
+return .{ .next = 240 };
+}
+noinline fn typebox_pc_625_242(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[178] = try rt.get(s, env, "context");
+return .{ .next = 241 };
+}
+noinline fn typebox_pc_625_243(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[177] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 242 };
+}
+noinline fn typebox_pc_625_244(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[176] = try rt.get(s, env, "m92_Rest");
+return .{ .next = 243 };
+}
+noinline fn typebox_pc_625_245(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[201];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_246(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[189], .receiver = c.pi_js_undefined(), .args = native_values[311..313], .result = 201, .next = 245, .construct = false } };
+}
+noinline fn typebox_pc_625_247(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[312] = native_values[200];
+return .{ .next = 246 };
+}
+noinline fn typebox_pc_625_248(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[311] = native_values[197];
+return .{ .next = 247 };
+}
+noinline fn typebox_pc_625_249(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[198], .receiver = c.pi_js_undefined(), .args = native_values[310..311], .result = 200, .next = 248, .construct = false } };
+}
+noinline fn typebox_pc_625_250(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[310] = native_values[199];
+return .{ .next = 249 };
+}
+noinline fn typebox_pc_625_251(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[199] = try rt.get(s, env, "type");
+return .{ .next = 250 };
+}
+noinline fn typebox_pc_625_252(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[198] = try rt.get(s, env, "m95_TupleOptions");
+return .{ .next = 251 };
+}
+noinline fn typebox_pc_625_253(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[190], .receiver = c.pi_js_undefined(), .args = native_values[307..310], .result = 197, .next = 252, .construct = false } };
+}
+noinline fn typebox_pc_625_254(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[309] = native_values[196];
+return .{ .next = 253 };
+}
+noinline fn typebox_pc_625_255(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[308] = native_values[192];
+return .{ .next = 254 };
+}
+noinline fn typebox_pc_625_256(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[307] = native_values[191];
+return .{ .next = 255 };
+}
+noinline fn typebox_pc_625_257(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[196] = try rt.key(s, native_values[193], native_values[195]);
+return .{ .next = 256 };
+}
+noinline fn typebox_pc_625_258(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[195] = try rt.propertyKey(s, native_values[194]);
+return .{ .next = 257 };
+}
+noinline fn typebox_pc_625_259(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[194] = try s.text("items");
+return .{ .next = 258 };
+}
+noinline fn typebox_pc_625_260(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[193] = try rt.get(s, env, "type");
+return .{ .next = 259 };
+}
+noinline fn typebox_pc_625_261(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[192] = try rt.get(s, env, "state");
+return .{ .next = 260 };
+}
+noinline fn typebox_pc_625_262(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[191] = try rt.get(s, env, "context");
+return .{ .next = 261 };
+}
+noinline fn typebox_pc_625_263(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[190] = try rt.get(s, env, "m0_InstantiateElements");
+return .{ .next = 262 };
+}
+noinline fn typebox_pc_625_264(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[189] = try rt.get(s, env, "m95_Tuple");
+return .{ .next = 263 };
+}
+noinline fn typebox_pc_625_265(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[217];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_266(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[205], .receiver = c.pi_js_undefined(), .args = native_values[318..320], .result = 217, .next = 265, .construct = false } };
+}
+noinline fn typebox_pc_625_267(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[319] = native_values[216];
+return .{ .next = 266 };
+}
+noinline fn typebox_pc_625_268(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[318] = native_values[213];
+return .{ .next = 267 };
+}
+noinline fn typebox_pc_625_269(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[214], .receiver = c.pi_js_undefined(), .args = native_values[317..318], .result = 216, .next = 268, .construct = false } };
+}
+noinline fn typebox_pc_625_270(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[317] = native_values[215];
+return .{ .next = 269 };
+}
+noinline fn typebox_pc_625_271(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[215] = try rt.get(s, env, "type");
+return .{ .next = 270 };
+}
+noinline fn typebox_pc_625_272(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[214] = try rt.get(s, env, "m24_UnionOptions");
+return .{ .next = 271 };
+}
+noinline fn typebox_pc_625_273(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[206], .receiver = c.pi_js_undefined(), .args = native_values[314..317], .result = 213, .next = 272, .construct = false } };
+}
+noinline fn typebox_pc_625_274(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[316] = native_values[212];
+return .{ .next = 273 };
+}
+noinline fn typebox_pc_625_275(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[315] = native_values[208];
+return .{ .next = 274 };
+}
+noinline fn typebox_pc_625_276(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[314] = native_values[207];
+return .{ .next = 275 };
+}
+noinline fn typebox_pc_625_277(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[212] = try rt.key(s, native_values[209], native_values[211]);
+return .{ .next = 276 };
+}
+noinline fn typebox_pc_625_278(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[211] = try rt.propertyKey(s, native_values[210]);
+return .{ .next = 277 };
+}
+noinline fn typebox_pc_625_279(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[210] = try s.text("anyOf");
+return .{ .next = 278 };
+}
+noinline fn typebox_pc_625_280(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[209] = try rt.get(s, env, "type");
+return .{ .next = 279 };
+}
+noinline fn typebox_pc_625_281(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[208] = try rt.get(s, env, "state");
+return .{ .next = 280 };
+}
+noinline fn typebox_pc_625_282(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[207] = try rt.get(s, env, "context");
+return .{ .next = 281 };
+}
+noinline fn typebox_pc_625_283(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[206] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 282 };
+}
+noinline fn typebox_pc_625_284(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[205] = try rt.get(s, env, "m24_Union");
+return .{ .next = 283 };
+}
+noinline fn typebox_pc_625_285(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[219] = native_values[218];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_625_286(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[218] = try rt.get(s, env, "type");
+return .{ .next = 285 };
+}
+noinline fn typebox_pc_625_287(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[204])) 284 else 286 };
+}
+noinline fn typebox_pc_625_288(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[202], .receiver = c.pi_js_undefined(), .args = native_values[313..314], .result = 204, .next = 287, .construct = false } };
+}
+noinline fn typebox_pc_625_289(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[313] = native_values[203];
+return .{ .next = 288 };
+}
+noinline fn typebox_pc_625_290(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[203] = try rt.get(s, env, "type");
+return .{ .next = 289 };
+}
+noinline fn typebox_pc_625_291(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[202] = try rt.get(s, env, "m24_IsUnion");
+return .{ .next = 290 };
+}
+noinline fn typebox_pc_625_292(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[188])) 264 else 291 };
+}
+noinline fn typebox_pc_625_293(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[186], .receiver = c.pi_js_undefined(), .args = native_values[306..307], .result = 188, .next = 292, .construct = false } };
+}
+noinline fn typebox_pc_625_294(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[306] = native_values[187];
+return .{ .next = 293 };
+}
+noinline fn typebox_pc_625_295(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[187] = try rt.get(s, env, "type");
+return .{ .next = 294 };
+}
+noinline fn typebox_pc_625_296(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[186] = try rt.get(s, env, "m95_IsTuple");
+return .{ .next = 295 };
+}
+noinline fn typebox_pc_625_297(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[175])) 244 else 296 };
+}
+noinline fn typebox_pc_625_298(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[173], .receiver = c.pi_js_undefined(), .args = native_values[301..302], .result = 175, .next = 297, .construct = false } };
+}
+noinline fn typebox_pc_625_299(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[301] = native_values[174];
+return .{ .next = 298 };
+}
+noinline fn typebox_pc_625_300(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[174] = try rt.get(s, env, "type");
+return .{ .next = 299 };
+}
+noinline fn typebox_pc_625_301(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[173] = try rt.get(s, env, "m92_IsRest");
+return .{ .next = 300 };
+}
+noinline fn typebox_pc_625_302(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[160])) 229 else 301 };
+}
+noinline fn typebox_pc_625_303(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[158], .receiver = c.pi_js_undefined(), .args = native_values[293..294], .result = 160, .next = 302, .construct = false } };
+}
+noinline fn typebox_pc_625_304(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[293] = native_values[159];
+return .{ .next = 303 };
+}
+noinline fn typebox_pc_625_305(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[159] = try rt.get(s, env, "type");
+return .{ .next = 304 };
+}
+noinline fn typebox_pc_625_306(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[158] = try rt.get(s, env, "m45_IsRecord");
+return .{ .next = 305 };
+}
+noinline fn typebox_pc_625_307(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[144])) 209 else 306 };
+}
+noinline fn typebox_pc_625_308(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[142], .receiver = c.pi_js_undefined(), .args = native_values[286..287], .result = 144, .next = 307, .construct = false } };
+}
+noinline fn typebox_pc_625_309(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[286] = native_values[143];
+return .{ .next = 308 };
+}
+noinline fn typebox_pc_625_310(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[143] = try rt.get(s, env, "type");
+return .{ .next = 309 };
+}
+noinline fn typebox_pc_625_311(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[142] = try rt.get(s, env, "m42_IsObject");
+return .{ .next = 310 };
+}
+noinline fn typebox_pc_625_312(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[128])) 189 else 311 };
+}
+noinline fn typebox_pc_625_313(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[126], .receiver = c.pi_js_undefined(), .args = native_values[279..280], .result = 128, .next = 312, .construct = false } };
+}
+noinline fn typebox_pc_625_314(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[279] = native_values[127];
+return .{ .next = 313 };
+}
+noinline fn typebox_pc_625_315(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[127] = try rt.get(s, env, "type");
+return .{ .next = 314 };
+}
+noinline fn typebox_pc_625_316(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[126] = try rt.get(s, env, "m41_IsIntersect");
+return .{ .next = 315 };
+}
+noinline fn typebox_pc_625_317(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[96])) 169 else 316 };
+}
+noinline fn typebox_pc_625_318(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[94], .receiver = c.pi_js_undefined(), .args = native_values[264..265], .result = 96, .next = 317, .construct = false } };
+}
+noinline fn typebox_pc_625_319(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[264] = native_values[95];
+return .{ .next = 318 };
+}
+noinline fn typebox_pc_625_320(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[95] = try rt.get(s, env, "type");
+return .{ .next = 319 };
+}
+noinline fn typebox_pc_625_321(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[94] = try rt.get(s, env, "m85_IsDependent");
+return .{ .next = 320 };
+}
+noinline fn typebox_pc_625_322(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[72])) 125 else 321 };
+}
+noinline fn typebox_pc_625_323(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[70], .receiver = c.pi_js_undefined(), .args = native_values[253..254], .result = 72, .next = 322, .construct = false } };
+}
+noinline fn typebox_pc_625_324(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[253] = native_values[71];
+return .{ .next = 323 };
+}
+noinline fn typebox_pc_625_325(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[71] = try rt.get(s, env, "type");
+return .{ .next = 324 };
+}
+noinline fn typebox_pc_625_326(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[70] = try rt.get(s, env, "m40_IsFunction");
+return .{ .next = 325 };
+}
+noinline fn typebox_pc_625_327(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[48])) 93 else 326 };
+}
+noinline fn typebox_pc_625_328(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[46], .receiver = c.pi_js_undefined(), .args = native_values[242..243], .result = 48, .next = 327, .construct = false } };
+}
+noinline fn typebox_pc_625_329(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[242] = native_values[47];
+return .{ .next = 328 };
+}
+noinline fn typebox_pc_625_330(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[47] = try rt.get(s, env, "type");
+return .{ .next = 329 };
+}
+noinline fn typebox_pc_625_331(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[46] = try rt.get(s, env, "m39_IsConstructor");
+return .{ .next = 330 };
+}
+noinline fn typebox_pc_625_332(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[33])) 61 else 331 };
+}
+noinline fn typebox_pc_625_333(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[31], .receiver = c.pi_js_undefined(), .args = native_values[237..238], .result = 33, .next = 332, .construct = false } };
+}
+noinline fn typebox_pc_625_334(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[237] = native_values[32];
+return .{ .next = 333 };
+}
+noinline fn typebox_pc_625_335(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[32] = try rt.get(s, env, "type");
+return .{ .next = 334 };
+}
+noinline fn typebox_pc_625_336(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[31] = try rt.get(s, env, "m82_IsCall");
+return .{ .next = 335 };
+}
+noinline fn typebox_pc_625_337(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[17])) 44 else 336 };
+}
+noinline fn typebox_pc_625_338(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[15], .receiver = c.pi_js_undefined(), .args = native_values[230..231], .result = 17, .next = 337, .construct = false } };
+}
+noinline fn typebox_pc_625_339(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[230] = native_values[16];
+return .{ .next = 338 };
+}
+noinline fn typebox_pc_625_340(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[16] = try rt.get(s, env, "type");
+return .{ .next = 339 };
+}
+noinline fn typebox_pc_625_341(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "m38_IsArray");
+return .{ .next = 340 };
+}
+noinline fn typebox_pc_625_342(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[5])) 24 else 341 };
+}
+noinline fn typebox_pc_625_343(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[225..226], .result = 5, .next = 342, .construct = false } };
+}
+noinline fn typebox_pc_625_344(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[225] = native_values[4];
+return .{ .next = 343 };
+}
+noinline fn typebox_pc_625_345(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "type");
+return .{ .next = 344 };
+}
+noinline fn typebox_pc_625_346(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m12_IsRef");
+return .{ .next = 345 };
+}
+noinline fn typebox_pc_625_347(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[2]);
+return .{ .next = 346 };
+}
+noinline fn typebox_pc_625_348(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 347 };
+}
+noinline fn typebox_pc_625_349(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 348 };
+}
+noinline fn typebox_pc_625_350(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 349 };
+}
+noinline fn typebox_pc_625_351(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 350 };
+}
+noinline fn typebox_pc_625_352(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 351 };
+}
+noinline fn typebox_pc_625_353(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 352 };
+}
+const typebox_steps_625 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_625_0, typebox_pc_625_1, typebox_pc_625_2, typebox_pc_625_3, typebox_pc_625_4, typebox_pc_625_5, typebox_pc_625_6, typebox_pc_625_7, typebox_pc_625_8, typebox_pc_625_9, typebox_pc_625_10, typebox_pc_625_11, typebox_pc_625_12, typebox_pc_625_13, typebox_pc_625_14, typebox_pc_625_15, typebox_pc_625_16, typebox_pc_625_17, typebox_pc_625_18, typebox_pc_625_19, typebox_pc_625_20, typebox_pc_625_21, typebox_pc_625_22, typebox_pc_625_23, typebox_pc_625_24, typebox_pc_625_25, typebox_pc_625_26, typebox_pc_625_27, typebox_pc_625_28, typebox_pc_625_29, typebox_pc_625_30, typebox_pc_625_31, typebox_pc_625_32, typebox_pc_625_33, typebox_pc_625_34, typebox_pc_625_35, typebox_pc_625_36, typebox_pc_625_37, typebox_pc_625_38, typebox_pc_625_39, typebox_pc_625_40, typebox_pc_625_41, typebox_pc_625_42, typebox_pc_625_43, typebox_pc_625_44, typebox_pc_625_45, typebox_pc_625_46, typebox_pc_625_47, typebox_pc_625_48, typebox_pc_625_49, typebox_pc_625_50, typebox_pc_625_51, typebox_pc_625_52, typebox_pc_625_53, typebox_pc_625_54, typebox_pc_625_55, typebox_pc_625_56, typebox_pc_625_57, typebox_pc_625_58, typebox_pc_625_59, typebox_pc_625_60, typebox_pc_625_61, typebox_pc_625_62, typebox_pc_625_63, typebox_pc_625_64, typebox_pc_625_65, typebox_pc_625_66, typebox_pc_625_67, typebox_pc_625_68, typebox_pc_625_69, typebox_pc_625_70, typebox_pc_625_71, typebox_pc_625_72, typebox_pc_625_73, typebox_pc_625_74, typebox_pc_625_75, typebox_pc_625_76, typebox_pc_625_77, typebox_pc_625_78, typebox_pc_625_79, typebox_pc_625_80, typebox_pc_625_81, typebox_pc_625_82, typebox_pc_625_83, typebox_pc_625_84, typebox_pc_625_85, typebox_pc_625_86, typebox_pc_625_87, typebox_pc_625_88, typebox_pc_625_89, typebox_pc_625_90, typebox_pc_625_91, typebox_pc_625_92, typebox_pc_625_93, typebox_pc_625_94, typebox_pc_625_95, typebox_pc_625_96, typebox_pc_625_97, typebox_pc_625_98, typebox_pc_625_99, typebox_pc_625_100, typebox_pc_625_101, typebox_pc_625_102, typebox_pc_625_103, typebox_pc_625_104, typebox_pc_625_105, typebox_pc_625_106, typebox_pc_625_107, typebox_pc_625_108, typebox_pc_625_109, typebox_pc_625_110, typebox_pc_625_111, typebox_pc_625_112, typebox_pc_625_113, typebox_pc_625_114, typebox_pc_625_115, typebox_pc_625_116, typebox_pc_625_117, typebox_pc_625_118, typebox_pc_625_119, typebox_pc_625_120, typebox_pc_625_121, typebox_pc_625_122, typebox_pc_625_123, typebox_pc_625_124, typebox_pc_625_125, typebox_pc_625_126, typebox_pc_625_127, typebox_pc_625_128, typebox_pc_625_129, typebox_pc_625_130, typebox_pc_625_131, typebox_pc_625_132, typebox_pc_625_133, typebox_pc_625_134, typebox_pc_625_135, typebox_pc_625_136, typebox_pc_625_137, typebox_pc_625_138, typebox_pc_625_139, typebox_pc_625_140, typebox_pc_625_141, typebox_pc_625_142, typebox_pc_625_143, typebox_pc_625_144, typebox_pc_625_145, typebox_pc_625_146, typebox_pc_625_147, typebox_pc_625_148, typebox_pc_625_149, typebox_pc_625_150, typebox_pc_625_151, typebox_pc_625_152, typebox_pc_625_153, typebox_pc_625_154, typebox_pc_625_155, typebox_pc_625_156, typebox_pc_625_157, typebox_pc_625_158, typebox_pc_625_159, typebox_pc_625_160, typebox_pc_625_161, typebox_pc_625_162, typebox_pc_625_163, typebox_pc_625_164, typebox_pc_625_165, typebox_pc_625_166, typebox_pc_625_167, typebox_pc_625_168, typebox_pc_625_169, typebox_pc_625_170, typebox_pc_625_171, typebox_pc_625_172, typebox_pc_625_173, typebox_pc_625_174, typebox_pc_625_175, typebox_pc_625_176, typebox_pc_625_177, typebox_pc_625_178, typebox_pc_625_179, typebox_pc_625_180, typebox_pc_625_181, typebox_pc_625_182, typebox_pc_625_183, typebox_pc_625_184, typebox_pc_625_185, typebox_pc_625_186, typebox_pc_625_187, typebox_pc_625_188, typebox_pc_625_189, typebox_pc_625_190, typebox_pc_625_191, typebox_pc_625_192, typebox_pc_625_193, typebox_pc_625_194, typebox_pc_625_195, typebox_pc_625_196, typebox_pc_625_197, typebox_pc_625_198, typebox_pc_625_199, typebox_pc_625_200, typebox_pc_625_201, typebox_pc_625_202, typebox_pc_625_203, typebox_pc_625_204, typebox_pc_625_205, typebox_pc_625_206, typebox_pc_625_207, typebox_pc_625_208, typebox_pc_625_209, typebox_pc_625_210, typebox_pc_625_211, typebox_pc_625_212, typebox_pc_625_213, typebox_pc_625_214, typebox_pc_625_215, typebox_pc_625_216, typebox_pc_625_217, typebox_pc_625_218, typebox_pc_625_219, typebox_pc_625_220, typebox_pc_625_221, typebox_pc_625_222, typebox_pc_625_223, typebox_pc_625_224, typebox_pc_625_225, typebox_pc_625_226, typebox_pc_625_227, typebox_pc_625_228, typebox_pc_625_229, typebox_pc_625_230, typebox_pc_625_231, typebox_pc_625_232, typebox_pc_625_233, typebox_pc_625_234, typebox_pc_625_235, typebox_pc_625_236, typebox_pc_625_237, typebox_pc_625_238, typebox_pc_625_239, typebox_pc_625_240, typebox_pc_625_241, typebox_pc_625_242, typebox_pc_625_243, typebox_pc_625_244, typebox_pc_625_245, typebox_pc_625_246, typebox_pc_625_247, typebox_pc_625_248, typebox_pc_625_249, typebox_pc_625_250, typebox_pc_625_251, typebox_pc_625_252, typebox_pc_625_253, typebox_pc_625_254, typebox_pc_625_255, typebox_pc_625_256, typebox_pc_625_257, typebox_pc_625_258, typebox_pc_625_259, typebox_pc_625_260, typebox_pc_625_261, typebox_pc_625_262, typebox_pc_625_263, typebox_pc_625_264, typebox_pc_625_265, typebox_pc_625_266, typebox_pc_625_267, typebox_pc_625_268, typebox_pc_625_269, typebox_pc_625_270, typebox_pc_625_271, typebox_pc_625_272, typebox_pc_625_273, typebox_pc_625_274, typebox_pc_625_275, typebox_pc_625_276, typebox_pc_625_277, typebox_pc_625_278, typebox_pc_625_279, typebox_pc_625_280, typebox_pc_625_281, typebox_pc_625_282, typebox_pc_625_283, typebox_pc_625_284, typebox_pc_625_285, typebox_pc_625_286, typebox_pc_625_287, typebox_pc_625_288, typebox_pc_625_289, typebox_pc_625_290, typebox_pc_625_291, typebox_pc_625_292, typebox_pc_625_293, typebox_pc_625_294, typebox_pc_625_295, typebox_pc_625_296, typebox_pc_625_297, typebox_pc_625_298, typebox_pc_625_299, typebox_pc_625_300, typebox_pc_625_301, typebox_pc_625_302, typebox_pc_625_303, typebox_pc_625_304, typebox_pc_625_305, typebox_pc_625_306, typebox_pc_625_307, typebox_pc_625_308, typebox_pc_625_309, typebox_pc_625_310, typebox_pc_625_311, typebox_pc_625_312, typebox_pc_625_313, typebox_pc_625_314, typebox_pc_625_315, typebox_pc_625_316, typebox_pc_625_317, typebox_pc_625_318, typebox_pc_625_319, typebox_pc_625_320, typebox_pc_625_321, typebox_pc_625_322, typebox_pc_625_323, typebox_pc_625_324, typebox_pc_625_325, typebox_pc_625_326, typebox_pc_625_327, typebox_pc_625_328, typebox_pc_625_329, typebox_pc_625_330, typebox_pc_625_331, typebox_pc_625_332, typebox_pc_625_333, typebox_pc_625_334, typebox_pc_625_335, typebox_pc_625_336, typebox_pc_625_337, typebox_pc_625_338, typebox_pc_625_339, typebox_pc_625_340, typebox_pc_625_341, typebox_pc_625_342, typebox_pc_625_343, typebox_pc_625_344, typebox_pc_625_345, typebox_pc_625_346, typebox_pc_625_347, typebox_pc_625_348, typebox_pc_625_349, typebox_pc_625_350, typebox_pc_625_351, typebox_pc_625_352, typebox_pc_625_353 };
+const typebox_plan_625: rt.Continuation.Plan = .{ .source_callback = f_625, .slots = 420, .entry = 353, .steps = &typebox_steps_625 };
+noinline fn typebox_pc_628_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_628_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[54] };
+}
+noinline fn typebox_pc_628_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[54] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_628_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[53]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_628_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[53] = native_values[32];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_628_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[27], .receiver = c.pi_js_undefined(), .args = native_values[65..67], .result = 32, .next = 4, .construct = false } };
+}
+noinline fn typebox_pc_628_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[66] = native_values[31];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_628_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[65] = native_values[30];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_628_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[31] = try rt.get(s, env, "instantiatedArguments");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_628_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[28], .receiver = c.pi_js_undefined(), .args = native_values[64..65], .result = 30, .next = 8, .construct = false } };
+}
+noinline fn typebox_pc_628_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[64] = native_values[29];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_628_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[29] = try rt.get(s, env, "name");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_628_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[28] = try rt.get(s, env, "m12_Ref");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_628_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[27] = try rt.get(s, env, "m82_CallConstruct");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_628_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[53] = native_values[48];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_628_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[33], .receiver = c.pi_js_undefined(), .args = native_values[68..74], .result = 48, .next = 14, .construct = false } };
+}
+noinline fn typebox_pc_628_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[73] = native_values[47];
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_628_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[72] = native_values[46];
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_628_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[71] = native_values[42];
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_628_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[70] = native_values[38];
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_628_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[69] = native_values[35];
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_628_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[68] = native_values[34];
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_628_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[47] = try rt.get(s, env, "instantiatedArguments");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_628_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[46] = try rt.key(s, native_values[43], native_values[45]);
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_628_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[45] = try rt.propertyKey(s, native_values[44]);
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_628_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[44] = try s.text("expression");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_628_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[43] = try rt.get(s, env, "type");
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_628_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[42] = try rt.key(s, native_values[39], native_values[41]);
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_628_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[41] = try rt.propertyKey(s, native_values[40]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_628_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[40] = try s.text("parameters");
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_628_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[39] = try rt.get(s, env, "type");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_628_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[36], .receiver = c.pi_js_undefined(), .args = native_values[67..68], .result = 38, .next = 30, .construct = false } };
+}
+noinline fn typebox_pc_628_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[67] = native_values[37];
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_628_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[37] = try rt.get(s, env, "name");
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_628_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[36] = try rt.get(s, env, "m12_Ref");
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_628_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[35] = try rt.get(s, env, "state");
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_628_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[34] = try rt.get(s, env, "context");
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_628_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[33] = try rt.get(s, env, "m258_CallImmediate");
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_628_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[26])) 13 else 37 };
+}
+noinline fn typebox_pc_628_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[23], .receiver = c.pi_js_undefined(), .args = native_values[62..64], .result = 26, .next = 38, .construct = false } };
+}
+noinline fn typebox_pc_628_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[63] = native_values[25];
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_628_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[62] = native_values[24];
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_628_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[25] = try rt.get(s, env, "name");
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_628_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[24] = try rt.get(s, env, "state");
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_628_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[23] = try rt.get(s, env, "m258_IsTailCall");
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_628_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[53] = native_values[52];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_628_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[49], .receiver = c.pi_js_undefined(), .args = native_values[74..76], .result = 52, .next = 45, .construct = false } };
+}
+noinline fn typebox_pc_628_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[75] = native_values[51];
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_628_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[74] = native_values[50];
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_628_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[51] = try rt.get(s, env, "instantiatedArguments");
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_628_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[50] = try rt.get(s, env, "target");
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_628_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[49] = try rt.get(s, env, "m82_CallConstruct");
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_628_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[22])) 44 else 51 };
+}
+noinline fn typebox_pc_628_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[20], .receiver = c.pi_js_undefined(), .args = native_values[61..62], .result = 22, .next = 52, .construct = false } };
+}
+noinline fn typebox_pc_628_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[61] = native_values[21];
+return .{ .next = 53 };
+}
+noinline fn typebox_pc_628_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "type");
+return .{ .next = 54 };
+}
+noinline fn typebox_pc_628_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[20] = try rt.get(s, env, "m83_IsGeneric");
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_628_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[19]);
+return .{ .next = 56 };
+}
+noinline fn typebox_pc_628_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try rt.key(s, native_values[17], native_values[18]);
+return .{ .next = 57 };
+}
+noinline fn typebox_pc_628_59(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[18] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 58 };
+}
+noinline fn typebox_pc_628_60(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[17] = try rt.get(s, env, "resolved");
+return .{ .next = 59 };
+}
+noinline fn typebox_pc_628_61(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "name", native_values[16]);
+return .{ .next = 60 };
+}
+noinline fn typebox_pc_628_62(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try rt.key(s, native_values[14], native_values[15]);
+return .{ .next = 61 };
+}
+noinline fn typebox_pc_628_63(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[15] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 62 };
+}
+noinline fn typebox_pc_628_64(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "resolved");
+return .{ .next = 63 };
+}
+noinline fn typebox_pc_628_65(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "resolved", native_values[13]);
+return .{ .next = 64 };
+}
+noinline fn typebox_pc_628_66(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[9], .receiver = c.pi_js_undefined(), .args = native_values[58..61], .result = 13, .next = 65, .construct = false } };
+}
+noinline fn typebox_pc_628_67(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[60] = native_values[12];
+return .{ .next = 66 };
+}
+noinline fn typebox_pc_628_68(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[59] = native_values[11];
+return .{ .next = 67 };
+}
+noinline fn typebox_pc_628_69(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[58] = native_values[10];
+return .{ .next = 68 };
+}
+noinline fn typebox_pc_628_70(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "arguments_");
+return .{ .next = 69 };
+}
+noinline fn typebox_pc_628_71(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "target");
+return .{ .next = 70 };
+}
+noinline fn typebox_pc_628_72(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "context");
+return .{ .next = 71 };
+}
+noinline fn typebox_pc_628_73(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "m259_ResolveTarget");
+return .{ .next = 72 };
+}
+noinline fn typebox_pc_628_74(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedArguments", native_values[8]);
+return .{ .next = 73 };
+}
+noinline fn typebox_pc_628_75(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[4], .receiver = c.pi_js_undefined(), .args = native_values[55..58], .result = 8, .next = 74, .construct = false } };
+}
+noinline fn typebox_pc_628_76(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[57] = native_values[7];
+return .{ .next = 75 };
+}
+noinline fn typebox_pc_628_77(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[56] = native_values[6];
+return .{ .next = 76 };
+}
+noinline fn typebox_pc_628_78(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[55] = native_values[5];
+return .{ .next = 77 };
+}
+noinline fn typebox_pc_628_79(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "arguments_");
+return .{ .next = 78 };
+}
+noinline fn typebox_pc_628_80(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "state");
+return .{ .next = 79 };
+}
+noinline fn typebox_pc_628_81(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "context");
+return .{ .next = 80 };
+}
+noinline fn typebox_pc_628_82(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "m0_InstantiateTypes");
+return .{ .next = 81 };
+}
+noinline fn typebox_pc_628_83(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[3]);
+return .{ .next = 82 };
+}
+noinline fn typebox_pc_628_84(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 83 };
+}
+noinline fn typebox_pc_628_85(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "target", native_values[2]);
+return .{ .next = 84 };
+}
+noinline fn typebox_pc_628_86(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 85 };
+}
+noinline fn typebox_pc_628_87(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 86 };
+}
+noinline fn typebox_pc_628_88(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 87 };
+}
+noinline fn typebox_pc_628_89(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 88 };
+}
+noinline fn typebox_pc_628_90(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 89 };
+}
+noinline fn typebox_pc_628_91(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 90 };
+}
+const typebox_steps_628 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_628_0, typebox_pc_628_1, typebox_pc_628_2, typebox_pc_628_3, typebox_pc_628_4, typebox_pc_628_5, typebox_pc_628_6, typebox_pc_628_7, typebox_pc_628_8, typebox_pc_628_9, typebox_pc_628_10, typebox_pc_628_11, typebox_pc_628_12, typebox_pc_628_13, typebox_pc_628_14, typebox_pc_628_15, typebox_pc_628_16, typebox_pc_628_17, typebox_pc_628_18, typebox_pc_628_19, typebox_pc_628_20, typebox_pc_628_21, typebox_pc_628_22, typebox_pc_628_23, typebox_pc_628_24, typebox_pc_628_25, typebox_pc_628_26, typebox_pc_628_27, typebox_pc_628_28, typebox_pc_628_29, typebox_pc_628_30, typebox_pc_628_31, typebox_pc_628_32, typebox_pc_628_33, typebox_pc_628_34, typebox_pc_628_35, typebox_pc_628_36, typebox_pc_628_37, typebox_pc_628_38, typebox_pc_628_39, typebox_pc_628_40, typebox_pc_628_41, typebox_pc_628_42, typebox_pc_628_43, typebox_pc_628_44, typebox_pc_628_45, typebox_pc_628_46, typebox_pc_628_47, typebox_pc_628_48, typebox_pc_628_49, typebox_pc_628_50, typebox_pc_628_51, typebox_pc_628_52, typebox_pc_628_53, typebox_pc_628_54, typebox_pc_628_55, typebox_pc_628_56, typebox_pc_628_57, typebox_pc_628_58, typebox_pc_628_59, typebox_pc_628_60, typebox_pc_628_61, typebox_pc_628_62, typebox_pc_628_63, typebox_pc_628_64, typebox_pc_628_65, typebox_pc_628_66, typebox_pc_628_67, typebox_pc_628_68, typebox_pc_628_69, typebox_pc_628_70, typebox_pc_628_71, typebox_pc_628_72, typebox_pc_628_73, typebox_pc_628_74, typebox_pc_628_75, typebox_pc_628_76, typebox_pc_628_77, typebox_pc_628_78, typebox_pc_628_79, typebox_pc_628_80, typebox_pc_628_81, typebox_pc_628_82, typebox_pc_628_83, typebox_pc_628_84, typebox_pc_628_85, typebox_pc_628_86, typebox_pc_628_87, typebox_pc_628_88, typebox_pc_628_89, typebox_pc_628_90, typebox_pc_628_91 };
+const typebox_plan_628: rt.Continuation.Plan = .{ .source_callback = f_628, .slots = 94, .entry = 91, .steps = &typebox_steps_628 };
+noinline fn typebox_pc_637_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_637_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[8] };
+}
+noinline fn typebox_pc_637_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_637_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[7]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_637_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[10..12], .result = 7, .next = 3, .construct = false } };
+}
+noinline fn typebox_pc_637_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[11] = native_values[6];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_637_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[5];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_637_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "name");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_637_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[9..10], .result = 5, .next = 7, .construct = false } };
+}
+noinline fn typebox_pc_637_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[4];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_637_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "state");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_637_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m258_Peek");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_637_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_637_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "name", native_values[1]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_637_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_637_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[0]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_637_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_637_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 16 };
+}
+const typebox_steps_637 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_637_0, typebox_pc_637_1, typebox_pc_637_2, typebox_pc_637_3, typebox_pc_637_4, typebox_pc_637_5, typebox_pc_637_6, typebox_pc_637_7, typebox_pc_637_8, typebox_pc_637_9, typebox_pc_637_10, typebox_pc_637_11, typebox_pc_637_12, typebox_pc_637_13, typebox_pc_637_14, typebox_pc_637_15, typebox_pc_637_16, typebox_pc_637_17 };
+const typebox_plan_637: rt.Continuation.Plan = .{ .source_callback = f_637, .slots = 16, .entry = 17, .steps = &typebox_steps_637 };
+noinline fn typebox_pc_638_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_638_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[26] };
+}
+noinline fn typebox_pc_638_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[26] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_638_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[25]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_638_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[25] = native_values[23];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_638_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[23] = try rt.key(s, native_values[13], native_values[22]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_638_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[22] = try rt.propertyKey(s, native_values[21]);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_638_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[21] = try rt.binary(s, "-", native_values[20], c.JS_NewFloat64(engine.context, 1));
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_638_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[20] = try rt.key(s, native_values[17], native_values[19]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_638_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try rt.propertyKey(s, native_values[18]);
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_638_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try s.text("length");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_638_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[17] = try rt.key(s, native_values[14], native_values[16]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_638_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try rt.propertyKey(s, native_values[15]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_638_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[15] = try s.text("callstack");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_638_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "state");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_638_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[13] = try rt.key(s, native_values[10], native_values[12]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_638_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try rt.propertyKey(s, native_values[11]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_638_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try s.text("callstack");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_638_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "state");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_638_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[25] = native_values[24];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_638_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[24] = try s.text("");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_638_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[9])) 18 else 20 };
+}
+noinline fn typebox_pc_638_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[1], .receiver = c.pi_js_undefined(), .args = native_values[27..29], .result = 9, .next = 21, .construct = false } };
+}
+noinline fn typebox_pc_638_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[28] = c.JS_NewFloat64(engine.context, 0);
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_638_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[27] = native_values[8];
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_638_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[8] = try rt.key(s, native_values[5], native_values[7]);
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_638_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try rt.propertyKey(s, native_values[6]);
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_638_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try s.text("length");
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_638_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try rt.key(s, native_values[2], native_values[4]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_638_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[4] = try rt.propertyKey(s, native_values[3]);
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_638_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[3] = try s.text("callstack");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_638_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "state");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_638_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[1] = try rt.get(s, env, "m4_IsGreaterThan");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_638_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[0]);
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_638_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_638_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 34 };
+}
+const typebox_steps_638 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_638_0, typebox_pc_638_1, typebox_pc_638_2, typebox_pc_638_3, typebox_pc_638_4, typebox_pc_638_5, typebox_pc_638_6, typebox_pc_638_7, typebox_pc_638_8, typebox_pc_638_9, typebox_pc_638_10, typebox_pc_638_11, typebox_pc_638_12, typebox_pc_638_13, typebox_pc_638_14, typebox_pc_638_15, typebox_pc_638_16, typebox_pc_638_17, typebox_pc_638_18, typebox_pc_638_19, typebox_pc_638_20, typebox_pc_638_21, typebox_pc_638_22, typebox_pc_638_23, typebox_pc_638_24, typebox_pc_638_25, typebox_pc_638_26, typebox_pc_638_27, typebox_pc_638_28, typebox_pc_638_29, typebox_pc_638_30, typebox_pc_638_31, typebox_pc_638_32, typebox_pc_638_33, typebox_pc_638_34, typebox_pc_638_35 };
+const typebox_plan_638: rt.Continuation.Plan = .{ .source_callback = f_638, .slots = 31, .entry = 35, .steps = &typebox_steps_638 };
+noinline fn typebox_pc_642_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_642_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[32] };
+}
+noinline fn typebox_pc_642_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[32] = try rt.get(s, env, "result");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_642_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[31]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_642_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[27];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_642_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[27] = try rt.key(s, native_values[25], native_values[26]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_642_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[26] = try rt.propertyKey(s, c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_642_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[25] = try rt.get(s, env, "returnTypes");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_642_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[30];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_642_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[28], .receiver = c.pi_js_undefined(), .args = native_values[44..45], .result = 30, .next = 8, .construct = false } };
+}
+noinline fn typebox_pc_642_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[44] = native_values[29];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_642_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[29] = try rt.get(s, env, "returnTypes");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_642_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[28] = try rt.get(s, env, "external_evaluation_EvaluateUnion");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_642_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[24])) 7 else 12 };
+}
+noinline fn typebox_pc_642_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[19], .receiver = c.pi_js_undefined(), .args = native_values[42..44], .result = 24, .next = 13, .construct = false } };
+}
+noinline fn typebox_pc_642_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[43] = c.JS_NewFloat64(engine.context, 1);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_642_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[42] = native_values[23];
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_642_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[23] = try rt.key(s, native_values[20], native_values[22]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_642_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[22] = try rt.propertyKey(s, native_values[21]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_642_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[21] = try s.text("length");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_642_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[20] = try rt.get(s, env, "returnTypes");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_642_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[19] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_642_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "returnTypes", native_values[18]);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_642_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[11], .receiver = c.pi_js_undefined(), .args = native_values[36..42], .result = 18, .next = 22, .construct = false } };
+}
+noinline fn typebox_pc_642_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[41] = native_values[17];
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_642_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[40] = native_values[16];
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_642_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[39] = native_values[15];
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_642_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[38] = native_values[14];
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_642_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[37] = native_values[13];
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_642_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[36] = native_values[12];
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_642_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[17] = try rt.get(s, env, "distributedArguments");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_642_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[16] = try rt.get(s, env, "expression");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_642_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "parameters");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_642_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "target");
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_642_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "state");
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_642_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "context");
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_642_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "m258_CallDistributed");
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_642_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "distributedArguments", native_values[10]);
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_642_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[33..36], .result = 10, .next = 37, .construct = false } };
+}
+noinline fn typebox_pc_642_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[35] = native_values[9];
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_642_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[34] = native_values[8];
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_642_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[33] = native_values[7];
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_642_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "expression");
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_642_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "arguments_");
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_642_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "parameters");
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_642_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m260_DistributeArguments");
+return .{ .next = 44 };
+}
+noinline fn typebox_pc_642_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[5]);
+return .{ .next = 45 };
+}
+noinline fn typebox_pc_642_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[5] = rt.argument(args, 5);
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_642_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "expression", native_values[4]);
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_642_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_642_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[3]);
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_642_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_642_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "target", native_values[2]);
+return .{ .next = 51 };
+}
+noinline fn typebox_pc_642_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 52 };
+}
+noinline fn typebox_pc_642_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 53 };
+}
+noinline fn typebox_pc_642_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 54 };
+}
+noinline fn typebox_pc_642_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_642_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 56 };
+}
+noinline fn typebox_pc_642_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 57 };
+}
+const typebox_steps_642 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_642_0, typebox_pc_642_1, typebox_pc_642_2, typebox_pc_642_3, typebox_pc_642_4, typebox_pc_642_5, typebox_pc_642_6, typebox_pc_642_7, typebox_pc_642_8, typebox_pc_642_9, typebox_pc_642_10, typebox_pc_642_11, typebox_pc_642_12, typebox_pc_642_13, typebox_pc_642_14, typebox_pc_642_15, typebox_pc_642_16, typebox_pc_642_17, typebox_pc_642_18, typebox_pc_642_19, typebox_pc_642_20, typebox_pc_642_21, typebox_pc_642_22, typebox_pc_642_23, typebox_pc_642_24, typebox_pc_642_25, typebox_pc_642_26, typebox_pc_642_27, typebox_pc_642_28, typebox_pc_642_29, typebox_pc_642_30, typebox_pc_642_31, typebox_pc_642_32, typebox_pc_642_33, typebox_pc_642_34, typebox_pc_642_35, typebox_pc_642_36, typebox_pc_642_37, typebox_pc_642_38, typebox_pc_642_39, typebox_pc_642_40, typebox_pc_642_41, typebox_pc_642_42, typebox_pc_642_43, typebox_pc_642_44, typebox_pc_642_45, typebox_pc_642_46, typebox_pc_642_47, typebox_pc_642_48, typebox_pc_642_49, typebox_pc_642_50, typebox_pc_642_51, typebox_pc_642_52, typebox_pc_642_53, typebox_pc_642_54, typebox_pc_642_55, typebox_pc_642_56, typebox_pc_642_57, typebox_pc_642_58 };
+const typebox_plan_642: rt.Continuation.Plan = .{ .source_callback = f_642, .slots = 53, .entry = 58, .steps = &typebox_steps_642 };
+noinline fn typebox_pc_660_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_660_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[12] };
+}
+noinline fn typebox_pc_660_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[9], .receiver = native_values[6], .args = native_values[13..15], .result = 12, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_660_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[11];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_660_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[10];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_660_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try s.array();
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_660_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[10] = try rt.plannedFunction(s, "", 2, f_661, env, receiver, true, &typebox_plan_661);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_660_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[9] = try rt.key(s, native_values[6], native_values[8]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_660_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[8] = try rt.propertyKey(s, native_values[7]);
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_660_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try s.text("reduce");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_660_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "distributedArguments");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_660_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "distributedArguments", native_values[5]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_660_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[5] = rt.argument(args, 5);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_660_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "expression", native_values[4]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_660_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_660_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[3]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_660_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_660_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "target", native_values[2]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_660_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_660_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_660_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_660_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_660_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_660_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 22 };
+}
+const typebox_steps_660 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_660_0, typebox_pc_660_1, typebox_pc_660_2, typebox_pc_660_3, typebox_pc_660_4, typebox_pc_660_5, typebox_pc_660_6, typebox_pc_660_7, typebox_pc_660_8, typebox_pc_660_9, typebox_pc_660_10, typebox_pc_660_11, typebox_pc_660_12, typebox_pc_660_13, typebox_pc_660_14, typebox_pc_660_15, typebox_pc_660_16, typebox_pc_660_17, typebox_pc_660_18, typebox_pc_660_19, typebox_pc_660_20, typebox_pc_660_21, typebox_pc_660_22, typebox_pc_660_23 };
+const typebox_plan_660: rt.Continuation.Plan = .{ .source_callback = f_660, .slots = 17, .entry = 23, .steps = &typebox_steps_660 };
+noinline fn typebox_pc_661_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_661_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[10] };
+}
+noinline fn typebox_pc_661_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.append(s, native_values[10], native_values[12]);
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_661_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "returnType");
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_661_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.spreadArray(s, native_values[10], native_values[11]);
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_661_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "result");
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_661_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[10] = try s.array();
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_661_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "returnType", native_values[9]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_661_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[13..19], .result = 9, .next = 7, .construct = false } };
+}
+noinline fn typebox_pc_661_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[18] = native_values[8];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_661_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[17] = native_values[7];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_661_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[16] = native_values[6];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_661_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[15] = native_values[5];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_661_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[4];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_661_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[3];
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_661_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "arguments_");
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_661_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "expression");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_661_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "parameters");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_661_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "target");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_661_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "state");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_661_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "context");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_661_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m258_CallDispatch");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_661_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[1]);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_661_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_661_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "result", native_values[0]);
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_661_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_661_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 25 };
+}
+const typebox_steps_661 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_661_0, typebox_pc_661_1, typebox_pc_661_2, typebox_pc_661_3, typebox_pc_661_4, typebox_pc_661_5, typebox_pc_661_6, typebox_pc_661_7, typebox_pc_661_8, typebox_pc_661_9, typebox_pc_661_10, typebox_pc_661_11, typebox_pc_661_12, typebox_pc_661_13, typebox_pc_661_14, typebox_pc_661_15, typebox_pc_661_16, typebox_pc_661_17, typebox_pc_661_18, typebox_pc_661_19, typebox_pc_661_20, typebox_pc_661_21, typebox_pc_661_22, typebox_pc_661_23, typebox_pc_661_24, typebox_pc_661_25, typebox_pc_661_26 };
+const typebox_plan_661: rt.Continuation.Plan = .{ .source_callback = f_661, .slots = 21, .entry = 26, .steps = &typebox_steps_661 };
+noinline fn typebox_pc_662_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_662_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .finish_finally;
+}
+noinline fn typebox_pc_662_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[41], .receiver = c.pi_js_undefined(), .args = native_values[0..0], .result = 42, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_662_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[41] = try rt.get(s, env, "m258_InstantiationDecrement");
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_662_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .leave_try = 0 };
+}
+noinline fn typebox_pc_662_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[40] };
+}
+noinline fn typebox_pc_662_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[33], .receiver = c.pi_js_undefined(), .args = native_values[54..57], .result = 40, .next = 5, .construct = false } };
+}
+noinline fn typebox_pc_662_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[56] = native_values[39];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_662_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[55] = native_values[38];
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_662_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[54] = native_values[34];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_662_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[39] = try rt.get(s, env, "returnType");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_662_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[35], .receiver = c.pi_js_undefined(), .args = native_values[52..54], .result = 38, .next = 10, .construct = false } };
+}
+noinline fn typebox_pc_662_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[53] = native_values[37];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_662_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[52] = native_values[36];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_662_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[37] = try s.array();
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_662_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[36] = try s.array();
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_662_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[35] = try rt.get(s, env, "m0_State");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_662_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[34] = try rt.get(s, env, "argumentsContext");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_662_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[33] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_662_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "returnType", native_values[32]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_662_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[14], .receiver = c.pi_js_undefined(), .args = native_values[49..52], .result = 32, .next = 19, .construct = false } };
+}
+noinline fn typebox_pc_662_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[51] = native_values[31];
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_662_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[50] = native_values[30];
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_662_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[49] = native_values[15];
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_662_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[31] = try rt.get(s, env, "expression");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_662_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[16], .receiver = c.pi_js_undefined(), .args = native_values[47..49], .result = 30, .next = 24, .construct = false } };
+}
+noinline fn typebox_pc_662_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[48] = native_values[29];
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_662_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[47] = native_values[17];
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_662_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[29] = try rt.key(s, native_values[26], native_values[28]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_662_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[28] = try rt.propertyKey(s, native_values[27]);
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_662_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[27] = try s.text("visited");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_662_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[26] = try rt.get(s, env, "state");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_662_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.append(s, native_values[17], native_values[25]);
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_662_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[25] = try rt.key(s, native_values[22], native_values[24]);
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_662_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[24] = try rt.propertyKey(s, native_values[23]);
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_662_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[23] = try s.text("$ref");
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_662_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[22] = try rt.get(s, env, "target");
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_662_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.spreadArray(s, native_values[17], native_values[21]);
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_662_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[21] = try rt.key(s, native_values[18], native_values[20]);
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_662_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[20] = try rt.propertyKey(s, native_values[19]);
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_662_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try s.text("callstack");
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_662_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[18] = try rt.get(s, env, "state");
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_662_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[17] = try s.array();
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_662_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[16] = try rt.get(s, env, "m0_State");
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_662_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "argumentsContext");
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_662_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 44 };
+}
+noinline fn typebox_pc_662_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "argumentsContext", native_values[13]);
+return .{ .next = 45 };
+}
+noinline fn typebox_pc_662_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[8], .receiver = c.pi_js_undefined(), .args = native_values[43..47], .result = 13, .next = 46, .construct = false } };
+}
+noinline fn typebox_pc_662_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[46] = native_values[12];
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_662_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[45] = native_values[11];
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_662_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[44] = native_values[10];
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_662_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[43] = native_values[9];
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_662_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "arguments_");
+return .{ .next = 51 };
+}
+noinline fn typebox_pc_662_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "parameters");
+return .{ .next = 52 };
+}
+noinline fn typebox_pc_662_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "state");
+return .{ .next = 53 };
+}
+noinline fn typebox_pc_662_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "context");
+return .{ .next = 54 };
+}
+noinline fn typebox_pc_662_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "m261_ResolveArgumentsContext");
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_662_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .enter_finally = .{ .handler = 3, .next = 56 } };
+}
+noinline fn typebox_pc_662_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[0..0], .result = 7, .next = 57, .construct = false } };
+}
+noinline fn typebox_pc_662_59(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m258_InstantiationIncrement");
+return .{ .next = 58 };
+}
+noinline fn typebox_pc_662_60(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[5]);
+return .{ .next = 59 };
+}
+noinline fn typebox_pc_662_61(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[5] = rt.argument(args, 5);
+return .{ .next = 60 };
+}
+noinline fn typebox_pc_662_62(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "expression", native_values[4]);
+return .{ .next = 61 };
+}
+noinline fn typebox_pc_662_63(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 62 };
+}
+noinline fn typebox_pc_662_64(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[3]);
+return .{ .next = 63 };
+}
+noinline fn typebox_pc_662_65(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 64 };
+}
+noinline fn typebox_pc_662_66(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "target", native_values[2]);
+return .{ .next = 65 };
+}
+noinline fn typebox_pc_662_67(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 66 };
+}
+noinline fn typebox_pc_662_68(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 67 };
+}
+noinline fn typebox_pc_662_69(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 68 };
+}
+noinline fn typebox_pc_662_70(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 69 };
+}
+noinline fn typebox_pc_662_71(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 70 };
+}
+noinline fn typebox_pc_662_72(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 71 };
+}
+const typebox_steps_662 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_662_0, typebox_pc_662_1, typebox_pc_662_2, typebox_pc_662_3, typebox_pc_662_4, typebox_pc_662_5, typebox_pc_662_6, typebox_pc_662_7, typebox_pc_662_8, typebox_pc_662_9, typebox_pc_662_10, typebox_pc_662_11, typebox_pc_662_12, typebox_pc_662_13, typebox_pc_662_14, typebox_pc_662_15, typebox_pc_662_16, typebox_pc_662_17, typebox_pc_662_18, typebox_pc_662_19, typebox_pc_662_20, typebox_pc_662_21, typebox_pc_662_22, typebox_pc_662_23, typebox_pc_662_24, typebox_pc_662_25, typebox_pc_662_26, typebox_pc_662_27, typebox_pc_662_28, typebox_pc_662_29, typebox_pc_662_30, typebox_pc_662_31, typebox_pc_662_32, typebox_pc_662_33, typebox_pc_662_34, typebox_pc_662_35, typebox_pc_662_36, typebox_pc_662_37, typebox_pc_662_38, typebox_pc_662_39, typebox_pc_662_40, typebox_pc_662_41, typebox_pc_662_42, typebox_pc_662_43, typebox_pc_662_44, typebox_pc_662_45, typebox_pc_662_46, typebox_pc_662_47, typebox_pc_662_48, typebox_pc_662_49, typebox_pc_662_50, typebox_pc_662_51, typebox_pc_662_52, typebox_pc_662_53, typebox_pc_662_54, typebox_pc_662_55, typebox_pc_662_56, typebox_pc_662_57, typebox_pc_662_58, typebox_pc_662_59, typebox_pc_662_60, typebox_pc_662_61, typebox_pc_662_62, typebox_pc_662_63, typebox_pc_662_64, typebox_pc_662_65, typebox_pc_662_66, typebox_pc_662_67, typebox_pc_662_68, typebox_pc_662_69, typebox_pc_662_70, typebox_pc_662_71, typebox_pc_662_72 };
+const typebox_plan_662: rt.Continuation.Plan = .{ .source_callback = f_662, .slots = 71, .entry = 72, .steps = &typebox_steps_662 };
+noinline fn typebox_pc_663_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_663_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_663_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.assign(s, env, "m258_instantiationDepth", native_values[5]);
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_663_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try rt.update(s, native_values[4], true);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_663_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "m258_instantiationDepth");
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_663_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.assign(s, env, "m258_instantiationCount", native_values[3]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_663_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[3] = try rt.update(s, native_values[2], true);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_663_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m258_instantiationCount");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_663_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[0], .receiver = c.pi_js_undefined(), .args = native_values[0..0], .result = 1, .next = 7, .construct = false } };
+}
+noinline fn typebox_pc_663_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[0] = try rt.get(s, env, "m258_InstantiationAssert");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_663_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 9 };
+}
+const typebox_steps_663 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_663_0, typebox_pc_663_1, typebox_pc_663_2, typebox_pc_663_3, typebox_pc_663_4, typebox_pc_663_5, typebox_pc_663_6, typebox_pc_663_7, typebox_pc_663_8, typebox_pc_663_9, typebox_pc_663_10 };
+const typebox_plan_663: rt.Continuation.Plan = .{ .source_callback = f_663, .slots = 8, .entry = 10, .steps = &typebox_steps_663 };
+noinline fn typebox_pc_664_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_664_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .thrown = native_values[13] };
+}
+noinline fn typebox_pc_664_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[11], .receiver = c.pi_js_undefined(), .args = native_values[16..17], .result = 13, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_664_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[16] = native_values[12];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_664_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try s.text("Type instantiation is excessively deep and possibly infinite");
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_664_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "Error");
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_664_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_664_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[10])) 6 else 5 };
+}
+noinline fn typebox_pc_664_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[0], .receiver = c.pi_js_undefined(), .args = native_values[14..16], .result = 10, .next = 7, .construct = false } };
+}
+noinline fn typebox_pc_664_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[15] = native_values[9];
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_664_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[14] = native_values[1];
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_664_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[9] = try rt.key(s, native_values[6], native_values[8]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_664_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[8] = try rt.propertyKey(s, native_values[7]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_664_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try s.text("maxInstantiationCount");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_664_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = native_values[2], .args = native_values[0..0], .result = 6, .next = 13, .construct = false } };
+}
+noinline fn typebox_pc_664_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try rt.key(s, native_values[2], native_values[4]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_664_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[4] = try rt.propertyKey(s, native_values[3]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_664_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[3] = try s.text("Get");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_664_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "external_settings_Settings");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_664_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[1] = try rt.get(s, env, "m258_instantiationCount");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_664_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[0] = try rt.get(s, env, "m4_IsLessThan");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_664_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 20 };
+}
+const typebox_steps_664 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_664_0, typebox_pc_664_1, typebox_pc_664_2, typebox_pc_664_3, typebox_pc_664_4, typebox_pc_664_5, typebox_pc_664_6, typebox_pc_664_7, typebox_pc_664_8, typebox_pc_664_9, typebox_pc_664_10, typebox_pc_664_11, typebox_pc_664_12, typebox_pc_664_13, typebox_pc_664_14, typebox_pc_664_15, typebox_pc_664_16, typebox_pc_664_17, typebox_pc_664_18, typebox_pc_664_19, typebox_pc_664_20, typebox_pc_664_21 };
+const typebox_plan_664: rt.Continuation.Plan = .{ .source_callback = f_664, .slots = 23, .entry = 21, .steps = &typebox_steps_664 };
+noinline fn typebox_pc_666_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_666_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[9] };
+}
+noinline fn typebox_pc_666_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[4], .receiver = c.pi_js_undefined(), .args = native_values[10..14], .result = 9, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_666_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[8];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_666_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[12] = native_values[7];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_666_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[11] = native_values[6];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_666_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[5];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_666_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "arguments_");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_666_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "parameters");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_666_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "state");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_666_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "context");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_666_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "m261_BindParameters");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_666_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[3]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_666_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_666_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[2]);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_666_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_666_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_666_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_666_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_666_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_666_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 19 };
+}
+const typebox_steps_666 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_666_0, typebox_pc_666_1, typebox_pc_666_2, typebox_pc_666_3, typebox_pc_666_4, typebox_pc_666_5, typebox_pc_666_6, typebox_pc_666_7, typebox_pc_666_8, typebox_pc_666_9, typebox_pc_666_10, typebox_pc_666_11, typebox_pc_666_12, typebox_pc_666_13, typebox_pc_666_14, typebox_pc_666_15, typebox_pc_666_16, typebox_pc_666_17, typebox_pc_666_18, typebox_pc_666_19, typebox_pc_666_20 };
+const typebox_plan_666: rt.Continuation.Plan = .{ .source_callback = f_666, .slots = 14, .entry = 20, .steps = &typebox_steps_666 };
+noinline fn typebox_pc_667_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_667_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[8] };
+}
+noinline fn typebox_pc_667_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[4], .receiver = c.pi_js_undefined(), .args = native_values[9..12], .result = 8, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_667_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[11] = native_values[7];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_667_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[6];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_667_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[5];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_667_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[7] = try rt.plannedFunction(s, "", 0, f_669, env, receiver, true, &typebox_plan_669);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_667_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[6] = try rt.plannedFunction(s, "", 2, f_668, env, receiver, true, &typebox_plan_668);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_667_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "parameters");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_667_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "m4_ShiftLeft");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_667_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[3]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_667_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_667_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameters", native_values[2]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_667_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_667_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_667_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_667_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_667_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_667_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 17 };
+}
+const typebox_steps_667 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_667_0, typebox_pc_667_1, typebox_pc_667_2, typebox_pc_667_3, typebox_pc_667_4, typebox_pc_667_5, typebox_pc_667_6, typebox_pc_667_7, typebox_pc_667_8, typebox_pc_667_9, typebox_pc_667_10, typebox_pc_667_11, typebox_pc_667_12, typebox_pc_667_13, typebox_pc_667_14, typebox_pc_667_15, typebox_pc_667_16, typebox_pc_667_17, typebox_pc_667_18 };
+const typebox_plan_667: rt.Continuation.Plan = .{ .source_callback = f_667, .slots = 12, .entry = 18, .steps = &typebox_steps_667 };
+noinline fn typebox_pc_668_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_668_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[8] };
+}
+noinline fn typebox_pc_668_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[9..14], .result = 8, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_668_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[13] = native_values[7];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_668_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[12] = native_values[6];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_668_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[11] = native_values[5];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_668_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[4];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_668_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[3];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_668_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "arguments_");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_668_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "right");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_668_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "left");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_668_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "state");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_668_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "context");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_668_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m261_BindArguments");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_668_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "right", native_values[1]);
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_668_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_668_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "left", native_values[0]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_668_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_668_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 17 };
+}
+const typebox_steps_668 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_668_0, typebox_pc_668_1, typebox_pc_668_2, typebox_pc_668_3, typebox_pc_668_4, typebox_pc_668_5, typebox_pc_668_6, typebox_pc_668_7, typebox_pc_668_8, typebox_pc_668_9, typebox_pc_668_10, typebox_pc_668_11, typebox_pc_668_12, typebox_pc_668_13, typebox_pc_668_14, typebox_pc_668_15, typebox_pc_668_16, typebox_pc_668_17, typebox_pc_668_18 };
+const typebox_plan_668: rt.Continuation.Plan = .{ .source_callback = f_668, .slots = 14, .entry = 18, .steps = &typebox_steps_668 };
+noinline fn typebox_pc_669_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_669_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[0] };
+}
+noinline fn typebox_pc_669_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[0] = try rt.get(s, env, "context");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_669_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 2 };
+}
+const typebox_steps_669 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_669_0, typebox_pc_669_1, typebox_pc_669_2, typebox_pc_669_3 };
+const typebox_plan_669: rt.Continuation.Plan = .{ .source_callback = f_669, .slots = 1, .entry = 3, .steps = &typebox_steps_669 };
+noinline fn typebox_pc_670_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_670_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[25] };
+}
+noinline fn typebox_pc_670_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[21], .receiver = c.pi_js_undefined(), .args = native_values[32..35], .result = 25, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_670_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[34] = native_values[24];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_670_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[33] = native_values[23];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_670_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[32] = native_values[22];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_670_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[24] = try rt.plannedFunction(s, "", 0, f_672, env, receiver, true, &typebox_plan_672);
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_670_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+const receiver = a.receiver;
+native_values[23] = try rt.plannedFunction(s, "", 2, f_671, env, receiver, true, &typebox_plan_671);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_670_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[22] = try rt.get(s, env, "arguments_");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_670_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "m4_ShiftLeft");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_670_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedEquals", native_values[20]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_670_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[13], .receiver = c.pi_js_undefined(), .args = native_values[29..32], .result = 20, .next = 10, .construct = false } };
+}
+noinline fn typebox_pc_670_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[19];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_670_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[30] = native_values[15];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_670_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[29] = native_values[14];
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_670_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try rt.key(s, native_values[16], native_values[18]);
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_670_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try rt.propertyKey(s, native_values[17]);
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_670_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[17] = try s.text("equals");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_670_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[16] = try rt.get(s, env, "parameterLeft");
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_670_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "state");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_670_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "context");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_670_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_670_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedExtends", native_values[12]);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_670_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = c.pi_js_undefined(), .args = native_values[26..29], .result = 12, .next = 22, .construct = false } };
+}
+noinline fn typebox_pc_670_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[28] = native_values[11];
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_670_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[27] = native_values[7];
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_670_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[26] = native_values[6];
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_670_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[11] = try rt.key(s, native_values[8], native_values[10]);
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_670_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[10] = try rt.propertyKey(s, native_values[9]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_670_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[9] = try s.text("extends");
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_670_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "parameterLeft");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_670_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "state");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_670_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "context");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_670_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_670_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "arguments_", native_values[4]);
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_670_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_670_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameterRight", native_values[3]);
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_670_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_670_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "parameterLeft", native_values[2]);
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_670_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_670_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_670_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_670_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_670_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_670_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 43 };
+}
+const typebox_steps_670 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_670_0, typebox_pc_670_1, typebox_pc_670_2, typebox_pc_670_3, typebox_pc_670_4, typebox_pc_670_5, typebox_pc_670_6, typebox_pc_670_7, typebox_pc_670_8, typebox_pc_670_9, typebox_pc_670_10, typebox_pc_670_11, typebox_pc_670_12, typebox_pc_670_13, typebox_pc_670_14, typebox_pc_670_15, typebox_pc_670_16, typebox_pc_670_17, typebox_pc_670_18, typebox_pc_670_19, typebox_pc_670_20, typebox_pc_670_21, typebox_pc_670_22, typebox_pc_670_23, typebox_pc_670_24, typebox_pc_670_25, typebox_pc_670_26, typebox_pc_670_27, typebox_pc_670_28, typebox_pc_670_29, typebox_pc_670_30, typebox_pc_670_31, typebox_pc_670_32, typebox_pc_670_33, typebox_pc_670_34, typebox_pc_670_35, typebox_pc_670_36, typebox_pc_670_37, typebox_pc_670_38, typebox_pc_670_39, typebox_pc_670_40, typebox_pc_670_41, typebox_pc_670_42, typebox_pc_670_43, typebox_pc_670_44 };
+const typebox_plan_670: rt.Continuation.Plan = .{ .source_callback = f_670, .slots = 35, .entry = 44, .steps = &typebox_steps_670 };
+noinline fn typebox_pc_671_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_671_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[16] };
+}
+noinline fn typebox_pc_671_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[22..26], .result = 16, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_671_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[25] = native_values[15];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_671_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[24] = native_values[14];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_671_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[23] = native_values[13];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_671_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[22] = native_values[12];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_671_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "right");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_671_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "parameterRight");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_671_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "state");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_671_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[17..22], .result = 12, .next = 9, .construct = false } };
+}
+noinline fn typebox_pc_671_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[21] = native_values[11];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_671_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[20] = native_values[10];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_671_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[19] = native_values[9];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_671_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[18] = native_values[5];
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_671_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[17] = native_values[4];
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_671_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "left");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_671_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "instantiatedExtends");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_671_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[9] = try rt.key(s, native_values[6], native_values[8]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_671_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[8] = try rt.propertyKey(s, native_values[7]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_671_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try s.text("name");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_671_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "parameterLeft");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_671_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "state");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_671_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "context");
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_671_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m261_BindArgument");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_671_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m261_BindParameters");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_671_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "right", native_values[1]);
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_671_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_671_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "left", native_values[0]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_671_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_671_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 29 };
+}
+const typebox_steps_671 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_671_0, typebox_pc_671_1, typebox_pc_671_2, typebox_pc_671_3, typebox_pc_671_4, typebox_pc_671_5, typebox_pc_671_6, typebox_pc_671_7, typebox_pc_671_8, typebox_pc_671_9, typebox_pc_671_10, typebox_pc_671_11, typebox_pc_671_12, typebox_pc_671_13, typebox_pc_671_14, typebox_pc_671_15, typebox_pc_671_16, typebox_pc_671_17, typebox_pc_671_18, typebox_pc_671_19, typebox_pc_671_20, typebox_pc_671_21, typebox_pc_671_22, typebox_pc_671_23, typebox_pc_671_24, typebox_pc_671_25, typebox_pc_671_26, typebox_pc_671_27, typebox_pc_671_28, typebox_pc_671_29, typebox_pc_671_30 };
+const typebox_plan_671: rt.Continuation.Plan = .{ .source_callback = f_671, .slots = 26, .entry = 30, .steps = &typebox_steps_671 };
+noinline fn typebox_pc_672_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_672_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[14] };
+}
+noinline fn typebox_pc_672_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[0], .receiver = c.pi_js_undefined(), .args = native_values[20..24], .result = 14, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_672_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[23] = native_values[13];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_672_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[22] = native_values[12];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_672_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[21] = native_values[11];
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_672_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[20] = native_values[10];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_672_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[13] = try s.array();
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_672_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "parameterRight");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_672_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "state");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_672_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[1], .receiver = c.pi_js_undefined(), .args = native_values[15..20], .result = 10, .next = 9, .construct = false } };
+}
+noinline fn typebox_pc_672_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[19] = native_values[9];
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_672_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[18] = native_values[8];
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_672_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[17] = native_values[7];
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_672_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[16] = native_values[3];
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_672_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[15] = native_values[2];
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_672_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "instantiatedEquals");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_672_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "instantiatedExtends");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_672_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try rt.key(s, native_values[4], native_values[6]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_672_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[6] = try rt.propertyKey(s, native_values[5]);
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_672_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[5] = try s.text("name");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_672_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "parameterLeft");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_672_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "state");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_672_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "context");
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_672_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[1] = try rt.get(s, env, "m261_BindArgument");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_672_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[0] = try rt.get(s, env, "m261_BindParameters");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_672_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 25 };
+}
+const typebox_steps_672 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_672_0, typebox_pc_672_1, typebox_pc_672_2, typebox_pc_672_3, typebox_pc_672_4, typebox_pc_672_5, typebox_pc_672_6, typebox_pc_672_7, typebox_pc_672_8, typebox_pc_672_9, typebox_pc_672_10, typebox_pc_672_11, typebox_pc_672_12, typebox_pc_672_13, typebox_pc_672_14, typebox_pc_672_15, typebox_pc_672_16, typebox_pc_672_17, typebox_pc_672_18, typebox_pc_672_19, typebox_pc_672_20, typebox_pc_672_21, typebox_pc_672_22, typebox_pc_672_23, typebox_pc_672_24, typebox_pc_672_25, typebox_pc_672_26 };
+const typebox_plan_672: rt.Continuation.Plan = .{ .source_callback = f_672, .slots = 24, .entry = 26, .steps = &typebox_steps_672 };
+noinline fn typebox_pc_673_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_673_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[24] };
+}
+noinline fn typebox_pc_673_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[18], .receiver = native_values[15], .args = native_values[31..33], .result = 24, .next = 1, .construct = false } };
+}
+noinline fn typebox_pc_673_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[32] = native_values[20];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_673_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[19];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_673_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[20], native_values[22], native_values[23]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_673_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[23] = try rt.get(s, env, "instantiatedArgument");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_673_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[22] = try rt.propertyKey(s, native_values[21]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_673_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "name");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_673_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[20] = try s.object();
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_673_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[19] = try rt.get(s, env, "context");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_673_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try rt.key(s, native_values[15], native_values[17]);
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_673_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[17] = try rt.propertyKey(s, native_values[16]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_673_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try s.text("Assign");
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_673_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "external_memory_Memory");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_673_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[10], .receiver = c.pi_js_undefined(), .args = native_values[28..31], .result = 14, .next = 14, .construct = false } };
+}
+noinline fn typebox_pc_673_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[30] = native_values[13];
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_673_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[29] = native_values[12];
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_673_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[28] = native_values[11];
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_673_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "extends_");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_673_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "instantiatedArgument");
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_673_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "name");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_673_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "m261_AssertArgumentExtends");
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_673_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedArgument", native_values[9]);
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_673_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = c.pi_js_undefined(), .args = native_values[25..28], .result = 9, .next = 23, .construct = false } };
+}
+noinline fn typebox_pc_673_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[27] = native_values[8];
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_673_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[26] = native_values[7];
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_673_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[25] = native_values[6];
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_673_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[8] = try rt.get(s, env, "type");
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_673_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "state");
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_673_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "context");
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_673_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "m0_InstantiateType");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_673_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[4]);
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_673_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[4] = rt.argument(args, 4);
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_673_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "extends_", native_values[3]);
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_673_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[3] = rt.argument(args, 3);
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_673_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "name", native_values[2]);
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_673_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_673_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "state", native_values[1]);
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_673_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_673_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "context", native_values[0]);
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_673_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_673_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 41 };
+}
+const typebox_steps_673 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_673_0, typebox_pc_673_1, typebox_pc_673_2, typebox_pc_673_3, typebox_pc_673_4, typebox_pc_673_5, typebox_pc_673_6, typebox_pc_673_7, typebox_pc_673_8, typebox_pc_673_9, typebox_pc_673_10, typebox_pc_673_11, typebox_pc_673_12, typebox_pc_673_13, typebox_pc_673_14, typebox_pc_673_15, typebox_pc_673_16, typebox_pc_673_17, typebox_pc_673_18, typebox_pc_673_19, typebox_pc_673_20, typebox_pc_673_21, typebox_pc_673_22, typebox_pc_673_23, typebox_pc_673_24, typebox_pc_673_25, typebox_pc_673_26, typebox_pc_673_27, typebox_pc_673_28, typebox_pc_673_29, typebox_pc_673_30, typebox_pc_673_31, typebox_pc_673_32, typebox_pc_673_33, typebox_pc_673_34, typebox_pc_673_35, typebox_pc_673_36, typebox_pc_673_37, typebox_pc_673_38, typebox_pc_673_39, typebox_pc_673_40, typebox_pc_673_41, typebox_pc_673_42 };
+const typebox_plan_673: rt.Continuation.Plan = .{ .source_callback = f_673, .slots = 33, .entry = 42, .steps = &typebox_steps_673 };
+noinline fn typebox_pc_674_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_674_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .thrown = native_values[39] };
+}
+noinline fn typebox_pc_674_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[28], .receiver = c.pi_js_undefined(), .args = native_values[46..48], .result = 39, .next = 1, .construct = true } };
+}
+noinline fn typebox_pc_674_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[47] = native_values[35];
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_674_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[46] = native_values[34];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_674_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[35], native_values[37], native_values[38]);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_674_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[38] = try rt.get(s, env, "cause");
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_674_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[37] = try rt.propertyKey(s, native_values[36]);
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_674_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[36] = try s.text("cause");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_674_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[35] = try s.object();
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_674_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[34] = try s.concat(native_values[32], native_values[33]);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_674_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[33] = try s.text(" does not satisfy constraint");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_674_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[32] = try s.concat(native_values[29], native_values[31]);
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_674_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[31] = try s.stringify(native_values[30]);
+return .{ .next = 12 };
+}
+noinline fn typebox_pc_674_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[30] = try rt.get(s, env, "name");
+return .{ .next = 13 };
+}
+noinline fn typebox_pc_674_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[29] = try s.text("Argument for parameter ");
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_674_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[28] = try rt.get(s, env, "Error");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_674_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "cause", native_values[18]);
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_674_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[18], native_values[26], native_values[27]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_674_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[27] = try rt.get(s, env, "type");
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_674_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[26] = try rt.propertyKey(s, native_values[25]);
+return .{ .next = 19 };
+}
+noinline fn typebox_pc_674_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[25] = try s.text("actual");
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_674_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[18], native_values[23], native_values[24]);
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_674_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[24] = try rt.get(s, env, "extends_");
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_674_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[23] = try rt.propertyKey(s, native_values[22]);
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_674_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[22] = try s.text("expect");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_674_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+try rt.property(s, native_values[18], native_values[20], native_values[21]);
+return .{ .next = 25 };
+}
+noinline fn typebox_pc_674_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "name");
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_674_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[20] = try rt.propertyKey(s, native_values[19]);
+return .{ .next = 27 };
+}
+noinline fn typebox_pc_674_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[19] = try s.text("parameter");
+return .{ .next = 28 };
+}
+noinline fn typebox_pc_674_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[18] = try s.object();
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_674_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_674_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[17])) 31 else 30 };
+}
+noinline fn typebox_pc_674_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[17] = native_values[16];
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_674_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[10], .receiver = c.pi_js_undefined(), .args = native_values[45..46], .result = 16, .next = 33, .construct = false } };
+}
+noinline fn typebox_pc_674_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[45] = native_values[15];
+return .{ .next = 34 };
+}
+noinline fn typebox_pc_674_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[11], .receiver = c.pi_js_undefined(), .args = native_values[42..45], .result = 15, .next = 35, .construct = false } };
+}
+noinline fn typebox_pc_674_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[44] = native_values[14];
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_674_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[43] = native_values[13];
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_674_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[42] = native_values[12];
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_674_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "extends_");
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_674_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[13] = try rt.get(s, env, "type");
+return .{ .next = 40 };
+}
+noinline fn typebox_pc_674_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[12] = try s.object();
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_674_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "m30_Extends");
+return .{ .next = 42 };
+}
+noinline fn typebox_pc_674_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[10] = try rt.get(s, env, "m116_IsExtendsTrueLike");
+return .{ .next = 43 };
+}
+noinline fn typebox_pc_674_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[17] = native_values[9];
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_674_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (!s.truthy(native_values[9])) 44 else 45 };
+}
+noinline fn typebox_pc_674_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[8];
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_674_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[6], .receiver = c.pi_js_undefined(), .args = native_values[41..42], .result = 8, .next = 47, .construct = false } };
+}
+noinline fn typebox_pc_674_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[41] = native_values[7];
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_674_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[7] = try rt.get(s, env, "type");
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_674_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "m82_IsCall");
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_674_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[9] = native_values[5];
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_674_53(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (!s.truthy(native_values[5])) 51 else 52 };
+}
+noinline fn typebox_pc_674_54(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[3], .receiver = c.pi_js_undefined(), .args = native_values[40..41], .result = 5, .next = 53, .construct = false } };
+}
+noinline fn typebox_pc_674_55(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[40] = native_values[4];
+return .{ .next = 54 };
+}
+noinline fn typebox_pc_674_56(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[4] = try rt.get(s, env, "type");
+return .{ .next = 55 };
+}
+noinline fn typebox_pc_674_57(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m86_IsInfer");
+return .{ .next = 56 };
+}
+noinline fn typebox_pc_674_58(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "extends_", native_values[2]);
+return .{ .next = 57 };
+}
+noinline fn typebox_pc_674_59(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[2] = rt.argument(args, 2);
+return .{ .next = 58 };
+}
+noinline fn typebox_pc_674_60(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[1]);
+return .{ .next = 59 };
+}
+noinline fn typebox_pc_674_61(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 60 };
+}
+noinline fn typebox_pc_674_62(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "name", native_values[0]);
+return .{ .next = 61 };
+}
+noinline fn typebox_pc_674_63(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 62 };
+}
+noinline fn typebox_pc_674_64(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 63 };
+}
+const typebox_steps_674 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_674_0, typebox_pc_674_1, typebox_pc_674_2, typebox_pc_674_3, typebox_pc_674_4, typebox_pc_674_5, typebox_pc_674_6, typebox_pc_674_7, typebox_pc_674_8, typebox_pc_674_9, typebox_pc_674_10, typebox_pc_674_11, typebox_pc_674_12, typebox_pc_674_13, typebox_pc_674_14, typebox_pc_674_15, typebox_pc_674_16, typebox_pc_674_17, typebox_pc_674_18, typebox_pc_674_19, typebox_pc_674_20, typebox_pc_674_21, typebox_pc_674_22, typebox_pc_674_23, typebox_pc_674_24, typebox_pc_674_25, typebox_pc_674_26, typebox_pc_674_27, typebox_pc_674_28, typebox_pc_674_29, typebox_pc_674_30, typebox_pc_674_31, typebox_pc_674_32, typebox_pc_674_33, typebox_pc_674_34, typebox_pc_674_35, typebox_pc_674_36, typebox_pc_674_37, typebox_pc_674_38, typebox_pc_674_39, typebox_pc_674_40, typebox_pc_674_41, typebox_pc_674_42, typebox_pc_674_43, typebox_pc_674_44, typebox_pc_674_45, typebox_pc_674_46, typebox_pc_674_47, typebox_pc_674_48, typebox_pc_674_49, typebox_pc_674_50, typebox_pc_674_51, typebox_pc_674_52, typebox_pc_674_53, typebox_pc_674_54, typebox_pc_674_55, typebox_pc_674_56, typebox_pc_674_57, typebox_pc_674_58, typebox_pc_674_59, typebox_pc_674_60, typebox_pc_674_61, typebox_pc_674_62, typebox_pc_674_63, typebox_pc_674_64 };
+const typebox_plan_674: rt.Continuation.Plan = .{ .source_callback = f_674, .slots = 48, .entry = 64, .steps = &typebox_steps_674 };
+noinline fn typebox_pc_675_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_675_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_675_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const engine = a.scope.engine;
+const env = a.env;
+try rt.assign(s, env, "m258_instantiationCount", c.JS_NewFloat64(engine.context, 0));
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_675_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[4])) 2 else 1 };
+}
+noinline fn typebox_pc_675_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[5..7], .result = 4, .next = 3, .construct = false } };
+}
+noinline fn typebox_pc_675_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const engine = a.scope.engine;
+const native_values = a.values;
+native_values[6] = c.JS_NewFloat64(engine.context, 0);
+return .{ .next = 4 };
+}
+noinline fn typebox_pc_675_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[5] = native_values[3];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_675_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "m258_instantiationDepth");
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_675_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m4_IsEqual");
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_675_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.assign(s, env, "m258_instantiationDepth", native_values[1]);
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_675_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[1] = try rt.update(s, native_values[0], false);
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_675_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[0] = try rt.get(s, env, "m258_instantiationDepth");
+return .{ .next = 10 };
+}
+noinline fn typebox_pc_675_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 11 };
+}
+const typebox_steps_675 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_675_0, typebox_pc_675_1, typebox_pc_675_2, typebox_pc_675_3, typebox_pc_675_4, typebox_pc_675_5, typebox_pc_675_6, typebox_pc_675_7, typebox_pc_675_8, typebox_pc_675_9, typebox_pc_675_10, typebox_pc_675_11, typebox_pc_675_12 };
+const typebox_plan_675: rt.Continuation.Plan = .{ .source_callback = f_675, .slots = 9, .entry = 12, .steps = &typebox_steps_675 };
+noinline fn typebox_pc_686_0(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+_ = a;
+return .{ .returned = c.pi_js_undefined() };
+}
+noinline fn typebox_pc_686_1(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .returned = native_values[29] };
+}
+noinline fn typebox_pc_686_2(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[29] = try rt.get(s, env, "withImmutable");
+return .{ .next = 1 };
+}
+noinline fn typebox_pc_686_3(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "withImmutable", native_values[28]);
+return .{ .next = 2 };
+}
+noinline fn typebox_pc_686_4(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[28] = native_values[26];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_686_5(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[23], .receiver = c.pi_js_undefined(), .args = native_values[37..39], .result = 26, .next = 4, .construct = false } };
+}
+noinline fn typebox_pc_686_6(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[38] = native_values[25];
+return .{ .next = 5 };
+}
+noinline fn typebox_pc_686_7(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[37] = native_values[24];
+return .{ .next = 6 };
+}
+noinline fn typebox_pc_686_8(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[25] = try s.object();
+return .{ .next = 7 };
+}
+noinline fn typebox_pc_686_9(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[24] = try rt.get(s, env, "withReadonly");
+return .{ .next = 8 };
+}
+noinline fn typebox_pc_686_10(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[23] = try rt.get(s, env, "m5_AddImmutableAction");
+return .{ .next = 9 };
+}
+noinline fn typebox_pc_686_11(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[28] = native_values[27];
+return .{ .next = 3 };
+}
+noinline fn typebox_pc_686_12(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[27] = try rt.get(s, env, "withReadonly");
+return .{ .next = 11 };
+}
+noinline fn typebox_pc_686_13(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[22])) 10 else 12 };
+}
+noinline fn typebox_pc_686_14(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[20], .receiver = c.pi_js_undefined(), .args = native_values[36..37], .result = 22, .next = 13, .construct = false } };
+}
+noinline fn typebox_pc_686_15(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[36] = native_values[21];
+return .{ .next = 14 };
+}
+noinline fn typebox_pc_686_16(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[21] = try rt.get(s, env, "type");
+return .{ .next = 15 };
+}
+noinline fn typebox_pc_686_17(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[20] = try rt.get(s, env, "m78_IsImmutable");
+return .{ .next = 16 };
+}
+noinline fn typebox_pc_686_18(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "withReadonly", native_values[19]);
+return .{ .next = 17 };
+}
+noinline fn typebox_pc_686_19(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[19] = native_values[17];
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_686_20(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[14], .receiver = c.pi_js_undefined(), .args = native_values[34..36], .result = 17, .next = 19, .construct = false } };
+}
+noinline fn typebox_pc_686_21(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[35] = native_values[16];
+return .{ .next = 20 };
+}
+noinline fn typebox_pc_686_22(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[34] = native_values[15];
+return .{ .next = 21 };
+}
+noinline fn typebox_pc_686_23(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[16] = try s.object();
+return .{ .next = 22 };
+}
+noinline fn typebox_pc_686_24(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[15] = try rt.get(s, env, "withOptional");
+return .{ .next = 23 };
+}
+noinline fn typebox_pc_686_25(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[14] = try rt.get(s, env, "m7_AddReadonlyAction");
+return .{ .next = 24 };
+}
+noinline fn typebox_pc_686_26(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[19] = native_values[18];
+return .{ .next = 18 };
+}
+noinline fn typebox_pc_686_27(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[18] = try rt.get(s, env, "withOptional");
+return .{ .next = 26 };
+}
+noinline fn typebox_pc_686_28(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[13])) 25 else 27 };
+}
+noinline fn typebox_pc_686_29(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[11], .receiver = c.pi_js_undefined(), .args = native_values[33..34], .result = 13, .next = 28, .construct = false } };
+}
+noinline fn typebox_pc_686_30(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[33] = native_values[12];
+return .{ .next = 29 };
+}
+noinline fn typebox_pc_686_31(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[12] = try rt.get(s, env, "type");
+return .{ .next = 30 };
+}
+noinline fn typebox_pc_686_32(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[11] = try rt.get(s, env, "m79_IsReadonly");
+return .{ .next = 31 };
+}
+noinline fn typebox_pc_686_33(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "withOptional", native_values[10]);
+return .{ .next = 32 };
+}
+noinline fn typebox_pc_686_34(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[8];
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_686_35(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[5], .receiver = c.pi_js_undefined(), .args = native_values[31..33], .result = 8, .next = 34, .construct = false } };
+}
+noinline fn typebox_pc_686_36(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[32] = native_values[7];
+return .{ .next = 35 };
+}
+noinline fn typebox_pc_686_37(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[31] = native_values[6];
+return .{ .next = 36 };
+}
+noinline fn typebox_pc_686_38(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+native_values[7] = try s.object();
+return .{ .next = 37 };
+}
+noinline fn typebox_pc_686_39(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[6] = try rt.get(s, env, "instantiatedType");
+return .{ .next = 38 };
+}
+noinline fn typebox_pc_686_40(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[5] = try rt.get(s, env, "m9_AddOptionalAction");
+return .{ .next = 39 };
+}
+noinline fn typebox_pc_686_41(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[10] = native_values[9];
+return .{ .next = 33 };
+}
+noinline fn typebox_pc_686_42(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[9] = try rt.get(s, env, "instantiatedType");
+return .{ .next = 41 };
+}
+noinline fn typebox_pc_686_43(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const native_values = a.values;
+return .{ .next = if (s.truthy(native_values[4])) 40 else 42 };
+}
+noinline fn typebox_pc_686_44(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+return .{ .call = .{ .function = native_values[2], .receiver = c.pi_js_undefined(), .args = native_values[30..31], .result = 4, .next = 43, .construct = false } };
+}
+noinline fn typebox_pc_686_45(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+native_values[30] = native_values[3];
+return .{ .next = 44 };
+}
+noinline fn typebox_pc_686_46(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[3] = try rt.get(s, env, "type");
+return .{ .next = 45 };
+}
+noinline fn typebox_pc_686_47(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+native_values[2] = try rt.get(s, env, "m44_IsOptional");
+return .{ .next = 46 };
+}
+noinline fn typebox_pc_686_48(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "instantiatedType", native_values[1]);
+return .{ .next = 47 };
+}
+noinline fn typebox_pc_686_49(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[1] = rt.argument(args, 1);
+return .{ .next = 48 };
+}
+noinline fn typebox_pc_686_50(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const env = a.env;
+const native_values = a.values;
+try rt.bind(s, env, "type", native_values[0]);
+return .{ .next = 49 };
+}
+noinline fn typebox_pc_686_51(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const native_values = a.values;
+const args = a.args;
+native_values[0] = rt.argument(args, 0);
+return .{ .next = 50 };
+}
+noinline fn typebox_pc_686_52(a: *rt.Continuation.Activation) anyerror!rt.Continuation.Action {
+const s = &a.scope;
+const roots = a.roots;
+a.env = try rt.environment(s, roots[0]);
+return .{ .next = 51 };
+}
+const typebox_steps_686 = [_]*const fn (*rt.Continuation.Activation) anyerror!rt.Continuation.Action { typebox_pc_686_0, typebox_pc_686_1, typebox_pc_686_2, typebox_pc_686_3, typebox_pc_686_4, typebox_pc_686_5, typebox_pc_686_6, typebox_pc_686_7, typebox_pc_686_8, typebox_pc_686_9, typebox_pc_686_10, typebox_pc_686_11, typebox_pc_686_12, typebox_pc_686_13, typebox_pc_686_14, typebox_pc_686_15, typebox_pc_686_16, typebox_pc_686_17, typebox_pc_686_18, typebox_pc_686_19, typebox_pc_686_20, typebox_pc_686_21, typebox_pc_686_22, typebox_pc_686_23, typebox_pc_686_24, typebox_pc_686_25, typebox_pc_686_26, typebox_pc_686_27, typebox_pc_686_28, typebox_pc_686_29, typebox_pc_686_30, typebox_pc_686_31, typebox_pc_686_32, typebox_pc_686_33, typebox_pc_686_34, typebox_pc_686_35, typebox_pc_686_36, typebox_pc_686_37, typebox_pc_686_38, typebox_pc_686_39, typebox_pc_686_40, typebox_pc_686_41, typebox_pc_686_42, typebox_pc_686_43, typebox_pc_686_44, typebox_pc_686_45, typebox_pc_686_46, typebox_pc_686_47, typebox_pc_686_48, typebox_pc_686_49, typebox_pc_686_50, typebox_pc_686_51, typebox_pc_686_52 };
+const typebox_plan_686: rt.Continuation.Plan = .{ .source_callback = f_686, .slots = 51, .entry = 52, .steps = &typebox_steps_686 };
 pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {
 const s = try engine.gpa.create(rt.Scope);
 s.* = .{ .engine = engine };
@@ -53807,8 +65682,8 @@ try rt.declare(s, env, "m66_ExprTail");
 try rt.declare(s, env, "m66_ExprPipe");
 try rt.declare(s, env, "m66_ExprReadonly");
 try rt.declare(s, env, "m240_ReadonlyType");
-try rt.bind(s, env, "m0_Instantiate", try rt.function(s, "Instantiate", 2, f_0, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateType", try rt.function(s, "InstantiateType", 3, f_1, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_Instantiate", try rt.plannedFunction(s, "Instantiate", 2, f_0, env, c.pi_js_undefined(), false, &typebox_plan_0));
+try rt.bind(s, env, "m0_InstantiateType", try rt.plannedFunction(s, "InstantiateType", 3, f_1, env, c.pi_js_undefined(), false, &typebox_plan_1));
 try rt.bind(s, env, "m1_IsDeferred", try rt.function(s, "IsDeferred", 1, f_2, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m2_IsKind", try rt.function(s, "IsKind", 2, f_3, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m4_IsObject", try rt.function(s, "IsObject", 1, f_4, env, c.pi_js_undefined(), false));
@@ -53816,7 +65691,7 @@ try rt.bind(s, env, "m4_IsEqual", try rt.function(s, "IsEqual", 2, f_5, env, c.p
 try rt.bind(s, env, "m4_IsNull", try rt.function(s, "IsNull", 1, f_6, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m4_HasPropertyKey", try rt.function(s, "HasPropertyKey", 2, f_7, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m4_IsUnsafePropertyKey", try rt.function(s, "IsUnsafePropertyKey", 1, f_8, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateDeferred", try rt.function(s, "InstantiateDeferred", 5, f_9, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_InstantiateDeferred", try rt.plannedFunction(s, "InstantiateDeferred", 5, f_9, env, c.pi_js_undefined(), false, &typebox_plan_9));
 try rt.bind(s, env, "m5_AddImmutableInstantiate", try rt.function(s, "AddImmutableInstantiate", 4, f_10, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m5_AddImmutableAction", try rt.function(s, "AddImmutableAction", 2, f_11, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "external_memory_Memory", try s.get(graph, "Memory"));
@@ -53838,8 +65713,8 @@ try rt.bind(s, env, "m10_RemoveOptionalAction", try rt.function(s, "RemoveOption
 try rt.bind(s, env, "m10_RemoveOptionalOperation", try rt.function(s, "RemoveOptionalOperation", 1, f_27, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m11_CapitalizeInstantiate", try rt.function(s, "CapitalizeInstantiate", 4, f_28, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m11_CapitalizeAction", try rt.function(s, "CapitalizeAction", 2, f_29, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_CanInstantiate", try rt.function(s, "CanInstantiate", 1, f_30, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m4_ShiftLeft", try rt.function(s, "ShiftLeft", 3, f_33, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_CanInstantiate", try rt.plannedFunction(s, "CanInstantiate", 1, f_30, env, c.pi_js_undefined(), false, &typebox_plan_30));
+try rt.bind(s, env, "m4_ShiftLeft", try rt.plannedFunction(s, "ShiftLeft", 3, f_33, env, c.pi_js_undefined(), false, &typebox_plan_33));
 try rt.bind(s, env, "m12_IsRef", try rt.function(s, "IsRef", 1, f_34, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m13_FromType", try rt.function(s, "FromType", 2, f_35, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m14_IsLiteral", try rt.function(s, "IsLiteral", 1, f_36, env, c.pi_js_undefined(), false));
@@ -54044,12 +65919,12 @@ try rt.bind(s, env, "m90_IsSymbol", try rt.function(s, "IsSymbol", 1, f_292, env
 try rt.bind(s, env, "m136_ExtendsSymbol", try rt.function(s, "ExtendsSymbol", 3, f_293, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m137_ExtendsTemplateLiteral", try rt.function(s, "ExtendsTemplateLiteral", 3, f_294, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m138_ExtendsTuple", try rt.function(s, "ExtendsTuple", 3, f_295, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateElements", try rt.function(s, "InstantiateElements", 3, f_296, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateTypes", try rt.function(s, "InstantiateTypes", 3, f_297, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_InstantiateElements", try rt.plannedFunction(s, "InstantiateElements", 3, f_296, env, c.pi_js_undefined(), false, &typebox_plan_296));
+try rt.bind(s, env, "m0_InstantiateTypes", try rt.plannedFunction(s, "InstantiateTypes", 3, f_297, env, c.pi_js_undefined(), false, &typebox_plan_297));
 try rt.bind(s, env, "m140_RestSpread", try rt.function(s, "RestSpread", 1, f_299, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m140_SpreadElement", try rt.function(s, "SpreadElement", 1, f_301, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m92_IsRest", try rt.function(s, "IsRest", 1, f_302, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_State", try rt.function(s, "State", 2, f_303, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_State", try rt.plannedFunction(s, "State", 2, f_303, env, c.pi_js_undefined(), false, &typebox_plan_303));
 try rt.bind(s, env, "m138_ExtendsTupleToTuple", try rt.function(s, "ExtendsTupleToTuple", 3, f_304, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m138_Reversed", try rt.function(s, "Reversed", 1, f_305, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m141_TryRestInferable", try rt.function(s, "TryRestInferable", 1, f_306, env, c.pi_js_undefined(), false));
@@ -54153,7 +66028,7 @@ try rt.bind(s, env, "m185_InstanceTypeAction", try rt.function(s, "InstanceTypeA
 try rt.bind(s, env, "m185_InstanceTypeOperation", try rt.function(s, "InstanceTypeOperation", 1, f_447, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m186_InstanceTypeDeferred", try rt.function(s, "InstanceTypeDeferred", 1, f_448, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m187_InterfaceInstantiate", try rt.function(s, "InterfaceInstantiate", 5, f_449, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateProperties", try rt.function(s, "InstantiateProperties", 3, f_450, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_InstantiateProperties", try rt.plannedFunction(s, "InstantiateProperties", 3, f_450, env, c.pi_js_undefined(), false, &typebox_plan_450));
 try rt.bind(s, env, "m187_InterfaceAction", try rt.function(s, "InterfaceAction", 3, f_452, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m187_InterfaceOperation", try rt.function(s, "InterfaceOperation", 2, f_453, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m196_InterfaceDeferred", try rt.function(s, "InterfaceDeferred", 2, f_454, env, c.pi_js_undefined(), false));
@@ -54299,10 +66174,10 @@ try rt.bind(s, env, "m254_UppercaseDeferred", try rt.function(s, "UppercaseDefer
 try rt.bind(s, env, "m255_WithInstantiate", try rt.function(s, "WithInstantiate", 4, f_622, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m255_WithAction", try rt.function(s, "WithAction", 2, f_623, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m256_WithDeferred", try rt.function(s, "WithDeferred", 2, f_624, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_InstantiateImmediate", try rt.function(s, "InstantiateImmediate", 3, f_625, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_InstantiateImmediate", try rt.plannedFunction(s, "InstantiateImmediate", 3, f_625, env, c.pi_js_undefined(), false, &typebox_plan_625));
 try rt.bind(s, env, "m257_RefInstantiate", try rt.function(s, "RefInstantiate", 4, f_626, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m82_IsCall", try rt.function(s, "IsCall", 1, f_627, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_CallInstantiate", try rt.function(s, "CallInstantiate", 4, f_628, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m258_CallInstantiate", try rt.plannedFunction(s, "CallInstantiate", 4, f_628, env, c.pi_js_undefined(), false, &typebox_plan_628));
 try rt.bind(s, env, "m259_ResolveTarget", try rt.function(s, "ResolveTarget", 3, f_629, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m259_FromType", try rt.function(s, "FromType", 4, f_630, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m83_IsGeneric", try rt.function(s, "IsGeneric", 1, f_631, env, c.pi_js_undefined(), false));
@@ -54311,12 +66186,12 @@ try rt.bind(s, env, "m83_Generic", try rt.function(s, "Generic", 2, f_633, env, 
 try rt.bind(s, env, "m259_FromRef", try rt.function(s, "FromRef", 3, f_634, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m259_FromNotResolvable", try rt.function(s, "FromNotResolvable", 0, f_635, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m259_FromNotGeneric", try rt.function(s, "FromNotGeneric", 0, f_636, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_IsTailCall", try rt.function(s, "IsTailCall", 2, f_637, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_Peek", try rt.function(s, "Peek", 1, f_638, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m258_IsTailCall", try rt.plannedFunction(s, "IsTailCall", 2, f_637, env, c.pi_js_undefined(), false, &typebox_plan_637));
+try rt.bind(s, env, "m258_Peek", try rt.plannedFunction(s, "Peek", 1, f_638, env, c.pi_js_undefined(), false, &typebox_plan_638));
 try rt.bind(s, env, "m4_IsGreaterThan", try rt.function(s, "IsGreaterThan", 2, f_639, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m82_CallConstruct", try rt.function(s, "CallConstruct", 2, f_640, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m12_Ref", try rt.function(s, "Ref", 2, f_641, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_CallImmediate", try rt.function(s, "CallImmediate", 6, f_642, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m258_CallImmediate", try rt.plannedFunction(s, "CallImmediate", 6, f_642, env, c.pi_js_undefined(), false, &typebox_plan_642));
 try rt.bind(s, env, "m260_DistributeArguments", try rt.function(s, "DistributeArguments", 3, f_643, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m260_CollectDistributionNames", try rt.function(s, "CollectDistributionNames", 1, f_644, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m260_BuildDistributionArray", try rt.function(s, "BuildDistributionArray", 2, f_645, env, c.pi_js_undefined(), false));
@@ -54326,18 +66201,18 @@ try rt.bind(s, env, "m260_Cross", try rt.function(s, "Cross", 2, f_654, env, c.p
 try rt.bind(s, env, "m260_Append", try rt.function(s, "Append", 2, f_656, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m260_Expand", try rt.function(s, "Expand", 1, f_658, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m260_CanonicalArgument", try rt.function(s, "CanonicalArgument", 1, f_659, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_CallDistributed", try rt.function(s, "CallDistributed", 6, f_660, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_CallDispatch", try rt.function(s, "CallDispatch", 6, f_662, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_InstantiationIncrement", try rt.function(s, "InstantiationIncrement", 0, f_663, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_InstantiationAssert", try rt.function(s, "InstantiationAssert", 0, f_664, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m258_CallDistributed", try rt.plannedFunction(s, "CallDistributed", 6, f_660, env, c.pi_js_undefined(), false, &typebox_plan_660));
+try rt.bind(s, env, "m258_CallDispatch", try rt.plannedFunction(s, "CallDispatch", 6, f_662, env, c.pi_js_undefined(), false, &typebox_plan_662));
+try rt.bind(s, env, "m258_InstantiationIncrement", try rt.plannedFunction(s, "InstantiationIncrement", 0, f_663, env, c.pi_js_undefined(), false, &typebox_plan_663));
+try rt.bind(s, env, "m258_InstantiationAssert", try rt.plannedFunction(s, "InstantiationAssert", 0, f_664, env, c.pi_js_undefined(), false, &typebox_plan_664));
 try rt.bind(s, env, "m4_IsLessThan", try rt.function(s, "IsLessThan", 2, f_665, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "external_settings_Settings", try s.get(graph, "Settings"));
-try rt.bind(s, env, "m261_ResolveArgumentsContext", try rt.function(s, "ResolveArgumentsContext", 4, f_666, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m261_BindParameters", try rt.function(s, "BindParameters", 4, f_667, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m261_BindArguments", try rt.function(s, "BindArguments", 5, f_670, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m261_BindArgument", try rt.function(s, "BindArgument", 5, f_673, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m261_AssertArgumentExtends", try rt.function(s, "AssertArgumentExtends", 3, f_674, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m258_InstantiationDecrement", try rt.function(s, "InstantiationDecrement", 0, f_675, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m261_ResolveArgumentsContext", try rt.plannedFunction(s, "ResolveArgumentsContext", 4, f_666, env, c.pi_js_undefined(), false, &typebox_plan_666));
+try rt.bind(s, env, "m261_BindParameters", try rt.plannedFunction(s, "BindParameters", 4, f_667, env, c.pi_js_undefined(), false, &typebox_plan_667));
+try rt.bind(s, env, "m261_BindArguments", try rt.plannedFunction(s, "BindArguments", 5, f_670, env, c.pi_js_undefined(), false, &typebox_plan_670));
+try rt.bind(s, env, "m261_BindArgument", try rt.plannedFunction(s, "BindArgument", 5, f_673, env, c.pi_js_undefined(), false, &typebox_plan_673));
+try rt.bind(s, env, "m261_AssertArgumentExtends", try rt.plannedFunction(s, "AssertArgumentExtends", 3, f_674, env, c.pi_js_undefined(), false, &typebox_plan_674));
+try rt.bind(s, env, "m258_InstantiationDecrement", try rt.plannedFunction(s, "InstantiationDecrement", 0, f_675, env, c.pi_js_undefined(), false, &typebox_plan_675));
 try rt.bind(s, env, "m39_ConstructorOptions", try rt.function(s, "ConstructorOptions", 1, f_676, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m40_FunctionOptions", try rt.function(s, "FunctionOptions", 1, f_677, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m85_Dependent", try rt.function(s, "Dependent", 3, f_678, env, c.pi_js_undefined(), false));
@@ -54348,7 +66223,7 @@ try rt.bind(s, env, "m45_RecordFromPattern", try rt.function(s, "RecordFromPatte
 try rt.bind(s, env, "m92_Rest", try rt.function(s, "Rest", 1, f_683, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m95_TupleOptions", try rt.function(s, "TupleOptions", 1, f_684, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m24_UnionOptions", try rt.function(s, "UnionOptions", 1, f_685, env, c.pi_js_undefined(), false));
-try rt.bind(s, env, "m0_WithModifiers", try rt.function(s, "WithModifiers", 2, f_686, env, c.pi_js_undefined(), false));
+try rt.bind(s, env, "m0_WithModifiers", try rt.plannedFunction(s, "WithModifiers", 2, f_686, env, c.pi_js_undefined(), false, &typebox_plan_686));
 try rt.bind(s, env, "m79_IsReadonly", try rt.function(s, "IsReadonly", 1, f_687, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m262_Priority", try rt.function(s, "Priority", 1, f_688, env, c.pi_js_undefined(), false));
 try rt.bind(s, env, "m262_Sort", try rt.function(s, "Sort", 1, f_689, env, c.pi_js_undefined(), false));

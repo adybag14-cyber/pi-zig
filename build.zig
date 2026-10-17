@@ -2502,6 +2502,12 @@ pub fn build(b: *std.Build) void {
     const typebox_production_run = b.addRunArtifact(typebox_production_tests);
     typebox_production_run.has_side_effects = true;
     b.step("test-native-typebox-production-source", "Replay actual compiler and provider schemas through the shared native TypeBox graph").dependOn(&typebox_production_run.step);
+    const typebox_heap_module = b.createModule(.{ .root_source_file = b.path("src/native_typebox_continuation_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, typebox_heap_module, quickjs, sqlite_lib_dir);
+    typebox_heap_module.addImport("catalog_tool", catalog_tool);
+    const typebox_heap_tests = b.addTest(.{ .root_module = typebox_heap_module, .use_llvm = use_llvm, .filters = &.{"TypeBox heap continuation "} });
+    b.step("build-native-typebox-heap-continuation", "Compile prepared exact-object synchronous heap activation controls").dependOn(&b.addInstallArtifact(typebox_heap_tests, .{}).step);
+    b.step("test-native-typebox-heap-continuation", "Run private VM scheduling ownership receiver finally and reentry controls").dependOn(&b.addRunArtifact(typebox_heap_tests).step);
     const native_tla_fatal_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_tla_fatal_delivery_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native TLA fatal"}, .use_llvm = use_llvm });
     linkQuickJs(b, native_tla_fatal_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(native_tla_fatal_tests.root_module, sqlite_lib_dir, sqlite_library);

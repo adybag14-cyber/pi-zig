@@ -89,6 +89,11 @@ pub fn function(scope: *Scope, name: [:0]const u8, length: c_int, callback: Call
     else
         try @import("native_node_function.zig").create(scope.engine, name, length, callback, &roots));
 }
+pub const Continuation = @import("native_typebox_continuation.zig");
+pub fn plannedFunction(scope: *Scope, name: [:0]const u8, length: c_int, callback: Callback, env: c.JSValue, receiver: c.JSValue, arrow: bool, plan: *const Continuation.Plan) !c.JSValue {
+    const roots = [_]c.JSValue{ env, receiver };
+    return scope.own(try @import("native_node_function.zig").createPlanned(scope.engine, name, length, callback, &roots, arrow, plan));
+}
 pub fn rest(scope: *Scope, args: []const c.JSValue, start: usize) !c.JSValue {
     const result = try scope.array();
     if (start < args.len) for (args[start..], 0..) |value, index| try scope.index(result, @intCast(index), value);

@@ -1,0 +1,75 @@
+{
+  "schema": 1,
+  "classification": "ACTUAL_SOURCE_AUTHORING_AND_KERNEL_PROOF_NOT_COMPOSED_PRODUCT_QUALIFICATION",
+  "source_head": "fe18566011346d210267c2b49bc1eb0bcd5f7b4d",
+  "root_composition_base": "688b1e478a48aefff17ddacd303e65b05f871dfa",
+  "root_reported_descendant": "6123ed36",
+  "tooling54": {
+    "actual_source_head": "f5dba5c680813cf0ecb829185b593fa873b74b5e",
+    "result": "evidence/root-typebox-heap-pure54-v3-20261017-164011/result.json",
+    "sha256": "363BE6CD16D4E4B192760D4DCCD9B707A0AB15FEAD790720CC7380D5F26FD23A",
+    "cases": 54,
+    "successor_replayed": false,
+    "unchanged_tooling_join_sha256": "164BC16DD974AF36E9C251910BC52CCAC267AD561C25C44CEB892BEBA8D24C7F"
+  },
+  "kernel16": {
+    "actual_source_head": "fe18566011346d210267c2b49bc1eb0bcd5f7b4d",
+    "result": "evidence/root-typebox-heap-kernel-v5-runtime-20261017-174932/result.json",
+    "sha256": "2A8B319ABD17A73FDED06BC952049C9690B364166A43E73DE220A913C5933D0A",
+    "cases": 16,
+    "flags_all_zero": true,
+    "qualification_transferred_to_newerRoot_C3": false
+  },
+  "actual_generation": {
+    "proof": "evidence/root-typebox-heap-package34-20261017-175413",
+    "wrapper_result_sha256": "168F8EECD73244EF69B2770BE4709AE33F52BDF1EDE5ECAA5C2363A64B9983C5",
+    "independent_acceptance": "evidence/root-typebox-heap-package34-independent-audit-20261017/independent-acceptance.json",
+    "independent_acceptance_sha256": "232A8465B1746D6E71143812212112FB84FE3D899BE4D5A4E0DBAA81D55D61BA",
+    "generated_native_sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+    "generated_map_sha256": "186D9248FF843FABB4C3FDD8DA1F23F12473F72CBB60EBBD35B570015AF08ABB",
+    "initialization_sha256": "C4BB3782E6353A073B34842E8D64BCE12E0C318476D69E4F6106DC8BEF9667ED",
+    "closure_sha256": "4E718CCE679A362BCC74A02F6FA717A61240619FA6D1B83BB394706476DC4F93",
+    "original_callbacks": 1669,
+    "original_branches": 585,
+    "original_try_helpers": 1,
+    "original_metadata_drift": 0,
+    "original_scoped_callbacks": 24,
+    "original_call_preparation_helpers": 165,
+    "original_call_step_invoke_sites": 165,
+    "original_call_step_construct_sites": 0,
+    "original_descriptor_slots": 330,
+    "heap_cfg_callbacks": 34,
+    "heap_cfg_pc_entries": 2022,
+    "heap_cfg_call_sites": 187,
+    "heap_cfg_construct_sites": 1,
+    "constructor_note": "The new34 CFG includes f674 resolve_arguments constructor operation; old24 call-step census0construct is a different structural scope. No constructor-path execution is claimed by generation.",
+    "source_evaluation_performed": false
+  },
+  "virtual_composition": {
+    "review": "evidence/typebox-heap-intake-688b-prepared-20261017/runtime-intake-independent-body-review.json",
+    "review_sha256": "F525D61DF36FCF8B02899F4698CAA540BBCCDD4FF706579C88ACAE0EFF945D17",
+    "root_fields_preserved": true,
+    "observer_restored": false,
+    "original_main_host_caller_sha256": "194F848EEF6FBB27D4AE5A9E17015EAA1893A5930929AE0AF1856EBE108E128F",
+    "fixtures_goldens_and_IR_changed": false,
+    "C_H_changed": false
+  },
+  "limits": {
+    "engine_guard_bytes": 1048576,
+    "pe_reserve_bytes": 16777216,
+    "instantiation_policy": 128,
+    "expected_assign": 129,
+    "expected_create": 792,
+    "expected_failure": "Type instantiation is excessively deep and possibly infinite",
+    "changed": false
+  },
+  "remaining": {
+    "actual_composed_intake_head": null,
+    "native_generated_output_compiled": false,
+    "source80_52_396_product_pass": false,
+    "matching_frames_measured": false,
+    "runtime_restoration_claim": false,
+    "stack_improvement_claim": false
+  },
+  "scope": "Accepted source generation and kernel16 remain distinct from future composed Root native qualification. All old product case391 negatives/raw traces/counters/Code/input goldens remain immutable."
+}
