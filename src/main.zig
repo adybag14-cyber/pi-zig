@@ -3397,7 +3397,7 @@ fn runMain(init: std.process.Init, exit_code: *u8) !void {
         return;
     }
     if (cli.version) {
-        try tui.render.printLine(io, config.identity);
+        try tui.render.printLine(io, config.version);
         return;
     }
     coding.args.validateModelSelection(cli) catch {

@@ -3,9 +3,9 @@
 const em = @import("engine.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
-pub const Inputs = struct { process: c.JSValue, os: c.JSValue, url: c.JSValue, child_process: c.JSValue, config_module_url: c.JSValue };
+pub const Inputs = struct { process: c.JSValue, os: c.JSValue, url: c.JSValue, child_process: c.JSValue, config_module_url: c.JSValue, user_agent_runtime: @import("native_sdk_configuration_production.zig").UserAgentRuntime = .source };
 pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
-    const module_name = "pi-native:sdk-runtime-imports";
+    const module_name = if (inputs.user_agent_runtime == .native_zig) "pi-native:sdk-runtime-imports-native-zig" else "pi-native:sdk-runtime-imports";
     if (engine.native_module_values.get(module_name)) |cached| return c.JS_DupValue(engine.context, cached);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
@@ -18,6 +18,7 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
         .filesystem = try scope.get(platform, "filesystem"),
         .path_utilities = try scope.get(platform, "pathUtilities"),
         .module_url = inputs.config_module_url,
+        .user_agent_runtime = inputs.user_agent_runtime,
     }));
     const shell = try scope.own(try @import("native_sdk_shell_production.zig").create(engine, .{
         .process = inputs.process,

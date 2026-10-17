@@ -1,0 +1,131 @@
+{
+  "accepted_source_commit": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "source_root": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016",
+  "source_rows": [
+    {
+      "path": "packages/coding-agent/package.json",
+      "git_blob": "33ac1bcfd6f15b8bcb17ea16ee42ade52421d70b",
+      "sha256": "A253F61695FCF170FB9A5B57A4D59ADB4EB27518852FB0D285E608CE19C91CAA",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\package.json"
+    },
+    {
+      "path": "packages/ai/package.json",
+      "git_blob": "07f546f9708a8d58dfb97b8b16a6fe769129afc6",
+      "sha256": "4E9ED07B06A91D844485874C251F312B610D015A4A4FD32C78CDE58A7862A3F1",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\ai\\package.json"
+    },
+    {
+      "path": "packages/agent/package.json",
+      "git_blob": "30943697ddf3ee70c89bbf4636c56a3adb567650",
+      "sha256": "67728D06E96459B7FE96C490B563865FB78F7EAFCECB708E7AE43E6DD857A324",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\agent\\package.json"
+    },
+    {
+      "path": "packages/tui/package.json",
+      "git_blob": "4b88076949dd7f980cd2dc8ce9864efdf863cc8e",
+      "sha256": "A6A82AF81ED5B6069267EABFDCF047D0AF8013695B0E64D72F3C9F44F8E8124E",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\tui\\package.json"
+    },
+    {
+      "path": "packages/coding-agent/src/config.ts",
+      "git_blob": "61dd63f38086111b67126ce9fb8c5ef2382e7243",
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\config.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/main.ts",
+      "git_blob": "51df447c540ecb34a0c7ab9bf1edef1d337225a1",
+      "sha256": "BC76D755332764FC80EDDC9C1BFB84F70E70C2B55D958E44F98000B05F08930C",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\main.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/utils/version-check.ts",
+      "git_blob": "a09a3d0003ee2b26fbc7c6c6d60e50eb6e8e0e82",
+      "sha256": "23279D94EAE94DC19B1221C58A7993677327A47A8B6E37C9C1E4201F3ADCF983",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\utils\\version-check.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/utils/pi-user-agent.ts",
+      "git_blob": "b1f0a7260725d5642aa88382d0bd7b466558beda",
+      "sha256": "CD2329BEB4B18FD99F5180D603FD1371C8F50441D4688F7D75918A051E565C26",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\utils\\pi-user-agent.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/extensions/mcp/runtime.ts",
+      "git_blob": "f13d21b1273ababa7f2cdabe31bd25bba6d2fb3d",
+      "sha256": "F2BF62F39179E2D956DF3783F1D561667C589AFD6F6EE94EBDAEAF6B22DE154C",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\extensions\\mcp\\runtime.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/modes/interactive/interactive-mode.ts",
+      "git_blob": "ce2398475b9780cbe7063da5d6b767224a0d217a",
+      "sha256": "B1000CCC60AC715D8483F00AD6CB8E6CD56665418B3738EFA47A77EC4FCE5043",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\modes\\interactive\\interactive-mode.ts"
+    },
+    {
+      "path": "packages/coding-agent/src/core/model-runtime.ts",
+      "git_blob": "7c1dc820c29bc8ed2a0fe5f2f7fb68b3c22aebd6",
+      "sha256": "BA6DB976A8947167CB867EDED70DFA96475182A3723CE2C7C9A88DB5AFEAB756",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\core\\model-runtime.ts"
+    },
+    {
+      "path": "LICENSE",
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "retained_snapshot": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\LICENSE"
+    }
+  ],
+  "protected_files": [
+    {
+      "path": "src/extensions/fixtures/sdk-lifecycle-version-6fb2e78.input.json",
+      "sha256": "324601F3982E5B7812C7CFC71B7383A00708DFAE8E949E45476859DA55880CDA"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-lifecycle-version-6fb2e78.json",
+      "sha256": "666BBF3C9F6AB6F298FE40ECDC0F19ED1D65B67399A8E6AB2BAAC08DFD50866F"
+    },
+    {
+      "path": "ARTIFACT-MANIFEST.json",
+      "sha256": "602E90D2A5A22EC672D69FD7CA6A25C80617A1465CD98007ABC6AE84F645A6BF"
+    },
+    {
+      "path": "src/ai/catalog_source.json",
+      "sha256": "AE489E497F78C88566DC7FD50BB5AE34A359550C3BA81D50D0D3B2E3A11852DB"
+    },
+    {
+      "path": "src/ai/catalog_generated.zig",
+      "sha256": "6B661CEFB933D9B09F5A716781DFC43FE3505E9A960B121899BDFAEE4EC59C85"
+    },
+    {
+      "path": "src/native_sdk_process_test.zig",
+      "sha256": "BEB241B0FCD343C5C186ED445F189A009F25524D00A39AFF491704A6C30A01BE"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "src/extensions/native_process.zig",
+      "sha256": "7A8A0850E25AAE8FEAC099C06E8C0966A144D1B5BFBFEA91F52859E8E92523DD"
+    },
+    {
+      "path": "tools/release.zig",
+      "sha256": "C296EF18F67AFDF3D11C70E7C5B97B34995A0FF7060291CED8D418F47FF5E0BB"
+    }
+  ],
+  "original_audit": "evidence/pi-version-8efd-audit-20261016/authority.json",
+  "original_audit_sha256": "A7745071CC03F8904DC55D450B53C024584E389298E0ED4274D89FBB7FA8F4FA",
+  "expected": "pi-version-8efd.expected.json",
+  "expected_absent": true,
+  "source_captured": false,
+  "native_executed": false,
+  "historical_or_generated_provenance_rewritten": false
+}

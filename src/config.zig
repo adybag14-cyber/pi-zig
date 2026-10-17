@@ -6,14 +6,28 @@ const builtin = @import("builtin");
 pub const APP_NAME = "pi";
 pub const CONFIG_DIR_NAME = ".pi";
 pub const AGENT_DIR_NAME = "agent";
-pub const version = "1.1.0";
+pub const version = "1.3.0";
 /// Package API identity exposed to Pi extensions, independent of fork releases.
-pub const upstream_api_version = "1.1.0";
+pub const upstream_api_version = version;
 /// Upstream Pi release whose public behavior this checkpoint targets.
-pub const upstream_version = "0.84.4";
-pub const upstream_commit = "853a80d26c90a14c1886f0ebb8ffaae133ca2185";
+pub const upstream_version = version;
+pub const upstream_commit = "8efd314fa3d3232ce197d8d7a6a5660530b9d83e";
 pub const upstream_package_name = "@earendil-works/pi-coding-agent";
 pub const identity = "pi (pi-zig) coding agent " ++ version;
+
+/// Native adaptation of Source's Pi/platform/runtime/architecture header.
+/// The release version is supplied by the caller; the runtime is the compiler
+/// actually building this executable, never an invented Node/Bun version.
+pub fn nativeUserAgent(gpa: std.mem.Allocator, package_version: []const u8) ![]u8 {
+    const platform = if (builtin.os.tag == .windows) "win32" else @tagName(builtin.os.tag);
+    const architecture = switch (builtin.cpu.arch) {
+        .x86_64 => "x64",
+        .aarch64 => "arm64",
+        .x86 => "ia32",
+        else => @tagName(builtin.cpu.arch),
+    };
+    return std.fmt.allocPrint(gpa, "pi/{s} ({s}; zig/{s}; {s})", .{ package_version, platform, builtin.zig_version_string, architecture });
+}
 
 pub const ENV_AGENT_DIR = "PI_CODING_AGENT_DIR";
 pub const ENV_AGENT_DIR_LEGACY = "PI_AGENT_DIR";

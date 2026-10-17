@@ -3,6 +3,7 @@ const std = @import("std");
 const builtin = @import("builtin");
 const session = @import("session.zig");
 const protocol = @import("protocol.zig");
+const config = @import("../config.zig");
 const Stdio = @import("stdio_transport.zig").Stdio;
 const Http = @import("http_transport.zig").Http;
 
@@ -41,7 +42,7 @@ pub const Adapter = struct {
     fn initialize(self: *Adapter, timeout_ms: u32) !void {
         const transport = if (self.stdio) |stdio| stdio.transport() else self.http.?.transport();
         self.client = try session.Client.create(self.gpa, self.io, transport, .{
-            .version = "1.1.0",
+            .version = config.version,
             .request_timeout_ms = @floatFromInt(timeout_ms),
             .context = self,
             .on_notification = notified,

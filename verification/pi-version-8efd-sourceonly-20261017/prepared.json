@@ -1,0 +1,67 @@
+{
+  "status": "source_only_peer_review_pending",
+  "base": "a45abd95e6335346eb1e860a7a5a0677df0b5148",
+  "accepted_source": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "products": [
+    {
+      "path": "build.zig.zon",
+      "sha256": "E44D177F205B0E18B3D6870FDEA1AC1AF374B724DD528E527B3048F9079AEF10"
+    },
+    {
+      "path": "src/config.zig",
+      "sha256": "B95EDFAA640D3F8AAD96B0D1FF692D076C4862125FEFBF4B65D3D978116671D4"
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "95EAD70D4C953B0E9AA3A1D71D8AC1D41EF71BA0C138AECA04F9A159582BF301"
+    },
+    {
+      "path": "src/mcp/client_adapter.zig",
+      "sha256": "C2154A56CD0C50DB6980810F8EE8EB92140A0BBCF231565C1A88191AAD0C12AB"
+    },
+    {
+      "path": "src/mcp/client.zig",
+      "sha256": "FE59C0345AB5156B595D0428B7E8BB36E8CA6F5D32790358CCC8E4AB3176C140"
+    },
+    {
+      "path": "src/coding_agent/update.zig",
+      "sha256": "50635B159CD6E9299CCECB15D424DA1A019158CCA82FA2A2CBB169ED8CE3DAB4"
+    },
+    {
+      "path": "src/extensions/native_sdk_configuration_production.zig",
+      "sha256": "F00970B949A9822AAE9DBF24D1EEF3A36DF64E0F7C14B38EC810BCF46B2D93BC"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "src/native_pi_version_alignment_controls.zig",
+      "sha256": "954ADBE4212729F72382F53868C014B7EB9372DE5450A368A1A4A784DD26646B"
+    }
+  ],
+  "controls": [
+    {
+      "path": "verification/pi-version-8efd-sourceonly-20261017/authority.json",
+      "sha256": "B1B11D2730C49582AFEE706A8DACCF2A934AA56AE825B3B2525758EC822A1F65"
+    },
+    {
+      "path": "verification/pi-version-8efd-sourceonly-20261017/README.md",
+      "sha256": "738E0E9B124B36208EB9D62C9A94935A09D082DA7C97E8E3523A1078551F85F0"
+    },
+    {
+      "path": "verification/pi-version-8efd-sourceonly-20261017/source-probe.mjs",
+      "sha256": "52E403AE25CB1C023637D601C2B8EC9E760659E53F00F5F2651E8DFCCE3C86A2"
+    }
+  ],
+  "expected": "verification/pi-version-8efd-sourceonly-20261017/pi-version-8efd.expected.json",
+  "expected_absent": true,
+  "native_compiled": false,
+  "native_executed": false,
+  "source_captured": false,
+  "generators_executed": false,
+  "main_edited": false,
+  "default_sdk_graph_qualified": false,
+  "historical_lifecycle_assertions_weakened": false,
+  "release_provenance_rewritten": false
+}

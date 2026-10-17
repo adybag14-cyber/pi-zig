@@ -8,7 +8,8 @@ const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const functions = @import("native_node_function.zig");
 const c = em.c;
-pub const Inputs = struct { process: c.JSValue, paths: c.JSValue, filesystem: c.JSValue, os: c.JSValue, url: c.JSValue, path_utilities: c.JSValue, module_url: c.JSValue };
+pub const UserAgentRuntime = enum { source, native_zig };
+pub const Inputs = struct { process: c.JSValue, paths: c.JSValue, filesystem: c.JSValue, os: c.JSValue, url: c.JSValue, path_utilities: c.JSValue, module_url: c.JSValue, user_agent_runtime: UserAgentRuntime = .source };
 const Method = enum(c_int) { findNodePackageDir, getPackageDir, getThemesDir, getExportTemplateDir, getPackageJsonPath, getReadmePath, getDocsPath, getExamplesPath, getChangelogPath, getInteractiveAssetsDir, getBundledInteractiveAssetPath, expandTildePath, getShareViewerUrl, getAgentDir, getCustomThemesDir, getModelsPath, getAuthPath, getSettingsPath, getToolsDir, getBinDir, getPromptsDir, getSessionsDir, getDebugLogPath, getDefaultSessionDir, getPiUserAgent };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
@@ -24,12 +25,15 @@ fn capture(scope: *Scope, bindings: c.JSValue, namespace: c.JSValue, comptime na
     }
 }
 pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
-    const module_name = "pi-native:sdk-configuration";
+    const module_name = if (inputs.user_agent_runtime == .native_zig) "pi-native:sdk-configuration-native-zig" else "pi-native:sdk-configuration";
     if (engine.native_module_values.get(module_name)) |cached| return c.JS_DupValue(engine.context, cached);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (!c.JS_IsString(inputs.module_url)) return error.RequiredActualSdkConfigurationModuleUrl;
     const bindings = try scope.object();
+    // Host-selected runtime profile, never inferred by reading extra guest
+    // properties. Keep Source Node/Bun getter order and its cache independent.
+    try js.define(engine, bindings, "nativeZigUserAgent", c.pi_js_bool(engine.context, @intFromBool(inputs.user_agent_runtime == .native_zig)));
     try capture(&scope, bindings, inputs.paths, .{ "dirname", "basename", "join", "resolve" });
     try capture(&scope, bindings, inputs.filesystem, .{ "existsSync", "readFileSync", "mkdirSync" });
     try capture(&scope, bindings, inputs.os, .{"homedir"});
@@ -182,6 +186,15 @@ fn execute(scope: *Scope, bindings: c.JSValue, method: Method, args: []const c.J
             break :blk path;
         },
         .getPiUserAgent => blk: {
+            if (scope.truthy(try scope.get(bindings, "nativeZigUserAgent"))) {
+                const version = try scope.stringify(arg(args, 0));
+                var length: usize = 0;
+                const bytes = c.JS_ToCStringLen(scope.engine.context, &length, version) orelse return js.capture(scope.engine);
+                defer c.JS_FreeCString(scope.engine.context, bytes);
+                const header = try @import("../config.zig").nativeUserAgent(scope.engine.gpa, bytes[0..length]);
+                defer scope.engine.gpa.free(header);
+                break :blk try scope.text(header);
+            }
             const process = try scope.get(bindings, "process");
             const bun = try scope.get(try scope.get(process, "versions"), "bun");
             const runtime = if (scope.truthy(bun)) try scope.concat(try scope.text("bun/"), try scope.stringify(try scope.get(try scope.get(process, "versions"), "bun"))) else try scope.concat(try scope.text("node/"), try scope.stringify(try scope.get(process, "version")));

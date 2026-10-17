@@ -89,7 +89,7 @@ pub const McpClient = struct {
 
     fn initialize(self: *McpClient) !void {
         const init_req =
-            \\{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2025-11-25","capabilities":{},"clientInfo":{"name":"pi-zig","version":"1.1.0"}}}
+            "{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"initialize\",\"params\":{\"protocolVersion\":\"2025-11-25\",\"capabilities\":{},\"clientInfo\":{\"name\":\"pi-zig\",\"version\":\"" ++ @import("../config.zig").version ++ "\"}}}"
         ;
         const init_line = try self.exchange(init_req, 1);
         defer self.gpa.free(init_line);

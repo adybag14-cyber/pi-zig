@@ -147,11 +147,11 @@ pub fn telemetryEnabled(environ: *const std.process.Environ.Map, setting: ?bool)
 }
 
 pub fn offline(environ: *const std.process.Environ.Map) bool {
-    return environ.get("PI_OFFLINE") != null;
+    return if (environ.get("PI_OFFLINE")) |value| value.len != 0 else false;
 }
 
 pub fn shouldCheckVersion(environ: *const std.process.Environ.Map) bool {
-    return !offline(environ) and environ.get("PI_SKIP_VERSION_CHECK") == null;
+    return !offline(environ) and (if (environ.get("PI_SKIP_VERSION_CHECK")) |value| value.len == 0 else true);
 }
 
 pub fn effectiveLatestUrl(environ: ?*const std.process.Environ.Map) []const u8 {
@@ -186,7 +186,7 @@ fn requestOptions(options: FetchOptions) bootstrap_http.Options {
 }
 
 pub fn userAgent(gpa: std.mem.Allocator, upstream_version: []const u8) ![]u8 {
-    return std.fmt.allocPrint(gpa, "pi-coding-agent/{s} pi-zig/{s}", .{ upstream_version, config.version });
+    return config.nativeUserAgent(gpa, upstream_version);
 }
 
 pub fn getLatestRelease(
@@ -381,6 +381,41 @@ test "latest release parser and install URL use owned normalized values" {
     try env.put("PI_REPORT_INSTALL_URL", "http://127.0.0.1/report?source=test");
     try std.testing.expectEqualStrings("http://127.0.0.1/latest", effectiveLatestUrl(&env));
     try std.testing.expectEqualStrings("http://127.0.0.1/report?source=test", effectiveReportUrl(&env));
+}
+
+test "version discovery flags use Source string truthiness independently of telemetry" {
+    var env: std.process.Environ.Map = .init(std.testing.allocator);
+    defer env.deinit();
+    try std.testing.expect(!offline(&env));
+    try std.testing.expect(shouldCheckVersion(&env));
+    try env.put("PI_OFFLINE", "");
+    try env.put("PI_SKIP_VERSION_CHECK", "");
+    try std.testing.expect(!offline(&env));
+    try std.testing.expect(shouldCheckVersion(&env));
+    for ([_][]const u8{ "0", "false", " ", "1" }) |value| {
+        try env.put("PI_OFFLINE", value);
+        try std.testing.expect(offline(&env));
+        try std.testing.expect(!shouldCheckVersion(&env));
+        try env.put("PI_OFFLINE", "");
+        try env.put("PI_SKIP_VERSION_CHECK", value);
+        try std.testing.expect(!offline(&env));
+        try std.testing.expect(!shouldCheckVersion(&env));
+        try env.put("PI_SKIP_VERSION_CHECK", "");
+    }
+    try env.put("PI_TELEMETRY", "false");
+    try std.testing.expect(!telemetryEnabled(&env, null));
+    try std.testing.expect(shouldCheckVersion(&env));
+}
+
+test "management user agent identifies actual Zig runtime and caller Pi version" {
+    const header = try userAgent(std.testing.allocator, config.version);
+    defer std.testing.allocator.free(header);
+    try std.testing.expect(std.mem.startsWith(u8, header, "pi/" ++ config.version ++ " ("));
+    try std.testing.expect(std.mem.indexOf(u8, header, "; zig/" ++ @import("builtin").zig_version_string ++ "; ") != null);
+    try std.testing.expect(std.mem.indexOf(u8, header, "node/") == null);
+    const package_override = try userAgent(std.testing.allocator, "fixture-package-version");
+    defer std.testing.allocator.free(package_override);
+    try std.testing.expect(std.mem.startsWith(u8, package_override, "pi/fixture-package-version ("));
 }
 
 test "changelog parser retains only bounded newer released sections" {
