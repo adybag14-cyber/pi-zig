@@ -52,9 +52,14 @@ native_chord_sqlite_values is private to this new component. It isolates owned
 prior Engine diagnostic captures on each body entry, checks actual pending VM
 events BEFORE rejected DATA, checks successful getter/call results BEFORE scope
 ownership/allocation/later effects, and preserves exact fresh allocation causes.
-Rejected DATA uses its saved operation-generation boundary; historical hidden
-fatal flags are cleared only after actual pending events and fresh causes have
-been excluded. No shared AF/Scope/Engine/C/H behavior changes.
+Rejected Await DATA is passed unchanged to Source closing/throw paths. No
+allocation metadata is read from it and no existing hidden flag is changed.
+Only actual current pending/captured events and synchronous fresh allocation
+boundaries are classified. A preexisting captured fatal remains in its owned
+slot and stops entry before detachment/body effects. No shared AF/Scope/Engine/
+C/H behavior changes. The existing shared AF/C handling of a flagged value
+passed through .thrown remains an explicit separate qualification frontier;
+this leaf does not hide it by mutating guest DATA.
 
 native_chord_sqlite.create takes REAL Node/Cloudflare export carriers from their
 separately owned factories. A private null-prototype context-owned record caches
@@ -87,6 +92,15 @@ validation, idempotency, atomic rollback, newer schema, live Proxy reads and
 expired transaction controls. No reference output or expected file exists.
 The three new Zig tests exercise real shared declarations without a fake SQL
 adapter; verifyActualMigrations requires the separately composed REAL database.
+The additive lifetime control delegates actual SQL transaction/run operations
+and pauses the real UPDATE completion. Both WeakRef targets are created in a
+prior job; the driver drains the actual queue, finishes that checkpoint and runs
+real VM GC before checking the inner record is retired while the outer record
+is still live. After real completion another checkpoint/GC checks the outer
+record retires. This avoids WeakRef kept-object same-job false evidence.
+The separate captured-fatal control creates a genuine native OOM capture, then
+calls the actual validator and checks exact reason/flag, zero prefix coercions
+and diagnostic balance. Both controls remain prepared/unrun.
 Further admitted controls must include inherited/Proxy getter/error order,
 iterator close overrides, old flagged rejected DATA, fresh OOM/interrupt/pending
 events, allocation failure and teardown/GC on the actual complete adapter graph.
@@ -97,3 +111,17 @@ The source revision remains8efd in config until Root intakes actual compatible
 ports and updates the target metadata as an explicit source change; changing a
 revision string alone is not runtime certification. The new installer is not
 called by any default selector. Root owns final integration and all grants.
+
+## Review successor scope
+
+Original87335/prepared79759 remain immutable historical source records. The
+finite successor removes rejected-DATA metadata/flag operations and unused
+saved generation state; retires completed/closed IteratorRecord fields before
+later SQL/outer-close callbacks; uses short Step/Close scopes so result/done/
+iterator/next temporaries end before those callbacks; releases the prior
+migration binding when advancing; and rejects a preexisting captured fatal
+before detachment. Active outer records remain live until their actual close
+or completion. No original observation/authority/expected body is rewritten.
+prepared-v2.json pins the actual cumulative successor, including its two new
+causal controls. Ordinary/fresh throw-event classification remains separate
+from rejected DATA; no whole-adapter/runtime claim transfers from this review.

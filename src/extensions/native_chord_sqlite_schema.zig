@@ -7,7 +7,7 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     return @import("native_node_module_callable.zig").create(engine, "validateSqliteSchemaPrefix", 1, true, validate, &.{});
 }
 fn validate(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    var captures = q.Captures.enter(engine); defer captures.deinit();
+    var captures = try q.Captures.enter(engine); defer captures.deinit();
     try q.pending(engine);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     const prefix = q.arg(args, 0);

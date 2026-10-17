@@ -36,7 +36,7 @@ fn required(s: *v.Scope, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
 pub fn create(engine: *v.em.Engine, actual: Inputs) !Graph {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var captures = q.Captures.enter(engine); defer captures.deinit();
+    var captures = try q.Captures.enter(engine); defer captures.deinit();
     try q.pending(engine);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     if (engine.native_module_values.get(cache_key)) |owner| {
@@ -75,7 +75,7 @@ pub fn create(engine: *v.em.Engine, actual: Inputs) !Graph {
 pub fn install(engine: *v.em.Engine, actual: Inputs) !void {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var captures = q.Captures.enter(engine); defer captures.deinit();
+    var captures = try q.Captures.enter(engine); defer captures.deinit();
     try q.pending(engine);
     const graph = try create(engine, actual); defer graph.deinit(engine);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
@@ -99,7 +99,7 @@ pub fn install(engine: *v.em.Engine, actual: Inputs) !void {
 pub fn addDurableNodeReexports(engine: *v.em.Engine, durable_exports: c.JSValue) !void {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var captures = q.Captures.enter(engine); defer captures.deinit();
+    var captures = try q.Captures.enter(engine); defer captures.deinit();
     try q.pending(engine);
     if (engine.native_module_names.contains("@earendil-works/pi-durable/storage/sqlite/node")) return error.DurableSqliteReexportAfterRegistration;
     const node = engine.native_module_values.get("@earendil-works/chord/sqlite/node") orelse return error.RequiredActualChordNodeSqliteModule;
@@ -112,7 +112,7 @@ pub fn addDurableNodeReexports(engine: *v.em.Engine, durable_exports: c.JSValue)
 pub fn addDurableCloudflareReexports(engine: *v.em.Engine, durable_exports: c.JSValue) !void {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    var captures = q.Captures.enter(engine); defer captures.deinit();
+    var captures = try q.Captures.enter(engine); defer captures.deinit();
     try q.pending(engine);
     if (engine.native_module_names.contains("@earendil-works/pi-durable/storage/sqlite/cloudflare")) return error.DurableSqliteReexportAfterRegistration;
     const cloudflare = engine.native_module_values.get("@earendil-works/chord/sqlite/cloudflare") orelse return error.RequiredActualChordCloudflareSqliteModule;
