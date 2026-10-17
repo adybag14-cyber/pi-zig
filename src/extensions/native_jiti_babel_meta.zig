@@ -10,12 +10,22 @@ const Kind = enum { url, dirname, filename, resolve, env };
 const Edit = struct { node: c.TSNode, kind: Kind, replacement: ?[]u8 = null };
 const Plan = struct {
     engine: *v.em.Engine, source: []const u8, edits: std.ArrayList(Edit) = .empty,
-    fn deinit(self: *Plan) void { for (self.edits.items) |edit| if (edit.replacement) |text| self.engine.gpa.free(text); self.edits.deinit(self.engine.gpa); }
+    fn deinit(self: *Plan) void { for (self.edits.items) |edit| if (edit.replacement) |replacement_text| self.engine.gpa.free(replacement_text); self.edits.deinit(self.engine.gpa); }
 };
 fn kind(node: c.TSNode) []const u8 { return if (c.ts_node_is_null(node)) "" else std.mem.span(c.ts_node_type(node)); }
 fn is(node: c.TSNode, name: []const u8) bool { return std.mem.eql(u8, kind(node), name); }
 fn field(node: c.TSNode, comptime name: [:0]const u8) c.TSNode { return c.ts_node_child_by_field_name(node, name, name.len); }
 fn text(source: []const u8, node: c.TSNode) []const u8 { return source[c.ts_node_start_byte(node)..c.ts_node_end_byte(node)]; }
+fn hasToken(node: c.TSNode, name: []const u8) bool { for (0..c.ts_node_child_count(node)) |i| if (is(c.ts_node_child(node, @intCast(i)), name)) return true; return false; }
+fn unwrap(input: c.TSNode) c.TSNode {
+    var node = input;
+    while (is(node, "parenthesized_expression")) {
+        var only: ?c.TSNode = null;
+        for (0..c.ts_node_named_child_count(node)) |i| { const child = c.ts_node_named_child(node, @intCast(i)); if (is(child, "comment")) continue; if (only != null) return node; only = child; }
+        node = only orelse return node;
+    }
+    return node;
+}
 fn collect(plan: *Plan, node: c.TSNode, depth: usize) !void {
     if (depth > 256) return error.UnsupportedJitiMetaNesting;
     if (is(node, "member_expression") or is(node, "subscript_expression")) {

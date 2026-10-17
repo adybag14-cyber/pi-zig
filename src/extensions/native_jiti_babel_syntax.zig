@@ -112,7 +112,7 @@ fn nestedResource(node:c.TSNode,depth:usize)!bool{
 }
 pub fn prepare(gpa:std.mem.Allocator,input:[]const u8,typescript:bool)!Prepared{
     // Every writer is memory-backed; a failed write is allocator failure.
-    return prepareBody(gpa,input,typescript) catch|err|return if(err==error.WriteFailed)error.OutOfMemory else err;
+    return prepareBody(gpa,input,typescript) catch |err| return if(err==error.WriteFailed)error.OutOfMemory else err;
 }
 fn prepareBody(gpa:std.mem.Allocator,input:[]const u8,typescript:bool)!Prepared{
     const decorated=if(typescript)try decorators(gpa,input) else try gpa.dupe(u8,input);defer gpa.free(decorated);

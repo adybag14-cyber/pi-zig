@@ -17,7 +17,7 @@ fn call(engine:*v.em.Engine,function:c.JSValue,receiver:c.JSValue,args:[]const c
 pub fn nonempty(engine:*v.em.Engine,options:c.JSValue)!bool{
     engine.native_exception_diagnostics_suppressed+=1;defer engine.native_exception_diagnostics_suppressed-=1;
     const generation=engine.native_allocation_generation;
-    return nonemptyBody(engine,options) catch|err|{
+    return nonemptyBody(engine,options) catch |err| {
         if(err==error.JavaScriptException)if(engine.captured_exception)|reason|try @import("native_async_body.zig").rethrowRecognizedAllocation(engine,reason,generation);
         return err;
     };

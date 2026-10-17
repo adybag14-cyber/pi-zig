@@ -28,7 +28,7 @@ const Printer=struct{
     fn newline(self:*Printer)!void{if(!self.line_start){try self.output.writer.writeByte('\n');self.line_start=true;self.last='\n';}}
 };
 pub fn pretty(gpa:std.mem.Allocator,input:[]const u8)![]u8{
-    return prettyBody(gpa,input) catch|err|return if(err==error.WriteFailed)error.OutOfMemory else err;
+    return prettyBody(gpa,input) catch |err| return if(err==error.WriteFailed)error.OutOfMemory else err;
 }
 fn prettyBody(gpa:std.mem.Allocator,input:[]const u8)![]u8{
     const parser=c.ts_parser_new() orelse return error.OutOfMemory;defer c.ts_parser_delete(parser);

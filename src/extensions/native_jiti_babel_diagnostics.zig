@@ -23,7 +23,7 @@ pub fn result(engine:*v.em.Engine,source:[]const u8,filename:v.c.JSValue)!v.c.JS
     const message=try std.fmt.allocPrint(engine.gpa,"Native TypeScript syntax error at line {d}, column {d}",.{point.row+1,column});defer engine.gpa.free(message);
     const terminated=try engine.gpa.dupeZ(u8,message);defer engine.gpa.free(terminated);
     const generation=engine.native_allocation_generation;
-    _=engine.checked(v.c.JS_ThrowSyntaxError(engine.context,"%s",terminated.ptr)) catch|err|{
+    _=engine.checked(v.c.JS_ThrowSyntaxError(engine.context,"%s",terminated.ptr)) catch |err| {
         if(err!=error.JavaScriptException)return err;
     };
     const reason=engine.captured_exception orelse return error.MissingNativeParserSyntaxReason;
