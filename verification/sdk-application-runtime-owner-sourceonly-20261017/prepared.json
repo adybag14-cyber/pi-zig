@@ -115,9 +115,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
-      "length": 10429,
-      "sha256": "8C4F6B5EA888B610EEFDB7A34F0C228C26DCE4C1DD0062F3B46657F277E5AF83",
-      "git_blob": "a665493259e794c54865a657d5cff860de0676ff"
+      "length": 10594,
+      "sha256": "3E2367467D37294B7FE615782AE95AD0DF48BABF0AFE2E7C8D967FA95E969AF8",
+      "git_blob": "d4a1ba75c388a2d6309f695515a592a7d18a8aa5"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
@@ -561,5 +561,12 @@
     "outcome_recorded_before_descriptor_fields": true,
     "preserved_native_release_order": "setter/getter/value, original3defer LIFO",
     "order_negative_source": "c82794f5962dd7d30190a2aad8948c0d0f278746"
+  },
+  "documentation_generation_scope_correction": {
+    "core_code_review_source": "733517fb9670ad92f556141a5d3ede069ea2423d",
+    "actual_pending_cleanup_generation": "SDK helper exact per-release boundary",
+    "body_generation_classification": "caller operation guard only",
+    "product_and_control_bytes_unchanged": true,
+    "core_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
   }
 }
