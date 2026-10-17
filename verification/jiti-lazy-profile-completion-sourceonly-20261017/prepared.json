@@ -23,8 +23,8 @@
     {
       "role": "control",
       "path": "src/native_jiti_public_factory_controls.zig",
-      "size": 19115,
-      "sha256": "D339A228129A852DF32EA577C3B82513938A9A255D71950A0EBEFD0BD6FDAE20"
+      "size": 19139,
+      "sha256": "9087801B7ACA04356E7F8DB9163BC60602FA5DDC3CCCAC5D96C318CB02E42FE1"
     },
     {
       "role": "control",
@@ -35,8 +35,8 @@
     {
       "role": "protected",
       "path": "src/extensions/native_jiti_public_factory.zig",
-      "size": 7900,
-      "sha256": "37485E63272B643977C39C847F8702DC07DDB381F5164EC882972B0A5D905871"
+      "size": 7914,
+      "sha256": "D39EB02C95A32D144D7D76B7D1EEFE41D1CB9A74D54987EF1E5CA7D69C3A3CD7"
     },
     {
       "role": "protected",
@@ -128,5 +128,6 @@
       "size": 5011,
       "sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8"
     }
-  ]
+  ],
+  "root_lexical_carry": "exact b34833e8 publicfactory pending_reason / controls actual_length / import_meta replacement_text; no semantic change"
 }
