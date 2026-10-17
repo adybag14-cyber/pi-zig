@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "parent": "863217002bfc37eda0537842376cc3d70626f3ff",
+  "status": "SOURCE_ONLY_TYPED_ACTUAL_PROFILE_PREPARED_UNRUN",
+  "scope": "Declarative aliases bind actual reviewed Socket/Hub/common completion/Wake/single ClosePool to existing reviewed FrontendAssembly. No new runtime or cleanup algorithm; no default activation",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_profile.zig",
+      "bytes": 734,
+      "sha256": "C9327328571B7BD78EB51C2669C0BE1CB9B192FE30D64131C3103D33453645B4"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "bytes": 10553,
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    }
+  ],
+  "target_change": "Use same profile.Frontend type instead of reconstructing generic in test",
+  "source_declarations": 19,
+  "execution_grant": false,
+  "actual_metadata": null,
+  "actual_results": null
+}
