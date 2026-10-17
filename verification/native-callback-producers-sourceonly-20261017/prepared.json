@@ -1,0 +1,225 @@
+{
+  "schema": 1,
+  "status": "prepared-source-only-unrun",
+  "parent": "535e1b480784dc92b556de0f51cd62a00fca0f7b",
+  "root_union": "1fd8dd40100cb41b44d94e09fffe12ed1412f32e",
+  "root_prior_node_sha256": "61B6953887A331B654AC765FE7A793E29B9F0A3889E0508E09C9875F9A2A176B",
+  "root_prior_engine_sha256": "FA18C560F18D535591512CAB36CF289B8DE898A9B04D651BF51A8B50DEECA381",
+  "products": [
+    {
+      "path": "src/extensions/abort_signal.zig",
+      "sha256": "5DD839D8EE581D7FCE0AF5808105E37949AA0E5695144F996087A59018F1ACCC",
+      "bytes": 36890
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "F9ACF143D1DB3D9B09FA8B93C722EF9D499669B51358D5C1B8AF908C3B7F4376",
+      "bytes": 88929
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "bytes": 5566
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_events.zig",
+      "sha256": "E87E7625768A77B8F0F071F51BFDFEB6CA7000154A7C9DA33D0805F32ECA9282",
+      "bytes": 13669
+    },
+    {
+      "path": "src/extensions/native_ai_json_scope.zig",
+      "sha256": "8A0C7D64B3DD09BCF64FE8B0CE65A792326DAD592AE8ADEE47AFD4B2679C5DF2",
+      "bytes": 2169
+    },
+    {
+      "path": "src/extensions/native_ai_models_refresh_methods.zig",
+      "sha256": "097D23AAABDFD4B32EA551A2339DE309737B2FC966FF29667E8ACCEFB0D5D8BD",
+      "bytes": 19729
+    },
+    {
+      "path": "src/extensions/native_ai_provider_retry_request.zig",
+      "sha256": "2F66931B22129B1CC0F4217B5B85524B1C08DFB522D020834B60B98BCE043F95",
+      "bytes": 12344
+    },
+    {
+      "path": "src/extensions/native_application_fatal.zig",
+      "sha256": "9931F4D33FB00E6832D1E095146BF2D7DE4556D85330016FA61D8385AA3B3683",
+      "bytes": 12330
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "59F6A4F29380B2F08B8762F6088AED9EFE7D871FB745347CE4B6CE55C136F100",
+      "bytes": 6137
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+      "bytes": 242598
+    },
+    {
+      "path": "src/extensions/native_cache_warmer_refresh.zig",
+      "sha256": "AF85DCD834DD7C15B2B9EC195714AE8E72EDB398208D016A2937F5B410ED7D84",
+      "bytes": 8864
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "B07501850278DBF4F4D1951BE2BF160E2AA41086B69026DA92BC77D9FCF5ECB1",
+      "bytes": 4685
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "47A0D2EAD3D239DBDE7345597733CA5FC081FB260040ECB09E264E33954DE538",
+      "bytes": 7725
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "bytes": 163154
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+      "bytes": 25609
+    }
+  ],
+  "owned": [
+    {
+      "path": "src/native_callback_producer_test.zig",
+      "sha256": "27DF29DFF989A6D73423F8465C04FFCD7F90DFE17A7537976B9DF0C2A5486C7E",
+      "bytes": 17503
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "1A889B1E10CF73F60E92D7C80CFB26D5ADFB994F83E167AAEEC73CFF135197D4",
+      "bytes": 17051
+    },
+    {
+      "path": "verification/native-callback-producers-sourceonly-20261017/README.md",
+      "sha256": "7242231F864E80FCEBCA85848845EE71E2304E2584EDB8DAD592C8FDA509F226",
+      "bytes": 6831
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+      "bytes": 2221803
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "bytes": 3281481
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+      "bytes": 11919
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7",
+      "bytes": 7874
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare.zig",
+      "sha256": "1C9A1D2E444DB9038E75DBD01DD14E06FBC02F9ED977E8B7F7967A34710914AD",
+      "bytes": 22261
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_migrations.zig",
+      "sha256": "ECCD0BC1320122CB16177ADAEE4C3E40ED8A83DADCFFFFAE1D7D91B1938FC755",
+      "bytes": 12712
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_schema.zig",
+      "sha256": "EF47535659EF039C7E620FA82AA3B460A53FCF893F79E58013FD8D962F660123",
+      "bytes": 2768
+    },
+    {
+      "path": "src/extensions/native_durable.zig",
+      "sha256": "C1DD2A86CA27C632991B89408B153BE2577128DF9D2D33AD0829EA49EDCB6381",
+      "bytes": 77196
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2",
+      "bytes": 18014
+    },
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769",
+      "bytes": 88298
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/native_async_rejected_allocation_test.zig",
+      "sha256": "34FD3C57A1E4AD8066A04BF79D37257E532D312D8985B281335FFD3B3598B282",
+      "bytes": 7534
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2",
+      "bytes": 8619
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2",
+      "bytes": 6658
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5",
+      "bytes": 9123
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/prepared.json",
+      "sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284",
+      "bytes": 3292
+    },
+    {
+      "path": "verification/await-rejection-callers-sourceonly-20261017/prepared.json",
+      "sha256": "5F73770BD33CBBF31C23ED5D3C99F0EEBB6CEBCE5DAAE5DB32518FF713781D04",
+      "bytes": 6238
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "bytes": 533979
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171",
+      "bytes": 12655
+    }
+  ],
+  "native_new_definitions": 8,
+  "native_total_definitions": 24,
+  "new_engine_fields": [],
+  "new_c_api": [],
+  "executed": false,
+  "execution_grant": false,
+  "main_edited": false,
+  "c_h_changed_in_this_unit": false,
+  "expected_observed_files": [],
+  "preserved_root_dispatch": "failFor(planned -> heap.fail), provenance, weak registry, init/runtime teardown, SQLite leaves",
+  "cold_factory_primitive": "existingJS_GetFunctionProto(ctx) -> owned js_dup(ctx->function_proto)",
+  "remaining_boundaries": [
+    "C3 Promise executor actualfatal consumption requires retained holders/separateprimitive closure",
+    "generator C3 producerexit separate uncomposed",
+    "legacy leaf-specific direct/prospective asyncworker failure transports outside bounded commonproducer patch"
+  ]
+}

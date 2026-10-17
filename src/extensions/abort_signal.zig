@@ -60,7 +60,7 @@ fn stateFor(engine: *engine_mod.Engine, value: c.JSValue) !*State {
 
 fn fail(context: ?*c.JSContext, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine_mod.Engine.fromContext(context.?).throwCaptured();
-    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemory();
+    if (err == error.OutOfMemory) return engine_mod.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(context, "Native AbortSignal: %s", @as([*:0]const u8, @errorName(err)));
 }
 

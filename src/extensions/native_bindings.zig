@@ -1227,7 +1227,7 @@ pub const Bindings = struct {
         const args: []c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
         return self.registration(@enumFromInt(magic), args) catch |err| {
             if (err == error.JavaScriptException) return engine.throwCaptured();
-            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+            if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
             return c.JS_ThrowTypeError(context, "Native extension registration failed: %s", @as([*:0]const u8, @errorName(err)));
         };
     }
@@ -2462,7 +2462,7 @@ pub const Bindings = struct {
         if (err == error.JavaScriptException) return engine.throwCaptured();
         if (err == error.StaleNativeExtensionOwner) {
             @import("native_async_scope.zig").throwMessage(engine, context_lifetime.default_message) catch |failure| {
-                if (failure == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+                if (failure == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
                 return engine.throwCaptured();
             };
             unreachable;

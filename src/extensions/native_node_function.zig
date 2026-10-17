@@ -18,18 +18,20 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
 }
 fn fail(engine: *js.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native Node function: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn call(_: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const owned: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     const engine = owned.engine;
+    if (c.JS_HasException(engine.context)) return engine.throwCaptured();
     // A guest catch must receive the original exception before host diagnostic
     // formatting can invoke its observable toString/getters. Uncaught failures
     // are diagnosed by the outer Engine eval/await after this frame returns.
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
-    return invoke(engine, function, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failFor(engine, function, err);
+    const result = invoke(engine, function, owned, target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| return failFor(engine, function, err);
+    return engine.nativeCallbackResult(result);
 }
 fn invoke(engine: *js.Engine, function: c.JSValue, owned: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     if (try heap.intercept(engine, function, provenance(function, owned), target, args, constructing)) |ack| return ack;
@@ -75,6 +77,7 @@ pub fn createMethod(engine: *js.Engine, name: [*:0]const u8, length: c_int, call
     return createKind(engine, name, length, callback, values, false, false);
 }
 fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: Callback, values: []const c.JSValue, constructible: bool, arrow: bool) !c.JSValue {
+    try engine.checkNativeEntry();
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native Node Function", .call = call, .finalizer = finalizer, .gc_mark = mark };

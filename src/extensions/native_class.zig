@@ -20,23 +20,24 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return c.JS_ThrowTypeError(context, "Invalid native constructor")));
     const engine = state.engine;
+    if (c.JS_HasException(engine.context)) return engine.throwCaptured();
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(engine.context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr);
-    return state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| {
+    const result = state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| {
         if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
         return c.JS_ThrowTypeError(context, "Native %s: %s", state.name.ptr, @as([*:0]const u8, @errorName(err)));
     };
+    return engine.nativeCallbackResult(result);
 }
 pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype: c.JSValue, create: Construct, values: []const c.JSValue) !c.JSValue {
+    try engine.checkNativeEntry();
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Native Component Constructor", .finalizer = finalizer, .gc_mark = mark, .call = call };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
-    const function = try js.global(engine, "Function");
-    defer engine.freeValue(function);
-    const function_prototype = try js.get(engine, function, "prototype");
+    const function_prototype = try engine.checked(c.JS_GetFunctionProto(engine.context));
     defer engine.freeValue(function_prototype);
     const result = try engine.checked(c.JS_NewObjectProtoClass(engine.context, function_prototype, class));
     errdefer engine.freeValue(result);
@@ -56,6 +57,7 @@ pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype
     return result;
 }
 pub fn object(engine: *Engine, target: c.JSValue) !c.JSValue {
+    try engine.checkNativeEntry();
     const prototype = try js.get(engine, target, "prototype");
     defer engine.freeValue(prototype);
     return engine.checked(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(engine.context, prototype) else c.JS_NewObject(engine.context));

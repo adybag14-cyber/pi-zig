@@ -195,8 +195,11 @@ fn eventsStep(engine: *v.em.Engine, owner: c.JSValue, completion: gen.Completion
     if (!scope.truthy(try scope.invoke(try scope.get(owner, "known"), "has", &.{if (v.nullish(kind)) try scope.text("") else kind}))) return next(&scope, owner);
     const parse_generation = engine.native_allocation_generation;
     const event = parseEvent(&scope, owner, frame) catch |err| {
-        const classified = engine.nativeAllocationError(err, parse_generation);
-        if (classified == error.OutOfMemory) return classified;
+        if (err == error.OutOfMemory) return err;
+        if (err == error.JavaScriptException) if (engine.captured_exception) |captured| {
+            try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, captured, parse_generation);
+            if (c.JS_IsUncatchableError(captured)) return err;
+        };
         const reason = try failure(&scope, err);
         const wrapped = try sse.parseFailure(&scope, frame, reason);
         _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, wrapped)));

@@ -32,7 +32,14 @@ fn nativeReason(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !bool {
 fn caught(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     if (err == error.OutOfMemory) return err;
     if (err != error.JavaScriptException) return err;
-    if (scope.engine.captured_exception) |reason| if (try nativeReason(scope, owner, reason)) return error.OutOfMemory;
+    if (scope.engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return err;
+        if (try nativeReason(scope, owner, reason)) {
+            var generation: u64 = 0;
+            if (c.JS_ToBigUint64(scope.engine.context, &generation, try scope.get(owner, "generation")) < 0) return js.capture(scope.engine);
+            try @import("native_async_body.zig").rethrowRecognizedAllocation(scope.engine, reason, generation);
+        }
+    }
     clearGuestFailure(scope.engine);
 }
 fn valid(scope: *Scope, receiver: c.JSValue, run: c.JSValue) !bool {

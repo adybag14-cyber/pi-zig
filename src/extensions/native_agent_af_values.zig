@@ -77,7 +77,7 @@ pub fn raise(s: *Scope, message: []const u8) !c.JSValue {
 /// Promise constructor swallow a direct trusted GPA failure before AF sees it.
 pub fn callbackFailure(engine: *em.Engine, err: anyerror) anyerror {
     if (err != error.OutOfMemory) return err;
-    _ = engine.throwNativeOutOfMemory();
+    _ = engine.throwNativeOutOfMemoryFatal();
     const reason = c.JS_GetException(engine.context);
     c.JS_SetUncatchableError(engine.context, reason);
     _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |failure_error| return failure_error;

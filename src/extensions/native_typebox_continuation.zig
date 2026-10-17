@@ -282,7 +282,7 @@ fn failureReason(engine: *js.Engine, err: anyerror, boundary: u64) Reason {
         }
     }
     if (err == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
+        _ = engine.throwNativeOutOfMemoryFatal();
         const reason = c.JS_GetException(engine.context);
         c.JS_SetUncatchableError(engine.context, reason);
         return .{ .value = reason, .fatal = true };

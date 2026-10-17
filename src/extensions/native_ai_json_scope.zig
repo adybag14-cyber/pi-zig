@@ -23,17 +23,17 @@ fn translate(context: ?*c.JSContext, source: c.JSValue, reason: c.JSValue) callc
     if (engine.native_json_diagnostic_depth == 0) return c.JS_DupValue(ctx, reason);
     var length: usize = 0;
     const characters = c.JS_ToCStringLenUTF16(ctx, &length, source);
-    if (characters == null) return engine.throwNativeOutOfMemory();
+    if (characters == null) return engine.throwNativeOutOfMemoryFatal();
     defer c.JS_FreeCStringUTF16(ctx, characters);
     const input = characters[0..length];
-    const failure = diagnostics.diagnose(engine.gpa, input) catch return engine.throwNativeOutOfMemory();
+    const failure = diagnostics.diagnose(engine.gpa, input) catch return engine.throwNativeOutOfMemoryFatal();
     if (failure == null) return c.JS_DupValue(ctx, reason);
-    const message = diagnostics.render(engine.gpa, input, failure.?) catch return engine.throwNativeOutOfMemory();
+    const message = diagnostics.render(engine.gpa, input, failure.?) catch return engine.throwNativeOutOfMemoryFatal();
     defer engine.gpa.free(message);
     const text = c.JS_NewStringUTF16(ctx, message.ptr, message.len);
-    if (c.JS_IsException(text)) return engine.throwNativeOutOfMemory();
+    if (c.JS_IsException(text)) return engine.throwNativeOutOfMemoryFatal();
     // The fresh intrinsic SyntaxError already owns a writable, non-enumerable
     // message. Assignment retains that descriptor and the actual error object.
-    if (c.JS_SetPropertyStr(ctx, reason, "message", text) < 0) return engine.throwNativeOutOfMemory();
+    if (c.JS_SetPropertyStr(ctx, reason, "message", text) < 0) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_DupValue(ctx, reason);
 }

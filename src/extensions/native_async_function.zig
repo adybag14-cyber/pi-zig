@@ -26,12 +26,7 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 }
 fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
     if (err == error.JavaScriptException) return engine.throwCaptured();
-    if (err == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        const failure = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, failure);
-        return c.JS_Throw(engine.context, failure);
-    }
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
     return c.JS_ThrowTypeError(engine.context, "Native async body: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, raw: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {

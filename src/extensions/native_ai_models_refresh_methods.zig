@@ -51,7 +51,10 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
 }
 fn guestReason(engine: *em.Engine, err: anyerror, generation: u64) !c.JSValue {
     if (err != error.JavaScriptException) return err;
-    if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+    if (engine.captured_exception) |reason| {
+        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
+        if (c.JS_IsUncatchableError(reason)) return err;
+    }
     return c.JS_DupValue(engine.context, engine.captured_exception orelse return error.ActualGuestExceptionRequired);
 }
 fn credentialBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
