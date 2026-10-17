@@ -4,7 +4,7 @@ const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const q = @import("extensions/native_chord_sqlite_values.zig");
 const c = v.c;
-fn prefixUntouched(engine: *v.em.Engine, global: c.JSValue) !void {
+fn prefixReads(engine: *v.em.Engine, global: c.JSValue, expected: i32) !void {
     const atom = c.JS_NewAtom(engine.context, "sqliteFatalPrefixReads");
     if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
     defer c.JS_FreeAtom(engine.context, atom);
@@ -15,7 +15,7 @@ fn prefixUntouched(engine: *v.em.Engine, global: c.JSValue) !void {
     try std.testing.expect(c.JS_IsNumber(descriptor.value));
     var reads: i32 = -1;
     try std.testing.expectEqual(@as(c_int, 0), c.JS_ToInt32(engine.context, &reads, descriptor.value));
-    try std.testing.expectEqual(@as(i32, 0), reads);
+    try std.testing.expectEqual(expected, reads);
 }
 fn captureMarkedOom(engine: *v.em.Engine) !void {
     engine.native_exception_diagnostics_suppressed += 1;
@@ -29,14 +29,15 @@ fn captureMarkedOom(engine: *v.em.Engine) !void {
     try std.testing.expect(v.js.capture(engine) == error.JavaScriptException);
     try std.testing.expect(c.JS_IsUncatchableError(engine.captured_exception orelse return error.MissingMarkedNativeOom));
 }
-/// Dedicated fresh realm; the driver tears it down after these raw assertions.
-pub fn verifyPreexistingCapturedFatal(engine: *v.em.Engine) !void {
+/// Earlier completed producer's captured diagnostic is HISTORY at a new call.
+/// Its private bit remains unchanged and must not suppress the actual body.
+pub fn verifyHistoricalCapturedDataBodyRuns(engine: *v.em.Engine) !void {
     try std.testing.expect(engine.captured_exception == null);
     try std.testing.expect(!c.JS_HasException(engine.context));
     const portable = engine.native_module_values.get("@earendil-works/chord/sqlite") orelse return error.RequiredActualPortableModule;
     const validate = try v.js.get(engine, portable, "validateSqliteSchemaPrefix"); defer engine.freeValue(validate);
     const setup = try engine.evalModule(
-        \\globalThis.sqliteFatalPrefixReads=0;globalThis.sqliteFatalPrefix={toString(){sqliteFatalPrefixReads++;return 'metadata'}};
+        \\globalThis.sqliteFatalPrefixReads=0;globalThis.sqliteFatalPrefix={toString(){sqliteFatalPrefixReads++;return 'metadata'},toLowerCase(){sqliteFatalPrefixReads++;return 'metadata'}};
     , "sqlite-captured-fatal-setup.mjs"); engine.freeValue(setup);
     const global = c.JS_GetGlobalObject(engine.context); defer engine.freeValue(global);
     const prefix = try v.js.get(engine, global, "sqliteFatalPrefix"); defer engine.freeValue(prefix);
@@ -47,13 +48,12 @@ pub fn verifyPreexistingCapturedFatal(engine: *v.em.Engine) !void {
     var args = [_]c.JSValue{prefix};
     const result = c.JS_Call(engine.context, validate, c.pi_js_undefined(), 1, &args);
     defer engine.freeValue(result); // Own even unexpected success on assertion failure.
-    try std.testing.expect(c.JS_IsException(result));
-    const actual = c.JS_GetException(engine.context); defer engine.freeValue(actual);
-    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual));
-    try std.testing.expect(c.JS_IsUncatchableError(actual));
-    try std.testing.expect(engine.captured_exception == null);
+    try std.testing.expect(c.JS_IsUndefined(result));
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.HistoricalCaptureLost));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
     try std.testing.expectEqual(diagnostics, engine.native_exception_diagnostics_suppressed);
-    try prefixUntouched(engine, global); // No guest recovery after fatal.
+    try prefixReads(engine, global, 2);
 }
 /// Distinct ACTUAL pending VM Error takes precedence over an older captured
 /// native fatal. No input flag is used as a substitute for the event slot.
@@ -82,7 +82,49 @@ pub fn verifyCurrentPendingWins(engine: *v.em.Engine) !void {
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, current, actual));
     try std.testing.expect(engine.captured_exception == null);
     try std.testing.expectEqual(diagnostics, engine.native_exception_diagnostics_suppressed);
-    try prefixUntouched(engine, global);
+    try std.testing.expect(c.JS_IsUncatchableError(older));
+    try prefixReads(engine, global, 0);
+}
+fn currentProducer(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const engine = v.em.Engine.fromContext(context.?);
+    const global = c.JS_GetGlobalObject(context); defer engine.freeValue(global);
+    // This control owns the real global data property. No getter/coercion is
+    // substituted for the actual native allocation producer below.
+    if (c.JS_SetPropertyStr(context, global, "sqliteFatalPrefixReads", c.JS_NewInt32(context, 1)) < 0) return c.JS_Throw(context, c.JS_GetException(context));
+    _ = engine.throwNativeOutOfMemory();
+    const reason = c.JS_GetException(context);
+    c.JS_SetUncatchableError(context, reason);
+    return c.JS_Throw(context, reason);
+}
+/// Real new native producer during the actual validator's coercion must win
+/// over old captured DATA. No historical-object flag is cleared or reclassified.
+pub fn verifyCurrentProducerWins(engine: *v.em.Engine) !void {
+    try std.testing.expect(engine.captured_exception == null);
+    try std.testing.expect(!c.JS_HasException(engine.context));
+    const portable = engine.native_module_values.get("@earendil-works/chord/sqlite") orelse return error.RequiredActualPortableModule;
+    const validate = try v.js.get(engine, portable, "validateSqliteSchemaPrefix"); defer engine.freeValue(validate);
+    const global = c.JS_GetGlobalObject(engine.context); defer engine.freeValue(global);
+    try q.put(engine, global, "sqliteFatalPrefixReads", c.JS_NewInt32(engine.context, 0));
+    const prefix = try v.js.object(engine); defer engine.freeValue(prefix);
+    const producer = try engine.checked(c.JS_NewCFunction(engine.context, currentProducer, "actualSqliteNativeProducer", 0)); defer engine.freeValue(producer);
+    try q.put(engine, prefix, "toString", producer);
+    const diagnostics = engine.native_exception_diagnostics_suppressed;
+    try captureMarkedOom(engine);
+    const older = c.JS_DupValue(engine.context, engine.captured_exception.?); defer engine.freeValue(older);
+    const generation = engine.native_allocation_generation;
+    var args = [_]c.JSValue{prefix};
+    const result = c.JS_Call(engine.context, validate, c.pi_js_undefined(), 1, &args);
+    defer engine.freeValue(result);
+    try std.testing.expect(c.JS_IsException(result));
+    const actual = c.JS_GetException(engine.context); defer engine.freeValue(actual);
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, older, actual));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, engine.native_allocation_exception orelse return error.MissingCurrentProducerReason));
+    try std.testing.expect(c.JS_IsUncatchableError(actual));
+    try std.testing.expect(c.JS_IsUncatchableError(older));
+    try std.testing.expect(engine.native_allocation_generation != generation);
+    try std.testing.expect(engine.captured_exception == null);
+    try std.testing.expectEqual(diagnostics, engine.native_exception_diagnostics_suppressed);
+    try prefixReads(engine, global, 1);
 }
 fn collectActual(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = v.em.Engine.fromContext(context.?);

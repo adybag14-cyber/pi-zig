@@ -10,11 +10,10 @@ pub const Captures = struct {
     prior: ?c.JSValue,
     pub fn enter(engine: *Engine) !Captures {
         // An actual VM event outranks an older diagnostic capture. Normalize
-        // it before the captured-fatal guard or any detachment/body effect.
+        // it before history isolation or any body effect.
         try pending(engine);
-        // A captured current fatal event is owned by this invocation boundary,
-        // unlike an arbitrary rejected Await input. Do not detach or bypass it.
-        if (engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) return error.JavaScriptException;
+        // A preexisting diagnostic capture has no current-producer ownership.
+        // Its flag/tag is historical DATA, not permission to skip this body.
         const prior = engine.captured_exception;
         engine.captured_exception = null;
         return .{ .engine = engine, .prior = prior };

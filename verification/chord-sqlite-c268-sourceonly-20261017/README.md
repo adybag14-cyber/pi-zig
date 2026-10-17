@@ -55,8 +55,10 @@ ownership/allocation/later effects, and preserves exact fresh allocation causes.
 Rejected Await DATA is passed unchanged to Source closing/throw paths. No
 allocation metadata is read from it and no existing hidden flag is changed.
 Only actual current pending/captured events and synchronous fresh allocation
-boundaries are classified. A preexisting captured fatal remains in its owned
-slot and stops entry before detachment/body effects. No shared AF/Scope/Engine/
+boundaries are classified. A preexisting captured diagnostic alone has NO
+current-producer ownership: its tag/flag is historical DATA, is isolated before
+the body, and is restored unchanged only if no new capture replaces it. No
+blanket captured-flag entry rejection remains. No shared AF/Scope/Engine/
 C/H behavior changes. The existing shared AF/C handling of a flagged value
 passed through .thrown remains an explicit separate qualification frontier;
 this leaf does not hide it by mutating guest DATA.
@@ -100,12 +102,14 @@ retired job fields and temporary roots are gone. An actual UPDATE completion
 gate then checks inner-retired/outer-live, followed by outer-retired after real
 completion. Run both empty and nonempty statement histories. This avoids
 WeakRef kept-object same-job false evidence.
-The separate captured-fatal control marks the ACTUAL pending native OOM Error
-using the normal fatal-delivery event policy before capture, then calls the
-actual validator and checks same reason/flag and zero prefix coercions through
-raw own-data inspection, without guest recovery after fatal. A third entrypoint
-places a distinct actual VM event above that older captured fatal and verifies
-the current event wins. All diagnostic counters balance; controls are unrun.
+The historical-capture control creates an earlier marked native Error capture,
+then verifies the actual validator body RUNS and the unchanged diagnostic/flag
+is retained. A distinct actual pending VM event must still take precedence over
+that older history, with zero body effects. A new actual native producer during
+the validator's real RegExp coercion must produce its own exact fatal reason,
+rather than reuse the historical capture. The terminal checks inspect raw own
+data, with no guest recovery after a current fatal. Counters balance; all are
+prepared/unrun and require dedicated real realms.
 Further admitted controls must include inherited/Proxy getter/error order,
 iterator close overrides, old flagged rejected DATA, fresh OOM/interrupt/pending
 events, allocation failure and teardown/GC on the actual complete adapter graph.
@@ -124,12 +128,15 @@ finite successor removes rejected-DATA metadata/flag operations and unused
 saved generation state; retires completed/closed IteratorRecord fields before
 later SQL/outer-close callbacks; uses short Step/Close scopes so result/done/
 iterator/next temporaries end before those callbacks; releases the prior
-migration binding when advancing; and rejects a preexisting captured fatal
-before detachment. Active outer records remain live until their actual close
+migration binding when advancing. Active outer records remain live until their actual close
 or completion. No original observation/authority/expected body is rewritten.
-prepared-v2.json preserves the intermediate4434 successor. prepared-v3.json pins
-the final finite ordering/control revision: actual pending normalization inside
-Captures.enter FIRST, then the captured-fatal guard before detachment. Its raw
-controls verify both distinct reasons and the exact live slot precedence.
+prepared-v2.json preserves the intermediate4434 successor. prepared-v3.json and
+the9bb4 review retain the historical ordering/control revision, including the
+captured-flag entry guard that Root's clarified CURRENT-producer rule supersedes.
+The narrow v4 successor removes ONLY that flag-alone guard; actual pending
+normalization remains FIRST inside Captures.enter, then history isolation.
+Its three cause contrasts verify old flagged history/body-runs, distinct actual
+pending precedence, and a new actual producer. No provenance is invented from
+a bit, name, old tag, pointer inequality or elapsed generation alone.
 Ordinary/fresh throw-event classification remains separate
 from rejected DATA; no whole-adapter/runtime claim transfers from this review.

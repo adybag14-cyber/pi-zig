@@ -1,0 +1,22 @@
+{
+  "schema": 4,
+  "source_closed": "6b4921ad4e4533030d295bc76f4684795c592a13",
+  "status": "finite Root-clarified CURRENT-producer policy source closed",
+  "review_sha256": "84E386DF6B2F9EC5E934928D954C9BC4BD639E664267F87CA89ABB890E2F16A7",
+  "prepared_v4_sha256": "D523268661351983490D4E68BFB7821C315D5850DF3262E7D37D00502D2FA6A3",
+  "current_pins": 63,
+  "drift": 0,
+  "supersedes": "A76442DC9bb4 captured-flag entry-guard recommendation and zero-entry control ONLY",
+  "preserved": "all prior source/authority/expected/review bytes remain immutable in their Git source revisions",
+  "production_delta": "remove old diagnostic flag-alone entry rejection; actualpendingfirst/historyisolation unchanged",
+  "three_causes": [
+    "old flagged diagnostic: actualbodyruns/historyrestoredunchanged",
+    "actual current VM event: exact event wins prior history",
+    "new actual native producer: fresh exact reason wins history"
+  ],
+  "new_context_or_shared_policy_changes": false,
+  "jobs_run": [],
+  "runtime_qualified": false,
+  "default_selection": false,
+  "receiver_Get_C_union_and_AF_delta": "separate prerequisites; not part of this correction"
+}
