@@ -1,0 +1,2 @@
+# Preserve official license bytes, including upstream indentation.
+LICENSE-node24.14.0.txt whitespace=-space-before-tab

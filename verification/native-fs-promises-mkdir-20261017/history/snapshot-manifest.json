@@ -1,0 +1,34 @@
+{
+  "status": "immutable_negative_source_snapshots_not_runtime_inputs",
+  "snapshots": [
+    {
+      "head": "6ac7ae83ff48054d88136be954f4ae52232c59ef",
+      "source_path": "src/extensions/native_node_fs_promises_mkdir.zig",
+      "git_blob": "f86d4c6e70abd3b67bf630793b139b0dc04b5c36",
+      "snapshot": "verification/native-fs-promises-mkdir-20261017/history/6ac7-mkdir.zig.source",
+      "sha256": "EB2A10489C6A432A3FCFA433D3E7B234C07883C753EC571755457157ED29BCBC"
+    },
+    {
+      "head": "5122dfdf0d39c9a9f488eef973515dbea97335bd",
+      "source_path": "src/extensions/native_node_fs_promises_mkdir.zig",
+      "git_blob": "e22d7949931402dd927e5bb59ff1afbc796b0361",
+      "snapshot": "verification/native-fs-promises-mkdir-20261017/history/5122-mkdir.zig.source",
+      "sha256": "DE72A89F60C4C5827472145820BB58779504DB46A5326B6EDEF6776E445A8C68"
+    },
+    {
+      "head": "5122dfdf0d39c9a9f488eef973515dbea97335bd",
+      "source_path": "src/extensions/native_node_fs_mkdir_exit.zig",
+      "git_blob": "d49a25a9b14592c29cdf7d4e4d2a68cd5ae133bb",
+      "snapshot": "verification/native-fs-promises-mkdir-20261017/history/5122-owned-exit.zig.source",
+      "sha256": "084E2FFF58FE2277F8E330381313FBE31396E6A6B3075260D189F50A27FA8C13"
+    },
+    {
+      "head": "5472f76bed88805cd97447e7e6e0f6f1462acb7f",
+      "source_path": "src/extensions/native_node_fs_mkdir_exit.zig",
+      "git_blob": "1fdb64055bb88a9c9fcb84ed6c49888328a7b797",
+      "snapshot": "verification/native-fs-promises-mkdir-20261017/history/5472-owned-exit.zig.source",
+      "sha256": "FB5DA43434AA8E612582B17C866DDD1BC3DD502E647EA208BC60A1CED8E1F515"
+    }
+  ],
+  "all_jobs_executed": false
+}

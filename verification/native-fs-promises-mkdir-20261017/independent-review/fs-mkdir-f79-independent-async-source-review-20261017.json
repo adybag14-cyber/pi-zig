@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "reviewed_utc": "2026-10-17T18:46:32.1363999+00:00",
+  "status": "finite_source_worker_and_owned_exit_review_closed",
+  "candidate": "f79b9caa01c9d6a2e14ffeda91a1485fda3d2a9d",
+  "original": "6ac7ae83ff48054d88136be954f4ae52232c59ef",
+  "module_sha256": "DE72A89F60C4C5827472145820BB58779504DB46A5326B6EDEF6776E445A8C68",
+  "exit_helper_sha256": "ED8BD489E8BE42862A9F68AB409DE55410CA02616C22493B745E795D923E2C7D",
+  "current_manifest_sha256": "FDB6637E851D121AECF0BD5BEE7FBB9DAF3997C63686612BABD2E6944B91479B",
+  "checked_current_pins": 14,
+  "hash_drift": [],
+  "findings": [],
+  "reviewed": [
+    "Native-only worker Packet, actual concurrent Hub submit rollback, stop flag, Group cancel/join before task destruction, acquire/release completion lifetime and capacity decrement ownership.",
+    "Source path/options/mode evaluation ordering and real inner Promise/Await/error reaction remain unchanged; no worker guest values or VM calls.",
+    "Owner-only stack Frame balances diagnostic suppression and escrows chosen reason outside both pending/captured slots through returned value/root/resolver destruction. Pre-entry captured history is DATA only; every later isolated slot is current operation provenance.",
+    "Post-entry checks and frees snapshot/drain actual pending plus newly captured reasons before destructors; ordinary cleanup cannot replace first reason, first actual fatal promotes ordinary and survives later fatal.",
+    "Request.complete checks entry before result/error construction or resolver effects, then detaches/releases both real resolvers in same escrow before Hub receives terminal outcome. Later normal destroy is native-only; abandoned destroy guards remaining resolver release.",
+    "Final narrow errOOM condition retains already escrowed actual fatal B without synthesizing C or advancing private generation. New real native capture plus ordinary-return finalizer control and generation assertion exercise this distinction.",
+    "Original failing successors remain immutable; module/worker bytes equal5122, helper current14 pins match."
+  ],
+  "limits": [
+    "No jobs, compiler/parser/Node/native controls or filesystem effects were executed. Every new control remains prepared UNRUN and actual metadata is unknown.",
+    "Actual fs runtime inputs, host Io/Hub integration, install-before-ESM freeze, physical filesystem races/permissions and real worker cancellation behavior require exact composed qualification.",
+    "Native AF ordinary THROW DATA/pre-body guards and producer/Engine policy are separate prerequisites, not qualified by unchanged DA14/61C4 in this source branch.",
+    "No shared Engine/Hub/C policy, universal pending-finalizer behavior of all imported helper internals, performance, full Node fs API or default activation is accepted."
+  ],
+  "execution_authorized": false,
+  "main_edited": false,
+  "historical_proofs_rewritten": false
+}

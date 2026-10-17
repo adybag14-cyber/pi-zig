@@ -1,0 +1,236 @@
+//! mkdir-local owned completion escrow. Only transient owner-stack frames are
+//! linked; no Engine ABI, shared callable policy or worker state is changed.
+const js = @import("native_js_values.zig");
+const c = js.c;
+const af = @import("native_async_function.zig");
+pub const Reason = struct { value: c.JSValue, fatal: bool };
+threadlocal var current: ?*Frame = null;
+pub fn active(engine: *js.Engine) ?*Frame {
+    var frame = current;
+    while (frame) |item| : (frame = item.previous) if (item.engine == engine) return item;
+    return null;
+}
+pub fn before(engine: *js.Engine) void { if (active(engine)) |frame| frame.operation = engine.native_allocation_generation; }
+fn classified(engine: *js.Engine, value: c.JSValue, generation: u64) Reason {
+    const tag = c.pi_js_native_allocation_error_generation(value);
+    const distance = tag -% generation;
+    const fresh = tag != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation;
+    if (fresh and c.JS_IsError(value)) c.JS_SetUncatchableError(engine.context, value);
+    return .{ .value = value, .fatal = fresh or c.JS_IsUncatchableError(value) };
+}
+pub const Frame = struct {
+    engine: *js.Engine,
+    previous: ?*Frame = null,
+    operation: u64 = 0,
+    chosen: ?Reason = null,
+    pub fn enter(self: *Frame) void {
+        self.previous = current; self.operation = self.engine.native_allocation_generation;
+        current = self; self.engine.native_exception_diagnostics_suppressed += 1;
+        // Older captured DATA is held separately and is NEVER classified by its
+        // flag/tag. Take an actual pending event before releasing that history.
+        const history = self.engine.captured_exception; self.engine.captured_exception = null;
+        if (c.JS_HasException(self.engine.context)) self.merge(classified(self.engine, c.JS_GetException(self.engine.context), self.operation));
+        if (history) |old| { const generation = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(generation); }
+    }
+    pub fn leave(self: *Frame) void {
+        // Every terminal helper consumes chosen. This is owner-stack provenance,
+        // not a persistent registry or cross-thread Engine reference.
+        if (self.chosen != null) @panic("mkdir completion escrow was not consumed");
+        current = self.previous; self.engine.native_exception_diagnostics_suppressed -= 1;
+    }
+    fn select(self: *Frame, next: Reason) ?c.JSValue {
+        if (self.chosen) |prior| {
+            // C5: ordinary cleanup cannot replace an original reason; the first
+            // actual cleanup fatal promotes ordinary, then retains priority.
+            if (!prior.fatal and next.fatal) { self.chosen = next; return prior.value; }
+            return next.value;
+        }
+        self.chosen = next; return null;
+    }
+    fn merge(self: *Frame, next: Reason) void {
+        if (self.select(next)) |displaced| {
+            const generation = self.engine.native_allocation_generation;
+            self.engine.freeValue(displaced); self.drain(generation);
+        }
+    }
+    fn drain(self: *Frame, generation: u64) void {
+        while (c.JS_HasException(self.engine.context) or self.engine.captured_exception != null) {
+            const pending: ?c.JSValue = if (c.JS_HasException(self.engine.context)) c.JS_GetException(self.engine.context) else null;
+            const captured = self.engine.captured_exception; self.engine.captured_exception = null;
+            const discard_pending = if (pending) |reason| self.select(classified(self.engine, reason, generation)) else null;
+            // This slot was empty BEFORE the cleanup operation. A newly captured
+            // cleanup completion is distinct from the separately saved history.
+            const discard_captured = if (captured) |reason| self.select(classified(self.engine, reason, generation)) else null;
+            // Both preexisting events are owned/selected BEFORE any destructor.
+            // After each free take new events before another free can overwrite.
+            if (discard_pending) |old| { const next = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(next); }
+            if (discard_captured) |old| { const next = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(next); }
+        }
+    }
+    fn clearHistory(self: *Frame) void {
+        const history = self.engine.captured_exception; self.engine.captured_exception = null;
+        if (c.JS_HasException(self.engine.context)) self.merge(classified(self.engine, c.JS_GetException(self.engine.context), self.operation));
+        if (history) |old| { const generation = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(generation); }
+    }
+    pub fn check(self: *Frame) !void {
+        self.clearHistory(); self.drain(self.operation);
+        if (self.chosen != null) return error.JavaScriptException;
+    }
+    pub fn record(self: *Frame, err: anyerror) void {
+        if (self.chosen != null) {
+            if (err == error.OutOfMemory) {
+                const actual: ?c.JSValue = if (c.JS_HasException(self.engine.context)) c.JS_GetException(self.engine.context) else null;
+                const captured = self.engine.captured_exception; self.engine.captured_exception = null;
+                const reason = actual orelse captured orelse allocated: {
+                    _ = self.engine.throwNativeOutOfMemory(); break :allocated c.JS_GetException(self.engine.context);
+                };
+                if (c.JS_IsError(reason)) c.JS_SetUncatchableError(self.engine.context, reason);
+                self.merge(.{ .value = reason, .fatal = true });
+                if (actual != null) if (captured) |old| { const generation = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(generation); };
+            } else self.clearHistory();
+            self.drain(self.operation); return;
+        }
+        const pending: ?c.JSValue = if (c.JS_HasException(self.engine.context)) c.JS_GetException(self.engine.context) else null;
+        const captured = self.engine.captured_exception; self.engine.captured_exception = null;
+        if (pending) |reason| self.chosen = classified(self.engine, reason, self.operation)
+        else if ((err == error.JavaScriptException or err == error.OutOfMemory) and captured != null) self.chosen = classified(self.engine, captured.?, self.operation);
+        if (err == error.OutOfMemory and self.chosen != null) {
+            if (c.JS_IsError(self.chosen.?.value)) c.JS_SetUncatchableError(self.engine.context, self.chosen.?.value);
+            self.chosen.?.fatal = true;
+        }
+        if (self.chosen == null) {
+            if (err == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemory()
+            else _ = c.JS_ThrowInternalError(self.engine.context, "Native mkdir boundary: %s", @as([*:0]const u8, @errorName(err)));
+            const reason = c.JS_GetException(self.engine.context);
+            if (err == error.OutOfMemory and c.JS_IsError(reason)) c.JS_SetUncatchableError(self.engine.context, reason);
+            self.chosen = .{ .value = reason, .fatal = err == error.OutOfMemory or c.JS_IsUncatchableError(reason) };
+        }
+        if (captured) |old| if (pending != null or (err != error.JavaScriptException and err != error.OutOfMemory)) {
+            const generation = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(generation);
+        };
+        self.drain(self.operation);
+    }
+    pub fn adoptFailureValue(self: *Frame, owned: c.JSValue) void {
+        if (c.JS_IsException(owned)) { self.record(error.JavaScriptException); return; }
+        const history = self.engine.captured_exception; self.engine.captured_exception = null;
+        if (c.JS_HasException(self.engine.context)) {
+            self.merge(classified(self.engine, c.JS_GetException(self.engine.context), self.operation));
+            self.release(owned);
+        } else self.merge(classified(self.engine, owned, self.operation));
+        if (history) |old| { const generation = self.engine.native_allocation_generation; self.engine.freeValue(old); self.drain(generation); }
+        self.clearHistory(); self.drain(self.operation);
+    }
+    pub fn release(self: *Frame, owned: c.JSValue) void {
+        self.clearHistory();
+        const generation = self.engine.native_allocation_generation;
+        self.engine.freeValue(owned); self.drain(generation);
+    }
+    fn publish(self: *Frame) anyerror {
+        const reason = self.chosen.?; self.chosen = null;
+        if (reason.fatal and c.JS_IsError(reason.value)) c.JS_SetUncatchableError(self.engine.context, reason.value);
+        _ = c.JS_Throw(self.engine.context, reason.value);
+        return error.JavaScriptException;
+    }
+    pub fn finishVoid(self: *Frame) !void { self.check() catch {}; if (self.chosen != null) return self.publish(); }
+    pub fn takeOrdinary(self: *Frame) ?c.JSValue {
+        self.check() catch {};
+        const reason = self.chosen orelse return null;
+        if (reason.fatal) return null;
+        self.chosen = null; return reason.value;
+    }
+    pub fn finishValue(self: *Frame, owned: c.JSValue) !c.JSValue {
+        self.check() catch {};
+        if (self.chosen != null) { self.release(owned); return self.publish(); }
+        return owned;
+    }
+    pub fn finishAction(self: *Frame, action: af.Action) !af.Action {
+        self.check() catch {};
+        if (self.chosen == null) return action;
+        // Source THROW is DATA here, never inferred fatal from a historical flag.
+        // Preserve an ordinary Source throw over ordinary cleanup, but promote
+        // a newly observed actual cleanup fatal before passing back to C3.
+        switch (action) {
+            .thrown => |reason| {
+                while (self.chosen) |ordinary| {
+                    if (ordinary.fatal) break;
+                    self.chosen = null; self.release(ordinary.value);
+                }
+                if (self.chosen == null) return .{ .thrown = reason };
+                self.release(reason);
+            },
+            .returned, .awaited => |reason| self.release(reason),
+        }
+        const selected = self.chosen.?;
+        if (selected.fatal) return self.publish();
+        self.chosen = null; return .{ .thrown = selected.value };
+    }
+};
+pub fn pending(engine: *js.Engine) !void { if (active(engine)) |frame| return frame.check(); if (c.JS_HasException(engine.context)) return js.capture(engine); }
+pub fn capture(engine: *js.Engine) anyerror { if (active(engine)) |frame| { frame.record(error.JavaScriptException); return error.JavaScriptException; } return js.capture(engine); }
+pub fn release(engine: *js.Engine, owned: c.JSValue) void { if (active(engine)) |frame| frame.release(owned) else engine.freeValue(owned); }
+
+/// Native-only contrasting cleanup controls. A real opaque finalizer transfers
+/// its owned reason into the VM slot; no fake exception/Engine or JS finalizer.
+pub const Testing = if (@import("builtin").is_test) struct {
+    const Payload = struct { engine: *js.Engine, reason: c.JSValue };
+    fn finalized(runtime: ?*c.JSRuntime, object: c.JSValue) callconv(.c) void {
+        const payload: *Payload = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)).?));
+        const engine = payload.engine; const reason = payload.reason;
+        engine.gpa.destroy(payload);
+        _ = runtime; _ = c.JS_Throw(engine.context, reason);
+    }
+    fn mark(runtime: ?*c.JSRuntime, object: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
+        const payload: *Payload = @ptrCast(@alignCast(c.JS_GetOpaque(object, c.JS_GetClassID(object)).?));
+        c.JS_MarkValue(runtime, payload.reason, visit);
+    }
+    pub fn cleanup(engine: *js.Engine, reason: c.JSValue) !c.JSValue {
+        var class: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &class);
+        const definition: c.JSClassDef = .{ .class_name = "Owned mkdir cleanup witness", .finalizer = finalized, .gc_mark = mark };
+        if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+        const object = try engine.checked(c.JS_NewObjectClass(engine.context, class)); errdefer engine.freeValue(object);
+        const payload = try engine.gpa.create(Payload);
+        payload.* = .{ .engine = engine, .reason = c.JS_DupValue(engine.context, reason) };
+        _ = c.JS_SetOpaque(object, payload); return object;
+    }
+} else struct {};
+
+test "mkdir owned exit retains first fatal and promotes actual cleanup fatal over ordinary" {
+    const std = @import("std");
+    const engine = try js.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const initial = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(initial);
+    const first_cleanup = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(first_cleanup);
+    const later_cleanup = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(later_cleanup);
+    c.JS_SetUncatchableError(engine.context, first_cleanup); c.JS_SetUncatchableError(engine.context, later_cleanup);
+    for ([_]bool{true, false}) |initial_fatal| {
+        if (initial_fatal) c.JS_SetUncatchableError(engine.context, initial) else c.JS_ClearUncatchableError(engine.context, initial);
+        if (initial_fatal) c.JS_ClearUncatchableError(engine.context, first_cleanup) else c.JS_SetUncatchableError(engine.context, first_cleanup);
+        const returned = try Testing.cleanup(engine, first_cleanup);
+        const later = try Testing.cleanup(engine, later_cleanup);
+        if (initial_fatal) engine.captured_exception = try Testing.cleanup(engine, first_cleanup);
+        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, initial));
+        var frame: Frame = .{ .engine = engine }; frame.enter(); defer frame.leave();
+        try std.testing.expectError(error.JavaScriptException, value(engine, returned));
+        release(engine, later);
+        try std.testing.expect(!c.JS_HasException(engine.context));
+        try std.testing.expect(engine.captured_exception == null);
+        try std.testing.expectError(error.JavaScriptException, frame.finishValue(c.pi_js_undefined()));
+        const observed = c.JS_GetException(engine.context); defer engine.freeValue(observed);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, observed, if (initial_fatal) initial else first_cleanup));
+    }
+}
+test "mkdir old flagged captured history is DATA on success" {
+    const std = @import("std");
+    const engine = try js.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const history = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(history);
+    c.JS_SetUncatchableError(engine.context, history);
+    engine.captured_exception = c.JS_DupValue(engine.context, history);
+    var frame: Frame = .{ .engine = engine }; frame.enter(); defer frame.leave();
+    const result = try frame.finishValue(c.JS_NewInt32(engine.context, 7)); defer engine.freeValue(result);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, result, c.JS_NewInt32(engine.context, 7)));
+    try std.testing.expect(!c.JS_HasException(engine.context)); try std.testing.expect(engine.captured_exception == null);
+}
+pub fn value(engine: *js.Engine, owned: c.JSValue) !c.JSValue {
+    if (c.JS_IsException(owned)) return capture(engine);
+    pending(engine) catch |err| { release(engine, owned); return err; };
+    return owned;
+}

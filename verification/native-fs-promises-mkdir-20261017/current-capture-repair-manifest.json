@@ -1,0 +1,61 @@
+{
+  "status": "source_only_current_capture_repair_prepared_unrun_unreviewed",
+  "parent": "5122dfdf0d39c9a9f488eef973515dbea97335bd",
+  "files": [
+    {
+      "path": "src/extensions/native_node_fs_mkdir_exit.zig",
+      "sha256": "FB5DA43434AA8E612582B17C866DDD1BC3DD502E647EA208BC60A1CED8E1F515"
+    },
+    {
+      "path": "src/extensions/native_node_fs_promises_mkdir.zig",
+      "sha256": "DE72A89F60C4C5827472145820BB58779504DB46A5326B6EDEF6776E445A8C68"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E"
+    },
+    {
+      "path": "src/extensions/native_env_io.zig",
+      "sha256": "C7EAA0FA5C02C98DFDEFFDD4EA262F88F1984B5E5B255FD0B4F1C71A3E7E3EC5"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/native-fs-promises-mkdir-20261017/CURRENT-CAPTURE-REPAIR.md",
+      "sha256": "685C255014A60F28A5747D2EB961CE48452BAFA7922ABA0A41D4B7C4A453B633"
+    },
+    {
+      "path": "verification/native-fs-promises-mkdir-20261017/OWNED-EXIT-REPAIR.md",
+      "sha256": "C80D301D678F3EEC6189D2171FC7FDC86F1B0B847F669EE7F0F27C32BF08282D"
+    },
+    {
+      "path": "verification/native-fs-promises-mkdir-20261017/owned-exit-repair-manifest.json",
+      "sha256": "85ABBCAB6A0040F637211F190A50330626BAB27A64F311FEC27C2179DF5B19FB"
+    },
+    {
+      "path": "verification/native-fs-promises-mkdir-20261017/source-manifest.json",
+      "sha256": "1F312A9C98CFC3152AD692312FFFD285169EF1E10F52FD35003795BC582C7E23"
+    },
+    {
+      "path": "verification/native-fs-promises-mkdir-20261017/mkdir-controls.mjs",
+      "sha256": "8CDFC2BA09FB7D3B4056EDFD7769928C5959C2F3155A326BB4D724FB551F3C8B"
+    }
+  ],
+  "all_jobs_executed": false,
+  "main_engine_shared_hub_c_h_modified": false,
+  "activation": false
+}
