@@ -5,6 +5,9 @@ const c = em.c;
 fn capture(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_CaptureCurrentStackFrames(context, 32, c.pi_js_undefined(), null, 0, 0, c.JS_ERROR_STACK_SKIP_FIRST);
 }
+fn captureAll(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    return c.JS_CaptureCurrentStackFrames(context, 32, c.pi_js_undefined(), null, 0, 0, 0);
+}
 fn clone(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
     return c.JS_CloneCapturedStackFrame(context, if (argc > 0) args[0] else c.pi_js_undefined());
 }
@@ -13,6 +16,8 @@ fn install(engine: *em.Engine) !void {
     defer engine.freeValue(global);
     const probe = try engine.checked(c.JS_NewCFunction(engine.context, capture, "ownedCapture", 0));
     if (c.JS_SetPropertyStr(engine.context, global, "ownedCapture", probe) < 0) return error.CaptureSetupFailure;
+    const unfiltered = try engine.checked(c.JS_NewCFunction(engine.context, captureAll, "ownedAllCapture", 0));
+    if (c.JS_SetPropertyStr(engine.context, global, "ownedAllCapture", unfiltered) < 0) return error.CaptureSetupFailure;
     const copier = try engine.checked(c.JS_NewCFunction(engine.context, clone, "ownedClone", 1));
     if (c.JS_SetPropertyStr(engine.context, global, "ownedClone", copier) < 0) return error.CaptureSetupFailure;
 }
@@ -32,6 +37,9 @@ test "CallSite visibility poisons strict frame and older sloppy frames but prese
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
     try install(engine);
     try check(engine, "globalThis.youngerReceiver={};function younger(){return ownedCapture()}function strictMiddle(){'use strict';return younger.call(youngerReceiver)}function older(){return strictMiddle()}globalThis.frames=older();frames[0].getFunction()===younger&&frames[0].getThis()===youngerReceiver&&frames[1].getFunction()===undefined&&frames[1].getThis()===undefined&&frames[2].getFunction()===undefined&&frames[2].getThis()===undefined");
+    try check(engine, "function applyYoung(){return ownedCapture()}function applyStrict(){'use strict';return applyYoung.apply(youngerReceiver,[])}function applyOlder(){return applyStrict()}globalThis.applyFrames=applyOlder();applyFrames[0].getFunction()===applyYoung&&applyFrames[0].getThis()===youngerReceiver&&applyFrames[1].getFunctionName()==='applyStrict'&&applyFrames[1].getFunction()===undefined&&applyFrames[1].getThis()===undefined&&applyFrames[2].getFunctionName()==='applyOlder'&&applyFrames[2].getFunction()===undefined&&applyFrames[2].getThis()===undefined");
+    try check(engine, "function reflectYoung(){return ownedCapture()}function reflectStrict(){'use strict';return Reflect.apply(reflectYoung,youngerReceiver,[])}function reflectOlder(){return reflectStrict()}globalThis.reflectFrames=reflectOlder();reflectFrames[0].getFunction()===reflectYoung&&reflectFrames[0].getThis()===youngerReceiver&&reflectFrames[1].getFunctionName()==='reflectStrict'&&reflectFrames[1].getFunction()===undefined&&reflectFrames[1].getThis()===undefined&&reflectFrames[2].getFunctionName()==='reflectOlder'&&reflectFrames[2].getFunction()===undefined&&reflectFrames[2].getThis()===undefined");
+    try check(engine, "function ordinaryNativeCaller(){return ownedAllCapture()}globalThis.ordinaryNativeFrames=ordinaryNativeCaller();ordinaryNativeFrames[0].isNative()&&ordinaryNativeFrames[0].getFunction()===ownedAllCapture&&ordinaryNativeFrames[1].getFunction()===ordinaryNativeCaller");
     c.JS_RunGC(engine.runtime);
     try check(engine, "ownedClone(frames[1]).getFunction()===undefined&&ownedClone(frames[2]).getThis()===undefined");
 }
@@ -83,6 +91,8 @@ const PrologueProbe = struct {
     warmed: bool = false,
     armed: bool = false,
     captured: c.JSValue,
+    legacy: bool = false,
+    legacy_error: c.JSValue,
     calls: usize = 0,
     fn poll(_: ?*c.JSRuntime, data: ?*anyopaque) callconv(.c) c_int {
         const self: *PrologueProbe = @ptrCast(@alignCast(data.?));
@@ -91,18 +101,22 @@ const PrologueProbe = struct {
         self.calls += 1;
         self.armed = false;
         self.captured = c.JS_CaptureCurrentStackFrames(self.context, 8, c.pi_js_undefined(), null, 0, 0, 0);
+        // Capture the legacy path while this actual module still has no PC.
+        // The later interruption captures after exception handling sets its PC.
+        if (self.legacy) self.legacy_error = c.JS_NewError(self.context);
         return 1; // Actual trusted VM interruption stops before body evaluation.
     }
 };
 fn noop(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue { return c.pi_js_undefined(); }
 fn prologueSubject(legacy: bool) !void {
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
-    if (legacy) try check(engine, "Error.prepareStackTrace=function(error,frames){globalThis.legacyPrologueFrames=frames;return frames};true");
+    if (legacy) try check(engine, "Error.prepareStackTrace=function(error,frames){if(globalThis.legacyPrologueFrames===undefined){globalThis.legacyPrologueFrames=frames;globalThis.legacyPrologueError=error}return frames};true");
     const module = try engine.eval("export function declaration(){return 1}globalThis.prologueBodyRan=true", "C:/callsite/prologue.mjs", c.JS_EVAL_TYPE_MODULE | c.JS_EVAL_FLAG_COMPILE_ONLY);
     defer engine.freeValue(module);
     const warm = try engine.checked(c.JS_NewCFunction(engine.context, noop, "ownedNoop", 0)); defer engine.freeValue(warm);
-    var probe: PrologueProbe = .{ .context = engine.context, .captured = c.pi_js_undefined() };
+    var probe: PrologueProbe = .{ .context = engine.context, .captured = c.pi_js_undefined(), .legacy = legacy, .legacy_error = c.pi_js_undefined() };
     defer engine.freeValue(probe.captured);
+    defer engine.freeValue(probe.legacy_error);
     c.JS_SetInterruptHandler(engine.runtime, PrologueProbe.poll, &probe);
     defer c.JS_SetInterruptHandler(engine.runtime, null, null);
     var warm_calls: usize = 0;
@@ -132,6 +146,11 @@ fn prologueSubject(legacy: bool) !void {
     try std.testing.expect(!c.JS_IsException(probe.captured));
     const global = try engine.checked(c.JS_GetGlobalObject(engine.context)); defer engine.freeValue(global);
     if (c.JS_SetPropertyStr(engine.context, global, "prologueFrames", c.JS_DupValue(engine.context, probe.captured)) < 0) return error.PrologueCaptureFailure;
+    if (legacy) {
+        try std.testing.expect(!c.JS_IsException(probe.legacy_error) and !c.JS_IsUndefined(probe.legacy_error));
+        if (c.JS_SetPropertyStr(engine.context, global, "prologueEagerError", c.JS_DupValue(engine.context, probe.legacy_error)) < 0) return error.PrologueCaptureFailure;
+        try check(engine, "legacyPrologueError===prologueEagerError");
+    }
     c.JS_RunGC(engine.runtime);
     try check(engine, "prologueFrames.length>0&&prologueFrames[0].getFileName()==='C:/callsite/prologue.mjs'&&prologueFrames[0].getFunction()===undefined&&prologueFrames[0].getThis()===undefined&&globalThis.prologueBodyRan===undefined");
     if (legacy) try check(engine, "globalThis.legacyPrologueFrame=legacyPrologueFrames.find(frame=>frame.getFileName()==='C:/callsite/prologue.mjs');legacyPrologueFrame!==undefined&&legacyPrologueFrame.getFunction()===undefined&&legacyPrologueFrame.getThis()===undefined&&legacyPrologueFrame.getLineNumber()===null&&legacyPrologueFrame.getColumnNumber()===null");

@@ -1644,6 +1644,7 @@ static void js_set_uncatchable_error(JSContext *ctx, JSValueConst val,
 
 static JSValue js_new_callsite(JSContext *ctx, JSCallSiteData *csd);
 static void js_new_callsite_data(JSContext *ctx, JSCallSiteData *csd, JSStackFrame *sf);
+static bool js_callsite_is_forwarding_frame(JSStackFrame *frame);
 static void js_new_callsite_data2(JSContext *ctx, JSCallSiteData *csd, const char *filename, int line_num, int col_num);
 static int _JS_AddIntrinsicCallSite(JSContext *ctx);
 
@@ -8587,6 +8588,8 @@ static void build_backtrace(JSContext *ctx, JSValueConst error_val,
             backtrace_flags &= ~JS_BACKTRACE_FLAG_SKIP_FIRST_LEVEL;
             continue;
         }
+        if (js_callsite_is_forwarding_frame(sf))
+            continue;
 
         p = JS_VALUE_GET_OBJ(sf->cur_func);
         b = NULL;
@@ -17208,26 +17211,32 @@ static JSValue js_reflect_apply(JSContext *ctx, JSValueConst this_val,
 static JSValue js_reflect_construct(JSContext *ctx, JSValueConst this_val,
                                    int argc, JSValueConst *argv);
 
-/* Read-only Source host caller observation. Skip only the three explicit
- * forwarding builtins; an ordinary native callback boundary yields null. */
+/* The actual forwarding builtins tailcall in V8 and add no visible frame.
+ * Match native callable identity and cproto, never guest-visible names. */
+static bool js_callsite_is_forwarding_frame(JSStackFrame *frame)
+{
+    JSObject *function;
+    if (!JS_IsObject(frame->cur_func))
+        return false;
+    function = JS_VALUE_GET_OBJ(frame->cur_func);
+    if (function->class_id != JS_CLASS_C_FUNCTION)
+        return false;
+    if (function->u.cfunc.cproto == JS_CFUNC_generic)
+        return function->u.cfunc.c_function.generic == js_function_call ||
+            function->u.cfunc.c_function.generic == js_reflect_apply ||
+            function->u.cfunc.c_function.generic == js_reflect_construct;
+    if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
+        return function->u.cfunc.c_function.generic_magic == js_function_apply;
+    return false;
+}
+
+/* Read-only Source host caller observation. An ordinary native callback
+ * boundary still yields null; only actual forwarding builtins are skipped. */
 JSValue JS_PiObserveCallFrame(JSContext *ctx, uintptr_t *identity)
 {
     JSStackFrame *frame = ctx->rt->current_stack_frame;
-    while (frame && JS_IsObject(frame->cur_func)) {
-        JSObject *function = JS_VALUE_GET_OBJ(frame->cur_func);
-        bool forwarding = false;
-        if (function->class_id == JS_CLASS_C_FUNCTION) {
-            if (function->u.cfunc.cproto == JS_CFUNC_generic)
-                forwarding = function->u.cfunc.c_function.generic == js_function_call ||
-                    function->u.cfunc.c_function.generic == js_reflect_apply ||
-                    function->u.cfunc.c_function.generic == js_reflect_construct;
-            else if (function->u.cfunc.cproto == JS_CFUNC_generic_magic)
-                forwarding = function->u.cfunc.c_function.generic_magic == js_function_apply;
-        }
-        if (!forwarding)
-            break;
+    while (frame && js_callsite_is_forwarding_frame(frame))
         frame = frame->prev_frame;
-    }
     *identity = (uintptr_t)frame;
     if (!frame || frame->is_strict_mode ||
         !JS_GetFunctionBytecode(frame->cur_func))
@@ -65790,6 +65799,8 @@ JSValue JS_CaptureCurrentStackFrames(JSContext *ctx, uint32_t limit,
             flags &= ~JS_ERROR_STACK_SKIP_FIRST;
             continue;
         }
+        if (js_callsite_is_forwarding_frame(current))
+            continue;
         function = JS_VALUE_GET_OBJ(current->cur_func);
         if (js_class_has_bytecode(function->class_id) &&
             !function->u.func.function_bytecode->native_async_body)

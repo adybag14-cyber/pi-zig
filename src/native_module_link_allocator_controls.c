@@ -193,15 +193,19 @@ static int allocation_attempt(int mode, int default_retry, size_t offset, size_t
         const char *source = mode == 1
             ? "export let x=2;export function f(){return x};globalThis.childRan=1;"
             : "let a=3;export{a as '10',a as '2',a as '',a as '\\u{10000}',a as '\\ue000',a as z};globalThis.childRan=1;";
-        if (mode == 1) {
+        if (mode == 1 || mode == 2) {
             size_t length = strlen(source);
             memcpy(child_source, source, length + 1);
-            /* More cells/closures than a small-block arena can hold. Thus the
-               actual host allocator sweep includes partial creation, rather
-               than falsely claiming that one arena event is every VM cell. */
-            for (i = 0; i < 128; i++) {
-                int written = snprintf(child_source + length, sizeof(child_source) - length,
-                                        "export function f%d(){return %d};", i, i);
+            /* Force actual backing allocator events in both fixture families.
+               Six namespace keys alone can reuse already populated arenas. */
+            for (i = 0; i < (mode == 1 ? 128 : 192); i++) {
+                int written;
+                if (mode == 1)
+                    written = snprintf(child_source + length, sizeof(child_source) - length,
+                                       "export function f%d(){return %d};", i, i);
+                else
+                    written = snprintf(child_source + length, sizeof(child_source) - length,
+                                       "export{a as pad%d};", i);
                 if (written < 0 || (size_t)written >= sizeof(child_source) - length) {
                     status = 19; goto cleanup;
                 }
@@ -276,7 +280,7 @@ evaluated:
             status = 20; goto cleanup;
         }
     } else if (!fixture_true(context,
-            "ran===1&&childRan===1&&ns['10']===3&&ns['2']===3&&ns['']===3&&ns['\\u{10000}']===3&&ns['\\ue000']===3&&Object.keys(ns).length===6")) {
+            "ran===1&&childRan===1&&ns['10']===3&&ns['2']===3&&ns['']===3&&ns['\\u{10000}']===3&&ns['\\ue000']===3&&ns.z===3&&Object.keys(ns).length===198&&Array.from({length:192},(_,i)=>ns['pad'+i]).every(value=>value===3)")) {
         status = 17; goto cleanup;
     }
     status = 0;
@@ -313,8 +317,11 @@ int pi_test_module_link_allocation_positions(int mode)
         return status;
     /* Bounded actual measurement, not a guessed success count. Every measured
        link allocation is tested in a fresh VM, with exact one-shot failure. */
-    if (!measured || measured > 512)
+    if (!measured || measured > 512) {
+        fprintf(stderr, "module link allocation sweep invalid host event count: mode=%d default_retry=%d measured=%zu\n",
+                mode, default_retry, measured);
         return 100;
+    }
     for (offset = 0; offset < measured; offset++) {
         status = allocation_attempt(mode, default_retry, offset, NULL);
         if (status)
