@@ -1,6 +1,7 @@
 //! Actual jiti2.7 eval.ts frontend. Real transform/import/path/syntax bindings
 //! are mandatory; no Babel/Acorn heuristic or fake factory fills a missing one.
 //! Derived from jiti2.7, Copyright Pooya Parsa, MIT (retained authority license).
+//! Local revision2: ordinary import catch separates rejected DATA/current event.
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
@@ -171,12 +172,38 @@ pub fn evaluate(engine: *v.em.Engine, imports: Imports, args: []const c.JSValue)
         .{ .context = context, .eval_options = options, .filename = filename, .parent_cache = parent_cache, .source = source });
 }
 fn importFallback(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    // This ordinary callback is entered only through the reviewed native
+    // ModuleCallable trampoline, which suppresses diagnostic coercion BEFORE
+    // invoking this body. Its incoming rejected argument is DATA, not an event.
+    const prior = engine.captured_exception;
+    engine.captured_exception = null;
+    defer {
+        if (engine.captured_exception == null) engine.captured_exception = prior else if (prior) |reason| engine.freeValue(reason);
+    }
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+    const generation = engine.native_allocation_generation;
+    return importFallbackInner(engine, args, roots) catch |err| {
+        if (err == error.JavaScriptException) {
+            if (engine.captured_exception == null and c.JS_HasException(engine.context)) _ = v.js.capture(engine);
+            const caught = engine.captured_exception orelse return error.MissingJitiFrontendCurrentCapturedReason;
+            if (c.JS_IsUncatchableError(caught)) return err;
+            try body.rethrowRecognizedAllocation(engine, caught, generation);
+        }
+        // Unlike a native AF Action, this ordinary Source arrow propagates its
+        // actual new capture to the trampoline and returns raw success values.
+        return err;
+    };
+}
+fn importFallbackInner(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const reason = arg(args, 0);
-    if (c.JS_IsUncatchableError(reason)) return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
     var generation: u64 = 0;
     if (c.JS_ToBigUint64(engine.context, &generation, try s.get(roots[0], "generation")) < 0) return v.js.capture(engine);
     try body.rethrowRecognizedAllocation(engine, reason, generation);
+    // No pending current event existed and no fresh private host cause was
+    // recognized. Clear only this rejected DATA's historical hidden flag
+    // before Source debug/spread/fallback callbacks can handle or rethrow it.
+    c.JS_ClearUncatchableError(engine.context, reason);
     const context = try s.get(roots[0], "context");
     const filename = try s.get(roots[0], "filename");
     const debug = try s.get(roots[0], "debug");

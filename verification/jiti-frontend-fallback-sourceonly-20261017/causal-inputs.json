@@ -1,0 +1,16 @@
+{
+  "status":"prepared_actual_frontend_arrow_inputs_unrun_expected_absent",
+  "source":"original jiti2.7 fd3bb289b75ed207edfb686d671ed50144f7e90f src/eval.ts native async import catch",
+  "capture":"observe actual real frontend Promise.catch registration, delegate original catch, drain successful genuine physical import before direct causal calls",
+  "fake_frontend_require_importer_self_or_namespace_allowed":false,
+  "cases":[
+    {"id":"historical-flagged-data-raw-real-fallback","entry":"verifyHistoricalDataRawFallback","observe":"old private tag before saved operation boundary, oldflag DATA ordinary; real debug/spread/self continuation, exact observed raw then-result, no extraPromise or formatting"},
+    {"id":"same-object-ordinary-new-spread-capture","entry":"verifySameObjectOrdinarySpreadRethrow","getter":"original options extra enumerable getter added aftercapture throws same prior diagnostic Error","observe":"actual newly captured same identity ordinary throw; prior flag not current-event heuristic"},
+    {"id":"actual-spread-host-allocation","entry":"verifyFreshSpreadOOM","getter":"original option getter calls explicit actualEngine native allocation fault probe","observe":"current private generation/new exact nativeallocation reason fatal; no rawSource success or input-oldflag escalation"},
+    {"id":"actual-pending-event-before-root-and-data-work","entry":"verifyActualPendingEventWins","observe":"actual current nonOOM VM event beats oldflag data before even private generation/debug/spread; exact reason, oldflag and extraReads untouched, zero diagnostic coercion"},
+    {"id":"actual-user-getter-native-interrupt","entry":"verifyRealSpreadInterrupt","getter":"explicit actualEngine cancel probe followed by real user loop","observe":"real installed interrupt currentfatal with private tag0/generation unchanged, no Error-name inference, owned cancellation reset"}
+  ],
+  "additional_qualification_cases":["historical tag with unrelated later allocation generation", "ordinary guest lookalike marker/name", "fulfilled/fallback namespace and parent/native cache identities", "full allocation positions and teardown/owner absence", "Source raw receiver/getter/error order under actual complete graph"],
+  "expected_path":"src/extensions/fixtures/jiti-frontend-fallback.expected.json",
+  "source_executed":false,"native_executed":false,"compiler_executed":false,"formatter_executed":false,"expected_written":false,"default_selected":false
+}
