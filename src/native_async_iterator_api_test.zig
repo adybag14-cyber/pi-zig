@@ -57,8 +57,9 @@ test "native async iterator API preserves pending ordinary and fatal entry witho
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
     const input = try engine.eval("globalThis.iteratorEntryReads=0;({get [Symbol.asyncIterator](){iteratorEntryReads++;throw Error('unexpected')}})", "iterator-entry-control.js", c.JS_EVAL_TYPE_GLOBAL); defer engine.freeValue(input);
     for (.{ false, true }) |fatal| {
-        const reason = try engine.checked(c.JS_NewObject(engine.context)); defer engine.freeValue(reason);
+        const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
         if (fatal) c.JS_SetUncatchableError(engine.context, reason);
+        try std.testing.expect(c.JS_IsUncatchableError(reason) == fatal);
         _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
         const result = c.JS_PiGetAsyncIterator(engine.context, input);
         try std.testing.expect(c.JS_IsException(result) and c.JS_HasException(engine.context));
@@ -141,8 +142,9 @@ fn pendingGetter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValu
 fn returnCaptured(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue { return c.JS_DupValue(context, roots[0]); }
 test "native async iterator API flagged returned data without pending is not a fatal event" {
     const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
-    const value = try engine.checked(c.JS_NewObject(engine.context)); defer engine.freeValue(value);
+    const value = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(value);
     c.JS_SetUncatchableError(engine.context, value);
+    try std.testing.expect(c.JS_IsUncatchableError(value));
     const input = try engine.checked(c.JS_NewObject(engine.context)); defer engine.freeValue(input);
     var roots = [_]c.JSValue{value};
     const method = try engine.checked(c.JS_NewCFunctionData2(engine.context, returnCaptured, "iterator", 0, 0, roots.len, &roots));
@@ -187,6 +189,7 @@ var cleanup_original: c.JSValue = undefined;
 var cleanup_classes: [3]c.JSClassID = .{ 0, 0, 0 };
 var cleanup_counts: [3]usize = .{ 0, 0, 0 };
 var incoming_fatal: bool = false;
+var original_marked: bool = false;
 fn resultCleanup(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
     cleanup_counts[0] += 1;
     if (cleanup_context) |ctx| {
@@ -210,9 +213,21 @@ fn displacedCleanup(_: ?*c.JSRuntime, _: c.JSValue) callconv(.c) void {
 fn cleanupMethod(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const result = c.JS_NewObjectClass(context, cleanup_classes[0]);
     if (c.JS_IsException(result)) return result;
-    const reason = c.JS_NewObjectClass(context, cleanup_classes[1]);
+    const reason = c.JS_NewError(context);
     if (c.JS_IsException(reason)) { c.JS_FreeValue(context, result); return reason; }
+    const token = c.JS_NewObjectClass(context, cleanup_classes[1]);
+    if (c.JS_IsException(token)) {
+        const failure = c.JS_GetException(context);
+        c.JS_FreeValue(context, result); c.JS_FreeValue(context, reason);
+        return c.JS_Throw(context, failure);
+    }
+    if (c.JS_DefinePropertyValueStr(context, reason, "cleanupToken", token, c.JS_PROP_C_W_E) < 0) {
+        const failure = c.JS_GetException(context);
+        c.JS_FreeValue(context, result); c.JS_FreeValue(context, reason);
+        return c.JS_Throw(context, failure);
+    }
     if (incoming_fatal) c.JS_SetUncatchableError(context, reason);
+    original_marked = c.JS_IsUncatchableError(reason);
     cleanup_original = reason; // Borrowed identity only: no additional refcount.
     _ = c.JS_Throw(context, reason); // Sole owned original is transferred.
     return result; // Deliberate native callback convention violation control.
@@ -221,7 +236,7 @@ test "native async iterator API nested result and displaced finalizers preserve 
     for (.{ false, true }) |fatal_first| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         cleanup_context = engine.context; defer cleanup_context = null;
-        incoming_fatal = fatal_first; cleanup_counts = .{ 0, 0, 0 }; cleanup_classes = .{ 0, 0, 0 };
+        incoming_fatal = fatal_first; original_marked = false; cleanup_counts = .{ 0, 0, 0 }; cleanup_classes = .{ 0, 0, 0 };
         const definitions = [_]c.JSClassDef{
             .{ .class_name = "Iterator API result finalizer", .finalizer = resultCleanup },
             .{ .class_name = "Iterator API original finalizer", .finalizer = originalCleanup },
@@ -246,6 +261,7 @@ test "native async iterator API nested result and displaced finalizers preserve 
         var actual_owned = true; defer if (actual_owned) engine.freeValue(actual);
         try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, if (fatal_first) cleanup_original else cleanup_fatal));
         try std.testing.expect(c.JS_IsUncatchableError(actual));
+        try std.testing.expect(original_marked == fatal_first);
         try std.testing.expectEqual(@as(usize, 1), cleanup_counts[0]);
         try std.testing.expectEqual(@as(usize, if (fatal_first) 0 else 1), cleanup_counts[1]);
         try std.testing.expectEqual(@as(usize, 1), cleanup_counts[2]);
