@@ -18,8 +18,9 @@ source remains unchanged at 8efd. The newer captured model/settings suppliers,
 live runtime/tool getters and NVIDIA default are now intaken as reviewed source;
 their native execution and schema introspection updates remain pending. See
 [the 8efd source record](verification/upstream-8efd-compat-sourceonly-20261016/README.md).
-The checked-in
-CLI and extension API identity remain 1.1.0 pending the complete migration.
+The checked-in CLI and extension API identity now target 1.3.0 at the pinned
+8efd source. That version alignment is source-reviewed; current CLI/MCP/header
+execution and complete application certification remain pending.
 Full Pi 1.x parity and release
 certification remain incomplete, and production extension discovery retains its
 legacy Node bridge while native parity and lifecycle work continues.
