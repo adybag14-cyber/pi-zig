@@ -1,0 +1,81 @@
+{
+  "schema": 1,
+  "scope": "private SDK consumed Chalk6 native supplier source-only",
+  "base": "518a7e5c681f116f62f04d92614d11574d940894",
+  "members": [
+    {
+      "path": "src/extensions/native_sdk_chalk.zig",
+      "bytes": 13933,
+      "sha256": "DE03855498779E4A1C72D6A635A6AC72B90B430721B53AC8E5107974BE66D731"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_supports_color.zig",
+      "bytes": 10145,
+      "sha256": "4406FBD29A70C60266122DA918AC0E209F7D3F04F6DF392A1EE29CEA3CE35022"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_test.zig",
+      "bytes": 2933,
+      "sha256": "7123306F9188799194424CEA8BFF6ED0810FC0742E9171681808F8A6464AE970"
+    },
+    {
+      "path": "src/native_sdk_chalk_test.zig",
+      "bytes": 122,
+      "sha256": "FA86EC6CC72F6BE4336B2312676461C44E75DDACDF2790CD31333C56551E1EC6"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-chalk6-consumed.input.txt",
+      "bytes": 6299,
+      "sha256": "69A5B993CAF382D21B79226BC17DAC783EEF2F0E5828922394E78F11D9A93809"
+    },
+    {
+      "path": "verification/sdk-chalk6/build-snippet.zig.txt",
+      "bytes": 887,
+      "sha256": "0B383B4269A9EB53E32C111794EF08D91E5B4323110F14DFA84BA84E975FA03D"
+    },
+    {
+      "path": "verification/sdk-chalk6/capture-primary.mjs",
+      "bytes": 1967,
+      "sha256": "E4F147A8BF0437A09936155BC833F51AFE4D29E5D024B80987D756806E190151"
+    },
+    {
+      "path": "verification/sdk-chalk6/chalk-consumed-callers.mjs",
+      "bytes": 6299,
+      "sha256": "69A5B993CAF382D21B79226BC17DAC783EEF2F0E5828922394E78F11D9A93809"
+    },
+    {
+      "path": "verification/sdk-chalk6/color-policy-callers.mjs",
+      "bytes": 1135,
+      "sha256": "0BEFBC46FB1997516F6CA56F50A85EDC7A79DAFBFDA5127415C7C78D563480A0"
+    },
+    {
+      "path": "verification/sdk-chalk6/LICENSE-chalk6.txt",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/sdk-chalk6/primary-provenance.json",
+      "bytes": 3476,
+      "sha256": "0F0F2E91BFF65EBF492443ABBC3331573C0D95C09FC39887E9B1E423C3B5B127"
+    },
+    {
+      "path": "verification/sdk-chalk6/README.md",
+      "bytes": 4578,
+      "sha256": "B3BCF2659F1EB186EAA24B9FED48470E2E13806E8FB16AFC2319CCD98E206CBE"
+    },
+    {
+      "path": "verification/sdk-chalk6/root-caller-config.template.json",
+      "bytes": 288,
+      "sha256": "CF6070BBAF1E43A5E0CAC96A70243099A6FA81FC87A19722EA9F47FEA22A0D4A"
+    }
+  ],
+  "native_or_Node_execution": false,
+  "fmt_or_AST_execution": false,
+  "expected_Source_outputs_authored": false,
+  "planned_shared_observations": 86,
+  "planned_policy_inputs": 22,
+  "actual_native_metadata": "unknown",
+  "global_or_public_chalk_module_registered": false,
+  "resource_consumer_modified": false,
+  "license": "MIT Sindre Sorhus"
+}
