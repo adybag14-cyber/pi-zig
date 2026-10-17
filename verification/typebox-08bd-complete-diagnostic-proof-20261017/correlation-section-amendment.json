@@ -1,0 +1,29 @@
+{
+  "status": "explicit_section_name_correction_to_independent_receipt",
+  "amends": {
+    "path": "root-typebox-08bd-independent-correlation-20261017.json",
+    "sha256": "E8DB5D80CBAFE1FA230D379717FB6A940DE5776F542509EB361EBDFC41E97B75",
+    "original_receipt_preserved_unchanged": true,
+    "overbroad_field": "anchor.PE_and_dump_section_headers_agree"
+  },
+  "corrected_claim": {
+    "all_seven_section_numbers_RVAs_and_virtual_sizes_agree": true,
+    "all_rendered_section_names_agree": false,
+    "rendered_name_discrepancies": [
+      {
+        "section": 3,
+        "actual_PE_name_from_exact_eight_bytes": ".buildid",
+        "retained_LLVM_text_name": ".buildid=",
+        "virtual_address": 72650752,
+        "virtual_size": 61,
+        "cause_of_text_rendering_not_independently_proven": true
+      }
+    ],
+    "text_section_name_RVA_and_virtual_size_agree_exactly": true,
+    "all_641_callback_starts_and_anchor_are_in_text_section": true,
+    "anchor_loaded_base_callback_source_join_and_GUID_age_results_unchanged": true
+  },
+  "scope": "The original broad header-agreement field did not distinguish numeric layout from a rendered name. This amendment makes that distinction explicit without changing raw inputs or forcing the mismatched name to agree.",
+  "new_LLVM_Node_compiler_AST_native_jobs": 0,
+  "production_edits": false
+}
