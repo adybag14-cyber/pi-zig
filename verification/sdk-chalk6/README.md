@@ -14,6 +14,20 @@ The same Engine returns the same cached callable. The private cache key does not
 register an importable `chalk` module or a global variable. Product consumer and
 resource assembly files are unchanged.
 
+The b43c/7ad source checkpoints remain preserved. Their ordinary-first cleanup
+and early cache publication gaps are recorded in the independent negative peer
+receipt BEDC3CD70A681E50F60A8B5E6DB7B0BB0A727418911B5FDD43B6D82D28A10C6F.
+The successor uses `native_sdk_owned_completion.zig` byte-identically from
+closed733517fb (SHA41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6).
+A private Chalk adapter qualifies actual raw get/call/key/construct/status/operator
+pending events at their individual producer generations before root tracking.
+Every body outcome is recorded before its temporaries retire through the same
+closed helper. Captured diagnostics and historical private tags remain DATA.
+The public initializer retains a NativeInvocation and a private reentry guard;
+it publishes the callable only after temporary and invocation-holder retirement
+and final normalization. Allocation failure at cache insertion retires both owned
+references under an independently recorded completion.
+
 The implemented surface consists of the default rest-argument callable, lazy
 `yellow` builders including yellow chaining, and root/builder level accessors.
 It uses actual VM calls, properties, symbols, coercions and exceptions. Enabled
@@ -34,6 +48,9 @@ already used by the executable. The installed source's disable flags,
 `FORCE_COLOR` exact/boolean behavior and non-TTY policy are preserved. The
 installed Chalk6 detector does not inspect `NO_COLOR`; the authored policy inputs
 make that fact observable rather than silently adding a new policy.
+Authenticating these host descriptors against each real frontend's stream
+binding remains an integration prerequisite. No remote or virtual descriptor
+parity is claimed.
 
 Primary authority is the six original-manifest-exact Chalk6 files listed in
 `primary-provenance.json`, plus the official Pi4dd ResourceLoader consumer.
@@ -56,10 +73,21 @@ not expected outputs. No expected Source JSON has been authored.
 control checks native identity, real ANSI/no-color, raw thrown values, option
 evaluation, cache descriptors and GC retention. `build-snippet.zig.txt` prepares
 canonical install/run registration without editing the shared build file.
-Actual compiled metadata is unknown; the source contains one named semantic
-test and a root import test. No compilation, formatting/AST command, Node run,
+Three additional causal native controls cover ordinary A versus finalizer B,
+fresh raw pending OOM and historical DATA, a direct GPA failure, initializer
+reentry and cache nonpublication when successful initialization cleanup throws.
+These fixtures invoke real native producers/finalizers; they are not Source
+observations. Actual compiled metadata is unknown; four named tests are planned.
+No compilation, formatting/AST command, Node run,
 source capture or native test has run. Static source and Git whitespace checks
 do not establish functional parity or whole SDK qualification.
+
+The shared `native_node_function.create/createArrow/createMethod` internals and
+atomic VM operations retain their separate unqualified cold-allocation frontier.
+A local wrapper cannot recover a reason already discarded by a shared helper's
+internal checked/cleanup operation. This checkpoint does not modify those shared
+helpers or establish complete factory allocation safety. Any concrete failure
+there requires its own owner-reviewed correction and proof.
 
 Any future genuine capture needs Root's separate exact-head ownership/resource
 grant, bounded owner and process absence, fresh 16GiB admission, sealed complete

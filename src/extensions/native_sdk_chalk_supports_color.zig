@@ -4,8 +4,8 @@
 const std = @import("std");
 const builtin = @import("builtin");
 const em = @import("engine.zig");
-const js = @import("native_js_values.zig");
-const Scope = @import("native_models_stream_scope.zig").Scope;
+const Scope = @import("native_sdk_chalk_scope.zig").Scope;
+const owned = @import("native_sdk_owned_completion.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const functions = @import("native_node_function.zig");
 const c = em.c;
@@ -23,14 +23,13 @@ fn terminal(fd: c_int) bool {
     }
     return Posix.isatty(fd) == 1;
 }
-fn nil(v: c.JSValue) bool { return c.JS_IsUndefined(v) or c.JS_IsNull(v); }
-fn key(s: *Scope, value: c.JSValue, name: []const u8) !c.JSValue { return s.own(try js.getKey(s.engine, value, try s.text(name))); }
-fn has(s: *Scope, value: c.JSValue, name: []const u8) !bool { return js.hasKey(s.engine, value, try s.text(name)); }
+fn key(s: *Scope, value: c.JSValue, name: []const u8) !c.JSValue { return s.getKey(value, try s.text(name)); }
+fn has(s: *Scope, value: c.JSValue, name: []const u8) !bool { return s.hasKey(value, try s.text(name)); }
 fn equal(s: *Scope, value: c.JSValue, text: []const u8) !bool { return s.equal(value, try s.text(text)); }
-fn compare(s: *Scope, op: arithmetic.Operation, a: c.JSValue, b: c.JSValue) !bool { return arithmetic.compare(s.engine, op, a, b); }
+fn compare(s: *Scope, op: arithmetic.Operation, a: c.JSValue, b: c.JSValue) !bool { return s.compare(op, a, b); }
 fn regex(s: *Scope, pattern: []const u8, flags: []const u8, input: c.JSValue) !bool {
-    var args = [_]c.JSValue{ try s.text(pattern), try s.text(flags) };
-    const expression = try s.own(try s.engine.checked(c.JS_CallConstructor(s.engine.context, s.engine.intrinsic_regexp_constructor, args.len, &args)));
+    const args = [_]c.JSValue{ try s.text(pattern), try s.text(flags) };
+    const expression = try s.construct(s.engine.intrinsic_regexp_constructor, &args);
     return s.truthy(try s.invoke(expression, "test", &.{input}));
 }
 fn hasFlag(s: *Scope, process: c.JSValue, comptime flag: []const u8) !bool {
@@ -45,7 +44,11 @@ fn hasFlag(s: *Scope, process: c.JSValue, comptime flag: []const u8) !bool {
 }
 fn numeric(s: *Scope, env: c.JSValue) !bool { return regex(s, "^\\d+$", "", try s.get(env, "FORCE_COLOR")); }
 fn envMembership(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    return c.pi_js_bool(engine.context, @intFromBool(try js.hasKey(engine, roots[0], if (args.len == 0) c.pi_js_undefined() else args[0])));
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, envMembershipBody(&s, args, roots));
+}
+fn envMembershipBody(s: *Scope, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return c.pi_js_bool(s.engine.context, @intFromBool(try s.hasKey(roots[0], if (args.len == 0) c.pi_js_undefined() else args[0])));
 }
 fn someEnv(s: *Scope, env: c.JSValue, names: []const []const u8) !bool {
     const names_array = try s.array();
@@ -122,13 +125,17 @@ fn translate(s: *Scope, value: c.JSValue) !c.JSValue {
     return result;
 }
 pub fn create(engine: *em.Engine, process: c.JSValue, os: c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, createBody(&s, process, os));
+}
+fn createBody(s: *Scope, process: c.JSValue, os: c.JSValue) !c.JSValue {
+    const engine = s.engine;
     const env = try s.get(process, "env");
     var force = c.pi_js_undefined();
-    inline for (.{ "no-color", "no-colors", "color=false", "color=never" }) |name| if (c.JS_IsUndefined(force) and try hasFlag(&s, process, name)) { force = c.JS_NewInt32(engine.context, 0); };
-    if (c.JS_IsUndefined(force)) inline for (.{ "color", "colors", "color=true", "color=always" }) |name| if (c.JS_IsUndefined(force) and try hasFlag(&s, process, name)) { force = c.JS_NewInt32(engine.context, 1); };
+    inline for (.{ "no-color", "no-colors", "color=false", "color=never" }) |name| if (c.JS_IsUndefined(force) and try hasFlag(s, process, name)) { force = c.JS_NewInt32(engine.context, 0); };
+    if (c.JS_IsUndefined(force)) inline for (.{ "color", "colors", "color=true", "color=always" }) |name| if (c.JS_IsUndefined(force) and try hasFlag(s, process, name)) { force = c.JS_NewInt32(engine.context, 1); };
     const result = try s.object();
-    try s.put(result, "stdout", try translate(&s, try level(&s, process, os, env, &force, terminal(1))));
-    try s.put(result, "stderr", try translate(&s, try level(&s, process, os, env, &force, terminal(2))));
+    try s.put(result, "stdout", try translate(s, try level(s, process, os, env, &force, terminal(1))));
+    try s.put(result, "stderr", try translate(s, try level(s, process, os, env, &force, terminal(2))));
     return c.JS_DupValue(engine.context, result);
 }
