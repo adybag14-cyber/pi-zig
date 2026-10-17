@@ -7,9 +7,9 @@
   "products": [
     {
       "path": "build.zig",
-      "sha256": "C38BEE224152DBF4C8F312AF5633B96837874BDEF5E55E1D36A3DECE9EFDA52A",
-      "length": 350190,
-      "git_blob": "4d497642688f82b4c636eddf4b54e09cc10d21cc"
+      "sha256": "0962EA2F144D102B289E2BD87A5478FFB7D69FF5C61E18F12F6DB388A8113F4B",
+      "length": 350149,
+      "git_blob": "d88f976170f8a6400eff204cb2039cb365e7253e"
     },
     {
       "path": "src/extensions/native_sdk_package_assembly.zig",
@@ -467,5 +467,11 @@
     "Actual transport/current-node-profile runtime qualification",
     "C Promise/generator internal extra guest work/frontiers",
     "Full completed package/SDK/Agent/public default activation"
-  ]
+  ],
+  "canonical_test_artifact_correction": {
+    "historical_manifest_sha256": "382E577E4A708ED5F5FB779017BE2BACD3BFB368BBF73CA86E9F709DB32512DE",
+    "test_bytes_unchanged": true,
+    "change": "Remove only new addTest.name so cached executable retains canonical test.exe admitted by607; no native run/controller/metadata authority",
+    "historical_source_head": "9b0e7ae1ecd485bbe946e79cb2aa8bcd324572cf"
+  }
 }

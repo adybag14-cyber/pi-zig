@@ -1619,7 +1619,6 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-sdk-application-bootstrap-artifact", "Compile actual SDK platform/AI/manager/OS and full factory/session body anchors").dependOn(&b.addInstallArtifact(sdk_application_tests, .{}).step);
     b.step("test-native-sdk-application-bootstrap", "Execute actual SDK available bootstrap controls after explicit grant").dependOn(&b.addRunArtifact(sdk_application_tests).step);
     const sdk_package_af_tests = b.addTest(.{
-        .name = "native-sdk-package-af",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_package_af_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK package AF"}, .use_llvm = use_llvm,
     });
