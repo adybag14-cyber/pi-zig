@@ -1,0 +1,146 @@
+{
+  "baseline": "e07023fd78d80c586b07fd165aa9736a1f7d3e7f",
+  "status": "source-only-inert-C-proposal-uncompiled-unrun-review-pending",
+  "active_C_H_changed": false,
+  "C_API_present_in_verified_C3": false,
+  "C_API_patch_applied": false,
+  "C_API_apply_check": true,
+  "Source_rows_prepared": 13,
+  "native_test_definitions": 4,
+  "native_additional_specs": 13,
+  "expected_absent": true,
+  "generator_pending_fatal_delivery_fixed": false,
+  "products": [
+    {
+      "path": "src/extensions/native_event_stream_core.zig",
+      "sha256": "508970F63BAD10F1C90A74F32E14BD7C84FBE1EF2E15E785A0A533A5AB995941",
+      "bytes": 13360
+    },
+    {
+      "path": "src/extensions/native_async_generator_function.zig",
+      "sha256": "8C65BC03C15E2A5E2970066A51F298F6AA9A4A52CF6F1435B80181ECADCE1301",
+      "bytes": 4362
+    },
+    {
+      "path": "src/extensions/native_promise_executor_fatal.zig",
+      "sha256": "2F2754E8402FB9835D2CDC85DE2FA663F1FB28830F84077D8F5009CCB46D03A8",
+      "bytes": 4969
+    },
+    {
+      "path": "src/native_event_stream_function_test.zig",
+      "sha256": "2A718999E52AD27D709F7AC29FC602EBFDE7E08E752967BF0B2A1CC4BEE4BEB6",
+      "bytes": 7753
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "0CEA9590A5EA47288D8C435B33C34AF842F5FF271DBE852798045568BB36D9DC",
+      "bytes": 2553
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819",
+      "bytes": 6315
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "bytes": 3936
+    },
+    {
+      "path": "src/extensions/native_event_stream_fifo.zig",
+      "sha256": "F89D5EA5794869D02152268B3FF15CFB32C4FBF2FB00CFBAA150EA2AF03A4B9A",
+      "bytes": 4604
+    },
+    {
+      "path": "src/extensions/native_event_stream_assistant.zig",
+      "sha256": "A04B1954E1E8EB2B82304F4A2F063893BB771CEAD8782E451A8255A7A08C049A",
+      "bytes": 8577
+    },
+    {
+      "path": "src/extensions/native_stream.zig",
+      "sha256": "FDB5C3E9930572F0D75AD4C6D88AD208CA2C0774270FA1C2839EE9EF59B7C53A",
+      "bytes": 36299
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "bytes": 5900
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "0379422826A29E45DB28643A0AF16E4A9A8FF967A39E37DFD3FC531BC7A3A4EE",
+      "bytes": 163149
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "build.zig",
+      "sha256": "C6C76F27E80BE573BC37330C0FC04C1770578876F18C8DFDEBB61DBD90523D6A",
+      "bytes": 342918
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/NATIVE-CONTROLS.md",
+      "sha256": "E71BE264787C43211880AA61D097983B39F52041565E3313C2616510DCA5F87C",
+      "bytes": 2614
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/observer.mjs",
+      "sha256": "9D77950368A5CAAFD1C9B87CB25490D503590655BBE341CB792A7A6D4769128C",
+      "bytes": 4824
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/PRODUCER-EXIT.md",
+      "sha256": "882B6FFF6192632909D1D171E9F2D395660F0C8636A83F18080AF492CDD09549",
+      "bytes": 2284
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/proposed-c-api.patch",
+      "sha256": "A30A79711F2420FC607E18FC815CC115ECB26D1D71857A443A535EBDF2A3CD59",
+      "bytes": 10902
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/README.md",
+      "sha256": "EA1886031A9929E1FCC3FEC4E168ADC3F3BC45D5468C5C1FEEABB22B1F51B631",
+      "bytes": 5977
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/reference-input.mjs",
+      "sha256": "42451C0390940970150619CD817ADED8825EB2DDAF1E8F8A67BF3DA603926F9C",
+      "bytes": 258
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/authority/Pi-LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    },
+    {
+      "path": "verification/event-stream-generator-function-sourceonly-20261017/authority/QuickJS-LICENSE",
+      "sha256": "96F73F9D2A16C21A36B418F06073BE26E7D6D5E7C1BC99756B21A4F2C74EF171",
+      "bytes": 1212
+    }
+  ],
+  "source": {
+    "commit": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\ai\\src\\utils\\event-stream.ts",
+    "sha256": "9FD5E33A8E295D88B5911AF71D7AFBFD437C9620288808D18331F16811E24DAC",
+    "bytes": 3971
+  },
+  "virtual_C3_candidate_path": "C:\\Users\\adyba\\pi-zig\\evidence\\event-stream-generator-function-virtual-c3-20261017"
+}

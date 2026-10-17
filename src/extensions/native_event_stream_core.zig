@@ -5,35 +5,57 @@ const js = @import("native_js_values.zig");
 const Scope = @import("native_models_stream_scope.zig").Scope;
 const fifo = @import("native_event_stream_fifo.zig");
 const gen = @import("native_async_generator.zig");
+const executor_fatal = @import("native_promise_executor_fatal.zig");
 const c = em.c;
 const Method = enum(c_int) { push, end, result, iterate };
 const PromisePurpose = enum(c_int) { final, waiting };
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (args.len > index) args[index] else c.pi_js_undefined();
 }
-fn executePromise(engine: *em.Engine, receiver: c.JSValue, purpose: PromisePurpose, resolve: c.JSValue) !c.JSValue {
+fn executorGet(scope: *Scope, holder: c.JSValue, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return scope.get(receiver, name) catch |err| return executor_fatal.recordFailure(scope.engine, holder, err, generation);
+}
+fn executePromise(engine: *em.Engine, receiver: c.JSValue, holder: c.JSValue, purpose: PromisePurpose, resolve: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     switch (purpose) {
-        .final => try scope.set(receiver, "resolveFinalResult", resolve),
-        .waiting => _ = try scope.invoke(try scope.get(receiver, "waiting"), "enqueue", &.{resolve}),
+        .final => {
+            const generation = engine.native_allocation_generation;
+            scope.set(receiver, "resolveFinalResult", resolve) catch |err| return executor_fatal.recordFailure(engine, holder, err, generation);
+        },
+        .waiting => {
+            const waiting_queue = try executorGet(&scope, holder, receiver, "waiting");
+            const enqueue = try executorGet(&scope, holder, waiting_queue, "enqueue");
+            const generation = engine.native_allocation_generation;
+            _ = scope.call(enqueue, waiting_queue, &.{resolve}) catch |err| return executor_fatal.recordFailure(engine, holder, err, generation);
+        },
     }
     return c.pi_js_undefined();
 }
 fn promise(engine: *em.Engine, receiver: c.JSValue, comptime purpose: PromisePurpose) !c.JSValue {
+    return promiseInner(engine, receiver, purpose) catch |err| {
+        // Host-storage failure before/after executor creation is trusted too;
+        // ordinary JS failures have already crossed their exact operation guard.
+        if (err == error.OutOfMemory) return executor_fatal.failureSince(engine, err, engine.native_allocation_generation);
+        return err;
+    };
+}
+fn promiseInner(engine: *em.Engine, receiver: c.JSValue, comptime purpose: PromisePurpose) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     // Source's `new Promise` is a live global lookup; Await itself subsequently
     // uses QuickJS's intrinsic PromiseResolve inside the actual generator.
-    const promise_constructor = try scope.global("Promise");
+    const global_generation = engine.native_allocation_generation;
+    const promise_constructor = scope.global("Promise") catch |err| return executor_fatal.failureSince(engine, err, global_generation);
+    const holder = try scope.own(try executor_fatal.create(engine));
     const Executor = struct {
         fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            return executePromise(host, roots[0], purpose, argument(args, 0));
+            return executePromise(host, roots[0], roots[1], purpose, argument(args, 0));
         }
     };
-    const callback = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, Executor.call, &.{receiver}));
-    var args = [_]c.JSValue{callback};
-    return engine.checked(c.JS_CallConstructor(engine.context, promise_constructor, args.len, &args));
+    const callback = try scope.own(try @import("native_node_function.zig").createArrow(engine, "", 1, Executor.call, &.{ receiver, holder }));
+    return executor_fatal.constructOwned(engine, promise_constructor, &.{callback}, holder);
 }
 pub fn initialize(engine: *em.Engine, receiver: c.JSValue, queue_constructor: c.JSValue, args: []const c.JSValue) !void {
     var scope: Scope = .{ .engine = engine };
@@ -134,11 +156,15 @@ pub fn iterator(engine: *em.Engine, receiver: c.JSValue, prototype: c.JSValue) !
     // the body. Property access and receiver failures occur on first next.
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    const owner = try scope.object();
-    try scope.put(owner, "receiver", receiver);
-    try scope.put(owner, "result", c.pi_js_undefined());
+    const owner = try scope.own(try iteratorOwner(engine, receiver, &.{}, &.{}));
     const selected = if (c.JS_IsObject(prototype)) prototype else try scope.own(try gen.prototype(engine));
     return gen.create(engine, owner, advance, selected);
+}
+fn iteratorOwner(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    const owner = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
+    try scope.put(owner, "receiver", receiver); try scope.put(owner, "result", c.pi_js_undefined());
+    return c.JS_DupValue(engine.context, owner);
 }
 fn function(engine: *em.Engine, comptime operation: Method, roots: []const c.JSValue) !c.JSValue {
     const Adapter = struct {
@@ -179,13 +205,7 @@ pub fn constructor(engine: *em.Engine) !c.JSValue {
         const method_value = try function(engine, operation, &.{});
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, @tagName(operation), method_value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     }
-    const generator_parent = try scope.own(try gen.prototype(engine));
-    const generator_prototype = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, generator_parent)));
-    const function_owner = try scope.object();
-    const iterate = try scope.own(try function(engine, .iterate, &.{function_owner}));
-    if (c.JS_SetPrototype(engine.context, iterate, try scope.own(try gen.functionPrototype(engine))) < 0) return js.capture(engine);
-    if (c.JS_DefinePropertyValueStr(engine.context, iterate, "prototype", c.JS_DupValue(engine.context, generator_prototype), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    try scope.put(function_owner, "function", iterate);
+    const iterate = try scope.own(try @import("native_async_generator_function.zig").create(engine, "[Symbol.asyncIterator]", 0, iteratorOwner, advance, &.{}));
     const symbol = try scope.own(try engine.checked(c.JS_GetAsyncIteratorSymbol(engine.context)));
     const atom = c.JS_ValueToAtom(engine.context, symbol);
     if (atom == c.JS_ATOM_NULL) return js.capture(engine);
