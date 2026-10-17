@@ -1,0 +1,2418 @@
+[
+  {
+    "nativeCallback": "f_0",
+    "source": "type/engine/instantiate.mjs",
+    "start": 13447,
+    "end": 13544,
+    "sourceDeclarationSha256": "72c80cae73533e094f1538bc5d7a871f7a9fd73d4b2109143c34a2572c859b03",
+    "name": "Instantiate",
+    "length": 2,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 19,
+    "originalOperandSlots": 10,
+    "appendedArgumentSlots": 5,
+    "callArgumentSlices": [
+      {
+        "start": 10,
+        "count": 2
+      },
+      {
+        "start": 12,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 4,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_0",
+        "offset": 0,
+        "count": 2,
+        "start": 15
+      },
+      {
+        "helper": "call_setup_1",
+        "offset": 2,
+        "count": 2,
+        "start": 17
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_1",
+    "source": "type/engine/instantiate.mjs",
+    "start": 13116,
+    "end": 13365,
+    "sourceDeclarationSha256": "a6c2ff18a45e35baded19e8ea50b42a3500a32605ee8432311f38a0d16007823",
+    "name": "InstantiateType",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 44,
+    "originalOperandSlots": 29,
+    "appendedArgumentSlots": 9,
+    "callArgumentSlices": [
+      {
+        "start": 29,
+        "count": 1
+      },
+      {
+        "start": 30,
+        "count": 5
+      },
+      {
+        "start": 35,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 6,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_31",
+        "offset": 0,
+        "count": 2,
+        "start": 38
+      },
+      {
+        "helper": "call_setup_32",
+        "offset": 2,
+        "count": 2,
+        "start": 40
+      },
+      {
+        "helper": "call_setup_33",
+        "offset": 4,
+        "count": 2,
+        "start": 42
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_9",
+    "source": "type/engine/instantiate.mjs",
+    "start": 5390,
+    "end": 11259,
+    "sourceDeclarationSha256": "569be5d28727d3b0aff9806bfce3d0f3fddf9897cae2dc17359958176f5a910d",
+    "name": "InstantiateDeferred",
+    "length": 5,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 774,
+    "originalOperandSlots": 436,
+    "appendedArgumentSlots": 208,
+    "callArgumentSlices": [
+      {
+        "start": 436,
+        "count": 2
+      },
+      {
+        "start": 438,
+        "count": 4
+      },
+      {
+        "start": 442,
+        "count": 2
+      },
+      {
+        "start": 444,
+        "count": 4
+      },
+      {
+        "start": 448,
+        "count": 2
+      },
+      {
+        "start": 450,
+        "count": 4
+      },
+      {
+        "start": 454,
+        "count": 2
+      },
+      {
+        "start": 456,
+        "count": 4
+      },
+      {
+        "start": 460,
+        "count": 2
+      },
+      {
+        "start": 462,
+        "count": 4
+      },
+      {
+        "start": 466,
+        "count": 2
+      },
+      {
+        "start": 468,
+        "count": 4
+      },
+      {
+        "start": 472,
+        "count": 2
+      },
+      {
+        "start": 474,
+        "count": 4
+      },
+      {
+        "start": 478,
+        "count": 2
+      },
+      {
+        "start": 480,
+        "count": 7
+      },
+      {
+        "start": 487,
+        "count": 2
+      },
+      {
+        "start": 489,
+        "count": 4
+      },
+      {
+        "start": 493,
+        "count": 2
+      },
+      {
+        "start": 495,
+        "count": 4
+      },
+      {
+        "start": 499,
+        "count": 2
+      },
+      {
+        "start": 501,
+        "count": 5
+      },
+      {
+        "start": 506,
+        "count": 2
+      },
+      {
+        "start": 508,
+        "count": 5
+      },
+      {
+        "start": 513,
+        "count": 2
+      },
+      {
+        "start": 515,
+        "count": 5
+      },
+      {
+        "start": 520,
+        "count": 2
+      },
+      {
+        "start": 522,
+        "count": 4
+      },
+      {
+        "start": 526,
+        "count": 2
+      },
+      {
+        "start": 528,
+        "count": 5
+      },
+      {
+        "start": 533,
+        "count": 2
+      },
+      {
+        "start": 535,
+        "count": 4
+      },
+      {
+        "start": 539,
+        "count": 2
+      },
+      {
+        "start": 541,
+        "count": 4
+      },
+      {
+        "start": 545,
+        "count": 2
+      },
+      {
+        "start": 547,
+        "count": 7
+      },
+      {
+        "start": 554,
+        "count": 2
+      },
+      {
+        "start": 556,
+        "count": 4
+      },
+      {
+        "start": 560,
+        "count": 2
+      },
+      {
+        "start": 562,
+        "count": 4
+      },
+      {
+        "start": 566,
+        "count": 2
+      },
+      {
+        "start": 568,
+        "count": 5
+      },
+      {
+        "start": 573,
+        "count": 2
+      },
+      {
+        "start": 575,
+        "count": 4
+      },
+      {
+        "start": 579,
+        "count": 2
+      },
+      {
+        "start": 581,
+        "count": 4
+      },
+      {
+        "start": 585,
+        "count": 2
+      },
+      {
+        "start": 587,
+        "count": 5
+      },
+      {
+        "start": 592,
+        "count": 2
+      },
+      {
+        "start": 594,
+        "count": 4
+      },
+      {
+        "start": 598,
+        "count": 2
+      },
+      {
+        "start": 600,
+        "count": 5
+      },
+      {
+        "start": 605,
+        "count": 2
+      },
+      {
+        "start": 607,
+        "count": 4
+      },
+      {
+        "start": 611,
+        "count": 2
+      },
+      {
+        "start": 613,
+        "count": 4
+      },
+      {
+        "start": 617,
+        "count": 2
+      },
+      {
+        "start": 619,
+        "count": 4
+      },
+      {
+        "start": 623,
+        "count": 2
+      },
+      {
+        "start": 625,
+        "count": 4
+      },
+      {
+        "start": 629,
+        "count": 2
+      },
+      {
+        "start": 631,
+        "count": 4
+      },
+      {
+        "start": 635,
+        "count": 2
+      },
+      {
+        "start": 637,
+        "count": 4
+      },
+      {
+        "start": 641,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 130,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_34",
+        "offset": 0,
+        "count": 2,
+        "start": 644
+      },
+      {
+        "helper": "call_setup_35",
+        "offset": 2,
+        "count": 2,
+        "start": 646
+      },
+      {
+        "helper": "call_setup_36",
+        "offset": 4,
+        "count": 2,
+        "start": 648
+      },
+      {
+        "helper": "call_setup_37",
+        "offset": 6,
+        "count": 2,
+        "start": 650
+      },
+      {
+        "helper": "call_setup_38",
+        "offset": 8,
+        "count": 2,
+        "start": 652
+      },
+      {
+        "helper": "call_setup_39",
+        "offset": 10,
+        "count": 2,
+        "start": 654
+      },
+      {
+        "helper": "call_setup_40",
+        "offset": 12,
+        "count": 2,
+        "start": 656
+      },
+      {
+        "helper": "call_setup_41",
+        "offset": 14,
+        "count": 2,
+        "start": 658
+      },
+      {
+        "helper": "call_setup_42",
+        "offset": 16,
+        "count": 2,
+        "start": 660
+      },
+      {
+        "helper": "call_setup_43",
+        "offset": 18,
+        "count": 2,
+        "start": 662
+      },
+      {
+        "helper": "call_setup_44",
+        "offset": 20,
+        "count": 2,
+        "start": 664
+      },
+      {
+        "helper": "call_setup_45",
+        "offset": 22,
+        "count": 2,
+        "start": 666
+      },
+      {
+        "helper": "call_setup_46",
+        "offset": 24,
+        "count": 2,
+        "start": 668
+      },
+      {
+        "helper": "call_setup_47",
+        "offset": 26,
+        "count": 2,
+        "start": 670
+      },
+      {
+        "helper": "call_setup_48",
+        "offset": 28,
+        "count": 2,
+        "start": 672
+      },
+      {
+        "helper": "call_setup_49",
+        "offset": 30,
+        "count": 2,
+        "start": 674
+      },
+      {
+        "helper": "call_setup_50",
+        "offset": 32,
+        "count": 2,
+        "start": 676
+      },
+      {
+        "helper": "call_setup_51",
+        "offset": 34,
+        "count": 2,
+        "start": 678
+      },
+      {
+        "helper": "call_setup_52",
+        "offset": 36,
+        "count": 2,
+        "start": 680
+      },
+      {
+        "helper": "call_setup_53",
+        "offset": 38,
+        "count": 2,
+        "start": 682
+      },
+      {
+        "helper": "call_setup_54",
+        "offset": 40,
+        "count": 2,
+        "start": 684
+      },
+      {
+        "helper": "call_setup_55",
+        "offset": 42,
+        "count": 2,
+        "start": 686
+      },
+      {
+        "helper": "call_setup_56",
+        "offset": 44,
+        "count": 2,
+        "start": 688
+      },
+      {
+        "helper": "call_setup_57",
+        "offset": 46,
+        "count": 2,
+        "start": 690
+      },
+      {
+        "helper": "call_setup_58",
+        "offset": 48,
+        "count": 2,
+        "start": 692
+      },
+      {
+        "helper": "call_setup_59",
+        "offset": 50,
+        "count": 2,
+        "start": 694
+      },
+      {
+        "helper": "call_setup_60",
+        "offset": 52,
+        "count": 2,
+        "start": 696
+      },
+      {
+        "helper": "call_setup_61",
+        "offset": 54,
+        "count": 2,
+        "start": 698
+      },
+      {
+        "helper": "call_setup_62",
+        "offset": 56,
+        "count": 2,
+        "start": 700
+      },
+      {
+        "helper": "call_setup_63",
+        "offset": 58,
+        "count": 2,
+        "start": 702
+      },
+      {
+        "helper": "call_setup_64",
+        "offset": 60,
+        "count": 2,
+        "start": 704
+      },
+      {
+        "helper": "call_setup_65",
+        "offset": 62,
+        "count": 2,
+        "start": 706
+      },
+      {
+        "helper": "call_setup_66",
+        "offset": 64,
+        "count": 2,
+        "start": 708
+      },
+      {
+        "helper": "call_setup_67",
+        "offset": 66,
+        "count": 2,
+        "start": 710
+      },
+      {
+        "helper": "call_setup_68",
+        "offset": 68,
+        "count": 2,
+        "start": 712
+      },
+      {
+        "helper": "call_setup_69",
+        "offset": 70,
+        "count": 2,
+        "start": 714
+      },
+      {
+        "helper": "call_setup_70",
+        "offset": 72,
+        "count": 2,
+        "start": 716
+      },
+      {
+        "helper": "call_setup_71",
+        "offset": 74,
+        "count": 2,
+        "start": 718
+      },
+      {
+        "helper": "call_setup_72",
+        "offset": 76,
+        "count": 2,
+        "start": 720
+      },
+      {
+        "helper": "call_setup_73",
+        "offset": 78,
+        "count": 2,
+        "start": 722
+      },
+      {
+        "helper": "call_setup_74",
+        "offset": 80,
+        "count": 2,
+        "start": 724
+      },
+      {
+        "helper": "call_setup_75",
+        "offset": 82,
+        "count": 2,
+        "start": 726
+      },
+      {
+        "helper": "call_setup_76",
+        "offset": 84,
+        "count": 2,
+        "start": 728
+      },
+      {
+        "helper": "call_setup_77",
+        "offset": 86,
+        "count": 2,
+        "start": 730
+      },
+      {
+        "helper": "call_setup_78",
+        "offset": 88,
+        "count": 2,
+        "start": 732
+      },
+      {
+        "helper": "call_setup_79",
+        "offset": 90,
+        "count": 2,
+        "start": 734
+      },
+      {
+        "helper": "call_setup_80",
+        "offset": 92,
+        "count": 2,
+        "start": 736
+      },
+      {
+        "helper": "call_setup_81",
+        "offset": 94,
+        "count": 2,
+        "start": 738
+      },
+      {
+        "helper": "call_setup_82",
+        "offset": 96,
+        "count": 2,
+        "start": 740
+      },
+      {
+        "helper": "call_setup_83",
+        "offset": 98,
+        "count": 2,
+        "start": 742
+      },
+      {
+        "helper": "call_setup_84",
+        "offset": 100,
+        "count": 2,
+        "start": 744
+      },
+      {
+        "helper": "call_setup_85",
+        "offset": 102,
+        "count": 2,
+        "start": 746
+      },
+      {
+        "helper": "call_setup_86",
+        "offset": 104,
+        "count": 2,
+        "start": 748
+      },
+      {
+        "helper": "call_setup_87",
+        "offset": 106,
+        "count": 2,
+        "start": 750
+      },
+      {
+        "helper": "call_setup_88",
+        "offset": 108,
+        "count": 2,
+        "start": 752
+      },
+      {
+        "helper": "call_setup_89",
+        "offset": 110,
+        "count": 2,
+        "start": 754
+      },
+      {
+        "helper": "call_setup_90",
+        "offset": 112,
+        "count": 2,
+        "start": 756
+      },
+      {
+        "helper": "call_setup_91",
+        "offset": 114,
+        "count": 2,
+        "start": 758
+      },
+      {
+        "helper": "call_setup_92",
+        "offset": 116,
+        "count": 2,
+        "start": 760
+      },
+      {
+        "helper": "call_setup_93",
+        "offset": 118,
+        "count": 2,
+        "start": 762
+      },
+      {
+        "helper": "call_setup_94",
+        "offset": 120,
+        "count": 2,
+        "start": 764
+      },
+      {
+        "helper": "call_setup_95",
+        "offset": 122,
+        "count": 2,
+        "start": 766
+      },
+      {
+        "helper": "call_setup_96",
+        "offset": 124,
+        "count": 2,
+        "start": 768
+      },
+      {
+        "helper": "call_setup_97",
+        "offset": 126,
+        "count": 2,
+        "start": 770
+      },
+      {
+        "helper": "call_setup_98",
+        "offset": 128,
+        "count": 2,
+        "start": 772
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_30",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4311,
+    "end": 4470,
+    "sourceDeclarationSha256": "f69f0684a44093931481f9b577b9ed6f20bf27ebf6b943dbd11089a7269374b3",
+    "name": "CanInstantiate",
+    "length": 1,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 11,
+    "originalOperandSlots": 6,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 6,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_2",
+        "offset": 0,
+        "count": 2,
+        "start": 9
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_31",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4378,
+    "end": 4454,
+    "sourceDeclarationSha256": "7090589981e2c7ebd8d3071438e2d94562fbcd446e9193adbd646e4e023fcee6",
+    "name": "",
+    "length": 2,
+    "arrow": true,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 15,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 2,
+    "callArgumentSlices": [
+      {
+        "start": 9,
+        "count": 1
+      },
+      {
+        "start": 10,
+        "count": 1
+      }
+    ],
+    "setupDescriptorSlots": 4,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_99",
+        "offset": 0,
+        "count": 2,
+        "start": 11
+      },
+      {
+        "helper": "call_setup_100",
+        "offset": 2,
+        "count": 2,
+        "start": 13
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_32",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4456,
+    "end": 4466,
+    "sourceDeclarationSha256": "2514aac809cba4d120d1a27aad6787c8d8e63792c7b22741ff0533e4985baca1",
+    "name": "",
+    "length": 0,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": false,
+    "heapOperandSlots": 0,
+    "originalOperandSlots": 0,
+    "appendedArgumentSlots": 0,
+    "callArgumentSlices": [],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_33",
+    "source": "guard/guard.mjs",
+    "start": 6384,
+    "end": 6512,
+    "sourceDeclarationSha256": "4f935573b4b6698358a1179cec9d32b86c687212c585e110961c8b425d1a6db2",
+    "name": "ShiftLeft",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 27,
+    "originalOperandSlots": 22,
+    "appendedArgumentSlots": 5,
+    "callArgumentSlices": [
+      {
+        "start": 22,
+        "count": 2
+      },
+      {
+        "start": 24,
+        "count": 1
+      },
+      {
+        "start": 25,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_296",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4707,
+    "end": 4884,
+    "sourceDeclarationSha256": "9f9ada764f45cf564dbd4486cfdbe8baa536b573387a197ad030f812fa2121ed",
+    "name": "InstantiateElements",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 20,
+    "originalOperandSlots": 12,
+    "appendedArgumentSlots": 4,
+    "callArgumentSlices": [
+      {
+        "start": 12,
+        "count": 3
+      },
+      {
+        "start": 15,
+        "count": 1
+      }
+    ],
+    "setupDescriptorSlots": 4,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_3",
+        "offset": 0,
+        "count": 2,
+        "start": 16
+      },
+      {
+        "helper": "call_setup_4",
+        "offset": 2,
+        "count": 2,
+        "start": 18
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_297",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4892,
+    "end": 5013,
+    "sourceDeclarationSha256": "bd34fa1bc0f1616622ab2f32d5a878a90bbd76baf5da92588baee5b5c26b8a67",
+    "name": "InstantiateTypes",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 12,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 1,
+    "callArgumentSlices": [
+      {
+        "start": 9,
+        "count": 1
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_5",
+        "offset": 0,
+        "count": 2,
+        "start": 10
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_298",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4964,
+    "end": 5009,
+    "sourceDeclarationSha256": "09d19c67b2d2909830bccfefb2250409a064a0975cace6488c9614736358f37e",
+    "name": "",
+    "length": 1,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 11,
+    "originalOperandSlots": 6,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 6,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_6",
+        "offset": 0,
+        "count": 2,
+        "start": 9
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_303",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4230,
+    "end": 4303,
+    "sourceDeclarationSha256": "e2fcfce80ecc8dbd216108db6c89a70c34c4b080eb6a6d327d5dd67ff80ceeb5",
+    "name": "State",
+    "length": 2,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 9,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 0,
+    "callArgumentSlices": [],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_450",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4478,
+    "end": 4699,
+    "sourceDeclarationSha256": "cea06db9c59661e83d9bf53ac7b089d09a9896ff2cb837d9dfdcc5ed89b5f37f",
+    "name": "InstantiateProperties",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 19,
+    "originalOperandSlots": 12,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 12,
+        "count": 1
+      },
+      {
+        "start": 13,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 4,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_7",
+        "offset": 0,
+        "count": 2,
+        "start": 15
+      },
+      {
+        "helper": "call_setup_8",
+        "offset": 2,
+        "count": 2,
+        "start": 17
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_451",
+    "source": "type/engine/instantiate.mjs",
+    "start": 4580,
+    "end": 4691,
+    "sourceDeclarationSha256": "4afd6accaaec3e8eefa4ebce534adffe6359eaa049f468cbe895579d8ff8fdaf",
+    "name": "",
+    "length": 2,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 19,
+    "originalOperandSlots": 14,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 14,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_9",
+        "offset": 0,
+        "count": 2,
+        "start": 17
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_625",
+    "source": "type/engine/instantiate.mjs",
+    "start": 11260,
+    "end": 13108,
+    "sourceDeclarationSha256": "8778b6ac6e4ea203a5cfc66f7bcbc72525424f0f24fca159c493724eae402696",
+    "name": "InstantiateImmediate",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 420,
+    "originalOperandSlots": 225,
+    "appendedArgumentSlots": 97,
+    "callArgumentSlices": [
+      {
+        "start": 225,
+        "count": 1
+      },
+      {
+        "start": 226,
+        "count": 4
+      },
+      {
+        "start": 230,
+        "count": 1
+      },
+      {
+        "start": 231,
+        "count": 3
+      },
+      {
+        "start": 234,
+        "count": 1
+      },
+      {
+        "start": 235,
+        "count": 2
+      },
+      {
+        "start": 237,
+        "count": 1
+      },
+      {
+        "start": 238,
+        "count": 4
+      },
+      {
+        "start": 242,
+        "count": 1
+      },
+      {
+        "start": 243,
+        "count": 3
+      },
+      {
+        "start": 246,
+        "count": 3
+      },
+      {
+        "start": 249,
+        "count": 1
+      },
+      {
+        "start": 250,
+        "count": 3
+      },
+      {
+        "start": 253,
+        "count": 1
+      },
+      {
+        "start": 254,
+        "count": 3
+      },
+      {
+        "start": 257,
+        "count": 3
+      },
+      {
+        "start": 260,
+        "count": 1
+      },
+      {
+        "start": 261,
+        "count": 3
+      },
+      {
+        "start": 264,
+        "count": 1
+      },
+      {
+        "start": 265,
+        "count": 3
+      },
+      {
+        "start": 268,
+        "count": 3
+      },
+      {
+        "start": 271,
+        "count": 3
+      },
+      {
+        "start": 274,
+        "count": 1
+      },
+      {
+        "start": 275,
+        "count": 4
+      },
+      {
+        "start": 279,
+        "count": 1
+      },
+      {
+        "start": 280,
+        "count": 3
+      },
+      {
+        "start": 283,
+        "count": 1
+      },
+      {
+        "start": 284,
+        "count": 2
+      },
+      {
+        "start": 286,
+        "count": 1
+      },
+      {
+        "start": 287,
+        "count": 3
+      },
+      {
+        "start": 290,
+        "count": 1
+      },
+      {
+        "start": 291,
+        "count": 2
+      },
+      {
+        "start": 293,
+        "count": 1
+      },
+      {
+        "start": 294,
+        "count": 1
+      },
+      {
+        "start": 295,
+        "count": 1
+      },
+      {
+        "start": 296,
+        "count": 3
+      },
+      {
+        "start": 299,
+        "count": 2
+      },
+      {
+        "start": 301,
+        "count": 1
+      },
+      {
+        "start": 302,
+        "count": 3
+      },
+      {
+        "start": 305,
+        "count": 1
+      },
+      {
+        "start": 306,
+        "count": 1
+      },
+      {
+        "start": 307,
+        "count": 3
+      },
+      {
+        "start": 310,
+        "count": 1
+      },
+      {
+        "start": 311,
+        "count": 2
+      },
+      {
+        "start": 313,
+        "count": 1
+      },
+      {
+        "start": 314,
+        "count": 3
+      },
+      {
+        "start": 317,
+        "count": 1
+      },
+      {
+        "start": 318,
+        "count": 2
+      },
+      {
+        "start": 320,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 98,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_10",
+        "offset": 0,
+        "count": 2,
+        "start": 322
+      },
+      {
+        "helper": "call_setup_101",
+        "offset": 2,
+        "count": 2,
+        "start": 324
+      },
+      {
+        "helper": "call_setup_102",
+        "offset": 4,
+        "count": 2,
+        "start": 326
+      },
+      {
+        "helper": "call_setup_103",
+        "offset": 6,
+        "count": 2,
+        "start": 328
+      },
+      {
+        "helper": "call_setup_104",
+        "offset": 8,
+        "count": 2,
+        "start": 330
+      },
+      {
+        "helper": "call_setup_105",
+        "offset": 10,
+        "count": 2,
+        "start": 332
+      },
+      {
+        "helper": "call_setup_106",
+        "offset": 12,
+        "count": 2,
+        "start": 334
+      },
+      {
+        "helper": "call_setup_107",
+        "offset": 14,
+        "count": 2,
+        "start": 336
+      },
+      {
+        "helper": "call_setup_108",
+        "offset": 16,
+        "count": 2,
+        "start": 338
+      },
+      {
+        "helper": "call_setup_109",
+        "offset": 18,
+        "count": 2,
+        "start": 340
+      },
+      {
+        "helper": "call_setup_110",
+        "offset": 20,
+        "count": 2,
+        "start": 342
+      },
+      {
+        "helper": "call_setup_111",
+        "offset": 22,
+        "count": 2,
+        "start": 344
+      },
+      {
+        "helper": "call_setup_112",
+        "offset": 24,
+        "count": 2,
+        "start": 346
+      },
+      {
+        "helper": "call_setup_113",
+        "offset": 26,
+        "count": 2,
+        "start": 348
+      },
+      {
+        "helper": "call_setup_114",
+        "offset": 28,
+        "count": 2,
+        "start": 350
+      },
+      {
+        "helper": "call_setup_115",
+        "offset": 30,
+        "count": 2,
+        "start": 352
+      },
+      {
+        "helper": "call_setup_116",
+        "offset": 32,
+        "count": 2,
+        "start": 354
+      },
+      {
+        "helper": "call_setup_117",
+        "offset": 34,
+        "count": 2,
+        "start": 356
+      },
+      {
+        "helper": "call_setup_118",
+        "offset": 36,
+        "count": 2,
+        "start": 358
+      },
+      {
+        "helper": "call_setup_119",
+        "offset": 38,
+        "count": 2,
+        "start": 360
+      },
+      {
+        "helper": "call_setup_120",
+        "offset": 40,
+        "count": 2,
+        "start": 362
+      },
+      {
+        "helper": "call_setup_121",
+        "offset": 42,
+        "count": 2,
+        "start": 364
+      },
+      {
+        "helper": "call_setup_122",
+        "offset": 44,
+        "count": 2,
+        "start": 366
+      },
+      {
+        "helper": "call_setup_123",
+        "offset": 46,
+        "count": 2,
+        "start": 368
+      },
+      {
+        "helper": "call_setup_124",
+        "offset": 48,
+        "count": 2,
+        "start": 370
+      },
+      {
+        "helper": "call_setup_125",
+        "offset": 50,
+        "count": 2,
+        "start": 372
+      },
+      {
+        "helper": "call_setup_126",
+        "offset": 52,
+        "count": 2,
+        "start": 374
+      },
+      {
+        "helper": "call_setup_127",
+        "offset": 54,
+        "count": 2,
+        "start": 376
+      },
+      {
+        "helper": "call_setup_128",
+        "offset": 56,
+        "count": 2,
+        "start": 378
+      },
+      {
+        "helper": "call_setup_129",
+        "offset": 58,
+        "count": 2,
+        "start": 380
+      },
+      {
+        "helper": "call_setup_130",
+        "offset": 60,
+        "count": 2,
+        "start": 382
+      },
+      {
+        "helper": "call_setup_131",
+        "offset": 62,
+        "count": 2,
+        "start": 384
+      },
+      {
+        "helper": "call_setup_132",
+        "offset": 64,
+        "count": 2,
+        "start": 386
+      },
+      {
+        "helper": "call_setup_133",
+        "offset": 66,
+        "count": 2,
+        "start": 388
+      },
+      {
+        "helper": "call_setup_134",
+        "offset": 68,
+        "count": 2,
+        "start": 390
+      },
+      {
+        "helper": "call_setup_135",
+        "offset": 70,
+        "count": 2,
+        "start": 392
+      },
+      {
+        "helper": "call_setup_136",
+        "offset": 72,
+        "count": 2,
+        "start": 394
+      },
+      {
+        "helper": "call_setup_137",
+        "offset": 74,
+        "count": 2,
+        "start": 396
+      },
+      {
+        "helper": "call_setup_138",
+        "offset": 76,
+        "count": 2,
+        "start": 398
+      },
+      {
+        "helper": "call_setup_139",
+        "offset": 78,
+        "count": 2,
+        "start": 400
+      },
+      {
+        "helper": "call_setup_140",
+        "offset": 80,
+        "count": 2,
+        "start": 402
+      },
+      {
+        "helper": "call_setup_141",
+        "offset": 82,
+        "count": 2,
+        "start": 404
+      },
+      {
+        "helper": "call_setup_142",
+        "offset": 84,
+        "count": 2,
+        "start": 406
+      },
+      {
+        "helper": "call_setup_143",
+        "offset": 86,
+        "count": 2,
+        "start": 408
+      },
+      {
+        "helper": "call_setup_144",
+        "offset": 88,
+        "count": 2,
+        "start": 410
+      },
+      {
+        "helper": "call_setup_145",
+        "offset": 90,
+        "count": 2,
+        "start": 412
+      },
+      {
+        "helper": "call_setup_146",
+        "offset": 92,
+        "count": 2,
+        "start": 414
+      },
+      {
+        "helper": "call_setup_147",
+        "offset": 94,
+        "count": 2,
+        "start": 416
+      },
+      {
+        "helper": "call_setup_148",
+        "offset": 96,
+        "count": 2,
+        "start": 418
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_628",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 3039,
+    "end": 3628,
+    "sourceDeclarationSha256": "3079dafa34cd0f2d4c53d68696dde4b1674403a58bd1d888e1f03c1d12350dc6",
+    "name": "CallInstantiate",
+    "length": 4,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 94,
+    "originalOperandSlots": 55,
+    "appendedArgumentSlots": 21,
+    "callArgumentSlices": [
+      {
+        "start": 55,
+        "count": 3
+      },
+      {
+        "start": 58,
+        "count": 3
+      },
+      {
+        "start": 61,
+        "count": 1
+      },
+      {
+        "start": 62,
+        "count": 2
+      },
+      {
+        "start": 64,
+        "count": 1
+      },
+      {
+        "start": 65,
+        "count": 2
+      },
+      {
+        "start": 67,
+        "count": 1
+      },
+      {
+        "start": 68,
+        "count": 6
+      },
+      {
+        "start": 74,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 18,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_11",
+        "offset": 0,
+        "count": 2,
+        "start": 76
+      },
+      {
+        "helper": "call_setup_12",
+        "offset": 2,
+        "count": 2,
+        "start": 78
+      },
+      {
+        "helper": "call_setup_149",
+        "offset": 4,
+        "count": 2,
+        "start": 80
+      },
+      {
+        "helper": "call_setup_150",
+        "offset": 6,
+        "count": 2,
+        "start": 82
+      },
+      {
+        "helper": "call_setup_151",
+        "offset": 8,
+        "count": 2,
+        "start": 84
+      },
+      {
+        "helper": "call_setup_152",
+        "offset": 10,
+        "count": 2,
+        "start": 86
+      },
+      {
+        "helper": "call_setup_153",
+        "offset": 12,
+        "count": 2,
+        "start": 88
+      },
+      {
+        "helper": "call_setup_154",
+        "offset": 14,
+        "count": 2,
+        "start": 90
+      },
+      {
+        "helper": "call_setup_155",
+        "offset": 16,
+        "count": 2,
+        "start": 92
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_637",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1695,
+    "end": 1803,
+    "sourceDeclarationSha256": "1e6c44bec659dcfa99f854f64863c3317a9ffce552fdd86de0d208bf556f255b",
+    "name": "IsTailCall",
+    "length": 2,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 16,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 9,
+        "count": 1
+      },
+      {
+        "start": 10,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 4,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_13",
+        "offset": 0,
+        "count": 2,
+        "start": 12
+      },
+      {
+        "helper": "call_setup_14",
+        "offset": 2,
+        "count": 2,
+        "start": 14
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_638",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1533,
+    "end": 1694,
+    "sourceDeclarationSha256": "8337cf107b181e7da778db169090dbafb0f2507493ef8ae67afa40ede1794923",
+    "name": "Peek",
+    "length": 1,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 31,
+    "originalOperandSlots": 27,
+    "appendedArgumentSlots": 2,
+    "callArgumentSlices": [
+      {
+        "start": 27,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_156",
+        "offset": 0,
+        "count": 2,
+        "start": 29
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_642",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 2622,
+    "end": 3031,
+    "sourceDeclarationSha256": "98dde5b95bb06f5267216856ba8292ff6768a4810f3edf4fc7a005d96a283322",
+    "name": "CallImmediate",
+    "length": 6,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 53,
+    "originalOperandSlots": 33,
+    "appendedArgumentSlots": 12,
+    "callArgumentSlices": [
+      {
+        "start": 33,
+        "count": 3
+      },
+      {
+        "start": 36,
+        "count": 6
+      },
+      {
+        "start": 42,
+        "count": 2
+      },
+      {
+        "start": 44,
+        "count": 1
+      }
+    ],
+    "setupDescriptorSlots": 8,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_15",
+        "offset": 0,
+        "count": 2,
+        "start": 45
+      },
+      {
+        "helper": "call_setup_16",
+        "offset": 2,
+        "count": 2,
+        "start": 47
+      },
+      {
+        "helper": "call_setup_157",
+        "offset": 4,
+        "count": 2,
+        "start": 49
+      },
+      {
+        "helper": "call_setup_158",
+        "offset": 6,
+        "count": 2,
+        "start": 51
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_660",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 2305,
+    "end": 2621,
+    "sourceDeclarationSha256": "08b7cc4f8c688dd31b301bf409dd643e55aa0ae5613f7f15d1d662ab163dd1bc",
+    "name": "CallDistributed",
+    "length": 6,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 17,
+    "originalOperandSlots": 13,
+    "appendedArgumentSlots": 2,
+    "callArgumentSlices": [
+      {
+        "start": 13,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_17",
+        "offset": 0,
+        "count": 2,
+        "start": 15
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_661",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 2441,
+    "end": 2613,
+    "sourceDeclarationSha256": "874c626e78fce28c35fead028d486a0a044c3170996149259200e58c8f0f785c",
+    "name": "",
+    "length": 2,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 21,
+    "originalOperandSlots": 13,
+    "appendedArgumentSlots": 6,
+    "callArgumentSlices": [
+      {
+        "start": 13,
+        "count": 6
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_18",
+        "offset": 0,
+        "count": 2,
+        "start": 19
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_662",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1804,
+    "end": 2304,
+    "sourceDeclarationSha256": "5ec6cd5825ee9b09e3a5d2cd6a0be747070b94511bf8f9f553397b99682d23a7",
+    "name": "CallDispatch",
+    "length": 6,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 71,
+    "originalOperandSlots": 43,
+    "appendedArgumentSlots": 14,
+    "callArgumentSlices": [
+      {
+        "start": 43,
+        "count": 4
+      },
+      {
+        "start": 47,
+        "count": 2
+      },
+      {
+        "start": 49,
+        "count": 3
+      },
+      {
+        "start": 52,
+        "count": 2
+      },
+      {
+        "start": 54,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 14,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_19",
+        "offset": 0,
+        "count": 2,
+        "start": 57
+      },
+      {
+        "helper": "call_setup_20",
+        "offset": 2,
+        "count": 2,
+        "start": 59
+      },
+      {
+        "helper": "call_setup_26",
+        "offset": 4,
+        "count": 2,
+        "start": 61
+      },
+      {
+        "helper": "call_setup_27",
+        "offset": 6,
+        "count": 2,
+        "start": 63
+      },
+      {
+        "helper": "call_setup_28",
+        "offset": 8,
+        "count": 2,
+        "start": 65
+      },
+      {
+        "helper": "call_setup_29",
+        "offset": 10,
+        "count": 2,
+        "start": 67
+      },
+      {
+        "helper": "call_setup_30",
+        "offset": 12,
+        "count": 2,
+        "start": 69
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_663",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1274,
+    "end": 1390,
+    "sourceDeclarationSha256": "78da7a00f2fc7318ab98424a0a1b2dc62b5a2163987d7875b0243f4f92843cc4",
+    "name": "InstantiationIncrement",
+    "length": 0,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 8,
+    "originalOperandSlots": 6,
+    "appendedArgumentSlots": 0,
+    "callArgumentSlices": [],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_21",
+        "offset": 0,
+        "count": 2,
+        "start": 6
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_664",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1058,
+    "end": 1273,
+    "sourceDeclarationSha256": "35d59eeb295d327897b411c82a418801560405bbaf00708bd9abb2b51897a80d",
+    "name": "InstantiationAssert",
+    "length": 0,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 23,
+    "originalOperandSlots": 14,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 14,
+        "count": 2
+      },
+      {
+        "start": 16,
+        "count": 1
+      }
+    ],
+    "setupDescriptorSlots": 6,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_22",
+        "offset": 0,
+        "count": 2,
+        "start": 17
+      },
+      {
+        "helper": "call_setup_23",
+        "offset": 2,
+        "count": 2,
+        "start": 19
+      },
+      {
+        "helper": "call_setup_24",
+        "offset": 4,
+        "count": 2,
+        "start": 21
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_666",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1964,
+    "end": 2107,
+    "sourceDeclarationSha256": "07105d1368834f84bbb407357b49a1c5c4336530783c358770d072ff56529c22",
+    "name": "ResolveArgumentsContext",
+    "length": 4,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 14,
+    "originalOperandSlots": 10,
+    "appendedArgumentSlots": 4,
+    "callArgumentSlices": [
+      {
+        "start": 10,
+        "count": 4
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_667",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1761,
+    "end": 1956,
+    "sourceDeclarationSha256": "a286ddf98394c9a71e23376054f9a9d6b07acd16ebb1be8c8df08bdaf6251975",
+    "name": "BindParameters",
+    "length": 4,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 12,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 3,
+    "callArgumentSlices": [
+      {
+        "start": 9,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_668",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1866,
+    "end": 1937,
+    "sourceDeclarationSha256": "f0d808a3cffeb93e5634349b7a2c0f3124a1deadf068ab52bf1526f64735c796",
+    "name": "",
+    "length": 2,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 14,
+    "originalOperandSlots": 9,
+    "appendedArgumentSlots": 5,
+    "callArgumentSlices": [
+      {
+        "start": 9,
+        "count": 5
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_669",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1939,
+    "end": 1952,
+    "sourceDeclarationSha256": "3bdc73c2fd2aba553f9eaf2188ee6794b2b4eb6280cce933c1c66b4815fb7c10",
+    "name": "",
+    "length": 0,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 1,
+    "originalOperandSlots": 1,
+    "appendedArgumentSlots": 0,
+    "callArgumentSlices": [],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_670",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1175,
+    "end": 1760,
+    "sourceDeclarationSha256": "e451444fe44c43ad41189cad4cda9b083ae98ed75d7419cf3c8182a1b619d7fe",
+    "name": "BindArguments",
+    "length": 5,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 35,
+    "originalOperandSlots": 26,
+    "appendedArgumentSlots": 9,
+    "callArgumentSlices": [
+      {
+        "start": 26,
+        "count": 3
+      },
+      {
+        "start": 29,
+        "count": 3
+      },
+      {
+        "start": 32,
+        "count": 3
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_671",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1472,
+    "end": 1613,
+    "sourceDeclarationSha256": "dd12ed66b0e91df0d2e8b7714f42c0e6f8d507c7fbb890ded6109ee81e2f0537",
+    "name": "",
+    "length": 2,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 26,
+    "originalOperandSlots": 17,
+    "appendedArgumentSlots": 9,
+    "callArgumentSlices": [
+      {
+        "start": 17,
+        "count": 5
+      },
+      {
+        "start": 22,
+        "count": 4
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_672",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 1615,
+    "end": 1756,
+    "sourceDeclarationSha256": "672361c79f5ddb9e90c34b17675ff8b1cc9fecfcb97f77393d6461bad500a0db",
+    "name": "",
+    "length": 0,
+    "arrow": true,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 24,
+    "originalOperandSlots": 15,
+    "appendedArgumentSlots": 9,
+    "callArgumentSlices": [
+      {
+        "start": 15,
+        "count": 5
+      },
+      {
+        "start": 20,
+        "count": 4
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_673",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 905,
+    "end": 1174,
+    "sourceDeclarationSha256": "3ed8da587dab00dce03706e17dee6b857a6e06da4a519a1607485807cd944cab",
+    "name": "BindArgument",
+    "length": 5,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 33,
+    "originalOperandSlots": 25,
+    "appendedArgumentSlots": 8,
+    "callArgumentSlices": [
+      {
+        "start": 25,
+        "count": 3
+      },
+      {
+        "start": 28,
+        "count": 3
+      },
+      {
+        "start": 31,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_674",
+    "source": "type/engine/call/resolve_arguments.mjs",
+    "start": 507,
+    "end": 904,
+    "sourceDeclarationSha256": "54211bd6f4102bea5fa189e8f0231238204f3df47b0e7427c4b4a920c87bd9c9",
+    "name": "AssertArgumentExtends",
+    "length": 3,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 48,
+    "originalOperandSlots": 40,
+    "appendedArgumentSlots": 8,
+    "callArgumentSlices": [
+      {
+        "start": 40,
+        "count": 1
+      },
+      {
+        "start": 41,
+        "count": 1
+      },
+      {
+        "start": 42,
+        "count": 3
+      },
+      {
+        "start": 45,
+        "count": 1
+      },
+      {
+        "start": 46,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 0,
+    "setupDescriptors": []
+  },
+  {
+    "nativeCallback": "f_675",
+    "source": "type/engine/call/instantiate.mjs",
+    "start": 1391,
+    "end": 1532,
+    "sourceDeclarationSha256": "31acd155242ae4ba9f6d39abeb7738ca90a49a458b2f3b2e8d864f2d00635eb4",
+    "name": "InstantiationDecrement",
+    "length": 0,
+    "arrow": false,
+    "originalUsesReceiver": false,
+    "originalUsesArgs": false,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 9,
+    "originalOperandSlots": 5,
+    "appendedArgumentSlots": 2,
+    "callArgumentSlices": [
+      {
+        "start": 5,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 2,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_25",
+        "offset": 0,
+        "count": 2,
+        "start": 7
+      }
+    ]
+  },
+  {
+    "nativeCallback": "f_686",
+    "source": "type/engine/instantiate.mjs",
+    "start": 5014,
+    "end": 5389,
+    "sourceDeclarationSha256": "3e3b9b5922c8643878c7fa7009cc65fe9969c5974a5ae7eb39b28c4e87aa53af",
+    "name": "WithModifiers",
+    "length": 2,
+    "arrow": false,
+    "originalUsesReceiver": true,
+    "originalUsesArgs": true,
+    "originalUsesEnv": true,
+    "heapOperandSlots": 51,
+    "originalOperandSlots": 30,
+    "appendedArgumentSlots": 9,
+    "callArgumentSlices": [
+      {
+        "start": 30,
+        "count": 1
+      },
+      {
+        "start": 31,
+        "count": 2
+      },
+      {
+        "start": 33,
+        "count": 1
+      },
+      {
+        "start": 34,
+        "count": 2
+      },
+      {
+        "start": 36,
+        "count": 1
+      },
+      {
+        "start": 37,
+        "count": 2
+      }
+    ],
+    "setupDescriptorSlots": 12,
+    "setupDescriptors": [
+      {
+        "helper": "call_setup_159",
+        "offset": 0,
+        "count": 2,
+        "start": 39
+      },
+      {
+        "helper": "call_setup_160",
+        "offset": 2,
+        "count": 2,
+        "start": 41
+      },
+      {
+        "helper": "call_setup_161",
+        "offset": 4,
+        "count": 2,
+        "start": 43
+      },
+      {
+        "helper": "call_setup_162",
+        "offset": 6,
+        "count": 2,
+        "start": 45
+      },
+      {
+        "helper": "call_setup_163",
+        "offset": 8,
+        "count": 2,
+        "start": 47
+      },
+      {
+        "helper": "call_setup_164",
+        "offset": 10,
+        "count": 2,
+        "start": 49
+      }
+    ]
+  }
+]

@@ -1,0 +1,38 @@
+[
+  {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/src/sqlite/cloudflare.ts.txt",
+    "upstream_path": "packages/chord/src/sqlite/cloudflare.ts",
+    "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "upstream_blob": "897a660b7c3caf1f39f38e30822835f6459c3d25",
+    "bytes": 5864,
+    "sha256": "2DEE7C2AEE058FD570FD8B0E0B9488F9382189362519C1A8EADF37FD6C0E0E28",
+    "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/cloudflare.ts"
+  },
+  {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/test/sqlite/cloudflare.test.ts.txt",
+    "upstream_path": "packages/chord/test/sqlite/cloudflare.test.ts",
+    "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "upstream_blob": "0e7521d25b54d8665a1f22a5391039846350602c",
+    "bytes": 5254,
+    "sha256": "31794743762C5280107A5B171439091ECCF353D339CCEA158BAFDA9E9AAB3373",
+    "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/test/sqlite/cloudflare.test.ts"
+  },
+  {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/chord/src/sqlite/database.ts.txt",
+    "upstream_path": "packages/chord/src/sqlite/database.ts",
+    "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "upstream_blob": "fc5a814c6141a18e519c4a461377c4068eb044ac",
+    "bytes": 1861,
+    "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2",
+    "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/database.ts"
+  },
+  {
+    "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/authority/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+    "upstream_path": "packages/durable/src/storage/sqlite/cloudflare.ts",
+    "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "upstream_blob": "3bce64417c1685a6f66e218cdce417394809a60c",
+    "bytes": 712,
+    "sha256": "CDCF6D443E0A03296F74732B6EB1AD7C3EBD00FFE5A8F8BC4C66B65D72948D10",
+    "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/cloudflare.ts"
+  }
+]

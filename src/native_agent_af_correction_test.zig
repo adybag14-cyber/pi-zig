@@ -18,7 +18,7 @@ fn executorFault(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []co
 }
 fn noop(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return c.pi_js_undefined(); }
 test "native Agent AF correction actual Promise executor marked fault escapes exact reason and wrap" {
-    for (.{ @as(u64, 0), std.math.maxInt(u64) }) |generation| {
+    for ([_]u64{ 0, std.math.maxInt(u64) }) |generation| {
         const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
         var s: p.Scope = .{ .engine = engine }; defer s.deinit();
         engine.native_allocation_generation = generation; marked = true; observed = null;

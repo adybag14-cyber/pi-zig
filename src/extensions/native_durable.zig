@@ -424,6 +424,7 @@ pub fn install(engine: *Engine) !void {
         const storage_exports = try sdk.object(engine);
         defer engine.freeValue(storage_exports);
         try sdk.put(engine, storage_exports, item[1], try engine.checked(c.pi_js_function_magic(engine.context, openStorage, item[1], 1, item[2])));
+        if (item[2] == 1 and engine.native_module_values.contains("@earendil-works/chord/sqlite/node")) try @import("native_chord_sqlite.zig").addDurableNodeReexports(engine, storage_exports);
         const name = "@earendil-works/pi-durable/storage/" ++ item[0] ++ "/node";
         if (!engine.native_module_names.contains(name)) try engine.registerValueModule(name, storage_exports);
     }

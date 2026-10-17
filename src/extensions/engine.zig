@@ -232,6 +232,7 @@ pub const Engine = struct {
     native_ai_codex_socket_pump: ?*const fn (*Engine) anyerror!bool = null,
     native_ai_codex_socket_pending: ?*const fn (*Engine) bool = null,
     native_chord_json_functions: ?c.JSValue = null,
+    native_typebox_continuation: ?*anyopaque = null,
     native_typebox_hash_accumulator: u64 = 14695981039346656037,
     native_typebox_literal_error: ?c.JSValue = null,
     native_typebox_literal_base: ?c.JSValue = null,
@@ -246,7 +247,11 @@ pub const Engine = struct {
         var memory_owner: ?*anyopaque = null;
         const runtime = c.pi_js_new_runtime(options.memory_limit, &memory_owner) orelse return error.OutOfMemory;
         errdefer c.pi_js_release_memory_owner(memory_owner);
-        errdefer c.JS_FreeRuntime(runtime);
+        var continuation_owner_initialized = false;
+        errdefer {
+            c.JS_FreeRuntime(runtime);
+            if (continuation_owner_initialized) @import("native_typebox_continuation.zig").deinitAfterRuntime(self);
+        }
         c.JS_SetMemoryLimit(runtime, options.memory_limit);
         c.JS_SetMaxStackSize(runtime, options.stack_limit);
         if (options.deterministic_clock) |clock| if (c.JS_PISetDeterministicTime(runtime, clock.seed, clock.realtime(), clock.elapsed()) < 0) return error.InvalidDeterministicTime;
@@ -272,6 +277,7 @@ pub const Engine = struct {
         const clone_operations = try @import("native_clone_intrinsics.zig").create(context);
         errdefer c.JS_FreeValue(context, clone_operations);
         self.* = .{ .gpa = gpa, .runtime = runtime, .native_memory_owner = memory_owner.?, .context = context, .options = options, .commonjs_cache = commonjs_cache, .intrinsic_decode_uri_component = intrinsic_decoder, .intrinsic_regexp_constructor = intrinsic_regexp, .intrinsic_bigint_constructor = intrinsic_bigint, .intrinsic_clone_operations = clone_operations };
+        continuation_owner_initialized = true;
         c.JS_SetContextOpaque(context, self);
         c.JS_SetRuntimeOpaque(runtime, self);
         c.JS_SetInterruptHandler(runtime, interrupt, self);
@@ -381,6 +387,7 @@ pub const Engine = struct {
         self.freeValue(self.commonjs_cache);
         c.JS_FreeContext(self.context);
         c.JS_FreeRuntime(self.runtime);
+        @import("native_typebox_continuation.zig").deinitAfterRuntime(self);
         @import("native_durable_storage.zig").deinit(self);
         c.pi_js_release_memory_owner(self.native_memory_owner);
         if (self.last_error) |message| self.gpa.free(message);

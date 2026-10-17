@@ -4,7 +4,9 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import {pathToFileURL,fileURLToPath} from 'node:url';
 import {outlineCallPreparations,usesNativeName} from './outline-call-setup.mjs';
+import {emitContinuations,selectedContinuation} from './emit-continuations.mjs';
 import {checkCallSetupAuthoring} from './outline-call-setup.test.mjs';
+import {checkCallStepAuthoring} from './outline-call-steps.test.mjs';
 // The existing owner sends this only after retained-handle/live-argv verification.
 if(process.argv[3]==='--owned-start'&&fs.readFileSync(0,'utf8')!=='TYPEBOX_STATIC_AUTHORING_OWNED_START\n')throw Error('Static authoring owned-start token required');
 if(process.argv[3]!=='--owned-start'||!process.argv[4])throw Error('Owned start and resolved workspace descriptor required');
@@ -13,6 +15,7 @@ const samePath=(left,right)=>path.resolve(left).toLowerCase()===path.resolve(rig
 if(workspace.schema!==1||!['static_authoring','static_package_authoring'].includes(workspace.mode)||!samePath(workspace.candidate_root,fileURLToPath(new URL('../../',import.meta.url)))||!samePath(workspace.output_directory,process.argv[2]))throw Error('Static authoring workspace descriptor mismatch');
 if(workspace.mode==='static_package_authoring'&&(!workspace.source_package_root||workspace.input_authority!=='source_package_only'||workspace.runtime_restoration_claim!==false))throw Error('Explicit source-only package authority required');
 const setupAuthoringControls=checkCallSetupAuthoring();
+const callStepAuthoringControls=checkCallStepAuthoring();
 if(crypto.createHash('sha256').update(fs.readFileSync(workspace.acorn_entry)).digest('hex').toUpperCase()!==workspace.acorn_entry_sha256)throw Error('Sealed Acorn entry drift');
 const {parse}=await import(pathToFileURL(workspace.acorn_entry));
 const root=workspace.mode==='static_package_authoring'?path.join(workspace.source_package_root,'build'):path.join(workspace.runtime,'node_modules/typebox/build');
@@ -100,18 +103,20 @@ console.log(JSON.stringify({modules:report.modules.length,declarations:report.de
 // operations and literals, never an AST/source blob for runtime interpretation.
 const functions=[],functionIds=new WeakMap(),branchHelpers=[],argumentFrames=new Map();let serial=0;
 const setupModules=new Set(['type/engine/instantiate.mjs','type/engine/call/instantiate.mjs']);
-function nativeUnit(kind,id,ctx,body){return{kind,id,owner:ctx.argumentFrame.key,source:ctx.module.file,scoped:ctx.scopedSetup,lines:ctx.lines,regions:ctx.callRegions,flags:{receiver:/\breceiver\b/.test(body),args:/\bargs\b/.test(body),env:/\benv\b/.test(body)}}}
+function nativeUnit(kind,id,ctx,body){return{kind,id,owner:ctx.argumentFrame.key,source:ctx.module.file,scoped:ctx.scopedSetup,lines:ctx.lines,records:ctx.records,regions:ctx.callRegions,flags:{receiver:/\breceiver\b/.test(body),args:/\bargs\b/.test(body),env:/\benv\b/.test(body)}}}
 function optionalCallee(node){let optional=false;walk(node,part=>{if(part.type==='ChainExpression'||part.optional)optional=true});return optional}
 const q=value=>JSON.stringify(value).replace(/\\u([0-9a-fA-F]{4})/g,'\\u{$1}').replace(/\\b/g,'\\x08').replace(/\\f/g,'\\x0c');
 const fresh=prefix=>`${prefix}_${serial++}`;
-const line=(ctx,text)=>ctx.lines.push(text);
-function value(ctx,expression){const name=`native_values[${ctx.slots.count++}]`;line(ctx,`${name} = ${expression};`);return name}
+const record=(ctx,operation)=>(ctx.records??=[]).push(operation);
+const line=(ctx,text,operation=null)=>{ctx.lines.push(text);record(ctx,operation??{kind:'emit',text})};
+function value(ctx,expression,operation=null){const name=`native_values[${ctx.slots.count++}]`;line(ctx,`${name} = ${expression};`,operation);return name}
 function argumentFrame(key){const frame={key,count:0,ranges:[],base:0};argumentFrames.set(key,frame);return frame}
 function argumentMarker(frame,index){return `__TYPEBOX_NATIVE_ARG_${frame.key}_${index}__`}
-function argumentsSlice(ctx,args){
- if(args.length===0)return '&.{}';
+function argumentsSlice(ctx,args,region=null){
+ if(args.length===0){if(region)region.argumentRange={owner:ctx.argumentFrame.key,start:0,count:0,empty:true};return '&.{}'}
  const frame=ctx.argumentFrame,start=frame.count;frame.count+=args.length;
  frame.ranges.push({start,count:args.length});
+ if(region)region.argumentRange={owner:frame.key,start,count:args.length,empty:false};
  args.forEach((arg,index)=>line(ctx,`native_values[${argumentMarker(frame,start+index)}] = ${arg};`));
  return `native_values[${argumentMarker(frame,start)}..${argumentMarker(frame,start+args.length)}]`;
 }
@@ -135,10 +140,10 @@ function bindPattern(ctx,pattern,input){
 function compileFunction(node,module,inferred='',ancestors=new Set()){
  if(functionIds.has(node))return functionIds.get(node);
  const id=functions.length;functionIds.set(node,id);functions.push(null);
- const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],receiver:'receiver',slots:{count:0},argumentFrame:argumentFrame(`f${id}`),scopedSetup:setupModules.has(module.file),callRegions:[]};
+ const ctx={module,locals:new Set([...ancestors,...localsOf(node)]),lines:[],records:[],receiver:'receiver',slots:{count:0},argumentFrame:argumentFrame(`f${id}`),scopedSetup:setupModules.has(module.file),continuationSelected:selectedContinuation(module.file,node.id?.name??inferred),callRegions:[]};
  for(let i=0;i<node.params.length;i++){const p=node.params[i];const input=value(ctx,p.type==='RestElement'?`try rt.rest(s, args, ${i})`:`rt.argument(args, ${i})`);bindPattern(ctx,p,input)}
- if(node.body.type==='BlockStatement'){statement(ctx,node.body);if(!returns(node.body))line(ctx,'return c.pi_js_undefined();')}
- else {const output=expr(ctx,node.body);line(ctx,`return c.JS_DupValue(engine.context, ${output});`)}
+ if(node.body.type==='BlockStatement'){statement(ctx,node.body);if(!returns(node.body))line(ctx,'return c.pi_js_undefined();',{kind:'returned',value:'c.pi_js_undefined()'})}
+ else {const output=expr(ctx,node.body);line(ctx,`return c.JS_DupValue(engine.context, ${output});`,{kind:'returned',value:output})}
  const sourceName=node.id?.name??inferred;
  const length=node.params.findIndex(p=>p.type==='AssignmentPattern'||p.type==='RestElement');
  const body=ctx.lines.join('\n'),usesReceiver=/\breceiver\b/.test(body),usesArgs=/\bargs\b/.test(body);
@@ -147,22 +152,22 @@ function compileFunction(node,module,inferred='',ancestors=new Set()){
  functions[id]={id,node,module,name:sourceName,length:length<0?node.params.length:length,arrow,body,usesReceiver,usesArgs,usesEnv:/\benv\b/.test(body),unit:nativeUnit('callback',id,ctx,body),slots:ctx.slots.count+ctx.argumentFrame.count,originalSlots:ctx.slots.count,argumentSlots:ctx.argumentFrame.count,argumentSlices:ctx.argumentFrame.ranges.map(range=>({start:ctx.slots.count+range.start,count:range.count}))};return id;
 }
 function branchFunction(ctx,node){
- const id=branchHelpers.length,helper={...ctx,lines:[],callRegions:[],receiver:'receiver'};branchHelpers.push(null);
+ const id=branchHelpers.length,helper={...ctx,lines:[],records:[],callRegions:[],receiver:'receiver'};branchHelpers.push(null);
  const conditional=node.type==='ConditionalExpression';
  const left=expr(helper,conditional?node.test:node.left);
  const condition=conditional?`s.truthy(${left})`:node.operator==='&&'?`s.truthy(${left})`:node.operator==='||'?`!s.truthy(${left})`:`rt.nullish(${left})`;
  function complete(next){
   if(next.type==='ConditionalExpression'||next.type==='LogicalExpression'){
-   const child=branchFunction(helper,next);line(helper,`return .{ .jump = ${child} };`);
-  }else{const output=expr(helper,next);line(helper,`return .{ .value = ${output} };`)}
+   const child=branchFunction(helper,next);line(helper,`return .{ .jump = ${child} };`,{kind:'branch_jump',id:child});
+  }else{const output=expr(helper,next);line(helper,`return .{ .value = ${output} };`,{kind:'branch_value',value:output})}
  }
- line(helper,`if (${condition}) {`);complete(conditional?node.consequent:node.right);line(helper,'} else {');
- if(conditional)complete(node.alternate);else line(helper,`return .{ .value = ${left} };`);
- line(helper,'}');const body=helper.lines.join('\n');branchHelpers[id]={body,unit:nativeUnit('branch',id,helper,body),source:ctx.module.file,start:node.start,end:node.end};return id;
+ line(helper,`if (${condition}) {`,{kind:'if',test:condition});complete(conditional?node.consequent:node.right);line(helper,'} else {',{kind:'else'});
+ if(conditional)complete(node.alternate);else line(helper,`return .{ .value = ${left} };`,{kind:'branch_value',value:left});
+ line(helper,'}',{kind:'endif'});const body=helper.lines.join('\n');branchHelpers[id]={body,unit:nativeUnit('branch',id,helper,body),source:ctx.module.file,start:node.start,end:node.end};return id;
 }
 function functionValue(ctx,node,inferred=''){
  const id=compileFunction(node,ctx.module,inferred,ctx.locals),f=functions[id];
- return value(ctx,`try rt.function(s, ${q(f.name)}, ${f.length}, f_${id}, env, ${ctx.receiver}, ${f.arrow})`);
+ return value(ctx,`try rt.${selectedContinuation(f.module.file,f.name)?'plannedFunction':'function'}(s, ${q(f.name)}, ${f.length}, f_${id}, env, ${ctx.receiver}, ${f.arrow}${selectedContinuation(f.module.file,f.name)?`, &typebox_plan_${id}`:''})`);
 }
 function member(ctx,node){
  const object=expr(ctx,node.object),raw=node.computed?expr(ctx,node.property):value(ctx,`try s.text(${q(node.property.name)})`);const key=value(ctx,`try rt.propertyKey(s, ${raw})`);return{object,key};
@@ -189,19 +194,20 @@ function expr(ctx,node,inferred=''){
    const m=member(ctx,node);return value(ctx,`try rt.key(s, ${m.object}, ${m.key})`);
   }
   case 'CallExpression':case 'NewExpression':{
+   if(ctx.continuationSelected&&(node.optional||optionalCallee(node.callee)||node.arguments.some(arg=>arg.type==='SpreadElement')))throw Error('Unsupported selected continuation call form');
    const region=ctx.scopedSetup&&!node.optional&&!optionalCallee(node.callee)&&!node.arguments.some(arg=>arg.type==='SpreadElement')?{start:ctx.lines.length,sourceStart:node.start,sourceEnd:node.end,sourceHash:crypto.createHash('sha256').update(ctx.module.source.slice(node.start,node.end)).digest('hex'),construct:node.type==='NewExpression'}:null;
    let callable,receiver='c.pi_js_undefined()';
    if(node.callee.type==='MemberExpression'&&!(node.callee.object.type==='Identifier'&&!ctx.locals.has(node.callee.object.name)&&local(ctx.module,node.callee.object.name)?.namespace)){const m=member(ctx,node.callee);receiver=m.object;callable=value(ctx,`try rt.key(s, ${m.object}, ${m.key})`)}else callable=expr(ctx,node.callee);
    if(region){region.calleeEnd=ctx.lines.length;region.callable=callable;region.callReceiver=receiver}
    const optional=node.optional;let output;
    if(optional){output=fresh('optional');line(ctx,`var ${output} = c.pi_js_undefined();`);line(ctx,`if (!rt.nullish(${callable})) {`)}
-   let result;
+   let result;const continuationCall=ctx.continuationSelected?{kind:'call',owner:ctx.argumentFrame.key,callable,receiver,construct:node.type==='NewExpression'}:null;
    if(node.arguments.some(a=>a.type==='SpreadElement')){
     if(node.type==='NewExpression')throw Error('New spread');const array=value(ctx,'try s.array()');for(const a of node.arguments){const input=expr(ctx,a.type==='SpreadElement'?a.argument:a);line(ctx,`try rt.${a.type==='SpreadElement'?'spreadArray':'append'}(s, ${array}, ${input});`)}result=`try rt.invokeSpread(s, ${callable}, ${receiver}, ${array})`;
-   }else{const args=argumentsSlice(ctx,node.arguments.map(a=>expr(ctx,a)));if(region)region.arguments=args;result=node.type==='NewExpression'?`try rt.construct(s, ${callable}, ${args})`:`try rt.invoke(s, ${callable}, ${receiver}, ${args})`}
+   }else{const args=argumentsSlice(ctx,node.arguments.map(a=>expr(ctx,a)),region??continuationCall);if(region)region.arguments=args;if(continuationCall){continuationCall.args=args;continuationCall.range=(region??continuationCall).argumentRange;continuationCall.result=ctx.slots.count}result=node.type==='NewExpression'?`try rt.construct(s, ${callable}, ${args})`:`try rt.invoke(s, ${callable}, ${receiver}, ${args})`}
    if(optional){line(ctx,`${output} = ${result};`);line(ctx,'}');return output}
-   if(region){region.end=ctx.lines.length;region.callLine=ctx.lines.length;region.resultSlot=value(ctx,result);ctx.callRegions.push(region);return region.resultSlot}
-   return value(ctx,result);
+   if(region){region.end=ctx.lines.length;region.callLine=ctx.lines.length;region.resultIndex=ctx.slots.count;region.resultSlot=value(ctx,result,continuationCall);ctx.callRegions.push(region);return region.resultSlot}
+   return value(ctx,result,continuationCall);
   }
   case 'ChainExpression':return expr(ctx,node.expression);
   case 'ArrayExpression':{
@@ -213,7 +219,7 @@ function expr(ctx,node,inferred=''){
    }}return object;
   }
   case 'ConditionalExpression':case 'LogicalExpression':{
-   const id=branchFunction(ctx,node);return value(ctx,`try runBranch(s, env, ${ctx.receiver}, native_values, ${id})`);
+   const id=branchFunction(ctx,node);return value(ctx,`try runBranch(s, env, ${ctx.receiver}, native_values, ${id})`,{kind:'branch_result',id,result:ctx.slots.count});
   }
   case 'BinaryExpression':{if(!['+','-','*','/','<','<=','>','>=','%','**','&','|','<<','>>','===','!==','in','instanceof'].includes(node.operator))throw Error('Unlowered binary '+node.operator);const left=expr(ctx,node.left),right=expr(ctx,node.right);return value(ctx,`try rt.binary(s, ${q(node.operator)}, ${left}, ${right})`)}
   case 'UnaryExpression':{if(node.operator==='-'&&node.argument.type==='Literal'&&typeof node.argument.value==='number')return expr(ctx,{type:'Literal',value:-node.argument.value});if(!['!','typeof'].includes(node.operator))throw Error('Unlowered unary '+node.operator);const input=expr(ctx,node.argument);return value(ctx,`try rt.unary(s, ${q(node.operator)}, ${input})`)}
@@ -238,11 +244,11 @@ function statement(ctx,node){
   case 'BlockStatement':
    for(const fn of node.body.filter(n=>n.type==='FunctionDeclaration')){const output=functionValue(ctx,fn,fn.id.name);line(ctx,`try rt.bind(s, env, ${q(fn.id.name)}, ${output});`)}
    for(const stmt of node.body)if(stmt.type!=='FunctionDeclaration')statement(ctx,stmt);return;
-  case 'ReturnStatement':{const output=expr(ctx,node.argument);line(ctx,`return c.JS_DupValue(engine.context, ${output});`);return}
-  case 'ThrowStatement':{const output=expr(ctx,node.argument);line(ctx,`return rt.throwValue(s, ${output});`);return}
+  case 'ReturnStatement':{const output=expr(ctx,node.argument);line(ctx,`return c.JS_DupValue(engine.context, ${output});`,{kind:'returned',value:output});return}
+  case 'ThrowStatement':{const output=expr(ctx,node.argument);line(ctx,`return rt.throwValue(s, ${output});`,{kind:'thrown',value:output});return}
   case 'VariableDeclaration':for(const declaration of node.declarations)bindPattern(ctx,declaration.id,expr(ctx,declaration.init,declaration.id.name??''));return;
   case 'ExpressionStatement':{const result=expr(ctx,node.expression);discard(ctx,result);return}
-  case 'IfStatement':{const test=expr(ctx,node.test);line(ctx,`if (s.truthy(${test})) {`);statement(ctx,node.consequent);if(node.alternate){line(ctx,'} else {');statement(ctx,node.alternate)}line(ctx,'}');return}
+  case 'IfStatement':{const test=expr(ctx,node.test);line(ctx,`if (s.truthy(${test})) {`,{kind:'if',test:`s.truthy(${test})`});statement(ctx,node.consequent);if(node.alternate){line(ctx,'} else {',{kind:'else'});statement(ctx,node.alternate)}line(ctx,'}',{kind:'endif'});return}
   case 'ForOfStatement':{
    const source=expr(ctx,node.right),iterator=fresh('loop');line(ctx,'{');line(ctx,`var ${iterator} = try rt.iterator(s, ${source});`);line(ctx,`defer ${iterator}.deinit();`);line(ctx,`errdefer ${iterator}.closePreserving();`);const item=fresh('item');line(ctx,`while (try ${iterator}.next()) |${item}| {`);line(ctx,`defer engine.freeValue(${item});`);bindPattern(ctx,node.left.declarations[0].id,item);statement(ctx,node.body);line(ctx,'}');line(ctx,'}');return;
   }
@@ -251,19 +257,19 @@ function statement(ctx,node){
   }
   case 'TryStatement':{
    if(node.handler||!returns(node.block)||returns(node.finalizer))throw Error('Unexpected try control shape');
-   const id=tryHelpers.length,helper={...ctx,lines:[],callRegions:[]};tryHelpers.push(null);statement(helper,node.block);const body=helper.lines.join('\n');tryHelpers[id]={body,unit:nativeUnit('try',id,helper,body)};
-   const result=fresh('completion');line(ctx,`const ${result} = try_block_${id}(s, env, ${ctx.receiver}, native_values);`);line(ctx,`errdefer if (${result}) |returned| engine.freeValue(returned) else |_| {};`);statement(ctx,node.finalizer);line(ctx,`return ${result};`);return;
+   const id=tryHelpers.length,helper={...ctx,lines:[],records:[],callRegions:[]};tryHelpers.push(null);statement(helper,node.block);const body=helper.lines.join('\n');tryHelpers[id]={body,unit:nativeUnit('try',id,helper,body)};
+   const result=fresh('completion');line(ctx,`const ${result} = try_block_${id}(s, env, ${ctx.receiver}, native_values);`,{kind:'try',id});line(ctx,`errdefer if (${result}) |returned| engine.freeValue(returned) else |_| {};`,{kind:'ignore'});statement(ctx,node.finalizer);record(ctx,{kind:'end_finally'});line(ctx,`return ${result};`,{kind:'ignore'});return;
   }
   default:throw Error('Unlowered statement '+node.type+' in '+ctx.module.file);
  }
 }
-const initialize={module:null,locals:new Set(),lines:[],receiver:'c.pi_js_undefined()',slots:{count:0},argumentFrame:argumentFrame('initializer'),scopedSetup:false,callRegions:[]};
+const initialize={module:null,locals:new Set(),lines:[],records:[],receiver:'c.pi_js_undefined()',slots:{count:0},argumentFrame:argumentFrame('initializer'),scopedSetup:false,callRegions:[]};
 for(const b of chosen.values())if(!b.external&&(b.init||b.node.type==='ClassDeclaration'))line(initialize,`try rt.declare(s, env, ${q(b.id)});`);
 for(const b of chosen.values()){
  if(b.external){const operations=['EvaluateTemplateLiteral','EvaluateEnum','EvaluateIntersect','EvaluateType','EvaluateUnion','EvaluateDependent','EvaluateUnionFast'];const lengths=[1,1,1,1,1,3,1];
   const rhs=b.external==='evaluation'?`try rt.evaluationBinding(s, graph, ${q(b.name)}, ${operations.indexOf(b.name)}, ${lengths[operations.indexOf(b.name)]})`:`try s.get(graph, ${q(b.name)})`;line(initialize,`try rt.bind(s, env, ${q(b.id)}, ${rhs});`);
  }else if(b.node.type==='FunctionDeclaration'){
-  const id=compileFunction(b.node,b.module,b.name),f=functions[id];line(initialize,`try rt.bind(s, env, ${q(b.id)}, try rt.function(s, ${q(f.name)}, ${f.length}, f_${id}, env, c.pi_js_undefined(), false));`);
+  const id=compileFunction(b.node,b.module,b.name),f=functions[id];line(initialize,`try rt.bind(s, env, ${q(b.id)}, try rt.${selectedContinuation(f.module.file,f.name)?'plannedFunction':'function'}(s, ${q(f.name)}, ${f.length}, f_${id}, env, c.pi_js_undefined(), false${selectedContinuation(f.module.file,f.name)?`, &typebox_plan_${id}`:''}));`);
  }
 }
 const initialized=new Set(),initializationOrder=[];
@@ -279,15 +285,21 @@ function initializeModule(file){if(initialized.has(file)||external.has(file)||!m
 }
 for(const b of chosen.values())if(!b.external)initializeModule(b.module.file);
 initialize.argumentFrame.base=initialize.slots.count;
+const continuationSelectedIds=functions.filter(f=>selectedContinuation(f.module.file,f.name)).map(f=>f.id);
+if(functions.length!==1669||branchHelpers.length!==585||tryHelpers.length!==1||JSON.stringify(continuationSelectedIds)!=='[0,1,9,30,31,32,33,296,297,298,303,450,451,625,628,637,638,642,660,661,662,663,664,666,667,668,669,670,671,672,673,674,675,686]')throw Error('Pinned original callback/branch/try or finite34 identity changed');
 const frozenLowering={serial,callbacks:functions.length,branches:branchHelpers.length,tries:tryHelpers.length,identities:JSON.stringify(functions.map(f=>({id:f.id,name:f.name,length:f.length,arrow:f.arrow,usesReceiver:f.usesReceiver,usesArgs:f.usesArgs,usesEnv:f.usesEnv,originalSlots:f.originalSlots,argumentSlots:f.argumentSlots,argumentSlices:f.argumentSlices})))};
 if(functions.filter(f=>f.unit.scoped).length!==24)throw Error('Measured setup scope must remain exactly24 callbacks');
 const setupUnits=[...functions.map(f=>f.unit),...tryHelpers.map(h=>h.unit),...branchHelpers.map(h=>h.unit)];
 const bodyIdentity=()=>JSON.stringify(setupUnits.map(unit=>({kind:unit.kind,id:unit.id,owner:unit.owner,flags:unit.flags,bodySha256:crypto.createHash('sha256').update(unit.lines.join('\n')).digest('hex')})));
 const frozenBodies=bodyIdentity();
-const outlined=outlineCallPreparations(setupUnits,argumentFrames,['runBranch',...functions.map(f=>`f_${f.id}`),...tryHelpers.map((_,id)=>`try_block_${id}`),...branchHelpers.map((_,id)=>`branch_${id}`)]);
+const frozenCallRegions=JSON.stringify(setupUnits.map(unit=>unit.regions));
+const outlined=outlineCallPreparations(setupUnits,argumentFrames,['runBranch',...continuationSelectedIds.map(id=>`typebox_plan_${id}`),...functions.map(f=>`f_${f.id}`),...tryHelpers.map((_,id)=>`try_block_${id}`),...branchHelpers.map((_,id)=>`branch_${id}`)],{preparedCallSteps:true});
+if(JSON.stringify(setupUnits.map(unit=>unit.regions))!==frozenCallRegions)throw Error('Call steps changed original recorded regions');
+if(outlined.provenance.length!==165||outlined.steps.length!==165||outlined.steps.some(step=>step.construct)||outlined.steps.filter(step=>step.emptyArguments).length!==4||[...argumentFrames.values()].reduce((count,frame)=>count+frame.descriptorCount,0)!==330)throw Error('Pinned165 invoke/0 construct/4 empty/330 descriptor scope differs');
 if(serial!==frozenLowering.serial||functions.length!==frozenLowering.callbacks||branchHelpers.length!==frozenLowering.branches||tryHelpers.length!==frozenLowering.tries||bodyIdentity()!==frozenBodies||JSON.stringify(functions.map(f=>({id:f.id,name:f.name,length:f.length,arrow:f.arrow,usesReceiver:f.usesReceiver,usesArgs:f.usesArgs,usesEnv:f.usesEnv,originalSlots:f.originalSlots,argumentSlots:f.argumentSlots,argumentSlices:f.argumentSlices})))!==frozenLowering.identities)throw Error('Outlining changed original lowering identity');
 if(initialize.argumentFrame.descriptorCount!==0)throw Error('Setup descriptors escaped the selected callback scope');
 for(const f of functions){const descriptors=argumentFrames.get(`f${f.id}`).descriptorCount;if(!f.unit.scoped&&descriptors)throw Error('Setup descriptors escaped the24 measured callbacks');f.slots+=descriptors}
+const continuationOutput=emitContinuations(functions,branchHelpers,tryHelpers,argumentFrames);
 const prelude='//! Generated native operations from pinned TypeBox1.3.27 authority.\n//! Static authoring only; no Source evaluation or runtime AST interpreter.\nconst rt = @import("native_typebox_operators_runtime.zig");\nconst c = rt.c;\nconst BranchResult = union(enum) { value: c.JSValue, jump: usize };\nconst BranchHelper = *const fn (*rt.Scope, c.JSValue, c.JSValue, []c.JSValue) anyerror!BranchResult;\n';
 let native=prelude;
 for(const f of functions){
@@ -299,6 +311,7 @@ for(let i=0;i<branchHelpers.length;i++){const h=branchHelpers[i],body=h.unit.emi
 native+='const branch_helpers = [_]BranchHelper { '+branchHelpers.map((_,i)=>`branch_${i}`).join(', ')+' };\n';
 native+='fn runBranch(s: *rt.Scope, env: c.JSValue, receiver: c.JSValue, native_values: []c.JSValue, initial: usize) anyerror!c.JSValue {\nvar next = initial;\nwhile (true) {\nconst result = try branch_helpers[next](s, env, receiver, native_values);\nswitch (result) { .jump => |child| next = child, .value => |value| return value }\n}\n}\n';
 native+=outlined.native;
+native+=continuationOutput.native;
 native+='pub fn create(engine: *rt.Engine, graph: c.JSValue) !c.JSValue {\nconst s = try engine.gpa.create(rt.Scope);\ns.* = .{ .engine = engine };\ndefer { s.deinit(); engine.gpa.destroy(s); }\nconst env = try rt.environment(s, c.pi_js_null());\n'+`const native_values = try engine.gpa.alloc(c.JSValue, ${initialize.slots.count+initialize.argumentFrame.count});\ndefer engine.gpa.free(native_values);\n`+initialize.lines.join('\n')+'\nconst namespace = try s.object();\n';
 for(const [name,b] of publicRoots)native+=`try s.put(namespace, ${q(name)}, try rt.get(s, env, ${q(b.id)}));\n`;
 native+='return c.JS_DupValue(engine.context, namespace);\n}\n';
@@ -307,7 +320,7 @@ native=native.replace(/__TYPEBOX_NATIVE_ARG_(f\d+|initializer)_(\d+)__/g,(_,key,
 native=native.replace(/__TYPEBOX_NATIVE_SETUP_(f\d+)_(\d+)__/g,(_,key,index)=>{const frame=argumentFrames.get(key),offset=Number(index);if(!frame||offset>=frame.descriptorCount)throw Error('Invalid setup descriptor offset');return String(frame.base+frame.count+offset)});
 if(native.includes('__TYPEBOX_NATIVE_ARG_')||native.includes('__TYPEBOX_NATIVE_SETUP_'))throw Error('Unresolved static frame offset');
 writeOutput('../../src/extensions/native_typebox_operators_production.zig',native);
-writeOutput('./lowering-map.json',JSON.stringify({format:'compiled-native-source-span-map-v1',functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,originalUsesReceiver:f.usesReceiver,originalUsesArgs:f.usesArgs,originalUsesEnv:f.usesEnv,heapOperandSlots:f.slots,originalOperandSlots:f.originalSlots,appendedArgumentSlots:f.argumentSlots,callArgumentSlices:f.argumentSlices,setupDescriptorSlots:argumentFrames.get(`f${f.id}`).descriptorCount,setupDescriptors:argumentFrames.get(`f${f.id}`).descriptors.map(item=>({...item,start:f.originalSlots+f.argumentSlots+item.offset}))})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',callbackScopeStorage:'GPA-owned original Scope; existing tracing and callback lifetime preserved',callArgumentStorage:'Disjoint appended argument area after original operand slots; borrowed pre-evaluated values',callSetup:{selectedModules:[...setupModules],selectedCallbacks:24,originalFreshSerial:frozenLowering.serial,identityFrozen:true,helpers:outlined.provenance},initializerOriginalOperandSlots:initialize.slots.count,initializerHeapOperandSlots:initialize.slots.count+initialize.argumentFrame.count,initializerArgumentSlices:initialize.argumentFrame.ranges.map(range=>({start:initialize.slots.count+range.start,count:range.count})),branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,iterativeJumpChained:true}))},null,2)+'\n');
+writeOutput('./lowering-map.json',JSON.stringify({format:'compiled-native-source-span-map-v1',heapContinuations:{selectedCallbacks:34,sourceOnlyAuthoring:true,steps:continuationOutput.provenance,legacyCallbackIdentityOnly:true},functions:functions.map(f=>({nativeCallback:`f_${f.id}`,source:f.module.file,start:f.node.start,end:f.node.end,sourceDeclarationSha256:crypto.createHash('sha256').update(f.module.source.slice(f.node.start,f.node.end)).digest('hex'),name:f.name,length:f.length,arrow:f.arrow,originalUsesReceiver:f.usesReceiver,originalUsesArgs:f.usesArgs,originalUsesEnv:f.usesEnv,heapOperandSlots:f.slots,originalOperandSlots:f.originalSlots,appendedArgumentSlots:f.argumentSlots,callArgumentSlices:f.argumentSlices,setupDescriptorSlots:argumentFrames.get(`f${f.id}`).descriptorCount,setupDescriptors:argumentFrames.get(`f${f.id}`).descriptors.map(item=>({...item,start:f.originalSlots+f.argumentSlots+item.offset}))})),nativeRawSha256:crypto.createHash('sha256').update(native).digest('hex'),tryHelpers:tryHelpers.length,operandStorage:'GPA-backed callback frame; borrowed JSValues remain traced by original Scope/cells',callbackScopeStorage:'GPA-owned original Scope; existing tracing and callback lifetime preserved',callArgumentStorage:'Disjoint appended argument area after original operand slots; borrowed pre-evaluated values',callSetup:{selectedModules:[...setupModules],selectedCallbacks:24,originalFreshSerial:frozenLowering.serial,identityFrozen:true,helpers:outlined.provenance,actualCallSteps:{sharedHelpers:[{nativeHelper:"invokePrepared",noinline:true,recordedUses:outlined.steps.filter(step=>!step.construct).length},{nativeHelper:"constructPrepared",noinline:true,recordedUses:outlined.steps.filter(step=>step.construct).length,constructorPathExercised:false}],steps:outlined.steps,count:outlined.steps.length,emptyArguments:outlined.steps.filter(step=>step.emptyArguments).length,ownership:"Borrow original heap Scope/frame; no additional own/dup/free/cleanup"}},initializerOriginalOperandSlots:initialize.slots.count,initializerHeapOperandSlots:initialize.slots.count+initialize.argumentFrame.count,initializerArgumentSlices:initialize.argumentFrame.ranges.map(range=>({start:initialize.slots.count+range.start,count:range.count})),branches:branchHelpers.map((h,id)=>({nativeHelper:`branch_${id}`,source:h.source,start:h.start,end:h.end,iterativeJumpChained:true}))},null,2)+'\n');
 for(const file of new Set(initializationOrder.map(row=>row.module))){const selected=initializationOrder.filter(row=>row.module===file);for(let index=1;index<selected.length;index++)if(selected[index-1].start>=selected[index].start)throw Error('Original declaration order regression '+file)}
 writeOutput('./initialization-order.json',JSON.stringify({format:'actual-source-module-initialization-order-v1',lexicalBindings:initializationOrder.length,functionsHoisted:true,lexicalTdzPreserved:true,rows:initializationOrder},null,2)+'\n');
-console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,setupHelpers:outlined.provenance.length,setupAuthoringControls,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));
+console.log(JSON.stringify({generatedFunctions:functions.length,tryHelpers:tryHelpers.length,setupHelpers:outlined.provenance.length,setupAuthoringControls,actualCallSteps:outlined.steps.length,callStepAuthoringControls,bytes:Buffer.byteLength(native),nativeSha256:crypto.createHash('sha256').update(native).digest('hex')},null,2));

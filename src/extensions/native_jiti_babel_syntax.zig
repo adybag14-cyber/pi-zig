@@ -63,10 +63,10 @@ fn decorate(plan:*Plan,node:c.TSNode,depth:usize)!void{
     if(depth>256)return error.TypeScriptNestingLimit;
     if(is(node,"class_declaration")){
         const parent=c.ts_node_parent(node);const container=if(is(parent,"export_statement"))parent else node;
-        var decorators:std.ArrayList(c.TSNode)=.empty;defer decorators.deinit(plan.gpa);
-        if(is(parent,"export_statement"))for(0..c.ts_node_named_child_count(parent))|i|{const child=c.ts_node_named_child(parent,@intCast(i));if(is(child,"decorator"))try decorators.append(plan.gpa,child);};
-        for(0..c.ts_node_named_child_count(node))|i|{const child=c.ts_node_named_child(node,@intCast(i));if(is(child,"decorator"))try decorators.append(plan.gpa,child);}
-        if(decorators.items.len!=0){
+        var class_decorators:std.ArrayList(c.TSNode)=.empty;defer class_decorators.deinit(plan.gpa);
+        if(is(parent,"export_statement"))for(0..c.ts_node_named_child_count(parent))|i|{const child=c.ts_node_named_child(parent,@intCast(i));if(is(child,"decorator"))try class_decorators.append(plan.gpa,child);};
+        for(0..c.ts_node_named_child_count(node))|i|{const child=c.ts_node_named_child(node,@intCast(i));if(is(child,"decorator"))try class_decorators.append(plan.gpa,child);}
+        if(class_decorators.items.len!=0){
             const body=field(node,"body");if(try containsDecorator(body,0))return error.UnsupportedBabelMemberDecorator;
             const class_name=field(node,"name");if(c.ts_node_is_null(class_name))return error.UnsupportedBabelAnonymousDecoratedClass;
             const class_token=token(node,"class") orelse return error.UnsupportedBabelClassSyntax;
@@ -77,7 +77,7 @@ fn decorate(plan:*Plan,node:c.TSNode,depth:usize)!void{
             try declaration.writer.print("var {s}",.{temporary});
             // Babel first evaluates every non-Identifier decorator expression
             // in source order, then applies the resulting decorators in reverse.
-            for(decorators.items)|dec|{
+            for(class_decorators.items)|dec|{
                 const expression=c.ts_node_named_child(dec,0);
                 if(is(expression,"identifier")){try expressions.append(plan.gpa,plan.text(expression));}
                 else{const alias=try plan.fresh("_dec");try declaration.writer.print(",{s}",.{alias});try prefix.writer.print("{s}=({s}),",.{alias,plan.text(expression)});try expressions.append(plan.gpa,alias);}
@@ -112,7 +112,7 @@ fn nestedResource(node:c.TSNode,depth:usize)!bool{
 }
 pub fn prepare(gpa:std.mem.Allocator,input:[]const u8,typescript:bool)!Prepared{
     // Every writer is memory-backed; a failed write is allocator failure.
-    return prepareBody(gpa,input,typescript) catch|err|return if(err==error.WriteFailed)error.OutOfMemory else err;
+    return prepareBody(gpa,input,typescript) catch |err| return if(err==error.WriteFailed)error.OutOfMemory else err;
 }
 fn prepareBody(gpa:std.mem.Allocator,input:[]const u8,typescript:bool)!Prepared{
     const decorated=if(typescript)try decorators(gpa,input) else try gpa.dupe(u8,input);defer gpa.free(decorated);

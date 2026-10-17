@@ -1,0 +1,30 @@
+diff --git a/vendor/quickjs/quickjs.c b/vendor/quickjs/quickjs.c
+--- a/vendor/quickjs/quickjs.c
++++ b/vendor/quickjs/quickjs.c
+@@ -9568,8 +9568,15 @@
+ JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop)
+ {
+     return JS_GetPropertyInternal(ctx, this_obj, prop, this_obj, false);
+ }
++
++/* Borrowed base/receiver/atom; owned Get completion, including Proxy traps. */
++JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
++                               JSAtom prop, JSValueConst receiver)
++{
++    return JS_GetPropertyInternal(ctx, base, prop, receiver, false);
++}
+
+ static JSValue JS_ThrowTypeErrorPrivateNotFound(JSContext *ctx, JSAtom atom)
+ {
+     return JS_ThrowTypeErrorAtom(ctx, "private class field '%s' does not exist",
+diff --git a/vendor/quickjs/quickjs.h b/vendor/quickjs/quickjs.h
+--- a/vendor/quickjs/quickjs.h
++++ b/vendor/quickjs/quickjs.h
+@@ -1042,5 +1042,7 @@
+ JS_EXTERN JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop);
++JS_EXTERN JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
++                                         JSAtom prop, JSValueConst receiver);
+ JS_EXTERN JSValue JS_GetPropertyUint32(JSContext *ctx, JSValueConst this_obj,
+                                        uint32_t idx);
+ JS_EXTERN JSValue JS_GetPropertyInt64(JSContext *ctx, JSValueConst this_obj,
+                                       int64_t idx);

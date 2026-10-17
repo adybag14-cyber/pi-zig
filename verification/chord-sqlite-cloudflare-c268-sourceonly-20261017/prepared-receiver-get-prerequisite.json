@@ -1,0 +1,44 @@
+{
+  "status": "inert_direct_C_receiver_get_prerequisite_pending_peer_uncompiled_unrun",
+  "base": "14775669ca4ad1155957114fec9bdd40b659ca3c",
+  "files": [
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/receiver-get-prerequisite.patch",
+      "bytes": 1413,
+      "sha256": "1FA56BB07B037448C6F447A903DFE7DD5DF4AE3F51F62FBEF3E45BFF5BDC9EBC"
+    },
+    {
+      "path": "verification/chord-sqlite-cloudflare-c268-sourceonly-20261017/RECEIVER-GET-PREREQUISITE.md",
+      "bytes": 2404,
+      "sha256": "B711994223F3124B5A4CBAA2E6E45C7D5729C97B7ADC078DAD570D7737DED676"
+    },
+    {
+      "path": "src/native_chord_sqlite_receiver_get_test.zig",
+      "bytes": 5405,
+      "sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7"
+    }
+  ],
+  "active_unchanged": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    }
+  ],
+  "patch_apply_check": true,
+  "native_controls_named_prepared": 4,
+  "actual_metadata_count": null,
+  "C_H_Engine_Main_changed": false,
+  "jobs_run": [],
+  "reason": "Actual superclass Get needs explicit accessor/Proxy receiver. Wrapper only delegates existing static internal Get, like actual interpreter/Reflect.get; no guessed descriptor algorithm."
+}
