@@ -74,13 +74,21 @@ fn constructor(scope: *Scope) !c.JSValue {
     const proto = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, base_proto)));
     const node = try scope.own(try class.constructor(engine, "NodeError", 1, proto, construct, &.{ error_type, symbol, c.pi_js_bool(engine.context, 1) }));
     if (c.JS_SetPrototype(engine.context, node, base) < 0) return js.capture(engine);
-    const key = try engine.gpa.dupe(u8, cache_key); errdefer engine.gpa.free(key);
     const retained = c.JS_DupValue(engine.context, node); errdefer engine.freeValue(retained);
-    try engine.native_module_values.put(engine.gpa, key, retained); return node;
+    try engine.native_module_values.put(engine.gpa, cache_key, retained); return node;
 }
 pub fn retryFailure(scope: *Scope, vector: bool) !c.JSValue {
     var args = [_]c.JSValue{try scope.text(if (vector) "writev failed" else "write failed")};
     return scope.engine.checked(c.JS_CallConstructor(scope.engine.context, try constructor(scope), args.len, &args));
+}
+/// Genuine ERR_SYSTEM_ERROR over an actual native operation context. Reuse the
+/// same existing class/prototype/accessor algorithm, not a label-only Error.
+pub fn fromContext(engine: *em.Engine, context: c.JSValue) !c.JSValue {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit();
+    var args = [_]c.JSValue{context};
+    return engine.checked(c.JS_CallConstructor(engine.context, try constructor(&scope), args.len, &args));
 }
 pub fn install(engine: *em.Engine) !void {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();

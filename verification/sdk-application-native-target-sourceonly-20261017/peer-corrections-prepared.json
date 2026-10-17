@@ -1,0 +1,34 @@
+{
+  "status": "source_only_peer_corrections_pending_delta_review",
+  "parent": "9519288415b832439106fe0cccfaa5c1add854db",
+  "original_prepared_sha256": "82203BA56856A7D068E0907DB34EBBCC52C508D5F749EB98D229E66E3671145C",
+  "files": [
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "sha256": "FB00A928967F906E3561802B7C169CC551E1FEB5806235BE90C19D04C78D8993",
+      "bytes": 18041
+    },
+    {
+      "path": "src/extensions/native_node_fs_system_error.zig",
+      "sha256": "A19BB0928F337E9065215BA37BB083F65ED6E5F0DF1639BC6CA92887629D50A2",
+      "bytes": 8670
+    },
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "sha256": "1B399A154B41A8E2876764052A12A34F9B44E4FEA9DFD0C4B6880A73C4D8B5F2",
+      "bytes": 12056
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/SOURCE-REVIEW-CORRECTIONS.md",
+      "sha256": "6178A2957FFF095C442618884E1D96FA71903E2CCDD69AAEE61FC48B4F5B2349",
+      "bytes": 1761
+    }
+  ],
+  "original_packet_unchanged": true,
+  "original19_inputs_unchanged": true,
+  "protected10_unchanged": true,
+  "native_controls_authored_unrun": 7,
+  "expected_absent": true,
+  "C_Engine_Main_modified": false,
+  "jobs_run": false
+}

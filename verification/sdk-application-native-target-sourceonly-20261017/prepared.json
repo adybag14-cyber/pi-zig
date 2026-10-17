@@ -1,0 +1,239 @@
+{
+  "status": "source_only_independent_review_pending",
+  "base": "65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7",
+  "products": [
+    {
+      "path": "build.zig",
+      "sha256": "9A964CFC322BAB0593CCA220495EFE2BFD65184A2A537C2AE73C0D965017C59D",
+      "bytes": 341522
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "sha256": "8A47E8547911EA3544F42919B3FB794ADCF1851F5EB8A7157A9157DE12922692",
+      "bytes": 17936
+    },
+    {
+      "path": "src/extensions/native_node_fs_system_error.zig",
+      "sha256": "A47A81C86E49DA755A68A86175E379A817B3E1F62993D0CDF7E0D89633CA5F82",
+      "bytes": 8550
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "0379422826A29E45DB28643A0AF16E4A9A8FF967A39E37DFD3FC531BC7A3A4EE",
+      "bytes": 163149
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "sha256": "66BFB9D9437390A00CCC68537945C65A703A6DB9BF09240FE91817405CF4DFA1",
+      "bytes": 11751
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "sha256": "F2A6CF17D8391E15B9B3FFF38834B0848D5C4F52BE2F012AF725B6C2C35759C4",
+      "bytes": 3348
+    },
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "sha256": "95DC4C3BDD1935803B47265C133891281C3C4FA7770D06063A943A2D9C34AC12",
+      "bytes": 10557
+    },
+    {
+      "path": "src/extensions/fixtures/node-os-consumed-24_14.input.mjs",
+      "sha256": "B5BA332BDC88842F13D7E24D2D2346E8A3342333A6714E9ED5CBECF83A5755C2",
+      "bytes": 2465
+    }
+  ],
+  "packet": [
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority.json",
+      "sha256": "ADD3493999E054CE794A2F5CEF985345A38DE29468C8EF0B6931BB17CDFFC827",
+      "bytes": 5554
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/node-os-consumed.input.mjs",
+      "sha256": "B5BA332BDC88842F13D7E24D2D2346E8A3342333A6714E9ED5CBECF83A5755C2",
+      "bytes": 2465
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/README.md",
+      "sha256": "87E79EECA78990EB90CB9E72AEADC029EAA98B881BC5A77A8331AE8956DF8BAE",
+      "bytes": 8439
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-errno.h",
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16",
+      "bytes": 11216
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-LICENSE",
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
+      "bytes": 1079
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-unix-core.c",
+      "sha256": "BEBF5062EEFB617A1D03E5E78F864B6384E14FB7055D534C3A092FC2132F4AC4",
+      "bytes": 48102
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-win-error.c",
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8",
+      "bytes": 8817
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-win-util.c",
+      "sha256": "216ADF1D26666EA84277ADDBC597B0BCB5F079B66FAC6567F80D793B977B152A",
+      "bytes": 44633
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/libuv-win.h",
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0",
+      "bytes": 33836
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node-constants.cc",
+      "sha256": "50913F278A8171451BEDCD026CC884D5A383FB3B62535D5A8C6A22277528A3BF",
+      "bytes": 29923
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node-env.cc",
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "bytes": 84987
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node-LICENSE",
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
+      "bytes": 156926
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node-os.cc",
+      "sha256": "3F4646A849AB27DFB3463D1C3A004BC5C9B30DA660453873A284A1A6F8608C01",
+      "bytes": 15914
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node-os.js",
+      "sha256": "5B14B21284E19382708F588FF7FA5A212C5335A84B1D9AE6EBDF626244F8FDE9",
+      "bytes": 8250
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/authority/node.h",
+      "sha256": "D8FA3B49508AB39C1BDCB1A1F46F93A2D46533417461A0059DE34DFEE14C9295",
+      "bytes": 73821
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "bytes": 85125,
+      "base_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518,
+      "base_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220,
+      "base_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "src/extensions/native_node_crypto_hash.zig",
+      "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487",
+      "bytes": 14185,
+      "base_blob": "770bc2f0979cb5ae02a9e0217b708fa77a45a618"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_production.zig",
+      "sha256": "1C5EB940BCC91CB0D546A62C94BF5EC4187EFF3C9CE11C88A6B4E463EA2E0165",
+      "bytes": 9309,
+      "base_blob": "f6c5cac4376f523d59ec236b8df93d5b8c761859"
+    },
+    {
+      "path": "src/native_sdk_factory_production_test.zig",
+      "sha256": "E291B3857A4D02AAA1AE2C0B9E3401380BB9C6754C310106DFBA4EEE301475DA",
+      "bytes": 4519,
+      "base_blob": "e549769a1a0922eaa907515a531bf2aef79f9a64"
+    },
+    {
+      "path": "src/native_sdk_registry_composition_test.zig",
+      "sha256": "C2CBBAD12E3E7887C30C2CD3821B3515759C90A2262165D9BF30C01143E5D655",
+      "bytes": 4807,
+      "base_blob": "5936d654bb0bc1bba2d672146d09328d551c596a"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-factory-production-4954.json",
+      "sha256": "EBA5A58F5A33C7675E11CF7A931DCE06EBB9D9DE25E59CEAD4324A58C83F3FCD",
+      "bytes": 17496,
+      "base_blob": "e3b731ae069f14b7cc56251ab27d0958fb557893"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-registry-b45.input.txt",
+      "sha256": "0E1D71BCAD612F6B01B35D97F5585A261623A5726FB9BDC58C7D63D845B450FB",
+      "bytes": 17504,
+      "base_blob": "64bf51a5f91a3ea38f8f7f17521a4a57b895dd1b"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-registry-private-factory.input.txt",
+      "sha256": "700F42787DE6214FA678FE78FF10718771591C9BE13989ADFFF43E4852B55D54",
+      "bytes": 3882,
+      "base_blob": "3ef8f01168fa3f1e6a85d5dfb07ca0ce3defb003"
+    }
+  ],
+  "actual_pi_source": {
+    "root": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016",
+    "files": [
+      {
+        "path": "packages/coding-agent/src/core/sdk.ts",
+        "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28",
+        "bytes": 18273
+      },
+      {
+        "path": "packages/coding-agent/src/core/settings-manager.ts",
+        "sha256": "AEF8FEA51000F291C1C51D81FD9B30F7A2BDD0E68370AD84B969E5FD15667E98",
+        "bytes": 46845
+      },
+      {
+        "path": "packages/coding-agent/src/core/session-manager.ts",
+        "sha256": "450D82C529933214E088B8422F00061815E617F352F6C834689787A314064BFF",
+        "bytes": 63809
+      },
+      {
+        "path": "packages/coding-agent/src/core/agent-session.ts",
+        "sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+        "bytes": 162151
+      },
+      {
+        "path": "packages/coding-agent/src/index.ts",
+        "sha256": "FF0C6959CF2952A575DD5B988B5E8C6A18D4E556993B05DFFB768797F3A98B1A",
+        "bytes": 12845
+      },
+      {
+        "path": "packages/coding-agent/src/utils/paths.ts",
+        "sha256": "64C3EBEF724FA21ED0042E127908B4323A5D2F1B8AAA91EEE550442332FE8502",
+        "bytes": 4950
+      }
+    ],
+    "revision": "8efd314f",
+    "version": "1.3.0"
+  },
+  "native_tests_authored_unrun": 6,
+  "source_os_rows_authored_unrun": 19,
+  "expected_absent": "src/extensions/fixtures/node-os-consumed-24_14.expected.json",
+  "full_source27_body_retained": true,
+  "source166_body_retained": true,
+  "original64_genuine_application_setup_pending": true,
+  "original64_historical_collaborator_setup_unchanged": true,
+  "full_completed_graph_missing": true,
+  "selection": false,
+  "C_changed": false,
+  "Engine_changed": false,
+  "qualified_SHA256_changed": false,
+  "compile_jobs": false,
+  "Node_jobs": false,
+  "runtime_jobs": false,
+  "AST_parser_formatter_jobs": false,
+  "Main_written": false
+}

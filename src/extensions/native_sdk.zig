@@ -2543,6 +2543,33 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
     }
     return result;
 }
+/// Host bootstrap projection of the existing real manager classes only. The
+/// private install creates the same manager bodies/prototypes as existing SDK
+/// callers; none of its legacy session/model/loader exports is selected here.
+pub fn managerImports(engine: *engine_mod.Engine) !c.JSValue {
+    const cache_key = "\x00sdk-actual-manager-imports";
+    if (engine.native_module_values.get(cache_key)) |cached| return c.JS_DupValue(engine.context, cached);
+    // install's existing class guard cannot populate another namespace. Require
+    // this projection at fresh bootstrap rather than reconstructing a binding
+    // from a guest-mutable prototype.constructor property.
+    if (engine.native_sdk_class != 0) return error.RequiredOriginalSdkManagerModuleOwner;
+    const all = try object(engine);
+    defer engine.freeValue(all);
+    try install(engine, all);
+    const managers = try object(engine);
+    errdefer engine.freeValue(managers);
+    inline for (.{ "SessionManager", "SettingsManager" }) |name| {
+        const value = try get(engine, all, name);
+        try put(engine, managers, name, value);
+    }
+    const retained = c.JS_DupValue(engine.context, managers);
+    engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| {
+        engine.freeValue(retained);
+        return err;
+    };
+    return managers;
+}
+
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_theme_assets.zig").install(engine, exports);
     try @import("native_async_scope.zig").install(engine);

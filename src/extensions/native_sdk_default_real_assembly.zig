@@ -128,6 +128,10 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try js.spreadInto(engine, exports, configuration);
     try js.spreadInto(engine, exports, stores);
     try scope.put(exports, "RuntimeCredentials", credentials);
+    // The actual coding-agent index re-exports these exact imported classes;
+    // Source27 consumes them from the same complete SDK API record.
+    inline for (.{ "SessionManager", "SettingsManager", "DefaultResourceLoader" }) |name|
+        try scope.put(exports, name, try scope.get(imports, name));
     const graph = try scope.object();
     try scope.put(graph, "exports", exports);
     try scope.put(graph, "imports", imports);

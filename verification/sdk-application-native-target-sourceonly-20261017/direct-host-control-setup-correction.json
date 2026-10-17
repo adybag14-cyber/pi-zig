@@ -1,0 +1,15 @@
+{
+  "status": "source_only_direct_host_control_genuine_bootstrap_correction",
+  "parent": "d82f1f13e92785ecf73c7b20acd8d9c932935b37",
+  "reason": "Fresh bare Engine has no native stream owner required by existing genuine SystemError constructor. Install actual platform/process/streams before direct host call; suppression-zero/raw identity assertions unchanged.",
+  "files": [
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "sha256": "A6433185B10A3F0ED34A9D1C0B780BDA5FA552AD355C980D957A9566E1F2272E",
+      "bytes": 12195
+    }
+  ],
+  "product_unchanged": true,
+  "original_proofs_unchanged": true,
+  "jobs_run": false
+}

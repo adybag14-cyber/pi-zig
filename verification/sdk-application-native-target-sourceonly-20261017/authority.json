@@ -1,0 +1,105 @@
+{
+  "node_version": "24.14.0",
+  "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "source_tag": "v24.14.0",
+  "retrieval": "Official tagged source copies; matching immutable tag authority retained by Node.Module primary-authority packet.",
+  "files": [
+    {
+      "path": "authority/node-os.js",
+      "upstream_path": "lib/os.js",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/lib/os.js",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/lib/os.js",
+      "sha256": "5B14B21284E19382708F588FF7FA5A212C5335A84B1D9AE6EBDF626244F8FDE9",
+      "bytes": 8250
+    },
+    {
+      "path": "authority/node-os.cc",
+      "upstream_path": "src/node_os.cc",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/node_os.cc",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_os.cc",
+      "sha256": "3F4646A849AB27DFB3463D1C3A004BC5C9B30DA660453873A284A1A6F8608C01",
+      "bytes": 15914
+    },
+    {
+      "path": "authority/node.h",
+      "upstream_path": "src/node.h",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/node.h",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node.h",
+      "sha256": "D8FA3B49508AB39C1BDCB1A1F46F93A2D46533417461A0059DE34DFEE14C9295",
+      "bytes": 73821
+    },
+    {
+      "path": "authority/node-env.cc",
+      "upstream_path": "src/env.cc",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/env.cc",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/env.cc",
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9",
+      "bytes": 84987
+    },
+    {
+      "path": "authority/node-constants.cc",
+      "upstream_path": "src/node_constants.cc",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/src/node_constants.cc",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_constants.cc",
+      "sha256": "50913F278A8171451BEDCD026CC884D5A383FB3B62535D5A8C6A22277528A3BF",
+      "bytes": 29923
+    },
+    {
+      "path": "authority/libuv-win-util.c",
+      "upstream_path": "deps/uv/src/win/util.c",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/util.c",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/src/win/util.c",
+      "sha256": "216ADF1D26666EA84277ADDBC597B0BCB5F079B66FAC6567F80D793B977B152A",
+      "bytes": 44633
+    },
+    {
+      "path": "authority/libuv-unix-core.c",
+      "upstream_path": "deps/uv/src/unix/core.c",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/unix/core.c",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/src/unix/core.c",
+      "sha256": "BEBF5062EEFB617A1D03E5E78F864B6384E14FB7055D534C3A092FC2132F4AC4",
+      "bytes": 48102
+    },
+    {
+      "path": "authority/libuv-win-error.c",
+      "upstream_path": "deps/uv/src/win/error.c",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/src/win/error.c",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/src/win/error.c",
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8",
+      "bytes": 8817
+    },
+    {
+      "path": "authority/libuv-errno.h",
+      "upstream_path": "deps/uv/include/uv/errno.h",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/include/uv/errno.h",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/include/uv/errno.h",
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16",
+      "bytes": 11216
+    },
+    {
+      "path": "authority/libuv-win.h",
+      "upstream_path": "deps/uv/include/uv/win.h",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/include/uv/win.h",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/include/uv/win.h",
+      "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0",
+      "bytes": 33836
+    },
+    {
+      "path": "authority/node-LICENSE",
+      "upstream_path": "LICENSE",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/LICENSE",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/LICENSE",
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
+      "bytes": 156926
+    },
+    {
+      "path": "authority/libuv-LICENSE",
+      "upstream_path": "deps/uv/LICENSE",
+      "source_uri": "https://raw.githubusercontent.com/nodejs/node/v24.14.0/deps/uv/LICENSE",
+      "immutable_uri": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/deps/uv/LICENSE",
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
+      "bytes": 1079
+    }
+  ],
+  "execution": false
+}
