@@ -88,15 +88,16 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
         if (entry.get) {
             try accessor(engine, prototype, entry);
         } else {
-            const genuine_routing = entry.body == .prompt or entry.body == .continueRun;
-            const callback = try scope.own(if (genuine_routing)
-                try @import("native_agent_prompt_async.zig").create(engine, if (entry.body == .prompt) .prompt else .continue_run)
-            else
-                try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
-            if (entry.async_body and !genuine_routing) {
-                const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-                if (c.JS_SetPrototype(engine.context, callback, parent) < 0) return js.capture(engine);
-            }
+            const callback = try scope.own(if (comptime entry.async_body) try switch (entry.body) {
+                .prompt => @import("native_agent_prompt_async.zig").create(engine, .prompt),
+                .continueRun => @import("native_agent_prompt_async.zig").create(engine, .continue_run),
+                .runPromptMessages => @import("native_agent_execution_async.zig").create(engine, false, try scope.get(cache, "loop")),
+                .runContinuation => @import("native_agent_execution_async.zig").create(engine, true, try scope.get(cache, "continuation")),
+                .runWithLifecycle => @import("native_agent_lifecycle_async.zig").create(engine),
+                .handleRunFailure => @import("native_agent_failure_async.zig").create(engine, try scope.get(cache, "usage")),
+                .processEvents => @import("native_agent_events_async.zig").create(engine),
+                else => @compileError("Actual Agent async method requires its direct native AF body"),
+            } else try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
             if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry.name, c.JS_DupValue(engine.context, callback), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
         }
     }

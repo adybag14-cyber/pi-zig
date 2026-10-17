@@ -1,0 +1,9 @@
+{
+  "status": "source_intake_uncompiled_unrun",
+  "root_baseline": "27b49e0c77891e0ed2267692a34415ea63821861",
+  "source": "fc2b368231f7fee0823266cbc425ce9837b27645",
+  "patch_sha256": "11C87DB9A83E927189C2BB1238CCF11D7E2E11C0B47304DED43491D8171CABA7",
+  "carry": "Only full observer embed path made package-local; observer bytes preserved. Root prior prompt bool, generic async_body, and Engine/C/H/build unchanged.",
+  "observer_sha256": "09AE2FEF3D5512D5A6EC201CD46BF860FFC9E095F5218F39A8DABEFAD38263C1",
+  "runtime_qualified": false
+}
