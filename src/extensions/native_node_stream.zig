@@ -944,7 +944,7 @@ fn accessor(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, internal: 
     const value = try scope.text(std.mem.span(name));
     const get = try scope.own(try fnc.createMethod(scope.engine, "get", 0, property, &.{ value, c.pi_js_bool(scope.engine.context, @intFromBool(internal)), c.pi_js_bool(scope.engine.context, 0) }));
     const set = if (writable) try scope.own(try fnc.createMethod(scope.engine, "set", 1, property, &.{ value, c.pi_js_bool(scope.engine.context, @intFromBool(internal)), c.pi_js_bool(scope.engine.context, 1) })) else c.pi_js_undefined();
-    if (c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom, c.JS_DupValue(scope.engine.context, get), c.JS_DupValue(scope.engine.context, set), if (std.mem.eql(u8, name, "writableBuffer")) 0 else c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
+    if (c.JS_DefinePropertyGetSet(scope.engine.context, prototype, atom, c.JS_DupValue(scope.engine.context, get), c.JS_DupValue(scope.engine.context, set), if (std.mem.eql(u8, std.mem.span(name), "writableBuffer")) 0 else c.JS_PROP_CONFIGURABLE) < 0) return js.capture(scope.engine);
 }
 fn method(scope: *Scope, prototype: c.JSValue, name: [*:0]const u8, length: c_int, op: Op) !c.JSValue {
     const function = try scope.own(try fnc.create(scope.engine, name, length, dispatch, &.{ c.pi_js_null(), c.JS_NewInt32(scope.engine.context, @intFromEnum(op)) }));
