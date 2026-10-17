@@ -1,0 +1,50 @@
+{
+  "status": "actual_public_five_files_and_all97_zip_entries_verified",
+  "public_commit": "ad0210496f3609a883a732057d6a8a6cbbb9e5b8",
+  "local_intake_commit": "b2e6a174e5e799c43556d9e879fce4f2e8a795c4",
+  "files": [
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/original-jiti-default-babel30-raw-proof-20261017.zip",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/ad0210496f3609a883a732057d6a8a6cbbb9e5b8/verification/original-jiti-default-babel30-proof-20261017/original-jiti-default-babel30-raw-proof-20261017.zip",
+      "bytes": 6247275,
+      "sha256": "862DE2B15FA5229D51AC60DCE46B6129B03557B20C3D56A8DF27F939C5661D7E",
+      "matches_reviewed_b2e6": true
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/original-output.json",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/ad0210496f3609a883a732057d6a8a6cbbb9e5b8/verification/original-jiti-default-babel30-proof-20261017/original-output.json",
+      "bytes": 33061,
+      "sha256": "96DA1A507001E61D539E067E99203B4F35BF982BEF64D8A3A7E152B350DC5C37",
+      "matches_reviewed_b2e6": true
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/package-verification.json",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/ad0210496f3609a883a732057d6a8a6cbbb9e5b8/verification/original-jiti-default-babel30-proof-20261017/package-verification.json",
+      "bytes": 800,
+      "sha256": "FAB1CE71B7092900FBD8D8716DF9E1B7B2932E63B5FC44C8081D96A04B72A58C",
+      "matches_reviewed_b2e6": true
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/public-manifest.json",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/ad0210496f3609a883a732057d6a8a6cbbb9e5b8/verification/original-jiti-default-babel30-proof-20261017/public-manifest.json",
+      "bytes": 19772,
+      "sha256": "7562AB19DD4F88985BAE252AD5CAF22361F4AF6994114D19EDC9E7FD24AE1374",
+      "matches_reviewed_b2e6": true
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/README.md",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/ad0210496f3609a883a732057d6a8a6cbbb9e5b8/verification/original-jiti-default-babel30-proof-20261017/README.md",
+      "bytes": 5393,
+      "sha256": "9CEF47E7EF2F1BE007755050A7DC6F42A29A51E913AE3CCAB697B755D374ACC5",
+      "matches_reviewed_b2e6": true
+    }
+  ],
+  "ZIP_entries_decompressed_rehashed": 97,
+  "entry_mismatches": 0,
+  "separate_original_output_sha256": "96DA1A507001E61D539E067E99203B4F35BF982BEF64D8A3A7E152B350DC5C37",
+  "native_expected_created": false,
+  "reviewer_pushed": false,
+  "reviewer_Main_edited": false,
+  "Node_native_compiler_AST_jobs": false,
+  "checked_utc": "2026-10-17T15:07:46.9565642+00:00"
+}

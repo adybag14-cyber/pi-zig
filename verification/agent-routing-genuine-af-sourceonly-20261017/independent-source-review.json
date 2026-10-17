@@ -1,0 +1,111 @@
+{
+  "schema": "pi-zig-agent-routing-independent-source-review-v1",
+  "reviewer": "/root/google_runtime_resume",
+  "status": "closed_finite_source_review_no_remaining_scoped_blocker",
+  "reviewed_commit": "482ddd9c63b49b6fce7bafbbdd29b8b73671441f",
+  "original_proposal": "e3d1e0b2e02e3127497fa29f815f73ba3c838c40",
+  "baseline": "8fa656fe8bb3711a5b2daaa8f59b8522ab524308",
+  "corrective_commits": [
+    "0679619135d2a2a83e1a5e60cf5ba040373d1c0b",
+    "482ddd9c63b49b6fce7bafbbdd29b8b73671441f"
+  ],
+  "upstream_commit": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "primary_source": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\agent\\src\\agent.ts",
+    "sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+    "lines": "373-410"
+  },
+  "immutable_git_blob_pins": [
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "B01B4363ACD48F935D80FFC04E6FC5DD660A5C1ECB2E8B7F2E420D75AECDCFE5"
+    },
+    {
+      "path": "src/extensions/native_agent_complete.zig",
+      "sha256": "D9E0B05BEB351BF2BA67CDA7A1ABB97C732226AD2C6AEFEA649FF4F3E92081B3"
+    },
+    {
+      "path": "src/native_agent_prompt_async_test.zig",
+      "sha256": "EABCF5FD4BF9D9EAAF6DAD9EF27F7A748B7274D918A8690215488C5F851FAEAC"
+    },
+    {
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/observer.mjs",
+      "sha256": "FD30493132E6614DC3B4EAACF369E60AA373D5B2EE22236B295EE7896D0B0EE0"
+    },
+    {
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/reference-input.mjs",
+      "sha256": "1C65EAE0356FFBFF4D137C3BE7DAF96BAFFE6E6D93BEBC7951D83481F8C45AE4"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "verification/agent-routing-call-boundary-sourceonly-20261017/prepared.json",
+      "sha256": "ED4C957B54440880BBDEE387159FA9C107532CA9B8130449A5E462CF08997412"
+    },
+    {
+      "path": "verification/agent-routing-reference-buffer-sourceonly-20261017/prepared.json",
+      "sha256": "0FC2816ABC8773095C865B08948CEACA8C72E3A792BF779536A741B243BA4BF2"
+    }
+  ],
+  "resolved_findings": [
+    {
+      "id": "R1",
+      "origin": "e3 selected synchronous call failure",
+      "problem": "Outer adapter classified against generation before all getter/prework, promoting a getter-created historical private reason",
+      "resolution": "067 catches the selected call at its own generation, rethrows exact recognized fresh failure, transfers ordinary owned captured reason directly to .thrown before broad outer reclassification",
+      "status": "closed_source_only"
+    },
+    {
+      "id": "R2",
+      "origin": "e3 comparison helper reference buffer",
+      "problem": "Borrowed []const u8 passed to JS_ParseJSON without guaranteed buf[len]==NUL",
+      "resolution": "482 dupeZ/defer free supplies terminator while preserving original length/content/full JSON comparison",
+      "status": "closed_source_only"
+    }
+  ],
+  "scope": [
+    "actual prompt/continue installer seam only",
+    "strict receiver and argument counts",
+    "Source getter/callee/repeated state and queue/every/index order",
+    "genuine Await thenables and void fulfillment/raw rejection",
+    "retained native receiver/arguments/null-prototype lexical state and GC marking/release",
+    "captured exception transfer and selected generation fresh fatal classification",
+    "same15-row original observer and complete comparison"
+  ],
+  "original_prepared_pin_rows": {
+    "products": 3,
+    "packet": 3,
+    "protected": 16,
+    "primary": 3,
+    "total": 27,
+    "hash_length_drift": 0
+  },
+  "observer_rows_prepared": 15,
+  "observer_bytes_changed": false,
+  "expected_or_observed_reference_files_created": false,
+  "limitations": [
+    "static source review only; no compiler/AST/Node/native/generator/Source capture jobs",
+    "no actual15-row original/native comparison executed",
+    "remaining runPromptMessages/runContinuation/runWithLifecycle/handleRunFailure/processEvents and executor bodies excluded",
+    "no full Agent, application, public/default selection or C/Engine/primitive requalification",
+    "private fault-injection/GC/thenable controls remain prepared and unrun; runtime-specific TypeError wording may remain a strict negative"
+  ],
+  "source_or_Main_edits_by_reviewer": false,
+  "jobs_executed": false,
+  "execution_grant": false,
+  "written_utc": "2026-10-17T15:07:20.9175428+00:00"
+}
