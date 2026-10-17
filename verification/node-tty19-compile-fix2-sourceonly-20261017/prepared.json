@@ -1,0 +1,22 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_ACTUAL_SECOND_COMPILE_ONE_LINE_TYPE_CORRECTION_UNCOMPILED",
+  "parent": "ae02a66c2f9e841978d544a4cd2c9948379417ac",
+  "diagnostics": "evidence/root-tty19-ae02-buildquery-20261017-221338/compile.stderr.log",
+  "diagnostics_sha256": "8AD85697930FD0E64B3CBAF9CAD1EDA225023AB032B231AF0F74F63829A197D6",
+  "actual_error": "native_node_net_socket.zig507 createProvider inferred error union rejects bare anyerror returned by js.capture",
+  "correction": "Explicit anyerror!Provider return annotation. All3 js.capture calls, actual pending/captured reason, scope errdefer cleanup and callback/native ownership remain untouched",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "D5B37644A146B766B363BB4FA310E7909B679B0BC363F8F842698DF79BE4AFF4"
+    }
+  ],
+  "dependency_owner": "FS confirmed explicitsignature annotation has no API/ownership objection and preservesrawCJS exception boundary",
+  "source_assertions": 19,
+  "assertions_changed": false,
+  "metadata": "UNOBSERVED",
+  "no_C_H_Engine_Main_build_or_other_source_change": true,
+  "no_jobs_started": true,
+  "execution_grant": false
+}

@@ -486,7 +486,7 @@ pub const Owned = struct {
         try publishClosed(state, state.destroy_reason);
     }
 };
-pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c.JSValue) !Provider {
+pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c.JSValue) anyerror!Provider {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
     try buffer.install(engine);
     var id: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &id);
