@@ -1,0 +1,88 @@
+{
+  "status": "prepared-unrun",
+  "expected_files": [],
+  "supported_execution_inputs": [
+    {
+      "ts": true,
+      "source": "export default function extension(){let seen=0;for(const key of Object.keys(import.meta.env)){seen++}return typeof seen}",
+      "id": "for-of-env-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){let seen=0;for(const key in import.meta.env){seen++}return typeof seen}",
+      "id": "for-in-env-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){let owned;([owned=import.meta.env]=[]);return owned.PI_JITI_DEFAULT_OWNED_VALUE}",
+      "id": "pattern-default-env-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){let owned;({[import.meta.url]:owned}={});return typeof owned}",
+      "id": "pattern-computed-url-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){let owned;({value:[owned=import.meta.resolve]}={value:[]});return typeof owned}",
+      "id": "nested-pattern-default-resolve-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){return import.meta.env.PI_JITI_DEFAULT_OWNED_VALUE}",
+      "id": "ordinary-env-read"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(){return import.meta.resolve('node:fs')}",
+      "id": "ordinary-resolve-call"
+    }
+  ],
+  "declared_native_frontier_inputs": [
+    {
+      "ts": true,
+      "source": "export default function extension(values){for(import.meta.env of values){}return 1}",
+      "id": "for-of-env-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){for(import.meta.resolve in values){}return 1}",
+      "id": "for-in-resolve-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){({owned:[import.meta.env]}=values);return 1}",
+      "id": "nested-object-array-env-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){([{owned:import.meta.resolve}]=values);return 1}",
+      "id": "nested-array-object-resolve-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){([import.meta.env={}]=values);return 1}",
+      "id": "default-left-env-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){([...import.meta.resolve]=values);return 1}",
+      "id": "array-rest-resolve-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(values){for({owned:[import.meta.env]} of values){}return 1}",
+      "id": "for-of-nested-env-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(value){(/*owned*/import.meta.env)=value;return 1}",
+      "id": "parenthesized-env-target"
+    },
+    {
+      "ts": true,
+      "source": "export default function extension(value){import.meta.resolve! = value;return 1}",
+      "id": "nonnull-resolve-target"
+    }
+  ]
+}

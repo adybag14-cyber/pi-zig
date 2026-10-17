@@ -29,10 +29,29 @@ fn unwrap(input: c.TSNode) c.TSNode {
 }
 fn writing(node: c.TSNode, source: []const u8) bool {
     var child = node; var parent = c.ts_node_parent(child);
-    while (is(parent, "parenthesized_expression") or is(parent, "non_null_expression")) { child = parent; parent = c.ts_node_parent(parent); }
-    if ((is(parent, "assignment_expression") or is(parent, "augmented_assignment_expression")) and same(child, field(parent, "left"))) return true;
-    if (is(parent, "update_expression") and same(child, field(parent, "argument"))) return true;
-    return is(parent, "unary_expression") and same(child, field(parent, "argument")) and std.mem.eql(u8, text(source, field(parent, "operator")), "delete");
+    while (!c.ts_node_is_null(parent)) {
+        // Follow only target edges. A computed pattern key or a default's
+        // initializer evaluates a read even when its containing pattern is a
+        // target; an outer member's object/index likewise reads this value.
+        if (is(parent, "parenthesized_expression") or is(parent, "non_null_expression") or
+            is(parent, "array_pattern") or is(parent, "object_pattern") or is(parent, "rest_pattern"))
+        {
+            child = parent; parent = c.ts_node_parent(parent); continue;
+        }
+        if (is(parent, "pair_pattern")) {
+            if (!same(child, field(parent, "value"))) return false;
+            child = parent; parent = c.ts_node_parent(parent); continue;
+        }
+        if (is(parent, "assignment_pattern") or is(parent, "object_assignment_pattern")) {
+            if (!same(child, field(parent, "left"))) return false;
+            child = parent; parent = c.ts_node_parent(parent); continue;
+        }
+        if (is(parent, "assignment_expression") or is(parent, "augmented_assignment_expression") or is(parent, "for_in_statement"))
+            return same(child, field(parent, "left"));
+        if (is(parent, "update_expression")) return same(child, field(parent, "argument"));
+        return is(parent, "unary_expression") and same(child, field(parent, "argument")) and std.mem.eql(u8, text(source, field(parent, "operator")), "delete");
+    }
+    return false;
 }
 fn collect(plan: *Plan, node: c.TSNode, depth: usize) !void {
     if (depth > 256) return error.UnsupportedJitiMetaNesting;
