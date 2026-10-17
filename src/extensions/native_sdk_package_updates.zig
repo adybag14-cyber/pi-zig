@@ -36,6 +36,7 @@ fn mapped(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
 }
 fn updateRecord(s: *Scope, source: c.JSValue, parsed: c.JSValue, scope: c.JSValue, npm: bool) !c.JSValue { const result = try s.object(); try s.put(result, "source", source); const display = if (npm) try s.get(parsed, "name") else blk: { const host = try s.stringify(try s.get(parsed, "host")); break :blk try s.concat(try s.concat(host, try s.text("/")), try s.stringify(try s.get(parsed, "path"))); }; try s.put(result, "displayName", display); try s.put(result, "type", try s.text(if (npm) "npm" else "git")); try s.put(result, "scope", scope); return result; }
 fn task(engine: *v.em.Engine, manager: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) }; var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[2]) < 0) return v.js.capture(engine); const kind: Task = @enumFromInt(raw); const entry = roots[1]; const imports = roots[0];
     if (completion == .fulfilled) {
         if (kind == .npm_check) { const value = try s.object(); try s.put(value, "entry", entry); try s.put(value, "shouldUpdate", input); return .{ .returned = c.JS_DupValue(engine.context, value) }; }
@@ -104,5 +105,6 @@ fn evaluate(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.J
     }
 }
 fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) }; var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const job = if (completion == .start) try body.init(&s, state) else state.*; return evaluate(&s, manager, roots[0], args, job, @enumFromInt(raw), completion, input);
 }

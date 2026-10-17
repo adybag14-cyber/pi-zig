@@ -77,6 +77,7 @@ fn evaluate(s: *Scope, manager: c.JSValue, imports: c.JSValue, args: []const c.J
     }
 }
 fn run(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine); const kind: Method = @enumFromInt(raw); const imports = roots[0]; const job = if (completion == .start) try body.init(&s, state) else state.*;
     if (completion == .rejected) { if (kind == .cleanAndInstallGitDependencies and try stage(&s, job) == 10) return failClean(&s, manager, job, arg(args, 0), input); if (kind == .installGit and s.truthy(try s.get(job, "cloneTry"))) return failClone(&s, manager, imports, job, input); return .{ .thrown = c.JS_DupValue(engine.context, input) }; }
     return evaluate(&s, manager, imports, args, job, kind, completion, input) catch |err| {

@@ -1618,6 +1618,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-sdk-application-bootstrap-artifact", "Compile actual SDK platform/AI/manager/OS and full factory/session body anchors").dependOn(&b.addInstallArtifact(sdk_application_tests, .{}).step);
     b.step("test-native-sdk-application-bootstrap", "Execute actual SDK available bootstrap controls after explicit grant").dependOn(&b.addRunArtifact(sdk_application_tests).step);
+    const sdk_package_af_tests = b.addTest(.{
+        .name = "native-sdk-package-af",
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_package_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK package AF"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_package_af_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_package_af_tests.root_module, typescript_parser);
+    linkSqlite(sdk_package_af_tests.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_package_af_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_package_af_tests.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_package_af_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-package-af", "Compile actual package AF progress and continuation controls without execution").dependOn(&b.addInstallArtifact(sdk_package_af_tests, .{}).step);
+    b.step("test-native-sdk-package-af", "Run actual package AF controls only after an explicit qualification grant").dependOn(&b.addRunArtifact(sdk_package_af_tests).step);
     const idle_settlement_identity_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_idle_settlement_identity_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native idle settlement"}, .use_llvm = use_llvm });
     linkQuickJs(b, idle_settlement_identity_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(idle_settlement_identity_tests.root_module, sqlite_lib_dir, sqlite_library);

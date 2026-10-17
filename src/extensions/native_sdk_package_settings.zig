@@ -1,7 +1,7 @@
 //! Actual source/settings matching, listing and progress methods. Parsing,
 //! paths, SettingsManager and installed-file checks remain live real imports.
 const v = @import("native_ai_provider_values.zig");
-const package_catch = @import("native_sdk_package_catch.zig");
+const p = @import("native_agent_af_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const f = @import("native_node_function.zig");
@@ -137,29 +137,61 @@ fn method(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roo
 fn event(s: *Scope, kind: []const u8, action: c.JSValue, source: c.JSValue, message: ?c.JSValue) !c.JSValue {
     const value = try s.object(); try s.put(value, "type", try s.text(kind)); try s.put(value, "action", action); try s.put(value, "source", source); if (message) |text| try s.put(value, "message", text); return value;
 }
-fn progressError(s: *Scope, manager: c.JSValue, args: []const c.JSValue, reason: c.JSValue) !af.Action {
-    const instance = c.JS_IsInstanceOf(s.engine.context, reason, try s.global("Error")); if (instance < 0) return v.js.capture(s.engine);
-    const message = if (instance != 0) try s.get(reason, "message") else try s.call(try s.global("String"), c.pi_js_undefined(), &.{reason});
+fn checkedGet(s: *Scope, owner: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    const generation = s.engine.native_allocation_generation;
+    return p.guard(s.engine, generation, s.get(owner, name));
+}
+fn checkedCall(s: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    const generation = s.engine.native_allocation_generation;
+    return p.guard(s.engine, generation, s.call(function, receiver, args));
+}
+fn reference(s: *Scope, name: [:0]const u8) !c.JSValue {
+    const global = try s.own(c.JS_GetGlobalObject(s.engine.context));
+    const atom = c.JS_NewAtom(s.engine.context, name.ptr);
+    if (atom == c.JS_ATOM_NULL) return v.js.capture(s.engine);
+    defer c.JS_FreeAtom(s.engine.context, atom);
+    const generation = s.engine.native_allocation_generation;
+    const present = c.JS_HasProperty(s.engine.context, global, atom);
+    if (present < 0) return p.guard(s.engine, generation, v.js.capture(s.engine));
+    try s.engine.checkNativeEntry();
+    if (present == 0) return s.engine.checked(c.JS_ThrowReferenceError(s.engine.context, "%s is not defined", name.ptr));
+    return checkedGet(s, global, name.ptr);
+}
+fn progressError(s: *Scope, manager: c.JSValue, args: []const c.JSValue, reason: c.JSValue) anyerror!af.Action {
+    const error_constructor = try reference(s, "Error");
+    const generation = s.engine.native_allocation_generation;
+    const instance = c.JS_IsInstanceOf(s.engine.context, reason, error_constructor);
+    if (instance < 0) { _ = try p.guard(s.engine, generation, v.js.capture(s.engine)); unreachable; }
+    try s.engine.checkNativeEntry();
+    const message = if (instance != 0) try checkedGet(s, reason, "message") else try checkedCall(s, try reference(s, "String"), c.pi_js_undefined(), &.{reason});
     try emitEvent(s, manager, "error", arg(args, 0), arg(args, 1), message);
     return .{ .thrown = c.JS_DupValue(s.engine.context, reason) };
 }
 fn emitEvent(s: *Scope, manager: c.JSValue, kind: []const u8, action: c.JSValue, source: c.JSValue, message: ?c.JSValue) !void {
-    const emit_progress = try s.get(manager, "emitProgress");
-    _ = try s.call(emit_progress, manager, &.{try event(s, kind, action, source, message)});
+    const emit_progress = try checkedGet(s, manager, "emitProgress");
+    _ = try checkedCall(s, emit_progress, manager, &.{try event(s, kind, action, source, message)});
 }
 
-fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+fn withProgress(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
+    try engine.checkNativeEntry();
+    if (completion == .rejected) try body.enterRejectedContinuation(engine);
+    return progressBody(engine, manager, args, completion, input) catch |err| p.failure(engine, err);
+}
+fn progressBody(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .start) {
+        // Source start notification is OUTSIDE the operation/complete try.
         try emitEvent(&s, manager, "start", arg(args, 0), arg(args, 1), arg(args, 2));
-        const job = try body.init(&s, state); const generation = engine.native_allocation_generation;
-        try s.put(job, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
-        const pending = s.call(arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| { const reason = (try package_catch.take(engine, err, generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return progressError(&s, manager, args, reason); };
+        const pending = checkedCall(&s, arg(args, 3), c.pi_js_undefined(), &.{}) catch |err| {
+            const reason = try s.own(try p.caught(engine, err));
+            return progressError(&s, manager, args, reason);
+        };
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }
-    var boundary: u64 = 0; if (c.JS_ToBigUint64(engine.context, &boundary, try s.get(state.*, "generation")) < 0) return v.js.capture(engine);
-    if (completion == .rejected) { try package_catch.guard(engine, input, boundary); return progressError(&s, manager, args, input); }
-    const complete_generation = engine.native_allocation_generation;
-    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| { const reason = (try package_catch.take(engine, err, complete_generation)) orelse @import("native_agent_async.zig").reason(engine, err); defer engine.freeValue(reason); return progressError(&s, manager, args, reason); };
+    if (completion == .rejected) return progressError(&s, manager, args, input);
+    emitEvent(&s, manager, "complete", arg(args, 0), arg(args, 1), null) catch |err| {
+        const reason = try s.own(try p.caught(engine, err));
+        return progressError(&s, manager, args, reason);
+    };
     return .{ .returned = c.pi_js_undefined() };
 }

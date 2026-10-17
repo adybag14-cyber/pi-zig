@@ -22,6 +22,7 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, deps: Dependencies) !vo
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "resolve", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn dispatch(engine: *em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    try @import("native_sdk_package_catch.zig").enter(engine, completion);
     if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, input) };
     if (completion == .fulfilled) return .{ .returned = try packagesResolved(engine, state.*, manager) };
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();

@@ -5,15 +5,19 @@ const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const body = @import("native_async_body.zig");
 
-/// Borrowed rejection reasons have no captured slot ownership to consume.
-pub fn guard(engine: *v.em.Engine, reason: c.JSValue, generation: u64) !void {
-    if (c.JS_IsUncatchableError(reason)) {
-        _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
-        unreachable;
-    }
-    try body.rethrowRecognizedAllocation(engine, reason, generation);
+/// Await/.catch callback inputs are borrowed DATA, even when a private tag or
+/// uncatchable bit was born while an unrelated operation was suspended. Only
+/// actual current pending events may bypass the Source catch/retry/finally.
+pub fn guard(engine: *v.em.Engine, _: c.JSValue, _: u64) !void {
+    try engine.checkNativeEntry();
+    try body.enterRejectedContinuation(engine);
 }
 
+/// BEFORE any native stage/property allocation, including fulfilled/start.
+pub fn enter(engine: *v.em.Engine, completion: body.native.Completion) !void {
+    try engine.checkNativeEntry();
+    if (completion == .rejected) try body.enterRejectedContinuation(engine);
+}
 /// Returns the owned ordinary captured reason, if this is a JS exception.
 /// Fatal errors retain their original Engine slot and exact reason. Non-JS
 /// failures cannot consume an unrelated captured exception.
