@@ -1,10 +1,24 @@
 //! Actual createExtension/initializeExtension/loadExtensionFromFactory bodies.
 //! Transactional API construction is a required concrete import until assembled.
+//! Local revision2: current callback events are distinct from rejected DATA.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = v.Scope;
 const body = @import("native_async_body.zig");
 const af = body.native;
+const Captures = struct {
+    engine: *v.em.Engine,
+    prior: ?c.JSValue,
+    fn enter(engine: *v.em.Engine) Captures {
+        const previous = engine.captured_exception;
+        engine.captured_exception = null;
+        return .{ .engine = engine, .prior = previous };
+    }
+    fn deinit(self: *Captures) void {
+        if (self.engine.captured_exception == null) self.engine.captured_exception = self.prior else if (self.prior) |reason| self.engine.freeValue(reason);
+        self.prior = null;
+    }
+};
 fn put(scope: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     try v.js.define(scope.engine, target, name, c.JS_DupValue(scope.engine.context, value));
 }
@@ -58,12 +72,17 @@ fn invokeFactory(scope: *Scope, factory: c.JSValue, load: c.JSValue) !c.JSValue 
 }
 fn trustedBoundary(engine: *v.em.Engine, err: anyerror, generation: u64) !void {
     if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+    if (err == error.JavaScriptException) {
+        if (c.JS_HasException(engine.context)) {
+            const capture_error = v.js.capture(engine);
+            if (capture_error != error.JavaScriptException) return capture_error;
+        }
+        const reason = engine.captured_exception orelse return error.MissingExtensionInitializerCurrentCapturedReason;
         if (c.JS_IsUncatchableError(reason)) return err;
         // Mark/rethrow the exact fresh private reason before classification can
         // turn it into a host error union and allocate a replacement reason.
         try body.rethrowRecognizedAllocation(engine, reason, generation);
-    };
+    }
 }
 fn takeReason(engine: *v.em.Engine, err: anyerror, generation: u64) !c.JSValue {
     try trustedBoundary(engine, err, generation);
@@ -73,6 +92,8 @@ fn takeReason(engine: *v.em.Engine, err: anyerror, generation: u64) !c.JSValue {
     return reason;
 }
 fn initialize(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var captures = Captures.enter(engine); defer captures.deinit();
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const generation = engine.native_allocation_generation;
     return initializeBody(engine, receiver, args, roots, state, completion, input) catch |err| {
         try trustedBoundary(engine, err, generation);
@@ -100,13 +121,14 @@ fn initializeBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, r
     }
     const job = state.*;
     if (completion == .rejected) {
-        if (c.JS_IsUncatchableError(input)) {
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, input)));
-            unreachable;
-        }
+        if (c.JS_HasException(engine.context)) return v.js.capture(engine);
         var boundary: u64 = 0;
         if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(job, "generation")) < 0) return v.js.capture(engine);
         try body.rethrowRecognizedAllocation(engine, input, boundary);
+        if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+        // Only rejected DATA reaches here. Preserve its raw identity through
+        // real discard/ordinary-override handling, without promoting an old bit.
+        c.JS_ClearUncatchableError(engine.context, input);
         return fail(&scope, job, input);
     }
     // commit is inside Source's try, so a commit failure also discards.
@@ -121,6 +143,8 @@ fn initializeBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, r
     return .{ .returned = c.JS_DupValue(engine.context, value) };
 }
 fn fromFactory(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var captures = Captures.enter(engine); defer captures.deinit();
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     const generation = engine.native_allocation_generation;
     return fromFactoryBody(engine, receiver, args, roots) catch |err| {
         try trustedBoundary(engine, err, generation);
