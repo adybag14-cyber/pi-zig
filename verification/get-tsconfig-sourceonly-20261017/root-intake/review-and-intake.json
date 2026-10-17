@@ -1,0 +1,20 @@
+{
+  "status": "independent_source_review_closed",
+  "source_head": "ae1cee3edc7406d18fb8068e071aa99a4a7f03bf",
+  "reviewer": "/root/google_runtime_resume",
+  "manifest_sha256": "9DA91C7E175501B4F92BD96A4001A20CC44D15A307546E9298CEC2E214089147",
+  "product_control_document_rows": 13,
+  "authority_rows": 70,
+  "archive_integrity_matches": 4,
+  "hash_length_drift": 0,
+  "scope": "Consumed one-argument getTsconfig/createPathsMatcher; seven native leaves",
+  "source_executed": false,
+  "native_executed": false,
+  "default_selected": false,
+  "genuine_fs_path_Module_process_assembly_complete": false,
+  "remaining": [
+    "Original observations and native tests unrun",
+    "Optional API modes and broader proxy/custom-iterator/realm mutation unqualified",
+    "Resource quotas remain explicit differences"
+  ]
+}

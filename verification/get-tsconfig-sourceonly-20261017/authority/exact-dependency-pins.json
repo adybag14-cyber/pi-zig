@@ -1,0 +1,40 @@
+{
+  "packages": [
+    {
+      "name": "get-tsconfig",
+      "version": "4.14.0",
+      "gitHead": "24bc5a798af42c3725b9bbb8a9ae9566e4293120",
+      "integrity": "sha512-yTb+8DXzDREzgvYmh6s9vHsSVCHeC0G3PI5bEXNBHtmshPnO+S5O7qgLEOn0I5QvMy6kpZN8K1NKGyilLb93wA==",
+      "sha256": "F15C5A9F60F0ED0D74B83239919DB1B8580180438DD7CC67AD0FB9E51CA507C9",
+      "tarball": "https://registry.npmjs.org/get-tsconfig/-/get-tsconfig-4.14.0.tgz"
+    },
+    {
+      "name": "jsonc-parser",
+      "version": "3.3.1",
+      "gitHead": null,
+      "integrity": "sha512-HUgH65KyejrUFPvHFPbqOY0rsFip3Bo5wb4ngvdi1EpCYWUQDC5V+Y7mZws+DLkr4M//zQJoanu1SP+87Dv1oQ==",
+      "sha256": "4A0315B8671E7463BAE7AF7C142CDF19E9AA7BA39EB36DC2DF383B8648E3CBC9",
+      "tarball": "https://registry.npmjs.org/jsonc-parser/-/jsonc-parser-3.3.1.tgz"
+    },
+    {
+      "name": "resolve-pkg-maps",
+      "version": "1.0.0",
+      "gitHead": "6d788049958514dbce52ef2bebc633f0ad336b51",
+      "integrity": "sha512-seS2Tj26TBVOC2NIc2rOe2y2ZO7efxITtLZcGSOnHHNOQ7CkiUBfw0Iw2ck6xkIhPwLhKNLS8BO+hEpngQlqzw==",
+      "sha256": "4A7CBDB7054B1DD6E466067129BE9577B495FF69D02064913E1723405DB0DF76",
+      "tarball": "https://registry.npmjs.org/resolve-pkg-maps/-/resolve-pkg-maps-1.0.0.tgz"
+    },
+    {
+      "name": "slash",
+      "version": "5.1.0",
+      "gitHead": "98b618f5a3bfcb5dd374b204868818845b87bb2f",
+      "integrity": "sha512-ZA6oR3T/pEyuqwMgAKT0/hAv8oAXckzbkmR0UkUosQ+Mc4RxGoJkRmwHgHufaenlyAgE1Mxgpdcrf75y6XcnDg==",
+      "sha256": "8E273F3A6D17B22DA8AB2BBAB64DB1190C272CD1588092881D124E18099DEB7A",
+      "tarball": "https://registry.npmjs.org/slash/-/slash-5.1.0.tgz"
+    }
+  ],
+  "original_caller_sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+  "source_commit": "24bc5a798af42c3725b9bbb8a9ae9566e4293120",
+  "source_package_is_development_manifest": true,
+  "published_version": "4.14.0"
+}

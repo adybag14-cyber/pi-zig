@@ -1,0 +1,44 @@
+[
+  {
+    "path": "package/LICENSE",
+    "inert": "published-package__LICENSE.txt",
+    "sha256": "10C904A49AF44409B073532E45A53FD4DF19BDF26EAF9AFC7917258C2B354382",
+    "bytes": 1089
+  },
+  {
+    "path": "package/dist/index.cjs",
+    "inert": "published-package__dist__index.cjs.txt",
+    "sha256": "2565F23AABA3DA531BB08C5278556715C0C904CEF632D6C4C52B42230D2EA6C2",
+    "bytes": 24535
+  },
+  {
+    "path": "package/dist/index.d.cts",
+    "inert": "published-package__dist__index.d.cts.txt",
+    "sha256": "D8AF17CB4C5BABFC822CB6DADE139C25957F9F3881E9DF5D0D68C1F9BE3F6EAA",
+    "bytes": 51882
+  },
+  {
+    "path": "package/package.json",
+    "inert": "published-package__package.json.txt",
+    "sha256": "F95040F5FBC86748FF1A08C9169585DEF994BD9769F57DE1DA404859C24316E8",
+    "bytes": 1031
+  },
+  {
+    "path": "package/README.md",
+    "inert": "published-package__README.md.txt",
+    "sha256": "0735CBC7AD6193A7C3C2737819BE4F4B96107FA28C63AECB5E8372040858A000",
+    "bytes": 8304
+  },
+  {
+    "path": "package/dist/index.mjs",
+    "inert": "published-package__dist__index.mjs.txt",
+    "sha256": "3BCCE3DE2DEF9C607EF6B02ED523653FF098C4FDCA268AB16C0DAE59B269759E",
+    "bytes": 24518
+  },
+  {
+    "path": "package/dist/index.d.mts",
+    "inert": "published-package__dist__index.d.mts.txt",
+    "sha256": "D8AF17CB4C5BABFC822CB6DADE139C25957F9F3881E9DF5D0D68C1F9BE3F6EAA",
+    "bytes": 51882
+  }
+]
