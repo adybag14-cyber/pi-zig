@@ -54,9 +54,7 @@ fn next(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, slot.*) < 0) return v.js.capture(engine);
-        try body.rethrowRecognizedAllocation(engine, input, generation);
+        try body.enterRejectedContinuation(engine);
         try releaseAfterFailure(&scope, reader);
         return .{ .thrown = c.JS_DupValue(engine.context, input) };
     }
@@ -110,9 +108,7 @@ fn close(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []cons
         return .{ .awaited = c.JS_DupValue(engine.context, pending) };
     }
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, slot.*) < 0) return v.js.capture(engine);
-        try body.rethrowRecognizedAllocation(engine, input, generation);
+        try body.enterRejectedContinuation(engine);
         return .{ .thrown = c.JS_DupValue(engine.context, input) };
     }
     const result = try scope.object();

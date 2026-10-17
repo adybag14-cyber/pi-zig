@@ -85,10 +85,7 @@ fn resumeBody(engine: *em.Engine, receiver: c.JSValue, state: *c.JSValue, comple
         try initialize(engine, owner);
     } else {
         if (completion == .rejected) {
-            var boundary: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
-            try async_body.rethrowRecognizedAllocation(engine, input, boundary);
-            if (c.JS_IsUncatchableError(input)) try throwFatal(engine, input);
+            try async_body.enterRejectedContinuation(engine);
         }
         try advance(engine, state.*, input, completion == .rejected, try async_body.stage(&scope, state.*));
     }

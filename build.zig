@@ -1968,6 +1968,12 @@ pub fn build(b: *std.Build) void {
     actual_models_class_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-actual-models-class", "Compile original Source18 over actual ordinary Models class").dependOn(&actual_models_class_tests.step);
     b.step("test-native-actual-models-class", "Replay original Source18 ordinary Models receivers and promises").dependOn(&b.addRunArtifact(actual_models_class_tests).step);
+    const await_rejection_data_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_await_rejection_data_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Await DATA"}, .use_llvm = use_llvm });
+    linkQuickJs(b, await_rejection_data_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(await_rejection_data_tests.root_module, sqlite_lib_dir, sqlite_library);
+    await_rejection_data_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-await-rejection-data", "Compile rejected DATA versus actual producer event regressions").dependOn(&await_rejection_data_tests.step);
+    b.step("test-native-await-rejection-data", "Check rejected DATA catch finally raw identity current events allocator cancellation and C3 action frontier").dependOn(&b.addRunArtifact(await_rejection_data_tests).step);
     const async_rejected_allocation_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_rejected_allocation_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native async rejected allocation"}, .use_llvm = use_llvm });
     linkQuickJs(b, async_rejected_allocation_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(async_rejected_allocation_tests.root_module, sqlite_lib_dir, sqlite_library);

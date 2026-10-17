@@ -25,8 +25,15 @@ pub fn create(engine: *em.Engine, owner: c.JSValue, comptime body: Resume, insta
     const Adapter = struct {
         fn call(context: ?*c.JSContext, state: c.JSValue, raw: c_int, input: c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
             const host = em.Engine.fromContext(context.?);
+            host.checkNativeEntry() catch return host.throwCaptured();
             host.native_exception_diagnostics_suppressed += 1;
             defer host.native_exception_diagnostics_suppressed -= 1;
+            var invocation: em.Engine.NativeInvocation = .{};
+            host.enterNativeInvocation(&invocation);
+            const value = invokeStep(host, state, raw, input, action);
+            return host.leaveNativeInvocation(&invocation, value);
+        }
+        fn invokeStep(host: *em.Engine, state: c.JSValue, raw: c_int, input: c.JSValue, action: [*c]c_int) c.JSValue {
             const step = body(host, state, @enumFromInt(raw), input) catch |err| return @import("native_sdk.zig").fail(host, err);
             return switch (step) {
                 .awaited => |value| result(action, c.JS_PI_AG_AWAIT, value),

@@ -240,12 +240,7 @@ fn callbackInner(engine: *v.em.Engine, kind: Callback, roots: []const c.JSValue,
         .native_success => { try cache.afterNativeSuccess(engine, ctx, id); return interop.jitiInteropDefault(engine, ctx, value); },
         .native_fallback => {
             var s: Scope = .{ .engine = engine }; defer s.deinit();
-            // Rejected data alone never proves a pending native fatal, even
-            // if its old flag remains set. Only a fresh private allocation tag
-            // in this explicit operation boundary qualifies this reason.
-            var generation: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &generation, roots[20]) < 0) return v.js.capture(engine);
-            try body.rethrowRecognizedAllocation(engine, value, generation);
+            try body.enterRejectedContinuation(engine);
             try fallbackDebug(engine, inputs, ctx, id, value);
             const nested = try s.own(try v.js.spread(engine, ctx));
             const opts = try s.own(try v.js.spread(engine, try s.get(ctx, "opts")));

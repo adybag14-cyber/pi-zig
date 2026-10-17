@@ -56,8 +56,10 @@ pub fn failureSince(engine: *v.em.Engine, err: anyerror, generation: u64) anyerr
     return failure(engine, engine.nativeAllocationError(err, generation));
 }
 
-/// A rejected value is trusted only when its private allocation tag was born
-/// inside the caller's explicit host boundary. Preserve Engine's unsigned wrap
+/// A captured failed operation is trusted only when its private allocation tag
+/// was born inside that operation's explicit host boundary. Settled Promise
+/// rejection DATA is not a failed producer event, even with a fresh private tag.
+/// Preserve Engine's unsigned wrap
 /// rule and rethrow that exact value; never allocate a replacement error.
 /// Historical or guest lookalike reasons return normally to Source's catch.
 pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boundary_generation: u64) !void {
@@ -69,4 +71,34 @@ pub fn rethrowRecognizedAllocation(engine: *v.em.Engine, reason: c.JSValue, boun
     defer engine.native_exception_diagnostics_suppressed -= 1;
     _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason)));
     unreachable;
+}
+
+/// C3 delivers Await rejection input as borrowed DATA. Actual pending events
+/// take precedence; a retained diagnostic/captured value is not a new event.
+/// Never inspect, mark or clear flags/private tags on the rejection input.
+pub fn enterRejectedContinuation(engine: *v.em.Engine) !void {
+    if (!c.JS_HasException(engine.context)) return;
+    // Own the actual event outside both mutable slots while retiring the old
+    // diagnostic. Finite native finalizers may publish another pending event;
+    // ordinary cleanup cannot replace the first actual fatal. A diagnostic
+    // value released here is DATA, regardless of its own bit/private tag.
+    var chosen = c.JS_GetException(engine.context);
+    while (c.JS_HasException(engine.context) or engine.captured_exception != null) {
+        if (c.JS_HasException(engine.context)) {
+            const pending = c.JS_GetException(engine.context);
+            if (!c.JS_IsUncatchableError(chosen) and c.JS_IsUncatchableError(pending)) {
+                const displaced = chosen;
+                chosen = pending;
+                engine.freeValue(displaced);
+            } else engine.freeValue(pending);
+        } else {
+            const diagnostic = engine.captured_exception.?;
+            engine.captured_exception = null;
+            engine.freeValue(diagnostic);
+        }
+    }
+    // Consumes the owned reason. No diagnostic conversion or VM operation can
+    // replace it between this transfer and the adapter's JS_EXCEPTION exit.
+    engine.captured_exception = chosen;
+    return error.JavaScriptException;
 }

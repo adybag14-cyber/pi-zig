@@ -71,9 +71,7 @@ fn safeHandlerBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, ro
         return .{ .awaited = c.JS_DupValue(engine.context, value) };
     }
     if (completion == .rejected) {
-        var boundary: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &boundary, try scope.get(state.*, "generation")) < 0) return js.capture(engine);
-        try body.rethrowRecognizedAllocation(engine, input, boundary);
+        try body.enterRejectedContinuation(engine);
         try caught(&scope, roots[0], input);
     }
     return .{ .returned = c.pi_js_undefined() };

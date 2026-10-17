@@ -51,14 +51,10 @@ pub fn init(s: *Scope, slot: *c.JSValue) !c.JSValue {
 pub fn stage(s: *Scope, owner: c.JSValue) !i32 { var result: i32 = 0; if (c.JS_ToInt32(s.engine.context, &result, try s.get(owner, "stage")) < 0) return @import("native_js_values.zig").capture(s.engine); return result; }
 pub fn wait(s: *Scope, owner: c.JSValue, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue, next: i32) !af.Action {
     try s.put(owner, "stage", c.JS_NewInt32(s.engine.context, next));
-    const generation = s.engine.native_allocation_generation;
-    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation))));
     return .{ .awaited = c.JS_DupValue(s.engine.context, try call(s, function, receiver, args)) };
 }
-pub fn rejected(s: *Scope, owner: c.JSValue, reason: c.JSValue) !void {
-    var generation: u64 = 0;
-    if (c.JS_ToBigUint64(s.engine.context, &generation, try s.get(owner, "awaitGeneration")) < 0) return @import("native_js_values.zig").capture(s.engine);
-    try body.rethrowRecognizedAllocation(s.engine, reason, generation);
+pub fn rejected(s: *Scope, _: c.JSValue, _: c.JSValue) !void {
+    try body.enterRejectedContinuation(s.engine);
 }
 pub fn caught(engine: *em.Engine, err: anyerror) !c.JSValue {
     const current = pendingFirst(engine, err);
@@ -81,7 +77,7 @@ pub fn raise(s: *Scope, message: []const u8) !c.JSValue {
 /// Promise constructor swallow a direct trusted GPA failure before AF sees it.
 pub fn callbackFailure(engine: *em.Engine, err: anyerror) anyerror {
     if (err != error.OutOfMemory) return err;
-    _ = engine.throwNativeOutOfMemory();
+    _ = engine.throwNativeOutOfMemoryFatal();
     const reason = c.JS_GetException(engine.context);
     c.JS_SetUncatchableError(engine.context, reason);
     _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |failure_error| return failure_error;

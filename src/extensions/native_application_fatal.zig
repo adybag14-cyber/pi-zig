@@ -93,7 +93,7 @@ pub const Manager = struct {
         if (self.pending == null) {
             const reason = if (argc > 0) argv[0] else c.pi_js_undefined();
             const plan = routing.classify(engine, reason, self.is_shutting_down) catch |err| {
-                if (err == error.OutOfMemory) return engine.throwNativeOutOfMemory();
+                if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
                 if (err == error.JavaScriptException) return engine.throwCaptured();
                 return c.JS_ThrowInternalError(context, "Native application crash classification failed");
             };

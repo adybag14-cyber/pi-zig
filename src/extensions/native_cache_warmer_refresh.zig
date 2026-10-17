@@ -32,7 +32,14 @@ fn nativeReason(scope: *Scope, owner: c.JSValue, reason: c.JSValue) !bool {
 fn caught(scope: *Scope, owner: c.JSValue, err: anyerror) !void {
     if (err == error.OutOfMemory) return err;
     if (err != error.JavaScriptException) return err;
-    if (scope.engine.captured_exception) |reason| if (try nativeReason(scope, owner, reason)) return error.OutOfMemory;
+    if (scope.engine.captured_exception) |reason| {
+        if (c.JS_IsUncatchableError(reason)) return err;
+        if (try nativeReason(scope, owner, reason)) {
+            var generation: u64 = 0;
+            if (c.JS_ToBigUint64(scope.engine.context, &generation, try scope.get(owner, "generation")) < 0) return js.capture(scope.engine);
+            try @import("native_async_body.zig").rethrowRecognizedAllocation(scope.engine, reason, generation);
+        }
+    }
     clearGuestFailure(scope.engine);
 }
 fn valid(scope: *Scope, receiver: c.JSValue, run: c.JSValue) !bool {
@@ -72,7 +79,7 @@ fn decide(scope: *Scope, receiver: c.JSValue, warm: c.JSValue, miss: c.JSValue, 
 fn continuation(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
-    if (rejected and try nativeReason(&scope, owner, value)) return error.OutOfMemory;
+    if (rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     if (stage == 0) return afterDecision(engine, owner, if (rejected) try scope.get(owner, "action") else value);
     if (!rejected) {
         const keep_going = record(&scope, owner, value) catch |err| fallback: {

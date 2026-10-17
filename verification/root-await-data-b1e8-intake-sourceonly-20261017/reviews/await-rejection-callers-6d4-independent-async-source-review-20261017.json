@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "reviewed_utc": "2026-10-17T18:43:32.1925287+00:00",
+  "status": "finite_rejected_data_caller_source_review_closed",
+  "candidate": "6d4c45a9570597c9f9256e77eb6f57e88cc6bf32",
+  "parent": "11161f0c00e989db0bdba3d5169f3f5b644fe077",
+  "prepared_sha256": "5F73770BD33CBBF31C23ED5D3C99F0EEBB6CEBCE5DAAE5DB32518FF713781D04",
+  "checks": {
+    "actual_product_deltas": 14,
+    "owned_pins": 3,
+    "immutable_git_raw_byte_hash_length_drift": [],
+    "protected_paths_git_equal_parent": 14,
+    "protected_git_drift": [],
+    "new_route_declarations": 5,
+    "route_executions": 6,
+    "static_total_definitions": 16,
+    "actual_metadata_count": null
+  },
+  "reviewed": [
+    "All fourteen actual caller deltas remove Await/rejected-input private tag/flag promotion or historical flag clearing; rejected DATA instead follows actual catch/retry/cleanup/finally and raw identity paths.",
+    "SDK read/cancel retains releaseLock behavior; request casts, OpenAI stream closure, Models error/abort/provider cleanup, cache warmer fallback, Jiti interop/fallback, initializer discard, factory rethrow, before-tool Error catch and EventBus log paths remain actual product bodies.",
+    "Anthropic ordinary rejected/throw DATA follows reader finally and parser/iterator-close Source ordering; former DATA freshness shortcuts are removed. Synchronous direct allocation/checked-operation failures retain a separate producer path.",
+    "Five new prepared route controls invoke actual SDK reader/cancel, Jiti import, before-tool native hook, EventBus and provider retry functions with owned guest collaborators. Raw reason identity/old flag preservation and cleanup/catch observations are meaningful finite controls."
+  ],
+  "findings_in_finite_data_scope": [],
+  "prerequisites_and_limits": [
+    "Immutable Git blobs were reviewed and raw-byte hashed. The owner has later active worktree changes; those were not silently included in this closure.",
+    "Native AF1116 ordinary THROW and pre-body pending behavior is a required separate primitive prerequisite; retained independent Min453C source review is not runtime acceptance.",
+    "Anthropic new synchronous marked captured-slot escape depends on actual current-producer/capture semantics. It does not independently establish historical-slot isolation; owner explicitly confirmed the separate Engine/producer successor prerequisite.",
+    "Shared Scope, Engine, generic Node/class/SDK producers and native generator fatal producer exits remain separate, unqualified scopes. No whole generator/factory/Agent/Models safety or all raw C success-plus-pending boundaries are claimed.",
+    "All controls and Source rows are prepared and UNRUN; actual compiled metadata and native outcomes are unknown. No expected/observed output or Source authority was changed."
+  ],
+  "jobs_launched": 0,
+  "execution_authorized": false,
+  "main_edited": false
+}

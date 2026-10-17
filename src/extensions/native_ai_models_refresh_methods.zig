@@ -51,7 +51,10 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue {
 }
 fn guestReason(engine: *em.Engine, err: anyerror, generation: u64) !c.JSValue {
     if (err != error.JavaScriptException) return err;
-    if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+    if (engine.captured_exception) |reason| {
+        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, reason, generation);
+        if (c.JS_IsUncatchableError(reason)) return err;
+    }
     return c.JS_DupValue(engine.context, engine.captured_exception orelse return error.ActualGuestExceptionRequired);
 }
 fn credentialBody(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, _: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
@@ -157,7 +160,7 @@ fn refreshable(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots:
 }
 fn finishRefresh(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bool) !af.Action {
     const engine = scope.engine;
-    if (rejected and try publication.nativeReason(scope, owner, value)) return publication.thrown(engine, value);
+    if (rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     const caller = try scope.get(owner, "callerSignal");
     if (rejected and !scope.truthy(try scope.get(caller, "aborted"))) return publication.thrown(engine, value);
     const result = try scope.object();
@@ -200,10 +203,7 @@ fn providerBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots
 fn finishProvider(scope: *Scope, owner: c.JSValue, value: c.JSValue, rejected: bool) !af.Action {
     const engine = scope.engine;
     if (rejected) {
-        if (try publication.nativeReason(scope, owner, value)) {
-            try cleanupProvider(scope, owner);
-            return publication.thrown(engine, value);
-        }
+        try @import("native_async_body.zig").enterRejectedContinuation(engine);
         const generation = engine.native_allocation_generation;
         recordProviderError(scope, owner, value) catch |err| {
             const reason = try scope.own(try guestReason(engine, err, generation));
@@ -265,7 +265,7 @@ fn operationBody(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, roots: 
         return publication.awaitAt(&scope, owner, pending, @intFromEnum(OperationStage.credential));
     }
     const owner = slot.*;
-    if (completion == .rejected and try publication.nativeReason(&scope, owner, input)) return publication.thrown(engine, input);
+    if (completion == .rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
     const stage: OperationStage = @enumFromInt(try publication.stage(&scope, owner));
     if (stage == .credential) {
         try scope.put(owner, if (completion == .rejected) "credentialError" else "storedCredential", input);

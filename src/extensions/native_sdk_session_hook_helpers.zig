@@ -54,13 +54,7 @@ fn bodyWithSourceCatch(engine: *em.Engine, kind: Kind, receiver: c.JSValue, args
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(state.*, "nativeGeneration")) < 0) return js.capture(engine);
-        try async_body.rethrowRecognizedAllocation(engine, input, generation);
-        if (c.JS_IsUncatchableError(input)) {
-            _ = try engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, input)));
-            unreachable;
-        }
+        try async_body.enterRejectedContinuation(engine);
         // This is the Source catch body itself. A failure constructing its
         // replacement escapes only to the outer trusted invocation wrapper.
         if (kind == ._beforeToolCall and scope.truthy(try scope.get(state.*, "toolCallTry"))) return beforeFailure(&scope, input);

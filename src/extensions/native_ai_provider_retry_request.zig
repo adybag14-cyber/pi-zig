@@ -26,9 +26,7 @@ fn retryBody(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []c
     }
     const owner = slot.*;
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, try scope.get(owner, "generation")) < 0) return v.js.capture(engine);
-        try @import("native_async_body.zig").rethrowRecognizedAllocation(engine, value, generation);
+        try @import("native_async_body.zig").enterRejectedContinuation(engine);
     }
     if (scope.truthy(try scope.get(owner, "sleeping"))) {
         if (completion == .rejected) return .{ .thrown = c.JS_DupValue(engine.context, value) };
@@ -52,7 +50,11 @@ fn signal(scope: *Scope, owner: c.JSValue) !c.JSValue {
 fn request(scope: *Scope, owner: c.JSValue) !asynchronous.Action {
     const generation = scope.engine.native_allocation_generation;
     const value = scope.call(try scope.get(owner, "request"), c.pi_js_undefined(), &.{}) catch |err| {
-        if (scope.engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
+        if (err == error.OutOfMemory) return err;
+        if (err == error.JavaScriptException) if (scope.engine.captured_exception) |reason| {
+            try @import("native_async_body.zig").rethrowRecognizedAllocation(scope.engine, reason, generation);
+            if (c.JS_IsUncatchableError(reason)) return err;
+        };
         const reason = try scope.own(flow.reason(scope.engine, err));
         if (scope.engine.captured_exception) |captured| {
             scope.engine.captured_exception = null;

@@ -1,0 +1,382 @@
+{
+  "schema": 1,
+  "status": "finite-source-review-closed-no-remaining-established-blocker-in-assigned-scope",
+  "reviewer": "google_runtime_resume",
+  "reviewed_commit": "b1e8d31480efd6f410bfd834a71f2a5b5e080c34",
+  "reviewed_parent": "e39677392982aace92ebfaedd45ef152b6897640",
+  "manifest": {
+    "path": "verification/native-callback-producer-corrections-sourceonly-20261017/prepared.json",
+    "sha256": "20ADD5DE0DF813FD6DF66C407AFE7A684CA4E64C5DE12CD76C5301C3AB5A67F6"
+  },
+  "prior_negative_receipt": {
+    "path": "evidence/native-callback-producers-e396-independent-google-source-review-20261017.json",
+    "sha256": "4AFA2027A98D65A5EF3E79BF2489BEDD4C462C66D9781258081A3E2261F4423B",
+    "preserved": true
+  },
+  "scope": "G1/G2 corrective successor plus original e396 finite common-producer/Engine/cold-class source scope; exact active invocation retention for ordinary Node/class and AF/AG step callbacks; prepared causal controls and protected ownership. Baseline14callers and future C VM transport semantics remain separately owned.",
+  "source_pins": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "bytes": 3006,
+      "sha256": "75A07A7D33050405705EE7D2C1D8EAD9375454A6F32541E2825EBB7CB52C65E1"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "bytes": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/native_callback_producer_test.zig",
+      "bytes": 28986,
+      "sha256": "26ACBAC1B50E3A3F8A9D0C4FF247838155D25A0E4D249943E30758D1DDBA718A"
+    },
+    {
+      "path": "verification/native-callback-producer-corrections-sourceonly-20261017/README.md",
+      "bytes": 4694,
+      "sha256": "59CEF120BCDDECD549E5705EDDFFEBAF9264222CC8139349335AB11EE80D2974"
+    },
+    {
+      "path": "verification/native-callback-producer-corrections-sourceonly-20261017/negative-e396-source-review.json",
+      "bytes": 12205,
+      "sha256": "4AFA2027A98D65A5EF3E79BF2489BEDD4C462C66D9781258081A3E2261F4423B"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2221803,
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "bytes": 163154,
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07"
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "bytes": 25609,
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A"
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "bytes": 3281481,
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D"
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "bytes": 11919,
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare.zig",
+      "bytes": 22261,
+      "sha256": "1C9A1D2E444DB9038E75DBD01DD14E06FBC02F9ED977E8B7F7967A34710914AD"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "bytes": 7874,
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7"
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "bytes": 18014,
+      "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2"
+    },
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "bytes": 88298,
+      "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "bytes": 242598,
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "bytes": 13571,
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "bytes": 8619,
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2"
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "bytes": 6658,
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2"
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "bytes": 17051,
+      "sha256": "1A889B1E10CF73F60E92D7C80CFB26D5ADFB994F83E167AAEEC73CFF135197D4"
+    },
+    {
+      "path": "verification/native-callback-producers-sourceonly-20261017/prepared.json",
+      "bytes": 8423,
+      "sha256": "12116ACCCDB98A54460C53ACF101F39E0026CB125E9FDFE5150C654DC1572B5F"
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "bytes": 9123,
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5"
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/prepared.json",
+      "bytes": 3292,
+      "sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284"
+    },
+    {
+      "path": "verification/await-rejection-callers-sourceonly-20261017/prepared.json",
+      "bytes": 6238,
+      "sha256": "5F73770BD33CBBF31C23ED5D3C99F0EEBB6CEBCE5DAAE5DB32518FF713781D04"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "bytes": 533979,
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "bytes": 12655,
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171"
+    }
+  ],
+  "new_manifest_rows": 30,
+  "new_manifest_products": 5,
+  "new_manifest_owned": 3,
+  "new_manifest_protected": 22,
+  "historical_unchanged_pins": [
+    {
+      "path": "src/extensions/abort_signal.zig",
+      "bytes": 36890,
+      "sha256": "5DD839D8EE581D7FCE0AF5808105E37949AA0E5695144F996087A59018F1ACCC"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_events.zig",
+      "bytes": 13669,
+      "sha256": "E87E7625768A77B8F0F071F51BFDFEB6CA7000154A7C9DA33D0805F32ECA9282"
+    },
+    {
+      "path": "src/extensions/native_ai_json_scope.zig",
+      "bytes": 2169,
+      "sha256": "8A0C7D64B3DD09BCF64FE8B0CE65A792326DAD592AE8ADEE47AFD4B2679C5DF2"
+    },
+    {
+      "path": "src/extensions/native_ai_models_refresh_methods.zig",
+      "bytes": 19729,
+      "sha256": "097D23AAABDFD4B32EA551A2339DE309737B2FC966FF29667E8ACCEFB0D5D8BD"
+    },
+    {
+      "path": "src/extensions/native_ai_provider_retry_request.zig",
+      "bytes": 12344,
+      "sha256": "2F66931B22129B1CC0F4217B5B85524B1C08DFB522D020834B60B98BCE043F95"
+    },
+    {
+      "path": "src/extensions/native_application_fatal.zig",
+      "bytes": 12330,
+      "sha256": "9931F4D33FB00E6832D1E095146BF2D7DE4556D85330016FA61D8385AA3B3683"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "bytes": 242598,
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F"
+    },
+    {
+      "path": "src/extensions/native_cache_warmer_refresh.zig",
+      "bytes": 8864,
+      "sha256": "AF85DCD834DD7C15B2B9EC195714AE8E72EDB398208D016A2937F5B410ED7D84"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "bytes": 163154,
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07"
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "bytes": 25609,
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A"
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "bytes": 17051,
+      "sha256": "1A889B1E10CF73F60E92D7C80CFB26D5ADFB994F83E167AAEEC73CFF135197D4"
+    },
+    {
+      "path": "verification/native-callback-producers-sourceonly-20261017/README.md",
+      "bytes": 6831,
+      "sha256": "7242231F864E80FCEBCA85848845EE71E2304E2584EDB8DAD592C8FDA509F226"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2221803,
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "bytes": 3281481,
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D"
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "bytes": 11919,
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "bytes": 7874,
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare.zig",
+      "bytes": 22261,
+      "sha256": "1C9A1D2E444DB9038E75DBD01DD14E06FBC02F9ED977E8B7F7967A34710914AD"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_migrations.zig",
+      "bytes": 12712,
+      "sha256": "ECCD0BC1320122CB16177ADAEE4C3E40ED8A83DADCFFFFAE1D7D91B1938FC755"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_schema.zig",
+      "bytes": 2768,
+      "sha256": "EF47535659EF039C7E620FA82AA3B460A53FCF893F79E58013FD8D962F660123"
+    },
+    {
+      "path": "src/extensions/native_durable.zig",
+      "bytes": 77196,
+      "sha256": "C1DD2A86CA27C632991B89408B153BE2577128DF9D2D33AD0829EA49EDCB6381"
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "bytes": 18014,
+      "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2"
+    },
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "bytes": 88298,
+      "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "bytes": 13571,
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/native_async_rejected_allocation_test.zig",
+      "bytes": 7534,
+      "sha256": "34FD3C57A1E4AD8066A04BF79D37257E532D312D8985B281335FFD3B3598B282"
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "bytes": 8619,
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2"
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "bytes": 6658,
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2"
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "bytes": 9123,
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5"
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/prepared.json",
+      "bytes": 3292,
+      "sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284"
+    },
+    {
+      "path": "verification/await-rejection-callers-sourceonly-20261017/prepared.json",
+      "bytes": 6238,
+      "sha256": "5F73770BD33CBBF31C23ED5D3C99F0EEBB6CEBCE5DAAE5DB32518FF713781D04"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "bytes": 533979,
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "bytes": 12655,
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171"
+    }
+  ],
+  "hash_length_mismatches": 0,
+  "findings": [
+    {
+      "id": "G1",
+      "status": "closed-source",
+      "resolution": "Engine default-null private stack invocation pointer records only actual pending marked fatal, actual fatal captureException or trusted direct OOM birth; settled Promise DATA and old captured flags do not record. Every Node/class error and success result goes through leave; current owned exact first survives receiver/Scope cleanup, direct OOM synthesis and legacy flag clearing. Frames pop before retained reference retirement and AF/AG Await/yield handoff.",
+      "causal_controls": "Actual generic NEW receiver/class error A with sole-owned native-finalizer ordinary/fatal B; real FailingAllocator callback failure plus new captured cleanup B requires exact B/no replacement generation; same object marked DATA versus actual new throw; sole holder across actual GC/idempotent unwind and genuine AF Await; legacy union recovery identity."
+    },
+    {
+      "id": "G2",
+      "status": "closed-source",
+      "resolution": "Capture drains actual pending, detached captured owners and detached last_error owners together before final commit. Owned first reason stays outside mutable slots across every native finalizer. Reentrant nested diagnostic is retired before outer ordinary message or fatal null diagnostic commits.",
+      "causal_controls": "Sole-owned captured native token performs real reentrant Engine.checked capture, requires exact first reason, ordinary outer message or fatal null last_error, empty pending and std.testing allocator cleanup."
+    }
+  ],
+  "source_invariants": [
+    "Single default-null Engine pointer; no new host allocation at invocation entry, JS_DupValue ownership and current stack membership asserted.",
+    "Nested invocations inherit/publish first current reason; previous pointers never become suspended state; Engine deinit asserts no active invocation.",
+    "Actual Function.prototype comes from existing intrinsic JS_GetFunctionProto(ctx), no mutable global Function lookup/new C API.",
+    "Root heap planned dispatch/failFor/provenance/weak registration/init/runtime teardown and SQLite leaves are not replaced.",
+    "First current event identity is independent of captured diagnostic mutation and later legacy uncatchable flag clearing."
+  ],
+  "declared_new_tests": 6,
+  "declared_producer_tests": 14,
+  "declared_aggregate_tests": 30,
+  "actual_metadata": "unknown-uncompiled-unrun",
+  "remaining_unqualified": [
+    "Actual matching compilation/query/runtime and allocation-failure controls; declarations do not establish discovered count.",
+    "Actual union with latest Root Engine and core8da C3/receiver APIs requires narrow composition and its own gates.",
+    "Separate generator C producer-exit correction and C3 Promise-constructor consumed executor fatal/extra guest-work frontier remain uncomposed; existing per-executor holders retained.",
+    "VM emergency allocator-stage failure representation, foreign-thread Engine access, whole SDK/Agent/default activation and original runtime restoration remain unqualified."
+  ],
+  "compiler_parser_ast_native_node_generator_jobs": false,
+  "main_edited": false,
+  "execution_grant": false,
+  "runtime_or_product_qualified": false,
+  "qualification_worktree_held": "C:\\Users\\adyba\\pi-zig\\worktrees\\chord-sqlite-qualification-20261017 at frozen ff672194; untouched"
+}

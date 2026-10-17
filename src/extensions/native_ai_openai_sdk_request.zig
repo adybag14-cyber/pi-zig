@@ -54,13 +54,11 @@ fn invoke(scope: *Scope, client: c.JSValue, comptime kind: Kind, args: []const c
     const function = try scope.own(if (kind == .parseBody) try af.createResumableArrow(scope.engine, "", 0, Adapter.run, &.{client}, c.pi_js_undefined()) else try af.createResumable(scope.engine, name, length, Adapter.run, &.{client}));
     return scope.call(function, client, args);
 }
-fn generation(scope: *Scope, job: c.JSValue, completion: af.Completion, input: c.JSValue) !void {
+fn generation(scope: *Scope, job: c.JSValue, completion: af.Completion, _: c.JSValue) !void {
     if (completion == .start) {
         try scope.put(job, "generation", try scope.own(try scope.engine.checked(c.JS_NewBigUint64(scope.engine.context, scope.engine.native_allocation_generation))));
     } else if (completion == .rejected) {
-        var start: u64 = 0;
-        if (c.JS_ToBigUint64(scope.engine.context, &start, try scope.get(job, "generation")) < 0) return v.js.capture(scope.engine);
-        try body.rethrowRecognizedAllocation(scope.engine, input, start);
+        try body.enterRejectedContinuation(scope.engine);
     }
 }
 fn rest(scope: *Scope, input: c.JSValue) !c.JSValue {
@@ -200,9 +198,7 @@ fn caught(scope: *Scope, promise: c.JSValue, text_only: bool, boundary: c.JSValu
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             var row: Scope = .{ .engine = engine };
             defer row.deinit();
-            var generation_start: u64 = 0;
-            if (c.JS_ToBigUint64(engine.context, &generation_start, roots[1]) < 0) return v.js.capture(engine);
-            try body.rethrowRecognizedAllocation(engine, argument(args, 0), generation_start);
+            try body.enterRejectedContinuation(engine);
             const reason = try cast(&row, argument(args, 0));
             return c.JS_DupValue(engine.context, if (row.truthy(roots[0])) try row.get(reason, "message") else reason);
         }

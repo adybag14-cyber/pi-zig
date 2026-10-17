@@ -58,14 +58,7 @@ fn inner(engine: *v.em.Engine, args: []const c.JSValue, roots: []const c.JSValue
         return .{ .awaited = c.JS_DupValue(engine.context, result) };
     }
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, try s.get(state.*, "generation")) < 0) return v.js.capture(engine);
-        try body.rethrowRecognizedAllocation(engine, input, generation);
-        // No current VM event existed on entry, and no fresh private host OOM
-        // was recognized above. This input is rejected DATA. C2's Action.THROW
-        // installs it into the exception slot, so clear only its historical
-        // hidden flag before that transfer; keep the exact same raw identity.
-        c.JS_ClearUncatchableError(engine.context, input);
+        try body.enterRejectedContinuation(engine);
         return .{ .thrown = c.JS_DupValue(engine.context, input) };
     }
     return .{ .returned = try @import("native_jiti_interop.zig").importDefault(engine, input, arg(args, 1)) };

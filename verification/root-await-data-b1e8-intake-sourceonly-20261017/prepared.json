@@ -1,0 +1,395 @@
+{
+  "schema": 1,
+  "status": "virtual-reviewed-source-intake-prepared",
+  "root_base": "6249b52dbabbf2b8d6188b4e7211657e4dcc39c5",
+  "reviewed_source": "b1e8d31480efd6f410bfd834a71f2a5b5e080c34",
+  "reviewed_source_root_union": "1fd8dd40100cb41b44d94e09fffe12ed1412f32e",
+  "product_count": 29,
+  "products": [
+    {
+      "path": "src/extensions/abort_signal.zig",
+      "sha256": "5DD839D8EE581D7FCE0AF5808105E37949AA0E5695144F996087A59018F1ACCC",
+      "bytes": 36890
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "bytes": 5566
+    },
+    {
+      "path": "src/extensions/native_agent_prompt_async.zig",
+      "sha256": "3FCF2B0C8FBCD28F9D1B409F9DB6B1BF570DA06AF45AD2AEABC82A77734D5421",
+      "bytes": 6218
+    },
+    {
+      "path": "src/extensions/native_ai_anthropic_events.zig",
+      "sha256": "E87E7625768A77B8F0F071F51BFDFEB6CA7000154A7C9DA33D0805F32ECA9282",
+      "bytes": 13669
+    },
+    {
+      "path": "src/extensions/native_ai_json_scope.zig",
+      "sha256": "8A0C7D64B3DD09BCF64FE8B0CE65A792326DAD592AE8ADEE47AFD4B2679C5DF2",
+      "bytes": 2169
+    },
+    {
+      "path": "src/extensions/native_ai_models_refresh_methods.zig",
+      "sha256": "097D23AAABDFD4B32EA551A2339DE309737B2FC966FF29667E8ACCEFB0D5D8BD",
+      "bytes": 19729
+    },
+    {
+      "path": "src/extensions/native_ai_openai_factory.zig",
+      "sha256": "56656418D949E0FD1840DAD14FB251EB150EF196AFF30527EA3F566613818DDF",
+      "bytes": 21484
+    },
+    {
+      "path": "src/extensions/native_ai_openai_sdk_readable.zig",
+      "sha256": "B79C5B1BF00C0F219F52B7C84B114EED39E7903CC9745CB6F6564510CEACE9F4",
+      "bytes": 6890
+    },
+    {
+      "path": "src/extensions/native_ai_openai_sdk_request.zig",
+      "sha256": "1AE3A188331B7A8193A413461F695575CF5E79D22DF0F99173E521683D7C7104",
+      "bytes": 39012
+    },
+    {
+      "path": "src/extensions/native_ai_provider_retry_request.zig",
+      "sha256": "2F66931B22129B1CC0F4217B5B85524B1C08DFB522D020834B60B98BCE043F95",
+      "bytes": 12344
+    },
+    {
+      "path": "src/extensions/native_application_fatal.zig",
+      "sha256": "9931F4D33FB00E6832D1E095146BF2D7DE4556D85330016FA61D8385AA3B3683",
+      "bytes": 12330
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "bytes": 6692
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "75A07A7D33050405705EE7D2C1D8EAD9375454A6F32541E2825EBB7CB52C65E1",
+      "bytes": 3006
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+      "bytes": 242598
+    },
+    {
+      "path": "src/extensions/native_cache_warmer_refresh.zig",
+      "sha256": "AF85DCD834DD7C15B2B9EC195714AE8E72EDB398208D016A2937F5B410ED7D84",
+      "bytes": 8864
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "bytes": 4809
+    },
+    {
+      "path": "src/extensions/native_jiti_import.zig",
+      "sha256": "AD033B311E6FA13ECB9A9460DEE009E80BE90353F937A1105E48532B462C9DD6",
+      "bytes": 4273
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "sha256": "D22E174AD52F785282FFEB4CDB79F4547391C9A234358605D9F5E13BDB0C19FE",
+      "bytes": 17149
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "bytes": 163154
+    },
+    {
+      "path": "src/extensions/native_sdk_event_bus.zig",
+      "sha256": "4551B70247922ADAF697B24B56109D63D0350BE2C1C7513CC793169E727853AF",
+      "bytes": 5256
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "sha256": "28530A20895C549F94BFC98D9EF8B9608F75A8DB7AEF975D0935FE493EB4C8E0",
+      "bytes": 9620
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_production.zig",
+      "sha256": "E8F032BE1F6D81211366AEAE81B27B8228E64172C1FA7B20D581AA1F7C36E351",
+      "bytes": 40706
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    },
+    {
+      "path": "src/extensions/native_sdk_session_hook_helpers.zig",
+      "sha256": "DE7712762A85A30CECE49FEFDBA68BEB21A8AA633C524022951A7ECCD354874B",
+      "bytes": 16943
+    },
+    {
+      "path": "src/extensions/native_sdk_session_settled.zig",
+      "sha256": "B0D64D6BDC0D2AAE58A3E691815B18A8770D01CE3165A3AC10B2795B33B096E6",
+      "bytes": 13149
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+      "bytes": 25609
+    }
+  ],
+  "control_count": 4,
+  "controls": [
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "1A889B1E10CF73F60E92D7C80CFB26D5ADFB994F83E167AAEEC73CFF135197D4",
+      "bytes": 17051
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2",
+      "bytes": 8619
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2",
+      "bytes": 6658
+    },
+    {
+      "path": "src/native_callback_producer_test.zig",
+      "sha256": "26ACBAC1B50E3A3F8A9D0C4FF247838155D25A0E4D249943E30758D1DDBA718A",
+      "bytes": 28986
+    }
+  ],
+  "native_declarations": 30,
+  "source_caller_rows": 20,
+  "owned": [
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/README.md",
+      "sha256": "BB26E8A7C3C4B1171FCF011A7D6F9616A6647BD22BACB8B0EE547AB27DDC4E70",
+      "bytes": 4089
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/source-observer.mjs",
+      "sha256": "FDE91A6349584444DE65DCBE0C60D1E996924295D32EC6BB12D2AFD0F6B9C86E",
+      "bytes": 2391
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/authority/agent-session.ts.txt",
+      "sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "bytes": 162151
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/authority/agent.ts.txt",
+      "sha256": "7024A3145A6EBC951A0F030164ADB1DFB12D33D6E0DBBAC15EF0EFDA49C87457",
+      "bytes": 19748
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/authority/LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/reviews/await-rejection-callers-6d4-independent-async-source-review-20261017.json",
+      "sha256": "9698743BE1DA10FC136C9C7231E801D44A9C143CC9CA103DF2833D6643DB8997",
+      "bytes": 2978
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/reviews/await-rejection-data-b6a8-independent-source-review-20261017.json",
+      "sha256": "61563468A47DDFF4C6671DA9A35143454BF6360E6B51F5EE75EE8038A7EDDDB1",
+      "bytes": 3289
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/reviews/await-rejection-primitive-1116-independent-source-review-20261017.json",
+      "sha256": "453C31474E77EE9C375AC7B8929DDCB1E694AD8DC33FAAECCF26F17DD3E1EE4F",
+      "bytes": 4038
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/reviews/native-callback-producers-b1e8-independent-google-source-review-20261017.json",
+      "sha256": "9D188E3E5B47307476FCA750EF3AECF0D68E78C30A6DAD0E972387B435E2CEB3",
+      "bytes": 16624
+    },
+    {
+      "path": "verification/root-await-data-b1e8-intake-sourceonly-20261017/reviews/native-callback-producers-e396-independent-google-source-review-20261017.json",
+      "sha256": "4AFA2027A98D65A5EF3E79BF2489BEDD4C462C66D9781258081A3E2261F4423B",
+      "bytes": 12205
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/fixtures/agent-full-methods-observer.mjs",
+      "sha256": "09AE2FEF3D5512D5A6EC201CD46BF860FFC9E095F5218F39A8DABEFAD38263C1",
+      "bytes": 9282
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "bytes": 533979
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-native.input.txt",
+      "sha256": "9897105D4290888FDF84F04D412CC93764555A9B5CA166BDEBD3EE19140BC60C",
+      "bytes": 5399
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171",
+      "bytes": 12655
+    },
+    {
+      "path": "src/extensions/host.zig",
+      "sha256": "DAAC6E0A83095102CDD67A9224218259610D7121EF0CD377B1A8F1F24688CA6B",
+      "bytes": 172219
+    },
+    {
+      "path": "src/extensions/js_runtime.zig",
+      "sha256": "65D3F685042D07F5DA04680B5E63E64816C00330B6F128E96B77C5D51633C426",
+      "bytes": 252606
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_node_queue.zig",
+      "sha256": "AB2649E7C2EFFDA1FFCD0D7100865C1B7E002D2CB88A3D691852E9BB73484A4E",
+      "bytes": 5262
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_node_values.zig",
+      "sha256": "4007156C806E9EE45AB16C62F2776972D133B4ACCC19D6DDE859867CE19FCEB8",
+      "bytes": 17621
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_node.zig",
+      "sha256": "67A6C0A04421D33F0EA20AEAAB48F1DF555F806D404FA79DABD657170892FCCE",
+      "bytes": 21664
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_values.zig",
+      "sha256": "32F82289EE6AC03E7AA923BF0AEBFD27218746DD33AC8B6493BC2B8F1D1F3038",
+      "bytes": 4638
+    },
+    {
+      "path": "src/extensions/native_node_fs_mkdir_exit.zig",
+      "sha256": "ED8BD489E8BE42862A9F68AB409DE55410CA02616C22493B745E795D923E2C7D",
+      "bytes": 16793
+    },
+    {
+      "path": "src/extensions/native_node_fs_promises_mkdir.zig",
+      "sha256": "DE72A89F60C4C5827472145820BB58779504DB46A5326B6EDEF6776E445A8C68",
+      "bytes": 28143
+    },
+    {
+      "path": "src/extensions/native_node_readline_callbacks.zig",
+      "sha256": "E78DD14096399D19D0A103CAE4AB736E94D0B329A4E57C6DC880918485EA1467",
+      "bytes": 6739
+    },
+    {
+      "path": "src/extensions/native_node_readline_errors.zig",
+      "sha256": "05CE47DDF4E9E9975EB6B7C9BE2D89B7513D2C824AFFBAE5211BF325EE153499",
+      "bytes": 17613
+    },
+    {
+      "path": "src/extensions/native_node_sqlite.zig",
+      "sha256": "AD514E7F663BCD35E3EBE1274D59FB291A40C416F2FB7E9FE6776BEB139EAB27",
+      "bytes": 29903
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "bytes": 3281481
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+      "bytes": 11919
+    },
+    {
+      "path": "src/main.zig",
+      "sha256": "95EAD70D4C953B0E9AA3A1D71D8AC1D41EF71BA0C138AECA04F9A159582BF301",
+      "bytes": 455641
+    },
+    {
+      "path": "src/native_chord_sqlite_lifetime_controls.zig",
+      "sha256": "AE1655B11FD438BC49CF977F4E392021E74262247AF4CB843875F8CB72D55EF3",
+      "bytes": 14158
+    },
+    {
+      "path": "src/native_chord_sqlite_node_correction_test.zig",
+      "sha256": "55F69CFCB42CF9D0A28C1B71CD7192F4ACEB0305A1BFD7CB5F20874114CE67A4",
+      "bytes": 34187
+    },
+    {
+      "path": "src/native_chord_sqlite_node_test.zig",
+      "sha256": "9707C90CE62D2B077873345382DC49C291628298A0DF2C49566A607CBD0C30F2",
+      "bytes": 6615
+    },
+    {
+      "path": "src/native_node_readline_validation_cleanup_control.zig",
+      "sha256": "A1AB6CAA269F04D3D36F3CFB164EAC492D54A6F6C37CC21DB0C7FC4EAEE3DA04",
+      "bytes": 6739
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "bytes": 125917
+    }
+  ],
+  "build": {
+    "path": "build.zig",
+    "sha256": "C925977C62DB9E778C91C22B33C2B766491B979325810597A87C1941D008D73F",
+    "bytes": 348995
+  },
+  "build_delta": "6add/0delete independent target only; allRoot targets preserved",
+  "root_selected_paths_changed_since1fd8": [],
+  "root_new_source_paths_protected": 13,
+  "c_h_included": false,
+  "c_semantic_prerequisite": "11161f0c00e989db0bdba3d5169f3f5b644fe077 via separate intended core1540e55a59b59a56a51bba5442f0aff4e8b0a418, preserving8daC/H and11c JSString/str8/str16 include repair; no combinedmetadata/runtimepass",
+  "root_c_sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+  "root_h_sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+  "main_edited": false,
+  "executed": false,
+  "execution_grant": false,
+  "native_host868_selected": false,
+  "source_reference_captured": false,
+  "expected_observed_files": [],
+  "remaining_vm_frontiers": [
+    "genuineC3PromiseCtor consumed executor actualfatal/extraGuestwork",
+    "generator20dproducerexit uncomposed"
+  ],
+  "intake_review": "pending exactRoot6249 virtualdelta Google independentbyte/scope review",
+  "intended_separate_core": {
+    "source": "1540e55a59b59a56a51bba5442f0aff4e8b0a418",
+    "worktree": "worktrees/runtime-c3-c4-c5-af-receiver-20261017",
+    "c_sha256": "23048FA5375F58A155581AA17FEF8D29CC88E159D6949F4CBB370F05A8287161",
+    "h_sha256": "DE1C05E99D18FC72A680B7A2476DC5B72DA57BFD15451B984697EF7228B9854A",
+    "owner": "minimatch_native_resume",
+    "combined_metadata_runtime_pass": false
+  },
+  "product_semantic_patch_artifact": {
+    "path": "evidence/root-await-data-b1e8-intake-prepared-20261017/products-only.patch",
+    "sha256": "9B4B4B22F5A0482EC3F71E53A1FDBC349F97A34A8595AAFE53078508025A5BFF",
+    "scope": "29reviewedproductfiles only; noC/H"
+  }
+}
