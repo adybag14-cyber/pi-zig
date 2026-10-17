@@ -1,0 +1,12 @@
+{
+  "status": "reviewed_source_only",
+  "source_head": "9f4fc947e93eb9230eecd3f79838e69db3308976",
+  "paths": 35,
+  "product_leaves": 2,
+  "original_inputs": 30,
+  "original_capture_executed": false,
+  "native_executed": false,
+  "default_selected": false,
+  "full_Babel_compatibility_qualified": false,
+  "Root_lowerer_lexical_fixes_preserved": true
+}

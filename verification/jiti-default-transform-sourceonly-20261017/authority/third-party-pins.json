@@ -1,0 +1,23 @@
+{
+  "paths_package": {
+    "gitHead": null,
+    "repository": {
+      "url": "https://github.com/javiertury/babel-plugin-transform-import-meta",
+      "type": "git"
+    },
+    "integrity": "sha512-XWEzH1lKhpNDGqZRIPSHbS77tJbPKpRzydQRoJ6KLj0eynQy+MJSo/C75GtMNWnJsP1sGOAvlWcTMMHnWNBSXg==",
+    "license": "BSD",
+    "version": "2.1.1"
+  },
+  "env_package": {
+    "gitHead": "1b4127929bc4c302f345a940a3ac2e14d03ff81b",
+    "repository": {
+      "url": "git+https://github.com/iendeavor/import-meta-env.git",
+      "type": "git",
+      "directory": "packages/babel"
+    },
+    "integrity": "sha512-jWA2Zr1nU9+joY9T0du5Qh7eoIpXr/pjzHpSwCX20EFGiXu074iI2nCNIXI1YV6F3aT9MsI+u0OIgNmzXqlCjw==",
+    "license": "MIT",
+    "version": "0.4.2"
+  }
+}

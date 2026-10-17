@@ -1,0 +1,39 @@
+{
+  "subject": "official jiti2.7.0 self-contained default reference package",
+  "npm_archive_sha256": "8DD0D365FB49C0E7CC42D6A00DF6FB2DA9056FC24492094346FC34ECDBCF28CA",
+  "npm_git_head": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+  "files": [
+    {
+      "path": "dist/babel.cjs",
+      "sha256": "B3BC89A8DC40860FB6A7A78512BDFE5976C6253E6DED74B7D96ECE803CAC8701",
+      "bytes": 1526691,
+      "retained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package\\dist\\babel.cjs"
+    },
+    {
+      "path": "dist/jiti.cjs",
+      "sha256": "A0B3B8D5E06A0519C66B62179E29200533057920F6F11370546E979DACD24C49",
+      "bytes": 190082,
+      "retained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package\\dist\\jiti.cjs"
+    },
+    {
+      "path": "lib/jiti.cjs",
+      "sha256": "A80E7F04D21D4EF5C540287E41D6AB36DBFF73132620E1894CD83425BB1E62A7",
+      "bytes": 646,
+      "retained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package\\lib\\jiti.cjs"
+    },
+    {
+      "path": "package.json",
+      "sha256": "AAB8AAFC42D9AEEC14A6E2FE0E15EA1514C0C205A624055A7E776F2EC456283C",
+      "bytes": 4784,
+      "retained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package\\package.json"
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078,
+      "retained_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\extension-import\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package\\LICENSE"
+    }
+  ],
+  "code_executed": false,
+  "runtime_dependency_recovery_claim": false
+}
