@@ -7,7 +7,9 @@ const core = @import("native_jiti_core_factory.zig");
 const frontend = @import("native_jiti_eval_frontend.zig");
 const functions = @import("native_node_module_callable.zig");
 const body = @import("native_async_body.zig");
-const Phase = enum { declared, linked, initializing, ready, failed };
+const requiring = @import("native_jiti_require.zig");
+const resolving = @import("native_jiti_resolve.zig");
+const Phase = enum { declared, linking, linked, initializing, ready, failed };
 const Record = struct {
     engine: *v.em.Engine,
     class_id: c.JSClassID,
@@ -26,6 +28,56 @@ pub const Bodies = struct { core: functions.Callback, frontend: functions.Callba
 pub const Bindings = struct {
     core: core.Imports,
     frontend: frontend.Imports,
+    platform: c.JSValue,
+};
+/// The canonical producer supplies only actual external dependencies. There
+/// is no caller-provided require/eval/core counterpart slot to fill with a
+/// placeholder or a function from some other graph.
+pub const CoreDependencies = struct {
+    resolve_options: c.JSValue,
+    file_url_to_path: c.JSValue,
+    path_to_file_url: c.JSValue,
+    normalize_aliases: c.JSValue,
+    escape_string_regexp: c.JSValue,
+    library_require: c.JSValue,
+    is_dir: c.JSValue,
+    pathe_dirname: c.JSValue,
+    pathe_join: c.JSValue,
+    debug: c.JSValue,
+    prepare_cache_dir: c.JSValue,
+    jiti_resolve: c.JSValue,
+    transform: c.JSValue,
+    package_json: c.JSValue,
+    iterator_symbol: c.JSValue,
+};
+pub const FrontendDependencies = struct {
+    module_constructor: c.JSValue,
+    jiti_resolve: c.JSValue,
+    pathe_dirname: c.JSValue,
+    pathe_basename: c.JSValue,
+    pathe_extname: c.JSValue,
+    read_nearest_package_json: c.JSValue,
+    has_esm_syntax: c.JSValue,
+    performance: c.JSValue,
+    debug: c.JSValue,
+    transform: c.JSValue,
+    native_import_or_require: c.JSValue,
+};
+pub const RequireDependencies = struct {
+    resolve_inputs: resolving.Inputs,
+    node_file_url_to_path: c.JSValue,
+    pathe_extname: c.JSValue,
+    pathe_is_absolute: c.JSValue,
+    mlly_path_to_file_url: c.JSValue,
+    node_builtin_modules: c.JSValue,
+    read_file_sync: c.JSValue,
+    debug: c.JSValue,
+    is_windows: bool,
+};
+pub const CanonicalBindings = struct {
+    core: CoreDependencies,
+    frontend: FrontendDependencies,
+    require: RequireDependencies,
     platform: c.JSValue,
 };
 pub const Exports = struct { create_jiti: c.JSValue, eval_module: c.JSValue };
@@ -113,6 +165,86 @@ pub fn link(engine: *v.em.Engine, cells: *const Cells, supplied: Bindings) !void
     frontend_imports.eval_module_self = record.frontend;
     try core.validate(engine, core_imports); try frontend.validate(engine, frontend_imports);
     if (!c.JS_IsFunction(engine.context, supplied.platform)) return error.RequiredActualJitiPlatform;
+    const retained_core = duplicate(core.Imports, engine, core_imports);
+    const retained_frontend = duplicate(frontend.Imports, engine, frontend_imports);
+    const platform = c.JS_DupValue(engine.context, supplied.platform);
+    record.core_imports = retained_core; record.frontend_imports = retained_frontend; record.platform = platform;
+    record.phase = .linked;
+}
+fn canonicalPreflight(engine: *v.em.Engine, supplied: CanonicalBindings) !void {
+    inline for (std.meta.fields(CoreDependencies)) |field| {
+        const value = @field(supplied.core, field.name);
+        if (comptime std.mem.eql(u8, field.name, "package_json")) {
+            if (!c.JS_IsObject(value)) return error.RequiredActualJitiPackageJson;
+        } else if (comptime std.mem.eql(u8, field.name, "iterator_symbol")) {
+            if (!c.JS_IsSymbol(value)) return error.RequiredActualJitiIteratorSymbol;
+        } else if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualJitiFactoryImport;
+    }
+    inline for (std.meta.fields(FrontendDependencies)) |field| {
+        const value = @field(supplied.frontend, field.name);
+        if (comptime std.mem.eql(u8, field.name, "performance")) {
+            if (!c.JS_IsObject(value)) return error.RequiredActualJitiPerformance;
+        } else if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualJitiFrontendImport;
+    }
+    inline for (std.meta.fields(resolving.Inputs)) |field| {
+        const value = @field(supplied.require.resolve_inputs, field.name);
+        if (comptime std.mem.eql(u8, field.name, "js_ext_re") or std.mem.eql(u8, field.name, "ts_ext_re")) {
+            if (!c.JS_IsObject(value)) return error.RequiredActualJitiResolveConstants;
+        } else if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualJitiResolveImport;
+    }
+    inline for (std.meta.fields(RequireDependencies)) |field| {
+        if (comptime !std.mem.eql(u8, field.name, "resolve_inputs") and !std.mem.eql(u8, field.name, "is_windows")) {
+            const value = @field(supplied.require, field.name);
+            if (comptime std.mem.eql(u8, field.name, "node_builtin_modules")) {
+                if (!c.JS_IsObject(value)) return error.RequiredActualNodeBuiltinModules;
+            } else if (!c.JS_IsFunction(engine.context, value)) return error.RequiredActualJitiRequireImport;
+        }
+    }
+    if (!c.JS_IsFunction(engine.context, supplied.platform)) return error.RequiredActualJitiPlatform;
+    // The same imported Source declarations are shared by all three bodies.
+    // Strict equality does not invoke any Source getter/coercion/proxy trap.
+    inline for (.{
+        .{ supplied.core.debug, supplied.frontend.debug },
+        .{ supplied.core.debug, supplied.require.debug },
+        .{ supplied.core.transform, supplied.frontend.transform },
+        .{ supplied.core.jiti_resolve, supplied.frontend.jiti_resolve },
+        .{ supplied.core.pathe_dirname, supplied.frontend.pathe_dirname },
+        .{ supplied.core.pathe_dirname, supplied.require.resolve_inputs.pathe_dirname },
+        .{ supplied.core.pathe_join, supplied.require.resolve_inputs.pathe_join },
+        .{ supplied.core.is_dir, supplied.require.resolve_inputs.is_dir },
+        .{ supplied.core.file_url_to_path, supplied.require.resolve_inputs.mlly_file_url_to_path },
+        .{ supplied.core.path_to_file_url, supplied.require.mlly_path_to_file_url },
+        .{ supplied.frontend.pathe_extname, supplied.require.pathe_extname },
+    }) |pair| if (!c.JS_IsStrictEqual(engine.context, pair[0], pair[1])) return error.MismatchedActualJitiModuleImports;
+}
+fn requireInputs(supplied: RequireDependencies, actual_frontend: c.JSValue) requiring.Inputs {
+    return .{ .resolve_inputs = supplied.resolve_inputs, .node_file_url_to_path = supplied.node_file_url_to_path,
+        .pathe_extname = supplied.pathe_extname, .pathe_is_absolute = supplied.pathe_is_absolute,
+        .mlly_path_to_file_url = supplied.mlly_path_to_file_url, .node_builtin_modules = supplied.node_builtin_modules,
+        .read_file_sync = supplied.read_file_sync, .debug = supplied.debug, .eval_module = actual_frontend, .is_windows = supplied.is_windows };
+}
+/// The sole canonical require/eval assembly transaction. Preflight cannot run
+/// Source code. The real reviewed require constructor then owns/traces/charges
+/// its actual captures, including this record's REAL frontend declaration.
+/// No imported field is committed until that construction succeeds.
+pub fn linkCanonical(engine: *v.em.Engine, cells: *const Cells, supplied: CanonicalBindings) !void {
+    const record = try hostRecord(engine, cells);
+    if (record.phase != .declared) return error.JitiModuleCellsAlreadyLinked;
+    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
+    try canonicalPreflight(engine, supplied);
+    record.phase = .linking;
+    errdefer record.phase = .declared;
+    const actual_require = try requiring.create(engine, requireInputs(supplied.require, record.frontend));
+    defer engine.freeValue(actual_require);
+    var core_imports = empty(core.Imports);
+    inline for (std.meta.fields(CoreDependencies)) |field| @field(core_imports, field.name) = @field(supplied.core, field.name);
+    core_imports.jiti_require = actual_require; core_imports.eval_module = record.frontend;
+    var frontend_imports = empty(frontend.Imports);
+    inline for (std.meta.fields(FrontendDependencies)) |field| @field(frontend_imports, field.name) = @field(supplied.frontend, field.name);
+    frontend_imports.jiti_require = actual_require;
+    frontend_imports.nested_create_jiti = record.core;
+    frontend_imports.eval_module_self = record.frontend;
+    // Fixed/precharged record slots; duplications cannot allocate or fail.
     const retained_core = duplicate(core.Imports, engine, core_imports);
     const retained_frontend = duplicate(frontend.Imports, engine, frontend_imports);
     const platform = c.JS_DupValue(engine.context, supplied.platform);

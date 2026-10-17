@@ -71,7 +71,7 @@ fn closeReturn(engine: *v.em.Engine, iterator: c.JSValue) !void {
     const method = try v.js.get(engine, iterator, "return"); defer engine.freeValue(method);
     if (v.nullish(method)) return;
     // A throwing completion precedes IteratorClose's result-object check.
-    const ignored = try v.js.call(engine, method, iterator, &.{}); engine.freeValue(ignored);
+    const ignored_result = try v.js.call(engine, method, iterator, &.{}); engine.freeValue(ignored_result);
 }
 fn spread(engine: *v.em.Engine, target: c.JSValue, iterable: c.JSValue, symbol: c.JSValue, start: u32) !void {
     var iterator = try v.js.Iterator.init(engine, iterable, symbol); defer iterator.deinit();
