@@ -41,11 +41,28 @@ pub fn createNativeFromOwners(engine: *em.Engine, runtime_inputs: @import("nativ
     try engine.checkNativeEntry();
     if (runtime_inputs.user_agent_runtime != .native_zig) return error.RequiredTruthfulNativeSdkRuntimeProfile;
     if (!c.JS_IsConstructor(engine.context, resources.package_manager) or !c.JS_IsFunction(engine.context, resources.load_extension_from_factory) or !c.JS_IsFunction(engine.context, resources.load_extensions_cached)) return error.RequiredActualResourceLoaderOwners;
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const value = nativeOwnerBody(engine, runtime_inputs, resources) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn nativeOwnerBody(engine: *em.Engine, runtime_inputs: @import("native_sdk_runtime_imports.zig").Inputs, resources: ResourceImports) !c.JSValue {
+
+    try engine.checkNativeEntry();
+    var s: Scope = .{ .engine = engine };
+    return @import("native_sdk_owned_completion.zig").finishValue(&s, nativeOwnerGraph(&s, runtime_inputs, resources));
+}
+fn nativeOwnerGraph(s: *Scope, runtime_inputs: @import("native_sdk_runtime_imports.zig").Inputs, resources: ResourceImports) !c.JSValue {
+    const engine = s.engine;
     const runtime = try s.own(try @import("native_sdk_runtime_imports.zig").create(engine, runtime_inputs));
     const platform = try s.get(runtime, "platform");
     const auth_storage = try s.get(runtime, "authStorage");
-    try requireAsyncOwner(&s, try s.get(try s.get(auth_storage, "AuthStorage"), "prototype"), .{ "reloadFromStorageAsync", "readLatestData", "read", "modify", "delete", "list" });
+    try requireAsyncOwner(s, try s.get(try s.get(auth_storage, "AuthStorage"), "prototype"), .{ "reloadFromStorageAsync", "readLatestData", "read", "modify", "delete", "list" });
     const managers = try s.own(try @import("native_sdk.zig").managerImports(engine));
     const loader = try s.own(try @import("native_sdk_resource_loader_assembly.zig").create(engine, .{
         .settings_manager = try s.get(managers, "SettingsManager"),
@@ -56,7 +73,7 @@ pub fn createNativeFromOwners(engine: *em.Engine, runtime_inputs: @import("nativ
         .load_extension_from_factory = resources.load_extension_from_factory,
         .load_extensions_cached = resources.load_extensions_cached,
     }));
-    try requireAsyncOwner(&s, try s.get(loader, "prototype"), .{"reload"});
+    try requireAsyncOwner(s, try s.get(loader, "prototype"), .{"reload"});
     return create(engine, .{
         .resource_loader = loader,
         .typebox_graph = try s.own(try @import("native_typebox_production_graph.zig").create(engine)),

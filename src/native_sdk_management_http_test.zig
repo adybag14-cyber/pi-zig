@@ -124,3 +124,107 @@ test "SDK management HTTP signal spread preserves own keys getters and preflight
     , "actual-management-spread-preflight.mjs");
     engine.freeValue(value);
 }
+
+const CleanupEmission = struct { engine: *em.Engine, reason: c.JSValue, finalizers: usize = 0 };
+var cleanup_selected_function: ?c.JSValue = null;
+var cleanup_selected_calls: usize = 0;
+fn emitCleanup(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const owner: *CleanupEmission = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    owner.finalizers += 1;
+    _ = c.JS_Throw(owner.engine.context, c.JS_DupValue(owner.engine.context, owner.reason));
+}
+fn cleanupToken(owner: *CleanupEmission) !c.JSValue {
+    var class: c.JSClassID = 0;
+    _ = c.JS_NewClassID(owner.engine.runtime, &class);
+    const definition: c.JSClassDef = .{ .class_name = "Owned management cleanup", .finalizer = emitCleanup };
+    if (c.JS_NewClass(owner.engine.runtime, class, &definition) < 0) return error.OutOfMemory;
+    const value = try owner.engine.checked(c.JS_NewObjectClass(owner.engine.context, class));
+    _ = c.JS_SetOpaque(value, owner);
+    return value;
+}
+fn selectedHas(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    cleanup_selected_calls += 1;
+    return c.pi_js_undefined();
+}
+fn takeSelectedHas(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const value = cleanup_selected_function orelse return error.RequiredSoleOwnedManagementFunction;
+    cleanup_selected_function = null; // Transfer sole function ownership to VM.
+    return value;
+}
+test "SDK management HTTP Source throw survives ordinary sole-holder cleanup while actual fatal promotes" {
+    for ([_]bool{ false, true }) |fatal_cleanup| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        const root = try s.own(c.JS_GetGlobalObject(engine.context));
+        try s.put(root, "actualManagementHttp", try s.own(try @import("extensions/native_sdk_management_http.zig").create(engine)));
+        const original = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        const cleanup = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        if (fatal_cleanup) c.JS_SetUncatchableError(engine.context, cleanup);
+        try s.put(root, "ownedManagementOriginal", original);
+        var emission: CleanupEmission = .{ .engine = engine, .reason = cleanup };
+        const token = try cleanupToken(&emission);
+        cleanup_selected_function = @import("extensions/native_node_function.zig").createArrow(engine, "selectedHas", 1, selectedHas, &.{token}) catch |err| { engine.freeValue(token); return err; };
+        engine.freeValue(token); // Only the transferred function retains token.
+        defer { if (cleanup_selected_function) |value| engine.freeValue(value); cleanup_selected_function = null; }
+        cleanup_selected_calls = 0;
+        const prototype = try s.get(try s.global("Set"), "prototype");
+        const atom = c.JS_NewAtom(engine.context, "has"); defer c.JS_FreeAtom(engine.context, atom);
+        const getter = try @import("extensions/native_node_function.zig").createArrow(engine, "get has", 0, takeSelectedHas, &.{});
+        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, getter, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+        const source =
+            \\globalThis.managementSeen=undefined;globalThis.fetch=()=>({get status(){throw ownedManagementOriginal}});try{await actualManagementHttp.fetchWithRetry('owned',undefined,{maxRetries:0})}catch(reason){globalThis.managementSeen=reason}
+        ;
+        if (fatal_cleanup) {
+            try std.testing.expectError(error.JavaScriptException, engine.evalModule(source, "actual-management-fatal-cleanup.mjs"));
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, cleanup, engine.captured_exception orelse return error.RequiredActualCleanupFatal));
+            try std.testing.expect(c.JS_IsUndefined(try s.global("managementSeen")));
+        } else {
+            const result = try engine.evalModule(source, "actual-management-ordinary-cleanup.mjs"); engine.freeValue(result);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, try s.global("managementSeen")));
+        }
+        try std.testing.expectEqual(@as(usize, 1), emission.finalizers);
+        try std.testing.expectEqual(@as(usize, 0), cleanup_selected_calls);
+        try std.testing.expect(cleanup_selected_function == null);
+    }
+}
+
+/// Prepared actual-owner entry, not a fake positive graph/test declaration.
+/// The caller must first supply the real child/config/resource bindings.
+pub fn verifyNativeOwnerGetterBoundary(engine: *em.Engine, runtime: @import("extensions/native_sdk_runtime_imports.zig").Inputs, resources: @import("extensions/native_sdk_application_bootstrap.zig").ResourceImports) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const actual = try s.own(try @import("extensions/native_sdk_runtime_imports.zig").create(engine, runtime));
+    const prototype = try s.get(try s.get(try s.get(actual, "authStorage"), "AuthStorage"), "prototype");
+    const original = try s.get(prototype, "reloadFromStorageAsync");
+    const root = try s.own(c.JS_GetGlobalObject(engine.context));
+    const reason = try s.own(try engine.eval("globalThis.ownerDiagnosticReads=0;({toString(){ownerDiagnosticReads++;return'forbidden owner diagnostic'}})", "actual-owner-raw-reason.js", c.JS_EVAL_TYPE_GLOBAL));
+    try s.put(root, "actualOwnerRawReason", reason);
+    const getter = try s.own(try engine.eval("(()=>{throw actualOwnerRawReason})", "actual-owner-auth-getter.js", c.JS_EVAL_TYPE_GLOBAL));
+    const atom = c.JS_NewAtom(engine.context, "reloadFromStorageAsync"); defer c.JS_FreeAtom(engine.context, atom);
+    if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+    defer { _ = c.JS_DefinePropertyValueStr(engine.context, prototype, "reloadFromStorageAsync", c.JS_DupValue(engine.context, original), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE); }
+    const suppression = engine.native_exception_diagnostics_suppressed;
+    try std.testing.expectError(error.JavaScriptException, @import("extensions/native_sdk_application_bootstrap.zig").createNativeFromOwners(engine, runtime, resources));
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.RequiredActualOwnerGetterReason));
+    try std.testing.expect(s.equal(try s.global("ownerDiagnosticReads"), c.JS_NewInt32(engine.context, 0)));
+    try std.testing.expectEqual(suppression, engine.native_exception_diagnostics_suppressed);
+    try std.testing.expect(engine.native_fatal_invocation == null);
+}
+test "SDK management HTTP native owner pending entry wins before validation and GPA" {
+    var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+    const engine = try em.Engine.init(failing.allocator(), .{}); defer engine.deinit();
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const original = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+    c.JS_SetUncatchableError(engine.context, original);
+    _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, original));
+    const missing = c.pi_js_undefined();
+    failing.fail_index = failing.alloc_index;
+    const result = @import("extensions/native_sdk_application_bootstrap.zig").createNativeFromOwners(engine, .{
+        .process = missing, .os = missing, .url = missing, .child_process = missing, .config_module_url = missing, .user_agent_runtime = .source,
+    }, .{ .package_manager = missing, .chalk_default = missing, .load_extension_from_factory = missing, .load_extensions_cached = missing });
+    failing.fail_index = std.math.maxInt(usize);
+    try std.testing.expectError(error.JavaScriptException, result);
+    try std.testing.expect(!failing.has_induced_failure);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception orelse return error.RequiredOriginalEntryReason));
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+    try std.testing.expect(engine.native_fatal_invocation == null);
+}

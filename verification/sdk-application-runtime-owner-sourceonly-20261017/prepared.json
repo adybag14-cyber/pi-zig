@@ -10,20 +10,22 @@
     "src/extensions/native_sdk_runtime_imports.zig",
     "src/extensions/native_sdk_application_bootstrap.zig",
     "src/native_sdk_management_http_test.zig",
-    "src/native_sdk_application_native_test.zig"
+    "src/native_sdk_application_native_test.zig",
+    "src/extensions/native_sdk_owned_completion.zig",
+    "src/native_sdk_owned_completion_test.zig"
   ],
   "products": [
     {
       "path": "build.zig",
-      "length": 350228,
-      "sha256": "53E8DD658F2E00E29AEE583116AFE038B8116F322B141CD93D564F569A2E9C42",
-      "git_blob": "2a35fbddc3db566553533736c26560b06c02f574"
+      "length": 351439,
+      "sha256": "49601DAF29805C8424D06BF9E36CE8C63D35F32B798C75F32287E1A266E0D58D",
+      "git_blob": "76e456d77b89f1f1341337e1d391566ffa481021"
     },
     {
       "path": "src/extensions/native_sdk_management_http.zig",
-      "length": 16969,
-      "sha256": "AE28283F6FC6013CC6C47EDD06FBFF2E61E6E49F1641C40C0F7BB7277C835F3D",
-      "git_blob": "0ca2bbf092f3d73299c934aa18abeed1c142daa0"
+      "length": 17891,
+      "sha256": "97A9CBB5E2D4A4A7858658DC2A3110AAD3F77407AC7BD1E202D6B727F88AA479",
+      "git_blob": "2a66fa80e053a7e83da51136eeeab0d1d7293870"
     },
     {
       "path": "src/extensions/native_sdk_runtime_imports.zig",
@@ -33,29 +35,41 @@
     },
     {
       "path": "src/extensions/native_sdk_application_bootstrap.zig",
-      "length": 6460,
-      "sha256": "7CC92C1BD9E558DA6947F503B0E42BD06A6FE2EA896AD5C54605B03EE8BDC85E",
-      "git_blob": "2e2ea2bc127b7b5fcb3c7614c44f62dfede6c0d2"
+      "length": 7451,
+      "sha256": "9897BA74A70E2AB187757A9583C897093C2309E72EB797C43EEC824FFBB389C6",
+      "git_blob": "736c5fe7c611c2a398457845fedc34c90016527c"
     },
     {
       "path": "src/native_sdk_management_http_test.zig",
-      "length": 11960,
-      "sha256": "6E0AD9F9902BC6209C38221B3A8583639DFB219BE50E9434015E26690015CD4B",
-      "git_blob": "92661770179bafc1d66841a6ddc386f52620e7db"
+      "length": 20385,
+      "sha256": "A2096A0A3C680639A274BFDA142851B006486AB885A85F84657DC3A40A0ECD00",
+      "git_blob": "0644f9348d979087d65e605cac1233d243766c52"
     },
     {
       "path": "src/native_sdk_application_native_test.zig",
       "length": 13442,
       "sha256": "7C0A999D79421CEE28231F199C1246D028CDB42A957B8DDD513F522F14168B21",
       "git_blob": "c90e00c6bd0cfd1c7ae1806125f350dfa1ba2d16"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "length": 8135,
+      "sha256": "6E5C4C4416290667BD2B49803E9C2F7C63330925A21FBEBCBD54D9297A1C21ED",
+      "git_blob": "311c8a9c01e8f6e58cb6ecfdb6630e7b4d8e2c49"
+    },
+    {
+      "path": "src/native_sdk_owned_completion_test.zig",
+      "length": 13238,
+      "sha256": "4D08941623F507D306627283702479B21B50B320B7F75C55C5149F6ACFB911D1",
+      "git_blob": "743bdd54c599cbf802e0fa5d10d83b1be41c14ca"
     }
   ],
   "owned": [
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/README.md",
-      "length": 5083,
-      "sha256": "92E7B912066DB21946BC868A760DDF08A7229C37F951E97BB2A0281C1D7F9659",
-      "git_blob": "2bbb974add7dc6bbe5d3d6d8796f5e1a85e75946"
+      "length": 5211,
+      "sha256": "612F20699973C5C63C1F0E5D76215F252C2D2E97DDF8F8BF3C769E062246163C",
+      "git_blob": "f282ed5beead26188ecff549a8e0f7667241349a"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/DEPENDENCIES.md",
@@ -65,9 +79,9 @@
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/CONTROLS.md",
-      "length": 5687,
-      "sha256": "9F5A2C1E026BF3FBE8B4BB1584999EE383CA7B084EEC11E3D1B4333775195770",
-      "git_blob": "94a611a1d54ab588c9a86610351b4092022975de"
+      "length": 6164,
+      "sha256": "C7941614BE80E73425DBB83FD1DB9A25D8153C007D00A5EA5D7567497DEDE138",
+      "git_blob": "06bbde52e35d58cd0a3aba0752a26fe00a841d47"
     },
     {
       "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/observe-management-http.mjs",
@@ -98,6 +112,18 @@
       "length": 1069,
       "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
       "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/OWNED-COMPLETION.md",
+      "length": 5859,
+      "sha256": "AC1479FD59F20E35AEAF983D9E807EF162B59A6C3BE5F3C343BCF91538AF434A",
+      "git_blob": "b9fbbdd32f0a6b3f633f880cbf0b31810a55675a"
+    },
+    {
+      "path": "verification/sdk-application-runtime-owner-sourceonly-20261017/prepared-689-source-review-negative.json",
+      "length": 20120,
+      "sha256": "48A2CEEF2FF7FD32861E84CCE4A5AEE3E09486097B74E90ACFE39FCDFDC391CC",
+      "git_blob": "2189e0a3e2f6fab389c62b37e470907320315305"
     }
   ],
   "protected": [
@@ -416,7 +442,9 @@
     "SDK management HTTP synchronous retry loop is bounded and missing fetch stays ReferenceError",
     "SDK management HTTP native owner requires truthful profile and real resource owners",
     "SDK management HTTP real native fetch allocation failure bypasses retry and guest catch",
-    "SDK management HTTP signal spread preserves own keys getters and preflight outside try"
+    "SDK management HTTP signal spread preserves own keys getters and preflight outside try",
+    "SDK management HTTP Source throw survives ordinary sole-holder cleanup while actual fatal promotes",
+    "SDK management HTTP native owner pending entry wins before validation and GPA"
   ],
   "original_caller_rows": 21,
   "native_tests_executed": false,
@@ -445,5 +473,42 @@
     "test_bytes_unchanged": true,
     "change": "Remove only new addTest.name so cached executable retains canonical test.exe admitted by607; no native run/controller/metadata authority",
     "historical_source_head": "0f7120a29cb59e3e17f8d38e418ee4de44942ee5"
+  },
+  "sdk_owned_completion_native_names": [
+    "SDK owned completion both actual Scope shapes preserve ordinary DATA over per-root cleanup",
+    "SDK owned completion captures actual failed operation before root cleanup and void Source finally",
+    "SDK owned completion returned native result cleanup promotes first actual fatal only",
+    "SDK owned completion actual GPA failure never promotes historical captured DATA",
+    "SDK owned completion recorded AF throw remains DATA through ordinary cleanup",
+    "SDK owned completion individual native releases preserve fatal through sole Source reason cleanup chain"
+  ],
+  "sdk_owned_completion": {
+    "api": [
+      "finishAction",
+      "finishValue",
+      "finishVoid",
+      "finishRecorded",
+      "Completion.initAction/initValue/initVoid/initRecorded",
+      "Completion.release/releaseScope",
+      "Completion.finishAction/finishValue/finishVoid/finishRecorded"
+    ],
+    "independent_build_target": "build-native-sdk-owned-completion",
+    "caller_explicit_generation_guard_retained": true,
+    "status": "Root-authorized SDK-only core helper and management/host adapters awaiting independent SOURCE peer",
+    "initial_thrown_and_historical_diagnostic_are_data": true,
+    "unrun": true,
+    "separate_ungranted_run_target": "test-native-sdk-owned-completion",
+    "no_shared_scope_engine_c_changes": true
+  },
+  "source_review_corrections": {
+    "negative_manifest_sha256": "48A2CEEF2FF7FD32861E84CCE4A5AEE3E09486097B74E90ACFE39FCDFDC391CC",
+    "issues": [
+      "ordinary Source completion replaced by native temporary cleanup before outer failure transfer",
+      "direct host owner lacked balanced diagnostic suppression/current-event boundary"
+    ],
+    "direct_owner_control": "verifyNativeOwnerGetterBoundary requires actual genuine runtime/resource suppliers; not a fake positive declaration",
+    "retracted_nonfinding": "Exact Bfb Engine.checked already normalizes success+pending before Scope.own; no Engine/p.get correction needed",
+    "actual_original21_unchanged": true,
+    "original_source_head": "689168f05c99b9650475ca796aacaa64323022d6"
   }
 }

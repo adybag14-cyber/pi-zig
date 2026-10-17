@@ -5,6 +5,7 @@ const p = @import("native_agent_af_values.zig");
 const js = @import("native_js_values.zig");
 const math = @import("native_image_arithmetic.zig");
 const functions = @import("native_node_function.zig");
+const owned = @import("native_sdk_owned_completion.zig");
 const Scope = p.Scope;
 const c = em.c;
 const Stage = enum(i32) { attempt, fetch, cancel };
@@ -65,8 +66,12 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     return engine.checked(engine.leaveNativeInvocation(&invocation, result));
 }
 fn initialize(engine: *em.Engine) !c.JSValue {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
-    const constructor = try binding(&s, "Set");
+    var s: Scope = .{ .engine = engine };
+    return owned.finishValue(&s, initializeBody(&s));
+}
+fn initializeBody(s: *Scope) !c.JSValue {
+    const engine = s.engine;
+    const constructor = try binding(s, "Set");
     const statuses = try s.array();
     inline for (.{ 408, 425, 429, 500, 502, 503, 504 }, 0..) |code, index| try s.index(statuses, index, c.JS_NewInt32(engine.context, code));
     var args = [_]c.JSValue{statuses};
@@ -265,15 +270,29 @@ fn run(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const
     try engine.checkNativeEntry();
     return execute(engine, args, roots[0], state, completion, input) catch |err| { return p.failure(engine, err); };
 }
-fn execute(engine: *em.Engine, args: []const c.JSValue, retryable: c.JSValue, state: *c.JSValue, completion: p.af.Completion, input: c.JSValue) !p.af.Action {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
+fn iterate(engine: *em.Engine, job: c.JSValue) anyerror!Decision {
+    var s: Scope = .{ .engine = engine };
+    const decision = begin(&s, job) catch |err| return .{ .action = try owned.finishAction(&s, err) };
+    if (decision == .action) return .{ .action = try owned.finishAction(&s, decision.action) };
+    const completion = try owned.finishAction(&s, .{ .returned = c.pi_js_undefined() });
+    return switch (completion) {
+        .returned => |value| blk: { engine.freeValue(value); break :blk .again; },
+        else => .{ .action = completion },
+    };
+}
+fn execute(engine: *em.Engine, args: []const c.JSValue, retryable: c.JSValue, state: *c.JSValue, completion: p.af.Completion, input: c.JSValue) anyerror!p.af.Action {
+    var s: Scope = .{ .engine = engine };
+    return owned.finishAction(&s, executeBody(&s, args, retryable, state, completion, input));
+}
+fn executeBody(s: *Scope, args: []const c.JSValue, retryable: c.JSValue, state: *c.JSValue, completion: p.af.Completion, input: c.JSValue) anyerror!p.af.Action {
+    const engine = s.engine;
     if (completion == .rejected) try p.body.enterRejectedContinuation(engine);
-    const job = if (completion == .start) try defaults(&s, state, args) else state.*;
+    const job = if (completion == .start) try defaults(s, state, args) else state.*;
     if (completion != .start) {
-        const previous: Stage = @enumFromInt(try p.stage(&s, job));
+        const previous: Stage = @enumFromInt(try p.stage(s, job));
         const decision = switch (previous) {
-            .fetch => if (completion == .rejected) try failed(&s, job, input) else try received(&s, job, retryable, input),
-            .cancel => try advance(&s, job), // Ordinary rejected DATA is discarded.
+            .fetch => if (completion == .rejected) try failed(s, job, input) else try received(s, job, retryable, input),
+            .cancel => try advance(s, job), // Ordinary rejected DATA is discarded.
             .attempt => return error.InvalidManagementHttpContinuation,
         };
         switch (decision) { .action => |action| return action, .again => {} }
@@ -281,7 +300,6 @@ fn execute(engine: *em.Engine, args: []const c.JSValue, retryable: c.JSValue, st
     var steps: usize = 0;
     while (true) {
         try tick(engine, &steps);
-        var iteration: Scope = .{ .engine = engine }; defer iteration.deinit();
-        switch (try begin(&iteration, job)) { .action => |action| return action, .again => {} }
+        switch (try iterate(engine, job)) { .action => |action| return action, .again => {} }
     }
 }
