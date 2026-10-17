@@ -1,0 +1,72 @@
+{
+  "status": "accepted_original_C8_authority",
+  "candidate_head": "37e27a0d34cd77611363b24c1e309a437e713e98",
+  "raw_bytes": 22201,
+  "raw_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "ordered_rows": 36,
+  "ordered_builtin_ids": 72,
+  "seals": [
+    {
+      "phase": "before",
+      "source": 10873,
+      "tree": 10873,
+      "node1838": 1838,
+      "node1774": 1774,
+      "controls": 14,
+      "drift": 0,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "phase": "before-node",
+      "source": 10873,
+      "tree": 10873,
+      "node1838": 1838,
+      "node1774": 1774,
+      "controls": 14,
+      "drift": 0,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "phase": "after-node",
+      "source": 10873,
+      "tree": 10873,
+      "node1838": 1838,
+      "node1774": 1774,
+      "controls": 14,
+      "drift": 0,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "phase": "final",
+      "source": 10873,
+      "tree": 10873,
+      "node1838": 1838,
+      "node1774": 1774,
+      "controls": 14,
+      "drift": 0,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    }
+  ],
+  "original_node_authority_drift": 0,
+  "current_complete_source_drift": 0,
+  "current_controls_drift": 0,
+  "fixture_files": 14,
+  "node_pid": 39560,
+  "node_elapsed_seconds": 0.2909259,
+  "outer_pid": 33940,
+  "outer_elapsed_seconds": 38.5769118,
+  "outer_helper_sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+  "outer_helper_only_difference": "pwsh.exe-only executable allowlist",
+  "recorded_owned_absence": true,
+  "fresh_cim_census_by_auditor": false,
+  "free_kib": 24991224,
+  "preserved_raw_quirks": [
+    "result.node_owner is [empty object, authoritative node receipt]",
+    "Equivalent UTC/local-offset completed timestamps in duplicated absence owner"
+  ],
+  "candidate_executed": false,
+  "native_qualified": false,
+  "runtime_restoration_claim": false,
+  "expected_created": false,
+  "audit_jobs_launched": false
+}

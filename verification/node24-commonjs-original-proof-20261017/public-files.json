@@ -1,0 +1,431 @@
+{
+  "scope": "Accepted original Node24 C8 observations only",
+  "candidate_head": "37e27a0d34cd77611363b24c1e309a437e713e98",
+  "raw_original_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "file_count": 69,
+  "bytes": 37271243.0,
+  "files": [
+    {
+      "public_path": "capture/absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\absence.json",
+      "bytes": 2559,
+      "sha256": "9FD5D05054EFB8ABCA5FABA003BD086E7AA344020DCE52D2F0402CDD8C8BA545"
+    },
+    {
+      "public_path": "capture/after-node.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\after-node.json",
+      "bytes": 8197082,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "public_path": "capture/before-node.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\before-node.json",
+      "bytes": 8197082,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "public_path": "capture/before.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\before.json",
+      "bytes": 8197082,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "public_path": "capture/final.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\final.json",
+      "bytes": 8197082,
+      "sha256": "3173B0DA6CA8F8FF812E7255FFA6310EDF440F60C3F588E6A47027C14B7A2780"
+    },
+    {
+      "public_path": "capture/fixture-inventory.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixture-inventory.json",
+      "bytes": 3701,
+      "sha256": "4CACF4D8DBD0BD19402831C71958E161711CB5FCA9698231F011D1AC41B413DC"
+    },
+    {
+      "public_path": "capture/node-admission.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\node-admission.json",
+      "bytes": 320,
+      "sha256": "6E860D73BD1EC601658B0EB7440679443BC8D38F0A949FB665469C8DE2704CEA"
+    },
+    {
+      "public_path": "capture/node.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\node.json",
+      "bytes": 1791,
+      "sha256": "6C6ED69C85E0393B92CD8BEBD881AF065B0B333A6CA4CBD8DCDE34F10F94DE2E"
+    },
+    {
+      "public_path": "capture/node.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\node.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "public_path": "capture/node.stdout.bin",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\node.stdout.bin",
+      "bytes": 22201,
+      "sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967"
+    },
+    {
+      "public_path": "capture/original-output.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\original-output.json",
+      "bytes": 22201,
+      "sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967"
+    },
+    {
+      "public_path": "capture/plan.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\plan.json",
+      "bytes": 2680,
+      "sha256": "8036AB44C084063B833C1A5BECF33246A8CA99A2A7BE537E3FE53C04E5AEF89B"
+    },
+    {
+      "public_path": "capture/result.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\result.json",
+      "bytes": 9432,
+      "sha256": "CDD3A0931CF55C8216EB5591B895364CFC35802C89D3410E19EA4F2713F1E098"
+    },
+    {
+      "public_path": "capture/fixtures/custom.owned",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\custom.owned",
+      "bytes": 25,
+      "sha256": "59CE19E5561E22084A6164DF9A1C0A1A29E74E9A47AEE7D90CE9C3329931A76B"
+    },
+    {
+      "public_path": "capture/fixtures/data.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\data.json",
+      "bytes": 17,
+      "sha256": "939D014F6B3A20882A38B25ED582CCEDDDACB91FD08F5FA6F9237E9F99357CE8"
+    },
+    {
+      "public_path": "capture/fixtures/entry.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\entry.cjs",
+      "bytes": 20,
+      "sha256": "1CF3E1EEED2D717D4DBA8A101C28B71F65E908BEB02F90371B11F927125B8390"
+    },
+    {
+      "public_path": "capture/fixtures/relative.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\relative.cjs",
+      "bytes": 40,
+      "sha256": "772C83AA1E0B703C49C7C0FDCE8050909342BDCEAC184E4B8F7BECC6D3BFD5C9"
+    },
+    {
+      "public_path": "capture/fixtures/suffix.custom.js",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\suffix.custom.js",
+      "bytes": 20,
+      "sha256": "1CF3E1EEED2D717D4DBA8A101C28B71F65E908BEB02F90371B11F927125B8390"
+    },
+    {
+      "public_path": "capture/fixtures/extra/relative.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\extra\\relative.cjs",
+      "bytes": 46,
+      "sha256": "5D443E0CE67D6C47A1DD9E326F726107396F04D083213E055072729E96E6E1BF"
+    },
+    {
+      "public_path": "capture/fixtures/extra/node_modules/owned/entry.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\extra\\node_modules\\owned\\entry.cjs",
+      "bytes": 37,
+      "sha256": "25B260EEA989D53CA4B83CC49696838EB6F76619451952DAAB9D0EEDAA9A74D9"
+    },
+    {
+      "public_path": "capture/fixtures/extra/node_modules/owned/package.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\extra\\node_modules\\owned\\package.json",
+      "bytes": 35,
+      "sha256": "C646773A924BA13C068BBB4B9C8A2B67032D9007D48B583C3ECFCC89527448F6"
+    },
+    {
+      "public_path": "capture/fixtures/node_modules/conditional/import.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\node_modules\\conditional\\import.mjs",
+      "bytes": 18,
+      "sha256": "9F085B1079AB38F776BBB3930DFD067A838CA3E0483AFF8625F88837E8ED964C"
+    },
+    {
+      "public_path": "capture/fixtures/node_modules/conditional/package.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\node_modules\\conditional\\package.json",
+      "bytes": 106,
+      "sha256": "F6DF9C2F8F30D5C20E2464889AC312B654874E366D25BD53CBB679E7A427D014"
+    },
+    {
+      "public_path": "capture/fixtures/node_modules/conditional/require.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\node_modules\\conditional\\require.cjs",
+      "bytes": 20,
+      "sha256": "1CF3E1EEED2D717D4DBA8A101C28B71F65E908BEB02F90371B11F927125B8390"
+    },
+    {
+      "public_path": "capture/fixtures/node_modules/owned/entry.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\node_modules\\owned\\entry.cjs",
+      "bytes": 40,
+      "sha256": "19FBE6B112C51CCA5960F7F114A643B6FABF0F237DE5EDE319D4A5B8E6516E9B"
+    },
+    {
+      "public_path": "capture/fixtures/node_modules/owned/package.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\node_modules\\owned\\package.json",
+      "bytes": 35,
+      "sha256": "C646773A924BA13C068BBB4B9C8A2B67032D9007D48B583C3ECFCC89527448F6"
+    },
+    {
+      "public_path": "capture/fixtures/sub/entry.cjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-20261017-132606\\fixtures\\sub\\entry.cjs",
+      "bytes": 20,
+      "sha256": "1CF3E1EEED2D717D4DBA8A101C28B71F65E908BEB02F90371B11F927125B8390"
+    },
+    {
+      "public_path": "controls/bootstrap-owned-c8.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\bootstrap-owned-c8.mjs",
+      "bytes": 664,
+      "sha256": "2A1965F81EB9D722A966CA4B18B119EB61A937F3173A0FA2B978301E5D53ECE1"
+    },
+    {
+      "public_path": "controls/grant.template.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\grant.template.json",
+      "bytes": 1038,
+      "sha256": "20D6FF9E01051AD71B3B67D69870C0CFAA13D4D9230DF6DABF065149B1983323"
+    },
+    {
+      "public_path": "controls/prepared.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\prepared.json",
+      "bytes": 2571,
+      "sha256": "5452B037EB26727A843BF6E5DFEFA657F10C614F6A14D7285E0519142D2B5779"
+    },
+    {
+      "public_path": "controls/README.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\README.md",
+      "bytes": 3610,
+      "sha256": "C1B0C55478B364B399F008EDFD137C8C18AE5107BF1164E055AF6DEA8238FD70"
+    },
+    {
+      "public_path": "controls/root-node-c8-original-20261017-132606-grant.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\root-node-c8-original-20261017-132606-grant.json",
+      "bytes": 1151,
+      "sha256": "3723B89760E53BE8E3B74347C37CE018EA52343B23EF3EC6A4128695D8DCF00A"
+    },
+    {
+      "public_path": "controls/root-node-c8-original-20261017-132606-outer-absence.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\root-node-c8-original-20261017-132606-outer-absence.json",
+      "bytes": 88,
+      "sha256": "060DD2FF899A933C7BFC52808546483C696CE2D34A250C0F1AC66B5D1C025BF2"
+    },
+    {
+      "public_path": "controls/root-node-c8-original-20261017-132606-outer.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\root-node-c8-original-20261017-132606-outer.json",
+      "bytes": 1508,
+      "sha256": "E9496D2B25F6BF1F74259B87F524812BF4232EFEDD1D8806A3D76A8710B3890A"
+    },
+    {
+      "public_path": "controls/root-node-c8-original-20261017-132606-outer.stderr.log",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\root-node-c8-original-20261017-132606-outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "public_path": "controls/root-node-c8-original-20261017-132606-outer.stdout.bin",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\root-node-c8-original-20261017-132606-outer.stdout.bin",
+      "bytes": 9432,
+      "sha256": "CDD3A0931CF55C8216EB5591B895364CFC35802C89D3410E19EA4F2713F1E098"
+    },
+    {
+      "public_path": "controls/Run-OriginalC8.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\Run-OriginalC8.ps1",
+      "bytes": 19372,
+      "sha256": "F203C444A0A5E1653B7C599472CE4A3CCB0B809A998EA9F63EE2C82DF78A679A"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/bootstrap-owned-c8.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\bootstrap-owned-c8.mjs",
+      "bytes": 664,
+      "sha256": "2A1965F81EB9D722A966CA4B18B119EB61A937F3173A0FA2B978301E5D53ECE1"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/grant.template.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\grant.template.json",
+      "bytes": 1038,
+      "sha256": "1EDCD66DFF1C2DA080B3AD1C26745F225B9701CB9CDE5C525529E88FD43D42A7"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/NEGATIVE.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\NEGATIVE.md",
+      "bytes": 292,
+      "sha256": "02D5D5BA66B8C438F19B8A50BF4140E631378175E1D5394546441EB89227B826"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/prepared.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\prepared.json",
+      "bytes": 2571,
+      "sha256": "22B7EBEB3E41AEC9618E3D65012485483CFC7437FAD0D236861E733B2C640184"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/README.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\README.md",
+      "bytes": 3457,
+      "sha256": "7049113A2E4B5F597D307831358DEDADFBCE4D30B77DEEA1BE28F8D6E7B0382D"
+    },
+    {
+      "public_path": "controls/negative-9D916-source-review/Run-OriginalC8.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-jiti-commonjs-c8-source-prepared-20261017\\negative-9D916-source-review\\Run-OriginalC8.ps1",
+      "bytes": 18953,
+      "sha256": "9D916D822B2245CB4F363DA0B311D867FC67408319C327D8AE7C7E66B21827E8"
+    },
+    {
+      "public_path": "authority-controls/main/tools/workspace/Resolve-PiZigWorkspace.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\workspace\\Resolve-PiZigWorkspace.ps1",
+      "bytes": 1299,
+      "sha256": "163E0872FC8CA7C9FAA37949E4F4787CDAE7C5103313894BAE26B0312ACF8BF9"
+    },
+    {
+      "public_path": "authority-controls/.pi-zig-workspace.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\.pi-zig-workspace.json",
+      "bytes": 817,
+      "sha256": "D551DA72833FA330C8365A625E4FDD6D2693456BAC5333C080E9657D1E38DFBF"
+    },
+    {
+      "public_path": "authority-controls/path-relocations.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\path-relocations.json",
+      "bytes": 109801,
+      "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5"
+    },
+    {
+      "public_path": "authority-controls/main/tools/ci/native_qualification_ci.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\ci\\native_qualification_ci.ps1",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "public_path": "authority-controls/evidence/owners/run-owned-source-node.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\owners\\run-owned-source-node.ps1",
+      "bytes": 3819,
+      "sha256": "96BEA0CF8E17535C322EE4F36C0115387386F16988BC2B98465BD070A504F5E5"
+    },
+    {
+      "public_path": "authority-controls/evidence/source4954-node-tools-before-20261015.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\source4954-node-tools-before-20261015.json",
+      "bytes": 352993,
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD"
+    },
+    {
+      "public_path": "authority-controls/evidence/typebox-heap-scope-args-static-second49d-20261016-frozen.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-heap-scope-args-static-second49d-20261016-frozen.json",
+      "bytes": 3384996,
+      "sha256": "35F1F2B0F12BF79C06B47AE2BA8C485EF10A7714BE3F129772E3BA1BBB97B927"
+    },
+    {
+      "public_path": "authority-controls/worktrees/node-jiti-commonjs-seams/verification/node-jiti-commonjs-seams-sourceonly-20261017/reference-input.mjs",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-jiti-commonjs-seams-sourceonly-20261017\\reference-input.mjs",
+      "bytes": 9472,
+      "sha256": "C8A44058689AEA991DAE49ED8C7014BE1A653CD4580452CC5CDD1EDD41992417"
+    },
+    {
+      "public_path": "authority-controls/worktrees/node-jiti-commonjs-seams/verification/node-jiti-commonjs-seams-sourceonly-20261017/prepared.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-jiti-commonjs-seams-sourceonly-20261017\\prepared.json",
+      "bytes": 6696,
+      "sha256": "5449324B93A36ADEE3D3EE73830EB05C6CE2D1856F7C4C0175F299305C5EC611"
+    },
+    {
+      "public_path": "authority-controls/worktrees/node-jiti-commonjs-seams/verification/node-jiti-commonjs-corrections-sourceonly-20261017/prepared.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-jiti-commonjs-corrections-sourceonly-20261017\\prepared.json",
+      "bytes": 6097,
+      "sha256": "9D46849F9C3CC3F0C5F345ECE5CE1A34CABBD7657A01604F94D4B34D818F4E3C"
+    },
+    {
+      "public_path": "observer/README.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-jiti-commonjs-seams-sourceonly-20261017\\README.md",
+      "bytes": 4613,
+      "sha256": "A35CEA0E233621D48C7FA0A5D3F0082EF2533C72DA9BA8D4BD68338559BC5686"
+    },
+    {
+      "public_path": "observer/CAPTURE-PLAN.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-jiti-commonjs-seams-sourceonly-20261017\\CAPTURE-PLAN.md",
+      "bytes": 2202,
+      "sha256": "FBF578697672606BCAA6DE6E7D507BEE83EABDD98D48BC80327006DD02CC6F04"
+    },
+    {
+      "public_path": "Node24-primary/jiti-package-manifest.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\jiti-package-manifest.json",
+      "bytes": 2607,
+      "sha256": "2D2F6F910A73F539BBB1644920DA160F02BB73192FE49F6DEFD2CF39AE376AF5"
+    },
+    {
+      "public_path": "Node24-primary/lib__internal__modules__cjs__loader.js.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__cjs__loader.js.txt",
+      "bytes": 72050,
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB"
+    },
+    {
+      "public_path": "Node24-primary/lib__internal__modules__helpers.js.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__modules__helpers.js.txt",
+      "bytes": 15131,
+      "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D"
+    },
+    {
+      "public_path": "Node24-primary/lib__internal__util.js.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\lib__internal__util.js.txt",
+      "bytes": 28980,
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429"
+    },
+    {
+      "public_path": "Node24-primary/LICENSE.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    {
+      "public_path": "Node24-primary/primary-authority.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\primary-authority.json",
+      "bytes": 3386,
+      "sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4"
+    },
+    {
+      "public_path": "Node24-primary/src__env_properties.h.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env_properties.h.txt",
+      "bytes": 40709,
+      "sha256": "AB193F60F8D05B576964DA783A8FCB7F8A074EA20176B9419EE2BA61B02C3C91"
+    },
+    {
+      "public_path": "Node24-primary/src__env.cc.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__env.cc.txt",
+      "bytes": 84987,
+      "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+    },
+    {
+      "public_path": "Node24-primary/src__node_util.cc.txt",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\node-jiti-commonjs-seams\\verification\\node-module-constructor-sourceonly-20261016\\authority\\src__node_util.cc.txt",
+      "bytes": 20372,
+      "sha256": "FBF7DC840F9A730D77E3A565B8A1B241009A8B817CBF0FC9BC2BD39DFF06EB2A"
+    },
+    {
+      "public_path": "outer/outer-owned-process.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-native-outer-prepared-20261017\\outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "public_path": "audit/Audit-C8.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-independent-audit-20261017\\Audit-C8.ps1",
+      "bytes": 11038,
+      "sha256": "C01DF3C4CB6D8581991CA770DCE46B1A7A7D176303B6ED804F4CC4982F4410E7"
+    },
+    {
+      "public_path": "audit/raw-audit.json",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-independent-audit-20261017\\raw-audit.json",
+      "bytes": 2237,
+      "sha256": "F6CE98842E87213326F7E46032F9ED011B721F2580290AFF2A8CD7EFD96D8FA1"
+    },
+    {
+      "public_path": "audit/README.md",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-independent-audit-20261017\\README.md",
+      "bytes": 2828,
+      "sha256": "7C4D2D7F2E2CCE5F8756BF8F000F256B5877C114B029F80C629A68C7507D06B0"
+    },
+    {
+      "public_path": "audit/Build-PublicList.ps1",
+      "source_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-node-c8-original-independent-audit-20261017\\Build-PublicList.ps1",
+      "bytes": 3729,
+      "sha256": "13C3F85DA4F43BAE93D377BA21D29801A7EB079B44EE87712A48DCAB72CAEB39"
+    }
+  ],
+  "exclusions": [
+    "All Node installation payloads, executable/PDB/library/archive/cache/output payloads",
+    "Unrelated whole10873-source payload; complete inventories and exact commit retained"
+  ],
+  "raw_stdout_bin_is_UTF8_observation_not_executable": true,
+  "native_qualification": false,
+  "expected_generated": false,
+  "remote_published_by_auditor": false
+}

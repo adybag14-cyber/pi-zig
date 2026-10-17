@@ -1,0 +1,12 @@
+{
+  "scope": "Original Node24.14.0 C8 behavior; native candidate unrun",
+  "raw_original_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "zip_sha256": "90F5D2113D305C4E015D03E8FA3C608F47D7E874AB4973FAD9B1BEE3B5DB11AF",
+  "zip_bytes": 5842589,
+  "members": 69,
+  "decompression_mismatch": 0,
+  "original_rows": 36,
+  "builtin_ids": 72,
+  "candidate_qualified": false,
+  "whole_application_qualified": false
+}
