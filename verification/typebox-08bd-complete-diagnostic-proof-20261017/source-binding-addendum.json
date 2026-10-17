@@ -1,0 +1,28 @@
+{
+  "status": "additive_source_binding_checks_passed",
+  "audit_sha256": "1CB6ADC483BE0FD38C995C6BED51542252F795A562414DCCA11A4DDE9C7C0F46",
+  "source_pins": [
+    {
+      "relative": "src/extensions/engine.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\engine.zig",
+      "sha256": "2F1BEDF42080D7A455E5EFE0FEB1BD7D8971BFD2881F904A9E7D2A9C8EEF88BA"
+    },
+    {
+      "relative": "src/native_typebox_compile_production_test.zig",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\native_typebox_compile_production_test.zig",
+      "sha256": "E1B357348FC2B89AE87A2468D39E2D3BF4A48874E6E23633D801F33171F66725"
+    },
+    {
+      "relative": "src/extensions/fixtures/typebox-operators-production.expected.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\fixtures\\typebox-operators-production.expected.json",
+      "sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C"
+    }
+  ],
+  "genuine_Source396_rows": 396,
+  "raw_mismatch_expected_row391_exact": true,
+  "Engine_guard_bytes": 1048576,
+  "test_stack_override_absent": true,
+  "guest_await_occurrences10000": 3,
+  "candidate_current_head_not_used_as_new_execution": true,
+  "jobs_executed": false
+}

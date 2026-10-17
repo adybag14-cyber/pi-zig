@@ -1,0 +1,652 @@
+{
+  "status": "independently_audited_complete_instrumentation_control10_pass_functional_negative",
+  "candidate": "08bd3b5fa6f162fc5bc86c3af604beafdabd887a",
+  "source_count": 10635,
+  "compiler_count": 19546,
+  "vendor_count": 1336,
+  "groups": [
+    {
+      "group": "controls",
+      "metadata": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata.stdout.bin",
+        "bytes": 1227,
+        "sha256": "920D0E99550B2A4E7F94887F67E64B7239416DEA14199DD756523F18061CC9CC",
+        "version": "0.16.0",
+        "names": [
+          "native_typebox_stack_observer_test.test.TypeBox stack observer nested records retain identities and balanced depth",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer fixed capacity reports incomplete and keeps unwind accounting",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer foreign engine cannot mutate records or depth",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer actual foreign thread only sets atomic rejection flag",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer mismatched unwind cannot pretend complete",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer actual native nested calls keep result and disabled calls record nothing",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer actual native error preserves sentinel identity and records failure",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer report path rejects escapes aliases and nonfresh path forms",
+          "native_typebox_stack_observer_test.test.TypeBox stack observer absent host opt in leaves engine observer detached",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.stdout.bin",
+        "bytes": 294,
+        "sha256": "C79EDA528504FA16D3674C1779F6DBF1A9F78B7EE29B76602E2331F6011CCA27",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 10,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 0
+          },
+          {
+            "index": 3,
+            "flags": 0
+          },
+          {
+            "index": 4,
+            "flags": 0
+          },
+          {
+            "index": 5,
+            "flags": 0
+          },
+          {
+            "index": 6,
+            "flags": 0
+          },
+          {
+            "index": 7,
+            "flags": 0
+          },
+          {
+            "index": 8,
+            "flags": 0
+          },
+          {
+            "index": 9,
+            "flags": 0
+          }
+        ]
+      },
+      "named": 9,
+      "anonymous_storage": 1,
+      "status": "passed"
+    },
+    {
+      "group": "functional",
+      "metadata": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata.stdout.bin",
+        "bytes": 485,
+        "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA",
+        "version": "0.16.0",
+        "names": [
+          "native_typebox_compile_production_test.test.actual TypeBox Compile Validator matches complete genuine Source80",
+          "native_typebox_compile_production_test.test.actual provider schemas Partial and Memory match genuine Source52 on shared compiler graph",
+          "native_typebox_compile_production_test.test.actual TypeBox generic operators match complete genuine Source396 on shared compiler graph",
+          "extensions.native_durable_storage.test_0"
+        ],
+        "starts": 0,
+        "results": []
+      },
+      "raw_runtime": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.stdout.bin",
+        "bytes": 126,
+        "sha256": "5BAFAEDFD9E39E2D1533672243DE898F99CD541874B587B0963888E6AA01C7FD",
+        "version": "0.16.0",
+        "names": [],
+        "starts": 4,
+        "results": [
+          {
+            "index": 0,
+            "flags": 0
+          },
+          {
+            "index": 1,
+            "flags": 0
+          },
+          {
+            "index": 2,
+            "flags": 1
+          },
+          {
+            "index": 3,
+            "flags": 0
+          }
+        ]
+      },
+      "named": 3,
+      "anonymous_storage": 1,
+      "status": "failed"
+    }
+  ],
+  "full_phase_final_seals": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\final.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-after.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-before.json",
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "source": 10635,
+      "tree": 10635,
+      "vendor": 1336,
+      "compiler": 19546,
+      "controls": 13,
+      "drift": 0
+    }
+  ],
+  "artifacts": [
+    {
+      "group": "controls",
+      "exe": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe",
+        "bytes": 45328896,
+        "sha256": "D5AFE3CD9ECF57B83411803DE50A717BCC597510AD414450146B058938B093EA"
+      },
+      "pdb": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.pdb",
+        "bytes": 14258176,
+        "sha256": "E7665F50D06A5B64CE0045DF29FE4CF645950B511F418B4D2CE5F41C558FB2C7"
+      },
+      "pe_stack_reserve": 16777216,
+      "engine_guard": 1048576,
+      "cached_content_sealed": false
+    },
+    {
+      "group": "functional",
+      "exe": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe",
+        "bytes": 75290112,
+        "sha256": "D701B66943CE457780E2F5D96CA4640B1CA74FE25734ABE76C121356D3CF86EE"
+      },
+      "pdb": {
+        "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.pdb",
+        "bytes": 30023680,
+        "sha256": "09D76EF5066F66D4B4F4505C8C78039C643087E710ABBDBC3447ACC70E813E66"
+      },
+      "pe_stack_reserve": 16777216,
+      "engine_guard": 1048576,
+      "cached_content_sealed": false
+    }
+  ],
+  "owners": [
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile.json",
+      "pid": 34688,
+      "creation": "2026-10-17T14:38:36.2107718Z",
+      "deadline": 1320,
+      "elapsed": 11.016066,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "arguments": [
+        "build",
+        "build-native-typebox-stack-observer",
+        "-Doptimize=Debug",
+        "-Duse-llvm=true",
+        "-Ddiagnostic-tests=false",
+        "-j1",
+        "--test-timeout",
+        "120s",
+        "--prefix",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed",
+        "--cache-dir",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache",
+        "--global-cache-dir",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\global-cache",
+        "--summary",
+        "all"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-typebox-stack-observer -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --test-timeout 120s --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\global-cache --summary all"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata.json",
+      "pid": 56848,
+      "creation": "2026-10-17T14:39:20.0716172Z",
+      "deadline": 30,
+      "elapsed": 0.2065694,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe",
+      "sha256": "D5AFE3CD9ECF57B83411803DE50A717BCC597510AD414450146B058938B093EA",
+      "arguments": [
+        "--listen=-"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.json",
+      "pid": 21920,
+      "creation": "2026-10-17T14:39:51.7973453Z",
+      "deadline": 120,
+      "elapsed": 0.2954585,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe",
+      "sha256": "D5AFE3CD9ECF57B83411803DE50A717BCC597510AD414450146B058938B093EA",
+      "arguments": [
+        "--listen=-"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile.json",
+      "pid": 57752,
+      "creation": "2026-10-17T14:40:25.4344971Z",
+      "deadline": 1320,
+      "elapsed": 31.9715179,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe",
+      "sha256": "086CE9D47BA42F33A514E1A6E04EB1D4A8FA1D75E0868E0213CAAD447C91E864",
+      "arguments": [
+        "build",
+        "build-native-typebox-production-source",
+        "-Doptimize=Debug",
+        "-Duse-llvm=true",
+        "-Ddiagnostic-tests=false",
+        "-j1",
+        "--test-timeout",
+        "120s",
+        "--prefix",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed",
+        "--cache-dir",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache",
+        "--global-cache-dir",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\global-cache",
+        "--summary",
+        "all"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\zig.exe\" build build-native-typebox-production-source -Doptimize=Debug -Duse-llvm=true -Ddiagnostic-tests=false -j1 --test-timeout 120s --prefix C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed --cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache --global-cache-dir C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\global-cache --summary all"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata.json",
+      "pid": 36808,
+      "creation": "2026-10-17T14:41:31.207111Z",
+      "deadline": 30,
+      "elapsed": 0.3477372,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe",
+      "sha256": "D701B66943CE457780E2F5D96CA4640B1CA74FE25734ABE76C121356D3CF86EE",
+      "arguments": [
+        "--listen=-"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe\" --listen=-"
+    },
+    {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.json",
+      "pid": 56548,
+      "creation": "2026-10-17T14:42:05.6606349Z",
+      "deadline": 120,
+      "elapsed": 12.3653717,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe",
+      "sha256": "D701B66943CE457780E2F5D96CA4640B1CA74FE25734ABE76C121356D3CF86EE",
+      "arguments": [
+        "--listen=-"
+      ],
+      "actual_command_line": "\"C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe\" --listen=-"
+    }
+  ],
+  "outer": {
+    "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.json",
+    "pid": 56472,
+    "creation": "2026-10-17T14:38:01.4155692Z",
+    "deadline": 4000,
+    "elapsed": 300.3978572,
+    "exit_code": 1,
+    "original_absent": true,
+    "absence_method": "PID absent",
+    "executable": "C:\\Program Files\\PowerShell\\7\\pwsh.exe",
+    "sha256": "BFB46AF89433268872DDB43D1CA7A3F433452EE91ED356A9786940F90118E285",
+    "arguments": [
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\Run-TypeBoxStackDiagnosticCapacityV4.ps1",
+      "-RootGrant",
+      "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-grant.json"
+    ],
+    "actual_command_line": "\"C:\\Program Files\\PowerShell\\7\\pwsh.exe\" -NoLogo -NoProfile -NonInteractive -File C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\Run-TypeBoxStackDiagnosticCapacityV4.ps1 -RootGrant C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-grant.json"
+  },
+  "functional_mismatch": {
+    "scope": "actual shared TypeBox operators",
+    "index": 391,
+    "expected": {
+      "name": "generic-default-instantiation-limit-recovery",
+      "value": [
+        {
+          "key": "0",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "name",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Error"
+            },
+            {
+              "key": "message",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Type instantiation is excessively deep and possibly infinite"
+            }
+          ]
+        },
+        {
+          "key": "1",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "type",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "string"
+            },
+            {
+              "key": "const",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "recovered"
+            },
+            {
+              "key": "~kind",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "value": "Literal"
+            }
+          ]
+        },
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "value": 2
+        }
+      ],
+      "metrics": {
+        "assign": 129,
+        "create": 792,
+        "clone": 0,
+        "discard": 0,
+        "update": 0
+      }
+    },
+    "actual": {
+      "name": "generic-default-instantiation-limit-recovery",
+      "value": [
+        {
+          "key": "0",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "name",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "RangeError"
+            },
+            {
+              "key": "message",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "Maximum call stack size exceeded"
+            }
+          ]
+        },
+        {
+          "key": "1",
+          "enumerable": true,
+          "configurable": true,
+          "writable": true,
+          "value": [
+            {
+              "key": "type",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "string"
+            },
+            {
+              "key": "const",
+              "enumerable": true,
+              "configurable": true,
+              "writable": true,
+              "value": "recovered"
+            },
+            {
+              "key": "~kind",
+              "enumerable": false,
+              "configurable": true,
+              "writable": true,
+              "value": "Literal"
+            }
+          ]
+        },
+        {
+          "key": "length",
+          "enumerable": false,
+          "configurable": false,
+          "writable": true,
+          "value": 2
+        }
+      ],
+      "metrics": {
+        "assign": 27,
+        "create": 180,
+        "clone": 0,
+        "discard": 0,
+        "update": 0
+      }
+    }
+  },
+  "trace": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801/stack-observation.json",
+    "sha256": "A8564B76FD61326144CF3FB760EFCB78E9293C30214253A15C5CB1B9B0178C43",
+    "bytes": 94433597,
+    "capacity": 1048576,
+    "used": 739888,
+    "attempted": 739888,
+    "dropped": 0,
+    "complete": true,
+    "full_event_grammar_independently_checked": true,
+    "enters": 369944,
+    "returns": 369944,
+    "native_error_returns": 263,
+    "root_invocations": 2665,
+    "distinct_callbacks": 641,
+    "maximum_callback_depth": 206,
+    "maximum_observed_entry_span_instrumented_bytes": 1045136,
+    "remaining_depth": 0,
+    "guard_flags": 0,
+    "row_association_claim": false,
+    "production_peak_claim": false
+  },
+  "symbols": {
+    "raw_dump": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017/llvm.stdout.bin",
+    "raw_dump_sha256": "5DF5CEE728F8DA48DFB82D4910D24BC3FA0216E4F6DABA83EE060F9FC5D384DE",
+    "raw_dump_bytes": 48885076,
+    "llvm_owner": {
+      "receipt": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017/llvm.json",
+      "pid": 57024,
+      "creation": "2026-10-17T14:45:37.2124981Z",
+      "deadline": 60,
+      "elapsed": 0.6154041,
+      "exit_code": 0,
+      "original_absent": true,
+      "absence_method": "PID absent",
+      "executable": "C:\\Program Files\\LLVM\\bin\\llvm-pdbutil.exe",
+      "sha256": "EBEFFD8BC9B9098C14FD087FD4CE7671E755B7570A5326AA625B8F9C01907A04",
+      "arguments": [
+        "dump",
+        "-symbols",
+        "-section-headers",
+        "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.pdb"
+      ],
+      "actual_command_line": "\"C:\\Program Files\\LLVM\\bin\\llvm-pdbutil.exe\" dump -symbols -section-headers C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.pdb"
+    },
+    "Min_correlation": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-independent-correlation-20261017.json",
+    "Min_correlation_sha256": "E8DB5D80CBAFE1FA230D379717FB6A940DE5776F542509EB361EBDFC41E97B75",
+    "all641_trace_addresses_bound_to_retained_exact_start_map": true,
+    "Min_RSDS_PDB_guid_age_closure_retained": true,
+    "Min_static_frame_parser_not_rerun": true,
+    "no_new_LLVM_or_native_jobs": true
+  },
+  "limitations": [
+    "Diagnostic instrumented candidate only; no production stack improvement claim",
+    "Trace complete for diagnostic instrumentation only; no Source row association or production peak claim",
+    "No full TypeBox396 pass, GPA, runtime restoration or full Pi qualification",
+    "Compiler caches explicitly mutable/unsealed; only recorded executable bindings checked",
+    "Historical layout bytes pinned by original seals; current mutable workspace layout is not rerun authority"
+  ],
+  "jobs_run_by_auditor": false,
+  "completed_utc": "2026-10-17T14:59:03.4096936+00:00"
+}

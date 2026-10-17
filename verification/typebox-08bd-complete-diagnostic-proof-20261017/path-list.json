@@ -1,0 +1,977 @@
+{
+  "status": "exact_raw_publication_pathlist",
+  "executed_candidate": "08bd3b5fa6f162fc5bc86c3af604beafdabd887a",
+  "intake_base": "c852223b2591059fccad3e746c31751365c368e0",
+  "scope": "Complete instrumented diagnostic trace; control10 pass; functional0/0/1/0 negative",
+  "files": [
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "relative": "evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+      "member": "content/dee259f171f720ab2c08e8dd473975e22c876417cd62e4f016c71a7c662794eb.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-crypto58-native-outer-prepared-20261017\\outer-owned-process.ps1",
+      "relative": "evidence/root-crypto58-native-outer-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "member": "content/53e522c8397b5f7ee9af721d8160b227e97fada4e1da36a938656e2403d56b6b.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-independent-correlation-20261017.json",
+      "relative": "evidence/root-typebox-08bd-independent-correlation-20261017.json",
+      "bytes": 5892,
+      "sha256": "E8DB5D80CBAFE1FA230D379717FB6A940DE5776F542509EB361EBDFC41E97B75",
+      "member": "content/e8db5d80cbafe1fa230d379717fb6a940de5776f542509eb361ebdfc41e97b75.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\after.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/after.json",
+      "bytes": 919,
+      "sha256": "6888C56966E6F33C58B5462708B06602FAD87B0CA17C2D42D4A3C6F736FE6338",
+      "member": "content/6888c56966e6f33c58b5462708b06602fad87b0ca17c2d42d4a3c6f736fe6338.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\all-fixed-frames-by-size.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/all-fixed-frames-by-size.json",
+      "bytes": 41345349,
+      "sha256": "AC177A78286EF40DEA11410DC26229EEF4163A22E2AA3BE1CD51A867D247C823",
+      "member": "content/ac177a78286ef40dea11410dc26229eef4163a22e2aa3be1cd51a867d247c823.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\all-fixed-frames.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/all-fixed-frames.json",
+      "bytes": 41345349,
+      "sha256": "B30DA77A692753FD44B4C620D5E2E5AD12717B4CA587AE3E22A3A3EFD306F3B2",
+      "member": "content/b30da77a692753fd44b4c620d5e2e5ad12717b4ca587ae3e22a3a3efd306f3b2.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\before.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/before.json",
+      "bytes": 919,
+      "sha256": "6888C56966E6F33C58B5462708B06602FAD87B0CA17C2D42D4A3C6F736FE6338",
+      "member": "content/6888c56966e6f33c58b5462708b06602fad87b0ca17c2d42d4a3c6f736fe6338.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\frame-parser-integrity.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/frame-parser-integrity.json",
+      "bytes": 895,
+      "sha256": "3A1D954C7DE96F282ADE39083C1A379A82F78CED4E61B3FC2975576AA090C975",
+      "member": "content/3a1d954c7de96f282ade39083c1a379a82f78ced4e61b3fc2975576aa090c975.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\llvm.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/llvm.json",
+      "bytes": 1270,
+      "sha256": "A895560CEA22E4F622A219AB2CE73881DB90C505BD3C8797EF584E3B64787CAE",
+      "member": "content/a895560cea22e4f622a219ab2ce73881db90c505bd3c8797ef584e3b64787cae.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\llvm.stderr.log",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/llvm.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\llvm.stdout.bin",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/llvm.stdout.bin",
+      "bytes": 48885076,
+      "sha256": "5DF5CEE728F8DA48DFB82D4910D24BC3FA0216E4F6DABA83EE060F9FC5D384DE",
+      "member": "content/5df5cee728f8da48dfb82d4910d24bc3fa0216e4f6daba83ee060f9fc5d384de.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\Parse-RetainedFrames.ps1",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/Parse-RetainedFrames.ps1",
+      "bytes": 10658,
+      "sha256": "7BB11B383AE767DF19650A7053433CE0CB785A0C4BFFB653B9E833E27DA4BC33",
+      "member": "content/7bb11b383ae767df19650a7053433ce0cb785a0c4bffb653b9e833e27da4bc33.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\result.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/result.json",
+      "bytes": 171,
+      "sha256": "20850FC03301D69A6576508306C91791A496DA1A687ED15069EE8B70723D4112",
+      "member": "content/20850fc03301d69a6576508306c91791a496da1a687ed15069ee8b70723d4112.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-matching-symbols-20261017\\selected-fixed-frames.json",
+      "relative": "evidence/root-typebox-08bd-matching-symbols-20261017/selected-fixed-frames.json",
+      "bytes": 1661731,
+      "sha256": "29233A4C74D4C988D9639E9EE13A823F72D6BD2775BD55BEB94A17B9FB11AA7C",
+      "member": "content/29233a4c74d4c988d9639e9ee13a823f72d6bd2775bd55beb94a17b9fb11aa7c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\analysis-first-negative.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/analysis-first-negative.json",
+      "bytes": 367,
+      "sha256": "6798C4A3B8504677509A201A7FDBEA252F3FD5D20C8BFADF56698376F1088D2D",
+      "member": "content/6798c4a3b8504677509a201a7fdbea252f3fd5d20c8bfadf56698376f1088d2d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\Analyze-RetainedTrace.ps1",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/Analyze-RetainedTrace.ps1",
+      "bytes": 13369,
+      "sha256": "F4F6058ADE1D7213C15C619ED6ED699D74B8014A617DB9A8474A199C59A03F12",
+      "member": "content/f4f6058ade1d7213c15c619ed6ed699d74b8014a617db9a8474a199c59a03f12.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\Analyze-RetainedTraceV2.ps1",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/Analyze-RetainedTraceV2.ps1",
+      "bytes": 13721,
+      "sha256": "B56C53DEA11E3B5DA6BC188A6070205DD04120B56B369BEBD7D5A5FCAFCBBC3C",
+      "member": "content/b56c53dea11e3b5da6bc188a6070205dd04120b56b369bebd7d5a5fcafcbbc3c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\anchor-and-sections.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/anchor-and-sections.json",
+      "bytes": 5505,
+      "sha256": "472BF1F1EC17AABBE29CD0AEBE240CC3BB2C005ECD83B701C99FD073145D5A9C",
+      "member": "content/472bf1f1ec17aabbe29cd0aebe240cc3bb2c005ecd83b701c99fd073145d5a9c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\callback-map.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/callback-map.json",
+      "bytes": 2572819,
+      "sha256": "ADCC5974FA54806D1E612AEEF9EA7B0EF0654A2EC52266A35B81AAC855C78D8A",
+      "member": "content/adcc5974fa54806d1e612aeef9ea7b0ef0654a2ec52266a35b81aac855c78d8a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\deep-paths.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/deep-paths.json",
+      "bytes": 138742,
+      "sha256": "E7C4C62AB556108FE529E57E94E07345A5C5F294D434BDCA4220B0D8219C7452",
+      "member": "content/e7c4c62ab556108fe529e57e94e07345a5c5f294d434bdca4220b0d8219c7452.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\edge-address-deltas.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/edge-address-deltas.json",
+      "bytes": 401575,
+      "sha256": "0FC8A3E6B4344547EF58F76B34C6291E2ECC65C007403702B26DACDFCBB194D3",
+      "member": "content/0fc8a3e6b4344547ef58f76b34c6291e2ecc65c007403702b26dacdfcbb194d3.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\recursive-cycles.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/recursive-cycles.json",
+      "bytes": 303434,
+      "sha256": "EA200428DE0C9FBE28A64CCEFDD03CB86FD4FBE17309D5C08B12223A3522756D",
+      "member": "content/ea200428de0c9fbe28a64ccefdd03cb86fd4fbe17309d5c08b12223a3522756d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\root-invocations.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/root-invocations.json",
+      "bytes": 730814,
+      "sha256": "3F6D5C259293EBDFAACE7227262B36D2910B8AE63C909D6C612647CF9424468C",
+      "member": "content/3f6d5c259293ebdfaace7227262b36d2910b8ae63c909d6c612647cf9424468c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-08bd-trace-analysis-20261017\\trace-integrity.json",
+      "relative": "evidence/root-typebox-08bd-trace-analysis-20261017/trace-integrity.json",
+      "bytes": 818,
+      "sha256": "1A183EA4A9F77453CC21D24B20986A28F5B34E677674C66D93C2A70A21C74971",
+      "member": "content/1a183ea4a9f77453cc21d24b20986a28f5b34e677674c66d93c2a70a21c74971.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-call-step-package-20261017-120245\\staged\\lowering-map.json",
+      "relative": "evidence/root-typebox-call-step-package-20261017-120245/staged/lowering-map.json",
+      "bytes": 1658101,
+      "sha256": "D0FDAE447D1C248A6B326129B2B6F0068AB962582D0D6D2F713F1BAA7357F35E",
+      "member": "content/d0fdae447d1c248a6b326129b2b6f0068ab962582d0d6d2f713f1baa7357f35e.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-call-step-package-20261017-120245\\staged\\native_typebox_operators_production.zig",
+      "relative": "evidence/root-typebox-call-step-package-20261017-120245/staged/native_typebox_operators_production.zig",
+      "bytes": 2768743,
+      "sha256": "14C4552D0647797A878FF3412668662B29DD4EF5683D979548EC0E3F081BF6C7",
+      "member": "content/14c4552d0647797a878ff3412668662b29dd4ef5683d979548ec0e3f081bf6c7.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controller.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controller.json",
+      "bytes": 1074,
+      "sha256": "26728BFBEDC8E7D466881273ACA7F7FBC6063508CB03705F83C89EC2A2B11F33",
+      "member": "content/26728bfbedc8e7d466881273aca7f7fbc6063508cb03705f83c89ec2a2b11f33.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-commands.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-commands.json",
+      "bytes": 2284,
+      "sha256": "AAAE6AA1D8F25F8C43706A7F987E38739DD11F74BE9B1F88A275E1B15F2D93E2",
+      "member": "content/aaae6aa1d8f25f8c43706a7f987e38739dd11f74be9b1f88a275e1b15f2d93e2.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile-absence.json",
+      "bytes": 3051,
+      "sha256": "D22AB525CFA719A18B8FCB0D9256B54CC95AC1D4D66FAAF2DAEDFE8F1DDC6B85",
+      "member": "content/d22ab525cfa719a18b8fcb0d9256b54cc95ac1d4d66faaf2daedfe8f1ddc6b85.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile-admission.json",
+      "bytes": 607,
+      "sha256": "1A55FCBD584A2B9AD7F59D96160963725DE1BA5E20B78E9A3660D4ED96BDBD89",
+      "member": "content/1a55fcbd584a2b9ad7f59d96160963725de1ba5e20b78e9a3660d4ed96bdbd89.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile-after-artifacts.json",
+      "bytes": 2377,
+      "sha256": "F3780D111533BDFFF678FA5C067963363D48806D0B9F8314B484F29A68A31A87",
+      "member": "content/f3780d111533bdfff678fa5c067963363d48806d0b9f8314b484f29a68a31a87.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile.json",
+      "bytes": 2037,
+      "sha256": "A3E6D53EC6CECE1EE47C553D4E97D37EB1357945784FBE48334573917AADC498",
+      "member": "content/a3e6d53ec6cece1ee47c553d4e97d37eb1357945784fbe48334573917aadc498.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile.stderr.log",
+      "bytes": 13930,
+      "sha256": "B4FE9AC9F441B7773C7A68E6D80688F9154B801B3A06CC40773E088B7141C048",
+      "member": "content/b4fe9ac9f441b7773c7a68e6d80688f9154b801b3a06cc40773e088b7141c048.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-compile.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-final-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-final-artifacts.json",
+      "bytes": 2626,
+      "sha256": "60728DB7F6782409EECFA48E6761CFFAE32A9C9D73B349D762BA182C43D7487C",
+      "member": "content/60728db7f6782409eecfa48e6761cffae32a9c9d73b349d762ba182c43d7487c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-absence.json",
+      "bytes": 2122,
+      "sha256": "44DDA8688F55C1582EBFD324598508F36F14A8F3BAAA907CC2E747C85F4F96C0",
+      "member": "content/44dda8688f55c1582ebfd324598508f36f14a8f3baaa907cc2e747c85f4f96c0.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-admission.json",
+      "bytes": 610,
+      "sha256": "D2EF0DF39EF7F5DC9A399A829E473274E135A33FA5E946B610A2D75E16C2842C",
+      "member": "content/d2ef0df39ef7f5dc9a399a829e473274e135a33fa5e946b610a2d75e16c2842c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-after-artifacts.json",
+      "bytes": 2377,
+      "sha256": "F3780D111533BDFFF678FA5C067963363D48806D0B9F8314B484F29A68A31A87",
+      "member": "content/f3780d111533bdfff678fa5c067963363d48806d0b9f8314b484f29a68a31a87.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-before-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-before-artifacts.json",
+      "bytes": 2377,
+      "sha256": "F3780D111533BDFFF678FA5C067963363D48806D0B9F8314B484F29A68A31A87",
+      "member": "content/f3780d111533bdfff678fa5c067963363d48806d0b9f8314b484f29a68a31a87.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata.json",
+      "bytes": 1166,
+      "sha256": "9777B613BB0AAFEDF7A27BBC43401015C4040B55E3AE682148BA360C1AE80CB9",
+      "member": "content/9777b613bb0aafedf7a27bbc43401015c4040b55e3ae682148ba360c1ae80cb9.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-metadata.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-metadata.stdout.bin",
+      "bytes": 1227,
+      "sha256": "920D0E99550B2A4E7F94887F67E64B7239416DEA14199DD756523F18061CC9CC",
+      "member": "content/920d0e99550b2a4e7f94887f67e64b7239416dea14199dd756523f18061cc9cc.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-absence.json",
+      "bytes": 3653,
+      "sha256": "43A5CC1EA16A7AAA491DACFC4BFE175848F61E61734B0AF0A50DDFA1CB916FF0",
+      "member": "content/43a5cc1ea16a7aaa491dacfc4bfe175848f61e61734b0af0a50ddfa1cb916ff0.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-admission.json",
+      "bytes": 607,
+      "sha256": "6E68E34876DC2A8F1D64B5E0F269F5308E979281B68F084FDBD7155E05A9DB1D",
+      "member": "content/6e68e34876dc2a8f1d64b5e0f269f5308e979281b68f084fdbd7155e05a9db1d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-after-artifacts.json",
+      "bytes": 2377,
+      "sha256": "F3780D111533BDFFF678FA5C067963363D48806D0B9F8314B484F29A68A31A87",
+      "member": "content/f3780d111533bdfff678fa5c067963363d48806d0b9f8314b484f29a68a31a87.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-before-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-before-artifacts.json",
+      "bytes": 2377,
+      "sha256": "F3780D111533BDFFF678FA5C067963363D48806D0B9F8314B484F29A68A31A87",
+      "member": "content/f3780d111533bdfff678fa5c067963363d48806d0b9f8314b484f29a68a31a87.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime-raw-frame-observation.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime-raw-frame-observation.json",
+      "bytes": 1669,
+      "sha256": "746EE0D10AE2CA23752D0A413E9FD419E672F782CC2E8E05A688569A24FDE7D5",
+      "member": "content/746ee0d10ae2ca23752d0a413e9fd419e672f782cc2e8e05a688569a24fde7d5.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.json",
+      "bytes": 1167,
+      "sha256": "56D7FDFDAD9DFF6E149C7EDF57F92245F2026F9D0CDB20E2D2CD6BC4CD5C6B54",
+      "member": "content/56d7fdfdad9dff6e149c7edf57f92245f2026f9d0cdb20e2d2cd6bc4cd5c6b54.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime.results.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.results.json",
+      "bytes": 1292,
+      "sha256": "CE363362507A960DB8E5052F7C0E84466E9859DE560DB2D3BA8FDC972ABB45FF",
+      "member": "content/ce363362507a960db8e5052f7c0e84466e9859de560db2d3ba8fdc972abb45ff.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-runtime.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-runtime.stdout.bin",
+      "bytes": 294,
+      "sha256": "C79EDA528504FA16D3674C1779F6DBF1A9F78B7EE29B76602E2331F6011CCA27",
+      "member": "content/c79eda528504fa16d3674c1779f6dbf1a9f78b7ee29b76602e2331f6011cca27.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-selected-tests.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/controls-selected-tests.json",
+      "bytes": 1570,
+      "sha256": "52415DBEA1F6C4F6AB2DAC2A41BA963336080CA1B4CEF70B14D5F2C11273BB0F",
+      "member": "content/52415dbea1f6c4f6ab2dac2a41ba963336080ca1b4cef70b14d5f2c11273bb0f.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\diagnostic-runtime-environment.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/diagnostic-runtime-environment.json",
+      "bytes": 647,
+      "sha256": "4E82E1586F44FB02A6288CA3FA8829E0F3C307BB953C3C1CEF16C03D481A365A",
+      "member": "content/4e82e1586f44fb02a6288ca3fa8829e0f3c307bb953c3c1cef16c03d481a365a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\final.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/final.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-commands.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-commands.json",
+      "bytes": 1549,
+      "sha256": "9E89B10B37350BF78421714E387D8CA0CC607A32024EBA01E274CBDBD0320827",
+      "member": "content/9e89b10b37350bf78421714e387d8ca0cc607a32024eba01e274cbdbd0320827.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile-absence.json",
+      "bytes": 3066,
+      "sha256": "77CFA8858508939B2DF0BBC627A5D67D805C5FA25C3EA9D1E2B3DBDAA1103F85",
+      "member": "content/77cfa8858508939b2df0bbc627a5d67d805c5fa25c3ea9d1e2b3dbdaa1103f85.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile-admission.json",
+      "bytes": 613,
+      "sha256": "1539DD8D8F736156EB28F5C0C7C0635C3D47E2A5681F5C58F7A5C37E0FA533A2",
+      "member": "content/1539dd8d8f736156eb28f5c0c7c0635c3d47e2a5681f5c58f7a5c37e0fa533a2.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile-after-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile.json",
+      "bytes": 2047,
+      "sha256": "DD7C876BA4D2E327CE20292ECAC3D5043C861597EBE4A5E71D4554BE6B9F7D93",
+      "member": "content/dd7c876ba4d2e327ce20292ecac3d5043c861597ebe4a5e71d4554be6b9f7d93.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile.stderr.log",
+      "bytes": 13931,
+      "sha256": "AC73AA5B905324FD276BBAF44623F3C2E69AE23DE9219000E4121F1226ADFFA0",
+      "member": "content/ac73aa5b905324fd276bbaf44623f3c2e69ae23de9219000e4121f1226adffa0.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-compile.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-final-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-final-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-absence.json",
+      "bytes": 2131,
+      "sha256": "15A528CC51EDBF1B944625282D3FFC6479F7B7CF4F6C68E30799F2D089351E0D",
+      "member": "content/15a528cc51edbf1b944625282d3ffc6479f7b7cf4f6c68e30799f2d089351e0d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-admission.json",
+      "bytes": 616,
+      "sha256": "2A37B35924A3E033954AB7662EA68EB4D09CBF02D7AC02D87D2EE83E40D97898",
+      "member": "content/2a37b35924a3e033954ab7662ea68eb4d09cbf02d7ac02d87d2ee83e40d97898.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-after-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-before-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-before-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata.json",
+      "bytes": 1172,
+      "sha256": "5613A84011BDCFC38ED3402013299DC536546A104892717D7C329620D901EACC",
+      "member": "content/5613a84011bdcfc38ed3402013299dc536546a104892717d7c329620d901eacc.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "member": "content/e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-metadata.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-metadata.stdout.bin",
+      "bytes": 485,
+      "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA",
+      "member": "content/2f9a75c910c6e90331700641d943c07f034df4f71258b48987e4a352d0b33ada.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-absence.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-absence.json",
+      "bytes": 3100,
+      "sha256": "0F2EC32E7328B7C1E5ECE505266DCECEF490AE02743D53D03C3071C9929789C0",
+      "member": "content/0f2ec32e7328b7c1e5ece505266dcecef490ae02743d53d03c3071c9929789c0.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-admission.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-admission.json",
+      "bytes": 609,
+      "sha256": "EBDF7449189E447ADE868C3877940D0444E08D3B7DF9FFAC11FDFB3DB686783D",
+      "member": "content/ebdf7449189e447ade868c3877940d0444e08d3b7df9ffac11fdfb3db686783d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-after-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-after-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-after.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-after.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-before-artifacts.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-before-artifacts.json",
+      "bytes": 2630,
+      "sha256": "6BA4F6C956D5D61421B1191E06514C12C5180E8E2A754899342466121E058615",
+      "member": "content/6ba4f6c956d5d61421b1191e06514c12c5180e8e2a754899342466121e058615.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-before.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-before.json",
+      "bytes": 13712899,
+      "sha256": "37BC0B5B8479516E98C4CF9CFFFC8E3BF97B6BEDD51954D41F860A44500E4D7A",
+      "member": "content/37bc0b5b8479516e98c4cf9cfffc8e3bf97b6bedd51954d41f860a44500e4d7a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime-raw-frame-observation.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime-raw-frame-observation.json",
+      "bytes": 823,
+      "sha256": "70D3395A5DA3AF4F4A767C393C37A19F39A2F770062DF0D17FFE822534F0AF18",
+      "member": "content/70d3395a5da3af4f4a767c393c37a19f39a2f770062df0d17ffe822534f0af18.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.json",
+      "bytes": 1173,
+      "sha256": "B4E420832CAF1207053F4EA258F8559E0FDF515D0E9A1F989BB3C31ACCA8D465",
+      "member": "content/b4e420832caf1207053f4ea258f8559e0fdf515d0e9a1f989bb3c31acca8d465.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime.results.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.results.json",
+      "bytes": 844,
+      "sha256": "EF18553AC9E13AB10BCCD3AA2BA38ED9EFFD80138243DF5CFDC0BC13BD95EEBE",
+      "member": "content/ef18553ac9e13ab10bccd3aa2ba38ed9effd80138243df5cfdc0bc13bd95eebe.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime.stderr.log",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.stderr.log",
+      "bytes": 2950,
+      "sha256": "60E3E7DB5DE79621BED8D7013EBE8C45B35279511DB4BB042336DFB0E57F49A6",
+      "member": "content/60e3e7db5de79621bed8d7013ebe8c45b35279511db4bb042336dfb0e57f49a6.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-runtime.stdout.bin",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-runtime.stdout.bin",
+      "bytes": 126,
+      "sha256": "5BAFAEDFD9E39E2D1533672243DE898F99CD541874B587B0963888E6AA01C7FD",
+      "member": "content/5bafaedfd9e39e2d1533672243de898f99cd541874b587b0963888e6aa01c7fd.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-selected-tests.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/functional-selected-tests.json",
+      "bytes": 830,
+      "sha256": "979D5FF977F7F3991D368BAE4F1A6FF29BDE75E769177956D08655CC6BF0A4CC",
+      "member": "content/979d5ff977f7f3991d368bae4f1a6ff29bde75e769177956d08655cc6bf0a4cc.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\result.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/result.json",
+      "bytes": 58293,
+      "sha256": "E9EAF0A5B18F49AFF94567F81B68A2FE2C833B0731417CA502A076F11D33A5F8",
+      "member": "content/e9eaf0a5b18f49aff94567f81b68a2fe2c833b0731417ca502a076f11d33a5f8.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\stack-observation-validation.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/stack-observation-validation.json",
+      "bytes": 5132,
+      "sha256": "5156C87834C81EEF83B3D68F438C25EA27E2111AD2DA8ED6A683F1EB18AA142F",
+      "member": "content/5156c87834c81eef83b3d68f438c25ea27e2111ad2da8ed6a683f1eb18aa142f.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\stack-observation.json",
+      "relative": "evidence/root-typebox-stack-diagnostic-08bd-v4-20261017-143801/stack-observation.json",
+      "bytes": 94433597,
+      "sha256": "A8564B76FD61326144CF3FB760EFCB78E9293C30214253A15C5CB1B9B0178C43",
+      "member": "content/a8564b76fd61326144cf3fb760efcb78e9293c30214253a15c5cb1b9b0178c43.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-e0-v3-independent-async-audit-20261017\\audit.json",
+      "relative": "evidence/typebox-e0-v3-independent-async-audit-20261017/audit.json",
+      "bytes": 24384,
+      "sha256": "0CB44F6ABA10525450E036692502F9AE99BCFC00964953433C285A307F9755C9",
+      "member": "content/0cb44f6aba10525450e036692502f9ae99bcfc00964953433c285a307f9755c9.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-e0-v3-independent-async-audit-20261017\\path-list.json",
+      "relative": "evidence/typebox-e0-v3-independent-async-audit-20261017/path-list.json",
+      "bytes": 46919,
+      "sha256": "B8960EA23318F85D706EDFA70B49F33702F38B6DA6253472C9A8E3B28A319B71",
+      "member": "content/b8960ea23318f85d706edfa70b49f33702f38b6da6253472c9a8e3b28a319b71.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-e0-v3-independent-async-audit-20261017\\README.md",
+      "relative": "evidence/typebox-e0-v3-independent-async-audit-20261017/README.md",
+      "bytes": 3115,
+      "sha256": "D86D0537FEA16A35E7CCDD66126E82410289B105CA53C55704B547210211BF57",
+      "member": "content/d86d0537fea16a35e7ccdd66126e82410289b105ca53c55704b547210211bf57.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-package-authoring-independent-acceptance-20261016.json",
+      "relative": "evidence/typebox-package-authoring-independent-acceptance-20261016.json",
+      "bytes": 11638,
+      "sha256": "466EE4FBE21B155C16B24FFD4C804549A6CB0FADD435CFD6F33820ECC54F5EFB",
+      "member": "content/466ee4fbe21b155c16b24ffd4c804549a6cb0fadd435cfd6f33820ecc54f5efb.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-transcribed-independent-review-08bd-v4.json",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-transcribed-independent-review-08bd-v4.json",
+      "bytes": 800,
+      "sha256": "14CE788A29B87A4B44C0806B0BB6CFCAF30EF27B8044C706E87EFCE7EF0E7006",
+      "member": "content/14ce788a29b87a4b44c0806b0bb6cfcaf30ef27b8044c706e87efce7ef0e7006.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-grant.json",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-grant.json",
+      "bytes": 3007,
+      "sha256": "6A832B24CCF32AC98EF0EFFA2CFF7F7F72E592229EAF4A840E2707FC9AD0B639",
+      "member": "content/6a832b24ccf32ac98ef0effa2cff7f7f72e592229eaf4a840e2707fc9ad0b639.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer-absence.json",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer-absence.json",
+      "bytes": 88,
+      "sha256": "011A1E9CF6E7209DB977C517CEACECA31C014FE88D1224A9D401D945765DACE1",
+      "member": "content/011a1e9cf6e7209db977c517ceaceca31c014fe88d1224a9d401d945765dace1.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.json",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.json",
+      "bytes": 1658,
+      "sha256": "69864E477B059393CC68FAFCA85F3EA028C74D8CBB6B08A69153D69C8431E8FE",
+      "member": "content/69864e477b059393cc68fafca85f3ea028c74d8cbb6b08a69153d69c8431e8fe.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.stderr.log",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.stderr.log",
+      "bytes": 419,
+      "sha256": "B5E439E856E2BFA55B9A16402DE6575920946D44A5C828B6B4761E275D4C6E9A",
+      "member": "content/b5e439e856e2bfa55b9a16402de6575920946d44a5c828b6b4761e275d4c6e9a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.stdout.bin",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/root-typebox-stack-diagnostic-08bd-v4-20261017-143801-outer.stdout.bin",
+      "bytes": 58293,
+      "sha256": "E9EAF0A5B18F49AFF94567F81B68A2FE2C833B0731417CA502A076F11D33A5F8",
+      "member": "content/e9eaf0a5b18f49aff94567f81b68a2fe2c833b0731417ca502a076f11d33a5f8.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-diagnostic-driver-prepared-20261017\\Run-TypeBoxStackDiagnosticCapacityV4.ps1",
+      "relative": "evidence/typebox-stack-diagnostic-driver-prepared-20261017/Run-TypeBoxStackDiagnosticCapacityV4.ps1",
+      "bytes": 46609,
+      "sha256": "87054C8DF4DDAB72045EEC23BAE1E52FBA0298AF53D1F71C978AFB1B5300045D",
+      "member": "content/87054c8df4ddab72045eec23bae1e52fba0298af53d1f71c978afb1b5300045d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-observer-08bd-capacity-source-prepared-20261017\\capacity-only.patch",
+      "relative": "evidence/typebox-stack-observer-08bd-capacity-source-prepared-20261017/capacity-only.patch",
+      "bytes": 4074,
+      "sha256": "C59F2239124676C3F376ED03122DDFEF2E8E2E8BE2F23BFEBD84491A78CB075A",
+      "member": "content/c59f2239124676c3f376ed03122ddfef2e8e2e8be2f23bfebd84491a78cb075a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-observer-08bd-capacity-source-prepared-20261017\\source-readiness.json",
+      "relative": "evidence/typebox-stack-observer-08bd-capacity-source-prepared-20261017/source-readiness.json",
+      "bytes": 5502,
+      "sha256": "4A9264995954E5FE8AEBC40954B5E436ED7EE0C2B0F2E4078071A5596F6B19E0",
+      "member": "content/4a9264995954e5fe8aebc40954b5e436ed7ee0c2b0f2e4078071a5596f6b19e0.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-observer-e0e-source-prepared-20261017\\full-diagnostic-source.patch",
+      "relative": "evidence/typebox-stack-observer-e0e-source-prepared-20261017/full-diagnostic-source.patch",
+      "bytes": 47733,
+      "sha256": "4F9F27456BC9770D3BC7E4E715B77204752FAB538F40DC09EDD0FE8F753302E8",
+      "member": "content/4f9f27456bc9770d3bc7e4e715b77204752fab538f40dc09edd0fe8f753302e8.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-observer-e0e-source-prepared-20261017\\review-closures.patch",
+      "relative": "evidence/typebox-stack-observer-e0e-source-prepared-20261017/review-closures.patch",
+      "bytes": 31739,
+      "sha256": "EDC9F4B83B8D77C912F4420A32636AC167D605D6E8C37431ABE2456F97054E1A",
+      "member": "content/edc9f4b83b8d77c912f4420a32636ac167d605d6e8c37431abe2456f97054e1a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-stack-observer-e0e-source-prepared-20261017\\source-readiness.json",
+      "relative": "evidence/typebox-stack-observer-e0e-source-prepared-20261017/source-readiness.json",
+      "bytes": 5714,
+      "sha256": "9B12E80C57D2517C522BA13BF5182AD11C34FB619B4743B77CBDFD1D4E1495A9",
+      "member": "content/9b12e80c57d2517c522ba13bf5182ad11c34fb619b4743b77cbdfd1d4e1495a9.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\ci\\Invoke-NativeTestProtocol.ps1",
+      "relative": "main/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "member": "content/39f273d35a5b28e9d60fbe93355828314458a67fb472d60e0a8a6d4dd1fb704d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\ci\\native_qualification_ci.ps1",
+      "relative": "main/tools/ci/native_qualification_ci.ps1",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "member": "content/607bedbb91fe318d214cd2c3b9c83d80437335c0062c320c0eacb3a745b38285.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\main\\tools\\workspace\\Resolve-PiZigWorkspace.ps1",
+      "relative": "main/tools/workspace/Resolve-PiZigWorkspace.ps1",
+      "bytes": 1299,
+      "sha256": "163E0872FC8CA7C9FAA37949E4F4787CDAE7C5103313894BAE26B0312ACF8BF9",
+      "member": "content/163e0872fc8ca7c9faa37949e4f4787cdae7c5103313894bae26b0312acf8bf9.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\path-relocations.json",
+      "relative": "path-relocations.json",
+      "bytes": 109801,
+      "sha256": "64281011985F83C90771A84D878AD712626E0D48A213D8553AFA4B34FFFAFEB5",
+      "member": "content/64281011985f83c90771a84d878ad712626e0d48a213d8553afa4b34fffafeb5.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\Audit-08bd.ps1",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/Audit-08bd.ps1",
+      "bytes": 20792,
+      "sha256": "B56773967EC3DF88AD597D4B22BF9F32F059894907D2170FD395E9FC5EDEF008",
+      "member": "content/b56773967ec3df88ad597d4b22bf9f32f059894907d2170fd395e9fc5edef008.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\audit.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/audit.json",
+      "bytes": 26389,
+      "sha256": "1CB6ADC483BE0FD38C995C6BED51542252F795A562414DCCA11A4DDE9C7C0F46",
+      "member": "content/1cb6adc483be0fd38c995c6bed51542252f795a562414dcca11a4dde9c7c0f46.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\Check-SourceBinding.ps1",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/Check-SourceBinding.ps1",
+      "bytes": 2110,
+      "sha256": "38B94AAB578D5E2E994866925644C42CB576B37183E5D06D5B1FC7B01CA92CF4",
+      "member": "content/38b94aab578d5e2e994866925644c42cb576b37183e5d06d5b1fc7b01ca92cf4.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\local-needed-ledger.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/local-needed-ledger.json",
+      "bytes": 5512,
+      "sha256": "86F2FF184335779323DA71802A5A11ECDDC4FA35E28378A36CA674517AB19331",
+      "member": "content/86f2ff184335779323da71802a5a11ecddc4fa35e28378a36ca674517ab19331.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\Package-08bd.ps1",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/Package-08bd.ps1",
+      "bytes": 10971,
+      "sha256": "8C55CB1A0C65DAD0A5F011C14E6F351C99F33308DA567439CB006B12660D07DD",
+      "member": "content/8c55cb1a0c65dad0a5f011c14e6f351c99f33308da567439cb006b12660d07dd.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\README.md",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/README.md",
+      "bytes": 4714,
+      "sha256": "2C1F9624CAD71F0D39BB76D1880FCC0E66736B1F9E8E33ABFA6BC2F06C64FED9",
+      "member": "content/2c1f9624cad71f0d39bb76d1880fcc0e66736b1f9e8e33abfa6bc2f06c64fed9.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source-binding-addendum.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source-binding-addendum.json",
+      "bytes": 1337,
+      "sha256": "287887448F31CF095F3909D95B236E769D8831FCC49BCE8D23970BB535A9D73A",
+      "member": "content/287887448f31cf095f3909d95b236e769d8831fcc49bce8d23970bb535a9d73a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source-manifest.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source-manifest.json",
+      "bytes": 4728,
+      "sha256": "5AD2B9204F8A3B5AC27452F19FEF2FA39421AB0FCB637F35AB25D43DA3B21139",
+      "member": "content/5ad2b9204f8a3b5ac27452f19fef2fa39421ab0fcb637f35ab25d43da3b21139.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\build.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/build.zig",
+      "bytes": 340316,
+      "sha256": "6CA0902B658A9F9D02A36F2329A2A0DDACAA823EA3219B5EC0A6315EB6AB57B7",
+      "member": "content/6ca0902b658a9f9d02a36f2329a2a0ddacaa823ea3219b5ec0a6315eb6ab57b7.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\engine.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/engine.zig",
+      "bytes": 85496,
+      "sha256": "2F1BEDF42080D7A455E5EFE0FEB1BD7D8971BFD2881F904A9E7D2A9C8EEF88BA",
+      "member": "content/2f1bedf42080d7a455e5efe0feb1bd7d8971bfd2881f904a9e7d2a9c8eef88ba.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\fixtures\\typebox-compile-production.input.mjs",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/fixtures/typebox-compile-production.input.mjs",
+      "bytes": 13930,
+      "sha256": "B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB",
+      "member": "content/b7dc5b8f18b42e70410438de323b408d4bb268cf45e19be923952d9097be60ab.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\fixtures\\typebox-compile-production.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/fixtures/typebox-compile-production.json",
+      "bytes": 41564,
+      "sha256": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2",
+      "member": "content/54303ee9477c4632f408963887dd58e5103775d1c8b75b37df8f27a020984de2.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\fixtures\\typebox-operators-production.expected.json",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/fixtures/typebox-operators-production.expected.json",
+      "bytes": 476883,
+      "sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+      "member": "content/888586a031e42c1c33a4a119f7196f5ee3e60a6466b1d9712bd28e28186e728c.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\fixtures\\typebox-operators-production.input.txt",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/fixtures/typebox-operators-production.input.txt",
+      "bytes": 15690,
+      "sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA",
+      "member": "content/37ceeac103c70bf1c587f03caa11c5ee4ec0a6ae414222d8653116e94db5c9aa.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\native_node_function.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/native_node_function.zig",
+      "bytes": 6821,
+      "sha256": "32A47070F0F72F3F79514040239080214147BBA143D05BFB809897B0115E3547",
+      "member": "content/32a47070f0f72f3f79514040239080214147bba143d05bfb809897b0115e3547.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\extensions\\native_node_stack_observer.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/extensions/native_node_stack_observer.zig",
+      "bytes": 3886,
+      "sha256": "4BC4649C7EEC13FF6CB765627EF1FA15680CF6EAECA06DCCF2B33F8836A3067D",
+      "member": "content/4bc4649c7eec13ff6cb765627ef1fa15680cf6eaeca06dccf2b33f8836a3067d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\native_typebox_compile_production_test.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/native_typebox_compile_production_test.zig",
+      "bytes": 8664,
+      "sha256": "E1B357348FC2B89AE87A2468D39E2D3BF4A48874E6E23633D801F33171F66725",
+      "member": "content/e1b357348fc2b89ae87a2468d39e2d3bf4a48874e6e23633d801f33171f66725.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\native_typebox_stack_observer_test.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/native_typebox_stack_observer_test.zig",
+      "bytes": 13866,
+      "sha256": "1E92190A9C38C6AAEDC6785F03079740856065CF95EB3F2DF1583B5A16FAFCE3",
+      "member": "content/1e92190a9c38c6aaedc6785f03079740856065cf95eb3f2df1583b5a16fafce3.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\src\\typebox_stack_observer_host.zig",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/src/typebox_stack_observer_host.zig",
+      "bytes": 12566,
+      "sha256": "015473CF04BBE628876A729B9C135E529990A1BA2F9E17E20A06EA61896A2303",
+      "member": "content/015473cf04bbe628876a729b9c135e529990a1ba2f9e17e20a06ea61896a2303.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\vendor\\quickjs\\quickjs.c",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/vendor/quickjs/quickjs.c",
+      "bytes": 2218664,
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D",
+      "member": "content/2fa2e26e35b7d5c45d1ffd3f6f10ee3a5de9a984738486128399a20bd8e4d88d.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\vendor\\quickjs\\quickjs.h",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/vendor/quickjs/quickjs.h",
+      "bytes": 75537,
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB",
+      "member": "content/341cf06f8041b8311d49767026c85c7b859bcfee3088380f3ffe6d77527052ab.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-08bd-proof-intake\\verification\\typebox-08bd-complete-diagnostic-proof-20261017\\source\\verification\\typebox-stack-observer-20261017\\README.md",
+      "relative": "worktrees/typebox-08bd-proof-intake/verification/typebox-08bd-complete-diagnostic-proof-20261017/source/verification/typebox-stack-observer-20261017/README.md",
+      "bytes": 8594,
+      "sha256": "F7AE20BE0BA83D4853D4DD778A2FDCE12554DDC59457A4DE3E87CE2F75DFF96A",
+      "member": "content/f7ae20be0ba83d4853d4dd778a2fdce12554ddc59457a4de3e87ce2f75dff96a.bin"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox\\tools\\ci\\native_qualification_ci.ps1",
+      "relative": "worktrees/typebox/tools/ci/native_qualification_ci.ps1",
+      "bytes": 11886,
+      "sha256": "78DEFAA829520D823FA5CA6ABD9BCD16F18409A3C9EB80A794913EAA156D32FB",
+      "member": "content/78defaa829520d823fa5ca6abd9bcd16f18409a3c9eb80a794913eaa156d32fb.bin"
+    }
+  ],
+  "logical_raw_bytes": 436954965.0,
+  "unique_raw_bytes": 258605408.0,
+  "original_execution_identity_rewritten": false
+}

@@ -1,0 +1,100 @@
+{
+  "status": "excluded_local_artifact_payloads_retained",
+  "files": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\0aa52c159f96ba22ea26dd1782241b6e\\test.exe",
+      "sha256": "E6B13E703F04B6176CE3F34FB6890A71ADD65A44F0B4462A29C217828BF7661D",
+      "bytes": 75276800,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\46d9c4970c2f8f1cc39912ce1291739b\\test.exe",
+      "sha256": "1BE8EE1305F24BEC89E528BC0D650991C49CE2521628E465A8E90C84AC318219",
+      "bytes": 75290112,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\56151154112343af9608a0f570dc83c9\\test.exe",
+      "sha256": "D701B66943CE457780E2F5D96CA4640B1CA74FE25734ABE76C121356D3CF86EE",
+      "bytes": 75290112,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\760b9b5fd16dd7591d541e5d38fe6f09\\test.exe",
+      "sha256": "D5AFE3CD9ECF57B83411803DE50A717BCC597510AD414450146B058938B093EA",
+      "bytes": 45328896,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\810a5530a197eecef63f4137590a12bf\\test.exe",
+      "sha256": "8AB6626EF430A6F8B592D57EB3627259CE8F6948DDE563FBF484F00E6BF3461C",
+      "bytes": 45328896,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\a4b3ea3068139f283d22cc5d39a7cdf0\\test.exe",
+      "sha256": "E2E091FCADDBC9192143E634F235483CC957DC727073D2E046E0D9729B450927",
+      "bytes": 75277312,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-component-first38a8-20261016\\cache\\o\\e84b78082f3495eeab242a458ba03cb1\\test.exe",
+      "sha256": "5E791F30FEC671427BF0F050B56B6D59896709D37478E3C7B23AF57EAFBB256C",
+      "bytes": 75208704,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.exe",
+      "sha256": "D5AFE3CD9ECF57B83411803DE50A717BCC597510AD414450146B058938B093EA",
+      "bytes": 45328896,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\controls-installed\\bin\\test.pdb",
+      "sha256": "E7665F50D06A5B64CE0045DF29FE4CF645950B511F418B4D2CE5F41C558FB2C7",
+      "bytes": 14258176,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.exe",
+      "sha256": "D701B66943CE457780E2F5D96CA4640B1CA74FE25734ABE76C121356D3CF86EE",
+      "bytes": 75290112,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-stack-diagnostic-08bd-v4-20261017-143801\\functional-installed\\bin\\test.pdb",
+      "sha256": "09D76EF5066F66D4B4F4505C8C78039C643087E710ABBDBC3447ACC70E813E66",
+      "bytes": 30023680,
+      "publication_payload_included": false,
+      "retained_locally": true,
+      "needed_for": "Retained artifact/symbol/cache identity and future exact proof review; no retirement authorized"
+    }
+  ],
+  "additional_exclusions": [
+    "All mutable compiler/global cache payloads",
+    "19546-file compiler payloads",
+    "System PowerShell/LLVM executables",
+    "Current mutable workspace layout"
+  ],
+  "deletion_authorized": false
+}

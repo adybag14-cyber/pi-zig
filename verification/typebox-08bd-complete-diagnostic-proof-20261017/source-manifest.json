@@ -1,0 +1,90 @@
+{
+  "executed_candidate": "08bd3b5fa6f162fc5bc86c3af604beafdabd887a",
+  "intake_base": "c852223b2591059fccad3e746c31751365c368e0",
+  "files": [
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\build.zig",
+      "snapshot": "source/build.zig",
+      "bytes": 340316,
+      "sha256": "6CA0902B658A9F9D02A36F2329A2A0DDACAA823EA3219B5EC0A6315EB6AB57B7"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\engine.zig",
+      "snapshot": "source/src/extensions/engine.zig",
+      "bytes": 85496,
+      "sha256": "2F1BEDF42080D7A455E5EFE0FEB1BD7D8971BFD2881F904A9E7D2A9C8EEF88BA"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\fixtures\\typebox-compile-production.input.mjs",
+      "snapshot": "source/src/extensions/fixtures/typebox-compile-production.input.mjs",
+      "bytes": 13930,
+      "sha256": "B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\fixtures\\typebox-compile-production.json",
+      "snapshot": "source/src/extensions/fixtures/typebox-compile-production.json",
+      "bytes": 41564,
+      "sha256": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\fixtures\\typebox-operators-production.expected.json",
+      "snapshot": "source/src/extensions/fixtures/typebox-operators-production.expected.json",
+      "bytes": 476883,
+      "sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\fixtures\\typebox-operators-production.input.txt",
+      "snapshot": "source/src/extensions/fixtures/typebox-operators-production.input.txt",
+      "bytes": 15690,
+      "sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\native_node_function.zig",
+      "snapshot": "source/src/extensions/native_node_function.zig",
+      "bytes": 6821,
+      "sha256": "32A47070F0F72F3F79514040239080214147BBA143D05BFB809897B0115E3547"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\extensions\\native_node_stack_observer.zig",
+      "snapshot": "source/src/extensions/native_node_stack_observer.zig",
+      "bytes": 3886,
+      "sha256": "4BC4649C7EEC13FF6CB765627EF1FA15680CF6EAECA06DCCF2B33F8836A3067D"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\native_typebox_compile_production_test.zig",
+      "snapshot": "source/src/native_typebox_compile_production_test.zig",
+      "bytes": 8664,
+      "sha256": "E1B357348FC2B89AE87A2468D39E2D3BF4A48874E6E23633D801F33171F66725"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\native_typebox_stack_observer_test.zig",
+      "snapshot": "source/src/native_typebox_stack_observer_test.zig",
+      "bytes": 13866,
+      "sha256": "1E92190A9C38C6AAEDC6785F03079740856065CF95EB3F2DF1583B5A16FAFCE3"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\src\\typebox_stack_observer_host.zig",
+      "snapshot": "source/src/typebox_stack_observer_host.zig",
+      "bytes": 12566,
+      "sha256": "015473CF04BBE628876A729B9C135E529990A1BA2F9E17E20A06EA61896A2303"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\vendor\\quickjs\\quickjs.c",
+      "snapshot": "source/vendor/quickjs/quickjs.c",
+      "bytes": 2218664,
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\vendor\\quickjs\\quickjs.h",
+      "snapshot": "source/vendor/quickjs/quickjs.h",
+      "bytes": 75537,
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\typebox-stack-observer\\verification\\typebox-stack-observer-20261017\\README.md",
+      "snapshot": "source/verification/typebox-stack-observer-20261017/README.md",
+      "bytes": 8594,
+      "sha256": "F7AE20BE0BA83D4853D4DD778A2FDCE12554DDC59457A4DE3E87CE2F75DFF96A"
+    }
+  ]
+}
