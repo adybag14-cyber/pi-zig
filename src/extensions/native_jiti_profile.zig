@@ -51,9 +51,20 @@ pub const Prepared = struct {
     }
 };
 fn imported(s: *v.Scope, namespace: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const value = try s.get(namespace, name);
+    const value = try get(s, namespace, name);
     if (!c.JS_IsFunction(s.engine.context, value)) return error.RequiredActualJitiNamespaceExport;
     return value;
+}
+fn success(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
+    if (c.JS_HasException(engine.context)) {
+        const pending = c.JS_GetException(engine.context);
+        engine.freeValue(owned);
+        return engine.checked(c.JS_Throw(engine.context, pending));
+    }
+    return owned;
+}
+fn get(s: *v.Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return s.own(try success(s.engine, try v.js.get(s.engine, receiver, name)));
 }
 /// Assemble real options/escape/resolve/cache/transform/core/frontend/require
 /// declarations with SAME import identities. Native Babel output is already
@@ -67,7 +78,7 @@ pub fn prepare(engine: *v.em.Engine, actual: Inputs) !Prepared {
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     const create_require = try imported(&s, actual.node_module, "createRequire");
     const module_constructor = try imported(&s, actual.node_module, "Module");
-    const builtin_modules = try s.get(actual.node_module, "builtinModules");
+    const builtin_modules = try get(&s, actual.node_module, "builtinModules");
     if (!c.JS_IsObject(builtin_modules)) return error.RequiredActualNodeBuiltinModules;
     const platform = try imported(&s, actual.node_os, "platform");
     const tmpdir = try imported(&s, actual.node_os, "tmpdir");
@@ -149,12 +160,12 @@ pub fn complete(engine: *v.em.Engine, staged: *Prepared, actual_babel_module: c.
     errdefer staged.phase = .failed;
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     if (!c.JS_IsObject(actual_babel_module)) return error.RequiredActualPublishedNativeBabelModule;
-    const cache_object = try s.get(staged.module_constructor, "_cache");
+    const cache_object = try get(&s, staged.module_constructor, "_cache");
     if (!c.JS_IsStrictEqual(engine.context, cache_object, engine.commonjs_cache)) return error.MismatchedActualCommonJSCache;
-    const current = try s.own(try v.js.getKey(engine, cache_object, staged.babel_filename));
-    const exports = try s.get(actual_babel_module, "exports");
-    const loaded = try s.get(actual_babel_module, "loaded");
-    const filename = try s.get(actual_babel_module, "filename");
+    const current = try s.own(try success(engine, try v.js.getKey(engine, cache_object, staged.babel_filename)));
+    const exports = try get(&s, actual_babel_module, "exports");
+    const loaded = try get(&s, actual_babel_module, "loaded");
+    const filename = try get(&s, actual_babel_module, "filename");
     if (!c.JS_IsStrictEqual(engine.context, current, actual_babel_module) or
         !c.JS_IsStrictEqual(engine.context, exports, staged.native_babel_exports) or
         !c.JS_IsStrictEqual(engine.context, filename, staged.babel_filename) or
@@ -163,7 +174,8 @@ pub fn complete(engine: *v.em.Engine, staged: *Prepared, actual_babel_module: c.
     const bindings = try s.object();
     try define(engine, bindings, "createJiti", staged.factory.create_jiti);
     try define(engine, bindings, "default", staged.factory.create_jiti);
-    staged.namespace = try engine.valueNamespace(bindings);
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
+    staged.namespace = try success(engine, try engine.valueNamespace(bindings));
     staged.phase = .complete;
     return c.JS_DupValue(engine.context, staged.namespace);
 }

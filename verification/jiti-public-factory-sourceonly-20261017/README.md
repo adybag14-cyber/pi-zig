@@ -117,3 +117,27 @@ backend, options/getter/spread/custom-hook contrasts, ordinary/new identities,
 builtin sync/async loading and actual lazy default transformer results. They
 are inert inputs, not a Node host implementation or captured expectations.
 Physical fixtures and reference execution need a separate Root grant.
+
+## Pending-event corrective revision
+
+Independent review of original7a7 found that a real host callback can return
+success while leaving an actual C2/C3 event pending. Entry guards alone did
+not protect the lazy lexical cache or final namespace commit. The successor
+normalizes every local wrapper get/call before ownership tracking can allocate,
+owns the actual VM reason BEFORE freeing a returned success value, and checks
+private cache/namespace commit boundaries. Its local CopyDataProperties checks
+after each actual Proxy/descriptor/getter boundary, preserving ordinary Source
+key/descriptor/value order while stopping a pending event before later getters.
+Profile import/Module/cache getters likewise stop before later lookups or ESM
+namespace creation. No shared helper, C/Engine or old declaration changes.
+
+New unrun controls delegate to the actual createRequire/require and actual
+backend, then leave a current non-OOM host event over its real success result.
+They require exact reason identity, empty consumed capture, diagnostics balance,
+retrying the real lazy load after failure, and successful caching only after
+the retry. A genuine published Module's exports getter is temporarily instrumented
+to return its SAME actual export while leaving a pending event; no namespace
+may be published and the real existing Module/cache identity stays intact.
+Another control checks pending event precedence at complete entry without a
+phase change. Original7a7 source seal is retained verbatim, separately named;
+no prior observations or expected output were rewritten.

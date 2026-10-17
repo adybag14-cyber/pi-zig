@@ -20,6 +20,43 @@ pub const Exports = struct {
     pub fn deinit(self: Exports, engine: *v.em.Engine) void { engine.freeValue(self.create_jiti); }
 };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
+fn success(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
+    if (c.JS_HasException(engine.context)) {
+        // Own the ACTUAL event before releasing a guest-returned value.
+        const pending = c.JS_GetException(engine.context);
+        engine.freeValue(owned);
+        return engine.checked(c.JS_Throw(engine.context, pending));
+    }
+    return owned;
+}
+fn get(s: *v.Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return s.own(try success(s.engine, try v.js.get(s.engine, receiver, name)));
+}
+fn call(s: *v.Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    return s.own(try success(s.engine, try v.js.call(s.engine, function, receiver, args)));
+}
+fn pending(engine: *v.em.Engine) !void { if (c.JS_HasException(engine.context)) return v.js.capture(engine); }
+/// Local CopyDataProperties: a host callback's success+pending event must stop
+/// before subsequent Proxy/getter effects. Shared spread policy is untouched.
+fn spread(engine: *v.em.Engine, target: c.JSValue, source: c.JSValue) !void {
+    if (v.nullish(source)) return;
+    const boxed = try success(engine, try engine.checked(c.JS_ToObject(engine.context, source))); defer engine.freeValue(boxed);
+    var names: [*c]c.JSPropertyEnum = null; var count: u32 = 0;
+    if (c.JS_GetOwnPropertyNames(engine.context, &names, &count, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return v.js.capture(engine);
+    defer c.JS_FreePropertyEnum(engine.context, names, count);
+    try pending(engine);
+    for (names[0..count]) |entry| {
+        var descriptor: c.JSPropertyDescriptor = undefined;
+        const present = c.JS_GetOwnProperty(engine.context, &descriptor, boxed, entry.atom);
+        if (present < 0) return v.js.capture(engine);
+        if (present == 0) { try pending(engine); continue; }
+        defer engine.freeValue(descriptor.value); defer engine.freeValue(descriptor.getter); defer engine.freeValue(descriptor.setter);
+        try pending(engine);
+        if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) continue;
+        const value = try success(engine, try engine.checked(c.JS_GetProperty(engine.context, boxed, entry.atom)));
+        if (c.JS_DefinePropertyValue(engine.context, target, entry.atom, value, c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
+    }
+}
 fn put(engine: *v.em.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
@@ -32,6 +69,7 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !Exports {
     if (!c.JS_IsFunction(engine.context, inputs.create_require)) return error.RequiredActualNodeCreateRequire;
     if (!c.JS_IsString(inputs.physical_filename) or !c.JS_IsString(inputs.module_url)) return error.RequiredPhysicalJitiModuleIdentity;
     var cells = try graph.createCanonical(engine, inputs.canonical); defer cells.deinit(engine);
+    try pending(engine);
     const actual = try graph.cells.exports(engine, &cells);
     defer engine.freeValue(actual.create_jiti); defer engine.freeValue(actual.eval_module);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
@@ -50,30 +88,31 @@ fn onError(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []con
 }
 fn lazyTransform(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) return v.js.capture(engine);
-    const cached = try v.js.get(engine, roots[0], "transform");
+    const cached = try success(engine, try v.js.get(engine, roots[0], "transform"));
     const enabled = c.JS_ToBool(engine.context, cached) != 0; engine.freeValue(cached);
     if (!enabled) {
         // Assignment occurs only AFTER both real createRequire and require
         // calls succeed. A failed load is retried; a cached falsy is retried.
         var s: v.Scope = .{ .engine = engine }; defer s.deinit();
-        const require = try s.call(roots[1], c.pi_js_undefined(), &.{roots[2]});
-        const transformed = try s.call(require, c.pi_js_undefined(), &.{try s.text("../dist/babel.cjs")});
+        const require = try call(&s, roots[1], c.pi_js_undefined(), &.{roots[2]});
+        const transformed = try call(&s, require, c.pi_js_undefined(), &.{try s.text("../dist/babel.cjs")});
+        try pending(engine);
         try put(engine, roots[0], "transform", transformed);
     }
-    const transform = try v.js.get(engine, roots[0], "transform"); defer engine.freeValue(transform);
-    return v.js.call(engine, transform, c.pi_js_undefined(), args);
+    const transform = try success(engine, try v.js.get(engine, roots[0], "transform")); defer engine.freeValue(transform);
+    return success(engine, try v.js.call(engine, transform, c.pi_js_undefined(), args));
 }
 fn createJiti(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
     var options = if (c.JS_IsUndefined(arg(args, 1))) try s.object() else arg(args, 1);
-    if (!s.truthy(try s.get(options, "transform"))) {
-        const spread = try s.object(); try v.js.spreadInto(engine, spread, options);
-        try put(engine, spread, "transform", roots[4]); options = spread;
+    if (!s.truthy(try get(&s, options, "transform"))) {
+        const copied = try s.object(); try spread(engine, copied, options);
+        try put(engine, copied, "transform", roots[4]); options = copied;
     }
     const parent = try s.object();
     try put(engine, parent, "onError", roots[1]);
     try put(engine, parent, "nativeImport", roots[2]);
     try put(engine, parent, "createRequire", roots[3]);
-    return v.js.call(engine, roots[0], c.pi_js_undefined(), &.{ arg(args, 0), options, parent });
+    return success(engine, try v.js.call(engine, roots[0], c.pi_js_undefined(), &.{ arg(args, 0), options, parent }));
 }
