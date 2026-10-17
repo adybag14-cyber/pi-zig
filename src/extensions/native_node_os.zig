@@ -53,7 +53,7 @@ fn failure(engine: *em.Engine, code: Code, syscall: []const u8) anyerror {
     return js.capture(engine);
 }
 fn winCode() !Code {
-    const code = @intFromEnum(w.kernel32.GetLastError());
+    const code = @intFromEnum(w.GetLastError());
     return switch (code) { 2, 3, 203 => .noent, 5, 1314 => .perm, 6 => .badf, 8, 14 => .nomem, 13, 87, 122 => .invalid, else => error.RequiredActualWindowsAccountErrorMapping };
 }
 fn posixCode(code: std.c.E) !Code {
@@ -75,13 +75,13 @@ fn accountHomeBytes(engine: *em.Engine) !NativeHome {
         defer w.CloseHandle(token);
         var count: u32 = 0;
         _ = Win.GetUserProfileDirectoryW(token, null, &count);
-        if (w.kernel32.GetLastError() != .INSUFFICIENT_BUFFER) return .{ .failed = try winCode() };
+        if (w.GetLastError() != .INSUFFICIENT_BUFFER) return .{ .failed = try winCode() };
         const buffer = try engine.gpa.alloc(u16, count); defer engine.gpa.free(buffer);
         if (Win.GetUserProfileDirectoryW(token, buffer.ptr, &count) == 0) return .{ .failed = try winCode() };
         // uv_os_get_passwd also queries the real account name before success.
         var username: [257]u16 = undefined; var user_count: u32 = username.len;
         if (Win.GetUserNameW(&username, &user_count) == 0) {
-            if (w.kernel32.GetLastError() == .INSUFFICIENT_BUFFER) return .{ .failed = .nomem };
+            if (w.GetLastError() == .INSUFFICIENT_BUFFER) return .{ .failed = .nomem };
             return .{ .failed = try winCode() };
         }
         const end = std.mem.indexOfScalar(u16, buffer, 0) orelse buffer.len;
