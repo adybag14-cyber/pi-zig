@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "parent": "cb800939e9629df3e8a1363fc1bcd8f60a0350f2",
+  "scope": "SOURCE ONLY transfer invariant; retracted dynamic-input UAF claim not repeated",
+  "payload": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2251330,
+      "sha256": "04C12BD6AD7E8ECEA405EC8219049EB22F560FCEC8E7705330E415077A290767"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 29121,
+      "sha256": "81ACF50B4BE1DD60A1ECD9FBA53BAE6DE83A106F303B833A4D9AE5B13FB655FE"
+    },
+    {
+      "path": "src/native_cjs_body_compiler_test.zig",
+      "bytes": 36230,
+      "sha256": "90C171355F19F30F82283A02FE43AC45F26553FA001C91AC409121379F0279A8"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/TERMINAL-TRANSFER-HARDENING.md",
+      "bytes": 1312,
+      "sha256": "F014165F5FB8A7C6A7EFF9A671C8906839209E692CC5D773A628B6C1127A408B"
+    }
+  ],
+  "controls_unrun": true
+}

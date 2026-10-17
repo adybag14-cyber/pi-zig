@@ -1,0 +1,18 @@
+[
+  {
+    "id": 2,
+    "ours": "    obj = JS_MakeError(ctx, error_num, add_backtrace, fmt, ap);\n    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n",
+    "base": "    obj = JS_MakeError(ctx, error_num, add_backtrace, fmt, ap);\n",
+    "metadata": "    obj = JS_MakeError(ctx, error_num, add_backtrace, &metadata_failed, fmt, ap);\n    if (metadata_failed)\n        return js_pi_metadata_fail_owned(ctx, obj);\n",
+    "resolution": "    obj = JS_MakeError(ctx, error_num, add_backtrace, &metadata_failed, fmt, ap);\n    if (metadata_failed)\n        return js_pi_metadata_fail_owned(ctx, obj);\n    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n",
+    "policy": "Keep single actual tracked call, metadata-specific owner, existing link guard, then existing compiler guard; no default selector change"
+  },
+  {
+    "id": 1,
+    "ours": "        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {\n            if (ctx->pi_link_preparing)\n                return js_pi_link_failure_free(ctx, obj);\n",
+    "base": "        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0) {\n",
+    "metadata": "        int captured = capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0);\n        if (captured == -2) {\n            if (metadata_failed)\n                *metadata_failed = true;\n            return js_pi_metadata_fail_owned(ctx, obj);\n        }\n        if (captured < 0) {\n",
+    "resolution": "        int captured = capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0);\n        if (captured == -2) {\n            if (metadata_failed)\n                *metadata_failed = true;\n            return js_pi_metadata_fail_owned(ctx, obj);\n        }\n        if (captured < 0) {\n            if (ctx->pi_link_preparing)\n                return js_pi_link_failure_free(ctx, obj);\n",
+    "policy": "Keep single actual tracked call, metadata-specific owner, existing link guard, then existing compiler guard; no default selector change"
+  }
+]

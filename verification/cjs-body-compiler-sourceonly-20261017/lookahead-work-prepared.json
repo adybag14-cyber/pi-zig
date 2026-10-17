@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "parent": "a6d54c8a7f6392a43bc6ea82b07651843027375d",
+  "scope": "SOURCE ONLY actual parser lookahead work",
+  "payload": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2251909,
+      "sha256": "A3A1BF299F8CD813A7F737EB41B1CC45ED990902B6E685E869E0A06157D4D33B"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77835,
+      "sha256": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 29467,
+      "sha256": "5930D0A17978F15E5FC7DE874C802A43C915CD0066561C8DBEDB6DC8B99689D1"
+    },
+    {
+      "path": "src/native_cjs_body_compiler_test.zig",
+      "bytes": 36763,
+      "sha256": "DA57ABD7B5494E76D2AA5DDC837AB4AF6959D1237316F743E45D24E398D6AD29"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/LOOKAHEAD-WORK-CORRECTION.md",
+      "bytes": 1500,
+      "sha256": "0514E96B395A8C55DF470273C3BFF386064EAE029D3C9F6A009F7FC8CBAF765E"
+    }
+  ],
+  "source_declarations": 43,
+  "actual_metadata": null,
+  "controls_unrun": true
+}

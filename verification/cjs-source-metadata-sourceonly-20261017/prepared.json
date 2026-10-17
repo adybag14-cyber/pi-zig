@@ -1,0 +1,115 @@
+{
+  "scope": "SOURCE ONLY UNRUN; actual lexer metadata and physical/logical ownership",
+  "historical_parent": "79ef3099d294cb43dea58cb56e066b4799fa0beb",
+  "closed_compiler_source": "430dac95b8213520cdd3e27ad388732c8ef96cab",
+  "compiler_control_successor": "5a2b27ac9785a163e64077293c431b54d6d513ba",
+  "source_authority": "official Node f657bb8ed86365ff3fdbe32e27563e778b41486a and bundled V8",
+  "product_layout": "separate owned FD/FBC logical atom; physical referrer unchanged; NULL legacy serialization bytes unchanged; private nonempty URL serialization unsupported",
+  "named_source_metadata_controls": 13,
+  "actual_compiled_count": null,
+  "expected_present": false,
+  "observed_present": false,
+  "execution_authorized": false,
+  "members": [
+    {
+      "path": "build.zig",
+      "bytes": 343389,
+      "sha256": "D6F95A78E114B4BDA74AF8F4EED0627AF9E2160EDEBE629B1A061662EC6C6BDE"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2260869,
+      "sha256": "716A565958B99A3C867E83BEE2FBD4832AECB1B6551056ACB407A9E077144BA5"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 78955,
+      "sha256": "8B3F0B912187EE68C8C39FC6B8E4051A2EAC44A9F275402F6F2A1A12919EBBCA"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "bytes": 17063,
+      "sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 31319,
+      "sha256": "B07A9F9A63A6CB6016D69CB9F31BE56120D695B3F4F65B70B6C89174B5F4A127"
+    },
+    {
+      "path": "src/native_cjs_source_metadata_test.zig",
+      "bytes": 19115,
+      "sha256": "9FBDD9CC1FA36D2D47C192C7ABC2B5B86BB52DE816194B898978FF4098B60C86"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/README.md",
+      "bytes": 7746,
+      "sha256": "F178C19648FD38BE102205C7C6AD94E706734BC5DACEA7ECAAB1F4595A52ED87"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/reference-node24-input.mjs",
+      "bytes": 5240,
+      "sha256": "96D3EEA67CA53ADD20E831515B93A7A7486B0F6AEEE463BB1D6CC99EA2261EEC"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-contextify.cc.txt",
+      "bytes": 71800,
+      "sha256": "4079C2C62311BDC5A8FDD72FB26AD2007BC84AC43F163B7CD8A10F90930CC537"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-esm-utils.js.txt",
+      "bytes": 13208,
+      "sha256": "1C0FAED0AF7033E5A662BC52DBBB35A067CB42D20F6C84F51EA00BD18762CCB9"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-module-wrap.cc.txt",
+      "bytes": 51944,
+      "sha256": "651B459C36A8F3BFB49F29A084990CE1A33F72561EFA2988437D37B4AE3AA357"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-v8-call-site-info.cc.txt",
+      "bytes": 31623,
+      "sha256": "709534F86CA06A5135A6DAF371B0EC8DA7D26A08DEAFB6010FC27CE5AB01B856"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-v8-execution-isolate.cc.txt",
+      "bytes": 296824,
+      "sha256": "EEA4CAC8477AE94429B28D2369BECC2DF00E0002A2664AC559435A802A40B2D0"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-v8-scanner-inl.h.txt",
+      "bytes": 21144,
+      "sha256": "6B25E6CD19BCECD0F53C00C439C8111FA54E3C20AEAF097670B9311F076AF454"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-v8-scanner.cc.txt",
+      "bytes": 37255,
+      "sha256": "E285E67BA1D3461AD40EB018258D3DA6F0718233F2A7337F6FB0C860DB5FC9E3"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/authority/node24-v8-scanner.h.txt",
+      "bytes": 27707,
+      "sha256": "555D45DEB92A1B5D6572E827C959BE6223412F33C306FADE7029E17FBB1BF207"
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/libregexp.c",
+      "bytes": 127825,
+      "sha256": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E",
+      "authority": "exact source-closed 430/5a bytes; no metadata changes"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.h",
+      "bytes": 4769,
+      "sha256": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3",
+      "authority": "exact source-closed 430/5a bytes; no metadata changes"
+    },
+    {
+      "path": "src/native_cjs_body_compiler_test.zig",
+      "bytes": 36747,
+      "sha256": "793409E53D3AAA22675E614F72A90AB15C572124ABDFEA0FD317C63BB45E2386",
+      "authority": "exact source-closed 430/5a bytes; no metadata changes"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "scope": "SOURCE ONLY actual raw linked compiler adapter; no fabricated contextify metadata",
+  "base": "1fd8dd40100cb41b44d94e09fffe12ed1412f32e",
+  "required_direct_c_source": "79ef3099d294cb43dea58cb56e066b4799fa0beb",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "sha256": "A1AED89298D6BCE017219A5ED9248B14551470E6F3F505AA8483A03BAEEE2A61",
+      "bytes": 6384
+    },
+    {
+      "path": "src/native_node_commonjs_body_compiler_test.zig",
+      "sha256": "2AC90DAD17D8E89807CACA008A65B1E3EDFCB8843085081A74A1C089888B64C6",
+      "bytes": 7583
+    },
+    {
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/README.md",
+      "sha256": "8FBBA3D12F7FF7333593C0A4C5E74F9662EEF037E7F0876612E2AD5EE734E442",
+      "bytes": 2221
+    }
+  ],
+  "source_names": [],
+  "actual_metadata": null,
+  "execution_authorized": false,
+  "default_selection": false
+}

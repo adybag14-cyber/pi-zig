@@ -1,0 +1,34 @@
+{
+  "scope": "SOURCE ONLY UNRUN actual pending ownership over native finalizer retirement",
+  "parent": "ede40961ae3cfef3214025e2c1e738e6d8f1cdd9",
+  "members": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2266895,
+      "sha256": "E1029212A185946CECDA1745D389982DA80E7B621A1BA9980C882C9B54E83F44"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 41044,
+      "sha256": "AE713AF834758E47A18E3E6521180962174088E1830EA55A0B4D008F01699A24"
+    },
+    {
+      "path": "src/native_cjs_source_metadata_test.zig",
+      "bytes": 20757,
+      "sha256": "306F98848A31D57D612D0B357B84C7BB1F6E20D455007E75003BF0F8A22ADCBD"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/README.md",
+      "bytes": 7744,
+      "sha256": "4F31BDCB7F74B50B457E1DE94E3B1D07FF54507CA5607231E60BA7D38784774B"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/RUNTIME-FINALIZER-CORRECTION.md",
+      "bytes": 2568,
+      "sha256": "1A744826AA89ACDAEB275F36B88471EC23A772E75115CC1BFF2900CF51ED4EE3"
+    }
+  ],
+  "named_metadata_controls": 16,
+  "actual_metadata": null,
+  "execution_authorized": false
+}

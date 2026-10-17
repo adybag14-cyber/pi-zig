@@ -1,0 +1,5 @@
+# Factory current-pending frontier correction
+
+SOURCE ONLY successor to immutable6ab. AuthFailure found createBodyCompiler called the generic ordinary factory before normalizing an actual current reason. The leaf now balances diagnostic suppression and takes/rethrows that actual pending reason before any holder/native reservation/VM object allocation. Escaping actual JavaScript failures have only fresh private generation recognition; no stale captured flag is used as current cause. Compile/probe product paths are unchanged.
+
+The new fifth prepared control precreates an ordinary incoming reason, sets the real VM heap limit to one byte, invokes the actual public factory, restores the host limit immediately, and checks raw identity, no replacement native Error capture, no promoted fatal bit and balanced suppression. It owns any unexpected success. No compiler/parser/native/metadata/Node job ran. Existing six-C-dependency/source-only admission and missing richer metadata/wrapSafe contract remain explicit; this is not whole Node bootstrap qualification.

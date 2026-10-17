@@ -1,0 +1,142 @@
+[
+  {
+    "index": 0,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    bool pi_link_preparing; /* private, synchronous link transaction only */\n",
+    "compiler": "    JSPiCompilerDiagnostic *pi_compiler_diagnostic;\n",
+    "resolved": "    bool pi_link_preparing; /* private, synchronous link transaction only */\n    JSPiCompilerDiagnostic *pi_compiler_diagnostic;\n"
+  },
+  {
+    "index": 1,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    ctx->pi_link_preparing = false;\n",
+    "compiler": "    ctx->pi_compiler_diagnostic = NULL;\n",
+    "resolved": "    ctx->pi_link_preparing = false;\n    ctx->pi_compiler_diagnostic = NULL;\n"
+  },
+  {
+    "index": 2,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_link_failure_free(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_compiler_fail_owned(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n",
+    "resolved": "    if (ctx->pi_link_preparing) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_link_failure_free(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n    if (ctx->pi_compiler_diagnostic) {\n        JSValue text;\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_length, js_int32(len),\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        text = JS_AtomToString(ctx, name);\n        if (JS_IsException(text) || JS_HasException(ctx)) {\n            js_pi_compiler_fail_owned(ctx, text);\n            return;\n        }\n        if (JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_name, text,\n                                   JS_PROP_CONFIGURABLE) < 0 || JS_HasException(ctx))\n            return;\n        return;\n    }\n"
+  },
+  {
+    "index": 3,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && JS_HasException(ctx)) {\n        js_pi_link_failure_free(ctx, saved);\n        return -1;\n    }\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx)) {\n        js_pi_compiler_fail_owned(ctx, saved);\n        return -1;\n    }\n",
+    "resolved": "    if (ctx->pi_link_preparing && JS_HasException(ctx)) {\n        js_pi_link_failure_free(ctx, saved);\n        return -1;\n    }\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx)) {\n        js_pi_compiler_fail_owned(ctx, saved);\n        return -1;\n    }\n"
+  },
+  {
+    "index": 4,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic) {\n        if (JS_IsException(obj) || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        return obj;\n    }\n",
+    "resolved": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n    if (ctx->pi_compiler_diagnostic) {\n        if (JS_IsException(obj) || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (capture_error_stack(ctx, obj, JS_UNDEFINED, NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        return obj;\n    }\n"
+  },
+  {
+    "index": 5,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n",
+    "resolved": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_link_failure_free(ctx, obj);\n    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n"
+  },
+  {
+    "index": 6,
+    "reason": "Retain original Link prepare branch followed by compiler prepare branch, then one legacy prepare expression",
+    "ours": "    if (ctx->pi_link_preparing) {\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n    } else if (prepare_native_error_stack(ctx, obj) < 0 ||\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic) {\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n    } else if (prepare_native_error_stack(ctx, obj) < 0 ||\n",
+    "resolved": "    if (ctx->pi_link_preparing) {\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_link_failure_free(ctx, obj);\n    } else if (ctx->pi_compiler_diagnostic) {\n        if (prepare_native_error_stack(ctx, obj) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n        if (native_error_stack_hook(ctx, obj, JS_ERROR_STACK_PREPARE, JS_UNDEFINED,\n                                    NULL, 0, 0, 0) < 0 || JS_HasException(ctx))\n            return js_pi_compiler_fail_owned(ctx, obj);\n    } else if (prepare_native_error_stack(ctx, obj) < 0 ||\n"
+  },
+  {
+    "index": 7,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, msg);\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && (JS_IsException(msg) || JS_HasException(ctx))) {\n        js_pi_compiler_fail_owned(ctx, msg);\n        return js_pi_compiler_fail_owned(ctx, obj);\n    }\n",
+    "resolved": "    if (ctx->pi_link_preparing && (JS_IsException(msg) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, msg);\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n    if (ctx->pi_compiler_diagnostic && (JS_IsException(msg) || JS_HasException(ctx))) {\n        js_pi_compiler_fail_owned(ctx, msg);\n        return js_pi_compiler_fail_owned(ctx, obj);\n    }\n"
+  },
+  {
+    "index": 8,
+    "reason": "Keep one exact actual producer/status declaration; retain original Link guard and append compiler guard",
+    "ours": "        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,\n                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {\n            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n            JS_FreeValue(ctx, obj);\n            return JS_Throw(ctx, first);\n        }\n",
+    "compiler": "        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,\n                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            return js_pi_compiler_fail_owned(ctx, obj);\n",
+    "resolved": "        int status = JS_DefinePropertyValue(ctx, obj, JS_ATOM_message, msg,\n                                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx))) {\n            JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n            JS_FreeValue(ctx, obj);\n            return JS_Throw(ctx, first);\n        }\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            return js_pi_compiler_fail_owned(ctx, obj);\n"
+  },
+  {
+    "index": 9,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "            if (ctx->pi_link_preparing)\n                return js_pi_link_failure_free(ctx, obj);\n",
+    "compiler": "            if (ctx->pi_compiler_diagnostic)\n                return js_pi_compiler_fail_owned(ctx, obj);\n",
+    "resolved": "            if (ctx->pi_link_preparing)\n                return js_pi_link_failure_free(ctx, obj);\n            if (ctx->pi_compiler_diagnostic)\n                return js_pi_compiler_fail_owned(ctx, obj);\n"
+  },
+  {
+    "index": 10,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && JS_HasException(ctx))\n        return js_pi_link_failure_free(ctx, obj);\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return js_pi_compiler_fail_owned(ctx, obj);\n",
+    "resolved": "    if (ctx->pi_link_preparing && JS_HasException(ctx))\n        return js_pi_link_failure_free(ctx, obj);\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        return js_pi_compiler_fail_owned(ctx, obj);\n"
+  },
+  {
+    "index": 11,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n",
+    "resolved": "    if (ctx->pi_link_preparing && (JS_IsException(obj) || JS_HasException(ctx))) {\n        JSValue first = JS_HasException(ctx) ? JS_GetException(ctx) : JS_NULL;\n        JS_FreeValue(ctx, obj);\n        return JS_Throw(ctx, first);\n    }\n    if (ctx->pi_compiler_diagnostic && (JS_IsException(obj) || JS_HasException(ctx)))\n        return js_pi_compiler_fail_owned(ctx, obj);\n"
+  },
+  {
+    "index": 12,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "static int js_pi_link_poll(JSContext *ctx)\n{\n    if (!ctx->pi_link_preparing)\n        return 0;\n    if (JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx))\n        return -1;\n    return 0;\n}\n\nstatic int js_pi_link_recursion(JSContext *ctx)\n{\n    if (js_pi_link_poll(ctx))\n        return -1;\n    if (ctx->pi_link_preparing && js_check_stack_overflow(ctx->rt, 0)) {\n        JS_ThrowStackOverflow(ctx);\n        return -1;\n    }\n    return 0;\n}\n\n",
+    "compiler": "static int js_pi_compiler_poll(JSContext *ctx)\n{\n    if (!ctx->pi_compiler_diagnostic)\n        return 0;\n    return JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx) ? -1 : 0;\n}\n\nstatic int js_pi_regexp_compile_poll(void *opaque)\n{\n    return js_pi_compiler_poll(opaque);\n}\n\nstatic void js_pi_regexp_compile_capacity(void *opaque, LRECompileLimit limit)\n{\n    JSContext *ctx = opaque;\n    (void)limit; /* Producer provenance, never an Error text classification. */\n    ctx->pi_compiler_diagnostic->capacity_failed = true;\n}\n\nstatic const LRECompileOptions js_pi_regexp_compile_options = {\n    js_pi_regexp_compile_poll, js_pi_regexp_compile_capacity,\n};\n\nstatic int js_pi_parse_escape(JSContext *ctx, const uint8_t **pp, int allow_utf16)\n{\n    if (ctx->pi_compiler_diagnostic)\n        return lre_parse_escape_with_options(pp, allow_utf16, ctx,\n                                             &js_pi_regexp_compile_options);\n    return lre_parse_escape(pp, allow_utf16);\n}\n\n",
+    "resolved": "static int js_pi_link_poll(JSContext *ctx)\n{\n    if (!ctx->pi_link_preparing)\n        return 0;\n    if (JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx))\n        return -1;\n    return 0;\n}\n\nstatic int js_pi_link_recursion(JSContext *ctx)\n{\n    if (js_pi_link_poll(ctx))\n        return -1;\n    if (ctx->pi_link_preparing && js_check_stack_overflow(ctx->rt, 0)) {\n        JS_ThrowStackOverflow(ctx);\n        return -1;\n    }\n    return 0;\n}\n\nstatic int js_pi_compiler_poll(JSContext *ctx)\n{\n    if (!ctx->pi_compiler_diagnostic)\n        return 0;\n    return JS_HasException(ctx) || js_poll_interrupts(ctx) || JS_HasException(ctx) ? -1 : 0;\n}\n\nstatic int js_pi_regexp_compile_poll(void *opaque)\n{\n    return js_pi_compiler_poll(opaque);\n}\n\nstatic void js_pi_regexp_compile_capacity(void *opaque, LRECompileLimit limit)\n{\n    JSContext *ctx = opaque;\n    (void)limit; /* Producer provenance, never an Error text classification. */\n    ctx->pi_compiler_diagnostic->capacity_failed = true;\n}\n\nstatic const LRECompileOptions js_pi_regexp_compile_options = {\n    js_pi_regexp_compile_poll, js_pi_regexp_compile_capacity,\n};\n\nstatic int js_pi_parse_escape(JSContext *ctx, const uint8_t **pp, int allow_utf16)\n{\n    if (ctx->pi_compiler_diagnostic)\n        return lre_parse_escape_with_options(pp, allow_utf16, ctx,\n                                             &js_pi_regexp_compile_options);\n    return lre_parse_escape(pp, allow_utf16);\n}\n\n"
+  },
+  {
+    "index": 13,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing)\n        return js_pi_link_failure_free(ctx, func_obj);\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic)\n        return js_pi_compiler_fail_owned(ctx, func_obj);\n",
+    "resolved": "    if (ctx->pi_link_preparing)\n        return js_pi_link_failure_free(ctx, func_obj);\n    if (ctx->pi_compiler_diagnostic)\n        return js_pi_compiler_fail_owned(ctx, func_obj);\n"
+  },
+  {
+    "index": 14,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "        if (ctx->pi_link_preparing)\n            return js_pi_link_failure_free(ctx, bfunc);\n",
+    "compiler": "        if (ctx->pi_compiler_diagnostic)\n            return js_pi_compiler_fail_owned(ctx, bfunc);\n",
+    "resolved": "        if (ctx->pi_link_preparing)\n            return js_pi_link_failure_free(ctx, bfunc);\n        if (ctx->pi_compiler_diagnostic)\n            return js_pi_compiler_fail_owned(ctx, bfunc);\n"
+  },
+  {
+    "index": 15,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing && JS_HasException(ctx))\n        goto fail;\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        goto fail;\n",
+    "resolved": "    if (ctx->pi_link_preparing && JS_HasException(ctx))\n        goto fail;\n    if (ctx->pi_compiler_diagnostic && JS_HasException(ctx))\n        goto fail;\n"
+  },
+  {
+    "index": 16,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "        if (ctx->pi_link_preparing && (JS_IsException(proto) || JS_HasException(ctx))) {\n            js_pi_link_failure_free(ctx, proto);\n            goto fail;\n        }\n",
+    "compiler": "        if (ctx->pi_compiler_diagnostic && (JS_IsException(proto) || JS_HasException(ctx))) {\n            js_pi_compiler_fail_owned(ctx, proto);\n            goto fail;\n        }\n",
+    "resolved": "        if (ctx->pi_link_preparing && (JS_IsException(proto) || JS_HasException(ctx))) {\n            js_pi_link_failure_free(ctx, proto);\n            goto fail;\n        }\n        if (ctx->pi_compiler_diagnostic && (JS_IsException(proto) || JS_HasException(ctx))) {\n            js_pi_compiler_fail_owned(ctx, proto);\n            goto fail;\n        }\n"
+  },
+  {
+    "index": 17,
+    "reason": "Keep one exact actual producer/status declaration; retain original Link guard and append compiler guard",
+    "ours": "        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,\n                                            JS_PROP_WRITABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n",
+    "compiler": "        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,\n                                            JS_PROP_WRITABLE);\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n",
+    "resolved": "        int status = JS_DefinePropertyValue(ctx, func_obj, JS_ATOM_prototype, proto,\n                                            JS_PROP_WRITABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n"
+  },
+  {
+    "index": 18,
+    "reason": "Keep one exact actual producer/status declaration; retain original Link guard and append compiler guard",
+    "ours": "        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,\n                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,\n                                             JS_PROP_WRITABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n",
+    "compiler": "        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,\n                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,\n                                             JS_PROP_WRITABLE);\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n",
+    "resolved": "        int status = JS_DefineAutoInitProperty(ctx, func_obj, JS_ATOM_prototype,\n                                             JS_AUTOINIT_ID_PROTOTYPE, NULL,\n                                             JS_PROP_WRITABLE);\n        if (ctx->pi_link_preparing && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n        if (ctx->pi_compiler_diagnostic && (status < 0 || JS_HasException(ctx)))\n            goto fail;\n"
+  },
+  {
+    "index": 19,
+    "reason": "Retain both independent fields/functions/guard branches in original order; default NULL/false path unchanged",
+    "ours": "    if (ctx->pi_link_preparing)\n        return js_pi_link_failure_free(ctx, func_obj);\n",
+    "compiler": "    if (ctx->pi_compiler_diagnostic)\n        return js_pi_compiler_fail_owned(ctx, func_obj);\n",
+    "resolved": "    if (ctx->pi_link_preparing)\n        return js_pi_link_failure_free(ctx, func_obj);\n    if (ctx->pi_compiler_diagnostic)\n        return js_pi_compiler_fail_owned(ctx, func_obj);\n"
+  }
+]

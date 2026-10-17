@@ -1,0 +1,35 @@
+{
+  "scope": "SOURCE ONLY UNRUN metadata legacy field failure and length-aware logical location",
+  "parent": "3a7c1c13695840949de0c145fe1b78bede07c4f4",
+  "members": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2265476,
+      "sha256": "A97FC7838CFD70D120A388692E34D92D8D3C734AF196D53B9C76D0FF13381326"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 37106,
+      "sha256": "9A7235CC47DF0BF249EB969B0C6B21CE5CF31DBC8793623BBB2703ADB1A431B5"
+    },
+    {
+      "path": "src/native_cjs_source_metadata_test.zig",
+      "bytes": 20483,
+      "sha256": "13BB68FED32EB1066C4DE5CB7421F5659D18B229CFE9CAD2747CAA48CCE3E593"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/README.md",
+      "bytes": 7744,
+      "sha256": "A5A9CF39BF8A3AFDF1A93A8CDFF582F16AA590F0BAAEE6198B5BEB550D0FACCA"
+    },
+    {
+      "path": "verification/cjs-source-metadata-sourceonly-20261017/LEGACY-FIELD-FAILURE-CORRECTION.md",
+      "bytes": 3437,
+      "sha256": "01B8ED99DD5526F64F7EDA8D221F24535E66927A3EE1E8EC5C4BFE5B96213EE5"
+    }
+  ],
+  "prepared_named_metadata_declarations": 15,
+  "actual_metadata": null,
+  "execution_authorized": false,
+  "original_packet_unchanged": true
+}

@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "reviewed_utc": "2026-10-17T18:53:16.4646299+00:00",
+  "status": "finite_combined_optin_compiler_source_review_closed",
+  "candidate": "430dac95b8213520cdd3e27ad388732c8ef96cab",
+  "base": "328eab6e4536eec1632edfef47ab376440b5ac45",
+  "reviewed_successors": [
+    "189dadbb",
+    "e2f8dfd4773f2bdc3e4936bdaf31f26da8561c12",
+    "531eed654092dd3940155fd5ecf84a068b617fc5",
+    "98954f9a129d753206c0703ed174b0c45b4742a9",
+    "a254898dc6983c085aa62c9f96314ed7c7fdaf3b",
+    "79ef3099d294cb43dea58cb56e066b4799fa0beb",
+    "cb800939e9629df3e8a1363fc1bcd8f60a0350f2",
+    "a6d54c8a7f6392a43bc6ea82b07651843027375d",
+    "430dac95b8213520cdd3e27ad388732c8ef96cab"
+  ],
+  "products": {
+    "quickjs_c": "A3A1BF299F8CD813A7F737EB41B1CC45ED990902B6E685E869E0A06157D4D33B",
+    "quickjs_h": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085",
+    "libregexp_c": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E",
+    "libregexp_h": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3",
+    "cjs_include": "7B5F03AAE91D98F71D697BA36D7478F8D573A98A422BEECA15FBFC61B964F3DB"
+  },
+  "current_union_payload_pins": 16,
+  "current_hash_length_drift": [],
+  "static_named_declarations": 43,
+  "actual_metadata": null,
+  "reviewed": [
+    "Actual fixed-five ordinary function body parser ends at EOF; retained wrapper presentation is not parsed. Bookkeeping parent, child list and cpool ownership transfer into actual js_create_function/js_closure were traced through success and failure. Realm is retained by actual bytecode, borrowed diagnostics/parser definitions never enter bytecode or serialization.",
+    "Detached actual module parser and semantic passes are unpublished before subsequent allocation/callback, never resolve/link/evaluate or load dependencies, suppress only runtime attribute policy in syntax probe, and free only their detached module/FD graph.",
+    "Diagnostic outputs reset before admission; actual pending wins before parser/semantic/prologue producers. Ordinary syntax category is published only by completed native SyntaxError production, separate from allocation/stack/interruption/capacity producer flags. Reason held before partial-object/FD/string cleanup.",
+    "Private variable pass reserves/transfers complete instruction operands and nulls moved input atoms, checks failed scope resolver before releasing input name, reserves generated atom bytes before duplication and frees only owned output on failure. Private label pass disables unsafe peephole/dead-code/threading paths, borrows input atoms, advances relocation heads before free and retires remaining chains without failing polls. Both CodeContext instances initialize the new field.",
+    "Parser/lexer Unicode escapes, comments, shebang, lookahead and semantic/label/source-map/stack work use actual opt-in polling; callback success with pending is checked separately. Coordinate representation overflow now reports capacity without inventing an allocation attempt.",
+    "LRE NULL wrappers preserve legacy callbacks/opaque/default selection; new borrowed options do not enter bytecode. Sticky abort blocks later allocations/polls but permits frees. Hash resize unlinks moved nodes, partial-copy nodes remain list-owned, scratch sort owns only native borrowed-pointer vector, and sequence failures propagate.",
+    "Actual native capacity guards and scalar callback classifications were inspected for captures/scopes/registers/ranges/bytecode/group names/string storage. Unicode-set stable length sorting preserves intended match ordering; NULL uses original sort.",
+    "Prepared controls include genuine allocator-position sweeps, first-reason identity, real cadence interrupts, atom-count/native-block cleanup and healthy same-input execution, real fixed grammar/realm/EOF/UTF16/probe behavior. New lookahead controls use actual long comments/whitespace without parser state injection. Install-only target compiles actual Zig tests plus C allocator controls; no execution step added."
+  ],
+  "corrected_findings": [
+    "Coordinate width overflow used JS_ThrowOutOfMemory without an allocation; cb800 switches to capacity plus operational InternalError.",
+    "Source-sized lookahead whitespace/comment scans had no poll; 430 adds context-only polling while preserving NULL wrapper."
+  ],
+  "clarification": "Earlier claim of reachable dynamic-atom UAF from raw terminal OP_throw_error copy was retracted after checking both current parser input producers emit JS_ATOM_NULL. Dynamic names are generated into variable-pass output. a6 uniformly routes terminal copy through transfer helper as invariant hardening; genuine null-atom grammar and separate dynamic-output controls are honest, not a reproduced UAF.",
+  "remaining_prerequisites": [
+    "Host retains correct context, installs actual correct-context capture-only native Error-stack owner, balances diagnostic suppression, and supplies trusted nonreentrant interruption; no guest formatting, graph mutation/disposal or concurrent use during synchronous compile.",
+    "Native Unicode tables/range operations, libc allocation/copies, VM string/atom conversion and native retirement remain atomic frontiers, not instruction-level interruption. Fixed-capacity lookups and native recursive stack limits remain real implementation bounds; this receipt is not a universal compile latency/resource guarantee.",
+    "Giant-memory coordinate/range/bytecode/string-layout capacity executions are not prepared. Finite measured sweeps have explicit native-event and interrupt admission limits and do not establish exhaustive allocation/capacity coverage.",
+    "All 43 named declarations are UNRUN; actual imported metadata, compilation/ABI success, native outcomes, default regressions and exact composed C qualification remain unknown.",
+    "SourceURL/sourceMap/code-cache/ScriptInfo metadata successor, full Node24/V8 equivalence, wrapSafe/load-ESM policy, Jiti/Node bootstrap, Core8da union and default activation are separate excluded work."
+  ],
+  "findings_remaining_in_finite_scope": [],
+  "jobs_launched": 0,
+  "main_edited": false,
+  "execution_authorized": false,
+  "historical_records_rewritten": false
+}

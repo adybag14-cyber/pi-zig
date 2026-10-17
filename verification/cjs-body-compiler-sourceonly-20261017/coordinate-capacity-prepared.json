@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "parent": "79ef3099d294cb43dea58cb56e066b4799fa0beb",
+  "scope": "SOURCE ONLY actual coordinate-capacity classification; no allocation event invented",
+  "payload": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "4A2A2884BED199DEF1807DFAD974432ABDBD099930A62F5B233EC20D2C648059",
+      "bytes": 2251237
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085",
+      "bytes": 77835
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/COORDINATE-CAPACITY-CORRECTION.md",
+      "sha256": "17D6FF880C84BCBD222DC234E598B3367860F149FE8AE9B90F9A44822E447628",
+      "bytes": 889
+    }
+  ],
+  "execution_authorized": false
+}

@@ -1307,6 +1307,10 @@ JS_EXTERN int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
                                         JSValue *filename, JSValue *function_name,
                                         int *line, int *column, int *is_native,
                                         int *is_constructor);
+/* Actual logical ScriptNameOrSourceURL, without guest property lookup. Success
+   transfers one owned value; failure leaves the output untouched. */
+JS_EXTERN int JS_ReadCapturedStackFrameSourceName(JSContext *ctx,
+    JSValueConst frame, JSValue *source_name);
 /* return != 0 if the JS code needs to be interrupted */
 typedef int JSInterruptHandler(JSRuntime *rt, void *opaque);
 JS_EXTERN void JS_SetInterruptHandler(JSRuntime *rt, JSInterruptHandler *cb, void *opaque);
@@ -1425,6 +1429,48 @@ JS_EXTERN JSValue JS_ReadObject2(JSContext *ctx, const uint8_t *buf, size_t buf_
 /* instantiate and evaluate a bytecode function. Only used when
    reading a script or module with JS_ReadObject() */
 JS_EXTERN JSValue JS_EvalFunction(JSContext *ctx, JSValue fun_obj);
+
+/* Native synchronous compilation only. Primitive strings are borrowed. These
+   APIs require a correct-context capture-only native Error-stack owner and
+   trusted nonreentrant interrupt callback; retain ctx and suppress host error
+   diagnostics, guest formatting/reentry, graph mutation/disposal/concurrency.
+   Categories are trusted syntax-completion policy, NEVER fatal classification.
+   Entry pending failure is retained unchanged; diagnostic outputs reset to NONE.
+   Filename NUL is explicitly refused. No module resolution/evaluation/job pump. */
+typedef enum JSPiCJSParseCategory {
+    JS_PI_CJS_NO_SYNTAX_CATEGORY = 0,
+    JS_PI_CJS_ORDINARY_SYNTAX = 1,
+    JS_PI_CJS_DIRECT_MODULE_SYNTAX = 2,
+    JS_PI_CJS_ESM_PARSE_REQUIRED = 3,
+} JSPiCJSParseCategory;
+JS_EXTERN JSValue JS_PiCompileCJSFunction(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSPiCJSParseCategory *category);
+/* Same actual compiler plus lexer-produced origin metadata. Both output slots
+   are required and distinct; success transfers owned JS values, failure leaves them intact.
+   source_url is the actual magic URL or the primitive physical filename;
+   source_map_url is undefined only when its actual lexer buffer is empty. */
+JS_EXTERN JSValue JS_PiCompileCJSFunctionInfo(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSPiCJSParseCategory *category,
+    JSValue *source_url, JSValue *source_map_url);
+/* Actual GLOBAL|COMPILE_ONLY script for patched Module.wrap, no body execution.
+   Same metadata output ownership and capture-only native owner requirements. */
+JS_EXTERN JSValue JS_PiCompileCommonJSScriptInfo(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSValue *source_url, JSValue *source_map_url);
+typedef enum JSPiModuleParseDiagnostic {
+    JS_PI_MODULE_NO_SYNTAX_DIAGNOSTIC = 0,
+    JS_PI_MODULE_ORDINARY_SYNTAX = 1,
+} JSPiModuleParseDiagnostic;
+enum {
+    JS_PI_MODULE_STATIC_IMPORT_EXPORT = 1,
+    JS_PI_MODULE_IMPORT_META = 2,
+    JS_PI_MODULE_TOP_LEVEL_AWAIT = 4,
+};
+/* 0 succeeds and writes flags; +1 is completed ordinary syntax rejection with
+   actual reason pending; -1 is operational failure with actual reason pending.
+   Both failure statuses leave flags unchanged. No reusable module is published. */
+JS_EXTERN int JS_PiParseModuleSyntax(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, unsigned *syntax_flags,
+    JSPiModuleParseDiagnostic *diagnostic);
 /* load the dependencies of the module 'obj'. Useful when JS_ReadObject()
    returns a module. */
 JS_EXTERN int JS_ResolveModule(JSContext *ctx, JSValueConst obj);

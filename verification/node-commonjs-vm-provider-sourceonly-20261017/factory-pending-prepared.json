@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "parent": "6ab2f5802ac586aaff15f3a0a29daa6e23a5e001",
+  "scope": "SOURCE ONLY actual factory pending-first correction",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "bytes": 6917,
+      "sha256": "A1E7A9A4953E5C2581DC2539A86B627BE5CBFAEE5BDFAF7F342DB6CE90A605FC"
+    },
+    {
+      "path": "src/native_node_commonjs_body_compiler_test.zig",
+      "bytes": 8956,
+      "sha256": "2AB60962610EC69DB8F23B7EA73015D42C21920400F88510E57CC77C29AC9E84"
+    },
+    {
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/FACTORY-PENDING-CORRECTION.md",
+      "bytes": 1065,
+      "sha256": "5AE7594AD59BFD48A15D7A237D177EF79A3B13EDE850517A3104448EFC2A4D9D"
+    }
+  ],
+  "source_declarations": 5,
+  "actual_metadata": null,
+  "execution_authorized": false
+}

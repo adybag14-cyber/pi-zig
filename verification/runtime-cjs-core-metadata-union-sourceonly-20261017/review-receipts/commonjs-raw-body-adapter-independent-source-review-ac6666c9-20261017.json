@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_CLOSED",
+  "reviewed_head": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+  "base": "1fd8dd40100cb41b44d94e09fffe12ed1412f32e",
+  "reviewer": "models_auth_failure_resume",
+  "scope": "Actual raw CJS body/probe adapter and five prepared genuine linked-VM controls; immutable Git blobs only",
+  "historical_negative": "6c206489 test predicate ABI and factory pre-allocation pending frontier preserved",
+  "corrections": [
+    "6ab2f580: both JS_IsAsyncFunction calls match the actual one-JSValue declaration",
+    "ac6666c9: factory diagnostic suppression balances; actual current reason owned and rethrown before callable allocations; fresh generation only in factory catch"
+  ],
+  "findings_remaining": [],
+  "verified_payload_and_manifests": [
+    {
+      "commit": "6c2064897731e423a5e65720e419a8402d8533c7",
+      "path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "bytes": 6384,
+      "sha256": "A1AED89298D6BCE017219A5ED9248B14551470E6F3F505AA8483A03BAEEE2A61"
+    },
+    {
+      "commit": "6c2064897731e423a5e65720e419a8402d8533c7",
+      "path": "src/native_node_commonjs_body_compiler_test.zig",
+      "bytes": 7583,
+      "sha256": "2AC90DAD17D8E89807CACA008A65B1E3EDFCB8843085081A74A1C089888B64C6"
+    },
+    {
+      "commit": "6c2064897731e423a5e65720e419a8402d8533c7",
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/README.md",
+      "bytes": 2221,
+      "sha256": "8FBBA3D12F7FF7333593C0A4C5E74F9662EEF037E7F0876612E2AD5EE734E442"
+    },
+    {
+      "commit": "6c2064897731e423a5e65720e419a8402d8533c7",
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/prepared.json",
+      "bytes": 972,
+      "sha256": "2151FAA29AF7C30753AA0132F2F19A58433A1CE85A28EC0B3961AED99E502C2D"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "bytes": 6917,
+      "sha256": "A1E7A9A4953E5C2581DC2539A86B627BE5CBFAEE5BDFAF7F342DB6CE90A605FC"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/native_node_commonjs_body_compiler_test.zig",
+      "bytes": 8956,
+      "sha256": "2AB60962610EC69DB8F23B7EA73015D42C21920400F88510E57CC77C29AC9E84"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/FACTORY-PENDING-CORRECTION.md",
+      "bytes": 1065,
+      "sha256": "5AE7594AD59BFD48A15D7A237D177EF79A3B13EDE850517A3104448EFC2A4D9D"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/factory-pending-prepared.json",
+      "bytes": 864,
+      "sha256": "E7DC82DEAAE4BE49B95BBE838BE1CF11928CF817C8F317B9715544550DED4FE6"
+    },
+    {
+      "commit": "6ab2f5802ac586aaff15f3a0a29daa6e23a5e001",
+      "path": "src/native_node_commonjs_body_compiler_test.zig",
+      "bytes": 7551,
+      "sha256": "0EB65FD06470C443676AB38B28CF26CAC0BA05D19D9444B508FC9442697776A2"
+    },
+    {
+      "commit": "6ab2f5802ac586aaff15f3a0a29daa6e23a5e001",
+      "path": "src/extensions/native_node_commonjs_body_compiler.zig",
+      "bytes": 6384,
+      "sha256": "A1AED89298D6BCE017219A5ED9248B14551470E6F3F505AA8483A03BAEEE2A61"
+    },
+    {
+      "commit": "6ab2f5802ac586aaff15f3a0a29daa6e23a5e001",
+      "path": "verification/node-commonjs-vm-provider-sourceonly-20261017/control-abi-prepared.json",
+      "bytes": 430,
+      "sha256": "46CFD1838CB07BCD31D20D7BAC1958DA54E06E3503E560146F33715D0D8F2C34"
+    }
+  ],
+  "protected_unchanged": [
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/extensions/native_ai_provider_values.zig",
+      "bytes": 2689,
+      "sha256": "2D64F3F5E408790DC0BD374E13F1A9C69EB21E1D62944DAE9C913B87F13629EB"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 3920,
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "src/extensions/engine.zig",
+      "bytes": 85495,
+      "sha256": "FA18C560F18D535591512CAB36CF289B8DE898A9B04D651BF51A8B50DEECA381"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "commit": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+      "path": "build.zig",
+      "bytes": 348099,
+      "sha256": "4723C291F1CFF38EDF85E0A77AD00AF50FE563E08C190564B4844496B5B5FCFD"
+    }
+  ],
+  "changed_paths": [
+    "A\tsrc/extensions/native_node_commonjs_body_compiler.zig",
+    "A\tsrc/native_node_commonjs_body_compiler_test.zig",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/CONTROL-ABI-CORRECTION.md",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/FACTORY-PENDING-CORRECTION.md",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/README.md",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/control-abi-prepared.json",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/factory-pending-prepared.json",
+    "A\tverification/node-commonjs-vm-provider-sourceonly-20261017/prepared.json"
+  ],
+  "diff_check": "passed",
+  "required_held_header": {
+    "commit": "430dac95b8213520cdd3e27ad388732c8ef96cab",
+    "path": "vendor/quickjs/quickjs.h",
+    "bytes": 77835,
+    "sha256": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085"
+  },
+  "abi_review": "Primitive borrowed JSValue ABI; C int enum outputs and C unsigned flags match held producer contract. No coercion, invented parser category, module resolution, execution or Promise adoption",
+  "ownership_review": "Actual current reason taken before output cleanup; Completion/Probe move ownership and all success/error transfers inspected; no stale captured slot used as reason; suppression balances",
+  "control_review": "Five genuine VM controls authored and inspected; incoming ordinary pending reason plus actual one-byte VM quota proves the factory allocation ordering causally when later executed; test restores limit immediately and frees unexpected owned result",
+  "source_declarations": 5,
+  "actual_metadata": null,
+  "execution_performed": false,
+  "untracked_inputs_reviewed": false,
+  "prerequisites": [
+    "Compose separately source-closed direct C 430dac95 lookahead/coordinate successor before execution; original prepared 79ef pin is historical, not composition authority",
+    "Strict correct-context capture-only Error owner and trusted nonreentrant interrupts remain mandatory",
+    "SourceURL/map scanner, consumed no-code-cache contextify record, real wrapSafe/createRequire/bootstrap/orchestration remain separate",
+    "No compilation, linked ABI, metadata, runtime, allocator, full Node or default-selection qualification established"
+  ]
+}

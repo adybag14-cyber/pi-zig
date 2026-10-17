@@ -53,6 +53,21 @@ extern "C" {
 uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
                      const char *buf, size_t buf_len, int re_flags,
                      void *opaque);
+/* Compile-only, borrowed for this call. NULL retains the legacy path. A poll
+   failure is sticky; cleanup never polls. The caller owns any failure reason. */
+typedef enum LRECompileLimit {
+    LRE_LIMIT_CAPTURES, LRE_LIMIT_GROUP_SCOPES, LRE_LIMIT_REGISTERS,
+    LRE_LIMIT_RANGES, LRE_LIMIT_BYTECODE, LRE_LIMIT_STRING_STORAGE,
+    LRE_LIMIT_GROUP_NAME,
+} LRECompileLimit;
+typedef struct LRECompileOptions {
+    int (*poll)(void *opaque);
+    void (*capacity)(void *opaque, LRECompileLimit limit);
+} LRECompileOptions;
+uint8_t *lre_compile_with_options(int *plen, char *error_msg, int error_msg_size,
+                                 const char *buf, size_t buf_len, int re_flags,
+                                 void *opaque,
+                                 const LRECompileOptions *borrowed_options);
 int lre_get_alloc_count(const uint8_t *bc_buf);
 int lre_check_bytecode(const uint8_t *bc_buf, int bc_buf_len);
 int lre_get_capture_count(const uint8_t *bc_buf);
@@ -63,6 +78,11 @@ int lre_exec(uint8_t **capture,
              int cbuf_type, void *opaque);
 
 int lre_parse_escape(const uint8_t **pp, int allow_utf16);
+/* Same actual escape parser, with the compile-only borrowed poll boundary.
+   Intended for an opted-in host lexer; NULL options preserve the old path. */
+int lre_parse_escape_with_options(const uint8_t **pp, int allow_utf16,
+                                  void *opaque,
+                                  const LRECompileOptions *borrowed_options);
 /* lre_is_space() is provided as an inline in libunicode.h */
 
 /* must be provided by the user */

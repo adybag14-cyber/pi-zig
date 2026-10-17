@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "parent": "98954f9a129d753206c0703ed174b0c45b4742a9",
+  "scope": "SOURCE ONLY actual lexer escape/shebang work; controls UNRUN; resolve_labels ownership frontier remains",
+  "payload": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2245507,
+      "sha256": "1E6B35F5C48814EA7C7CF97DB08D7D5AE75E78F5C5DE423D4B1A475FD2A3E0BB"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77835,
+      "sha256": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.c",
+      "bytes": 127825,
+      "sha256": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.h",
+      "bytes": 4769,
+      "sha256": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "bytes": 12691,
+      "sha256": "7B5F03AAE91D98F71D697BA36D7478F8D573A98A422BEECA15FBFC61B964F3DB"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 25343,
+      "sha256": "0F48718CDCEBA161A4C4C8CE292F3C9E6F4DCA3CD3A12BA999538718CC7416F5"
+    },
+    {
+      "path": "src/native_cjs_body_compiler_test.zig",
+      "bytes": 35758,
+      "sha256": "E0430FF07A22F4BC873A485F666D7DF2FD611417EA4339C54BF176974DA9534A"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 342586,
+      "sha256": "177921BD8E08FEE709A25B8BD3E787CC72473662E6E818A8B2B0FF35CA0D0FBF"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/LEXER-WORK-POLL-SUCCESSOR.md",
+      "bytes": 2365,
+      "sha256": "7D85CE70B10FE62517FC3E0C3AA5B7032DE82EF0DE12F4A4B8FFAA6AB9FE53A2"
+    }
+  ],
+  "source_declarations": 39,
+  "actual_metadata": null,
+  "jobs_authorized": false
+}

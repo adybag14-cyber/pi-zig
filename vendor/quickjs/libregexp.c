@@ -97,12 +97,56 @@ typedef struct {
     int total_capture_count; /* -1 = not computed yet */
     int has_named_captures; /* -1 = don't know, 0 = no, 1 = yes */
     void *opaque;
+    const LRECompileOptions *compile_options;
+    bool compile_aborted;
     DynBuf group_names;
     union {
         char error_msg[TMP_BUF_SIZE];
         char tmp_buf[TMP_BUF_SIZE];
     } u;
 } REParseState;
+
+static int re_compile_poll(REParseState *s)
+{
+    if (!s->compile_options)
+        return 0;
+    if (s->compile_aborted)
+        return -1;
+    if (s->compile_options->poll && s->compile_options->poll(s->opaque)) {
+        s->compile_aborted = true;
+        js__pstrcpy(s->u.error_msg, sizeof(s->u.error_msg), "interrupted");
+        return -1;
+    }
+    return 0;
+}
+
+static void re_compile_capacity(REParseState *s, LRECompileLimit limit)
+{
+    if (s->compile_options && !s->compile_aborted && s->compile_options->capacity)
+        s->compile_options->capacity(s->opaque, limit);
+}
+
+/* All opt-in native allocations share the sticky abort, including CharRange
+   callbacks. Size-zero retirement remains available after the first failure. */
+static void *re_compile_realloc(void *opaque, void *ptr, size_t size)
+{
+    REParseState *s = opaque;
+    if (size && s->compile_aborted)
+        return NULL;
+    return lre_realloc(s->opaque, ptr, size);
+}
+
+static void re_compile_cr_init(REParseState *s, CharRange *cr)
+{
+    cr_init(cr, s->compile_options ? s : s->opaque,
+            s->compile_options ? re_compile_realloc : lre_realloc);
+}
+
+static void re_compile_dbuf_init(REParseState *s, DynBuf *db)
+{
+    dbuf_init2(db, s->compile_options ? s : s->opaque,
+               s->compile_options ? re_compile_realloc : lre_realloc);
+}
 
 typedef struct {
 #ifdef DUMP_REOP
@@ -158,21 +202,29 @@ typedef struct {
     uint32_t hash_size;
     int hash_bits;
     REString **hash_table;
+    REParseState *parse_state;
+    bool failed;
 } REStringList;
 
-static uint32_t re_string_hash(int len, const uint32_t *buf)
+static int re_string_hash(REParseState *s, int len, const uint32_t *buf, uint32_t *result)
 {
     int i;
     uint32_t h;
     h = 1;
-    for(i = 0; i < len; i++)
+    for(i = 0; i < len; i++) {
+        if (re_compile_poll(s))
+            return -1;
         h = h * 263 + buf[i];
-    return hash32(h);
+    }
+    *result = hash32(h);
+    return 0;
 }
 
 static void re_string_list_init(REParseState *s1, REStringList *s)
 {
-    cr_init(&s->cr, s1->opaque, lre_realloc);
+    re_compile_cr_init(s1, &s->cr);
+    s->parse_state = s1;
+    s->failed = false;
     s->n_strings = 0;
     s->hash_size = 0;
     s->hash_bits = 0;
@@ -186,10 +238,10 @@ static void re_string_list_free(REStringList *s)
     for(i = 0; i < s->hash_size; i++) {
         for(p = s->hash_table[i]; p != NULL; p = p_next) {
             p_next = p->next;
-            lre_realloc(s->cr.mem_opaque, p, 0);
+            s->cr.realloc_func(s->cr.mem_opaque, p, 0);
         }
     }
-    lre_realloc(s->cr.mem_opaque, s->hash_table, 0);
+    s->cr.realloc_func(s->cr.mem_opaque, s->hash_table, 0);
 
     cr_free(&s->cr);
 }
@@ -245,48 +297,118 @@ static int re_string_find2(REStringList *s, int len, const uint32_t *buf,
                            uint32_t h0, bool add_flag)
 {
     uint32_t h = 0; /* avoid warning */
+    int equal, j;
     REString *p;
+    if (re_compile_poll(s->parse_state))
+        return -1;
     if (s->n_strings != 0) {
         h = h0 >> (32 - s->hash_bits);
         for(p = s->hash_table[h]; p != NULL; p = p->next) {
-            if (p->hash == h0 && p->len == len &&
-                (len == 0 ||
-                 !memcmp(p->buf, buf, len * sizeof(buf[0])))) {
-                return 1;
+            if (re_compile_poll(s->parse_state))
+                return -1;
+            if (p->hash == h0 && p->len == len) {
+                if (!s->parse_state->compile_options) {
+                    equal = len == 0 || !memcmp(p->buf, buf, len * sizeof(buf[0]));
+                } else {
+                    equal = 1;
+                    for(j = 0; j < len; j++) {
+                        if (re_compile_poll(s->parse_state))
+                            return -1;
+                        if (p->buf[j] != buf[j]) {
+                            equal = 0;
+                            break;
+                        }
+                    }
+                }
+                if (equal)
+                    return 1;
             }
         }
     }
     /* not found */
     if (!add_flag)
         return 0;
+    if (s->parse_state->compile_options &&
+        (s->n_strings >= INT_MAX || len < 0 ||
+         (size_t)len > (SIZE_MAX - sizeof(REString)) / sizeof(buf[0]))) {
+        re_compile_capacity(s->parse_state, LRE_LIMIT_STRING_STORAGE);
+        return -1;
+    }
     /* increase the size of the hash table if needed */
     if (unlikely((s->n_strings + 1) > s->hash_size)) {
         REString **new_hash_table, *p_next;
         int new_hash_bits, i;
-        uint32_t new_hash_size;
+        uint32_t new_hash_size, old_n_strings;
         new_hash_bits = max_int(s->hash_bits + 1, 4);
+        if (s->parse_state->compile_options &&
+            (new_hash_bits >= 31 ||
+             (size_t)(UINT32_C(1) << new_hash_bits) > SIZE_MAX / sizeof(new_hash_table[0]))) {
+            re_compile_capacity(s->parse_state, LRE_LIMIT_STRING_STORAGE);
+            return -1;
+        }
         new_hash_size = 1 << new_hash_bits;
-        new_hash_table = lre_realloc(s->cr.mem_opaque, NULL,
+        new_hash_table = s->cr.realloc_func(s->cr.mem_opaque, NULL,
                                      sizeof(new_hash_table[0]) * new_hash_size);
         if (!new_hash_table)
             return -1;
-        memset(new_hash_table, 0, sizeof(new_hash_table[0]) * new_hash_size);
+        if (!s->parse_state->compile_options) {
+            memset(new_hash_table, 0, sizeof(new_hash_table[0]) * new_hash_size);
+        } else for(i = 0; i < new_hash_size; i++) {
+            if (re_compile_poll(s->parse_state)) {
+                s->cr.realloc_func(s->cr.mem_opaque, new_hash_table, 0);
+                return -1;
+            }
+            new_hash_table[i] = NULL;
+        }
+        old_n_strings = s->n_strings;
         for(i = 0; i < s->hash_size; i++) {
-            for(p = s->hash_table[i]; p != NULL; p = p_next) {
+            if (re_compile_poll(s->parse_state)) {
+                /* Old table retains the unmoved nodes; retire the new table
+                   below, using only non-failing native frees. */
+                break;
+            }
+            while ((p = s->hash_table[i]) != NULL) {
+                if (re_compile_poll(s->parse_state)) {
+                    /* Old table retains the unmoved nodes. Retire only the
+                       moved nodes here; caller still owns the old list/range. */
+                    int k;
+                    for(k = 0; k < new_hash_size; k++) {
+                        for(p = new_hash_table[k]; p != NULL; p = p_next) {
+                            p_next = p->next;
+                            s->cr.realloc_func(s->cr.mem_opaque, p, 0);
+                        }
+                    }
+                    s->cr.realloc_func(s->cr.mem_opaque, new_hash_table, 0);
+                    return -1;
+                }
                 p_next = p->next;
+                s->hash_table[i] = p_next;
+                s->n_strings--;
                 h = p->hash >> (32 - new_hash_bits);
                 p->next = new_hash_table[h];
                 new_hash_table[h] = p;
             }
         }
-        lre_realloc(s->cr.mem_opaque, s->hash_table, 0);
+        if (s->parse_state->compile_aborted) {
+            int k;
+            for(k = 0; k < new_hash_size; k++) {
+                for(p = new_hash_table[k]; p != NULL; p = p_next) {
+                    p_next = p->next;
+                    s->cr.realloc_func(s->cr.mem_opaque, p, 0);
+                }
+            }
+            s->cr.realloc_func(s->cr.mem_opaque, new_hash_table, 0);
+            return -1;
+        }
+        s->cr.realloc_func(s->cr.mem_opaque, s->hash_table, 0);
         s->hash_bits = new_hash_bits;
+        s->n_strings = old_n_strings;
         s->hash_size = new_hash_size;
         s->hash_table = new_hash_table;
         h = h0 >> (32 - s->hash_bits);
     }
 
-    p = lre_realloc(s->cr.mem_opaque, NULL, sizeof(REString) + len * sizeof(buf[0]));
+    p = s->cr.realloc_func(s->cr.mem_opaque, NULL, sizeof(REString) + len * sizeof(buf[0]));
     if (!p)
         return -1;
     p->next = s->hash_table[h];
@@ -294,7 +416,13 @@ static int re_string_find2(REStringList *s, int len, const uint32_t *buf,
     s->n_strings++;
     p->hash = h0;
     p->len = len;
-    if (len != 0)
+    if (s->parse_state->compile_options) {
+        for(j = 0; j < len; j++) {
+            if (re_compile_poll(s->parse_state))
+                return -1; /* The linked node is already owned by the list. */
+            p->buf[j] = buf[j];
+        }
+    } else if (len != 0)
         memcpy(p->buf, buf, sizeof(buf[0]) * len);
     return 1;
 }
@@ -303,7 +431,8 @@ static int re_string_find(REStringList *s, int len, const uint32_t *buf,
                           bool add_flag)
 {
     uint32_t h0;
-    h0 = re_string_hash(len, buf);
+    if (re_string_hash(s->parse_state, len, buf, &h0))
+        return -1;
     return re_string_find2(s, len, buf, h0, add_flag);
 }
 
@@ -331,6 +460,8 @@ static int re_string_list_op(REStringList *a, REStringList *b, int op)
     case CR_OP_UNION:
         if (b->n_strings != 0) {
             for(i = 0; i < b->hash_size; i++) {
+                if (re_compile_poll(a->parse_state))
+                    return -1;
                 for(p = b->hash_table[i]; p != NULL; p = p->next) {
                     if (re_string_find2(a, p->len, p->buf, p->hash, true) < 0)
                         return -1;
@@ -341,19 +472,25 @@ static int re_string_list_op(REStringList *a, REStringList *b, int op)
     case CR_OP_INTER:
     case CR_OP_SUB:
         for(i = 0; i < a->hash_size; i++) {
+            if (re_compile_poll(a->parse_state))
+                return -1;
             pp = &a->hash_table[i];
             for(;;) {
+                if (re_compile_poll(a->parse_state))
+                    return -1;
                 p = *pp;
                 if (p == NULL)
                     break;
                 ret = re_string_find2(b, p->len, p->buf, p->hash, false);
+                if (ret < 0)
+                    return -1;
                 if (op == CR_OP_SUB)
                     ret = !ret;
                 if (!ret) {
                     /* remove it */
                     *pp = p->next;
                     a->n_strings--;
-                    lre_realloc(a->cr.mem_opaque, p, 0);
+                    a->cr.realloc_func(a->cr.mem_opaque, p, 0);
                 } else {
                     /* keep it */
                     pp = &p->next;
@@ -391,8 +528,16 @@ static int re_string_list_canonicalize(REParseState *s1,
         s->hash_table = NULL;
 
         for(i = 0; i < a->hash_size; i++) {
+            if (re_compile_poll(s1)) {
+                re_string_list_free(a);
+                return -1;
+            }
             for(p = a->hash_table[i]; p != NULL; p = p->next) {
                 for(j = 0; j < p->len; j++) {
+                    if (re_compile_poll(s1)) {
+                        re_string_list_free(a);
+                        return -1;
+                    }
                     p->buf[j] = lre_canonicalize(p->buf[j], is_unicode);
                 }
                 if (re_string_add(s, p->len, p->buf)) {
@@ -705,7 +850,7 @@ static int re_parse_out_of_memory(REParseState *s)
 
 /* If allow_overflow is false, return -1 in case of
    overflow. Otherwise return INT32_MAX. */
-static int parse_digits(const uint8_t **pp, bool allow_overflow)
+static int parse_digits(REParseState *s, const uint8_t **pp, bool allow_overflow)
 {
     const uint8_t *p;
     uint64_t v;
@@ -714,6 +859,8 @@ static int parse_digits(const uint8_t **pp, bool allow_overflow)
     p = *pp;
     v = 0;
     for(;;) {
+        if (re_compile_poll(s))
+            return -1;
         c = *p;
         if (c < '0' || c > '9')
             break;
@@ -751,7 +898,7 @@ static int re_parse_expect(REParseState *s, const uint8_t **pp, int c)
    Return the unicode char and update *pp if recognized,
    return -1 if malformed escape,
    return -2 otherwise. */
-int lre_parse_escape(const uint8_t **pp, int allow_utf16)
+static int re_parse_escape(REParseState *s, const uint8_t **pp, int allow_utf16)
 {
     const uint8_t *p;
     uint32_t c;
@@ -799,6 +946,8 @@ int lre_parse_escape(const uint8_t **pp, int allow_utf16)
                 p++;
                 c = 0;
                 for(;;) {
+                    if (s && re_compile_poll(s))
+                        return -1;
                     h = from_hex(*p++);
                     if (h < 0)
                         return -1;
@@ -869,6 +1018,26 @@ int lre_parse_escape(const uint8_t **pp, int allow_utf16)
 }
 
 /* XXX: we use the same chars for name and value */
+int lre_parse_escape(const uint8_t **pp, int allow_utf16)
+{
+    return re_parse_escape(NULL, pp, allow_utf16);
+}
+
+int lre_parse_escape_with_options(const uint8_t **pp, int allow_utf16,
+                                  void *opaque,
+                                  const LRECompileOptions *borrowed_options)
+{
+    REParseState state;
+    if (!borrowed_options)
+        return lre_parse_escape(pp, allow_utf16);
+    memset(&state, 0, sizeof(state));
+    state.opaque = opaque;
+    state.compile_options = borrowed_options;
+    if (re_compile_poll(&state))
+        return -1;
+    return re_parse_escape(&state, pp, allow_utf16);
+}
+
 static bool is_unicode_char(int c)
 {
     return ((c >= '0' && c <= '9') ||
@@ -881,7 +1050,10 @@ static bool is_unicode_char(int c)
 static void seq_prop_cb(void *opaque, const uint32_t *seq, int seq_len)
 {
     REStringList *sl = opaque;
-    re_string_add(sl, seq_len, seq);
+    if (sl->parse_state->compile_options && sl->failed)
+        return;
+    if (re_string_add(sl, seq_len, seq) && sl->parse_state->compile_options)
+        sl->failed = true;
 }
 
 static int parse_unicode_property(REParseState *s, REStringList *cr,
@@ -900,6 +1072,8 @@ static int parse_unicode_property(REParseState *s, REStringList *cr,
     p++;
     q = name;
     while (is_unicode_char(*p)) {
+        if (re_compile_poll(s))
+            return -1;
         if ((q - name) >= sizeof(name) - 1)
             goto unknown_property_name;
         *q++ = *p++;
@@ -909,6 +1083,8 @@ static int parse_unicode_property(REParseState *s, REStringList *cr,
     if (*p == '=') {
         p++;
         while (is_unicode_char(*p)) {
+            if (re_compile_poll(s))
+                return -1;
             if ((q - value) >= sizeof(value) - 1)
                 return re_parse_error(s, "unknown unicode property value");
             *q++ = *p++;
@@ -961,9 +1137,13 @@ static int parse_unicode_property(REParseState *s, REStringList *cr,
         }
         if (ret < 0 && !is_inv && allow_sequence_prop) {
             CharRange cr_tmp;
-            cr_init(&cr_tmp, s->opaque, lre_realloc);
+            re_compile_cr_init(s, &cr_tmp);
             ret = unicode_sequence_prop(name, seq_prop_cb, cr, &cr_tmp);
             cr_free(&cr_tmp);
+            if (s->compile_options && cr->failed) {
+                re_string_list_free(cr);
+                goto out_of_memory;
+            }
             if (ret == -1) {
                 re_string_list_free(cr);
                 goto out_of_memory;
@@ -1018,13 +1198,17 @@ static int parse_class_string_disjunction(REParseState *s, REStringList *cr,
     if (*p != '{')
         return re_parse_error(s, "expecting '{' after \\q");
 
-    dbuf_init2(&str, s->opaque, lre_realloc);
+    re_compile_dbuf_init(s, &str);
     re_string_list_init(s, cr);
     
     p++;
     for(;;) {
+        if (re_compile_poll(s))
+            goto fail;
         str.size = 0;
         while (*p != '}' && *p != '|') {
+            if (re_compile_poll(s))
+                goto fail;
             c = get_class_atom(s, NULL, &p, true);
             if (c < 0)
                 goto fail;
@@ -1173,7 +1357,7 @@ static int get_class_atom(REParseState *s, REStringList *cr,
         default:
         default_escape:
             p--;
-            ret = lre_parse_escape(&p, s->is_unicode * 2);
+            ret = re_parse_escape(s, &p, s->is_unicode * 2);
             if (ret >= 0) {
                 c = ret;
             } else {
@@ -1260,8 +1444,10 @@ static int re_emit_range(REParseState *s, const CharRange *cr)
     uint32_t high;
 
     len = (unsigned)cr->len / 2;
-    if (len >= 65535)
+    if (len >= 65535) {
+        re_compile_capacity(s, LRE_LIMIT_RANGES);
         return re_parse_error(s, "too many ranges");
+    }
     if (len == 0) {
         re_emit_op_u32(s, REOP_char32, -1);
     } else {
@@ -1273,6 +1459,8 @@ static int re_emit_range(REParseState *s, const CharRange *cr)
                infinity */
             re_emit_op_u16(s, s->ignore_case ? REOP_range_i : REOP_range, len);
             for(i = 0; i < cr->len; i += 2) {
+                if (re_compile_poll(s))
+                    return -1;
                 dbuf_put_u16(&s->byte_code, cr->points[i]);
                 high = cr->points[i + 1] - 1;
                 if (high == UINT32_MAX - 1)
@@ -1282,6 +1470,8 @@ static int re_emit_range(REParseState *s, const CharRange *cr)
         } else {
             re_emit_op_u16(s, s->ignore_case ? REOP_range32_i : REOP_range32, len);
             for(i = 0; i < cr->len; i += 2) {
+                if (re_compile_poll(s))
+                    return -1;
                 dbuf_put_u32(&s->byte_code, cr->points[i]);
                 dbuf_put_u32(&s->byte_code, cr->points[i + 1] - 1);
             }
@@ -1295,6 +1485,58 @@ static int re_string_cmp_len(const void *a, const void *b, void *arg)
     REString *p1 = *(REString **)a;
     REString *p2 = *(REString **)b;
     return (p1->len < p2->len) - (p1->len > p2->len);
+}
+
+/* Only the opt-in compiler uses scratch sorting: a fallible comparator cannot
+   safely interrupt rqsort. Equal lengths retain gather order, with the exact
+   existing (length-only) comparator. Scratch contains borrowed string nodes. */
+static int re_string_sort(REParseState *s, REString **tab, size_t count)
+{
+    REString **scratch, **src, **dst, **tmp;
+    size_t width, start, mid, end, i, j, k;
+    if (count < 2)
+        return re_compile_poll(s);
+    if (count > SIZE_MAX / sizeof(*scratch)) {
+        re_compile_capacity(s, LRE_LIMIT_STRING_STORAGE);
+        return re_parse_error(s, "too many strings");
+    }
+    scratch = re_compile_realloc(s, NULL, count * sizeof(*scratch));
+    if (!scratch)
+        return re_parse_out_of_memory(s);
+    src = tab;
+    dst = scratch;
+    for(width = 1; width < count;) {
+        for(start = 0; start < count; start = end) {
+            mid = start + (width < count - start ? width : count - start);
+            end = mid + (width < count - mid ? width : count - mid);
+            i = start;
+            j = mid;
+            for(k = start; k < end; k++) {
+                if (re_compile_poll(s))
+                    goto fail;
+                if (i < mid && (j == end || re_string_cmp_len(&src[i], &src[j], NULL) <= 0))
+                    dst[k] = src[i++];
+                else
+                    dst[k] = src[j++];
+            }
+        }
+        tmp = src; src = dst; dst = tmp;
+        if (width > count / 2)
+            break;
+        width *= 2;
+    }
+    if (src != tab) {
+        for(i = 0; i < count; i++) {
+            if (re_compile_poll(s))
+                goto fail;
+            tab[i] = src[i];
+        }
+    }
+    re_compile_realloc(s, scratch, 0);
+    return 0;
+ fail:
+    re_compile_realloc(s, scratch, 0);
+    return -1;
 }
 
 static void re_emit_char(REParseState *s, int c)
@@ -1319,7 +1561,13 @@ static int re_emit_string_list(REParseState *s, const REStringList *sl)
     } else {
         /* at least one string list is present : match the longest ones first */
         /* XXX: add a new op_switch opcode to compile as a trie */
-        tab = lre_realloc(s->opaque, NULL, sizeof(tab[0]) * sl->n_strings);
+        if (s->compile_options && (sl->n_strings > INT_MAX ||
+            (size_t)sl->n_strings > SIZE_MAX / sizeof(tab[0]))) {
+            re_compile_capacity(s, LRE_LIMIT_STRING_STORAGE);
+            return re_parse_error(s, "too many strings");
+        }
+        tab = s->compile_options ? re_compile_realloc(s, NULL, sizeof(tab[0]) * sl->n_strings)
+                                 : lre_realloc(s->opaque, NULL, sizeof(tab[0]) * sl->n_strings);
         if (!tab) {
             re_parse_out_of_memory(s);
             return -1;
@@ -1327,7 +1575,11 @@ static int re_emit_string_list(REParseState *s, const REStringList *sl)
         has_empty_string = false;
         n = 0;
         for(i = 0; i < sl->hash_size; i++) {
+            if (re_compile_poll(s))
+                goto fail;
             for(p = sl->hash_table[i]; p != NULL; p = p->next) {
+                if (re_compile_poll(s))
+                    goto fail;
                 if (p->len == 0) {
                     has_empty_string = true;
                 } else {
@@ -1337,10 +1589,17 @@ static int re_emit_string_list(REParseState *s, const REStringList *sl)
         }
         assert(n <= sl->n_strings);
         
-        rqsort(tab, n, sizeof(tab[0]), re_string_cmp_len, NULL);
+        if (s->compile_options) {
+            if (re_string_sort(s, tab, n))
+                goto fail;
+        } else {
+            rqsort(tab, n, sizeof(tab[0]), re_string_cmp_len, NULL);
+        }
 
         last_match_pos = -1;
         for(i = 0; i < n; i++) {
+            if (re_compile_poll(s))
+                goto fail;
             p = tab[i];
             is_last = !has_empty_string && sl->cr.len == 0 && i == (n - 1);
             if (!is_last)
@@ -1348,6 +1607,8 @@ static int re_emit_string_list(REParseState *s, const REStringList *sl)
             else
                 split_pos = 0;
             for(j = 0; j < p->len; j++) {
+                if (re_compile_poll(s))
+                    goto fail;
                 re_emit_char(s, p->buf[j]);
             }
             if (!is_last) {
@@ -1380,6 +1641,8 @@ static int re_emit_string_list(REParseState *s, const REStringList *sl)
         if (dbuf_error(&s->byte_code))
             goto out_of_memory;
         while (last_match_pos != -1) {
+            if (re_compile_poll(s))
+                goto fail;
             int next_pos = get_u32(s->byte_code.buf + last_match_pos);
             put_u32(s->byte_code.buf + last_match_pos, s->byte_code.size - (last_match_pos + 4));
             last_match_pos = next_pos;
@@ -1431,6 +1694,8 @@ static int re_parse_nested_class(REParseState *s, REStringList *cr, const uint8_
     REStringList cr1_s, *cr1 = &cr1_s;
     bool invert, is_first;
 
+    if (re_compile_poll(s))
+        return -1;
     if (lre_check_stack_overflow(s->opaque, 0))
         return re_parse_error(s, "stack overflow");
 
@@ -1447,6 +1712,8 @@ static int re_parse_nested_class(REParseState *s, REStringList *cr, const uint8_
     /* handle unions */
     is_first = true;
     for(;;) {
+        if (re_compile_poll(s))
+            goto fail;
         if (*p == ']')
             break;
         if (*p == '[' && s->unicode_sets) {
@@ -1488,7 +1755,7 @@ static int re_parse_nested_class(REParseState *s, REStringList *cr, const uint8_
                 }
                 if (s->ignore_case) {
                     CharRange cr2_s, *cr2 = &cr2_s;
-                    cr_init(cr2, s->opaque, lre_realloc);
+                    re_compile_cr_init(s, cr2);
                     if (cr_add_interval(cr2, c1, c2 + 1) ||
                         cr_regexp_canonicalize(cr2, s->is_unicode) ||
                         cr_op1(&cr->cr, cr2->points, cr2->len, CR_OP_UNION)) {
@@ -1521,6 +1788,8 @@ static int re_parse_nested_class(REParseState *s, REStringList *cr, const uint8_
             if (*p == '&' && p[1] == '&' && p[2] != '&') {
                 /* handle '&&' */
                 for(;;) {
+                    if (re_compile_poll(s))
+                        goto fail;
                     if (*p == ']') {
                         break;
                     } else if (*p == '&' && p[1] == '&' && p[2] != '&') {
@@ -1538,6 +1807,8 @@ static int re_parse_nested_class(REParseState *s, REStringList *cr, const uint8_
             } else if (*p == '-' && p[1] == '-') {
                 /* handle '--' */
                 for(;;) {
+                    if (re_compile_poll(s))
+                        goto fail;
                     if (*p == ']') {
                         break;
                     } else if (*p == '-' && p[1] == '-') {
@@ -1598,7 +1869,7 @@ static int re_parse_char_class(REParseState *s, const uint8_t **pp)
 /* need_check_adv: false if the opcodes always advance the char pointer
    need_capture_init: true if all the captures in the atom are not set
 */
-static bool re_need_check_adv_and_capture_init(bool *pneed_capture_init,
+static bool re_need_check_adv_and_capture_init(REParseState *s, bool *pneed_capture_init,
                                                const uint8_t *bc_buf, int bc_buf_len)
 {
     int pos, opcode, len;
@@ -1609,6 +1880,10 @@ static bool re_need_check_adv_and_capture_init(bool *pneed_capture_init,
     need_capture_init = false;
     pos = 0;
     while (pos < bc_buf_len) {
+        if (re_compile_poll(s)) {
+            *pneed_capture_init = false;
+            return true;
+        }
         opcode = bc_buf[pos];
         len = reopcode_info[opcode].size;
         switch(opcode) {
@@ -1672,7 +1947,7 @@ static bool re_need_check_adv_and_capture_init(bool *pneed_capture_init,
 }
 
 /* '*pp' is the first char after '<' */
-static int re_parse_group_name(char *buf, int buf_size, const uint8_t **pp)
+static int re_parse_group_name(REParseState *s, char *buf, int buf_size, const uint8_t **pp)
 {
     const uint8_t *p, *p1;
     uint32_t c, d;
@@ -1681,12 +1956,14 @@ static int re_parse_group_name(char *buf, int buf_size, const uint8_t **pp)
     p = *pp;
     q = buf;
     for(;;) {
+        if (re_compile_poll(s))
+            return -1;
         c = *p;
         if (c == '\\') {
             p++;
             if (*p != 'u')
                 return -1;
-            c = lre_parse_escape(&p, 2); // accept surrogate pairs
+            c = re_parse_escape(s, &p, 2); // accept surrogate pairs
         } else if (c == '>') {
             break;
         } else if (c >= 128) {
@@ -1710,8 +1987,10 @@ static int re_parse_group_name(char *buf, int buf_size, const uint8_t **pp)
             if (!lre_js_is_ident_next(c))
                 return -1;
         }
-        if ((q - buf + UTF8_CHAR_LEN_MAX + 1) > buf_size)
+        if ((q - buf + UTF8_CHAR_LEN_MAX + 1) > buf_size) {
+            re_compile_capacity(s, LRE_LIMIT_GROUP_NAME);
             return -1;
+        }
         if (c < 128) {
             *q++ = c;
         } else {
@@ -1739,6 +2018,8 @@ static int re_parse_captures(REParseState *s, int *phas_named_captures,
     n = 0;
     *phas_named_captures = 0;
     for (p = s->buf_start; p < s->buf_end; p++) {
+        if (re_compile_poll(s))
+            return -1;
         switch (*p) {
         case '(':
             if (p[1] == '?') {
@@ -1747,7 +2028,7 @@ static int re_parse_captures(REParseState *s, int *phas_named_captures,
                     /* potential named capture */
                     if (capture_name) {
                         p += 3;
-                        if (re_parse_group_name(name, sizeof(name), &p) == 0) {
+                        if (re_parse_group_name(s, name, sizeof(name), &p) == 0) {
                             if (!strcmp(name, capture_name)) {
                                 if (emit_group_index)
                                     dbuf_putc(&s->byte_code, capture_index);
@@ -1770,6 +2051,8 @@ static int re_parse_captures(REParseState *s, int *phas_named_captures,
             break;
         case '[':
             for (p += 1 + (*p == ']'); p < s->buf_end && *p != ']'; p++) {
+                if (re_compile_poll(s))
+                    return -1;
                 if (*p == '\\')
                     p++;
             }
@@ -1814,6 +2097,8 @@ static int find_group_name(REParseState *s, const char *name, bool emit_group_in
     capture_index = 1;
     n = 0;
     while (p < buf_end) {
+        if (re_compile_poll(s))
+            return -1;
         len = strlen(p);
         if (len == name_len && memcmp(name, p, name_len) == 0) {
             if (emit_group_index)
@@ -1838,6 +2123,8 @@ static bool is_duplicate_group_name(REParseState *s, const char *name, int scope
     buf_end = (char *)s->group_names.buf + s->group_names.size;
     name_len = strlen(name);
     while (p < buf_end) {
+        if (re_compile_poll(s))
+            return false;
         len = strlen(p);
         if (len == name_len && memcmp(name, p, name_len) == 0) {
             scope1 = (uint8_t)p[len + 1];
@@ -1858,6 +2145,8 @@ static int re_parse_modifiers(REParseState *s, const uint8_t **pp)
     int val;
 
     for(;;) {
+        if (re_compile_poll(s))
+            return -1;
         if (*p == 'i') {
             val = LRE_FLAG_IGNORECASE;
         } else if (*p == 'm') {
@@ -1892,6 +2181,9 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
     int c, last_atom_start, quant_min, quant_max, last_capture_count;
     bool greedy, is_neg, is_backward_lookahead;
     REStringList cr_s, *cr = &cr_s;
+
+    if (re_compile_poll(s))
+        return -1;
 
     /* after a failed allocation the byte code is incomplete and 'buf' may
        still be NULL: stop before computing positions inside it */
@@ -1931,11 +2223,11 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
         } else {
             const uint8_t *p1 = p + 1;
             /* Annex B: error if it is like a repetition count */
-            parse_digits(&p1, true);
+            parse_digits(s, &p1, true);
             if (*p1 == ',') {
                 p1++;
                 if (lre_is_digit(*p1)) {
-                    parse_digits(&p1, true);
+                    parse_digits(s, &p1, true);
                 }
             }
             if (*p1 != '}') {
@@ -2030,7 +2322,7 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
                 put_u32(s->byte_code.buf + pos, s->byte_code.size - (pos + 4));
             } else if (p[2] == '<') {
                 p += 3;
-                if (re_parse_group_name(s->u.tmp_buf, sizeof(s->u.tmp_buf),
+                if (re_parse_group_name(s, s->u.tmp_buf, sizeof(s->u.tmp_buf),
                                         &p)) {
                     return re_parse_error(s, "invalid group name");
                 }
@@ -2056,8 +2348,10 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
             dbuf_putc(&s->group_names, 0);
             dbuf_putc(&s->group_names, 0);
         parse_capture:
-            if (s->capture_count >= CAPTURE_COUNT_MAX)
+            if (s->capture_count >= CAPTURE_COUNT_MAX) {
+                re_compile_capacity(s, LRE_LIMIT_CAPTURES);
                 return re_parse_error(s, "too many captures");
+            }
             last_atom_start = s->byte_code.size;
             last_capture_count = s->capture_count;
             capture_index = s->capture_count++;
@@ -2104,7 +2398,7 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
                         goto parse_class_atom;
                 }
                 p1 += 3;
-                if (re_parse_group_name(s->u.tmp_buf, sizeof(s->u.tmp_buf),
+                if (re_parse_group_name(s, s->u.tmp_buf, sizeof(s->u.tmp_buf),
                                         &p1)) {
                     if (s->is_unicode || re_has_named_captures(s))
                         return re_parse_error(s, "invalid group name");
@@ -2161,7 +2455,7 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
             {
                 const uint8_t *q = ++p;
 
-                c = parse_digits(&p, false);
+                c = parse_digits(s, &p, false);
                 if (c < 0 || (c >= s->capture_count && c >= re_count_captures(s))) {
                     if (!s->is_unicode) {
                         /* Annex B.1.4: accept legacy octal */
@@ -2272,12 +2566,12 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
                     break;
                 }
                 p++;
-                quant_min = parse_digits(&p, true);
+                quant_min = parse_digits(s, &p, true);
                 quant_max = quant_min;
                 if (*p == ',') {
                     p++;
                     if (lre_is_digit(*p)) {
-                        quant_max = parse_digits(&p, true);
+                        quant_max = parse_digits(s, &p, true);
                         if (quant_max < quant_min) {
                         invalid_quant_count:
                             return re_parse_error(s, "invalid repetition count");
@@ -2312,9 +2606,11 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
                    then there is no match. We remove this test when we
                    are sure the atom always advances the position. */
                 add_zero_advance_check =
-                    re_need_check_adv_and_capture_init(&need_capture_init,
+                    re_need_check_adv_and_capture_init(s, &need_capture_init,
                                                        s->byte_code.buf + last_atom_start,
                                                        s->byte_code.size - last_atom_start);
+                if (re_compile_poll(s))
+                    return -1;
             
                 /* general case: need to reset the capture at each
                    iteration. We don't do it if there are no captures
@@ -2413,7 +2709,7 @@ static int re_parse_term(REParseState *s, bool is_backward_dir)
         }
     }
     s->buf_ptr = p;
-    return 0;
+    return re_compile_poll(s);
  out_of_memory:
     return re_parse_out_of_memory(s);
 }
@@ -2426,6 +2722,8 @@ static int re_parse_alternative(REParseState *s, bool is_backward_dir)
 
     start = s->byte_code.size;
     for(;;) {
+        if (re_compile_poll(s))
+            return -1;
         p = s->buf_ptr;
         if (p >= s->buf_end)
             break;
@@ -2456,6 +2754,8 @@ static int re_parse_disjunction(REParseState *s, bool is_backward_dir)
 {
     int start, len, pos;
 
+    if (re_compile_poll(s))
+        return -1;
     if (lre_check_stack_overflow(s->opaque, 0))
         return re_parse_error(s, "stack overflow");
 
@@ -2463,6 +2763,8 @@ static int re_parse_disjunction(REParseState *s, bool is_backward_dir)
     if (re_parse_alternative(s, is_backward_dir))
         return -1;
     while (*s->buf_ptr == '|') {
+        if (re_compile_poll(s))
+            return -1;
         s->buf_ptr++;
 
         len = s->byte_code.size - start;
@@ -2476,8 +2778,10 @@ static int re_parse_disjunction(REParseState *s, bool is_backward_dir)
 
         pos = re_emit_op_u32(s, REOP_goto, 0);
 
-        if (re_has_named_captures(s) && s->group_name_scope == GROUP_NAME_SCOPE_MAX)
+        if (re_has_named_captures(s) && s->group_name_scope == GROUP_NAME_SCOPE_MAX) {
+            re_compile_capacity(s, LRE_LIMIT_GROUP_SCOPES);
             return re_parse_error(s, "too many named groups");
+        }
 
         s->group_name_scope++;
 
@@ -2496,7 +2800,7 @@ static int re_parse_disjunction(REParseState *s, bool is_backward_dir)
 
 /* Allocate the registers as a stack. The control flow is recursive so
    the analysis can be linear. */
-static int compute_register_count(uint8_t *bc_buf, int bc_buf_len)
+static int compute_register_count(REParseState *s, uint8_t *bc_buf, int bc_buf_len)
 {
     int stack_size, stack_size_max, pos, opcode, len;
     uint32_t val;
@@ -2507,6 +2811,8 @@ static int compute_register_count(uint8_t *bc_buf, int bc_buf_len)
     bc_buf_len -= RE_HEADER_LEN;
     pos = 0;
     while (pos < bc_buf_len) {
+        if (re_compile_poll(s))
+            return -2;
         opcode = bc_buf[pos];
         len = reopcode_info[opcode].size;
         assert(opcode < REOP_COUNT);
@@ -2517,8 +2823,10 @@ static int compute_register_count(uint8_t *bc_buf, int bc_buf_len)
             bc_buf[pos + 1] = stack_size;
             stack_size++;
             if (stack_size > stack_size_max) {
-                if (stack_size > REGISTER_COUNT_MAX)
+                if (stack_size > REGISTER_COUNT_MAX) {
+                    re_compile_capacity(s, LRE_LIMIT_REGISTERS);
                     return -1;
+                }
                 stack_size_max = stack_size;
             }
             break;
@@ -2570,13 +2878,23 @@ static void *lre_bytecode_realloc(void *opaque, void *ptr, size_t size)
     }
 }
 
+static void *re_compile_bytecode_realloc(void *opaque, void *ptr, size_t size)
+{
+    REParseState *s = opaque;
+    if (size > INT32_MAX / 2) {
+        re_compile_capacity(s, LRE_LIMIT_BYTECODE);
+        return NULL;
+    }
+    return re_compile_realloc(s, ptr, size);
+}
+
 /* 'buf' must be a zero terminated UTF-8 string of length buf_len.
    Return NULL if error and allocate an error message in *perror_msg,
    otherwise the compiled bytecode and its length in plen.
 */
-uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
+uint8_t *lre_compile_with_options(int *plen, char *error_msg, int error_msg_size,
                      const char *buf, size_t buf_len, int re_flags,
-                     void *opaque)
+                     void *opaque, const LRECompileOptions *borrowed_options)
 {
     REParseState s_s, *s = &s_s;
     int register_count;
@@ -2584,6 +2902,7 @@ uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
 
     memset(s, 0, sizeof(*s));
     s->opaque = opaque;
+    s->compile_options = borrowed_options;
     s->buf_ptr = (const uint8_t *)buf;
     s->buf_end = s->buf_ptr + buf_len;
     s->buf_start = s->buf_ptr;
@@ -2598,8 +2917,12 @@ uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
     s->total_capture_count = -1;
     s->has_named_captures = -1;
 
-    dbuf_init2(&s->byte_code, opaque, lre_bytecode_realloc);
-    dbuf_init2(&s->group_names, opaque, lre_realloc);
+    dbuf_init2(&s->byte_code, borrowed_options ? s : opaque,
+               borrowed_options ? re_compile_bytecode_realloc : lre_bytecode_realloc);
+    re_compile_dbuf_init(s, &s->group_names);
+
+    if (re_compile_poll(s))
+        goto error;
 
     dbuf_put_u16(&s->byte_code, re_flags); /* first element is the flags */
     dbuf_putc(&s->byte_code, 0); /* second element is the number of captures */
@@ -2617,7 +2940,7 @@ uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
     }
     re_emit_op_u8(s, REOP_save_start, 0);
 
-    if (re_parse_disjunction(s, false)) {
+    if (re_compile_poll(s) || re_parse_disjunction(s, false) || re_compile_poll(s)) {
     error:
         dbuf_free(&s->byte_code);
         dbuf_free(&s->group_names);
@@ -2640,9 +2963,10 @@ uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
         goto error;
     }
 
-    register_count = compute_register_count(s->byte_code.buf, s->byte_code.size);
+    register_count = compute_register_count(s, s->byte_code.buf, s->byte_code.size);
     if (register_count < 0) {
-        re_parse_error(s, "too many imbricated quantifiers");
+        if (register_count != -2)
+            re_parse_error(s, "too many imbricated quantifiers");
         goto error;
     }
 
@@ -2669,6 +2993,13 @@ uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
     error_msg[0] = '\0';
     *plen = s->byte_code.size;
     return s->byte_code.buf;
+}
+
+uint8_t *lre_compile(int *plen, char *error_msg, int error_msg_size,
+                     const char *buf, size_t buf_len, int re_flags, void *opaque)
+{
+    return lre_compile_with_options(plen, error_msg, error_msg_size,
+                                    buf, buf_len, re_flags, opaque, NULL);
 }
 
 static bool is_line_terminator(uint32_t c)

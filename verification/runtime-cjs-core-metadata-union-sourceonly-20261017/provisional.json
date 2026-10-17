@@ -1,0 +1,149 @@
+{
+  "scope": "PROVISIONAL SOURCE ONLY; no native or metadata jobs; metadataffb/combined peer closure pending",
+  "base_core": "42daa15f43cf31a9e42659cd46123c88b644a078",
+  "compiler": "5a2b27ac9785a163e64077293c431b54d6d513ba",
+  "metadata": "ffb7f7cba41205797f3e8458fbfe9df7b5c93344",
+  "raw_adapter": "ac6666c9cad5872ae37cacde3116af493dc43e4e",
+  "virtual_tree": "55247252dd0f8e6fc59f2d98c1a0641b0e45ab67",
+  "new_metadata_conflicts": 2,
+  "inherited_compiler_conflicts": 20,
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "identical": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "blob": "94ae933a5592fb7453996daaa88f5560b63e1446",
+      "identical": true
+    },
+    {
+      "path": "src/native_async_iterator_api_test.zig",
+      "blob": "14883cca0d41e81eaabe74a14b8cf8fb48cc02d1",
+      "identical": true
+    },
+    {
+      "path": "src/native_callsite_visibility_test.zig",
+      "blob": "b951705e332031bb381ea2d781014c09367a1063",
+      "identical": true
+    },
+    {
+      "path": "src/native_module_link_allocator_controls.c",
+      "blob": "892aacca259836896da756216c6276039e3b01f2",
+      "identical": true
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "identical": true
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe",
+      "identical": true
+    },
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "blob": "1b51a92985304de7709efc25317a9eac5a0a59f8",
+      "identical": true
+    }
+  ],
+  "source_controls": [
+    {
+      "root": "src/native_cjs_body_compiler_test.zig",
+      "prepared_names": [
+        "native CJS compiler compiles actual fixed-five ordinary function before any body or jobs",
+        "native CJS compiler rejects closing-brace outer-program escape through actual EOF function grammar",
+        "native CJS compiler supports nested classes templates regexp direct eval and mapped arguments in actual VM",
+        "native CJS compiler actual strict directive controls this and arguments rather than host caller mode",
+        "native CJS compiler returns raw Promise and thrown input without async adoption wrapper",
+        "native CJS compiler actual grammar event distinguishes direct module retry from full-probe-required collision",
+        "native CJS compiler module probe parses nonexistent imports and unreachable TLA without load evaluation or jobs",
+        "native CJS compiler detached probe never poisons the ordinary same-physical-name module cache",
+        "native CJS compiler syntax probe checks attribute grammar without invoking runtime host attribute policy",
+        "native CJS compiler module probe runs real semantic undefined-export validation",
+        "native CJS compiler actual pending entry reason precedes category flags input validation and native capture",
+        "native CJS compiler success-with-pending capture failure is not labeled an ordinary parser syntax rejection",
+        "native CJS compiler real memory limit failure stays operational and releases state before healthy reuse",
+        "native CJS compiler does not inherit strict caller or caller lexical bindings and retains actual global realm through GC",
+        "native CJS compiler ordinary VM constructor has actual new target rather than outer parser function state",
+        "native CJS compiler physical body origin and UTF16 columns precede retained wrapped-source presentation",
+        "native CJS compiler primitive input admission avoids coercion and refuses filename NUL without truncation",
+        "native CJS compiler actual trusted cancellation is operational rather than ordinary syntax and permits reuse",
+        "native CJS compiler actual measured allocator failures in valid parsing semantic compilation regexp and closure retain operational reasons",
+        "native CJS compiler actual SyntaxError allocation events preserve first reason and trusted completion through native recovery",
+        "native CJS compiler actual literal-regexp allocator events never convert OOM into ordinary regexp syntax rejection",
+        "native CJS compiler actual detached probe allocation positions retain flags and clean state before reuse",
+        "native CJS compiler actual semantic-export SyntaxError allocation positions preserve native reason identity and cleanup",
+        "native CJS compiler actual stack failure is operational before ordinary syntax and permits later compile and probe",
+        "native CJS compiler true EOF accepts trailing line comments and preserves source NUL within a literal",
+        "native CJS compiler real VM local-variable capacity SyntaxError remains operational rather than ordinary grammar",
+        "native CJS compiler actual regexp capture ceiling has no ordinary syntax category in compile and probe",
+        "native CJS compiler actual optin regexp bytecode equals legacy and explicit NULL with no option callbacks",
+        "native CJS compiler actual regexp capture producer reports only the actual native limit",
+        "native CJS compiler measured Unicode stringset compile poll sweep preserves first pending reason through hash sort cleanup GC and reuse",
+        "native CJS compiler optin regexp first poll preserves already pending reason without further callbacks",
+        "native CJS compiler actual nested quantifier register capacity uses producer channel",
+        "native CJS compiler actual named alternative scope capacity uses producer channel",
+        "native CJS compiler actual native group name buffer capacity uses producer channel",
+        "native CJS compiler actual Unicode stringset allocator sweep covers native hash table and optin sort scratch retirement",
+        "native CJS compiler actual string and template Unicode escape work interrupts preserve native success pending reason",
+        "native CJS compiler actual identifier and private-name Unicode escape work interrupts preserve first reason",
+        "native CJS compiler actual shebang scan uses trusted interrupt cadence before body or diagnostic production",
+        "native CJS compiler detached probe escape and shebang work interrupts preserve flags and exact pending reason",
+        "native CJS compiler actual controlflow atom release counts survive measured allocator failures before healthy execution",
+        "native CJS compiler measured real interrupt sweep through lexical semantic label and line work retires exact atom owners",
+        "native CJS compiler actual async lookahead block comment and whitespace work preserve first pending reason",
+        "native CJS compiler actual arrow and label line comment lookahead work preserve first pending reason"
+      ],
+      "prepared_named_count": 43,
+      "actual_metadata": null,
+      "optional_only": "extensions.native_durable_storage.test_0"
+    },
+    {
+      "root": "src/native_cjs_source_metadata_test.zig",
+      "prepared_names": [
+        "native CJS metadata actual lexer comments produce URL map and nested real function origin before execution",
+        "native CJS metadata string template regexp block HTML and malformed comments never become magic events",
+        "native CJS metadata exact mandatory whitespace and recognized invalid later assignment follow actual scanner rules",
+        "native CJS metadata raw unicode and quoted values are not URI normalized or unquoted",
+        "native CJS metadata first pending reason dominates syntax producer and leaves output slots untouched",
+        "native CJS metadata incoming pending and invalid alias admission do not alter owned output slots",
+        "native CJS metadata patched script compiles before body and retains actual raw Promise completion",
+        "native CJS metadata real embedded source URL NUL is length preserved in returned metadata",
+        "native CJS metadata logical source URL never redirects actual nested dynamic import physical referrer",
+        "native CJS metadata private logical URL serialization refuses while ordinary legacy bytecode roundtrip remains real",
+        "native CJS metadata cloned frames own physical and full logical names after function GC",
+        "native CJS metadata actual allocator sweep retires FD bytecode logical atoms and uncommitted outputs",
+        "native CJS metadata actual cadence pending interrupts preserve outputs and retire logical atoms",
+        "native CJS metadata real legacy numeric source name failure stops preparation and preserves cause before unwind",
+        "native CJS metadata default legacy formatted location preserves embedded logical NUL by length",
+        "native CJS metadata actual sole owned Error prototype finalizer fatal supersedes ordinary capture failure"
+      ],
+      "prepared_named_count": 16,
+      "actual_metadata": null,
+      "optional_only": "extensions.native_durable_storage.test_0"
+    },
+    {
+      "root": "src/native_node_commonjs_body_compiler_test.zig",
+      "prepared_names": [
+        "native CJS raw provider returns actual ordinary function without body execution and preserves raw Promise completion",
+        "native CJS raw provider distinguishes actual syntax categories from actual detached module completion",
+        "native CJS raw provider preserves actual pending identity and does not consult stale captured reason",
+        "native CJS raw provider private callable is ordinary nonconstructor and primitive input failure does not coerce",
+        "native CJS raw provider factory preserves incoming reason before real one-byte VM quota and balances suppression"
+      ],
+      "prepared_named_count": 5,
+      "actual_metadata": null,
+      "optional_only": "extensions.native_durable_storage.test_0"
+    }
+  ],
+  "excluded": [
+    "unreviewed2a073fa4 Info adapter/wrapSafe/native Error formatter",
+    "Graph2",
+    "new namespace/defaultselector",
+    "runtime execution or compilation claims"
+  ],
+  "execution_authorized": false
+}

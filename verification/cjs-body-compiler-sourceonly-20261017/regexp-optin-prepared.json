@@ -1,0 +1,113 @@
+{
+  "schema": 1,
+  "scope": "SOURCE ONLY opt-in regexp compiler delta; all controls UNRUN; not final combined compiler qualification",
+  "parent": "531eed654092dd3940155fd5ecf84a068b617fc5",
+  "source_declarations": 35,
+  "actual_compiled_metadata": null,
+  "execution_authorized": false,
+  "runtime_results": null,
+  "payload": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2244904,
+      "sha256": "D7AC4CEE4DCC5E6B8B5F59A01CA50CAAAD5E357B4E90921ACA8372545864C534"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 77835,
+      "sha256": "164C90709929E1D3D280DEB05022B085D0C90A41F542501A29646F972E04C085"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.c",
+      "bytes": 127307,
+      "sha256": "7BBF6F609E7A207718882A12197805D8DCD8765B8DBCB92F438372224E8CD601"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.h",
+      "bytes": 4417,
+      "sha256": "85751FF55AD7739FEAF577424168EA921BDDC019856F15D91AAE77FC0CEB2457"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "bytes": 12591,
+      "sha256": "8C172663F55786F728AFDF1705823B3CE617B9B5703203E9FB1BE6FD28FBE95F"
+    },
+    {
+      "path": "src/native_cjs_allocator_controls.c",
+      "bytes": 20581,
+      "sha256": "A486082CC04F53C06BD6C4D97E600CAD4147510CA5C9EF70D11006DC0021A7A9"
+    },
+    {
+      "path": "src/native_cjs_body_compiler_test.zig",
+      "bytes": 34689,
+      "sha256": "F7457068D80B303FE30EA7DEB8FF95C8A89287F3CDC2CD67C67B46CD19D98802"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 342586,
+      "sha256": "177921BD8E08FEE709A25B8BD3E787CC72473662E6E818A8B2B0FF35CA0D0FBF"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/REGEXP-OPTIN-COMPILE-PROPOSAL.md",
+      "bytes": 5323,
+      "sha256": "17D2984AEF37E6AB2BADD4F86AD2185AF97C4C31AD22EA4540784734F995B722"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/REGEXP-OPTIN-IMPLEMENTATION.md",
+      "bytes": 6866,
+      "sha256": "8D8A9E1A26E6862297207C730949DA3AD185BB8075DCBE6538D2DA74DC9F2CB6"
+    },
+    {
+      "path": "verification/cjs-body-compiler-sourceonly-20261017/README-WIP.md",
+      "bytes": 5660,
+      "sha256": "1ABD97A3FA4FEFE93351FC9535FCA05DF832F2977260143CFB1D8E9F49D5339E"
+    }
+  ],
+  "source_names": [
+    "native CJS compiler compiles actual fixed-five ordinary function before any body or jobs",
+    "native CJS compiler rejects closing-brace outer-program escape through actual EOF function grammar",
+    "native CJS compiler supports nested classes templates regexp direct eval and mapped arguments in actual VM",
+    "native CJS compiler actual strict directive controls this and arguments rather than host caller mode",
+    "native CJS compiler returns raw Promise and thrown input without async adoption wrapper",
+    "native CJS compiler actual grammar event distinguishes direct module retry from full-probe-required collision",
+    "native CJS compiler module probe parses nonexistent imports and unreachable TLA without load evaluation or jobs",
+    "native CJS compiler detached probe never poisons the ordinary same-physical-name module cache",
+    "native CJS compiler syntax probe checks attribute grammar without invoking runtime host attribute policy",
+    "native CJS compiler module probe runs real semantic undefined-export validation",
+    "native CJS compiler actual pending entry reason precedes category flags input validation and native capture",
+    "native CJS compiler success-with-pending capture failure is not labeled an ordinary parser syntax rejection",
+    "native CJS compiler real memory limit failure stays operational and releases state before healthy reuse",
+    "native CJS compiler does not inherit strict caller or caller lexical bindings and retains actual global realm through GC",
+    "native CJS compiler ordinary VM constructor has actual new target rather than outer parser function state",
+    "native CJS compiler physical body origin and UTF16 columns precede retained wrapped-source presentation",
+    "native CJS compiler primitive input admission avoids coercion and refuses filename NUL without truncation",
+    "native CJS compiler actual trusted cancellation is operational rather than ordinary syntax and permits reuse",
+    "native CJS compiler actual measured allocator failures in valid parsing semantic compilation regexp and closure retain operational reasons",
+    "native CJS compiler actual SyntaxError allocation events preserve first reason and trusted completion through native recovery",
+    "native CJS compiler actual literal-regexp allocator events never convert OOM into ordinary regexp syntax rejection",
+    "native CJS compiler actual detached probe allocation positions retain flags and clean state before reuse",
+    "native CJS compiler actual semantic-export SyntaxError allocation positions preserve native reason identity and cleanup",
+    "native CJS compiler actual stack failure is operational before ordinary syntax and permits later compile and probe",
+    "native CJS compiler true EOF accepts trailing line comments and preserves source NUL within a literal",
+    "native CJS compiler real VM local-variable capacity SyntaxError remains operational rather than ordinary grammar",
+    "native CJS compiler actual regexp capture ceiling has no ordinary syntax category in compile and probe",
+    "native CJS compiler actual optin regexp bytecode equals legacy and explicit NULL with no option callbacks",
+    "native CJS compiler actual regexp capture producer reports only the actual native limit",
+    "native CJS compiler measured Unicode stringset compile poll sweep preserves first pending reason through hash sort cleanup GC and reuse",
+    "native CJS compiler optin regexp first poll preserves already pending reason without further callbacks",
+    "native CJS compiler actual nested quantifier register capacity uses producer channel",
+    "native CJS compiler actual named alternative scope capacity uses producer channel",
+    "native CJS compiler actual native group name buffer capacity uses producer channel",
+    "native CJS compiler actual Unicode stringset allocator sweep covers native hash table and optin sort scratch retirement"
+  ],
+  "preserve": [
+    "Original proposal and 531eed history",
+    "NULL-options legacy callbacks/ABI/bytecode/execution",
+    "Main and frozen C3/C4/CallSite/Link proofs"
+  ],
+  "not_claimed": [
+    "Instruction-level polling inside atomic libunicode/libc/native retirement",
+    "Large-memory range/bytecode/storage capacity execution",
+    "Whole Node24/V8 compiler/bootstrap parity"
+  ]
+}
