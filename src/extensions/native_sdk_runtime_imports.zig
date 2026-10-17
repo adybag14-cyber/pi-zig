@@ -5,10 +5,34 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
 pub const Inputs = struct { process: c.JSValue, os: c.JSValue, url: c.JSValue, child_process: c.JSValue, config_module_url: c.JSValue, user_agent_runtime: @import("native_sdk_configuration_production.zig").UserAgentRuntime = .source };
 pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
+    try engine.checkNativeEntry();
     const module_name = if (inputs.user_agent_runtime == .native_zig) "pi-native:sdk-runtime-imports-native-zig" else "pi-native:sdk-runtime-imports";
     if (engine.native_module_values.get(module_name)) |cached| return c.JS_DupValue(engine.context, cached);
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    const value = createOwned(engine, inputs, module_name) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn createOwned(engine: *em.Engine, inputs: Inputs, module_name: []const u8) !c.JSValue {
+    const owned = @import("native_sdk_owned_completion.zig");
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+    const graph = try owned.finishValue(&scope, createBody(&scope, inputs));
+    // A completed graph is not published until all construction temporaries
+    // retire successfully. A warm dependency may ignore a freshly read value.
+    const published: anyerror!c.JSValue = if (engine.registerValueModule(module_name, graph)) |_|
+        c.JS_DupValue(engine.context, graph)
+    else |err| err;
+    var completion = owned.Completion.initValue(engine, published);
+    completion.release(graph);
+    return completion.finishValue();
+}
+fn createBody(scope: *Scope, inputs: Inputs) !c.JSValue {
+    const engine = scope.engine;
     const platform = try scope.own(try @import("native_sdk_filesystem_namespaces.zig").createPlatform(engine));
     const configuration = try scope.own(try @import("native_sdk_configuration_production.zig").create(engine, .{
         .process = inputs.process,
@@ -49,6 +73,5 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     try scope.put(result, "timing", timing);
     try scope.put(result, "managementHttp", management_http);
     try scope.put(result, "process", inputs.process);
-    try engine.registerValueModule(module_name, result);
     return c.JS_DupValue(engine.context, result);
 }

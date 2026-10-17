@@ -108,7 +108,20 @@ fn module(engine: *em.Engine, name: []const u8) !c.JSValue {
 }
 
 pub fn create(engine: *em.Engine, completed: Completed) !c.JSValue {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    try engine.checkNativeEntry();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var s: Scope = .{ .engine = engine };
+    const value = @import("native_sdk_owned_completion.zig").finishValue(&s, createBody(&s, completed)) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn createBody(s: *Scope, completed: Completed) !c.JSValue {
+    const engine = s.engine;
     const root = try s.own(c.JS_GetGlobalObject(engine.context));
     const managers = try s.own(try @import("native_sdk.zig").managerImports(engine));
     const agent = try s.object();

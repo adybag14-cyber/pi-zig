@@ -7,6 +7,7 @@ const c = em.c;
 const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const bootstrap = @import("extensions/native_sdk_application_bootstrap.zig");
 const production = @import("native_sdk_session_production_test.zig");
+comptime { _ = @import("native_sdk_application_owner_cleanup_test.zig"); }
 
 fn eval(engine: *em.Engine, source: []const u8) !void {
     const result = try engine.evalModule(source, "actual-sdk-application-probe.mjs");
