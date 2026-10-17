@@ -4,34 +4,49 @@
   "source_only": true,
   "files": [
     {
+      "path": "libuv-errno.h.txt",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "libuv-LICENSE",
       "bytes": 1079,
-      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
-      "path": "libuv-LICENSE"
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C"
     },
     {
+      "path": "libuv-unix-fs.c.txt",
       "bytes": 59847,
-      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
-      "path": "libuv-unix-fs.c.txt"
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61"
     },
     {
+      "path": "libuv-uv.h.txt",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "libuv-win-error.c.txt",
+      "bytes": 8817,
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8"
+    },
+    {
+      "path": "libuv-win-fs.c.txt",
       "bytes": 105366,
-      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
-      "path": "libuv-win-fs.c.txt"
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
     },
     {
+      "path": "node-file.cc.txt",
       "bytes": 139328,
-      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3",
-      "path": "node-file.cc.txt"
+      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3"
     },
     {
+      "path": "node-fs.js.txt",
       "bytes": 88259,
-      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A",
-      "path": "node-fs.js.txt"
+      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A"
     },
     {
+      "path": "node-LICENSE",
       "bytes": 156926,
-      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
-      "path": "node-LICENSE"
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
     }
   ]
 }

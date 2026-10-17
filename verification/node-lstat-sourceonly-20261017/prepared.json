@@ -3,16 +3,22 @@
   "baseline": "8b36501abcc98563e7ba78c7c417fb024d672361",
   "products": [
     {
-      "bytes": 16519,
+      "path": "src/extensions/native_file_stat.zig",
+      "bytes": 18571,
       "baseline_blob": "084bbd74f917f9c2643020260bce1977d729ffc9",
-      "sha256": "2AC31667D0969994326C13E64504A43D9B8B33ECC5C0B90F882D2511A721AFB9",
-      "path": "src/extensions/native_file_stat.zig"
+      "sha256": "7F6C4AE774FF2CE28D51960E88E6DD1BB8FDAFA84EA7218FCC9FEB7C70FB634D"
     },
     {
-      "bytes": 20077,
+      "path": "src/extensions/node_fs_metadata.zig",
+      "bytes": 21792,
       "baseline_blob": "4f30583a6edbc74a9c23111dfe16e62c3189e0bd",
-      "sha256": "5C6457F7A6D04B337F3AFCD93159FC8D0444879E16200B65CD16EA53F2FC6FC8",
-      "path": "src/extensions/node_fs_metadata.zig"
+      "sha256": "08E82C5AE73454D4D7AA9A51056FED69F6D4E964678AE057F68236B7FF6294ED"
+    },
+    {
+      "path": "src/extensions/native_node_lstat_error.zig",
+      "bytes": 7550,
+      "baseline_blob": null,
+      "sha256": "ADCD4950FDB2C7090DFC9BD82E671533E3857FB53C754E166FDCF87D933DC53E"
     }
   ],
   "protected": [
@@ -64,61 +70,82 @@
   ],
   "packet": [
     {
-      "bytes": 4003,
-      "sha256": "53A0870ABDCDD45CA2F98F988C180900A11D97EACA195F323F3EC2B1BC040A16",
-      "path": "verification/node-lstat-sourceonly-20261017/controls.json"
+      "path": "verification/node-lstat-sourceonly-20261017/controls.json",
+      "bytes": 5748,
+      "sha256": "630B53822C91A95C53C5E2493D084CAE57ADBE2E465192801C557C8E5964E0DB"
     },
     {
-      "bytes": 3241,
-      "sha256": "FA6352704A7D5EF026ACDDA6FB17B61CC0A136B55D0DC8265F815DED4408EC55",
-      "path": "verification/node-lstat-sourceonly-20261017/README.md"
+      "path": "verification/node-lstat-sourceonly-20261017/README.md",
+      "bytes": 4672,
+      "sha256": "C3B2A16FFC0D9D20AF1FD5794515A83A15D39A6BAB2390F48F0D9320EF104337"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/source-caller.mjs",
       "bytes": 4232,
-      "sha256": "AFD5C2A6E44113173EF3834BE1D5BBD05E5B8A4A69B97677528052EE420CB66F",
-      "path": "verification/node-lstat-sourceonly-20261017/source-caller.mjs"
+      "sha256": "AFD5C2A6E44113173EF3834BE1D5BBD05E5B8A4A69B97677528052EE420CB66F"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-errno.h.txt",
+      "bytes": 11216,
+      "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+    },
+    {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-LICENSE",
       "bytes": 1079,
-      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-LICENSE"
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-unix-fs.c.txt",
       "bytes": 59847,
-      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-unix-fs.c.txt"
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-uv.h.txt",
+      "bytes": 72810,
+      "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+    },
+    {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-win-error.c.txt",
+      "bytes": 8817,
+      "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8"
+    },
+    {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-win-fs.c.txt",
       "bytes": 105366,
-      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-win-fs.c.txt"
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-file.cc.txt",
       "bytes": 139328,
-      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/node-file.cc.txt"
+      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-fs.js.txt",
       "bytes": 88259,
-      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/node-fs.js.txt"
+      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A"
     },
     {
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-LICENSE",
       "bytes": 156926,
-      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/node-LICENSE"
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
     },
     {
-      "bytes": 1077,
-      "sha256": "53BC6AA67AC86F9F95040AD0D8B54DEF2EB8953680C0F716CAD84A51909A2DAF",
-      "path": "verification/node-lstat-sourceonly-20261017/authority/pins.json"
+      "path": "verification/node-lstat-sourceonly-20261017/authority/pins.json",
+      "bytes": 1551,
+      "sha256": "A273432270A0A6489DFD86BD2AF49B6D375C58754D27D93F41EE179D9FF0E82E"
     }
   ],
   "no_c_h_engine_or_main_edits": true,
   "no_new_native_io_primitive_needed": true,
   "source_capture_expected_absent": true,
-  "native_controls": 12,
+  "native_controls": 15,
   "jobs_started": false,
   "known_existing_stat_windows_directory_execute_bits_gap": "reported separately; stat.read existing behavior preserved; new lstat follows actual libuv permissions",
-  "scope": "actual lstatSync/native final-component metadata seam; not full Node fs/permissions qualification"
+  "scope": "actual lstatSync/native final-component metadata seam; not full Node fs/permissions qualification",
+  "review_corrections": "Successor preserves899 immutable packet; fixes latched Windows error transport +1464 retry/handle order, Linux statx unsupported fallback and leaf-local fatal/raw exception exit. No old generic helpers/C/Engine/stat rollback.",
+  "static_primary_uv_checks": {
+    "enum_numbers": 44,
+    "runtime_execution": false,
+    "messages": 44
+  }
 }

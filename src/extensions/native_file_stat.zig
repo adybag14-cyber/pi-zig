@@ -27,21 +27,44 @@ pub fn read(gpa: std.mem.Allocator, path: []const u8) !Stat {
 
 /// Actual final-component link metadata, including broken links. This is not
 /// a stat alias: each OS receives its native no-follow request.
-pub fn readLink(gpa: std.mem.Allocator, path: []const u8) !Stat {
-    return readMode(gpa, path, false);
+pub const LinkResult = union(enum) { metadata: Stat, windows_error: u32 };
+/// Own the actual Win32 failure number before handle/allocation cleanup. The
+/// JS lstat owner translates this code; no thread-local GetLastError survives.
+pub fn readLink(gpa: std.mem.Allocator, path: []const u8) !LinkResult {
+    if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
+    if (builtin.os.tag != .windows) return .{ .metadata = try readMode(gpa, path, false) };
+    var failure: ?u32 = null;
+    const value = windowsStat(gpa, path, false, &failure) catch |err| {
+        if (failure) |code| {
+            if (code == 1464 or code == 4390) {
+                // libuv's retry applies to any lstat failure with these codes.
+                // windowsStat already closed the first handle on this catch.
+                failure = null;
+                var target = windowsStat(gpa, path, true, &failure) catch |retry_err| {
+                    if (failure) |retry_code| return .{ .windows_error = retry_code };
+                    return retry_err;
+                };
+                target.mode &= ~@as(u32, 0o111);
+                return .{ .metadata = target };
+            }
+            return .{ .windows_error = code };
+        }
+        return err;
+    };
+    return .{ .metadata = value };
 }
 fn readMode(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     // Node validates embedded NULs before entering the OS, including Buffer
     // paths. Never allow a native sentinel to silently truncate such a path.
     if (std.mem.indexOfScalar(u8, path, 0) != null) return error.InvalidFileStatPath;
     return switch (builtin.os.tag) {
-        .windows => windowsStat(gpa, path, follow),
+        .windows => windowsStat(gpa, path, follow, null),
         .linux => linuxStat(gpa, path, follow),
         else => posixStat(gpa, path, follow),
     };
 }
 
-fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
+fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool, failure: ?*?u32) !Stat {
     const w = std.os.windows;
     const Native = struct {
         const FileTime = extern struct { low: u32, high: u32 };
@@ -81,25 +104,31 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
     // BACKUP_SEMANTICS allows directories. OPEN_REPARSE_POINT addresses the
     // final link itself for lstat; all parent components retain OS traversal.
     const handle = Native.CreateFileW(wide.ptr, 0x80, 7, null, 3, 0x02000000 | (if (follow) @as(u32, 0) else 0x00200000), null);
-    if (handle == w.INVALID_HANDLE_VALUE) return switch (w.GetLastError()) {
-        .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound,
-        .ACCESS_DENIED => error.AccessDenied,
-        .DIRECTORY => error.NotDir,
-        else => error.FileStatOpenFailed,
-    };
-    defer _ = Native.CloseHandle(handle);
+    if (handle == w.INVALID_HANDLE_VALUE) {
+        const code = w.GetLastError();
+        if (failure) |slot| slot.* = @intFromEnum(code);
+        return switch (code) {
+            .FILE_NOT_FOUND, .PATH_NOT_FOUND => error.FileNotFound,
+            .ACCESS_DENIED => error.AccessDenied,
+            else => error.FileStatOpenFailed,
+        };
+    }
+    var handle_open = true;
+    defer if (handle_open) { _ = Native.CloseHandle(handle); };
     var info: Native.Information = undefined;
-    if (Native.GetFileInformationByHandle(handle, &info) == 0) return error.FileStatInformationFailed;
+    if (Native.GetFileInformationByHandle(handle, &info) == 0) return windowsFailure(failure);
     var basic: Native.Basic = undefined;
-    if (Native.GetFileInformationByHandleEx(handle, 0, &basic, @sizeOf(Native.Basic)) == 0) return error.FileStatInformationFailed;
+    if (Native.GetFileInformationByHandleEx(handle, 0, &basic, @sizeOf(Native.Basic)) == 0) return windowsFailure(failure);
     var standard: Native.Standard = undefined;
-    if (Native.GetFileInformationByHandleEx(handle, 1, &standard, @sizeOf(Native.Standard)) == 0) return error.FileStatInformationFailed;
+    if (Native.GetFileInformationByHandleEx(handle, 1, &standard, @sizeOf(Native.Standard)) == 0) return windowsFailure(failure);
     const directory = basic.attributes & 0x10 != 0;
-    const link_length = if (!follow and basic.attributes & 0x400 != 0) try windowsLinkLength(handle) else null;
+    const link_length = if (!follow and basic.attributes & 0x400 != 0) try windowsLinkLength(handle, failure) else null;
     // libuv retries non-link reparse tags (including volume mount points)
     // with ordinary stat, rather than reporting every reparse point as a link.
     if (!follow and basic.attributes & 0x400 != 0 and link_length == null) {
-        var target = try windowsStat(gpa, path, true);
+        handle_open = false;
+        _ = Native.CloseHandle(handle);
+        var target = try windowsStat(gpa, path, true, failure);
         // read's older Windows directory execute bits are not part of libuv's
         // lstat result, including the non-link reparse retry.
         target.mode &= ~@as(u32, 0o111);
@@ -127,14 +156,21 @@ fn windowsStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
 /// Node24's bundled libuv fs__readlink_handle semantics. The actual kernel
 /// payload selects the link kind and supplies the decoded WTF-8 target length.
 /// null means libuv's ERROR_SYMLINK_NOT_SUPPORTED/NOT_A_REPARSE_POINT retry.
-fn windowsLinkLength(handle: std.os.windows.HANDLE) !?u64 {
+fn windowsFailure(failure: ?*?u32) anyerror {
+    const code: u32 = @intFromEnum(std.os.windows.GetLastError());
+    if (failure) |slot| slot.* = code;
+    return error.FileStatInformationFailed;
+}
+fn windowsLinkLength(handle: std.os.windows.HANDLE, failure: ?*?u32) !?u64 {
     const Native = struct {
         extern "kernel32" fn DeviceIoControl(std.os.windows.HANDLE, u32, ?*anyopaque, u32, *anyopaque, u32, *u32, ?*anyopaque) callconv(.winapi) i32;
     };
     var buffer: [16384]u8 align(8) = undefined;
     var count: u32 = 0;
     if (Native.DeviceIoControl(handle, 0x000900a8, null, 0, &buffer, buffer.len, &count, null) == 0) {
-        if (@intFromEnum(std.os.windows.GetLastError()) == 4390) return null;
+        const code: u32 = @intFromEnum(std.os.windows.GetLastError());
+        if (code == 4390 or code == 1464) return null;
+        if (failure) |slot| slot.* = code;
         return error.FileStatInformationFailed;
     }
     if (count < 8 or count > buffer.len) return error.FileStatFieldsUnavailable;
@@ -248,6 +284,12 @@ fn linuxStat(gpa: std.mem.Allocator, path: []const u8, follow: bool) !Stat {
         .NOENT => return error.FileNotFound,
         .ACCES => return error.AccessDenied,
         .NOTDIR => return error.NotDir,
+        .INVAL, .PERM, .NOSYS, .OPNOTSUPP => {
+            // libuv falls back when statx is unavailable/filtered/unsupported.
+            // Keep the older stat.read path separate from this new lstat seam.
+            if (!follow) return posixStat(gpa, path, false);
+            return error.FileStatFailed;
+        },
         else => return error.FileStatFailed,
     };
     if (!info.mask.INO or !info.mask.SIZE or !info.mask.MTIME or !info.mask.CTIME) return error.FileStatFieldsUnavailable;
