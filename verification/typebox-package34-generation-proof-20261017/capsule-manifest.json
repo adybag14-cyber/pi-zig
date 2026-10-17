@@ -1,0 +1,356 @@
+{
+  "schema": 1,
+  "scope": "Actual package34 source generation only; privacy-filtered capsule",
+  "source_head": "fe18566011346d210267c2b49bc1eb0bcd5f7b4d",
+  "members": [
+    {
+      "member": "generated/native_typebox_operators_production.zig",
+      "role": "Actual owned generated text, not a compiled artifact",
+      "bytes": 3281481,
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/staged/native_typebox_operators_production.zig",
+      "original_sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "original_bytes": 3281481
+    },
+    {
+      "member": "controls/package-caller.redacted.ps1.txt",
+      "role": "Static source-package caller/fence review text; not runnable",
+      "bytes": 12632,
+      "sha256": "2EC74919ABDE12455530558097BBA7457C2D0D84DB9C4BEBA180664424479D95",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-production-native-qualification-20261016/Run-OwnedStaticPackageAuthoring.ps1",
+      "original_sha256": "7049991E10FD9338CB9A2E4EBDF865CFD610A7F3C8D22F611FE8827F983C60A5",
+      "original_bytes": 12650
+    },
+    {
+      "member": "owners/node-owner.json",
+      "role": "Actual owned Node24 terminal identity only",
+      "bytes": 1507,
+      "sha256": "AA4A284ACEF11A947A51D1DC5A6DC8E47C4F6850565F219723250E1C3938E4F2",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-owner.json",
+      "original_sha256": "1C91E62074349A5807B05E240B0718907D14188869DD9CE3886959011D7944BB",
+      "original_bytes": 1640
+    },
+    {
+      "member": "owners/node-absence.json",
+      "role": "Owned Node absence; descendant/global-native lists empty",
+      "bytes": 1702,
+      "sha256": "0B8B1E929E007BA729391655B8091C3973C4B8D70BBE70ADA76E47438CF5B6A7",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-absence.json",
+      "original_sha256": "8DD53371F02141A7D63F7F883C540BC38E1AD421BB3811CB87FCCB072C099813",
+      "original_bytes": 1835
+    },
+    {
+      "member": "owners/outer-owner.json",
+      "role": "Actual owned dedicated PowerShell terminal identity only",
+      "bytes": 1392,
+      "sha256": "7625F4490A55F5283A9F8C08611338508E1B71F52BFD5741CDF8F8A9744BA63A",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "evidence/typebox-heap-execution-prepared-20261017/root-typebox-heap-package34-20261017-175413-outer.json",
+      "original_sha256": "39F0B6A1EBA88B5FF7E1776C4D5FC6D12A25E4AB524DF205F77861BF4DDF25D1",
+      "original_bytes": 1502
+    },
+    {
+      "member": "owners/outer-absence.json",
+      "role": "Fresh absence of owned outer PID only",
+      "bytes": 373,
+      "sha256": "0A0C9A36E6300FE8527A9D794070BC531D4E60E4EBAFD6EB44EF9E49F1C31580",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "evidence/typebox-heap-execution-prepared-20261017/root-typebox-heap-package34-20261017-175413-outer-absence.json",
+      "original_sha256": "8D8FEF2CB56B119C58CC188E488CB585FDE9695EFE0025297A0AFA698A348AF4",
+      "original_bytes": 386
+    },
+    {
+      "member": "output/generator.stdout.txt",
+      "role": "Exact UTF8 authoring stdout: two JSON documents, not native protocol",
+      "bytes": 1878,
+      "sha256": "15AAB8A9AB649AAFB1CF6D31EAB19FE4F0D384CF4F45DA2A34217B14D5C28988",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-owner.stdout.bin",
+      "original_sha256": "15AAB8A9AB649AAFB1CF6D31EAB19FE4F0D384CF4F45DA2A34217B14D5C28988",
+      "original_bytes": 1878
+    },
+    {
+      "member": "controls/package-wrapper.redacted.ps1.txt",
+      "role": "Static source review text; path-labelled derivative, not runnable",
+      "bytes": 31679,
+      "sha256": "9E7678968ED20E63038E5CC08ADDEABA86D451AA963BCA06F186175B377AA5AE",
+      "transformation": "Explicit public path-label derivative; original raw hash retained separately",
+      "original_evidence": "evidence/typebox-heap-execution-prepared-20261017/Run-HeapPackage34V5ForFe185.ps1",
+      "original_sha256": "5CE1F2973F25D5EFCB8A85B16580DD57DC97362CAC8330FAA3E14FAEECFDD5D9",
+      "original_bytes": 31769
+    },
+    {
+      "member": "output/node.stderr.txt",
+      "role": "Exact empty Node stderr",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-owner.stderr.log",
+      "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "original_bytes": 0
+    },
+    {
+      "member": "seals/run-before-summary.json",
+      "role": "Exact pre/post authority-check result; full inventory omitted",
+      "bytes": 139,
+      "sha256": "0EC325E149FDBEFCC39C6630EF9B5878908746E24171DF7CF14D73ED521AD08E",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-before-summary.json",
+      "original_sha256": "0EC325E149FDBEFCC39C6630EF9B5878908746E24171DF7CF14D73ED521AD08E",
+      "original_bytes": 139
+    },
+    {
+      "member": "seals/run-after-summary.json",
+      "role": "Exact pre/post authority-check result; full inventory omitted",
+      "bytes": 138,
+      "sha256": "DD02EF2541521B91226810F93A1344B649DEAE527019BF1D9171576DF3F6194A",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/run-after-summary.json",
+      "original_sha256": "DD02EF2541521B91226810F93A1344B649DEAE527019BF1D9171576DF3F6194A",
+      "original_bytes": 138
+    },
+    {
+      "member": "summary/generation-result.json",
+      "role": "Whitelisted generation result, no global process rows or environment values",
+      "bytes": 1503,
+      "sha256": "FDFE553C04D53FEDE512A649159086393C994EB173DF658B4C42CC2302803819",
+      "transformation": "Whitelisted public summary; not a raw receipt"
+    },
+    {
+      "member": "summary/full-seal-digests.json",
+      "role": "Seal digests only, not full inventories",
+      "bytes": 2208,
+      "sha256": "7FF3C17902C2B7A7F225998E6E9876CC042F98DDCE787FBE49CBFE6103D6AEF5",
+      "transformation": "Whitelisted public summary; not a raw receipt"
+    },
+    {
+      "member": "summary/separate-prior-scopes.json",
+      "role": "Separate earlier actual scopes, no proof relabelling",
+      "bytes": 1033,
+      "sha256": "FEDC4AF8AB14BB8C5CF40F88E6DA64251EEE1C306812D6823E70981910AD257C",
+      "transformation": "Whitelisted public summary; not a raw receipt"
+    },
+    {
+      "member": "summary/local-raw-evidence-pins.json",
+      "role": "Raw evidence hashes only",
+      "bytes": 6326,
+      "sha256": "5A5D3773135A53708CFF356E904479F7820205CF426E8A6345D83872B63F6B0E",
+      "transformation": "Whitelisted public summary; not a raw receipt"
+    },
+    {
+      "member": "output/outer.stderr.txt",
+      "role": "Exact empty outer stderr",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/typebox-heap-execution-prepared-20261017/root-typebox-heap-package34-20261017-175413-outer.stderr.log",
+      "original_sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "original_bytes": 0
+    },
+    {
+      "member": "README.md",
+      "role": "Public scope/privacy/verification documentation",
+      "bytes": 3681,
+      "sha256": "22B9E318F174883A3C10875B26F140011302FBF16BD454494B1BE5F23772B927",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/typebox-package34-public-capsule-prepared-20261017/README.source.md",
+      "original_sha256": "22B9E318F174883A3C10875B26F140011302FBF16BD454494B1BE5F23772B927",
+      "original_bytes": 3681
+    },
+    {
+      "member": "controls/Invoke-NativeTestProtocol.ps1",
+      "role": "Canonical39F earlier kernel16 role only; NOT used for package generation",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "transformation": "byte-exact",
+      "original_evidence": "main/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "original_sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D",
+      "original_bytes": 3354
+    },
+    {
+      "member": "controls/native_qualification_ci.ps1",
+      "role": "Canonical607 bounded Node owner used by this generation",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "transformation": "byte-exact",
+      "original_evidence": "main/tools/ci/native_qualification_ci.ps1",
+      "original_sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+      "original_bytes": 11699
+    },
+    {
+      "member": "generated/lowering-map.json",
+      "role": "Actual owned generated text, not a compiled artifact",
+      "bytes": 1676512,
+      "sha256": "186D9248FF843FABB4C3FDD8DA1F23F12473F72CBB60EBBD35B570015AF08ABB",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/staged/lowering-map.json",
+      "original_sha256": "186D9248FF843FABB4C3FDD8DA1F23F12473F72CBB60EBBD35B570015AF08ABB",
+      "original_bytes": 1676512
+    },
+    {
+      "member": "generated/initialization-order.json",
+      "role": "Actual owned generated text, not a compiled artifact",
+      "bytes": 38892,
+      "sha256": "C4BB3782E6353A073B34842E8D64BCE12E0C318476D69E4F6106DC8BEF9667ED",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/staged/initialization-order.json",
+      "original_sha256": "C4BB3782E6353A073B34842E8D64BCE12E0C318476D69E4F6106DC8BEF9667ED",
+      "original_bytes": 38892
+    },
+    {
+      "member": "generated/reachable-closure.json",
+      "role": "Actual owned generated text, not a compiled artifact",
+      "bytes": 47973,
+      "sha256": "4E718CCE679A362BCC74A02F6FA717A61240619FA6D1B83BB394706476DC4F93",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-20261017-175413/staged/reachable-closure.json",
+      "original_sha256": "4E718CCE679A362BCC74A02F6FA717A61240619FA6D1B83BB394706476DC4F93",
+      "original_bytes": 47973
+    },
+    {
+      "member": "acceptance/independent-acceptance.json",
+      "role": "Independent data-only actual source/output/ownership acceptance",
+      "bytes": 38926,
+      "sha256": "232A8465B1746D6E71143812212112FB84FE3D899BE4D5A4E0DBAA81D55D61BA",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-independent-audit-20261017/independent-acceptance.json",
+      "original_sha256": "232A8465B1746D6E71143812212112FB84FE3D899BE4D5A4E0DBAA81D55D61BA",
+      "original_bytes": 38926
+    },
+    {
+      "member": "acceptance/independent-acceptance-controller-schema.json",
+      "role": "Independent data-only actual source/output/ownership acceptance",
+      "bytes": 39375,
+      "sha256": "6ACF20AFE71D79EB554D8068BFA15627D58DA487E38C7D73A81A98CE19D56562",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-independent-audit-20261017/independent-acceptance-controller-schema.json",
+      "original_sha256": "6ACF20AFE71D79EB554D8068BFA15627D58DA487E38C7D73A81A98CE19D56562",
+      "original_bytes": 39375
+    },
+    {
+      "member": "acceptance/registration-join.json",
+      "role": "Independent data-only actual source/output/ownership acceptance",
+      "bytes": 674,
+      "sha256": "BF100814B983FEA93A3B8DE8B6CFA25322163133FFC77C99EE34251ABE8EC24F",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-typebox-heap-package34-independent-audit-20261017/registration-join.json",
+      "original_sha256": "BF100814B983FEA93A3B8DE8B6CFA25322163133FFC77C99EE34251ABE8EC24F",
+      "original_bytes": 674
+    },
+    {
+      "member": "controls/outer-owned-process.ps1",
+      "role": "Reviewed53 dedicated PowerShell controller owner",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/root-crypto58-native-outer-prepared-20261017/outer-owned-process.ps1",
+      "original_sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "original_bytes": 11658
+    },
+    {
+      "member": "authoring/lower-authority.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 43458,
+      "sha256": "1848BCC26F7395FD1F6E923D262AEAF28951F11B95E06EDE4C4FFB58BE63781D",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/lower-authority.mjs",
+      "original_sha256": "1848BCC26F7395FD1F6E923D262AEAF28951F11B95E06EDE4C4FFB58BE63781D",
+      "original_bytes": 43458
+    },
+    {
+      "member": "authoring/outline-call-setup.test.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 6852,
+      "sha256": "9B7B80E4DACF47D9505D688D1EE5DB09BD93E3C611427128E4EFF1932676CE2C",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/outline-call-setup.test.mjs",
+      "original_sha256": "9B7B80E4DACF47D9505D688D1EE5DB09BD93E3C611427128E4EFF1932676CE2C",
+      "original_bytes": 6852
+    },
+    {
+      "member": "authoring/outline-call-steps.test.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 9233,
+      "sha256": "7A6E8957199DEE1097A0EC4862809978DD8677546F8AFB9862ABFF6756EF1658",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/outline-call-steps.test.mjs",
+      "original_sha256": "7A6E8957199DEE1097A0EC4862809978DD8677546F8AFB9862ABFF6756EF1658",
+      "original_bytes": 9233
+    },
+    {
+      "member": "authoring/emit-continuations.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 8775,
+      "sha256": "3D8B6EB91695B5694658BB3A6CC84530EB827AE36475C4CDF2A2E766C492C701",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/emit-continuations.mjs",
+      "original_sha256": "3D8B6EB91695B5694658BB3A6CC84530EB827AE36475C4CDF2A2E766C492C701",
+      "original_bytes": 8775
+    },
+    {
+      "member": "authoring/emit-continuations.test.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 6575,
+      "sha256": "325175252C7ED6800B6A961780A1839D6DCE3382FB080247AB02D6D960A67A95",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/emit-continuations.test.mjs",
+      "original_sha256": "325175252C7ED6800B6A961780A1839D6DCE3382FB080247AB02D6D960A67A95",
+      "original_bytes": 6575
+    },
+    {
+      "member": "authoring/original-scope34.json",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 51131,
+      "sha256": "81A62A17BC0F33C20A4B0B23B64E267343DCB841C2C3C1E7FCD798D29B23DD21",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-heap-continuation-20261017/original-scope34.json",
+      "original_sha256": "81A62A17BC0F33C20A4B0B23B64E267343DCB841C2C3C1E7FCD798D29B23DD21",
+      "original_bytes": 51131
+    },
+    {
+      "member": "licenses/TYPEBOX-LICENSE.txt",
+      "role": "TypeBox license",
+      "bytes": 1094,
+      "sha256": "E8A7CC256941A26BA8234F04390165243A4D42F74FD6491934140605BF7EAE2D",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/TYPEBOX-LICENSE.txt",
+      "original_sha256": "E8A7CC256941A26BA8234F04390165243A4D42F74FD6491934140605BF7EAE2D",
+      "original_bytes": 1094
+    },
+    {
+      "member": "authoring/outline-call-setup.mjs",
+      "role": "Exact fe185 Acorn/typed-emission tooling or control source",
+      "bytes": 14914,
+      "sha256": "B55121919AA454A2D6C0C6BC588B18F96F6AC60DB64995CDED431E99D6FF1DEF",
+      "transformation": "byte-exact",
+      "original_evidence": "worktrees/typebox-heap-continuation/verification/typebox-operators-production-20261016/outline-call-setup.mjs",
+      "original_sha256": "B55121919AA454A2D6C0C6BC588B18F96F6AC60DB64995CDED431E99D6FF1DEF",
+      "original_bytes": 14914
+    },
+    {
+      "member": "Verify-Capsule.ps1",
+      "role": "Standalone data-only payload/acceptance verifier, no process launch",
+      "bytes": 2154,
+      "sha256": "C0F0391AB7D163999BC3999640096740F903888FFAD9357160E216AEF8C3183C",
+      "transformation": "byte-exact",
+      "original_evidence": "evidence/typebox-package34-public-capsule-prepared-20261017/Verify-Capsule.source.ps1",
+      "original_sha256": "C0F0391AB7D163999BC3999640096740F903888FFAD9357160E216AEF8C3183C",
+      "original_bytes": 2154
+    }
+  ],
+  "manifest_self_hash_excluded": true,
+  "original_raw_unchanged": true,
+  "source_eval_native_or_product_pass_claim": false,
+  "path_labels": [
+    "{WORKSPACE}",
+    "{USER_HOME}",
+    "{NODE_HOME}",
+    "{POWERSHELL_HOME}"
+  ],
+  "forbidden_payloads": "No executable/PDB/cache/full inventory/non-owned CIM rows/credentials/environment snapshot",
+  "zip_metadata": "Sorted; fixed2000-01-01 UTC; .NET Optimal compression"
+}
