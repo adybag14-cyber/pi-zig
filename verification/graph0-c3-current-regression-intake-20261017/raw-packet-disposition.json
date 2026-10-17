@@ -1,0 +1,9 @@
+{
+  "status": "both_component_raw_packets_retained",
+  "candidate": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "retained150_zip": "verification/graph0-c3-retained150-proof-20261017/raw-proof.zip",
+  "retained150_zip_sha256": "6E7C812DD2C083F79FFFE4C0201B38B9953C5F70AD1AA77EF030A1CD7A64653E",
+  "focused11_zip": "verification/graph0-c3-current11-proof-20261017/raw-proof.zip",
+  "focused11_zip_sha256": "DB7954D9687772A4E126CCC3C1846D9F748CE548C54F85248F61F3DD6B9B0BA7",
+  "whole_application_qualified": false
+}

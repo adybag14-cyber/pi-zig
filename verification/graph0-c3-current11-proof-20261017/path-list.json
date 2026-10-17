@@ -1,0 +1,537 @@
+{
+  "schema": 1,
+  "status": "prepared_not_publication",
+  "created_utc": "2026-10-17T13:25:07.5989619+00:00",
+  "current_head": "c83c8b1364ef92479c83e8d7db8459372f4d7bf1",
+  "primary150_zip_sha256": "6E7C812DD2C083F79FFFE4C0201B38B9953C5F70AD1AA77EF030A1CD7A64653E",
+  "scopes": [
+    {
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "parent": "root-graph0-c3-current11-prepared-20261017",
+      "id": "root-c3-current11-20261017-131913"
+    }
+  ],
+  "logical_file_count": 65,
+  "files": [
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\before.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "48FC034A85A41B13518EB3F66C6021A6FF8D7F7DE8741B97D0FE12A91F817F9B",
+      "blob_member": "blobs/48FC034A85A41B13518EB3F66C6021A6FF8D7F7DE8741B97D0FE12A91F817F9B"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-after.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "C14C31FEFA70A60D153D876BE24555CA2ED5C6DE5204C4992C996ED83234EF3A",
+      "blob_member": "blobs/C14C31FEFA70A60D153D876BE24555CA2ED5C6DE5204C4992C996ED83234EF3A"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-artifacts-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-artifacts-after.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 932,
+      "sha256": "40B506F6FEBA7890838E1FEFB4E5DC49F0FC661418E9C6F87ACF1FAFA80D5B13",
+      "blob_member": "blobs/40B506F6FEBA7890838E1FEFB4E5DC49F0FC661418E9C6F87ACF1FAFA80D5B13"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-artifacts-before.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 790,
+      "sha256": "0261EEEDDE46944E155509D0FEFE453F6E7A9F6493A69680E2F664B6AB6FD326",
+      "blob_member": "blobs/0261EEEDDE46944E155509D0FEFE453F6E7A9F6493A69680E2F664B6AB6FD326"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-artifacts-between.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 932,
+      "sha256": "114F87080A32AFA34561208FCF05E9B3C04E3A01CAE1922D61C11DB51E30186A",
+      "blob_member": "blobs/114F87080A32AFA34561208FCF05E9B3C04E3A01CAE1922D61C11DB51E30186A"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-artifacts-final.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 932,
+      "sha256": "14B00829C03E205E5BFC29F44199C019A40AFE0E5BE2C13A671B60F2A53008F3",
+      "blob_member": "blobs/14B00829C03E205E5BFC29F44199C019A40AFE0E5BE2C13A671B60F2A53008F3"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-between.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "2AA7BF2CDE2EC02B45BD89F3A18AF3BAC2C01188F966109BB5E5BC6BF094D8DB",
+      "blob_member": "blobs/2AA7BF2CDE2EC02B45BD89F3A18AF3BAC2C01188F966109BB5E5BC6BF094D8DB"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-compile-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "EED82B2B30137EA50295258C5A28D9CAA2AE0B0CB10F9FEB82F99AF32147C1BD",
+      "blob_member": "blobs/EED82B2B30137EA50295258C5A28D9CAA2AE0B0CB10F9FEB82F99AF32147C1BD"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-compile.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 2125,
+      "sha256": "34016E8E1055A74FDE3B7850E8CE9C2DAD32C858C58C9F62CEAF94DC97AE7238",
+      "blob_member": "blobs/34016E8E1055A74FDE3B7850E8CE9C2DAD32C858C58C9F62CEAF94DC97AE7238"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-compile.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 14055,
+      "sha256": "7352615336A743BC19320410048E2CEE30C418D471295813FD71694C50A765B6",
+      "blob_member": "blobs/7352615336A743BC19320410048E2CEE30C418D471295813FD71694C50A765B6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-compile.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-metadata-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "7FCBC50F05E82F7171A0800E4CF34C01E127570659254BB9DC256C2C89159C62",
+      "blob_member": "blobs/7FCBC50F05E82F7171A0800E4CF34C01E127570659254BB9DC256C2C89159C62"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-metadata.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1223,
+      "sha256": "46C821094169CD689334148ED3DDA0D9700E7DD84F645573F37E6D2BD372A174",
+      "blob_member": "blobs/46C821094169CD689334148ED3DDA0D9700E7DD84F645573F37E6D2BD372A174"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-metadata.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-metadata.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 327,
+      "sha256": "DB2AE0B1D36A63315D3C6470C41692A6495E27140883E6D925361B71F712EE73",
+      "blob_member": "blobs/DB2AE0B1D36A63315D3C6470C41692A6495E27140883E6D925361B71F712EE73"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "2FB019D23108ECAAB44337582825E8A07A37302332F17BFA69000DBF7E4FD85C",
+      "blob_member": "blobs/2FB019D23108ECAAB44337582825E8A07A37302332F17BFA69000DBF7E4FD85C"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1224,
+      "sha256": "4CCBB0936FFF877513BE72D62B3DDAE73BBD32A4B81F9CE98BB844C233F293C5",
+      "blob_member": "blobs/4CCBB0936FFF877513BE72D62B3DDAE73BBD32A4B81F9CE98BB844C233F293C5"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime.results.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 804,
+      "sha256": "B543662C5D5609EAB8C52722D1A1BBF345CE0E7A17EFC74B8E254C4F84ABEB61",
+      "blob_member": "blobs/B543662C5D5609EAB8C52722D1A1BBF345CE0E7A17EFC74B8E254C4F84ABEB61"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-runtime.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 98,
+      "sha256": "33ED66EE95600A2E1783CF21EA51E3BB0A714099B2B9C70073DD6D4B216E072B",
+      "blob_member": "blobs/33ED66EE95600A2E1783CF21EA51E3BB0A714099B2B9C70073DD6D4B216E072B"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/binding-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\binding-selected-tests.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1089,
+      "sha256": "7F6674BB314197562F6A42E85A7AAE8BC38C7C77DA004B70D26D25A7C094A915",
+      "blob_member": "blobs/7F6674BB314197562F6A42E85A7AAE8BC38C7C77DA004B70D26D25A7C094A915"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\final.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "B05F94F31ABC3781BD6368EBAE50A5197208D211A8801C6E0E7ABBDF9924F0B6",
+      "blob_member": "blobs/B05F94F31ABC3781BD6368EBAE50A5197208D211A8801C6E0E7ABBDF9924F0B6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/initial-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\initial-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "116EB8D82869B3753FAB8153CB31E50866960150A43A8BDE3850E84F2711BD86",
+      "blob_member": "blobs/116EB8D82869B3753FAB8153CB31E50866960150A43A8BDE3850E84F2711BD86"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/native-roots-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\native-roots-final.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F",
+      "blob_member": "blobs/A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/owner-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\owner-absence.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 2054,
+      "sha256": "FCE6CA6E632E9F68DC73EC173BC1B348EF9CA544CA471CBF482C77F04646FB7C",
+      "blob_member": "blobs/FCE6CA6E632E9F68DC73EC173BC1B348EF9CA544CA471CBF482C77F04646FB7C"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-after.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "700F56FC83B62F0A5F979EBB21E8CD0A216A6CCAF6684C16C4553DC3DD38440C",
+      "blob_member": "blobs/700F56FC83B62F0A5F979EBB21E8CD0A216A6CCAF6684C16C4553DC3DD38440C"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-artifacts-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-artifacts-after.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 929,
+      "sha256": "0EEA23BEE313F2F4B38233B60997EEEA964B033095A5DFF3385683882758D83D",
+      "blob_member": "blobs/0EEA23BEE313F2F4B38233B60997EEEA964B033095A5DFF3385683882758D83D"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-artifacts-before.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 787,
+      "sha256": "4CF4ADAD0811C27A58FF5647AC3490FDC496C5E8230890752C764D0817F309AB",
+      "blob_member": "blobs/4CF4ADAD0811C27A58FF5647AC3490FDC496C5E8230890752C764D0817F309AB"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-artifacts-between.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 929,
+      "sha256": "74507A488325B8A73B17BB66D91A15D5E1848915EB89E6BD6454C687D8F36443",
+      "blob_member": "blobs/74507A488325B8A73B17BB66D91A15D5E1848915EB89E6BD6454C687D8F36443"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-artifacts-final.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 929,
+      "sha256": "729A592F73A49EA2EC82839A87CC36A8C85D515DDEB5DA43EA808D9E86C823C9",
+      "blob_member": "blobs/729A592F73A49EA2EC82839A87CC36A8C85D515DDEB5DA43EA808D9E86C823C9"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-between.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 9648817,
+      "sha256": "38E8CFC935734C6D59BCABAF5A0C1A31E931200C33F1A5F33C21E6204502C7F9",
+      "blob_member": "blobs/38E8CFC935734C6D59BCABAF5A0C1A31E931200C33F1A5F33C21E6204502C7F9"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-compile-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "B2F0610DB8DD542945C9D9B66C4067714EA5245A4192F18A78143824A788E56E",
+      "blob_member": "blobs/B2F0610DB8DD542945C9D9B66C4067714EA5245A4192F18A78143824A788E56E"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-compile.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 2137,
+      "sha256": "3E0B68ECFF72D59AF3F33B96462724BEB5A7CD7378378D9C70C40DF1186B475D",
+      "blob_member": "blobs/3E0B68ECFF72D59AF3F33B96462724BEB5A7CD7378378D9C70C40DF1186B475D"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-compile.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 14062,
+      "sha256": "BDDAD34EE14A5FCC4AD480782EEC3407BB0B442BA4B840749063C51EF2389745",
+      "blob_member": "blobs/BDDAD34EE14A5FCC4AD480782EEC3407BB0B442BA4B840749063C51EF2389745"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-compile.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-metadata-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "28AA4C778B8AE6D1A229E7192B6DA0C4B5E4C9AC687957AAA1C681649E93AC0A",
+      "blob_member": "blobs/28AA4C778B8AE6D1A229E7192B6DA0C4B5E4C9AC687957AAA1C681649E93AC0A"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-metadata.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1220,
+      "sha256": "45C63530CDDA0EE007F25460C9C3C9DF255D02C92393C3BA7893761D51B2DAB8",
+      "blob_member": "blobs/45C63530CDDA0EE007F25460C9C3C9DF255D02C92393C3BA7893761D51B2DAB8"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-metadata.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-metadata.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1012,
+      "sha256": "BE42702C83F0DA2E7E8A322CF08134433DF83EC38CF6D0D22594E87B8DF9E3AC",
+      "blob_member": "blobs/BE42702C83F0DA2E7E8A322CF08134433DF83EC38CF6D0D22594E87B8DF9E3AC"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime-admission.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 418,
+      "sha256": "C14EA57CB9B3A641983A80688503E9DA3E2182CE43DDFF30C1B1804BEEE67701",
+      "blob_member": "blobs/C14EA57CB9B3A641983A80688503E9DA3E2182CE43DDFF30C1B1804BEEE67701"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1221,
+      "sha256": "636298241E8F7FA62C393D3E19292EF4AC7D91A837C26FB49A0675BE9D833816",
+      "blob_member": "blobs/636298241E8F7FA62C393D3E19292EF4AC7D91A837C26FB49A0675BE9D833816"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime.results.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1177,
+      "sha256": "577E6361728D2395E3FA8D8F688080A8CE50F7AAC00D01F4DD9ED9FFE3951CA6",
+      "blob_member": "blobs/577E6361728D2395E3FA8D8F688080A8CE50F7AAC00D01F4DD9ED9FFE3951CA6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-runtime.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 238,
+      "sha256": "685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5",
+      "blob_member": "blobs/685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/queued-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\queued-selected-tests.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 2458,
+      "sha256": "EFCEF500AC73665D4CA55CD1C3E2E98DEF434F35C55E759EAD0360BC27000A72",
+      "blob_member": "blobs/EFCEF500AC73665D4CA55CD1C3E2E98DEF434F35C55E759EAD0360BC27000A72"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\result.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 14612,
+      "sha256": "844438E871AA6ECFB92970963A9A0E84A421D3B1B93E40B37E321FD67BB35E6D",
+      "blob_member": "blobs/844438E871AA6ECFB92970963A9A0E84A421D3B1B93E40B37E321FD67BB35E6D"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913/root-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913\\root-grant.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries",
+      "bytes": 1184,
+      "sha256": "E57FEF7E7E8EF00C4FD21A351A8C2905EAB94EB3EC7B8B785FDCFC1622EF4AB6",
+      "blob_member": "blobs/E57FEF7E7E8EF00C4FD21A351A8C2905EAB94EB3EC7B8B785FDCFC1622EF4AB6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/Prepare-Current11.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\Prepare-Current11.ps1",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 1541,
+      "sha256": "B06CA464589963EB74E6AA6DD22E42F7A96F5451F120C664A0049C773F0C91C5",
+      "blob_member": "blobs/B06CA464589963EB74E6AA6DD22E42F7A96F5451F120C664A0049C773F0C91C5"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/prepared.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\prepared.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 1522,
+      "sha256": "BA4D06C5D217F4C574477C56530259A6B937140A3DAB89673C9F062E18E5BA46",
+      "blob_member": "blobs/BA4D06C5D217F4C574477C56530259A6B937140A3DAB89673C9F062E18E5BA46"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\README.md",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 2498,
+      "sha256": "FB22C49121753EDF35525D7873BA72E33F4F1BB5805D66D2CEBB159C5CFB07A6",
+      "blob_member": "blobs/FB22C49121753EDF35525D7873BA72E33F4F1BB5805D66D2CEBB159C5CFB07A6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-grant.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 1184,
+      "sha256": "E57FEF7E7E8EF00C4FD21A351A8C2905EAB94EB3EC7B8B785FDCFC1622EF4AB6",
+      "blob_member": "blobs/E57FEF7E7E8EF00C4FD21A351A8C2905EAB94EB3EC7B8B785FDCFC1622EF4AB6"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913-outer-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-outer-absence.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 88,
+      "sha256": "F3A824151B6CED7F54541FE8A4217E698A20C0F3E6C00F90ACE759770C197454",
+      "blob_member": "blobs/F3A824151B6CED7F54541FE8A4217E698A20C0F3E6C00F90ACE759770C197454"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913-outer.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-outer.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 1579,
+      "sha256": "039C2AE459EADE6B2D2B1E534B7FB6774D70CB678D590B7618ECA1E99C16C1DE",
+      "blob_member": "blobs/039C2AE459EADE6B2D2B1E534B7FB6774D70CB678D590B7618ECA1E99C16C1DE"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913-outer.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-outer.stderr.log",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "blob_member": "blobs/E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-c3-current11-20261017-131913-outer.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-c3-current11-20261017-131913-outer.stdout.bin",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 14612,
+      "sha256": "844438E871AA6ECFB92970963A9A0E84A421D3B1B93E40B37E321FD67BB35E6D",
+      "blob_member": "blobs/844438E871AA6ECFB92970963A9A0E84A421D3B1B93E40B37E321FD67BB35E6D"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/root-grant.template.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\root-grant.template.json",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 1067,
+      "sha256": "1B5A3886AAD882085342D5D769DCA211948FA7EE313906CCB8C3B173DA88930D",
+      "blob_member": "blobs/1B5A3886AAD882085342D5D769DCA211948FA7EE313906CCB8C3B173DA88930D"
+    },
+    {
+      "container_relative_path": "evidence/root-graph0-c3-current11-prepared-20261017/Run-Graph0C3Native.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-current11-prepared-20261017\\Run-Graph0C3Native.ps1",
+      "role": "CURRENT c83 focused C3 queued8+binding3 raw pass; separate from150 regression entries; parent control/outer receipt",
+      "bytes": 16156,
+      "sha256": "A74A8533047044FABF6496FAEF226E57AA86004973DF1F45FEADE575F363ECA8",
+      "blob_member": "blobs/A74A8533047044FABF6496FAEF226E57AA86004973DF1F45FEADE575F363ECA8"
+    },
+    {
+      "container_relative_path": "evidence/c3-current11-independent-async-review-20261017/acceptance.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current11-independent-async-review-20261017\\acceptance.json",
+      "role": "Independent current11 audit and source",
+      "bytes": 12694,
+      "sha256": "EB3E1138A4C71B0B6E5C7FA0877ADF2138E113B2F087B722EE1BF806BB3A3DDD",
+      "blob_member": "blobs/EB3E1138A4C71B0B6E5C7FA0877ADF2138E113B2F087B722EE1BF806BB3A3DDD"
+    },
+    {
+      "container_relative_path": "evidence/c3-current11-independent-async-review-20261017/Audit-Current11.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current11-independent-async-review-20261017\\Audit-Current11.ps1",
+      "role": "Independent current11 audit and source",
+      "bytes": 8565,
+      "sha256": "61DFD8B640C98761B38DF48FCE9E56470D8DCD40499F14E7E63FE58DBD52A080",
+      "blob_member": "blobs/61DFD8B640C98761B38DF48FCE9E56470D8DCD40499F14E7E63FE58DBD52A080"
+    },
+    {
+      "container_relative_path": "evidence/c3-current150-independent-async-review-20261017/acceptance.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-independent-async-review-20261017\\acceptance.json",
+      "role": "Independent primary150 acceptance reference; its raw archive is separate",
+      "bytes": 35672,
+      "sha256": "2EECCCB444AEAD66F0ECDDC0076718C3B672FA821BDB03097B6E6C9F05AAD60E",
+      "blob_member": "blobs/2EECCCB444AEAD66F0ECDDC0076718C3B672FA821BDB03097B6E6C9F05AAD60E"
+    },
+    {
+      "container_relative_path": "evidence/c3-current150-public-proof-prepared-20261017/path-list.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-public-proof-prepared-20261017\\path-list.json",
+      "role": "Immutable primary150 reference metadata; raw blobs are separate",
+      "bytes": 396717,
+      "sha256": "3C95D1F862904048DEFD726A3947091080C8178311CF2FD888EB09ADA3BFE4E4",
+      "blob_member": "blobs/3C95D1F862904048DEFD726A3947091080C8178311CF2FD888EB09ADA3BFE4E4"
+    },
+    {
+      "container_relative_path": "evidence/c3-current150-public-proof-prepared-20261017/member-manifest.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-public-proof-prepared-20261017\\member-manifest.json",
+      "role": "Immutable primary150 reference metadata; raw blobs are separate",
+      "bytes": 177631,
+      "sha256": "40B8C29A7DEE3D6F46395EB59C633F6806B83AB9674AF96E327E49D16CB543A5",
+      "blob_member": "blobs/40B8C29A7DEE3D6F46395EB59C633F6806B83AB9674AF96E327E49D16CB543A5"
+    },
+    {
+      "container_relative_path": "evidence/c3-current150-public-proof-prepared-20261017/package-verification.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-public-proof-prepared-20261017\\package-verification.json",
+      "role": "Immutable primary150 reference metadata; raw blobs are separate",
+      "bytes": 107515,
+      "sha256": "FBD1D3DAC7D118622BFC64AC74FD84399FF0112BCB58D5BDE4CBC9A11D5CD02D",
+      "blob_member": "blobs/FBD1D3DAC7D118622BFC64AC74FD84399FF0112BCB58D5BDE4CBC9A11D5CD02D"
+    },
+    {
+      "container_relative_path": "evidence/c3-current150-public-proof-prepared-20261017/Package-C3.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current150-public-proof-prepared-20261017\\Package-C3.ps1",
+      "role": "Exact primary packaging helper source; only two AST-extracted file-collection functions reused",
+      "bytes": 13073,
+      "sha256": "420E2A93EE08AEC0CBBA03C77136804DB8025DFE5914802C00BD84DD036D6765",
+      "blob_member": "blobs/420E2A93EE08AEC0CBBA03C77136804DB8025DFE5914802C00BD84DD036D6765"
+    },
+    {
+      "container_relative_path": "evidence/c3-current11-public-addendum-prepared-20261017/Package-Addendum.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\c3-current11-public-addendum-prepared-20261017\\Package-Addendum.ps1",
+      "role": "New addendum packaging source",
+      "bytes": 6078,
+      "sha256": "2D080480C5252E2731B3D4E0CD74684100CC3589F2430926F457919A3A1910AA",
+      "blob_member": "blobs/2D080480C5252E2731B3D4E0CD74684100CC3589F2430926F457919A3A1910AA"
+    }
+  ]
+}
