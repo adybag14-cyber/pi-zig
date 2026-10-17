@@ -104,7 +104,7 @@ fn rest(scope: *Scope, input: c.JSValue) !c.JSValue {
 fn argument(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
 }
-fn packed(scope: *Scope, built: headers.Built) !c.JSValue {
+fn packHeaders(scope: *Scope, built: headers.Built) !c.JSValue {
     defer scope.engine.freeValue(built.values);
     defer scope.engine.freeValue(built.nulls);
     const result = try scope.object();
@@ -246,12 +246,12 @@ fn dispatch(engine: *v.em.Engine, client: c.JSValue, comptime kind: Kind, args: 
             const key = try scope.get(client, "apiKey");
             if (v.nullish(key)) return owned(&scope, c.pi_js_undefined());
             try scope.put(values, "Authorization", try scope.concat(try scope.text("Bearer "), key));
-            return owned(&scope, try packed(&scope, try headers.build(engine, &.{values})));
+            return owned(&scope, try packHeaders(&scope, try headers.build(engine, &.{values})));
         },
         .authHeaders => {
             if (stage == 0) return wait(&scope, job, try invoke(&scope, client, .bearerAuth, &.{argument(args, 0)}), 1);
             const source: headers.Layer = if (v.nullish(input)) .{ .plain = input } else try nullable(&scope, input);
-            return owned(&scope, try packed(&scope, try headers.buildMixed(engine, &.{ source, .{ .plain = c.pi_js_null() } })));
+            return owned(&scope, try packHeaders(&scope, try headers.buildMixed(engine, &.{ source, .{ .plain = c.pi_js_null() } })));
         },
         .buildHeaders => {
             if (stage == 0) {
