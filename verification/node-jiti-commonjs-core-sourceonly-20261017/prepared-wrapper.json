@@ -1,0 +1,40 @@
+{
+  "status": "source-only-uncompiled",
+  "parent": "8f8704fd",
+  "node_source": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "loader_authority_sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB",
+  "body_scope": [
+    "Module.wrap",
+    "Module.wrapper",
+    "actual VM Proxy set",
+    "actual VM Proxy defineProperty",
+    "wrap/wrapper getters and setters"
+  ],
+  "original_caller_rows": 6,
+  "expected_present": false,
+  "observed_present": false,
+  "default_selected": false,
+  "compiler_node_native_generator_jobs": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_state.zig",
+      "bytes": 2830,
+      "sha256": "FD1FCE7037F7D3B50E6DB6095B2463B8949B1D897910EAA1125DE9C6C26FDDA9"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_wrapper.zig",
+      "bytes": 5982,
+      "sha256": "1FEC750FC8F9FB5E71462C213C500687B6275BBD5C0D29E7219BB2A206561FFD"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/WRAPPER-SCOPE.md",
+      "bytes": 2237,
+      "sha256": "0A0F94A446AADD0FB3D091A687E9C8F94D8F6886525B78DFD06353F928C6CB73"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/reference-wrapper-input.mjs",
+      "bytes": 3396,
+      "sha256": "55C40428955FEBAFA7119C67E2BE17000BB6FA0567645DF15212A832BEA1B370"
+    }
+  ]
+}

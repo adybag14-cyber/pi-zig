@@ -1,0 +1,22 @@
+[
+  {
+    "path": "reviews/commonjs-patched-script-independent-source-review-d1a51104-20261017.json",
+    "sha256": "7FEC97AB87A70EF1C2CE389A57871EC12071AED77AF71BBA76C68A7A2D08CD1B",
+    "bytes": 2322
+  },
+  {
+    "path": "reviews/commonjs-converted-publisher-independent-source-review-0641c422-20261017.json",
+    "sha256": "6A23B6298D92349BF73ADC53A34C5EA06EA1D96C6B7FA489D2AED9E8EB6C9288",
+    "bytes": 3284
+  },
+  {
+    "path": "reviews/commonjs-lazy-provider-independent-source-review-b0efd1a2-20261017.json",
+    "sha256": "C219973AFE04C0CAA4119A044943D831E88A8A52461646FD56257BADC6996B1B",
+    "bytes": 2431
+  },
+  {
+    "path": "reviews/commonjs-provider-pending-independent-source-review-a5792ee0-20261017.json",
+    "sha256": "16CD683181BF743D8DB6F568C6306F71184168CD935D6FB94847F8D6DD111944",
+    "bytes": 1762
+  }
+]

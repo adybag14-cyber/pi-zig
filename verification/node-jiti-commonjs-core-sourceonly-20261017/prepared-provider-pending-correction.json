@@ -1,0 +1,27 @@
+{
+  "status": "source-only-uncompiled-unrun-unselected",
+  "parent": "b0efd1a2ce6bbca86326d7869a594ff719d3b465",
+  "actual_pending_getter_guard": true,
+  "actual_pending_callee_guard": true,
+  "guest_data_flag_inference": false,
+  "new_prepared_named_controls": 4,
+  "combined_named_declarations": 13,
+  "compiled_metadata_count": null,
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_converted_provider.zig",
+      "bytes": 5239,
+      "sha256": "B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module_test.zig",
+      "bytes": 19913,
+      "sha256": "C8C76D963AF301CEDA9649D636A8A73A3592EC72386ED7C935178B8ECFE4D03E"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/PROVIDER-PENDING-CORRECTION.md",
+      "bytes": 1234,
+      "sha256": "D8DDA024F9CF8BA1104C06E1F2C8C9EE4ABC82BDC78F64EC84DC3A4B6D2B41A1"
+    }
+  ]
+}

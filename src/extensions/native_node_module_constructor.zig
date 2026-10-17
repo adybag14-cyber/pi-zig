@@ -57,12 +57,23 @@ pub fn create(engine: *v.em.Engine, inputs: Inputs) !Graph {
     const owner = try nullObject(&s);
     const weak_map = try s.global("WeakMap");
     const weak_prototype = try s.get(weak_map, "prototype");
+    try define(engine, owner, "weakMapConstructor", weak_map);
     const weak_args = [_]c.JSValue{};
     inline for (.{ "firstParents", "lastParents" }) |name| try define(engine, owner, name, try s.own(try engine.checked(c.JS_CallConstructor(engine.context, weak_map, weak_args.len, @constCast(&weak_args)))));
     try define(engine, owner, "weakGet", try method(&s, weak_prototype, "get"));
     try define(engine, owner, "weakSet", try method(&s, weak_prototype, "set"));
+    try define(engine, owner, "weakHas", try method(&s, weak_prototype, "has"));
+    const map = try s.global("Map");
+    try define(engine, owner, "mapConstructor", map);
+    const map_prototype = try s.get(map, "prototype");
+    try define(engine, owner, "mapGet", try method(&s, map_prototype, "get"));
+    try define(engine, owner, "mapSet", try method(&s, map_prototype, "set"));
     const array_prototype = try s.get(try s.global("Array"), "prototype");
     try define(engine, owner, "arrayPush", try method(&s, array_prototype, "push"));
+    try define(engine, owner, "arrayIncludes", try method(&s, array_prototype, "includes"));
+    try define(engine, owner, "arrayIndexOf", try method(&s, array_prototype, "indexOf"));
+    try define(engine, owner, "arraySplice", try method(&s, array_prototype, "splice"));
+    try define(engine, owner, "arrayIsArray", try method(&s, try s.global("Array"), "isArray"));
     const string_prototype = try s.get(try s.global("String"), "prototype");
     try define(engine, owner, "charCodeAt", try method(&s, string_prototype, "charCodeAt"));
     try define(engine, owner, "stringSlice", try method(&s, string_prototype, "slice"));
@@ -168,6 +179,108 @@ pub fn lastParent(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValu
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const owner = try cachedOwner(engine, constructor);
     return v.js.call(engine, try s.get(owner, "weakGet"), try s.get(owner, "lastParents"), &.{module});
+}
+/// Loader's private first-parent read. Unlike .parent this never enters the
+/// public deprecation wrapper and never substitutes the last-parent relation.
+pub fn firstParent(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    return v.js.call(engine, try s.get(owner, "weakGet"), try s.get(owner, "firstParents"), &.{module});
+}
+/// Module._load updates the last parent only for an existing cached Module.
+/// This is private source state, not a write through the deprecated .parent.
+pub fn setLastParent(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValue, parent: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    _ = try s.call(try s.get(owner, "weakSet"), try s.get(owner, "lastParents"), &.{ module, parent });
+}
+/// The actual constructor's opaque callback roots own the CommonJS lexical
+/// graph. It is never cached as an importable module exposing private maps.
+pub fn commonJSState(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue {
+    return v.js.get(engine, try cachedOwner(engine, constructor), "commonJSState");
+}
+pub fn retainCommonJSState(engine: *v.em.Engine, constructor: c.JSValue, state: c.JSValue) !void {
+    if (!c.JS_IsObject(state)) return error.ActualCommonJSLexicalOwnerRequired;
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const previous = try s.get(owner, "commonJSState");
+    if (!c.JS_IsUndefined(previous) and !s.equal(previous, state)) return error.DifferentCommonJSLexicalState;
+    try define(engine, owner, "commonJSState", state);
+}
+/// Canonical public Source symbols are shared even when a converted CJS module
+/// is published before prototype/compiler bootstrap. Never recreate by spelling.
+pub const LoaderKey = enum { format, url, is_main, is_executing, cached_by_esm, required_module };
+pub fn loaderKey(engine: *v.em.Engine, constructor: c.JSValue, key: LoaderKey) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const name: [*:0]const u8 = switch (key) {
+        .format => "kFormat", .url => "kURL", .is_main => "kIsMainSymbol",
+        .is_executing => "kIsExecuting", .cached_by_esm => "kIsCachedByESMLoader", .required_module => "kRequiredModuleSymbol",
+    };
+    const previous = try s.get(owner, name);
+    if (!c.JS_IsUndefined(previous)) return c.JS_DupValue(engine.context, previous);
+    const symbol = try s.own(try engine.checked(c.JS_NewSymbol(engine.context, name, false)));
+    try define(engine, owner, name, symbol);
+    return c.JS_DupValue(engine.context, symbol);
+}
+/// Same private export relation for native-converted modules, load and ESM.
+pub fn moduleExportMap(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const previous = try s.get(owner, "moduleExportMap");
+    if (!c.JS_IsUndefined(previous)) return c.JS_DupValue(engine.context, previous);
+    const map = try s.own(try engine.checked(c.JS_CallConstructor(engine.context, try s.get(owner, "weakMapConstructor"), 0, null)));
+    try define(engine, owner, "moduleExportMap", map);
+    return c.JS_DupValue(engine.context, map);
+}
+pub fn snapshotExports(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValue, exports: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    _ = try s.call(try s.get(owner, "weakSet"), try s.own(try moduleExportMap(engine, constructor)), &.{ module, exports });
+}
+pub fn exportsSnapshot(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    return v.js.call(engine, try s.get(owner, "weakGet"), try s.own(try moduleExportMap(engine, constructor)), &.{module});
+}
+pub fn hasPrivateModuleRecord(engine: *v.em.Engine, constructor: c.JSValue, module: c.JSValue) !bool {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    return s.truthy(try s.call(try s.get(owner, "weakHas"), try s.get(owner, "firstParents"), &.{module}));
+}
+pub fn pathObject(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue { return v.js.get(engine, try cachedOwner(engine, constructor), "paths"); }
+/// Host-only converted-body capability store. Neither this Map nor its entries
+/// is exposed as a namespace/cache or accepted from guest input.
+pub fn convertedBody(engine: *v.em.Engine, constructor: c.JSValue, filename: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const map = try s.get(owner, "convertedBodies");
+    if (c.JS_IsUndefined(map)) return c.pi_js_undefined();
+    return v.js.call(engine, try s.get(owner, "mapGet"), map, &.{filename});
+}
+pub fn retainConvertedBody(engine: *v.em.Engine, constructor: c.JSValue, filename: c.JSValue, body: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    var map = try s.get(owner, "convertedBodies");
+    if (c.JS_IsUndefined(map)) {
+        map = try s.own(try engine.checked(c.JS_CallConstructor(engine.context, try s.get(owner, "mapConstructor"), 0, null)));
+        try define(engine, owner, "convertedBodies", map);
+    }
+    _ = try s.call(try s.get(owner, "mapSet"), map, &.{ filename, body });
+}
+pub fn addCachedChild(engine: *v.em.Engine, constructor: c.JSValue, parent: c.JSValue, module: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const children = try v.optional(&s, parent, "children");
+    if (s.truthy(children) and !s.truthy(try s.call(try s.get(owner, "arrayIncludes"), children, &.{module}))) _ = try s.call(try s.get(owner, "arrayPush"), children, &.{module});
+}
+pub fn removeChild(engine: *v.em.Engine, constructor: c.JSValue, parent: c.JSValue, module: c.JSValue) !void {
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const owner = try cachedOwner(engine, constructor);
+    const children = try v.optional(&s, parent, "children");
+    if (!s.truthy(try s.call(try s.get(owner, "arrayIsArray"), c.pi_js_undefined(), &.{children}))) return;
+    const index = try s.call(try s.get(owner, "arrayIndexOf"), children, &.{module});
+    if (!s.equal(index, c.JS_NewInt32(engine.context, -1))) _ = try s.call(try s.get(owner, "arraySplice"), children, &.{ index, c.JS_NewInt32(engine.context, 1) });
 }
 /// Real internal util deprecators must share this code set when composed later.
 pub fn warningCodes(engine: *v.em.Engine, constructor: c.JSValue) !c.JSValue { return v.js.get(engine, try cachedOwner(engine, constructor), "warningCodes"); }

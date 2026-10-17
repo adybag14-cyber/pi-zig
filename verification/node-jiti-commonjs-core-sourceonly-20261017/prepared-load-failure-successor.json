@@ -1,0 +1,49 @@
+{
+  "status": "source-only-fresh-allocation-boundary-correction",
+  "historical_unfixed_unit": "d0cbcb8aeda3ed3de2e18dd805b721d351f46616",
+  "parent": "4e43d9722faa1cea3babc5d8c8d04e3d86e212c0",
+  "concrete_source_review_finding": "Fresh private generation-tagged allocation reason can arrive catchable until outer callable classification; guest cleanup must not replace it",
+  "actual_used_boundary_extracted": "loadWithCleanup",
+  "snapshot_before": "actual module.load getter and call",
+  "classification": "existing rethrowRecognizedAllocation exact fresh reason before capture transfer and cleanup",
+  "shared_engine_c_h_helper_edits": false,
+  "named_prepared_native_controls": 5,
+  "compiled_metadata_count": null,
+  "native_controls_scope": "actual used direct boundary with real VM callback and actual Proxy/cache/children; explicitly not fake whole Module/bootstrap",
+  "historical_lookalike_and_ordinary_cleanup_retained": true,
+  "original_caller_rows_preserved": 8,
+  "expected_or_observed_added": false,
+  "node_compiler_native_generator_jobs": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_load.zig",
+      "bytes": 14580,
+      "sha256": "87DAE18EDB347EBCFEE9B36A66B4C567348B1C1F01971B33E55A6B7E4C452AE4"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_load_failure_test.zig",
+      "bytes": 7535,
+      "sha256": "9EF3E1A05185C76381FCE3E66BB3D22F9D668A3B4FA85E1539E78806FDA106D7"
+    },
+    {
+      "path": "src/native_node_commonjs_load_failure_test.zig",
+      "bytes": 83,
+      "sha256": "A10F0B7EB0AF210B01D311FB74DAE03D7EFEEBA9F0DEAF60375D02F8BA33B72D"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/LOAD-SCOPE.md",
+      "bytes": 4294,
+      "sha256": "73BE5936D8890F302CF21BDA1B5759C9F08D02D0C4B7FDDF7EB452A09FDC55E5"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/build-load-failure-snippet.zig.txt",
+      "bytes": 794,
+      "sha256": "906E13214A140A4617BF5803361C60F00D698B9A31BFC17D2A9AFCA8660D23EB"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/reference-load-input.mjs",
+      "bytes": 4522,
+      "sha256": "BE95B5DD2C19BFF7C182BD78F3045BDA0741ECBF156FCBEC947D07644EC40AA0"
+    }
+  ]
+}

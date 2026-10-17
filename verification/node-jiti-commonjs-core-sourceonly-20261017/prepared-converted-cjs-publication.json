@@ -1,0 +1,49 @@
+{
+  "status": "source-only-uncompiled-unrun-unselected",
+  "parent": "6a168030a78c2ecb81f77d143b24e048761628df",
+  "closed_load_failure": "138ecd3221e7724723a7b108e17a87ecc74cf18d",
+  "profile_dependency": "6ad2362a051f287f7815928376b0a30e933960dd",
+  "root_pi_js_null_shims_preserved": true,
+  "c_engine_shared_helpers_changed": false,
+  "actual_create_require_invoked_by_controls": false,
+  "fixture_process_is_actual_node_namespace": false,
+  "prepared_named_controls": 6,
+  "compiled_metadata_count": null,
+  "files": [
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 19979,
+      "sha256": "58683291910E1F708E81FC46A7B968AC1C9738ECBAC497471766C9927C7F6F96"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_prototype.zig",
+      "bytes": 11923,
+      "sha256": "62ADB34457AF4E037F182EB736E0969B07680796327C05B4AB2326FC9EF08D67"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module.zig",
+      "bytes": 6284,
+      "sha256": "710348CE1A0D91319C87A056B1DE4AFACFC51BC7E3142FEAF42FB840CE80310D"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module_test.zig",
+      "bytes": 11219,
+      "sha256": "80D81A674E831C9FC5F0C464D7AEDE68067EC602BFADB7B4E8ABE6B616496684"
+    },
+    {
+      "path": "src/native_node_commonjs_converted_module_test.zig",
+      "bytes": 87,
+      "sha256": "FE97604E80EC9AD31DB43BEEB522B2DC901CC787FC22A84379A18843BF8683B0"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/CONVERTED-CJS-PUBLICATION.md",
+      "bytes": 5093,
+      "sha256": "31FDC466110073816146D0B34473891BD1B0EB6AD6FA214A0E71E8F33275D025"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/converted-cjs-build-snippet.zig.txt",
+      "bytes": 465,
+      "sha256": "4CA7C4130C8E9B97ADBF8D43440831031170D02932F76DFCF3CB4DBF8B9DD887"
+    }
+  ]
+}

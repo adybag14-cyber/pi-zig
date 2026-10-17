@@ -1,0 +1,43 @@
+{
+  "status": "source-only-uncompiled-unrun-unselected",
+  "parent": "0641c42222c4a5ecb3cef6038c4782cfe93018a6",
+  "host_api": "native_node_commonjs_converted_provider.register/ready",
+  "actual_dispatch": "native_node_commonjs_prototype.compileBody",
+  "eager_babel_module": false,
+  "registered_value": "actual native five-argument CJS initializer exporting exact supplied native backend",
+  "source_policy": "explicit commonjs format and initialized unpatched canonical wrapper only",
+  "prepared_new_named_controls": 3,
+  "combined_prepared_named_controls": 9,
+  "compiled_metadata_count": null,
+  "full_public_load_execution": false,
+  "generic_compiler_missing": true,
+  "default_bootstrap_selected": false,
+  "c_engine_shared_helpers_changed": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_module_constructor.zig",
+      "bytes": 21426,
+      "sha256": "6AB69F66F14A19EF9AA8D5B68676D782BE2C4B4BA04A67A7EED242D001B87242"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_prototype.zig",
+      "bytes": 12210,
+      "sha256": "56F7D9B276D997A3028D6B7967D4152AE53A29698F50B1395F3C2DAF1C0B1468"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_provider.zig",
+      "bytes": 5011,
+      "sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_converted_module_test.zig",
+      "bytes": 15762,
+      "sha256": "B9C7A411C571F7450857F309AACE216729C1C95B3941940D98CE3FE016E70F93"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/LAZY-CONVERTED-CJS-PROVIDER.md",
+      "bytes": 5090,
+      "sha256": "C158B67D44F29E6E608A9F4569A75D69B297676412FD55B6F1D30989F0FE1DF7"
+    }
+  ]
+}

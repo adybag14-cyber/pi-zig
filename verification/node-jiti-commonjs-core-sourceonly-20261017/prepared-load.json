@@ -1,0 +1,43 @@
+{
+  "status": "source-only-uncompiled",
+  "parent": "dbf0f29b",
+  "node_source": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "loader_authority_sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB",
+  "body_scope": [
+    "Module._load",
+    "updateChildren scan=true",
+    "reportModuleToWatchMode",
+    "ordinary load-failure finally cleanup"
+  ],
+  "original_caller_rows": 8,
+  "expected_present": false,
+  "observed_present": false,
+  "default_selected": false,
+  "actual_collaborators_required": [
+    "resolveForCJSWithHooks",
+    "loadBuiltinWithHooks",
+    "BuiltinModule normalize/bare policies",
+    "getExportsForCircularRequire/CircularRequirePrototypeWarningProxy",
+    "watch mode predicate/process",
+    "real prototype loaders/compiler/FS/ESM/NAPI"
+  ],
+  "private_last_parent_runtime_observation": false,
+  "compiler_node_native_generator_jobs": false,
+  "files": [
+    {
+      "path": "src/extensions/native_node_commonjs_load.zig",
+      "bytes": 13882,
+      "sha256": "ACD7962080B91F012EB4A236D74B91350BDAC4B5D1983DA50C8310C2185AD5B2"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/LOAD-SCOPE.md",
+      "bytes": 3141,
+      "sha256": "8F0695F9BE04EBC53A958D97742A47DD034790AC69890AD638EF2F62EA2DBBF9"
+    },
+    {
+      "path": "verification/node-jiti-commonjs-core-sourceonly-20261017/reference-load-input.mjs",
+      "bytes": 4522,
+      "sha256": "BE95B5DD2C19BFF7C182BD78F3045BDA0741ECBF156FCBEC947D07644EC40AA0"
+    }
+  ]
+}

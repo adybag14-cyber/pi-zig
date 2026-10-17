@@ -1,0 +1,31 @@
+{
+  "status": "accepted_finite_source_intake_uncompiled_unrun",
+  "patch_sha256": "CB76A7116E2526E7ACA1149820AB727185DB5318B73C8AB032A46BECE5042EF7",
+  "manifest_sha256": "56057908D62779685464FD692DA9142BDD230E4A6D767CCAD1593A7792DD60F4",
+  "base": "12cc31356136cdbca5ee858a4d7a1873feabcd28",
+  "source": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399",
+  "result_tree": "a325b609ec3a1ad5fc9478e6374fc3e0b15fd5d9",
+  "newer_base": "80e6181d3ea62382934fd057188b0cfd511d2066",
+  "newer_result_tree": "ddb4127dd27209a025ff0d5136bdc28f5214fed9",
+  "payload_rows": 32,
+  "payload_sha_and_exact_source_tree_blob_mismatches": 0,
+  "protected_paths_checked": [
+    "src/extensions/native_ai_provider_values.zig",
+    "src/extensions/native_models_stream_scope.zig",
+    "src/extensions/native_async_body.zig",
+    "src/extensions/native_node_module_callable.zig",
+    "src/extensions/native_node_module_paths.zig",
+    "src/extensions/native_jiti_profile.zig",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h",
+    "build.zig",
+    "src/extensions/engine.zig",
+    "src/extensions/native_js_values.zig"
+  ],
+  "relative_import_checks": 43,
+  "outside_embeds": 0,
+  "copied_reviews": 4,
+  "constructor_null_carries": 2,
+  "scope": "Eight exact reviewed product blobs plus six prepared test roots/sources and eighteen historical source/control/provenance paths; constructor private additions preserve both Root null shims. Prior prototype/wrapper/load closures remain explicitly message-derived. No default selection, installed targets, full bootstrap or runtime qualification.",
+  "execution": "Only Git private-index and managed file/hash operations. No Main edits, Node, native tests, compiler, parser or AST jobs."
+}
