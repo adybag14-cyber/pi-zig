@@ -1,0 +1,69 @@
+{
+  "schema": 1,
+  "parent": "02daf24721db4615fb4a973ef1e514ae88152a6c",
+  "status": "SOURCE_ONLY_ACTUAL_ORIGINAL_CAPTURE_CONTROLLERS_PREPARED_UNRUN",
+  "controller": {
+    "path": "verification/node-tty-composition-sourceonly-20261017/Prepare-OriginalCapture.ps1",
+    "sha256": "6FB8EE635780079AAB44D10DF30C3E50A635216C4B97798BE3D3CB5029EA8752"
+  },
+  "cases": [
+    {
+      "name": "actual-builtin-identities",
+      "input": "verification/node-tty-composition-sourceonly-20261017/original-builtin-identities.mjs",
+      "sha256": "6EC91BA74898F90CB6269D838A1A003A12D0FA87CB5B717714FBD386D2D92E4F",
+      "bytes": 2261
+    },
+    {
+      "name": "actual-alias-identities",
+      "input": "verification/node-tty-composition-sourceonly-20261017/original-alias-identity-capture.mjs",
+      "sha256": "235D35E9705520AD46DF671283AA6CB8D78D8548ECBF1E7622F45DCE417B5E31",
+      "bytes": 438
+    },
+    {
+      "name": "original-tty-consumers",
+      "input": "verification/node-tty-sourceonly-20261017/original-consumers.mjs",
+      "sha256": "585A0E068F70012778D26FD1FA7259C0858D02BAAE4B8487EFC490F8B173CBA6",
+      "bytes": 6959
+    },
+    {
+      "name": "actual-warning-and-release-cache",
+      "input": "verification/node-tty-sourceonly-20261017/warning-and-cache.mjs",
+      "sha256": "9D9D3D0C93B15EC0A9111AAB38E53FD3ED11D6FE9210FCAEBFAC004EFE04E8DB",
+      "bytes": 1431
+    },
+    {
+      "name": "original-error-registration",
+      "input": "verification/node-tty-sourceonly-20261017/original-error-registration.mjs",
+      "sha256": "0B380FCA1FF7BC513A3043165B82E3D39AFF10E762D72631424D52215156FDA9",
+      "bytes": 3689
+    },
+    {
+      "name": "original-util-error-paths",
+      "input": "verification/node-tty-sourceonly-20261017/original-util-error-paths.mjs",
+      "sha256": "EEFDD84A1C3662F82A70C4FC2A79ABF67DDF2096BB271015372B53140633F0D2",
+      "bytes": 5107
+    },
+    {
+      "name": "original-readline-callbacks",
+      "input": "verification/node-tty-sourceonly-20261017/original-readline-callbacks.mjs",
+      "sha256": "C0F94C98070ADE7D3C3B3ECE279D6B31138281B4152ED9BA78189D12CB04F0DC",
+      "bytes": 7424
+    }
+  ],
+  "transitive_input": {
+    "path": "verification/node-tty-composition-sourceonly-20261017/original-alias-identity.mjs",
+    "sha256": "1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181"
+  },
+  "reference_processes": 7,
+  "fresh_process_each": true,
+  "execution_grant": false,
+  "capture_accepted": false,
+  "actual_results": null,
+  "expected_outputs": null,
+  "separate_physical_console_cases": [
+    "verification/node-tty-sourceonly-20261017/original-console-output.mjs",
+    "verification/node-tty-sourceonly-20261017/original-legacy-console-inputs.json"
+  ],
+  "physical_fixture": "Not provided by this packet. Actual private console + genuine fd3 report pipe/authorized input ownership required; redirected stdio is not a positive console qualification",
+  "preserves": "Original7 source callers unchanged; one added pure alias export observer only. Existing bounded Root actor owner remains launch authority."
+}
