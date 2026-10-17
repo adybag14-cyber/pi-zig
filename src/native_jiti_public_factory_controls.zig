@@ -121,6 +121,7 @@ pub fn verifyPendingLazyLoadAndRetry(engine: *em.Engine, actual_inputs: public_f
     const lazy = try js.get(engine, resolved_options, "transform"); defer engine.freeValue(lazy);
     var args = [_]c.JSValue{actual_transform_options};
     const failed = c.JS_Call(engine.context, lazy, c.pi_js_undefined(), args.len, &args);
+    defer engine.freeValue(failed);
     try std.testing.expect(c.JS_IsException(failed));
     const reason = c.JS_GetException(engine.context); defer engine.freeValue(reason);
     try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual_pending_reason));
