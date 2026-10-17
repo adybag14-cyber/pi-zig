@@ -101,3 +101,46 @@ pub fn allocationFailure(engine: *v.em.Engine, actual_tty_exports: c.JSValue, fa
     };
     return error.ExpectedActualAliasAllocationFailure;
 }
+
+/// Actual Bfb producer+invocation, with B already captured and VM slot empty.
+/// After leaving that invocation, the SAME flagged value is historical DATA;
+/// successful admission then proves this is not a blanket flag/history guard.
+pub fn currentFatalEntry(engine: *v.em.Engine, actual_tty_exports: c.JSValue) !void {
+    try std.testing.expectEqual(@as(usize, 0), engine.native_builtin_aliases.count());
+    try engine.registerValueModule("node:tty", actual_tty_exports);
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    defer if (invocation.active) {
+        const result = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+        engine.freeValue(result);
+        if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
+    };
+    var threw = false;
+    const produced = engine.checked(engine.throwNativeOutOfMemoryFatal()) catch |err| block: {
+        try std.testing.expect(err == error.JavaScriptException);
+        threw = true; break :block c.pi_js_undefined();
+    };
+    defer engine.freeValue(produced);
+    try std.testing.expect(threw);
+    const reason = c.JS_DupValue(engine.context, engine.captured_exception orelse return error.MissingActualAliasFatal); defer engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsUncatchableError(reason) and !c.JS_HasException(engine.context));
+    engine.registerBuiltinAlias("tty", "node:tty") catch |err| {
+        try std.testing.expect(err == error.JavaScriptException);
+        try std.testing.expectEqual(@as(usize, 0), engine.native_builtin_aliases.count());
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception orelse return error.MissingAliasFatalCapture));
+        const captured = engine.captured_exception.?; engine.captured_exception = null; engine.freeValue(captured);
+        const result = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined()); defer engine.freeValue(result);
+        try std.testing.expect(c.JS_IsException(result));
+        const leaving = c.JS_GetException(engine.context); defer engine.freeValue(leaving);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, leaving));
+        try std.testing.expect(engine.native_fatal_invocation == null);
+        engine.captured_exception = c.JS_DupValue(engine.context, reason);
+        try engine.registerBuiltinAlias("tty", "node:tty");
+        try std.testing.expectEqual(@as(usize, 1), engine.native_builtin_aliases.count());
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.captured_exception.?));
+        const history = engine.captured_exception.?; engine.captured_exception = null; engine.freeValue(history);
+        c.JS_ClearUncatchableError(engine.context, reason);
+        return;
+    };
+    return error.ExpectedCurrentFatalAliasEntryFailure;
+}

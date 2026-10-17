@@ -29,7 +29,7 @@ pub const Primordials = struct {
 };
 pub fn capturePrimordials(engine: *v.em.Engine) !Primordials {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
-    try h.pending(engine);
+    try engine.checkNativeEntry();
     const color_inputs = try colors.capturePrimordials(engine); errdefer color_inputs.deinit(engine);
     const inspect_inputs = try inspect.capturePrimordials(engine); errdefer inspect_inputs.deinit(engine);
     var s: v.Scope = .{ .engine = engine }; defer s.deinit();
@@ -232,26 +232,42 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
                 cleanup.collect(generation); cleanup.release(owned);
                 return error.JavaScriptException;
             }
-            return s.own(owned);
+            return s.own(try s.engine.checked(owned));
         }
         fn get(s: *v.Scope, cleanup: *Cleanup, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
             const generation = s.engine.native_allocation_generation;
-            return own(s, cleanup, try v.js.get(s.engine, receiver, name), generation);
+            return own(s, cleanup, c.JS_GetPropertyStr(s.engine.context, receiver, name), generation);
         }
         fn call(s: *v.Scope, cleanup: *Cleanup, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
             const generation = s.engine.native_allocation_generation;
-            return own(s, cleanup, try v.js.call(s.engine, function, receiver, args), generation);
+            return own(s, cleanup, c.JS_Call(s.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)), generation);
+        }
+        fn global(s: *v.Scope, cleanup: *Cleanup, name: [*:0]const u8) !c.JSValue {
+            const generation = s.engine.native_allocation_generation;
+            const object = try own(s, cleanup, c.JS_GetGlobalObject(s.engine.context), generation);
+            return get(s, cleanup, object, name);
+        }
+        fn registeredBuiltin(s: *v.Scope, cleanup: *Cleanup, name: []const u8) !c.JSValue {
+            // Mirror the actual Engine requireBuiltin guard/default fallback,
+            // intercepting its RAW owned result before Bfb.checked can retire
+            // success+pending. This never exposes an unregistered private key.
+            const engine = s.engine;
+            if (std.fs.path.isAbsolute(name)) return error.RequiredActualTtyBuiltin;
+            const canonical = engine.native_builtin_aliases.get(name) orelse name;
+            if (!engine.native_module_names.contains(canonical)) return error.RequiredActualTtyBuiltin;
+            const record = engine.native_module_values.get(canonical) orelse return error.RequiredActualTtyBuiltin;
+            const value = try get(s, cleanup, record, "default");
+            if (!c.JS_IsUndefined(value)) return value;
+            return s.own(c.JS_DupValue(engine.context, record));
         }
         fn prepare(engine: *v.em.Engine, state: *State, inputs: Inputs, temporaries: *Temporaries, cleanup: *Cleanup) !void {
             const s = &temporaries.scope;
-            const process_generation = engine.native_allocation_generation;
-            const actual_process = try own(s, cleanup, try v.js.global(engine, "process"), process_generation);
+            const actual_process = try global(s, cleanup, "process");
             if (!c.JS_IsStrictEqual(engine.context, actual_process, inputs.actual_process) or !c.JS_IsFunction(engine.context, try get(s, cleanup, actual_process, "nextTick"))) return error.RequiredActualTtyProcessTicks;
             if (!c.JS_IsObject(inputs.actual_net) or !c.JS_IsStrictEqual(engine.context, try get(s, cleanup, inputs.actual_net, "Socket"), inputs.canonical_socket.constructor)) return error.RequiredCanonicalTtySocketCarrier;
             // Actual CJS implementation performs normalization and builtin
             // lookup. No locally fabricated require dispatcher is installed.
-            const module_generation = engine.native_allocation_generation;
-            const node_module = try own(s, cleanup, (try engine.requireBuiltin("node:module")) orelse return error.RequiredActualNodeModuleCreateRequire, module_generation);
+            const node_module = try registeredBuiltin(s, cleanup, "node:module");
             const create_require = try get(s, cleanup, node_module, "createRequire");
             if (!c.JS_IsFunction(engine.context, create_require)) return error.RequiredActualNodeModuleCreateRequire;
             state.actual_require = c.JS_DupValue(engine.context, try call(s, cleanup, create_require, node_module, &.{inputs.physical_filename}));
@@ -292,7 +308,7 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
         /// owner can opt into this entry; Engine/default bootstrap never does.
         pub fn create(engine: *v.em.Engine, inputs: Inputs) !Exports {
             engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
-            try h.pending(engine);
+            try engine.checkNativeEntry();
             if (@import("builtin").os.tag != .windows) return error.RequiredActualPlatformTtyAssembly;
             if (inputs.primordials.engine != engine) return error.ForeignActualTtyPrimordials;
             if (engine.native_module_values.get(key)) |holder| {
@@ -341,7 +357,7 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
         /// this function does not emulate them with ordinary JS objects.
         pub fn install(engine: *v.em.Engine, inputs: Inputs) !Exports {
             engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
-            try h.pending(engine);
+            try engine.checkNativeEntry();
             const exports = try create(engine, inputs); errdefer exports.deinit(engine);
             const state = try stateOf(engine, engine.native_module_values.get(key).?);
             if (state.phase == .published) return exports;

@@ -494,7 +494,7 @@ pub const Engine = struct {
     /// second C module, forwarding namespace, loader wrapper or guest getter.
     pub fn registerBuiltinAlias(self: *Engine, alias: []const u8, canonical: []const u8) !void {
         self.native_exception_diagnostics_suppressed += 1; defer self.native_exception_diagnostics_suppressed -= 1;
-        if (c.JS_HasException(self.context)) { self.captureException(self.context); return error.JavaScriptException; }
+        try self.checkNativeEntry();
         if (!std.mem.startsWith(u8, canonical, "node:") or canonical.len == 5 or !std.mem.eql(u8, alias, canonical[5..]) or std.mem.indexOfScalar(u8, canonical, 0) != null) return error.InvalidNativeBuiltinAlias;
         if (std.fs.path.isAbsolute(alias) or alias[0] == '.' or std.mem.indexOfScalar(u8, alias, '\\') != null or std.mem.indexOfScalar(u8, alias, ':') != null) return error.InvalidNativeBuiltinAlias;
         if (!self.native_module_names.contains(canonical) or !self.native_module_values.contains(canonical) or self.native_builtin_aliases.contains(canonical)) return error.RequiredCanonicalNativeBuiltin;

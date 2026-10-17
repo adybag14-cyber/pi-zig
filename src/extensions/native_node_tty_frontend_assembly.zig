@@ -19,7 +19,7 @@ pub const Bootstrap = struct {
     physical_filename: c.JSValue,
     pub fn capture(engine: *v.em.Engine, actual_frontend: *frontend.Frontend, filename: []const u8) !Bootstrap {
         engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
-        try h.pending(engine);
+        try engine.checkNativeEntry();
         if (!std.fs.path.isAbsolute(filename)) return error.RequiredPhysicalTtyCallerFilename;
         // capture validates active frontend, VM/owner thread, original native
         // mode and current native descriptor mapping where input is a console.
@@ -40,7 +40,7 @@ pub fn FrontendAssembly(comptime Socket: type, comptime Hub: type, comptime Sche
         pub fn install(bootstrap: *const Bootstrap, canonical_socket: *const Socket.Provider, actual_net: c.JSValue, qualification_admission: bool) !Builtins.Exports {
             const engine = bootstrap.engine;
             engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
-            try h.pending(engine);
+            try engine.checkNativeEntry();
             const actual_frontend = bootstrap.actual_frontend;
             if (actual_frontend.engine != engine or std.Thread.getCurrentId() != actual_frontend.owner or !actual_frontend.active.load(.acquire)) return error.RequiredLiveActualTtyFrontend;
             if (bootstrap.native_mode) |snapshot| try snapshot.validate(engine);

@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "parent": "068b1f05d55906f10397bad66452bb3a0324aae5",
+  "root_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "findings": [
+    "Raw owned success+pending must be intercepted BEFORE Bfb Engine.checked/v.js normalization can retire it",
+    "Alias admission must protect actual active NativeInvocation fatal alreadycaptured with noVMpending; historical flagsalone DATA"
+  ],
+  "corrections": [
+    "New assembly-local RAW JS_GetPropertyStr/JS_Call/global/registered-builtin guard+default fallback feeds existingCleanup BEFORE Engine.checked/Scope/GPA",
+    "Direct new assembly/frontend/alias host entries use actualRootBfb checkNativeEntry, no oldEngineflagfallback"
+  ],
+  "payload": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 96700,
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 30963,
+      "sha256": "64052E58BBF0213AF77125E1A32E18AD0B4361ED2B0B71572290FEB8FB502612"
+    },
+    {
+      "path": "src/extensions/native_node_tty_frontend_assembly.zig",
+      "bytes": 3732,
+      "sha256": "46B1D5F757600198C7F58B2476198B12CD15AE3CF729B84E037D3C513F0DC664"
+    },
+    {
+      "path": "src/native_node_tty_builtin_alias_control.zig",
+      "bytes": 10322,
+      "sha256": "809EF641395682528A7187315808F52C744C733883A1395507409607C320BD23"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/alias-bfb-projection-v2.json",
+      "bytes": 1055,
+      "sha256": "F79B3E9A421FCB97B3D8444F66A7D9F27AC5782B028B9AB1E4075FA114DD75FB"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/engine-alias-on-bfb-v2.patch",
+      "bytes": 8261,
+      "sha256": "259D202432FD25E8BC32432ADAB7072353CABEB853A536DCE19A040287818E5D"
+    }
+  ],
+  "controls": "Existing pendingOwned soleholder A/C/rawB profiles now reach localnormalizer beforechecked; new actualNativeInvocation+throwNativeOOMFatal alreadycaptured/noVMpending alias no-mutation; samevalue historicalDATA admission succeeds",
+  "engine_projection": "Canonical Bfbpatch applies/reverses full originaltree byteexact; previous C04 projection historical; selected engine CCCC31A0",
+  "scope": "No sharedh/Scope/C/H/Main rewrite ordefaultselection",
+  "execution_grant": false,
+  "actual_results": null
+}

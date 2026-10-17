@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_PRIVATE_INDEX_PROJECTION_NO_COMPILE",
+  "base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "base_engine_git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+  "base_engine_sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+  "prospective_tree": "2947c783ba91c31ade2a6a865060cd0960d9a761",
+  "prospective_engine_sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC",
+  "patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\node-tty-alias-bfb-projection-sourceonly-20261017\\engine-alias-on-bfb-v2.patch",
+    "sha256": "259D202432FD25E8BC32432ADAB7072353CABEB853A536DCE19A040287818E5D"
+  },
+  "reversed_tree": "5141ffb694042427f314e86e240276041c78ff02",
+  "base_tree": "5141ffb694042427f314e86e240276041c78ff02",
+  "exact_reversal_preserves_all_bfb_changes": true,
+  "main_edits": false,
+  "execution_grant": false,
+  "correction": "Direct alias entry uses actual Bfb checkNativeEntry/currentNativeInvocation; no historyflagfallback"
+}
