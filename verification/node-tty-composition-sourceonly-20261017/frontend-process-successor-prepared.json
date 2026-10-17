@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "parent": "faf7e27293dd45d1f1558ec90b9334fe16da3e28",
+  "status": "SOURCE_ONLY_CORRECTIVE_PREPARED_UNRUN",
+  "finding": "Direct FrontendAssembly live global.process result previouslypassedthrough v.js/checked before Builtins cleanup",
+  "correction": "Existing localCleanup exposes takeOwned for RAW results; frontend rawGlobal/rawprocess normalized beforechecked, preservedthrough Builtins invocation and each process/global/export release; assemblydelegatessamehelper",
+  "payload": [
+    {
+      "path": "src/extensions/native_node_tty_assembly_cleanup.zig",
+      "bytes": 4479,
+      "sha256": "CBAD9D6D45DA44ECE544D2334AE5107189445764923AF9142A9D199AD0CD97C2"
+    },
+    {
+      "path": "src/extensions/native_node_tty_builtin_assembly.zig",
+      "bytes": 33106,
+      "sha256": "783820435385C04FE22A0C634C4B965EBDA9898C4BBBA1FA7D0193E54B68C6C9"
+    },
+    {
+      "path": "src/extensions/native_node_tty_frontend_assembly.zig",
+      "bytes": 4820,
+      "sha256": "600244F6324F1A45E5B7E986B4ACDD7FFC6761FA1BE75EF165C2EA9DCE6B48D0"
+    },
+    {
+      "path": "src/native_node_tty_frontend_process_control.zig",
+      "bytes": 6162,
+      "sha256": "152FDD593E015C964BFA8C1BBBE60BE4BCEB4DB2549F6E1F279334CBAAE9D6D5"
+    }
+  ],
+  "controls": [
+    "Actual activeFrontend +globalprocessgetter returnssoleholder/pendingA; ordinarycleanupC keepsA",
+    "Same actualfrontprofile freshrawnativeOOM BpromotesA; exactidentity/rawtag/freeonce/slots-empty",
+    "No module/alias/Hub effects before failure; restoreactualprocess then retry samegenuinefrontend/canonicalprovider succeeds"
+  ],
+  "alias_engine_closure": "Separate Body2E07355F receipt; EngineCCCC31A0 unchanged",
+  "scope": "No fakeFrontend/provider; no sharedh/Scope/C/H/Engine/Main changes/defaultactivation",
+  "execution_grant": false,
+  "actual_metadata": null
+}

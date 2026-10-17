@@ -36,6 +36,15 @@ pub const Cleanup = struct {
         const generation = self.engine.native_allocation_generation;
         self.engine.freeValue(value); self.collect(generation);
     }
+    /// RAW result boundary: Engine.checked itself may retire a successful
+    /// value with an actual pending event. Intercept before it can do so.
+    pub fn takeOwned(self: *Cleanup, owned: c.JSValue, generation: u64) !c.JSValue {
+        if (c.JS_HasException(self.engine.context)) {
+            self.collect(generation); self.release(owned);
+            return error.JavaScriptException;
+        }
+        return self.engine.checked(owned);
+    }
     pub fn scope(self: *Cleanup, value: *v.Scope) void {
         const count = value.inline_count; value.inline_count = 0;
         for (value.inline_values[0..count]) |owned| self.release(owned);

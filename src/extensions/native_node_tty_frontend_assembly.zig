@@ -7,6 +7,7 @@ const h = @import("native_node_tty_values.zig");
 const assembly = @import("native_node_tty_builtin_assembly.zig");
 const frontend = @import("native_stdio_frontend.zig");
 const mode = @import("native_node_tty_frontend_mode.zig");
+const Cleanup = @import("native_node_tty_assembly_cleanup.zig").Cleanup;
 
 /// Owned by the actual frontend's bootstrap frame. Retain until assembly has
 /// cached its own JS roots; retaining it longer permits identity-checked retry.
@@ -44,10 +45,25 @@ pub fn FrontendAssembly(comptime Socket: type, comptime Hub: type, comptime Sche
             const actual_frontend = bootstrap.actual_frontend;
             if (actual_frontend.engine != engine or std.Thread.getCurrentId() != actual_frontend.owner or !actual_frontend.active.load(.acquire)) return error.RequiredLiveActualTtyFrontend;
             if (bootstrap.native_mode) |snapshot| try snapshot.validate(engine);
-            const process = try h.success(engine, try v.js.global(engine, "process")); defer engine.freeValue(process);
-            return Builtins.install(engine, .{ .canonical_socket = canonical_socket, .actual_net = actual_net, .actual_process = process,
+            var cleanup = Cleanup.begin(engine);
+            const generation = engine.native_allocation_generation;
+            const global = cleanup.takeOwned(c.JS_GetGlobalObject(engine.context), generation) catch |err| {
+                cleanup.collect(generation); try cleanup.finish(err); unreachable;
+            };
+            const process = cleanup.takeOwned(c.JS_GetPropertyStr(engine.context, global, "process"), generation) catch |err| {
+                cleanup.collect(generation); cleanup.release(global); try cleanup.finish(err); unreachable;
+            };
+            var failure: ?anyerror = null;
+            const result: ?Builtins.Exports = Builtins.install(engine, .{ .canonical_socket = canonical_socket, .actual_net = actual_net, .actual_process = process,
                 .physical_filename = bootstrap.physical_filename, .primordials = &bootstrap.primordials, .frontend_mode = bootstrap.native_mode,
-                .qualification_admission = qualification_admission });
+                .qualification_admission = qualification_admission }) catch |err| block: { failure = err; break :block null; };
+            cleanup.collect(generation);
+            cleanup.release(process); cleanup.release(global);
+            if (failure != null or cleanup.selected != null) {
+                if (result) |exports| inline for (std.meta.fields(Builtins.Exports)) |field| cleanup.release(@field(exports, field.name));
+                try cleanup.finish(failure); unreachable;
+            }
+            cleanup.restoreHistory(); return result.?;
         }
     };
 }

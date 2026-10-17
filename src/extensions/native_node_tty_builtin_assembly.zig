@@ -227,14 +227,7 @@ pub fn Assembly(comptime Socket: type, comptime Hub: type, comptime Scheduler: t
             if (state.failure_reason) |reason| { state.failure_reason = null; cleanup.release(reason); }
         }
         fn own(s: *v.Scope, cleanup: *Cleanup, owned: c.JSValue, generation: u64) !c.JSValue {
-            if (c.JS_HasException(s.engine.context)) {
-                // Collect A before releasing the successful owned result.
-                // Its genuine native finalizer can produce raw fresh B; the
-                // SAME reducer promotes B before Scope/GPA/another getter.
-                cleanup.collect(generation); cleanup.release(owned);
-                return error.JavaScriptException;
-            }
-            return s.own(try s.engine.checked(owned));
+            return s.own(try cleanup.takeOwned(owned, generation));
         }
         fn get(s: *v.Scope, cleanup: *Cleanup, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
             const generation = s.engine.native_allocation_generation;
