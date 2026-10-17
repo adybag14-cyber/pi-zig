@@ -1,0 +1,14 @@
+[
+  {
+    "path": "verification/jiti-options-factory-sourceonly-20261017/authority/options.ts",
+    "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/src/options.ts",
+    "sha256": "5F60FADFFBE2B43B7F37E21340AA61C99A2A88DD6F8A8FBE9A98689008F8A76F",
+    "bytes": 2201
+  },
+  {
+    "path": "verification/jiti-options-factory-sourceonly-20261017/authority/jiti.ts",
+    "uri": "https://raw.githubusercontent.com/unjs/jiti/fd3bb289b75ed207edfb686d671ed50144f7e90f/src/jiti.ts",
+    "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+    "bytes": 5500
+  }
+]
