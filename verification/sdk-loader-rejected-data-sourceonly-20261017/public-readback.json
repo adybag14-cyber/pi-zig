@@ -1,0 +1,62 @@
+{
+  "source_head": "d8e42843fb03cfbad6bd320bd12376d8258f800f",
+  "ref": "checkpoint/sdk-loader-rejected-data-sourceonly-20261017",
+  "all_public_bytes_match": true,
+  "native_qualification": false,
+  "records": [
+    {
+      "path": "src/extensions/native_sdk_extension_initializer.zig",
+      "size": 10005,
+      "sha256": "C351ECBE107DF52529564D69DF974E5DF814F09959E0F90ACD7F912542D8554C",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/src/extensions/native_sdk_extension_initializer.zig"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "size": 20907,
+      "sha256": "6E2CC076EE61546349D986B93093C11A06CAD8E627ED0254D7431B7112BE86C1",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/src/extensions/native_sdk_extension_loader_production.zig"
+    },
+    {
+      "path": "src/native_sdk_loader_rejected_data_controls.zig",
+      "size": 11618,
+      "sha256": "C8601ACDCBCEBD6CC09FEF9EF69CC4DB10D6F1BC34015A4B23B64CA25E8826F8",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/src/native_sdk_loader_rejected_data_controls.zig"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/README.md",
+      "size": 5239,
+      "sha256": "F54B4ABA1D90C573E38DC7779B491EA92B2CD9FF85B85E3DAE7BA06733D635A9",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/README.md"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/authority/LICENSE.txt",
+      "size": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/authority/LICENSE.txt"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/authority/loader.ts.txt",
+      "size": 28124,
+      "sha256": "0177DB97C7E35EA39CDAB53124C04DBF6E045AC379670BCAE0B4E1269002EB3A",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/authority/loader.ts.txt"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/controller.input.mjs",
+      "size": 1136,
+      "sha256": "851ABEDF8F4BD086E19FFD609BED1826D1262693720BD2E9177458B82AF3142D",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/controller.input.mjs"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/extension.input.mjs",
+      "size": 456,
+      "sha256": "E39B194597DD525D7E1D8DF7E26C303F27C61CD1EBE79519CE04A2802CE3A57A",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/extension.input.mjs"
+    },
+    {
+      "path": "verification/sdk-loader-rejected-data-sourceonly-20261017/prepared.json",
+      "size": 5199,
+      "sha256": "8C8F7FFB49CB03B9564F807DDDF28C4AC1C793A09FEC06066B74A2C90BB1A01D",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/d8e42843fb03cfbad6bd320bd12376d8258f800f/verification/sdk-loader-rejected-data-sourceonly-20261017/prepared.json"
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "source_head": "d8e42843fb03cfbad6bd320bd12376d8258f800f",
+  "reviewer": "/root/async_c_review_resume",
+  "result": "source-review-closed-no-scoped-blocker",
+  "manifest_sha256": "8C8F7FFB49CB03B9564F807DDDF28C4AC1C793A09FEC06066B74A2C90BB1A01D",
+  "records": 20,
+  "hash_and_size_drift": 0,
+  "expected_absent": true,
+  "ordinary_source_flow": "discard/formatter/IteratorClose/override intact; DATA rawidentity preserved",
+  "scope": "3 real loader AF callbacks + initializer/fromFactory current event/capture ownership and rejected-DATA correction; exact3nullshims",
+  "excluded_untracked_source": [
+    "src/extensions/native_jiti_shared_dependencies.zig",
+    "src/extensions/native_extension_dynamic_import_graph0.zig"
+  ],
+  "jobs_run": [],
+  "compiled": false,
+  "native_qualified": false,
+  "full_bootstrap_available": false,
+  "default_selection": false,
+  "public_readback_paths": 9,
+  "public_readback_sha256": "B8FCAF93150EAABD4E6C6DB9E16854B1A04FE42B422643587D16E41FE47B810B"
+}
