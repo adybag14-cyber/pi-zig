@@ -25,7 +25,7 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < arg
 fn define(engine: *v.em.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, target, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
-fn nullObject(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.JS_NULL))); }
+fn nullObject(s: *Scope) !c.JSValue { return s.own(try s.engine.checked(c.JS_NewObjectProto(s.engine.context, c.pi_js_null()))); }
 fn method(s: *Scope, prototype: c.JSValue, name: [*:0]const u8) !c.JSValue {
     const function = try s.get(prototype, name);
     if (!c.JS_IsFunction(s.engine.context, function)) return error.RequiredPristineNodeModulePrimordial;
@@ -120,7 +120,7 @@ fn construct(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue,
         const children = try s.get(arg(args, 1), "children");
         if (s.truthy(children)) _ = try s.call(try s.get(owner, "arrayPush"), children, &.{receiver});
     }
-    try s.set(receiver, "filename", c.JS_NULL);
+    try s.set(receiver, "filename", c.pi_js_null());
     try s.set(receiver, "loaded", c.pi_js_bool(engine.context, 0));
     try s.set(receiver, "children", try s.array());
     return c.pi_js_undefined();

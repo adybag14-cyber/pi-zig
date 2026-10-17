@@ -151,7 +151,7 @@ pub fn evaluate(engine: *v.em.Engine, imports: Imports, args: []const c.JSValue)
             const completion = try s.call(imports.native_import_or_require, c.pi_js_undefined(), &.{ context, filename, try s.get(options, "async") });
             const resolved = try s.call(resolve, promise, &.{completion});
             const catch_method = try s.get(resolved, "catch");
-            const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+            const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
             inline for (.{ .{ "context", context }, .{ "source", source }, .{ "options", options }, .{ "filename", filename }, .{ "self", imports.eval_module_self }, .{ "debug", imports.debug } }) |entry| try put(engine, owner, entry[0], entry[1]);
             try put(engine, owner, "generation", try s.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
             const handler = try s.own(try functions.create(engine, "", 1, false, importFallback, &.{owner}));
@@ -184,7 +184,10 @@ fn importFallback(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, r
     const generation = engine.native_allocation_generation;
     return importFallbackInner(engine, args, roots) catch |err| {
         if (err == error.JavaScriptException) {
-            if (engine.captured_exception == null and c.JS_HasException(engine.context)) _ = v.js.capture(engine);
+            if (engine.captured_exception == null and c.JS_HasException(engine.context)) {
+                const capture_error = v.js.capture(engine);
+                if (capture_error != error.JavaScriptException) return capture_error;
+            }
             const caught = engine.captured_exception orelse return error.MissingJitiFrontendCurrentCapturedReason;
             if (c.JS_IsUncatchableError(caught)) return err;
             try body.rethrowRecognizedAllocation(engine, caught, generation);

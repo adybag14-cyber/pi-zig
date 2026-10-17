@@ -30,7 +30,7 @@ pub fn interopDefault(engine: *v.em.Engine, value: c.JSValue) !c.JSValue {
     const needs_apply = c.JS_IsFunction(engine.context, def) and !c.JS_IsFunction(engine.context, value);
     const fallback = def_object_or_function and !try instance(&s, def, try s.global("Promise"));
     const cache = try s.own(try v.js.builtin(engine, "Map", &.{}));
-    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try put(engine, owner, "mod", value);
     try put(engine, owner, "def", def);
     try put(engine, owner, "defIsNil", c.pi_js_bool(engine.context, @intFromBool(nil)));

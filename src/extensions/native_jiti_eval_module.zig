@@ -91,7 +91,7 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: BaseRequest, code: Co
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     // Actual next() is lexically hoisted. Its private owner roots ctx/module;
     // no Source-visible object or collaborator is created as a placeholder.
-    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try put(engine, owner, "context", request.context);
     try put(engine, owner, "module", c.pi_js_undefined());
     try put(engine, owner, "jitiRequire", inputs.jiti_require);

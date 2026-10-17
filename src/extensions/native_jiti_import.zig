@@ -33,7 +33,10 @@ fn invoke(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
         if (err == error.JavaScriptException) {
             // Normalize a still-pending current event, never a restored old
             // capture. A missing actual event fails closed as an internal error.
-            if (engine.captured_exception == null and c.JS_HasException(engine.context)) _ = v.js.capture(engine);
+            if (engine.captured_exception == null and c.JS_HasException(engine.context)) {
+                const capture_error = v.js.capture(engine);
+                if (capture_error != error.JavaScriptException) return capture_error;
+            }
             const reason = engine.captured_exception orelse return error.MissingJitiImportCurrentCapturedReason;
             if (c.JS_IsUncatchableError(reason)) return err;
             try body.rethrowRecognizedAllocation(engine, reason, generation);

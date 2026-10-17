@@ -235,13 +235,13 @@ pub fn instantiate(engine: *v.em.Engine, imports: Imports, is_windows: bool, arg
     inline for (.{ .{ "filename", filename }, .{ "url", url }, .{ "opts", opts }, .{ "alias", alias }, .{ "resolveTsConfigPaths", paths_matcher }, .{ "nativeModules", native_modules }, .{ "transformModules", transform_modules }, .{ "isNativeRe", native_re }, .{ "isTransformRe", transform_re }, .{ "additionalExts", additional }, .{ "nativeRequire", native_require } }) |entry| try put(engine, context, entry[0], entry[1]);
     inline for (.{ "onError", "parentModule", "parentCache", "nativeImport", "createRequire" }) |name| try put(engine, context, name, try s.get(parent_context, name));
     if (!nested) { try debugInit(engine, imports, context, opts); try ignored(engine, imports.prepare_cache_dir, c.pi_js_undefined(), &.{context}); }
-    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     inline for (.{ .{ "context", context }, .{ "url", url }, .{ "require", imports.jiti_require }, .{ "resolve", imports.jiti_resolve }, .{ "transform", imports.transform }, .{ "evalModule", imports.eval_module }, .{ "pathToFileURL", imports.path_to_file_url } }) |entry| try put(engine, owner, entry[0], entry[1]);
     // Source retrieves outer Object.assign before building either argument.
     const object = try s.global("Object"); const assign = try s.get(object, "assign");
     const jiti = try s.own(try functions.create(engine, "jiti", 1, true, requireCall, &.{owner}));
     const properties = try s.object();
-    const cache = if (s.truthy(try s.get(opts, "moduleCache"))) try s.get(native_require, "cache") else try s.invoke(try s.global("Object"), "create", &.{c.JS_NULL});
+    const cache = if (s.truthy(try s.get(opts, "moduleCache"))) try s.get(native_require, "cache") else try s.invoke(try s.global("Object"), "create", &.{c.pi_js_null()});
     try put(engine, properties, "cache", cache);
     try put(engine, properties, "extensions", try s.get(native_require, "extensions"));
     try put(engine, properties, "main", try s.get(native_require, "main"));

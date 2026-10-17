@@ -28,5 +28,5 @@ pub fn next(iterator: *v.js.Iterator) !?c.JSValue {
     const done = try v.js.get(iterator.engine, step, "done");
     defer iterator.engine.freeValue(done);
     if (c.JS_ToBool(iterator.engine.context, done) != 0) { iterator.closed = true; return null; }
-    return v.js.get(iterator.engine, step, "value");
+    return try v.js.get(iterator.engine, step, "value");
 }

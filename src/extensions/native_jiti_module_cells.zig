@@ -126,7 +126,7 @@ pub fn declare(engine: *v.em.Engine, bodies: Bodies) !Cells {
     if (c.JS_NewClassID(engine.runtime, &id) == 0) return error.OutOfMemory;
     const definition: c.JSClassDef = .{ .class_name = "Private Jiti Import Cells", .finalizer = finalizer, .gc_mark = mark };
     if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
-    const owner = try engine.checked(c.JS_NewObjectProtoClass(engine.context, c.JS_NULL, id));
+    const owner = try engine.checked(c.JS_NewObjectProtoClass(engine.context, c.pi_js_null(), id));
     record.* = .{ .engine = engine, .class_id = id, .reserved = reserved, .phase = .declared, .core = c.pi_js_undefined(), .frontend = c.pi_js_undefined(),
         .platform = c.pi_js_undefined(), .core_imports = empty(core.Imports), .frontend_imports = empty(frontend.Imports), .is_windows = false };
     _ = c.JS_SetOpaque(owner, record); attached = true;
