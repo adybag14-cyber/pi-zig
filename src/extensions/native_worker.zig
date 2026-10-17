@@ -222,7 +222,7 @@ const Transport = struct {
             // A background owner request may have notified between pumpIdle
             // and the wire queue reset. Drain after reset before waiting so
             // its notification cannot be lost while stdin is otherwise idle.
-            if (self.engine.native_durable_control_pump != null and try self.engine.pumpControls()) continue;
+            if ((self.engine.native_durable_control_pump != null or self.engine.native_env_pump != null) and try self.engine.pumpControls()) continue;
             if (deadline) |due| {
                 const remaining = due - std.Io.Clock.awake.now(self.io).toMilliseconds();
                 if (remaining <= 0) continue;
@@ -1602,12 +1602,14 @@ test "native durable VM background notifier survives the wire reset and drains o
     };
     engine.host_owner_notify_context = &transport;
     engine.host_owner_notify = Transport.notifyOwner;
+    @import("native_env_io.zig").bindHostNotifiers(engine);
     var probe: Probe = .{ .transport = &transport, .owner = std.Thread.getCurrentId(), .notify = engine.host_owner_notify.?, .notify_context = engine.host_owner_notify_context };
     engine.native_durable_control_context = &probe;
     engine.native_durable_control_pump = Probe.pump;
     defer {
         engine.native_durable_control_context = null;
         engine.native_durable_control_pump = null;
+        @import("native_env_io.zig").detachHostNotifiers(engine);
         engine.host_owner_notify = null;
         engine.host_owner_notify_context = null;
     }
@@ -1877,12 +1879,14 @@ fn runOwner(gpa: std.mem.Allocator, io: std.Io, sources: []const []const u8, ini
     engine.host_control_pump = Transport.pump;
     engine.host_owner_notify_context = &transport;
     engine.host_owner_notify = Transport.notifyOwner;
+    @import("native_env_io.zig").bindHostNotifiers(engine);
     bindings.ui_manager.bridge = .{ .context = &transport, .request = Transport.uiRequest, .action = Transport.uiAction, .cancel = Transport.uiCancel, .component_scene = Transport.componentScene, .component_close = Transport.componentClose, .component_mouse_outcome = Transport.componentMouseOutcome, .service_open = if (grouped) Transport.serviceOpen else null, .service_close = if (grouped) Transport.serviceClose else null, .sync_request = if (grouped) Transport.uiSyncRequest else null };
     defer bindings.ui_manager.bridge = null;
     defer {
         // Retire and join durable workers while their notifier and transport
         // are still alive, before dropping owner control callbacks.
         engine.closeDurableOwner();
+        @import("native_env_io.zig").detachHostNotifiers(engine);
         engine.host_owner_notify = null;
         engine.host_owner_notify_context = null;
         engine.host_control_context = null;

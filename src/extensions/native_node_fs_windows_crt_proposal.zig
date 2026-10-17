@@ -1,6 +1,6 @@
-//! Isolated, UNSELECTED Windows CRT ownership proposal. Nothing imports this
-//! file and both external-call entry points fail closed until explicit review.
-//! No C or Engine source changes are part of this proposal.
+//! Native Windows CRT ownership; default admission remains UNSELECTED. Explicit
+//! per-Lease/ticket qualification uses the same real native operations and fixed
+//! retirement registry. No C or Engine source change or global selection flip.
 const std = @import("std");
 pub const selected_after_independent_review = false;
 const crt = struct {
@@ -63,10 +63,20 @@ pub const ClosePacket = struct {
     attempt: u64,
     result: WorkerResult = .closed,
     done: std.atomic.Value(bool) = .init(false),
+    qualification_admission: bool = false,
     // This native packet, not Lease, enters a worker. It has no Engine, File
     // ownership, guest roots or owner-state pointer. Call exactly once.
     pub fn run(self: *ClosePacket) !void {
         if (!selected_after_independent_review) return error.RequiredIndependentWindowsCrtOwnershipReview;
+        return self.runOwned();
+    }
+    /// Trusted isolated native target only. The entitlement was copied from
+    /// the admitted Lease before IO/close; ordinary packets cannot select it.
+    pub fn runForQualification(self: *ClosePacket) !void {
+        if (!self.qualification_admission) return error.NativeCrtQualificationAdmissionRequired;
+        return self.runOwned();
+    }
+    fn runOwned(self: *ClosePacket) !void {
         // Claim in native pre-reserved storage before the external call. Even
         // an accidentally copied packet cannot issue a second close or close a
         // descriptor reused by a later reservation generation.
@@ -74,6 +84,14 @@ pub const ClosePacket = struct {
         const result = crt._close(self.fd);
         self.result = if (result == 0) .closed else .{ .failed = std.c._errno().* };
         self.done.store(true, .release);
+    }
+    /// Native-only successor retirement after the VM owner has detached. The
+    /// caller owns this exact completed packet; no Lease/Engine/JS is retained.
+    pub fn retireDetached(self: *const ClosePacket, original_handle: std.Io.File.Handle) !void {
+        if (!self.done.load(.acquire)) return error.NativeCrtCloseNotCompleted;
+        lock(); defer unlock(); const slot = &registry_slots[self.reservation.index];
+        if (slot.* != .closing or slot.closing.generation != self.generation or slot.closing.fd != self.fd or slot.closing.attempt != self.attempt or !slot.closing.claimed) return error.NativeCrtCloseGenerationMismatch;
+        slot.* = switch (self.result) { .closed => .free, .failed => |errno| .{ .failed = .{ .fd = self.fd, .original_handle = original_handle, .generation = self.generation, .errno = errno } } };
     }
 };
 pub const Lease = struct {
@@ -87,7 +105,9 @@ pub const Lease = struct {
     phase: Phase = .owned,
     close_errno: ?c_int = null,
     close_attempt: u64 = 0,
+    qualification_admission: bool = false,
     pub fn startIo(self: *Lease, expected_generation: u64) !void {
+        if (!selected_after_independent_review and !self.qualification_admission) return error.RequiredIndependentWindowsCrtOwnershipReview;
         if (self.phase != .owned or self.generation != expected_generation) return error.NativeCrtLeaseRetired;
         self.in_flight += 1;
     }
@@ -98,14 +118,14 @@ pub const Lease = struct {
     /// VM OWNER ONLY. Admission freezes before worker submission. A worker
     /// never reads/mutates plain Lease fields and cannot race a new startIo.
     pub fn beginClose(self: *Lease) !Close {
-        if (!selected_after_independent_review) return error.RequiredIndependentWindowsCrtOwnershipReview;
+        if (!selected_after_independent_review and !self.qualification_admission) return error.RequiredIndependentWindowsCrtOwnershipReview;
         if (self.phase == .closed) return .closed;
         if (self.phase == .close_failed) return .{ .failed = self.close_errno.? };
         if (self.phase == .closing_submitted) return .already_submitted;
         if (self.phase == .owned) self.phase = .closing_wait;
         if (self.in_flight != 0) return .pending_io;
         self.close_attempt = try reserveClose(self.reservation, self.fd); self.phase = .closing_submitted;
-        return .{ .submit = .{ .fd = self.fd, .generation = self.generation, .reservation = self.reservation, .attempt = self.close_attempt } };
+        return .{ .submit = .{ .fd = self.fd, .generation = self.generation, .reservation = self.reservation, .attempt = self.close_attempt, .qualification_admission = self.qualification_admission } };
     }
     /// Only the owner applies the result, after acquiring actual completion.
     pub fn publishClose(self: *Lease, packet: *const ClosePacket) !Close {
@@ -127,6 +147,14 @@ pub const Lease = struct {
 };
 pub fn associate(native: *NativeOwned, kind: OpenKind) !Lease {
     if (!selected_after_independent_review) return error.RequiredIndependentWindowsCrtOwnershipReview;
+    return associateOwned(native, kind, false);
+}
+/// Source-only controlled target seam. No global selector changes; successful
+/// ownership transfer marks this one Lease and its later exact ClosePacket.
+pub fn associateForQualification(native: *NativeOwned, kind: OpenKind) !Lease {
+    return associateOwned(native, kind, true);
+}
+fn associateOwned(native: *NativeOwned, kind: OpenKind, qualification: bool) !Lease {
     if (@import("builtin").os.tag != .windows) return error.WindowsOnly;
     const file = native.file orelse return error.NativeFileOwnershipRequired;
     const descriptor = crt._open_osfhandle(@bitCast(@intFromPtr(file.handle)), mapping(kind).association_flags);
@@ -138,5 +166,40 @@ pub fn associate(native: *NativeOwned, kind: OpenKind) !Lease {
         return error.NativeCrtAssociationFailed;
     }
     native.file = null;
-    return .{ .fd = descriptor, .borrowed_view = file, .generation = native.reservation.generation, .reservation = native.reservation };
+    return .{ .fd = descriptor, .borrowed_view = file, .generation = native.reservation.generation, .reservation = native.reservation, .qualification_admission = qualification };
+}
+
+test "owned qualification CRT lease closes actual NUL descriptor without enabling defaults" {
+    if (@import("builtin").os.tag != .windows) return error.SkipZigTest;
+    const reservation = try reserveBeforeOpen();
+    var reservation_owned = true; defer if (reservation_owned) releaseReservation(reservation);
+    const file = try std.Io.Dir.cwd().openFile(std.testing.io, "NUL", .{ .mode = .read_write });
+    var native: NativeOwned = .{ .file = file, .reservation = reservation };
+    defer if (native.file) |owned| owned.close(std.testing.io);
+    var unassociated: NativeOwned = .{ .file = null, .reservation = reservation };
+    try std.testing.expectError(error.RequiredIndependentWindowsCrtOwnershipReview, associate(&unassociated, .w));
+    var lease = try associateForQualification(&native, .w);
+    reservation_owned = false;
+    var active_packet: ?ClosePacket = null;
+    defer if (lease.phase != .closed and lease.phase != .close_failed) {
+        switch (lease.beginClose() catch @panic("owned control close admission failed")) {
+            .submit => |owned| active_packet = owned,
+            .already_submitted => {},
+            else => @panic("owned control unexpected live close entitlement"),
+        }
+        const packet = if (active_packet) |*owned| owned else @panic("owned control packet entitlement missing");
+        if (!packet.done.load(.acquire)) packet.runForQualification() catch @panic("owned control close failed before acknowledgement");
+        _ = lease.publishClose(packet) catch @panic("owned control close publication failed");
+    };
+    try std.testing.expect(native.file == null and lease.qualification_admission);
+    try lease.startIo(lease.generation); lease.retiredIo(lease.generation);
+    const close = try lease.beginClose();
+    active_packet = close.submit;
+    const packet = &active_packet.?;
+    try std.testing.expectError(error.RequiredIndependentWindowsCrtOwnershipReview, packet.run());
+    try packet.runForQualification();
+    const closed = try lease.publishClose(packet);
+    try std.testing.expect(closed == .closed);
+    try std.testing.expect(lease.phase == .closed);
+    try std.testing.expect(!selected_after_independent_review);
 }

@@ -213,6 +213,7 @@ pub const Frontend = struct {
                 self.flowing = resumed;
                 self.changed.broadcast(self.io);
                 self.mutex.unlock(self.io);
+                self.engine.native_owner_signal.notify(self.io);
             },
         }
     }
@@ -231,34 +232,40 @@ pub const Frontend = struct {
                 if (!self.closed) {
                     if (err == error.EndOfStream) self.eof = true else self.failure = err;
                 }
+                self.engine.native_owner_signal.notify(self.io);
                 return;
             };
             if (count == 0) {
                 self.mutex.lockUncancelable(self.io);
                 self.eof = true;
                 self.mutex.unlock(self.io);
+                self.engine.native_owner_signal.notify(self.io);
                 return;
             }
             const bytes = std.heap.page_allocator.dupe(u8, buffer[0..count]) catch |err| {
                 self.mutex.lockUncancelable(self.io);
                 self.failure = err;
                 self.mutex.unlock(self.io);
+                self.engine.native_owner_signal.notify(self.io);
                 return;
             };
             self.mutex.lockUncancelable(self.io);
             if (self.closed) {
                 self.mutex.unlock(self.io);
                 std.heap.page_allocator.free(bytes);
+                self.engine.native_owner_signal.notify(self.io);
                 return;
             }
             self.queue.append(std.heap.page_allocator, bytes) catch |err| {
                 self.failure = err;
                 self.mutex.unlock(self.io);
                 std.heap.page_allocator.free(bytes);
+                self.engine.native_owner_signal.notify(self.io);
                 return;
             };
             self.bytes += bytes.len;
             self.mutex.unlock(self.io);
+            self.engine.native_owner_signal.notify(self.io);
         }
     }
     fn pump(engine: *js.Engine) !bool {
@@ -312,6 +319,7 @@ pub const Frontend = struct {
     }
     pub fn runUntilIdle(self: *Frontend) !void {
         while (true) {
+            const owner_epoch = self.engine.native_owner_signal.observe();
             // Finish the microtask checkpoint before deciding whether any
             // referenced handle keeps this direct script alive. An unref-only
             // Immediate queue must not execute merely to discover it is idle.
@@ -319,13 +327,32 @@ pub const Frontend = struct {
             const referenced_timer = try timers.nextReferencedDeadline(self.engine);
             const builtin_pending = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
             const ai_http_pending = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
-            if (!self.referencedInput() and referenced_timer == null and !builtin_pending and !ai_http_pending) return;
-            _ = try self.engine.pumpControls();
+            const env_pending = @import("native_env_io.zig").hasReferenced(self.engine);
+            const input_pending = self.referencedInput();
+            if (!input_pending and referenced_timer == null and !builtin_pending and !ai_http_pending and !env_pending) return;
+            const owner_worked = try self.engine.pumpControls();
             _ = try self.engine.drainReadyJobs();
             _ = try timers.pumpReady(self.engine);
             _ = try self.engine.drainReadyJobs();
+            // A ready frame/client may already have published the observed
+            // epoch. Finish this callback's checkpoint, then pump the next turn
+            // instead of sleeping merely because no new epoch was published.
+            if (owner_worked) continue;
             const deadline = try timers.nextDeadline(self.engine);
             const now = Io.Clock.awake.now(self.io).toMilliseconds();
+            // Child/ported Env producers publish the real owner signal. Legacy
+            // builtin/AI and terminal resize routes keep their existing polling
+            // behavior; no child readiness qualification is inferred from it.
+            const env_now = @import("native_env_io.zig").hasReferenced(self.engine);
+            const input_now = self.referencedInput();
+            const builtin_now = if (self.engine.native_sdk_builtin_execution_pending) |pending| pending(self.engine) else false;
+            const ai_now = if (self.engine.native_ai_http_pending) |pending| pending(self.engine) else false;
+            if (!env_now and !input_now and !builtin_now and !ai_now and (try timers.nextReferencedDeadline(self.engine)) == null) continue;
+            if (env_now and !input_now and !builtin_now and !ai_now and !@import("native_env_io.zig").needsLegacyPolling(self.engine)) {
+                const timeout: Io.Timeout = if (deadline) |due| .{ .duration = .{ .raw = .fromMilliseconds(@max(@as(i64, 0), due - now)), .clock = .awake } } else .none;
+                _ = try self.engine.native_owner_signal.waitAfter(self.io, owner_epoch, timeout);
+                continue;
+            }
             const delay = if (deadline) |due| @min(@as(i64, 5), @max(@as(i64, 0), due - now)) else 5;
             try self.io.sleep(.fromMilliseconds(delay), .awake);
         }

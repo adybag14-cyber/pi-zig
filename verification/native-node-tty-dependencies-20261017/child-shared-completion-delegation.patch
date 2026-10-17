@@ -1,0 +1,25 @@
+diff --git a/src/extensions/native_child_process_scheduler.zig b/src/extensions/native_child_process_scheduler.zig
+index 829ad3c0ffb5e2feeeac7d3b5034ebb88a2912db..33e7bc5ebd128335ddc210d80173120f27e88cf7 100644
+--- a/src/extensions/native_child_process_scheduler.zig
++++ b/src/extensions/native_child_process_scheduler.zig
+@@ -80,9 +80,8 @@ fn controller(engine: *js.Engine) !*Controller {
+         if (existing.hub != hub) return error.NativeChildControllerOwnerMismatch;
+         return existing;
+     };
+-    const io = engine.native_io orelse return error.NativeIoRequired;
+-    const reference = try wake.create(.{ .signal = &engine.native_owner_signal, .io = io, .host_notify = engine.host_owner_notify, .host_context = engine.host_owner_notify_context });
+-    errdefer { wake.detach(reference); wake.release(reference); }
++    const reference = try @import("native_owner_completion.zig").acquireNativeWake(engine);
++    errdefer wake.release(reference);
+     const self = try engine.gpa.create(Controller);
+     errdefer engine.gpa.destroy(self);
+     self.* = .{ .hub = hub, .wake_ref = reference };
+@@ -91,7 +90,7 @@ fn controller(engine: *js.Engine) !*Controller {
+ }
+ /// Caller owns this native reference. Close packets retain an independent copy,
+ /// publish atomic done, notify, then release without any Engine/Task pointer.
+-pub fn acquireNativeWake(engine: *js.Engine) !wake.Ref { return wake.retain((try controller(engine)).wake_ref); }
++pub const acquireNativeWake = @import("native_owner_completion.zig").acquireNativeWake;
+ pub const OwnerBridge = struct {
+     control: *Controller, lease: waits.Lease, transport: async_io.AsyncTransport,
+     config: options.Config, hooks: Hooks, roots: []c.JSValue,

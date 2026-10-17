@@ -1,0 +1,244 @@
+{
+  "status": "prospective_minimal_tty_dependencies_raw_owned_result_repair_source_only_unreviewed_unrun",
+  "frozen_child_base": "8d5cb9f32dde7a44c178119623ff8cd196d95f01",
+  "root_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "close_worker_base": "8fcc809df9aadf60f56b09ea9973762b018fcff4",
+  "products": [
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "source": "src/extensions/native_node_net_socket.zig",
+      "git_blob": "3c4fa1a882702a69cab6c183872c1b455deb74c2",
+      "sha256": "85176A0BFFB8493F6B5A57C2CB3C8F9CA77178A21DC839F1476BBE48920917BD"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "source": "src/extensions/native_node_socket_function.zig",
+      "git_blob": "545a599232591a9b9092c2607c0fc4268b4bb95b",
+      "sha256": "B0472772FBCFD062E672D15DFD3BF0EC1C05E7A6B6BB39C29E11BA08817979B0"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "source": "src/extensions/native_node_socket_scope.zig",
+      "git_blob": "2363cceb252459c815381e94c59af54b4c6114ad",
+      "sha256": "7318284A4EC7A51CDAFAB451648492DDCAD976361BBBB3A6CE769CA7178E0FCC"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "source": "src/extensions/native_node_net_socket_provider.zig",
+      "git_blob": "2c9df7f42000617e1e1a82dafddb2d2e0d5db710",
+      "sha256": "9DCE149F54924D779663E1CC2E23779C2FD06EF076409A961B2D874E183FDAB4"
+    },
+    {
+      "path": "src/extensions/native_owner_completion.zig",
+      "source": "src/extensions/native_owner_completion.zig",
+      "git_blob": "9df8474c6de7966e562c33ef0d3f8f800bf470f5",
+      "sha256": "F1479AEB2E1C180B19D77A3375A8FE303D9B9B3AA25F37A356F90B1F9D010A81"
+    },
+    {
+      "path": "src/extensions/native_node_tty_dependencies.zig",
+      "source": "src/extensions/native_node_tty_dependencies.zig",
+      "git_blob": "c6367027559ea0796c60c54b65d1f601d7e9ff61",
+      "sha256": "E0D57C62D2683B6E9E066BF664B5A4F5D2A0AB1A56BA12A3C453DEC0F17A0E0C"
+    },
+    {
+      "path": "src/extensions/native_owner_wake.zig",
+      "source": "src/extensions/native_owner_wake.zig",
+      "git_blob": "39d1cde3fe29cc4d552a0eb09f0a2777d3e44405",
+      "sha256": "19C5506377D88ED1EB5B6238DAB779F82076580BBCB803966C9B76EDE7D0E778"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_windows.zig",
+      "source": "src/extensions/native_owner_wake_windows.zig",
+      "git_blob": "79cda8404a781620d9f97ba2cd7a37cd2563f110",
+      "sha256": "C1D6709C2A77D51AEF40C0DCBA59D029640627FA4C819C4450113715C3A98CA2"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_linux.zig",
+      "source": "src/extensions/native_owner_wake_linux.zig",
+      "git_blob": "01ac68a9acc4487a0cf2631604b371194e623679",
+      "sha256": "437CEFC74EECF15D5EF418A951B872F599E87FAF5057A5D571F1ACAC838A9E35"
+    },
+    {
+      "path": "src/extensions/native_child_process_linux_mutex.zig",
+      "source": "src/extensions/native_child_process_linux_mutex.zig",
+      "git_blob": "d7f0f9dc6c065668194e3f0ec1e33d5df7620fab",
+      "sha256": "96A8859CA616CB8408E0821908B93F796C1602201F83E51C48B305A71022687B"
+    },
+    {
+      "path": "src/extensions/native_node_fs_windows_close_worker.zig",
+      "source": "src/extensions/native_node_fs_windows_close_worker.zig",
+      "git_blob": "ae3b2f55349c7daf39716c12b3ec8b826e2fb220",
+      "sha256": "D13DE3DC47F0D5A7D57ED2FFF6773938A2DABFD273FC6F4AB201CF8B94E56E5B"
+    },
+    {
+      "path": "src/extensions/native_node_fs_windows_crt_proposal.zig",
+      "source": "src/extensions/native_node_fs_windows_crt_proposal.zig",
+      "git_blob": "660b313488f437c302d2405c874d4a68a0f2fab5",
+      "sha256": "B920F4C03FD6DF172A53BA6B7B20A4FAD1BA4FF6EA319DAE44D33AB3F9534A49"
+    },
+    {
+      "path": "src/extensions/native_env_io.zig",
+      "source": "verification/native-node-tty-dependencies-20261017/projection/native_env_io.zig.source",
+      "git_blob": "5859f1047d014128d97cba0c6173f9d6414eb743",
+      "sha256": "049610EB21152A75B92061F31AC4D209EAB983040AE0D940369BD53D81E74691"
+    },
+    {
+      "path": "src/extensions/native_stdio_frontend.zig",
+      "source": "verification/native-node-tty-dependencies-20261017/projection/native_stdio_frontend.zig.source",
+      "git_blob": "3dcfc41e1880305585019786582d0f0d632678f4",
+      "sha256": "5E1AB2248A9080A77BA3D37B650196AF70A31629BC897FCC13B53467321A9085"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "source": "verification/native-node-tty-dependencies-20261017/projection/native_worker.zig.source",
+      "git_blob": "e7b3b0fd54c4c0e59702acfd834b68469f2ff1e1",
+      "sha256": "5F762F01C3EE40C00D6A8F3BC06EFE418AA78054A4CFA1182170A4646D13B8C7"
+    }
+  ],
+  "retained_root": [
+    {
+      "path": "src/extensions/engine.zig",
+      "base_git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/node_buffer.zig",
+      "base_git_blob": "638c545e42f12440a8b3a1eaf9515f43e24a6108",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/binary_encoding.zig",
+      "base_git_blob": "22f0124863a6f5fabb52977c2b50c70d005ab030",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "base_git_blob": "dc74667547037fd639eb4e9d7f6204ea2c626787",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "base_git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "base_git_blob": "3fb29a972197fc86cd9997928841a435e7eb9fa6",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/native_owner_signal.zig",
+      "base_git_blob": "ab29a5e14435d3bf4a566e32fd0994ed69207935",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "base_git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a",
+      "policy": "retain_exact_Root_no_old_branch_copy"
+    }
+  ],
+  "packet_files": [
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/child-shared-completion-delegation.patch",
+      "sha256": "1DF77F8628A4A939CA0F120A765EA83B28CD37456A69E3A3D5E75B2C75CF517F"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/CURRENT-REVIEW.md",
+      "sha256": "9E18A2C3C2AE2ED6DFF40CC66378EDDBC5DE9FDC0FA18DEE6AE40B14BD114E8E"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/manifest.json",
+      "sha256": "C36358EC723AC4D5C02DB6FABEEF36577BED0DB74151FDA6987844F329DF663B"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/ordinary-cleanup-repair-manifest.json",
+      "sha256": "4A8C78AD7144717BDDDC067F49612F7774DE5EEA8B13AC6258FE866F29893F5A"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/ORDINARY-CLEANUP-REPAIR.md",
+      "sha256": "75B11D618521D7F779F3F6C892E22D7CED5D6F122F81B427C498F4A191EB5F32"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/producer-bfb-repair-manifest.json",
+      "sha256": "8DDE2DA1A3AD5E478079898613F03C84E8FB79EE03BBB66BEA7168A1C0AD4516"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/PRODUCER-BFB-REPAIR.md",
+      "sha256": "590A82B39A04D11CB37A4B96824EA57E71DCF41A2E1A2D4B39C9D2FD3F865D63"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/RAW-OWNED-RESULT-REPAIR.md",
+      "sha256": "0A4ABCA0E50786B79EC4EDF6D0816F6B166E4998543B94C0803DA321B3C75F73"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/socket-tty-controls.cjs",
+      "sha256": "01334FC8F7814F30C4C3B5CC099DD13BD2D37F7B7E0D3EB395A0BA17D88F958C"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/SOURCE-PACKET.md",
+      "sha256": "08603A3D1540C9CDE80D10002D1A0685A7C922E6AD3C749B793253CCB0DAD4F4"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/authority/.gitattributes",
+      "sha256": "78057A34EEC4C49696764A002FDA9932C09E0500651D878318D7600773AF47C8"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/authority/LICENSE-node24.14.0.txt",
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/authority/net.js",
+      "sha256": "347D5DB0206F222E11223E7B515457F837B400BD915070618883B6AA27496719"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/authority/stream-base-commons.js",
+      "sha256": "898B8C327EB3AC6140E1BE1BF6584C353625488F0CCB6F579F465974C120456D"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/authority/stream-base.cc",
+      "sha256": "B5420659CB816F074F9A8C3A5D96C2FE52C90253A08392E5306B657512C2A9B4"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/projection/native_env_io.zig.source",
+      "sha256": "049610EB21152A75B92061F31AC4D209EAB983040AE0D940369BD53D81E74691"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/projection/native_stdio_frontend.zig.source",
+      "sha256": "5E1AB2248A9080A77BA3D37B650196AF70A31629BC897FCC13B53467321A9085"
+    },
+    {
+      "path": "verification/native-node-tty-dependencies-20261017/projection/native_worker.zig.source",
+      "sha256": "5F762F01C3EE40C00D6A8F3BC06EFE418AA78054A4CFA1182170A4646D13B8C7"
+    }
+  ],
+  "patch": "C:\\Users\\adyba\\pi-zig\\evidence\\tty-dependency-projection-raw-owned-20261017\\products-vs-root-bfb-raw-owned.patch",
+  "patch_sha256": "A675B64955A1B89E92A6C3F0A33E426616E05E5127632D36DADB46D396669CCB",
+  "projected_tree": "bdc844e207efd54ab2488e32748e88863791a0ef",
+  "applied_root_tree": "bdc844e207efd54ab2488e32748e88863791a0ef",
+  "changes": [
+    "A\tsrc/extensions/native_child_process_linux_mutex.zig",
+    "M\tsrc/extensions/native_env_io.zig",
+    "A\tsrc/extensions/native_node_fs_windows_close_worker.zig",
+    "M\tsrc/extensions/native_node_fs_windows_crt_proposal.zig",
+    "A\tsrc/extensions/native_node_net_socket.zig",
+    "A\tsrc/extensions/native_node_net_socket_provider.zig",
+    "A\tsrc/extensions/native_node_socket_function.zig",
+    "A\tsrc/extensions/native_node_socket_scope.zig",
+    "A\tsrc/extensions/native_node_tty_dependencies.zig",
+    "A\tsrc/extensions/native_owner_completion.zig",
+    "A\tsrc/extensions/native_owner_wake.zig",
+    "A\tsrc/extensions/native_owner_wake_linux.zig",
+    "A\tsrc/extensions/native_owner_wake_windows.zig",
+    "M\tsrc/extensions/native_stdio_frontend.zig",
+    "M\tsrc/extensions/native_worker.zig"
+  ],
+  "product_count": 15,
+  "root_check_apply_exit": 0,
+  "applied_product_drift": 0,
+  "engine_c_h_changed": false,
+  "main_changed": false,
+  "all_controls": "UNRUN",
+  "compiler_formatter_ast_node_native_generator_jobs_run": false,
+  "activation": false,
+  "independent_source_review": "pending"
+}

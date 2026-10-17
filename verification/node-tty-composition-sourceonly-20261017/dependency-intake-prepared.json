@@ -1,0 +1,98 @@
+{
+  "schema": 1,
+  "status": "REVIEWED_SOURCE_ONLY_EXACT_DEPENDENCY_INTAKE_UNCOMPILED_UNRUN",
+  "parent": "7f5f92ad0049f54a5a4d1c2c7491960c4de06ea4",
+  "source": "4adbf1c56b1a7515fcf732915f28582d348b51f7",
+  "source_manifest": {
+    "path": "verification/native-node-tty-dependencies-20261017/raw-owned-result-repair-manifest.json",
+    "sha256": "1D02B8D299EE307B03F644570F14AA7C60B236ADF323ECE988729F6A595F0E9B"
+  },
+  "review": {
+    "path": "evidence/node-tty-dependencies-4ad-independent-body-source-review-20261017.json",
+    "sha256": "C6073D26F3CB0CD2BCC64AD159C940691093F88039F2464BCA84685B1E468A78"
+  },
+  "patch_sha256": "A675B64955A1B89E92A6C3F0A33E426616E05E5127632D36DADB46D396669CCB",
+  "products": [
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "85176A0BFFB8493F6B5A57C2CB3C8F9CA77178A21DC839F1476BBE48920917BD",
+      "git_blob": "3c4fa1a882702a69cab6c183872c1b455deb74c2"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "sha256": "B0472772FBCFD062E672D15DFD3BF0EC1C05E7A6B6BB39C29E11BA08817979B0",
+      "git_blob": "545a599232591a9b9092c2607c0fc4268b4bb95b"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "sha256": "7318284A4EC7A51CDAFAB451648492DDCAD976361BBBB3A6CE769CA7178E0FCC",
+      "git_blob": "2363cceb252459c815381e94c59af54b4c6114ad"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "9DCE149F54924D779663E1CC2E23779C2FD06EF076409A961B2D874E183FDAB4",
+      "git_blob": "2c9df7f42000617e1e1a82dafddb2d2e0d5db710"
+    },
+    {
+      "path": "src/extensions/native_owner_completion.zig",
+      "sha256": "F1479AEB2E1C180B19D77A3375A8FE303D9B9B3AA25F37A356F90B1F9D010A81",
+      "git_blob": "9df8474c6de7966e562c33ef0d3f8f800bf470f5"
+    },
+    {
+      "path": "src/extensions/native_node_tty_dependencies.zig",
+      "sha256": "E0D57C62D2683B6E9E066BF664B5A4F5D2A0AB1A56BA12A3C453DEC0F17A0E0C",
+      "git_blob": "c6367027559ea0796c60c54b65d1f601d7e9ff61"
+    },
+    {
+      "path": "src/extensions/native_owner_wake.zig",
+      "sha256": "19C5506377D88ED1EB5B6238DAB779F82076580BBCB803966C9B76EDE7D0E778",
+      "git_blob": "39d1cde3fe29cc4d552a0eb09f0a2777d3e44405"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_windows.zig",
+      "sha256": "C1D6709C2A77D51AEF40C0DCBA59D029640627FA4C819C4450113715C3A98CA2",
+      "git_blob": "79cda8404a781620d9f97ba2cd7a37cd2563f110"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_linux.zig",
+      "sha256": "437CEFC74EECF15D5EF418A951B872F599E87FAF5057A5D571F1ACAC838A9E35",
+      "git_blob": "01ac68a9acc4487a0cf2631604b371194e623679"
+    },
+    {
+      "path": "src/extensions/native_child_process_linux_mutex.zig",
+      "sha256": "96A8859CA616CB8408E0821908B93F796C1602201F83E51C48B305A71022687B",
+      "git_blob": "d7f0f9dc6c065668194e3f0ec1e33d5df7620fab"
+    },
+    {
+      "path": "src/extensions/native_node_fs_windows_close_worker.zig",
+      "sha256": "D13DE3DC47F0D5A7D57ED2FFF6773938A2DABFD273FC6F4AB201CF8B94E56E5B",
+      "git_blob": "ae3b2f55349c7daf39716c12b3ec8b826e2fb220"
+    },
+    {
+      "path": "src/extensions/native_node_fs_windows_crt_proposal.zig",
+      "sha256": "B920F4C03FD6DF172A53BA6B7B20A4FAD1BA4FF6EA319DAE44D33AB3F9534A49",
+      "git_blob": "660b313488f437c302d2405c874d4a68a0f2fab5"
+    },
+    {
+      "path": "src/extensions/native_env_io.zig",
+      "sha256": "049610EB21152A75B92061F31AC4D209EAB983040AE0D940369BD53D81E74691",
+      "git_blob": "5859f1047d014128d97cba0c6173f9d6414eb743"
+    },
+    {
+      "path": "src/extensions/native_stdio_frontend.zig",
+      "sha256": "5E1AB2248A9080A77BA3D37B650196AF70A31629BC897FCC13B53467321A9085",
+      "git_blob": "3dcfc41e1880305585019786582d0f0d632678f4"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "sha256": "5F762F01C3EE40C00D6A8F3BC06EFE418AA78054A4CFA1182170A4646D13B8C7",
+      "git_blob": "e7b3b0fd54c4c0e59702acfd834b68469f2ff1e1"
+    }
+  ],
+  "reviewed_packet_rows": 18,
+  "engine_alias": "Preserved own reviewedCCCC31A0+Bfb actual producer APIs; no Engine delta in dependency",
+  "execution_grant": false,
+  "actual_metadata": null,
+  "actual_results": null,
+  "default_activation": false
+}
