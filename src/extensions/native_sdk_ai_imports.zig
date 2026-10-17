@@ -23,12 +23,12 @@ pub fn create(engine: *v.em.Engine) !c.JSValue {
     const compat = try s.own(try @import("native_ai_compat.zig").namespace(engine, try s.get(factories, "builtinModels")));
     const lazy = try s.own(try @import("native_ai_lazy_api.zig").namespace(engine));
     const transcript = try s.own(try @import("native_ai_transcript_context.zig").exports(engine));
-    const ai = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const ai = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try copy(&s, ai, models, .{ "createModels", "createProvider", "ModelsError", "getModelType", "isModelType", "clampThinkingLevel" });
     try copy(&s, ai, operations, .{ "assertChatModel", "assertImageModel", "assertClassifierModel", "assertClassifierInputSupported", "imageErrorResult", "classifierErrorResult" });
     try copy(&s, ai, lazy, .{"lazyStream"});
     try copy(&s, ai, transcript, .{"normalizeContext"});
-    const graph = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.JS_NULL)));
+    const graph = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
     try s.put(graph, "ai", ai);
     try s.put(graph, "compat", compat);
     try s.put(graph, "providerFactories", factories);
