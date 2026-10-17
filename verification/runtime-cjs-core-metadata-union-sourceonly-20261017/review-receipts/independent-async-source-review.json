@@ -1,0 +1,55 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "reviewed_utc": "2026-10-17T20:16:08.2418554+00:00",
+  "status": "finite_combined_source_overlap_review_closed",
+  "candidate": "5fd302000f42fc8460c38d1537b557dd7cd256a0",
+  "candidate_tree": "339bdc456e4ee4b883d3347da3d680a1096c0b22",
+  "base": "42daa15f43cf31a9e42659cd46123c88b644a078",
+  "c_sha256": "42B56811B72A224C977AE69EC9F8101C7D979D44A785582352C769CB86F51A1D",
+  "h_sha256": "0DBC21D3205747FB9620CAEFEB1AE3FE8D2F78F1793157C06E2FA4F2F18CB556",
+  "payload_manifest_sha256": "D739913DD4A84EBC7A0E34B1E18D2A3D964F36BD5459079C9933AE568216B6CB",
+  "checks": {
+    "payload_members_raw_git_byte_hash_length": 54,
+    "payload_drift": [],
+    "protected_core_blobs": 8,
+    "protected_drift": [],
+    "exact_component_product_and_control_blobs": 8,
+    "inherited_compiler_resolutions": 20,
+    "new_metadata_resolutions": 2,
+    "all_resolution_fragments_present": true,
+    "independent_compiler_C_patch_hunks": 137,
+    "independent_Core42d_plus_compiler_matches_ours_C": true,
+    "independent_readonly_three_way_metadata_merge_conflicts": 2,
+    "both_conflicts_match_journal_exactly": true,
+    "entire_reconstructed_composed_C_matches_candidate": true,
+    "independent_header_patch_hunks": 3,
+    "entire_reconstructed_header_matches_candidate": true,
+    "files_written_during_reconstruction": 0
+  },
+  "reviewed": [
+    "Inherited twenty Link/compiler overlaps retain distinct private fields/init/guard/poll/cleanup branches and one actual producer call; metadata adds two exact conflicts, with metadata tracked owner before existing Link and compiler error guards. Default NULL/false branches retain inherited logic.",
+    "Compiler/include/LRE and C fixture/body/metadata controls are exact ffb component blobs; raw adapter plus controls exact ac6666c9 peer-reviewed blobs. No formatter/Info/wrapSafe WIP or whole older shared Engine/constructor/body copy is included.",
+    "Protected module link/sort, iterator/CallSite/link allocator controls, Engine, async body and actual Module constructor blobs equal Core42d. Actual forwarding predicate, both forwarding skips, native AF resume/retire/call and receiver Get remain inherited; function-body comparison confirmed unchanged core helpers.",
+    "Three install-only linked artifacts retain separately filtered compiler43, metadata16 and raw provider5 controls, actual C fixture where required, and no run/default dependency. Actual counts remain unknown; anonymous storage is allowed only if actually discovered as the named existing import.",
+    "Entire composed C reconstructed independently by applying compiler patch to actual Core42d then readonly three-way merging actual ffb against compiler5a, matching both exact journal conflicts. Header reconstructed from actual component patches. No candidate/index/worktree mutation was performed."
+  ],
+  "component_receipts": {
+    "compiler": "evidence/cjs-body-regexp-430-independent-async-source-review-20261017.json",
+    "compiler_sha256": "B85F4E1E317FAF9799956D3A0EBC5660C48565AD49278FB47E87BC140B3F6F46",
+    "metadata": "evidence/cjs-metadata-ffb-independent-async-source-review-20261017.json",
+    "metadata_sha256": "8E87312EE10CB9944734D6D17DE431AFA2B69A2536645ABEDA88AA792297FF69",
+    "raw_adapter": "Exact ac6666c9 AuthFailure F03 peer receipt retained in candidate; semantic scope remains that independent component review."
+  },
+  "findings_remaining_in_finite_union_scope": [],
+  "limits": [
+    "Source-only union closure; no compiler, metadata query, tests, Node/native/helper process, formatter/parser or candidate execution was launched. Readonly Git text reconstruction is not compilation.",
+    "43+16+5 are static named counts in three artifacts, not64 actual entries or runtime passes. Actual imports/anonymous controls, ABI, source-qualified protocol counts and resource/ownership gates require exact new-head qualification.",
+    "Historical Core42d proof and old430/3a/ede/union proposals remain their original scopes. No historical pass is transferred to this candidate; provisional tree values in older packet records are retained provenance, not current execution identity.",
+    "Capture-only/native diagnostic/no-reentry/lifetime and atomic/capacity boundaries from compiler/metadata/Link sources remain mandatory. Simultaneous private operations are not authorized by composition.",
+    "Current Root Main newer products must be preserved through narrow intake. Default implementation selection, Graph2, formatter, wrapSafe/Info caller and full Node/SDK/latest runtime authority remain unqualified."
+  ],
+  "main_edited": false,
+  "historical_proofs_rewritten": false,
+  "execution_authorized": false
+}

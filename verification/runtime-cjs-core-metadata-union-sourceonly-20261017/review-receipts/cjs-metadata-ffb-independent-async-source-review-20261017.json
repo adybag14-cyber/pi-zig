@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "reviewed_utc": "2026-10-17T20:06:32.5891530+00:00",
+  "status": "finite_cjs_metadata_source_review_closed",
+  "candidate": "ffb7f7cba41205797f3e8458fbfe9df7b5c93344",
+  "compiler_baseline": "5a2b27ac9785a163e64077293c431b54d6d513ba",
+  "prior_negative_sources": [
+    "3a7c1c13695840949de0c145fe1b78bede07c4f4",
+    "ede40961ae3cfef3214025e2c1e738e6d8f1cdd9"
+  ],
+  "c_sha256": "E1029212A185946CECDA1745D389982DA80E7B621A1BA9980C882C9B54E83F44",
+  "h_sha256": "8B3F0B912187EE68C8C39FC6B8E4051A2EAC44A9F275402F6F2A1A12919EBBCA",
+  "finalizer_manifest_sha256": "3AF952F16A494D65C221A50D7FE8BBFA8453D38CA0831C53BF114D150C275024",
+  "current_union_members": 18,
+  "protected_compiler_members": 3,
+  "hash_length_drift": [],
+  "metadata_static_named": 16,
+  "reference_rows_prepared": 18,
+  "actual_metadata": null,
+  "reviewed": [
+    "Actual line-comment lexer events follow retained official V8 magic comment grammar, clearing and raw-value rules, with source-sized work polling; literal/template/regexp/block/HTML text is excluded. Source slices remain compiler-stack borrowed until owned outputs/atoms are produced.",
+    "Logical optional atoms initialize in FD and all three FBC creators/readers, propagate over actual parsed nested FD graph, transfer into bytecode and free on every owner path. Physical filename remains the dynamic import/module origin. Serialization rejects nonempty private logical metadata without changing legacy format.",
+    "Captured records own logical source-name separately from physical filename, including transfer, clone, mark and finalization. New getter and raw accessor avoid guest property lookup; physical API remains separate.",
+    "Metadata-specific legacy failure status stops direct guest prepare after affected field/format failure. Tracked MakeError propagation reserves private -2 without adopting arbitrary embedding negative status or changing old metadata-free status behavior.",
+    "Metadata-local actual pending owner separates presence from value, takes before/after each release, clears owned slots before destructor reentry, drains displaced/nonselected reasons and preserves first fatal over ordinary/new later failures. All new runtime -2 Error/DOM/suppressed owner teardowns use this owner rather than compiler-only cleanup assumptions.",
+    "Default logical location append is length-aware, preserving embedded NUL, and owns actual pending through conversion/native buffer/text cleanup.",
+    "Sixteenth causal control uses intrinsic Error via actual JS_CallConstructor2, constructible newTarget, genuine getter transferring sole-owned opaque native prototype, real measured backing allocation failures and actual armed finalizer event B. It requires B identity/fatal retention before outer unwind and at least one such event; disarms before cleanup while context/B remain alive. No fake VM fields or tagged DATA classification."
+  ],
+  "findings_remaining_in_finite_scope": [],
+  "limits": [
+    "All 16 metadata declarations and18 original observer rows remain UNRUN/expected absent; actual compiled/imported counts and ABI/runtime outcomes unknown.",
+    "Compiler43, metadata16 and raw-adapter5 must retain separately bounded artifact selections and actual metadata discovery; static sum64 must not be assumed to fit a single64-entry batch if imports add anonymous tests.",
+    "Strict owning-context/capture-only native Error owner, diagnostic suppression and trusted nonreentrant host conditions from compiler baseline remain. Old unrelated legacy array/prepare behavior is explicitly outside this finite metadata correction.",
+    "Zig formatter, wrapSafe/loader/default selection and broader Node/V8/resource/cache parity remain separate unqualified callers/dependencies. Atomic native/compiler resource frontiers from B85F remain.",
+    "Composition atop current Core42d requires a separate exact overlap/default-path review; this worktree whole C must never overwrite Root newer C. No execution grant or historical pass transfer is given."
+  ],
+  "jobs_launched": 0,
+  "native_calls_invoked": 0,
+  "main_edited": false,
+  "historical_proofs_rewritten": false,
+  "execution_authorized": false
+}
