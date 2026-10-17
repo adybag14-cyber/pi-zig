@@ -1,0 +1,25 @@
+{
+  "status":"prepared-unrun",
+  "expected_files":[],
+  "observed_files":[],
+  "direct_source_boundaries":[
+    {"id":"disabled-cache-short-circuit","input":"Actual getCache ctx.opts.fsCache falsy; topts.filename getter throws.","observe":"Calls real get() immediately without reading filename/source/hash/path flags."},
+    {"id":"callee-and-spread-source-order","input":"Actual ctx.opts.transform getter replaces opts/transformOptions; own getter and symbol properties occur in both transformOptions and topts.","observe":"Original callee/opts receiver is acquired first; all subsequent spreads re-read the live source fields and preserve original own-key order/overrides."},
+    {"id":"cache-name-fresh-getters","input":"Original options.filename/source/async/jsx getters and context sourceMaps/fsCache/rebuild getters.","observe":"Keep exact read multiplicity and source filename/hash/flag order; sourceMaps comes from ctx while interop/async/jsx cache flags come from topts."},
+    {"id":"raw-getter-method-completions","input":"Original returned code object has includes/endsWith/startsWith getters/calls, coercion hook and raw throw markers.","observe":"Keep method receiver/callee-before-arguments, raw return identity and actual default-hint concatenation; no early String()/Promise adoption."},
+    {"id":"prepare-assignment-receiver","input":"ctx.opts changes during real getCacheDir through a filename/cwd getter.","observe":"Assignment targets opts acquired before RHS; later condition/mkdir/debug/disable reads use their own later ctx.opts."},
+    {"id":"prepare-catch-completion","input":"Real mkdir/access failure, debug getter/call failure and fsCache setter failure.","observe":"Ordinary reason owned across debug; debug and setter failures override in original order; no extra restore/normalization."},
+    {"id":"tmpdir-delete-second-call-throw","input":"Actual getCacheDir with owned env and separately injected ordinary failure in the second real tmpdir boundary.","observe":"TMPDIR stays deleted when source throws before restoration; no invented finally. Exact raw original failure retained."},
+    {"id":"tmpdir-live-process-env","input":"Owned process overlay inherits original process; only explicit dummy env accessors log permitted keys and delegate actual owned store.","observe":"Each process/env/cwd receiver is read in source order, including new env receiver for restore; no host-env spread/enumeration."},
+    {"id":"nonconfigurable-tmpdir-delete","input":"Owned dummy env has a nonconfigurable TMPDIR descriptor.","observe":"Strict source delete throws before second tmpdir and before restoration; no silent fallback or renamed directory."},
+    {"id":"same-canonical-declarations","input":"Actual module graph shares getCache/getCacheDir/prepareCacheDir/transform identities with frontend/core.","observe":"No prelink placeholder functions or duplicate getCacheDir identity; ordinary names/lengths/constructibility and raw call semantics retained."}
+  ],
+  "native_controls":[
+    {"id":"real-owned-files-cache-bytes","input":"Run public Source23/native counterparts with real owned files and actual hash/FS bindings.","observe":"Compare genuine filename/store/hash footer bytes, fresh vs hit return, marker absence and post-cache shebang behavior without generated native golden."},
+    {"id":"fresh-host-fatal-in-prepare","input":"Granted GPA/fresh private allocation failure inside actual mkdir/access/path/error construction boundary.","observe":"Trusted fatal escapes exact and is not debugged/converted to fsCache=false; historical/lookalike ordinary reasons remain source catchable."},
+    {"id":"ordinary-reason-and-pending-ownership","input":"Owned raw getter/hook/FS/debug errors through actual exported functions, including new invocation after guest catches.","observe":"Original ordinary reason identity and source precedence; no stale captured exception replaces later completion."},
+    {"id":"callback-gc-and-release","input":"Drop external ctx/options/import refs after actual transform obtains get callback; separately granted GC before callback invocation and final release.","observe":"Actual native traced captures stay live, and after final GC aggregate owner memory returns to baseline; no borrowed dangling JSValue."},
+    {"id":"actual-md5-fips-policy","input":"Actual native crypto utility selected against genuine owned Node controls for default MD5, real FIPS/SHA256, default8 and explicit16 length.","observe":"No SHA256-as-MD5 alias, fabricated FIPS mode or digest from another source/version."},
+    {"id":"canonical-compiler-frontier","input":"Actual supported native compiler profile and explicit unsupported grammar from API12a, separately owned default binding.","observe":"No identity transform, JS Babel host, fake parse marker or full default-transformer qualification is inferred from these orchestration controls."}
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "status": "source-only-prepared-uncompiled-unrun",
+  "baseline": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "subject": "jiti2.7.0 fd3bb289b75ed207edfb686d671ed50144f7e90f src/cache.ts and src/transform.ts",
+  "CACHE_VERSION": "9",
+  "products": [
+    {
+      "sha256": "099F5FD86204EA18E8CAC676E9F86E7B81EA1A109AC34B0F15C83BC76DE75EEC",
+      "path": "src/extensions/native_jiti_fs_cache.zig",
+      "bytes": 12196
+    },
+    {
+      "sha256": "2C87DD9837B543E6BEA1A9FD874519CBF05A0478F87C82A057724888F3F4D68C",
+      "path": "src/extensions/native_jiti_transform.zig",
+      "bytes": 3712
+    }
+  ],
+  "protected": [
+    {
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "baseline_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125
+    },
+    {
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "baseline_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "path": "src/extensions/engine_abi.c",
+      "bytes": 7528
+    },
+    {
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "baseline_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "path": "src/extensions/engine_abi.h",
+      "bytes": 1544
+    },
+    {
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "baseline_blob": "824a2f6ce190333527ea812dc978e3fd213fead1",
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117
+    },
+    {
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "baseline_blob": "dc74667547037fd639eb4e9d7f6204ea2c626787",
+      "path": "src/extensions/native_js_values.zig",
+      "bytes": 9122
+    },
+    {
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "baseline_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66",
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878
+    },
+    {
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "baseline_blob": "5a713e97233c42e64c602f1532838e880214f5c4",
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 3936
+    },
+    {
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
+      "baseline_blob": "0d6df1b1e37e3bdf60bee327a02ae6cf8fc403ea",
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35118
+    },
+    {
+      "sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA",
+      "baseline_blob": "87b039ccb99ca17ad27785b8cec975864bdeb51b",
+      "path": "src/extensions/native_jiti_cjs_eval.zig",
+      "bytes": 3627
+    },
+    {
+      "sha256": "4B4A0380A1F02C918E76843D64F00B03C54F516B29FE8BC3F17F3E655C0C8F9D",
+      "baseline_blob": "310d1d4c3e4226a1b278b298b229538e26bb5acc",
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "bytes": 12697
+    },
+    {
+      "sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "baseline_blob": "125fa70d782448627d566a779426155724a4c5ec",
+      "path": "src/extensions/native_jiti_require.zig",
+      "bytes": 15301
+    },
+    {
+      "sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "baseline_blob": "178934966c36fd061e5a6000a5a9568e83d1b534",
+      "path": "src/extensions/native_jiti_resolve.zig",
+      "bytes": 13578
+    },
+    {
+      "sha256": "9F8E8F41A84C72B5DD1D66C3A3480CA9CD0F7B03CF35B615DAFDF121A0FAF8A8",
+      "baseline_blob": "d8d5c62391efaf1dad72c1e429402b54ebe140fb",
+      "path": "src/extensions/native_os_tmpdir.zig",
+      "bytes": 5929
+    },
+    {
+      "sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487",
+      "baseline_blob": "770bc2f0979cb5ae02a9e0217b708fa77a45a618",
+      "path": "src/extensions/native_node_crypto_hash.zig",
+      "bytes": 14185
+    },
+    {
+      "sha256": "1FC3CF74C16C35BE02F528F3C33E1D128C306B94ACFA9424D8C51CBC34AF8771",
+      "baseline_blob": "6527db3f4ef4a5c887e9551d7fd87ac05e8884de",
+      "path": "src/extensions/node_fs.zig",
+      "bytes": 39698
+    },
+    {
+      "sha256": "9718CE373657264DF0A65E6840B163C920F762B10B015536203B5F988C57EE59",
+      "baseline_blob": "62d7f0601cf8cb10dd69d22ea9ea48f5aeb7eeec",
+      "path": "src/extensions/node_fs_metadata.zig",
+      "bytes": 21880
+    },
+    {
+      "sha256": "2D386948BAB831FE764A1EBB95982A7FE50E319AD93D67523417BAD1D3F258D0",
+      "baseline_blob": "e77af317a60c8026ff7c19e67bdd4a2b3d3a6c22",
+      "path": "src/extensions/fixtures/ai-openai-http-b06.json",
+      "bytes": 154439
+    },
+    {
+      "sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC",
+      "baseline_blob": "edaa10ebba1acf3e0e36c0866de53de9ed8afd6e",
+      "path": "src/extensions/fixtures/ai-openai-http-b45.json",
+      "bytes": 40056
+    }
+  ],
+  "packet": [
+    {
+      "sha256": "8C8DA7004B8A98EA30AC83A4C83415AA2CAAB848275EF00B4C7146A692069DB5",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/controls.json",
+      "bytes": 4899
+    },
+    {
+      "sha256": "A1D2EC68BD86C0940FA1C8FD5B36C25232425A44F3B77EAB913FAF6D0F8AD214",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/README.md",
+      "bytes": 4700
+    },
+    {
+      "sha256": "5D5A22FBE5AB5D27E029978AD43146A29BED8DF7B867CDBA248013E5C94C0D2B",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/source-caller.mjs",
+      "bytes": 9790
+    },
+    {
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/cache.ts",
+      "bytes": 2872
+    },
+    {
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/LICENSE.txt",
+      "bytes": 1078
+    },
+    {
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705",
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/transform.ts",
+      "bytes": 796
+    }
+  ],
+  "actual_input_owners": {
+    "utilities": "Root coordinates actual debug/isWritable/hash Source module; MD5/FIPS missing from old SHA256-only crypto must be implemented, not faked",
+    "tmpdir": "actual native_os_tmpdir.create export with original process/environment captures",
+    "frontend": "typebox_operators_resume actual core/frontend/cells assembler shares SAME actual transform/cache declarations",
+    "pathe": "models_refresh: sourceclosedb5cd plus resolve/filename4672e40dd15d51c013f5e54cf491af30966180c4 successor; no Nodepath alias",
+    "default_transformer": "Separate native compiler/profile owner: API12a is not full Babel result contract and is NOT bound as a default/identity by this delta",
+    "filesystem": "actual existing node_fs named functions, no substituted IO"
+  },
+  "public_source_rows": 23,
+  "direct_source_controls": 10,
+  "native_controls": 6,
+  "expected_files": [],
+  "observed_files": [],
+  "jobs_launched": false,
+  "shared_or_main_c_h_engine_changes": false,
+  "full_default_jiti_qualification": false
+}

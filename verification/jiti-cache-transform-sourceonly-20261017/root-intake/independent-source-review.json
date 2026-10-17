@@ -1,0 +1,26 @@
+{
+  "schema": "pi-zig-independent-cache-transform-review-provenance-v1",
+  "status": "independent-source-closure-received-controls-unrun",
+  "reviewer": "/root/models_refresh_resume",
+  "captured_by": "/root/stream_module_resume",
+  "provenance_kind": "team-message; reviewer wrote no receipt file and performed no edits",
+  "reviewed_commit": "b5f73edc37f130a5d65404cab1339f743c5d3bb8",
+  "reviewed_scope": "Actual jiti2.7 cache.ts/transform.ts orchestration and scoped native ownership/fatal semantics",
+  "reviewed_hashes": {
+    "cache": "099F5FD86204EA18E8CAC676E9F86E7B81EA1A109AC34B0F15C83BC76DE75EEC",
+    "transform": "2C87DD9837B543E6BEA1A9FD874519CBF05A0478F87C82A057724888F3F4D68C",
+    "prepared": "A047FA9E01F563B3823AD37A97291348166165214AD4F6B2BA25E9F3BC454751"
+  },
+  "reviewer_message": "Cache/transform closure was teammessage only; no independent receiptfile authored (read-only assignment). Exactclosed cleanb5f73edc: cache099F5FD86204EA18E8CAC676E9F86E7B81EA1A109AC34B0F15C83BC76DE75EEC; transform2C87DD9837B543E6BEA1A9FD874519CBF05A0478F87C82A057724888F3F4D68C; preparedA047FA9E01F563B3823AD37A97291348166165214AD4F6B2BA25E9F3BC454751. Independently26sealedrows0drift, primariescache84A3/transformD93A matchoperatorsretainedSource,9pathdiffclean. Source semantic/ownership/fatalclosure no remaining scopedblocker; initialputfindingretracted(currentSDK201 alreadycapture).23actualpubliccallsprepared+10direct/6native CONTROL SPECIFICATIONS, no runnable/executednativeentries/goldens/defaultBabel/API12aalias. Nojobs/edits byreviewer. This message may be preserved as provenance, not runtime evidence.",
+  "reference_calls_prepared": 23,
+  "direct_boundary_specifications": 10,
+  "native_control_specifications": 6,
+  "native_test_entries_added": 0,
+  "reference_calls_run": 0,
+  "direct_boundaries_run": 0,
+  "native_controls_run": 0,
+  "expected_files": [],
+  "observed_files": [],
+  "remaining_default_transformer_or_frontend_dependencies_not_closed": true,
+  "runtime_or_public_activation_qualification": false
+}

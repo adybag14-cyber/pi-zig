@@ -1,0 +1,258 @@
+{
+  "schema": "pi-zig-cache-transform-narrow-root-intake-v1",
+  "status": "reviewed-source-only-prepared-for-root-intake",
+  "unit_worktree": "C:\\Users\\adyba\\pi-zig\\worktrees\\jiti-cache-transform",
+  "unit_base": "675252b2bfeb95addfe20dda58755c6687ae83e5",
+  "unit_commit": "b5f73edc37f130a5d65404cab1339f743c5d3bb8",
+  "published_checkpoint_ref": "refs/heads/checkpoint/jiti-cache-transform-sourceonly-20261017",
+  "published_checkpoint_commit_verified_with_git_ls_remote": "b5f73edc37f130a5d65404cab1339f743c5d3bb8",
+  "observed_root_head": "29e6f8f5e2f2166a1a520535df8e9c9b1cf58002",
+  "source_patch_scope": "Only unit parent675252b2 -> reviewedb5f73edc nine-path delta; unrelated ancestors excluded",
+  "source_path_count": 9,
+  "source_files": [
+    {
+      "path": "src/extensions/native_jiti_fs_cache.zig",
+      "git_blob": "daf73b4833e241b31014e5f1e5d0b5704aa6de71",
+      "sha256": "099F5FD86204EA18E8CAC676E9F86E7B81EA1A109AC34B0F15C83BC76DE75EEC",
+      "bytes": 12196,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "src/extensions/native_jiti_transform.zig",
+      "git_blob": "827157079a1fc0b2f4808b0b858042ced49655d3",
+      "sha256": "2C87DD9837B543E6BEA1A9FD874519CBF05A0478F87C82A057724888F3F4D68C",
+      "bytes": 3712,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/README.md",
+      "git_blob": "277bcae8e5d76137b8b6c4b5a1b19d203506c4d9",
+      "sha256": "A1D2EC68BD86C0940FA1C8FD5B36C25232425A44F3B77EAB913FAF6D0F8AD214",
+      "bytes": 4700,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/LICENSE.txt",
+      "git_blob": "e739abce461d8b2899aaec6529a4af24a417e0fc",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/cache.ts",
+      "git_blob": "afd17527860bc383d22e381c52957854f85a6b92",
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930",
+      "bytes": 2872,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/authority/transform.ts",
+      "git_blob": "785093193dc12848a5a775c52b3831e08f781902",
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705",
+      "bytes": 796,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/controls.json",
+      "git_blob": "4da6c056fb21a672dd780e68111d9d2a67b0f2bd",
+      "sha256": "8C8DA7004B8A98EA30AC83A4C83415AA2CAAB848275EF00B4C7146A692069DB5",
+      "bytes": 4899,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/prepared.json",
+      "git_blob": "18f1c36f8c05664cdf6c0b1d44e3fca70b3a990a",
+      "sha256": "A047FA9E01F563B3823AD37A97291348166165214AD4F6B2BA25E9F3BC454751",
+      "bytes": 7421,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    },
+    {
+      "path": "verification/jiti-cache-transform-sourceonly-20261017/source-caller.mjs",
+      "git_blob": "04fb9bd83feabe1b6dcd2ce4f75eeeaf2a06463c",
+      "sha256": "5D5A22FBE5AB5D27E029978AD43146A29BED8DF7B867CDBA248013E5C94C0D2B",
+      "bytes": 9790,
+      "root_target_status": "absent_at_observed_root_and_worktree"
+    }
+  ],
+  "root_target_replacements": 0,
+  "all_nine_source_targets_absent": true,
+  "source_product_bytes_changed_from_reviewed": false,
+  "independent_review_provenance": "independent-source-review.json",
+  "upstream_authority": {
+    "project": "unjs/jiti",
+    "version": "2.7.0",
+    "commit": "fd3bb289b75ed207edfb686d671ed50144f7e90f",
+    "license": "MIT",
+    "retained_files": [
+      "authority/cache.ts",
+      "authority/transform.ts",
+      "authority/LICENSE.txt"
+    ]
+  },
+  "original_prepared_manifest_sha256": "A047FA9E01F563B3823AD37A97291348166165214AD4F6B2BA25E9F3BC454751",
+  "original_26_hash_rows_verified": 26,
+  "original_hash_row_drift": 0,
+  "protected_root_files": [
+    {
+      "path": "src/extensions/engine.zig",
+      "reviewed_unit_base_sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "observed_root_sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "reviewed_unit_base_sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "observed_root_sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "reviewed_unit_base_sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "observed_root_sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "reviewed_unit_base_sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "observed_root_sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "reviewed_unit_base_sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "observed_root_sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "reviewed_unit_base_sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "observed_root_sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "reviewed_unit_base_sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "observed_root_sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "reviewed_unit_base_sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
+      "observed_root_sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_eval.zig",
+      "reviewed_unit_base_sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA",
+      "observed_root_sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "reviewed_unit_base_sha256": "4B4A0380A1F02C918E76843D64F00B03C54F516B29FE8BC3F17F3E655C0C8F9D",
+      "observed_root_sha256": "AF011548FEAD1038784193641611BEE13AD8076C34EC5CF29A57483C0C2577B2",
+      "matches_unit_base": false,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_jiti_require.zig",
+      "reviewed_unit_base_sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "observed_root_sha256": "BD29C7EDB624BEE507E667F03733A1FEA12BF292C39335F1C8CD5426368FE731",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_jiti_resolve.zig",
+      "reviewed_unit_base_sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "observed_root_sha256": "AB6A7BC912E5FB74B07CA0A1AF01316FFD0530B493C3BF89E8686CA5BE0C2712",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_os_tmpdir.zig",
+      "reviewed_unit_base_sha256": "9F8E8F41A84C72B5DD1D66C3A3480CA9CD0F7B03CF35B615DAFDF121A0FAF8A8",
+      "observed_root_sha256": "9F8E8F41A84C72B5DD1D66C3A3480CA9CD0F7B03CF35B615DAFDF121A0FAF8A8",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/native_node_crypto_hash.zig",
+      "reviewed_unit_base_sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487",
+      "observed_root_sha256": "91FBAD6661EE2345F64E5F3166A27C6C0870278DEA5072E2DA79CF70F34C7487",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/node_fs.zig",
+      "reviewed_unit_base_sha256": "1FC3CF74C16C35BE02F528F3C33E1D128C306B94ACFA9424D8C51CBC34AF8771",
+      "observed_root_sha256": "1FC3CF74C16C35BE02F528F3C33E1D128C306B94ACFA9424D8C51CBC34AF8771",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/node_fs_metadata.zig",
+      "reviewed_unit_base_sha256": "9718CE373657264DF0A65E6840B163C920F762B10B015536203B5F988C57EE59",
+      "observed_root_sha256": "9718CE373657264DF0A65E6840B163C920F762B10B015536203B5F988C57EE59",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-http-b06.json",
+      "reviewed_unit_base_sha256": "2D386948BAB831FE764A1EBB95982A7FE50E319AD93D67523417BAD1D3F258D0",
+      "observed_root_sha256": "2D386948BAB831FE764A1EBB95982A7FE50E319AD93D67523417BAD1D3F258D0",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-http-b45.json",
+      "reviewed_unit_base_sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC",
+      "observed_root_sha256": "A2A204564432415EF469A81A78F08B8302AEA36AD92475041470C5CA8A2F74EC",
+      "matches_unit_base": true,
+      "included_in_patch": false,
+      "root_bytes_preserved": true
+    }
+  ],
+  "public_source_rows_prepared": 23,
+  "direct_boundary_specifications": 10,
+  "native_control_specifications": 6,
+  "native_executable_test_entries": 0,
+  "reference_source_or_native_controls_run": 0,
+  "expected_files": [],
+  "observed_files": [],
+  "genuine_capture_accepted": false,
+  "default_Babel_compiler_bound": false,
+  "API12a_used_as_default_or_identity": false,
+  "frontend_or_global_assembly_selected": false,
+  "build_targets_changed": false,
+  "C_header_Engine_or_shared_sdk_in_patch": false,
+  "full_default_jiti_qualification": false,
+  "sourceonly_intake_does_not_authorize_jobs": true,
+  "historical_proofs_rewritten": false,
+  "root_worktree_or_index_edited": false
+}
