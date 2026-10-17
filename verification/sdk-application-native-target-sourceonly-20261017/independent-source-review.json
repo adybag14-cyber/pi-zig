@@ -1,0 +1,117 @@
+{
+  "schema": 1,
+  "reviewer": "/root/minimatch_native_resume",
+  "classification": "FINITE_SOURCE_REVIEW_CLOSED_UNCOMPILED_UNRUN",
+  "source_head": "8a4b5043053211618ff89b2f90b30f9cbf903f55",
+  "base": "65dc640634d6bb1ae3ed4fba8a6b17eb50ab83b7",
+  "original_checkpoint": "9519288415b832439106fe0cccfaa5c1add854db",
+  "product_corrections": "d82f1f13e92785ecf73c7b20acd8d9c932935b37",
+  "scope": "Consumed native node:os profile plus actual SDK bootstrap, exact manager projection and real full-graph anchor bodies",
+  "products": [
+    {
+      "path": "build.zig",
+      "git_blob": "155743811605d25499b45272c7b3294011497832",
+      "sha256": "9A964CFC322BAB0593CCA220495EFE2BFD65184A2A537C2AE73C0D965017C59D",
+      "bytes": 341522
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "git_blob": "9eab6398a6beee4839633c1908660eafa6d19f80",
+      "sha256": "FB00A928967F906E3561802B7C169CC551E1FEB5806235BE90C19D04C78D8993",
+      "bytes": 18041
+    },
+    {
+      "path": "src/extensions/native_node_fs_system_error.zig",
+      "git_blob": "21e0fb8c70ae1af60b73e74acfcc6a65c50bdde2",
+      "sha256": "A19BB0928F337E9065215BA37BB083F65ED6E5F0DF1639BC6CA92887629D50A2",
+      "bytes": 8670
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "git_blob": "54894543537081b5b9dd3af56310d0b3b2d9ad57",
+      "sha256": "0379422826A29E45DB28643A0AF16E4A9A8FF967A39E37DFD3FC531BC7A3A4EE",
+      "bytes": 163149
+    },
+    {
+      "path": "src/extensions/native_sdk_default_real_assembly.zig",
+      "git_blob": "0314352e94a624f7ba42eb575e7b77bb464506dd",
+      "sha256": "66BFB9D9437390A00CCC68537945C65A703A6DB9BF09240FE91817405CF4DFA1",
+      "bytes": 11751
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "git_blob": "21db613b508a8de81bcb46f7003a405a553bea0e",
+      "sha256": "F2A6CF17D8391E15B9B3FFF38834B0848D5C4F52BE2F012AF725B6C2C35759C4",
+      "bytes": 3348
+    },
+    {
+      "path": "src/native_sdk_application_native_test.zig",
+      "git_blob": "a3bc01da0ebc6822b15ca3abae64e0c8f95bbb1b",
+      "sha256": "A6433185B10A3F0ED34A9D1C0B780BDA5FA552AD355C980D957A9566E1F2272E",
+      "bytes": 12195
+    },
+    {
+      "path": "src/extensions/fixtures/node-os-consumed-24_14.input.mjs",
+      "git_blob": "c01623d965e68dd1832363566e1467332f7ffb1e",
+      "sha256": "B5BA332BDC88842F13D7E24D2D2346E8A3342333A6714E9ED5CBECF83A5755C2",
+      "bytes": 2465
+    }
+  ],
+  "manifest_chain": [
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/prepared.json",
+      "git_blob": "b55c55b9dd9f6248d4d57553efd7e5d7b939d946",
+      "sha256": "82203BA56856A7D068E0907DB34EBBCC52C508D5F749EB98D229E66E3671145C",
+      "bytes": 9477
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/peer-corrections-prepared.json",
+      "git_blob": "17a9c639bac833422f70ca14fb7164c185b68944",
+      "sha256": "134764D84FD687F9726C67D7EDBC5E5FE427A484385521883861CB75799E6279",
+      "bytes": 1258
+    },
+    {
+      "path": "verification/sdk-application-native-target-sourceonly-20261017/direct-host-control-setup-correction.json",
+      "git_blob": "a57344ae4818c11fc42219d9b7ecf15e8dc61136",
+      "sha256": "65D8E2B35E0E2A764F5E61CD3B3C066BAB31AE4D7A0FD6420B6FB2167D50F9F8",
+      "bytes": 663
+    }
+  ],
+  "verified": {
+    "original_manifest_rows": 33,
+    "original_git_and_checkout_hash_drift": 0,
+    "original_protected_rows": 10,
+    "final_protected_git_blob_drift": 0,
+    "additive_correction_manifest_rows": 4,
+    "additive_correction_hash_drift": 0,
+    "original_caller_rows": 19,
+    "native_named_controls": 7,
+    "caller_copies_identical": true,
+    "expected_present": false
+  },
+  "findings_closed": [
+    "Unsupported native errno no longer becomes fabricated UNKNOWN SystemError; admitted exact mappings remain",
+    "Direct host SystemError.fromContext balances diagnostic suppression around outer checked constructor call",
+    "Direct-host getter control now installs genuine process/streams/SystemError owner before testing raw identity and zero formatting"
+  ],
+  "source_observations": [
+    "Normal Win32 profile/token/uname declarations agree with pinned Node/libuv and Zig0.16 Windows types",
+    "POSIX getpwuid_r/uname declarations agree with Zig0.16 platform types; Darwin utsname layout checked against retained toolchain header",
+    "Home environment profile admits original own string data; accessors/nonstring/ambiguous Windows aliases fail explicitly",
+    "Manager projection caches exact existing SessionManager and SettingsManager constructor objects",
+    "Application bootstrap forwards required actual Completed dependencies and exact manager/loader exports; no stand-in full application is authored",
+    "SystemError static cache key removes prior unowned allocated-key leak without changing class body"
+  ],
+  "limitations": [
+    "All seven native controls and nineteen original caller rows remain unrun",
+    "No compiler/parser/AST/formatter/Node/generator/native/LLVM jobs were performed",
+    "No runtime ABI or cross-platform execution qualification",
+    "Darwin native_process platform tag remains macos instead of Node darwin and needs separate owner correction",
+    "Full process.env exotic semantics, omitted native errno translations, uncommon Windows registry/version failures and host OOM remain explicit gates",
+    "Actual completed loader/model/runtime/config/shell/auth/HTTP graphs remain required for full application replay",
+    "Source27/Source166 anchor bodies are real but unexecuted; historical Original64 supplied-collaborator harness remains separate",
+    "No C/Engine/Main edits, product intake, default activation, whole SDK/Pi parity or execution authorization follows from this receipt"
+  ],
+  "original_proofs_rewritten": false,
+  "receipt_is_runtime_evidence": false
+}
