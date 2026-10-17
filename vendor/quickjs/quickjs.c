@@ -17423,6 +17423,26 @@ static JSValue JS_GetIterator(JSContext *ctx, JSValueConst obj, bool is_async)
     return ret;
 }
 
+JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj)
+{
+    JSValue result, reason;
+    bool fatal;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    result = JS_GetIterator(ctx, obj, true);
+    if (!JS_HasException(ctx))
+        return result;
+    reason = JS_GetException(ctx);
+    fatal = JS_IsUncatchableError(reason);
+    JS_FreeValue(ctx, result);
+    if (!fatal && JS_HasException(ctx) &&
+        JS_IsUncatchableError(ctx->rt->current_exception)) {
+        JS_FreeValue(ctx, reason);
+        return JS_EXCEPTION;
+    }
+    return JS_Throw(ctx, reason);
+}
+
 /* return *pdone = 2 if the iterator object is not parsed */
 static JSValue JS_IteratorNext2(JSContext *ctx, JSValueConst enum_obj,
                                 JSValueConst method,

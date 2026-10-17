@@ -595,6 +595,12 @@ JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);
 JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
+/* Executing acquisition, not a read-only query. Borrowed same-runtime input,
+   owned iterator return. Exceptions pending at entry prevent guest work.
+   Pending results are normalized after protected owned-result cleanup; native
+   callbacks must still obey the ordinary C API exception-return convention.
+   Uses the VM's genuine async/sync-fallback path; caller captures next itself. */
+JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
 
 /* the following functions are used to select the intrinsic object to
    save memory */
