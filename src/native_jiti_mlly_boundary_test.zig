@@ -170,7 +170,7 @@ test "mlly normal break still rejects primitive return results"{
 }
 fn parentFatal(engine:*em.Engine,_:c.JSValue,_:[]const c.JSValue,roots:[]const c.JSValue)!c.JSValue{
     const generation=engine.native_allocation_generation;
-    if(engine.checked(engine.throwNativeOutOfMemory()))|unexpected|{engine.freeValue(unexpected);return error.ExpectedMllyParentFatal;}else|err|{_=m.exact(engine,err,generation);}
+    if(engine.checked(engine.throwNativeOutOfMemory()))|unexpected|{engine.freeValue(unexpected);return error.ExpectedMllyParentFatal;}else|err|{try std.testing.expect(m.exact(engine,err,generation)==error.JavaScriptException);}
     const primary=engine.captured_exception orelse return error.MissingMllyParentFatal;engine.captured_exception=null;defer engine.freeValue(primary);
     try install(engine,"MllyParentFatalReason",primary);
     // Entered cleanup may catch an ordinary child close. The already trusted

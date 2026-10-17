@@ -416,7 +416,7 @@ fn resolveAliasLoop(engine: *v.em.Engine, state: c.JSValue, path: c.JSValue, ite
             const suffix = try s.invoke(path, "slice", &.{try s.get(alias, "length")});
             const result = try joined(engine, state, &.{ to, suffix });
             errdefer engine.freeValue(result);
-            try closeNormal(engine, &iterator); return result;
+            try closeNormal(engine, iterator); return result;
         }
     }
     return c.JS_DupValue(engine.context, path);

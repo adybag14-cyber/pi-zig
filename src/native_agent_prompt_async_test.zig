@@ -6,7 +6,7 @@ const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const c = em.c;
 pub fn compareActualSource(engine: *em.Engine, actual_agent: c.JSValue, original_reference: []const u8) !void {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
-    const observer = try s.own(try engine.evalModule(@embedFile("../verification/agent-routing-genuine-af-sourceonly-20261017/observer.mjs"), "actual-agent-routing-observer.mjs"));
+    const observer = try s.own(try engine.evalModule(@embedFile("extensions/fixtures/agent-routing-observer.mjs"), "actual-agent-routing-observer.mjs"));
     const pending = try s.call(try s.get(observer, "observeAgentRouting"), c.pi_js_undefined(), &.{actual_agent});
     const result = try s.own(try engine.awaitValue(pending));
     const terminated_reference = try engine.gpa.dupeZ(u8, original_reference);
