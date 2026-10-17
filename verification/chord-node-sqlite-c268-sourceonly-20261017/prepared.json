@@ -1,0 +1,220 @@
+{
+  "schema": 1,
+  "status": "source-only-uncompiled-unrun-independent-review-pending",
+  "baseline": "14775669ca4ad1155957114fec9bdd40b659ca3c",
+  "product_commit": "b7edd2aee190bc6f60151fac4717b0e2e9ee5b53",
+  "upstream": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "node_primary_ref": "v24.14.0",
+  "node_cpp_official_git_blob": "050d779bdcd2b3129abddc3fefa1e852831df236",
+  "node_source_sha256": "EB659409FCDC53515DA42E543EADDD7CB86BC73CFD919A224292EB562A375E00",
+  "products": [
+    "src/extensions/native_chord_sqlite_node.zig",
+    "src/extensions/native_chord_sqlite_node_queue.zig",
+    "src/extensions/native_chord_sqlite_node_values.zig",
+    "src/extensions/native_node_sqlite.zig"
+  ],
+  "adapter_factory": "native_chord_sqlite_node.create(engine, Inputs{database_sync,mkdir,dirname}) -> owned actual exportcarrier",
+  "sqlite_factory": "native_node_sqlite.create(engine) -> owned actual consumer carrier DatabaseSync/StatementSync",
+  "source_observer_rows_prepared": 25,
+  "native_test_definitions_prepared": 4,
+  "additional_native_specs": 7,
+  "observed_output_files": [],
+  "expected_output_files": [],
+  "pins": [
+    {
+      "path": "src/extensions/native_chord_sqlite_node.zig",
+      "bytes": 20462,
+      "sha256": "D0F0BF2FB905F176CE56825CB146CCDEC491197D45C6F3CD1FAE73BF991F6FFE"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_node_queue.zig",
+      "bytes": 5172,
+      "sha256": "560155C39C13C1D637A0BBC14CE9F302EBD348A8C5FFD9C6905EA101BBB60DBC"
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_node_values.zig",
+      "bytes": 4224,
+      "sha256": "67790E969B5B9620FCFC8BF823B58282B1DCB5F6CC89F5AEE0799A588EF88F44"
+    },
+    {
+      "path": "src/extensions/native_node_sqlite.zig",
+      "bytes": 28909,
+      "sha256": "09EBC7F5525DCA12766F51EDB1C083890E3E31FFB32BEFB9B87D132FC1822F41"
+    },
+    {
+      "path": "src/native_chord_sqlite_node_test.zig",
+      "bytes": 6615,
+      "sha256": "9707C90CE62D2B077873345382DC49C291628298A0DF2C49566A607CBD0C30F2"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/README.md",
+      "bytes": 5750,
+      "sha256": "33CD9C1809C8C891FF7BEFD7E13945350A0E39E9B2709E0F40F183D5D890D914"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/c268-chord-database.ts.txt",
+      "bytes": 1861,
+      "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/c268-chord-node.ts.txt",
+      "bytes": 6288,
+      "sha256": "87EEE26EC2CD23F0EC19FA785C4B985546D85CF791FD6454E75BBE643E6EAC68"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/node-v24.14.0-LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/node-v24.14.0-node_sqlite-git-blob.json",
+      "bytes": 303,
+      "sha256": "198FFF52B6755E57960655A8A1CC9027FC8F787028776630548802AD0CBFC6A3"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/node-v24.14.0-node_sqlite.cc.txt",
+      "bytes": 118789,
+      "sha256": "EB659409FCDC53515DA42E543EADDD7CB86BC73CFD919A224292EB562A375E00"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/node-v24.14.0-node_sqlite.h.txt",
+      "bytes": 13630,
+      "sha256": "A881D9700F1D9F99D519AD5B8CB1BA15FBAF7E268EC671BCAAFA6B0819DA7923"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/authority/node-v24.14.0-sqlite.md.txt",
+      "bytes": 53900,
+      "sha256": "75ACDD10D4FC48F57526C32805A510A4AADD5DAED5573043B000B9088A44C828"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/native-controls.md",
+      "bytes": 2416,
+      "sha256": "B735665BA8F955A993A810A249F678FA9EC48A2F611240F62CDDC9F1AF0F8CC9"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/observer.mjs",
+      "bytes": 10643,
+      "sha256": "1002E747678F2841742C0378D6C940B8FC7763CBDF0CC8964011519543D26933"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/reference-input.mjs",
+      "bytes": 300,
+      "sha256": "00EE83B7968114A52E3EB6C173C4EB81E244D362974EC647B78DCA23479005FD"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/reference-source/database.ts",
+      "bytes": 1861,
+      "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2"
+    },
+    {
+      "path": "verification/chord-node-sqlite-c268-sourceonly-20261017/reference-source/node.ts",
+      "bytes": 6288,
+      "sha256": "87EEE26EC2CD23F0EC19FA785C4B985546D85CF791FD6454E75BBE643E6EAC68"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "baseline_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "baseline_blob": "00be281f64f1a4caa27fbfc94ad55f5345b8019a",
+      "bytes": 6315,
+      "sha256": "61C4A3302BA8CF6C13CC051D6CA2CA281B4D4BC325A4C105A072182AE8B88819"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "baseline_blob": "ad79be421d1ce9764eb3a9d4152ba896431a3689",
+      "bytes": 3920,
+      "sha256": "43AF332E622C5E8C0F91CEDC0B5E84EFED8133F8E058450F5DF254892105761E"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "baseline_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "baseline_blob": "390157c1ae6264e314137b799b269e8c0f18f366",
+      "bytes": 5900,
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "baseline_blob": "b81779d3d0fa59cce20f2d89e0c94a6fc1c05c88",
+      "bytes": 4558,
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0"
+    },
+    {
+      "path": "src/extensions/node_fs.zig",
+      "baseline_blob": "6527db3f4ef4a5c887e9551d7fd87ac05e8884de",
+      "bytes": 39698,
+      "sha256": "1FC3CF74C16C35BE02F528F3C33E1D128C306B94ACFA9424D8C51CBC34AF8771"
+    },
+    {
+      "path": "src/extensions/node_path.zig",
+      "baseline_blob": "c57090b4444910155adcc1efe500ba27b160c2a8",
+      "bytes": 31004,
+      "sha256": "377B41F044812F61066B61D0A70723A90019E1F41FD2617DF4DC252BBCBC02B5"
+    },
+    {
+      "path": "src/storage/sqlite/ffi.zig",
+      "baseline_blob": "4711e6235d928fccae36a30e5ee1dc821f3cb902",
+      "bytes": 15455,
+      "sha256": "7DCA075080F55A9454980304869C76C76223B46DB48DE3628E304E9B84F6514C"
+    },
+    {
+      "path": "src/durable/backend/sqlite.zig",
+      "baseline_blob": "f930a188e7357b0ff0b92e6f7afd683bec898e69",
+      "bytes": 17624,
+      "sha256": "A94906C9F6D8CD22E3CFCE209E41B94B883AA30880D4C74EEA595E71BD4D4ED0"
+    },
+    {
+      "path": "src/extensions/native_durable.zig",
+      "baseline_blob": "1afb1b26340779fc3c0e068013e7a36fd3ded364",
+      "bytes": 77003,
+      "sha256": "11742E3A31990054AF8EB6C76EC13E88A67C706CC78F0CD960C5389925299C4C"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "baseline_blob": "c9b544cb3f5616368648a87cf87fb04193883513",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "baseline_blob": "a1b689283c422bd258a6a4c8876e689a3b892805",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "vendor/sqlite/sqlite3.c",
+      "baseline_blob": "0644a39f8734fdef1506609af760147454e15389",
+      "bytes": 9515341,
+      "sha256": "B1DD5D74EC7F29055A6684FA06FB3C2F6821C87DD38F9A458DFD2E8A1DB28189"
+    },
+    {
+      "path": "build.zig",
+      "baseline_blob": "fe0d5f361ee1d5646f82199e4299ba4c1ccce471",
+      "bytes": 347284,
+      "sha256": "5837DE41F1D08C520A38D049895A817F6BE71F11475AC7AB7CBD07928D815B05"
+    }
+  ],
+  "dependencies": {
+    "dirname": "actual imported node:path.dirname binding required",
+    "namespace_schema_migrations": "Operators87335f0f separate unit",
+    "sqlite_linkage": "existing Root SQLite C linkage, no new fallback or host process",
+    "genuine_async_mkdir": "FS6ac7ae83 separate unit, peer review pending"
+  },
+  "authority_whitespace_note": "Official Node LICENSE has one original space-before-tab indentation at line362; retained byte-exact. Product/source controls diff-check otherwise clean.",
+  "main_edited": false,
+  "shared_c_or_engine_edited": false,
+  "default_build_edited": false,
+  "compiler_ast_node_native_generator_jobs": false,
+  "runtime_or_product_qualified": false,
+  "full_node_sqlite_api_qualified": false
+}

@@ -1,0 +1,7 @@
+# Leaf-local callback allocator boundary successor
+
+Product successor ad9da5f208439b94835bc57a4664771f5446b81f preserves b01e1b2c and its original manifest. The new SQLite/adapter/queue callbacks are now wrapped locally, without changing native_node_function.zig, native_class.zig, Engine or C.
+
+Each actual ordinary callback snapshots the native allocation generation before its operation. A direct error.OutOfMemory creates and marks its actual trusted native reason before returning it. An actual JavaScriptException uses the current pending exception and the existing private fresh-generation classifier; historical tags and returned DATA are not newly classified. This covers raw DatabaseSync methods/constructors and queue Promise callbacks as well as adapter ordinary methods. Genuine AF bodies retain the existing direct-OOM handling in the native AF primitive and operation-local Await guards.
+
+This is a concrete boundary repair, not a claim that mutable global Promise code can never consume or overwrite a fatal event. Actual C3/C4 composition, Promise subclass/overwriting controls and allocator/GC tests remain unrun and mandatory before broader qualification. The original25 observer, all four native test definitions and original authority/protected files are byte-identical to b01e1b2c. No expected output was fabricated and no failure check is weakened.

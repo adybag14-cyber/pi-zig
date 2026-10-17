@@ -1,0 +1,8 @@
+{
+  "url": "https://github.com/nodejs/node/blob/v24.14.0/src/node_sqlite.cc",
+  "ref": "v24.14.0",
+  "official_git_blob": "050d779bdcd2b3129abddc3fefa1e852831df236",
+  "bytes": 118789,
+  "sha256": "EB659409FCDC53515DA42E543EADDD7CB86BC73CFD919A224292EB562A375E00",
+  "git_blob_verified": true
+}
