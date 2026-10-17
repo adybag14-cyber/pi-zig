@@ -1,0 +1,183 @@
+{
+  "schema": 1,
+  "status": "prepared-source-only-unrun",
+  "parent": "e39677392982aace92ebfaedd45ef152b6897640",
+  "root_union": "1fd8dd40100cb41b44d94e09fffe12ed1412f32e",
+  "resolved_source_findings": [
+    "G1 current actualfatal error-unwind and directGPA/captured-first ownership",
+    "G2 reentrant captured/last_error ownership retirement"
+  ],
+  "negative_receipt_sha256": "4AFA2027A98D65A5EF3E79BF2489BEDD4C462C66D9781258081A3E2261F4423B",
+  "products": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "bytes": 6692
+    },
+    {
+      "path": "src/extensions/native_async_generator.zig",
+      "sha256": "75A07A7D33050405705EE7D2C1D8EAD9375454A6F32541E2825EBB7CB52C65E1",
+      "bytes": 3006
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "bytes": 4809
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826
+    }
+  ],
+  "owned": [
+    {
+      "path": "src/native_callback_producer_test.zig",
+      "sha256": "26ACBAC1B50E3A3F8A9D0C4FF247838155D25A0E4D249943E30758D1DDBA718A",
+      "bytes": 28986
+    },
+    {
+      "path": "verification/native-callback-producer-corrections-sourceonly-20261017/README.md",
+      "sha256": "59CEF120BCDDECD549E5705EDDFFEBAF9264222CC8139349335AB11EE80D2974",
+      "bytes": 4694
+    },
+    {
+      "path": "verification/native-callback-producer-corrections-sourceonly-20261017/negative-e396-source-review.json",
+      "sha256": "4AFA2027A98D65A5EF3E79BF2489BEDD4C462C66D9781258081A3E2261F4423B",
+      "bytes": 12205
+    }
+  ],
+  "protected": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "F5B4EDF5C4DAA6ED4FC8892752777E602D46379723B471F25552DCF4F884B69B",
+      "bytes": 2221803
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "bytes": 163154
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "sha256": "69286C144813B1369F303485E6831AE5103B630E006E9D936A7DC5DD7127708A",
+      "bytes": 25609
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "bytes": 3281481
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+      "bytes": 11919
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite_cloudflare.zig",
+      "sha256": "1C9A1D2E444DB9038E75DBD01DD14E06FBC02F9ED977E8B7F7967A34710914AD",
+      "bytes": 22261
+    },
+    {
+      "path": "src/extensions/native_chord_sqlite.zig",
+      "sha256": "BE9F0BB893C1DF7DD4818E6CCE03C7DB65A2E7569E1617061E867D1A258BD5C7",
+      "bytes": 7874
+    },
+    {
+      "path": "src/extensions/native_node_os.zig",
+      "sha256": "9EEC70BDD87210460DE4CCFC70D66BAB4333FDB56ED41C127171B6FE6BBABBD2",
+      "bytes": 18014
+    },
+    {
+      "path": "src/extensions/native_node_stream.zig",
+      "sha256": "1F52B9BDE90EB24DB51674E8D03A8C65093BBF36D5D2C1B22BC13F21A177F769",
+      "bytes": 88298
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+      "bytes": 242598
+    },
+    {
+      "path": "src/extensions/native_sdk_session_control.zig",
+      "sha256": "4B0531D5D660BE8B7AA386ACDC404BE0B6C3D647D80DC04C802F55A3C7F6D330",
+      "bytes": 13571
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/native_async_throw_cleanup_test.zig",
+      "sha256": "3189B3088C1280AEE1E8EC40004E91A12826756E203A6775F6A0F95CCD2641F2",
+      "bytes": 8619
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "sha256": "94DB6164E982A61FFB670E2D69B16A65C6C75BD58340B8709167EAE0D8229AE2",
+      "bytes": 6658
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "sha256": "1A889B1E10CF73F60E92D7C80CFB26D5ADFB994F83E167AAEEC73CFF135197D4",
+      "bytes": 17051
+    },
+    {
+      "path": "verification/native-callback-producers-sourceonly-20261017/prepared.json",
+      "sha256": "12116ACCCDB98A54460C53ACF101F39E0026CB125E9FDFE5150C654DC1572B5F",
+      "bytes": 8423
+    },
+    {
+      "path": "verification/await-rejection-data-sourceonly-20261017/prepared.json",
+      "sha256": "2840F2926DBC9F0A10BD59908504CBAC80FD11C709329967668B72791FDA25F5",
+      "bytes": 9123
+    },
+    {
+      "path": "verification/await-rejection-primitive-sourceonly-20261017/prepared.json",
+      "sha256": "EA036B94A1C7AD761BA8DF01A81183C311743AFA774BB735942E4EF1C9167284",
+      "bytes": 3292
+    },
+    {
+      "path": "verification/await-rejection-callers-sourceonly-20261017/prepared.json",
+      "sha256": "5F73770BD33CBBF31C23ED5D3C99F0EEBB6CEBCE5DAAE5DB32518FF713781D04",
+      "bytes": 6238
+    },
+    {
+      "path": "src/extensions/fixtures/ai-openai-full58-ae7.json",
+      "sha256": "6349299A388CBEB1F1086DFA58317AE4F296A26D6B620BB5A7987B6D44D82852",
+      "bytes": 533979
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-control-e622.json",
+      "sha256": "3D46361B7F92DB6556F71D3E8B7C7A5F92DB80CAA731EBA0732CC19D407B5171",
+      "bytes": 12655
+    }
+  ],
+  "added_engine_fields": [
+    "native_fatal_invocation: ?*NativeInvocation = null"
+  ],
+  "stack_retention_source": "actual pending/fatalcapture or directtrustedOOM birth ONLY; no rejected DATA/oldslot",
+  "new_native_definitions": 6,
+  "producer_native_definitions": 14,
+  "aggregate_native_definitions": 30,
+  "source_rows_prepared": 20,
+  "executed": false,
+  "execution_grant": false,
+  "compiler_ast_parser": false,
+  "main_edited": false,
+  "c_h_changed": false,
+  "expected_observed_files": [],
+  "c_semantics_prerequisite": "independentlysourceclosed1116AFTHROW; generator20d pending/uncomposed",
+  "remaining_vm_frontier": "C3Promiseconstructor consumed executor actualfatal/extraGuestwork not globally repaired by retention"
+}

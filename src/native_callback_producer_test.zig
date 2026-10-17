@@ -45,11 +45,168 @@ test "native Await DATA producer genuine Node function arrow class and SDK alloc
         try std.testing.expect(s.equal(try s.global("ownedCaught"), c.JS_NewInt32(engine.context, 0)));
     }
 }
-const Emission = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0 };
+const Emission = struct { engine: *em.Engine, reason: c.JSValue, calls: usize = 0, capture: bool = false };
 fn emit(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const emission: *Emission = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
     emission.calls += 1;
+    if (emission.capture) {
+        _ = emission.engine.checked(c.JS_Throw(emission.engine.context, c.JS_DupValue(emission.engine.context, emission.reason))) catch {};
+        return;
+    }
     _ = c.JS_Throw(emission.engine.context, c.JS_DupValue(emission.engine.context, emission.reason));
+}
+test "native Await DATA producer reentrant native capture retires nested diagnostic strings before commit" {
+    for ([_]bool{ false, true }) |fatal| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        const original = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        const nested = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        try s.put(original, "message", try s.text("owned outer"));
+        try s.put(nested, "message", try s.text("owned nested"));
+        if (fatal) c.JS_SetUncatchableError(engine.context, original);
+        var emission: Emission = .{ .engine = engine, .reason = nested, .capture = true };
+        engine.captured_exception = try token(&emission); // Sole-owned native finalizer.
+        try std.testing.expectError(error.JavaScriptException, engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, original))));
+        try std.testing.expectEqual(@as(usize, 1), emission.calls);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, original, engine.captured_exception.?));
+        try std.testing.expect(!c.JS_HasException(engine.context));
+        if (fatal) try std.testing.expect(engine.last_error == null)
+        else try std.testing.expectEqualStrings("Error: owned outer", engine.last_error.?);
+        // std.testing.allocator also checks the nested last_error is not leaked.
+    }
+}
+var error_emission: ?*Emission = null;
+var error_original: c.JSValue = undefined;
+var error_allocate: bool = false;
+fn failReceiver(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    if (c.JS_DefinePropertyValueStr(engine.context, receiver, "cleanup", try token(error_emission.?), c.JS_PROP_C_W_E) < 0) return error.JavaScriptException;
+    if (error_allocate) {
+        const bytes = try engine.gpa.alloc(u8, 1); defer engine.gpa.free(bytes);
+        return c.pi_js_undefined();
+    }
+    return engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, error_original)));
+}
+fn failClassReceiver(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    const receiver = try classes.object(engine, target);
+    defer engine.freeValue(receiver);
+    return failReceiver(engine, receiver, args, roots);
+}
+fn legacyRecoverCurrentOOM(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    const generation = engine.native_allocation_generation;
+    _ = engine.checked(engine.throwNativeOutOfMemoryFatal()) catch |err| return engine.nativeAllocationError(err, generation);
+    unreachable;
+}
+test "native Await DATA producer recorded actual OOM identity survives legacy error union flag clearing" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const function = try functions.createArrow(engine, "recoverCurrentOOM", 0, legacyRecoverCurrentOOM, &.{}); defer engine.freeValue(function);
+    const result = c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null); defer engine.freeValue(result);
+    try std.testing.expect(c.JS_IsException(result));
+    const reason = c.JS_GetException(engine.context); defer engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, engine.native_allocation_exception.?));
+    try std.testing.expectEqual(@as(u64, 1), engine.native_allocation_generation);
+    try std.testing.expectEqual(@as(u64, 1), c.pi_js_native_allocation_error_generation(reason));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expect(engine.native_fatal_invocation == null);
+}
+test "native Await DATA producer current captured fatal survives real Node new receiver and class error unwind" {
+    inline for (.{ false, true }) |class_call| {
+        for ([_]bool{ false, true }) |cleanup_fatal| {
+            const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+            var s: Scope = .{ .engine = engine }; defer s.deinit();
+            const a = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+            const b = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+            c.JS_SetUncatchableError(engine.context, a);
+            if (cleanup_fatal) c.JS_SetUncatchableError(engine.context, b);
+            var emission: Emission = .{ .engine = engine, .reason = b };
+            error_emission = &emission; defer error_emission = null;
+            error_original = a; error_allocate = false;
+            const function = try s.own(if (class_call) try classes.constructor(engine, "ErrorUnwind", 0, try s.object(), failClassReceiver, &.{}) else try functions.create(engine, "errorUnwind", 0, failReceiver, &.{}));
+            const result = c.JS_CallConstructor(engine.context, function, 0, null); defer engine.freeValue(result);
+            try std.testing.expect(c.JS_IsException(result));
+            const actual = c.JS_GetException(engine.context); defer engine.freeValue(actual);
+            try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, a));
+            try std.testing.expect(c.JS_IsUncatchableError(actual));
+            try std.testing.expectEqual(@as(usize, 1), emission.calls);
+            try std.testing.expect(engine.native_fatal_invocation == null);
+            try std.testing.expect(!c.JS_HasException(engine.context));
+        }
+    }
+}
+test "native Await DATA producer genuine GPA error followed by current captured cleanup fatal does not synthesize replacement" {
+    inline for (.{ false, true }) |class_call| {
+        var failing = std.testing.FailingAllocator.init(std.testing.allocator, .{});
+        const engine = try em.Engine.init(failing.allocator(), .{}); defer engine.deinit();
+        var s: Scope = .{ .engine = engine }; defer s.deinit();
+        const b = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+        c.JS_SetUncatchableError(engine.context, b);
+        var emission: Emission = .{ .engine = engine, .reason = b, .capture = true };
+        error_emission = &emission; defer error_emission = null;
+        error_allocate = true;
+        const function = try s.own(if (class_call) try classes.constructor(engine, "GPAUnwind", 0, try s.object(), failClassReceiver, &.{}) else try functions.create(engine, "gpaUnwind", 0, failReceiver, &.{}));
+        const before = engine.native_allocation_generation;
+        // Class-id/token setup uses only VM allocation; the next GPA request
+        // is the actual one-byte callback allocation after receiver setup.
+        failing.fail_index = failing.alloc_index;
+        const result = c.JS_CallConstructor(engine.context, function, 0, null); defer engine.freeValue(result);
+        failing.fail_index = std.math.maxInt(usize);
+        try std.testing.expect(failing.has_induced_failure and c.JS_IsException(result));
+        const actual = c.JS_GetException(engine.context); defer engine.freeValue(actual);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, actual, b));
+        try std.testing.expectEqual(before, engine.native_allocation_generation);
+        try std.testing.expectEqual(@as(usize, 1), emission.calls);
+        try std.testing.expect(engine.native_fatal_invocation == null);
+        try std.testing.expect(!c.JS_HasException(engine.context));
+    }
+}
+test "native Await DATA producer invocation ignores marked DATA history but records same object actual new throw" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
+    c.JS_SetUncatchableError(engine.context, reason);
+    const rejected = try engine.checked(c.JS_NewSettledPromise(engine.context, true, reason)); defer engine.freeValue(rejected);
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    try std.testing.expectError(error.JavaScriptException, engine.awaitValue(rejected));
+    try std.testing.expect(invocation.first == null); // Settled DATA, no event.
+    const plain = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+    try std.testing.expect(c.JS_IsUndefined(plain) and !c.JS_HasException(engine.context));
+    engine.enterNativeInvocation(&invocation);
+    try std.testing.expectError(error.JavaScriptException, engine.checked(c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason))));
+    try std.testing.expect(invocation.first != null);
+    const fatal = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+    try std.testing.expect(c.JS_IsException(fatal));
+    const actual = c.JS_GetException(engine.context); defer engine.freeValue(actual);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, actual));
+    try std.testing.expect(engine.native_fatal_invocation == null);
+}
+fn suspendWithoutEvent(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, _: *c.JSValue, completion: @import("extensions/native_async_function.zig").Completion, _: c.JSValue) !@import("extensions/native_async_function.zig").Action {
+    if (completion == .start) return .{ .awaited = c.pi_js_undefined() };
+    return .{ .returned = c.pi_js_undefined() };
+}
+test "native Await DATA producer stack holder roots sole current reason through GC and pops before AF Await" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const original = try engine.checked(c.JS_NewError(engine.context));
+    c.JS_SetUncatchableError(engine.context, original);
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    try std.testing.expectError(error.JavaScriptException, engine.checked(c.JS_Throw(engine.context, original)));
+    const diagnostic = engine.captured_exception.?;
+    engine.captured_exception = null;
+    engine.freeValue(diagnostic); // Only invocation.first still owns original.
+    c.JS_RunGC(engine.runtime);
+    const result = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
+    try std.testing.expect(c.JS_IsException(result));
+    const reason = c.JS_GetException(engine.context);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, reason, original));
+    engine.freeValue(reason);
+    _ = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined()); // Idempotent holder unwind.
+    const af = @import("extensions/native_async_function.zig");
+    const function = try af.createResumable(engine, "actualSuspend", 0, suspendWithoutEvent, &.{}); defer engine.freeValue(function);
+    const promise = try engine.checked(c.JS_Call(engine.context, function, c.pi_js_undefined(), 0, null)); defer engine.freeValue(promise);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(engine.context, promise));
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    _ = try engine.runReadyJobs(16);
+    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(engine.context, promise));
+    try std.testing.expect(engine.native_fatal_invocation == null);
 }
 fn token(emission: *Emission) !c.JSValue {
     var class: c.JSClassID = 0;

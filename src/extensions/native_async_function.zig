@@ -32,10 +32,18 @@ fn fail(engine: *em.Engine, err: anyerror) c.JSValue {
 fn invoke(_: ?*c.JSContext, owner: c.JSValue, receiver: c.JSValue, argc: c_int, argv: [*c]const c.JSValue, raw: c_int, input: c.JSValue, state: [*c]c.JSValue, action: [*c]c_int) callconv(.c) c.JSValue {
     const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(owner, c.JS_GetClassID(owner)).?));
     const engine = captures.engine;
+    engine.checkNativeEntry() catch return engine.throwCaptured();
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const args: []const c.JSValue = if (argc == 0) &.{} else argv[0..@intCast(argc)];
     const completion: Completion = @enumFromInt(raw);
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const result = invokeImplementation(captures, receiver, args, state, action, completion, input);
+    return engine.leaveNativeInvocation(&invocation, result);
+}
+fn invokeImplementation(captures: *Captures, receiver: c.JSValue, args: []const c.JSValue, state: [*c]c.JSValue, action: [*c]c_int, completion: Completion, input: c.JSValue) c.JSValue {
+    const engine = captures.engine;
     const result: Action = switch (captures.implementation) {
         .callback => |callback| blk: {
             if (completion != .start) return c.JS_ThrowInternalError(engine.context, "Simple native async body resumed");

@@ -20,16 +20,18 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) 
 fn call(context: ?*c.JSContext, function: c.JSValue, target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)) orelse return c.JS_ThrowTypeError(context, "Invalid native constructor")));
     const engine = state.engine;
-    if (c.JS_HasException(engine.context)) return engine.throwCaptured();
+    engine.checkNativeEntry() catch return engine.throwCaptured();
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     if (flags & c.JS_CALL_FLAG_CONSTRUCTOR == 0) return c.JS_ThrowTypeError(engine.context, "Class constructor %s cannot be invoked without 'new'", state.name.ptr);
-    const result = state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| {
-        if (err == error.JavaScriptException) return engine.throwCaptured();
-        if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
-        return c.JS_ThrowTypeError(context, "Native %s: %s", state.name.ptr, @as([*:0]const u8, @errorName(err)));
+    var invocation: Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const result = state.create(engine, target, if (argc == 0) &.{} else argv[0..@intCast(argc)], state.values) catch |err| failure: {
+        break :failure if (err == error.JavaScriptException) engine.throwCaptured()
+            else if (err == error.OutOfMemory) engine.throwNativeOutOfMemoryFatal()
+            else c.JS_ThrowTypeError(context, "Native %s: %s", state.name.ptr, @as([*:0]const u8, @errorName(err)));
     };
-    return engine.nativeCallbackResult(result);
+    return engine.leaveNativeInvocation(&invocation, result);
 }
 pub fn constructor(engine: *Engine, name: [:0]const u8, length: c_int, prototype: c.JSValue, create: Construct, values: []const c.JSValue) !c.JSValue {
     try engine.checkNativeEntry();

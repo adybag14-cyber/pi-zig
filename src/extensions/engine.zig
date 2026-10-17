@@ -233,6 +233,7 @@ pub const Engine = struct {
     native_ai_codex_socket_pending: ?*const fn (*Engine) bool = null,
     native_chord_json_functions: ?c.JSValue = null,
     native_typebox_continuation: ?*anyopaque = null,
+    native_fatal_invocation: ?*NativeInvocation = null,
     native_typebox_hash_accumulator: u64 = 14695981039346656037,
     native_typebox_literal_error: ?c.JSValue = null,
     native_typebox_literal_base: ?c.JSValue = null,
@@ -312,6 +313,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        std.debug.assert(self.native_fatal_invocation == null);
         _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
         self.native_json_diagnostic_depth = 0;
         if (self.native_ai_oauth_callback_cleanup) |cleanup| cleanup(self);
@@ -713,19 +715,73 @@ pub const Engine = struct {
     /// Host factory entry: no guest conversion/allocation before preserving a
     /// real already-pending event. A prior captured diagnostic is only DATA.
     pub fn checkNativeEntry(self: *Engine) !void {
-        if (!c.JS_HasException(self.context)) return;
+        if (!c.JS_HasException(self.context) and self.currentNativeFatal() == null) return;
         self.native_exception_diagnostics_suppressed += 1;
         defer self.native_exception_diagnostics_suppressed -= 1;
+        _ = self.nativeCallbackResult(c.pi_js_undefined());
         self.captureException(self.context);
         return error.JavaScriptException;
+    }
+    /// Stack-only current-event retention. No guest value or diagnostic slot
+    /// can publish into this list; only actual fatal event producers record.
+    pub const NativeInvocation = struct { previous: ?*NativeInvocation = null, first: ?c.JSValue = null, active: bool = false };
+    pub fn enterNativeInvocation(self: *Engine, invocation: *NativeInvocation) void {
+        std.debug.assert(!invocation.active);
+        const inherited = self.currentNativeFatal();
+        invocation.* = .{ .previous = self.native_fatal_invocation, .first = if (inherited) |first| c.JS_DupValue(self.context, first) else null, .active = true };
+        self.native_fatal_invocation = invocation;
+    }
+    fn currentNativeFatal(self: *Engine) ?c.JSValue {
+        var cursor = self.native_fatal_invocation;
+        while (cursor) |invocation| : (cursor = invocation.previous) if (invocation.first) |first| return first;
+        return null;
+    }
+    fn recordNativeFatal(self: *Engine, reason: c.JSValue) void {
+        const first = self.currentNativeFatal() orelse reason;
+        var cursor = self.native_fatal_invocation;
+        while (cursor) |invocation| : (cursor = invocation.previous) {
+            std.debug.assert(invocation.active);
+            if (invocation.first == null) invocation.first = c.JS_DupValue(self.context, first);
+        }
+    }
+    /// Consumes result exactly once. Pop BEFORE holder cleanup/return so no
+    /// suspended AF or late finalizer can retain an escaping stack pointer.
+    pub fn leaveNativeInvocation(self: *Engine, invocation: *NativeInvocation, result: c.JSValue) c.JSValue {
+        if (!invocation.active) return result;
+        std.debug.assert(self.native_fatal_invocation == invocation);
+        var owned: NativePending = .{ .reason = if (invocation.first) |first| c.JS_DupValue(self.context, first) else null, .fatal = invocation.first != null };
+        self.takeNativePending(&owned);
+        if (owned.reason != null) self.releaseNativeOwned(result, &owned);
+        if (invocation.first) |first| if (!owned.fatal) {
+            const displaced = owned.reason;
+            owned = .{ .reason = c.JS_DupValue(self.context, first), .fatal = true };
+            if (displaced) |old| self.releaseNativeOwned(old, &owned);
+        };
+        self.native_fatal_invocation = invocation.previous;
+        invocation.active = false;
+        const retained = invocation.first;
+        invocation.first = null;
+        if (retained) |first| self.releaseNativeOwned(first, &owned);
+        if (owned.reason) |reason| {
+            if (owned.fatal) c.JS_SetUncatchableError(self.context, reason);
+            return c.JS_Throw(self.context, reason);
+        }
+        return result;
     }
     /// Consumes result. A native finalizer can publish an actual event while
     /// successful callback temporaries retire; do not return success with it.
     pub fn nativeCallbackResult(self: *Engine, result: c.JSValue) c.JSValue {
-        var owned: NativePending = .{};
+        const first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
         self.takeNativePending(&owned);
         if (owned.reason == null) return result;
         self.releaseNativeOwned(result, &owned);
+        if (self.currentNativeFatal()) |actual| if (!owned.fatal) {
+            const displaced = owned.reason.?;
+            owned = .{ .reason = c.JS_DupValue(self.context, actual), .fatal = true };
+            self.releaseNativeOwned(displaced, &owned);
+        };
+        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);
         return c.JS_Throw(self.context, owned.reason.?);
     }
 
@@ -745,6 +801,7 @@ pub const Engine = struct {
         while (c.JS_HasException(self.context)) {
             const next = c.JS_GetException(self.context);
             const fatal = c.JS_IsUncatchableError(next);
+            if (fatal) self.recordNativeFatal(next);
             if (owned.reason == null) {
                 owned.* = .{ .reason = next, .fatal = fatal };
             } else if (!owned.fatal and fatal) {
@@ -760,14 +817,19 @@ pub const Engine = struct {
         self.takeNativePending(owned);
     }
     fn throwNativeOutOfMemoryMode(self: *Engine, fatal: bool) c.JSValue {
-        var owned: NativePending = .{};
+        const first = self.currentNativeFatal();
+        var owned: NativePending = .{ .reason = if (first) |reason| c.JS_DupValue(self.context, reason) else null, .fatal = first != null };
         self.takeNativePending(&owned);
-        if (owned.fatal) return c.JS_Throw(self.context, owned.reason.?);
+        if (owned.fatal) {
+            c.JS_SetUncatchableError(self.context, owned.reason.?);
+            return c.JS_Throw(self.context, owned.reason.?);
+        }
         const prior = owned.reason;
         _ = c.JS_ThrowOutOfMemory(self.context);
         const exception = c.JS_GetException(self.context);
         if (fatal) c.JS_SetUncatchableError(self.context, exception);
-        owned = .{ .reason = exception, .fatal = c.JS_IsUncatchableError(exception) };
+        if (fatal) self.recordNativeFatal(exception);
+        owned = .{ .reason = exception, .fatal = fatal or c.JS_IsUncatchableError(exception) };
         const previous = self.native_allocation_exception;
         // Publish/tag before releasing old tracking: a reentrant cleanup may
         // create a later OOM, whose tracking must not then be overwritten.
@@ -780,6 +842,7 @@ pub const Engine = struct {
         if (prior) |old| self.releaseNativeOwned(old, &owned);
         if (previous) |old| self.releaseNativeOwned(old, &owned);
         self.takeNativePending(&owned);
+        if (owned.fatal) c.JS_SetUncatchableError(self.context, owned.reason.?);
         return c.JS_Throw(self.context, owned.reason.?);
     }
     pub fn nativeAllocationError(self: *Engine, err: anyerror, generation: u64) anyerror {
@@ -981,6 +1044,7 @@ pub const Engine = struct {
         return self.awaitValueImpl(value, false);
     }
     fn awaitValueImpl(self: *Engine, value: c.JSValue, drain_ready_jobs: bool) !c.JSValue {
+        try self.checkNativeEntry();
         if (self.native_rejection_tracking and c.JS_PromiseState(self.context, value) >= 0)
             c.JS_PromiseMarkAsHandled(self.context, value);
         defer self.finishJob();
@@ -1058,6 +1122,11 @@ pub const Engine = struct {
     /// settled Promise rejection DATA never gains fatal authority from its bit.
     fn captureValue(self: *Engine, context: *c.JSContext, exception: c.JSValue, actual_event: bool) void {
         var owned: NativePending = .{ .reason = exception, .fatal = actual_event and c.JS_IsUncatchableError(exception) };
+        if (owned.fatal) self.recordNativeFatal(exception);
+        if (self.currentNativeFatal()) |first| {
+            owned = .{ .reason = c.JS_DupValue(context, first), .fatal = true };
+            self.releaseNativeOwned(exception, &owned);
+        }
         self.takeNativePending(&owned);
         // A native implementation may call guest functions whose exceptions
         // are still inside a guest try/catch. Capturing their identity must
@@ -1074,15 +1143,22 @@ pub const Engine = struct {
         }
         // String conversion can invoke user code and another native callback.
         // Commit ownership only afterward, retaining the original thrown value.
-        if (self.last_error) |message| self.gpa.free(message);
-        self.last_error = null;
-        while (self.captured_exception) |previous| {
-            self.captured_exception = null;
-            self.releaseNativeOwned(previous, &owned);
+        while (c.JS_HasException(self.context) or self.captured_exception != null or self.last_error != null) {
+            self.takeNativePending(&owned);
+            if (self.captured_exception) |previous| {
+                self.captured_exception = null;
+                self.releaseNativeOwned(previous, &owned);
+            } else if (self.last_error) |message| {
+                // A released diagnostic may reenter checked()/captureValue
+                // and publish another owned message. Detach before freeing;
+                // drain all channels before committing this invocation's text.
+                self.last_error = null;
+                self.gpa.free(message);
+            }
         }
-        self.takeNativePending(&owned);
         if (owned.fatal) {
             if (diagnostic_message) |message| self.gpa.free(message);
+            c.JS_SetUncatchableError(context, owned.reason.?);
         } else self.last_error = diagnostic_message;
         self.captured_exception = owned.reason.?;
     }
