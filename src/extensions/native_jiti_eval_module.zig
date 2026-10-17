@@ -34,6 +34,20 @@ pub const TransformedRequest = struct {
     typescript: bool,
     transform_async: bool,
 };
+/// The actual transform/cache function has already returned this Source value.
+/// Its template ToString occurs only at wrapModule after Module publication.
+pub const LoweredRequest = struct {
+    context: c.JSValue,
+    eval_options: c.JSValue,
+    filename: c.JSValue,
+    parent_cache: c.JSValue,
+    source: c.JSValue,
+};
+const BaseRequest = struct { context: c.JSValue, eval_options: c.JSValue, filename: c.JSValue, parent_cache: c.JSValue };
+const Code = union(enum) {
+    native: struct { source: []const u8, typescript: bool, asynchronous: bool },
+    lowered: c.JSValue,
+};
 fn put(engine: *v.em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
@@ -54,11 +68,18 @@ fn requireBindings(engine: *v.em.Engine, inputs: Inputs) !void {
 /// Owned raw value/Promise. This is a host entry into the actual ordinary
 /// evalModule body, NOT an AF wrapper or a complete public evalModule facade.
 pub fn evaluateTransformed(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !c.JSValue {
+    return protectedEvaluate(engine, inputs, .{ .context = request.context, .eval_options = request.eval_options, .filename = request.filename, .parent_cache = request.parent_cache },
+        .{ .native = .{ .source = request.source, .typescript = request.typescript, .asynchronous = request.transform_async } });
+}
+pub fn evaluateLowered(engine: *v.em.Engine, inputs: Inputs, request: LoweredRequest) !c.JSValue {
+    return protectedEvaluate(engine, inputs, .{ .context = request.context, .eval_options = request.eval_options, .filename = request.filename, .parent_cache = request.parent_cache }, .{ .lowered = request.source });
+}
+fn protectedEvaluate(engine: *v.em.Engine, inputs: Inputs, request: BaseRequest, code: Code) !c.JSValue {
     try requireBindings(engine, inputs);
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const generation = engine.native_allocation_generation;
-    return evaluate(engine, inputs, request) catch |err| {
+    return evaluate(engine, inputs, request, code) catch |err| {
         if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
             if (c.JS_IsUncatchableError(reason)) return err;
             try body.rethrowRecognizedAllocation(engine, reason, generation);
@@ -66,7 +87,7 @@ pub fn evaluateTransformed(engine: *v.em.Engine, inputs: Inputs, request: Transf
         return err;
     };
 }
-fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !c.JSValue {
+fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: BaseRequest, code: Code) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     // Actual next() is lexically hoisted. Its private owner roots ctx/module;
     // no Source-visible object or collaborator is created as a placeholder.
@@ -75,8 +96,11 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
     try put(engine, owner, "module", c.pi_js_undefined());
     try put(engine, owner, "jitiRequire", inputs.jiti_require);
     const next = try s.own(try functions.create(engine, "next", 0, true, finish, &.{owner}));
-    const prepared = try lowering.prepare(engine.gpa, request.source, .{ .typescript = request.typescript, .async_mode = request.transform_async });
-    defer prepared.deinit(engine.gpa);
+    const generated: ?lowering.Prepared = switch (code) {
+        .native => |input| try lowering.prepare(engine.gpa, input.source, .{ .typescript = input.typescript, .async_mode = input.asynchronous }),
+        .lowered => null,
+    };
+    defer if (generated) |prepared| prepared.deinit(engine.gpa);
 
     var filename_args = [_]c.JSValue{request.filename};
     const module = try s.own(try engine.checked(c.JS_CallConstructor(engine.context, inputs.module_constructor, 1, &filename_args)));
@@ -113,8 +137,13 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
 
     // Source wraps with a fresh async read outside the compile try. A guest
     // getter may differ from the earlier transform option and the later tail.
-    var compiled_prepared = prepared;
-    compiled_prepared.async_mode = s.truthy(try s.get(request.eval_options, "async"));
+    const asynchronous = s.truthy(try s.get(request.eval_options, "async"));
+    var source_bytes: ?[]u8 = null; defer if (source_bytes) |bytes| engine.gpa.free(bytes);
+    const bytes = if (generated) |prepared| prepared.body else wrapped: {
+        source_bytes = try wrapSourceBytes(engine, code.lowered);
+        break :wrapped source_bytes.?;
+    };
+    const compiled_prepared: lowering.Prepared = .{ .body = bytes, .async_mode = asynchronous };
     var compiled = c.pi_js_undefined(); defer engine.freeValue(compiled);
     const compile_generation = engine.native_allocation_generation;
     if (compile(engine, &compiled_prepared, request.filename)) |value| {
@@ -150,6 +179,13 @@ fn evaluate(engine: *v.em.Engine, inputs: Inputs, request: TransformedRequest) !
     const promise = try s.global("Promise");
     const resolved = try s.invoke(promise, "resolve", &.{eval_result});
     return v.js.invoke(engine, resolved, "then", &.{next});
+}
+fn wrapSourceBytes(engine: *v.em.Engine, source: c.JSValue) ![]u8 {
+    const string = try engine.checked(c.JS_ToString(engine.context, source)); defer engine.freeValue(string);
+    var length: usize = 0;
+    const bytes = c.JS_ToCStringLen(engine.context, &length, string) orelse return v.js.capture(engine);
+    defer c.JS_FreeCString(engine.context, bytes);
+    return engine.gpa.dupe(u8, bytes[0..length]);
 }
 fn compile(engine: *v.em.Engine, prepared: *const lowering.Prepared, filename: c.JSValue) !c.JSValue {
     if (!c.JS_IsString(filename)) return v.js.typeError(engine, "Native jiti profile requires a physical string filename");

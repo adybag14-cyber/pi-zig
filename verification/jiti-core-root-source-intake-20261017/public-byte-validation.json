@@ -1,0 +1,156 @@
+{
+  "source_head": "65c19764177809cd8dc084ba3889842cf317762a",
+  "public_ref": "checkpoint/jiti-core-frontend-sourceonly-20261017",
+  "files": [
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "bytes": 21521,
+      "sha256": "84BF31967422CF040DDD2AF8784B764CB3DFFE35EEF7D788D6744D9C208D40F8",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_core_factory.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "bytes": 1295,
+      "sha256": "C79FAB61E10FA5B799709269A75CBE3AE6F50FD73F30118F692F26D879234ECA",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_core_graph.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_escape_regexp.zig",
+      "bytes": 2518,
+      "sha256": "596050570E5FAF55438F1EE5D1C477387115EEE6EB7A9BEFF97AC781C02855DA",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_escape_regexp.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "bytes": 12432,
+      "sha256": "B8FC56E214C7E89949B623958176EFCF88C3D9F7AA94735784803EE6B9B252A4",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_eval_frontend.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "bytes": 14886,
+      "sha256": "AF011548FEAD1038784193641611BEE13AD8076C34EC5CF29A57483C0C2577B2",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_eval_module.zig"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "bytes": 10022,
+      "sha256": "8353C219AEAA21EB2561F5A9ABB10EC6356DD5CEB6385AEE9FEAF79A366688C7",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/extensions/native_jiti_module_cells.zig"
+    },
+    {
+      "path": "src/native_jiti_core_factory_controls.zig",
+      "bytes": 6742,
+      "sha256": "9A38A2E141F5B5763579C99E4CDC76A6E4460D361AFCD8C0CD5C8F79E76A2C19",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/src/native_jiti_core_factory_controls.zig"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/DEPENDENCIES.md",
+      "bytes": 5900,
+      "sha256": "0D769495D44EF10A2945F0F0BC5F532FD986B4AA1428E461730AC3FA7C9C4990",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/DEPENDENCIES.md"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/README.md",
+      "bytes": 7377,
+      "sha256": "A2C873C217096F4D03A53DA2E567AE61F3B569A5A5A38BF18309722CB92A03EC",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/README.md"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/REVIEWED-LIVE-IMPORT-API.md",
+      "bytes": 6211,
+      "sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/REVIEWED-LIVE-IMPORT-API.md"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/cache.ts",
+      "bytes": 2872,
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/cache.ts"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-primary.json",
+      "bytes": 981,
+      "sha256": "2E694F21C1288D5AFFD1FD57DFFFF2CB7D024C32E5765B717962BC07744F0DB7",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/escape-primary.json"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-index.js.txt",
+      "bytes": 469,
+      "sha256": "AF2065AD2F2D2B91946C2121E21618DAA3F4B18787AF9226F8C953CA54CCA2F5",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-index.js.txt"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-license.txt",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-license.txt"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-package.json.txt",
+      "bytes": 732,
+      "sha256": "6D7AE0240943E38CB8A8DD35242584B2C3415A2BCA83AA86497D3B7B1BEF08EF",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-package.json.txt"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/eval.ts",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/eval.ts"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/jiti-LICENSE.txt"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti.ts",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/jiti.ts"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/pnpm-lock.yaml",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/pnpm-lock.yaml"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/transform.ts",
+      "bytes": 796,
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/transform.ts"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/utils.ts",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/authority/utils.ts"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/causal-inputs.json",
+      "bytes": 6073,
+      "sha256": "DF3C24BB92CC6CCF84F9C53E83C27ABFF25EC4A2D8245956D5B35DE72B38C75C",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/causal-inputs.json"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/eval-boundary-input.mjs",
+      "bytes": 2834,
+      "sha256": "72D000F2F4485B28FD5133686662A4E4C2DA061912DFE14A70D801C22970E652",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/eval-boundary-input.mjs"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/prepared.json",
+      "bytes": 12151,
+      "sha256": "0B39F4C13000900796A624C6BC649C0FD17952682729A8505A41C9F99D98994C",
+      "uri": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/65c19764177809cd8dc084ba3889842cf317762a/verification/jiti-core-factory-sourceonly-20261017/prepared.json"
+    }
+  ],
+  "all_public_bytes_match": true,
+  "source_review": "closed no blocker in admitted scope by async_c_review_resume",
+  "native_executed": false,
+  "source_executed": false,
+  "canonical_require_frontend_bootstrap_complete": false,
+  "default_selected": false
+}

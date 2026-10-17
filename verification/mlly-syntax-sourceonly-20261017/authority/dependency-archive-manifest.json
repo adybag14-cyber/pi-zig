@@ -1,0 +1,170 @@
+[
+  {
+    "name": "mlly",
+    "version": "1.8.2",
+    "gitHead": "c5ce4e5596761b9d2b063bcf82a5160d76e8c2cf",
+    "uri": "https://registry.npmjs.org/mlly/-/mlly-1.8.2.tgz",
+    "integrity": "sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==",
+    "archive_sha256": "74B820E74909A6EB6378E03139BFA2D1C2A6660D16CFD83E1A00F71E89AC7AD7",
+    "file_count": 8,
+    "files": [
+      {
+        "original_path": "package/LICENSE",
+        "inert_path": "mlly-1.8.2\\LICENSE.txt",
+        "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+        "bytes": 1078
+      },
+      {
+        "original_path": "package/dist/index.cjs",
+        "inert_path": "mlly-1.8.2\\dist\\index.cjs.txt",
+        "sha256": "5EFF0719B8C589EC720F013928A4B61063077B6220E5BABC6133D81FEBF8D901",
+        "bytes": 77213
+      },
+      {
+        "original_path": "package/dist/index.d.cts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.cts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      },
+      {
+        "original_path": "package/package.json",
+        "inert_path": "mlly-1.8.2\\package.json.txt",
+        "sha256": "E521AB6B33AC365A19E0EC4463A7FB831C39218DCB0A34625C55CB4233B84F5E",
+        "bytes": 1425
+      },
+      {
+        "original_path": "package/README.md",
+        "inert_path": "mlly-1.8.2\\README.md.txt",
+        "sha256": "F56BB029C4A1CE45476CF84C0E62951AFC469B3A8BE11D7C4266FEC71CCEB18D",
+        "bytes": 13449
+      },
+      {
+        "original_path": "package/dist/index.mjs",
+        "inert_path": "mlly-1.8.2\\dist\\index.mjs.txt",
+        "sha256": "170C8B21A62ADF2803AD08305B5B7D1C0AD1C45DB35136F5FFAA4572BF961656",
+        "bytes": 75345
+      },
+      {
+        "original_path": "package/dist/index.d.mts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.mts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      },
+      {
+        "original_path": "package/dist/index.d.ts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.ts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      }
+    ],
+    "source_executed": false
+  },
+  {
+    "name": "pathe",
+    "version": "2.0.3",
+    "gitHead": null,
+    "uri": "https://registry.npmjs.org/pathe/-/pathe-2.0.3.tgz",
+    "integrity": "sha512-WUjGcAqP1gQacoQe+OBJsFA7Ld4DyXuUIjZ5cc75cLHvJ7dtNsTugphxIADwspS+AraAUePCKrSVtPLFj/F88w==",
+    "archive_sha256": "6E3B73BC5DBB7F8A108FF5D8459B07DA04062E822C662339416525510696DF36",
+    "file_count": 16,
+    "files": [
+      {
+        "original_path": "package/LICENSE",
+        "inert_path": "pathe-2.0.3\\LICENSE.txt",
+        "sha256": "52E92576851154BAD7737E90CC72818936F43665CB0E3F7428ED8EDC8CC5709B",
+        "bytes": 3355
+      },
+      {
+        "original_path": "package/dist/index.cjs",
+        "inert_path": "pathe-2.0.3\\dist\\index.cjs.txt",
+        "sha256": "1F4CA8018D88814E25EA558A3AED3532DA23CA0B426EEAD27B0A4F101EE62AE9",
+        "bytes": 1249
+      },
+      {
+        "original_path": "package/dist/shared/pathe.BSlhyZSM.cjs",
+        "inert_path": "pathe-2.0.3\\dist\\shared\\pathe.BSlhyZSM.cjs.txt",
+        "sha256": "216F157B0D829B31F0709A706E5A59CE4CFC45CA4156F7467A3520A5062E6829",
+        "bytes": 13027
+      },
+      {
+        "original_path": "package/dist/utils.cjs",
+        "inert_path": "pathe-2.0.3\\dist\\utils.cjs.txt",
+        "sha256": "2FBF157878053BFE5F298B2F2233105AF0E6A1B6E1BB46F24B7D8D4CF084F51C",
+        "bytes": 2521
+      },
+      {
+        "original_path": "package/dist/index.d.cts",
+        "inert_path": "pathe-2.0.3\\dist\\index.d.cts.txt",
+        "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+        "bytes": 1901
+      },
+      {
+        "original_path": "package/dist/utils.d.cts",
+        "inert_path": "pathe-2.0.3\\dist\\utils.d.cts.txt",
+        "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+        "bytes": 1599
+      },
+      {
+        "original_path": "package/package.json",
+        "inert_path": "pathe-2.0.3\\package.json.txt",
+        "sha256": "6CCCFFE6BB2A39E2E4F257AEFC3F5D553D98199A0C79558BDB5EA2880FA030A3",
+        "bytes": 1534
+      },
+      {
+        "original_path": "package/README.md",
+        "inert_path": "pathe-2.0.3\\README.md.txt",
+        "sha256": "47B7EA0D3DFAA71BF75FC69BD5239FFCBF4540249637DB84CBEC2285CEB2CF11",
+        "bytes": 3048
+      },
+      {
+        "original_path": "package/dist/index.mjs",
+        "inert_path": "pathe-2.0.3\\dist\\index.mjs.txt",
+        "sha256": "9998AF9290974A85A0DEA395AABE596DD267C3E3EA8668F0ABF9248D04FD75B9",
+        "bytes": 876
+      },
+      {
+        "original_path": "package/dist/shared/pathe.M-eThtNZ.mjs",
+        "inert_path": "pathe-2.0.3\\dist\\shared\\pathe.M-eThtNZ.mjs.txt",
+        "sha256": "5A087C7848E128640D114AAC23965F9FE73DCE651A1E4C307F399DC72800AFBC",
+        "bytes": 12786
+      },
+      {
+        "original_path": "package/dist/utils.mjs",
+        "inert_path": "pathe-2.0.3\\dist\\utils.mjs.txt",
+        "sha256": "12BF9533748EB9B718D277884C258908ACB27E94213604F57DA60787CECB9465",
+        "bytes": 2406
+      },
+      {
+        "original_path": "package/dist/index.d.mts",
+        "inert_path": "pathe-2.0.3\\dist\\index.d.mts.txt",
+        "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+        "bytes": 1901
+      },
+      {
+        "original_path": "package/dist/utils.d.mts",
+        "inert_path": "pathe-2.0.3\\dist\\utils.d.mts.txt",
+        "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+        "bytes": 1599
+      },
+      {
+        "original_path": "package/dist/index.d.ts",
+        "inert_path": "pathe-2.0.3\\dist\\index.d.ts.txt",
+        "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+        "bytes": 1901
+      },
+      {
+        "original_path": "package/dist/utils.d.ts",
+        "inert_path": "pathe-2.0.3\\dist\\utils.d.ts.txt",
+        "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+        "bytes": 1599
+      },
+      {
+        "original_path": "package/utils.d.ts",
+        "inert_path": "pathe-2.0.3\\utils.d.ts.txt",
+        "sha256": "0A9392A978EA08E5C58D8801C15864694157FFA0B9019CCDB2BB533183F091DF",
+        "bytes": 30
+      }
+    ],
+    "source_executed": false
+  }
+]

@@ -1,0 +1,209 @@
+{
+  "status": "minimal_exact_source_closed_base_unit_for_root_copy",
+  "source_head": "65c19764177809cd8dc084ba3889842cf317762a",
+  "root_head_at_read": "4c498582fa6c951c463bca4ae9540e8cedcb8f38",
+  "files": [
+    {
+      "path": "src/extensions/native_jiti_core_factory.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "f595dc047b459be334386ebada7177cda9485b7c",
+      "bytes": 21521,
+      "sha256": "84BF31967422CF040DDD2AF8784B764CB3DFFE35EEF7D788D6744D9C208D40F8"
+    },
+    {
+      "path": "src/extensions/native_jiti_core_graph.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "6d77d499c3c577fe0ce8a5aa8e4de51c4a6f7fc2",
+      "bytes": 1295,
+      "sha256": "C79FAB61E10FA5B799709269A75CBE3AE6F50FD73F30118F692F26D879234ECA"
+    },
+    {
+      "path": "src/extensions/native_jiti_escape_regexp.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "c4822e292a028a335f83fce38a0e361aecb7747c",
+      "bytes": 2518,
+      "sha256": "596050570E5FAF55438F1EE5D1C477387115EEE6EB7A9BEFF97AC781C02855DA"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_frontend.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "6e3098d1bc1398c07f9b3960692951571a02f7cf",
+      "bytes": 12432,
+      "sha256": "B8FC56E214C7E89949B623958176EFCF88C3D9F7AA94735784803EE6B9B252A4"
+    },
+    {
+      "path": "src/extensions/native_jiti_eval_module.zig",
+      "action": "replace_reviewed_existing_path",
+      "root_before_sha256": "4B4A0380A1F02C918E76843D64F00B03C54F516B29FE8BC3F17F3E655C0C8F9D",
+      "source_git_blob": "b7054e2e0e2eacc1b9e6ff59954f87d6fdd5a5b7",
+      "bytes": 14886,
+      "sha256": "AF011548FEAD1038784193641611BEE13AD8076C34EC5CF29A57483C0C2577B2"
+    },
+    {
+      "path": "src/extensions/native_jiti_module_cells.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "672aebf9fc6657a3ff36e9a0b2c661e52fe887a1",
+      "bytes": 10022,
+      "sha256": "8353C219AEAA21EB2561F5A9ABB10EC6356DD5CEB6385AEE9FEAF79A366688C7"
+    },
+    {
+      "path": "src/native_jiti_core_factory_controls.zig",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "a632005900a908190c7ef0793062cad57f60d65e",
+      "bytes": 6742,
+      "sha256": "9A38A2E141F5B5763579C99E4CDC76A6E4460D361AFCD8C0CD5C8F79E76A2C19"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/DEPENDENCIES.md",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "4395632bddd04389f2605957a2e60839f3e07430",
+      "bytes": 5900,
+      "sha256": "0D769495D44EF10A2945F0F0BC5F532FD986B4AA1428E461730AC3FA7C9C4990"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/README.md",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "e67ae3c42a5212e1aed286a1cd74e46c38cea6b0",
+      "bytes": 7377,
+      "sha256": "A2C873C217096F4D03A53DA2E567AE61F3B569A5A5A38BF18309722CB92A03EC"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/REVIEWED-LIVE-IMPORT-API.md",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "ea037d3d4ff08a64131dd61206b9886c2d7d22da",
+      "bytes": 6211,
+      "sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/cache.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "afd17527860bc383d22e381c52957854f85a6b92",
+      "bytes": 2872,
+      "sha256": "84A3D6812AD44D8CD835081C25DF283CFD28938C13C4A9E2BD64FBFFD9434930"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-primary.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "150a83ef48c3524c1942b222685d2a789721903a",
+      "bytes": 981,
+      "sha256": "2E694F21C1288D5AFFD1FD57DFFFF2CB7D024C32E5765B717962BC07744F0DB7"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-index.js.txt",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "9ce9323ff246d2cafb0a1c3768f49ca9b7efee13",
+      "bytes": 469,
+      "sha256": "AF2065AD2F2D2B91946C2121E21618DAA3F4B18787AF9226F8C953CA54CCA2F5"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-license.txt",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "fa7ceba3eb4a9657a9db7f3ffca4e4e97a9019de",
+      "bytes": 1117,
+      "sha256": "5C932D88256B4AB958F64A856FA48E8BD1F55BC1D96B8149C65689E0C61789D3"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/escape-string-regexp-package.json.txt",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "9390a6bd22f04aa58ca46e7bca09a7e47f49f179",
+      "bytes": 732,
+      "sha256": "6D7AE0240943E38CB8A8DD35242584B2C3415A2BCA83AA86497D3B7B1BEF08EF"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/eval.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "3fcf671ebf649ae2707455e86cdfad0b665c7635",
+      "bytes": 7360,
+      "sha256": "DFE6808658BCB920442B5D6B1676EF2D4E55E342B5D718E300F064DD1134E80A"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti-LICENSE.txt",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "e739abce461d8b2899aaec6529a4af24a417e0fc",
+      "bytes": 1078,
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/jiti.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "160a331b5f21df5c5129e3be0a0f06319a1310f0",
+      "bytes": 5500,
+      "sha256": "C42D99C6CF576F7261BB2AC25A39059E069572D5EEAA774DAF34D185B9F9EC29"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/pnpm-lock.yaml",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "a062fb04e54f2ea6d0ecca4add372d96b2912b6e",
+      "bytes": 158470,
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/transform.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "785093193dc12848a5a775c52b3831e08f781902",
+      "bytes": 796,
+      "sha256": "D93A6FE0B63A33A729ED510912C8728794CD18F07084B88482CB40F0367F2705"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/authority/utils.ts",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "67f1e4896e1fa42584529de4914e2be485ef0e97",
+      "bytes": 5009,
+      "sha256": "C0B823DF0E6F848236EAC75BC6081CBA55A9C2EC076D5AF240750A081989C954"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/causal-inputs.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "ef7b7ced51c30bcd0045d3c8c46c671761c7791f",
+      "bytes": 6073,
+      "sha256": "DF3C24BB92CC6CCF84F9C53E83C27ABFF25EC4A2D8245956D5B35DE72B38C75C"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/eval-boundary-input.mjs",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "e055ba60d8ffd3c0d06ba990244ed6efea466e7d",
+      "bytes": 2834,
+      "sha256": "72D000F2F4485B28FD5133686662A4E4C2DA061912DFE14A70D801C22970E652"
+    },
+    {
+      "path": "verification/jiti-core-factory-sourceonly-20261017/prepared.json",
+      "action": "add_new_path",
+      "root_before_sha256": null,
+      "source_git_blob": "4e405c4eb23989c7b261618407a1e6e28735efcc",
+      "bytes": 12151,
+      "sha256": "0B39F4C13000900796A624C6BC649C0FD17952682729A8505A41C9F99D98994C"
+    }
+  ],
+  "excludes": [
+    "later canonical assembly",
+    "Graph2 adapter and C/H",
+    "Engine/shared helpers",
+    "other branch history"
+  ],
+  "source_executed": false,
+  "native_executed": false,
+  "default_selected": false,
+  "root_edited": false
+}

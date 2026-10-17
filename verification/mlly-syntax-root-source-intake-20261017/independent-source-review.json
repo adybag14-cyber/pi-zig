@@ -1,0 +1,19 @@
+{
+  "source_head": "f9c633b1e4d36f5c20bea899bf6d978153454b6b",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "closed_no_blocker_in_narrow_consumed_export_scope",
+  "manifest_rows": 68,
+  "hash_length_drift": 0,
+  "primary_archive_sha256_sha512_independently_match": true,
+  "checked": [
+    "exact regex/flags/rawtest return/default-options getter/replace receiver and rawresult order versus primary2644-2653",
+    "real ordinary constructible name/length1",
+    "charged/marked callable roots retain shared regex constants and failure defers unwind",
+    "balanced fatalboundary"
+  ],
+  "namespace_module_cache_wiring_pending": true,
+  "original_observations": 26,
+  "native_entrypoints": 3,
+  "executed": false,
+  "expected_absent": true
+}

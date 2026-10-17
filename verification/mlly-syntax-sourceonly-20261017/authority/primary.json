@@ -1,0 +1,71 @@
+{
+  "status": "original_primary_archive_sha512_verified_inert",
+  "package": "mlly",
+  "version": "1.8.2",
+  "git_head": "c5ce4e5596761b9d2b063bcf82a5160d76e8c2cf",
+  "uri": "https://registry.npmjs.org/mlly/-/mlly-1.8.2.tgz",
+  "integrity": "sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==",
+  "archive_sha256": "74B820E74909A6EB6378E03139BFA2D1C2A6660D16CFD83E1A00F71E89AC7AD7",
+  "original_full_archive_manifest": {
+    "name": "mlly",
+    "version": "1.8.2",
+    "gitHead": "c5ce4e5596761b9d2b063bcf82a5160d76e8c2cf",
+    "uri": "https://registry.npmjs.org/mlly/-/mlly-1.8.2.tgz",
+    "integrity": "sha512-d+ObxMQFmbt10sretNDytwt85VrbkhhUA/JBGm1MPaWJ65Cl4wOgLaB1NYvJSZ0Ef03MMEU/0xpPMXUIQ29UfA==",
+    "archive_sha256": "74B820E74909A6EB6378E03139BFA2D1C2A6660D16CFD83E1A00F71E89AC7AD7",
+    "file_count": 8,
+    "files": [
+      {
+        "original_path": "package/LICENSE",
+        "inert_path": "mlly-1.8.2\\LICENSE.txt",
+        "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+        "bytes": 1078
+      },
+      {
+        "original_path": "package/dist/index.cjs",
+        "inert_path": "mlly-1.8.2\\dist\\index.cjs.txt",
+        "sha256": "5EFF0719B8C589EC720F013928A4B61063077B6220E5BABC6133D81FEBF8D901",
+        "bytes": 77213
+      },
+      {
+        "original_path": "package/dist/index.d.cts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.cts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      },
+      {
+        "original_path": "package/package.json",
+        "inert_path": "mlly-1.8.2\\package.json.txt",
+        "sha256": "E521AB6B33AC365A19E0EC4463A7FB831C39218DCB0A34625C55CB4233B84F5E",
+        "bytes": 1425
+      },
+      {
+        "original_path": "package/README.md",
+        "inert_path": "mlly-1.8.2\\README.md.txt",
+        "sha256": "F56BB029C4A1CE45476CF84C0E62951AFC469B3A8BE11D7C4266FEC71CCEB18D",
+        "bytes": 13449
+      },
+      {
+        "original_path": "package/dist/index.mjs",
+        "inert_path": "mlly-1.8.2\\dist\\index.mjs.txt",
+        "sha256": "170C8B21A62ADF2803AD08305B5B7D1C0AD1C45DB35136F5FFAA4572BF961656",
+        "bytes": 75345
+      },
+      {
+        "original_path": "package/dist/index.d.mts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.mts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      },
+      {
+        "original_path": "package/dist/index.d.ts",
+        "inert_path": "mlly-1.8.2\\dist\\index.d.ts.txt",
+        "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+        "bytes": 23149
+      }
+    ],
+    "source_executed": false
+  },
+  "selected_export": "hasESMSyntax",
+  "executed": false
+}

@@ -1,0 +1,26 @@
+{
+  "source_head": "65c19764177809cd8dc084ba3889842cf317762a",
+  "reviewer": "/root/async_c_review_resume",
+  "status": "closed_no_blocker_in_admitted_source_scope",
+  "manifest_rows": 56,
+  "manifest_hash_length_drift": 0,
+  "reviewed_api_sha256": "47B5A60831AFDA05BAEAF3230A6821D8F826CDC9F610DAEF7BACB5E208CB2478",
+  "findings_checked": [
+    "core/frontend getter/callee/catch order against original jiti.ts/eval.ts",
+    "private once-linked record charge/mark/free and Engine identity",
+    "phase-before-platform/reentryfailure, exact hardwired core/frontend bodies, exportready gate",
+    "Lowered Source ToString follows Module/cache publication outside compilecatch; VM Function compile remains inside",
+    "legacy12a preparation timing preserved",
+    "freshfatal bypass and ordinaryreason capture/cleanup separation"
+  ],
+  "explicit_unclosed": [
+    "canonical actual require to frontend link",
+    "finite real dependencies and public package wrapper",
+    "esmEval fallback",
+    "full default SDK/native/runtime qualification"
+  ],
+  "source_executed": false,
+  "native_executed": false,
+  "jobs_launched": false,
+  "default_selected": false
+}
