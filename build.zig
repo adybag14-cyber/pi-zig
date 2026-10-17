@@ -3338,6 +3338,53 @@ pub fn build(b: *std.Build) void {
         const installed_name = b.fmt("highlight-root10db-{s}{s}", .{ gate.name, if (target.result.os.tag == .windows) ".exe" else "" });
         b.step(b.fmt("build-highlight-root10db-{s}", .{gate.name}), "Install exact selected C33+9h qualification artifact without running tests").dependOn(&b.addInstallArtifact(gate.artifact, .{ .dest_sub_path = installed_name }).step);
     }
+    // Genuine existing controls: install-only qualification targets. They add
+    // no default/runtime edge and do not execute the compile-only213 sentinel.
+    const expanded213_existing_runtime = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_expanded213_existing_runtime_selector.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{
+            "jiti nativeImport actual arrow captures physical base and queued Graph0 identity",
+            "native Agent AF correction actual Promise executor marked fault escapes exact reason and wrap",
+            "native Agent AF correction successful constructor ignores catchable fresh historical and lookalike data",
+            "native Agent AF correction event iterator cancellation remains host fatal before next call",
+            "native Agent AF correction retained first executor fatal wins later constructor completions",
+            "CommonJS patched script compile only precedes arbitrary actual script execution",
+            "CommonJS patched script returns a real five parameter VM function with arbitrary valid body grammar",
+            "CommonJS patched script syntax failure precedes body and retains physical filename",
+            "CommonJS patched script preserves raw completion and thrown object without Promise adoption",
+            "CommonJS load failure fresh private native reason skips guest cache and children cleanup",
+            "CommonJS load failure fresh private reason from load getter skips guest cleanup",
+            "CommonJS load failure historical private reason follows ordinary finally precedence",
+            "CommonJS load failure guest lookalike follows ordinary finally precedence",
+            "CommonJS load failure ordinary raw reason survives successful cache and children cleanup",
+            "converted CommonJS module uses actual canonical constructor cache parent paths and export snapshot",
+            "converted CommonJS module cache publication precedes body and captures live paths callee first",
+            "converted CommonJS module ordinary initialization failure removes actual cache and child",
+            "converted CommonJS module fresh private initialization failure bypasses guest cleanup",
+            "converted CommonJS module entry classifies fresh cache getter fatal without external suppression",
+            "converted CommonJS module refuses forged constructor cache records and conflicting actual exports",
+            "converted CommonJS provider readiness is private and lazy without cache or parent publication",
+            "converted CommonJS provider actual compile selector respects format filenames and patched wrappers",
+            "converted CommonJS provider real CJS initializer assigns exact backend without pretending to finish load",
+            "converted CommonJS provider stops actual pending ordinary getter before callee and publication",
+            "converted CommonJS provider stops actual pending fresh getter before callee and publication",
+            "converted CommonJS provider stops actual pending ordinary callee before publication",
+            "converted CommonJS provider stops actual pending fresh callee before publication",
+        },
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, expanded213_existing_runtime.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, expanded213_existing_runtime.root_module, typescript_parser);
+    linkSqlite(expanded213_existing_runtime.root_module, sqlite_lib_dir, sqlite_library);
+    expanded213_existing_runtime.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        expanded213_existing_runtime.root_module.linkSystemLibrary("advapi32", .{});
+        expanded213_existing_runtime.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-expanded213-existing-runtime", "Install27 original runtime controls without sentinel or default activation").dependOn(&b.addInstallArtifact(expanded213_existing_runtime, .{ .dest_sub_path = b.fmt("native-expanded213-existing-runtime{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    // Reuse the actual existing TreeSitter/Zig transformer test artifact and
+    // all its original tests. This alias does not select a Node TS compiler.
+    b.step("build-native-expanded213-typescript-controls", "Install existing native TypeScript helper controls without running").dependOn(&b.addInstallArtifact(typescript_tests, .{ .dest_sub_path = b.fmt("native-expanded213-typescript-controls{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
