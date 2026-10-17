@@ -8,15 +8,28 @@ fn put(engine: *v.em.Engine, object: c.JSValue, name: [*:0]const u8, value: c.JS
     if (c.JS_DefinePropertyValueStr(engine.context, object, name, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(engine);
 }
 fn nil(value: c.JSValue) bool { return c.JS_IsNull(value) or c.JS_IsUndefined(value); }
+fn initializationValue(engine: *v.em.Engine, owned: c.JSValue) !c.JSValue {
+    if (c.JS_HasException(engine.context)) {
+        // Capture the actual pending event BEFORE releasing guest success.
+        // No input flag/name or historical diagnostic slot is classified.
+        const pending_reason = c.JS_GetException(engine.context);
+        engine.freeValue(owned);
+        return engine.checked(c.JS_Throw(engine.context, pending_reason));
+    }
+    return owned;
+}
+fn initializationGet(s: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return s.own(try initializationValue(s.engine, try v.js.get(s.engine, receiver, name)));
+}
 fn colorsEnabled(s: *Scope, tty: c.JSValue) !c.JSValue {
     if (nil(tty)) return c.pi_js_bool(s.engine.context, 0);
-    const stream = try s.get(tty, "WriteStream");
+    const stream = try initializationGet(s, tty, "WriteStream");
     if (nil(stream)) return c.pi_js_bool(s.engine.context, 0);
-    const prototype = try s.get(stream, "prototype");
+    const prototype = try initializationGet(s, stream, "prototype");
     if (nil(prototype)) return c.pi_js_bool(s.engine.context, 0);
-    const function = try s.get(prototype, "hasColors");
+    const function = try initializationGet(s, prototype, "hasColors");
     if (nil(function)) return c.pi_js_bool(s.engine.context, 0);
-    const value = try s.call(function, prototype, &.{});
+    const value = try s.own(try initializationValue(s.engine, try v.js.call(s.engine, function, prototype, &.{})));
     return if (nil(value)) c.pi_js_bool(s.engine.context, 0) else value;
 }
 /// Caller supplies the actual imported node:tty default namespace. Missing
@@ -24,6 +37,7 @@ fn colorsEnabled(s: *Scope, tty: c.JSValue) !c.JSValue {
 pub fn create(engine: *v.em.Engine, actual_tty: c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
+    if (c.JS_HasException(engine.context)) return v.js.capture(engine);
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const enabled = try colorsEnabled(&s, actual_tty);
     const result = try s.object();
