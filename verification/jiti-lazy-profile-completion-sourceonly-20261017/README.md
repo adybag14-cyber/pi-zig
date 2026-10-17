@@ -43,9 +43,9 @@ providers for a physical filename fail closed rather than silently overwrite.
 
 ## Actual required dependency, not an inferred closure
 
-This source directly imports the sealed, independently reviewed b0efd1a2 API
+This source directly imports the sealed, independently reviewed a5792ee0 API
 from worktrees/node-jiti-commonjs-core. Its exact provider SHA256 is
-22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8;
+B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C;
 the inert exact source is retained here for peer review. At authoring Main
 b34833e8 and this isolated base do NOT yet contain that new provider leaf.
 Its constructor pathObject/convertedBody/retainConvertedBody + canonical private
@@ -53,6 +53,13 @@ map and genuine prototype._compile dispatch are a REQUIRED separate Auth-owner
 intake. No older vendor, fake host callback or copied whole CommonJS branch
 fills that dependency. Root will consolidate only the independently closed
 minimal Node source unit. Native compilation/execution is deliberately unrun.
+
+The initial b0 API source remains inert historical authority. Its live mutable
+node:path.isAbsolute getter/call success+pending frontier was identified during
+profile integration review. Auth's a579 successor checks pending immediately
+after the actual getter and call, before allocation/provider-map commit. The
+same provider API remains; the exact successor and13 combined prepared native
+controls are independently source closed (AuthFailure16CD receipt), unrun.
 
 Full genuine createRequire, actual _load/wrapSafe/compiler/platform dependencies
 remain unqualified. The underlying native transformer keeps its explicit

@@ -8,7 +8,7 @@ const resolving = @import("native_jiti_resolve.zig");
 const cache = @import("native_jiti_fs_cache.zig");
 const transform = @import("native_jiti_transform.zig");
 const default_transform = @import("native_jiti_default_transform.zig");
-// Actual sealed b0efd1a2 native CJS provider API; its separate constructor /
+// Actual sealed a5792ee0 native CJS provider API; its separate constructor /
 // _compile integration must be reviewed/intaken before this can be compiled.
 const converted_provider = @import("native_node_commonjs_converted_provider.zig");
 pub const Inputs = struct {

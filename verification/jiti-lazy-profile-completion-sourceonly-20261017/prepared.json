@@ -4,8 +4,8 @@
   "supersedes_profile_admission": "6ad2362a051f287f7815928376b0a30e933960dd",
   "api_revision": 2,
   "completion_signature": "complete(engine, *Prepared) -> owned real ESM namespace",
-  "required_provider_head": "b0efd1a2ce6bbca86326d7869a594ff719d3b465",
-  "required_provider_sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8",
+  "required_provider_head": "a5792ee0767f2dffdeb4cf96dd1fdb0405e62399",
+  "required_provider_sha256": "B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C",
   "required_provider_literal_present": false,
   "provider_dependency_separate_source_review_closed": true,
   "provider_dependency_intake_still_required": true,
@@ -18,7 +18,7 @@
       "role": "product",
       "path": "src/extensions/native_jiti_profile.zig",
       "size": 11933,
-      "sha256": "8E16C9C4BCD80B2FD3D9427FCB01C8F590F6C5EA2F4116405597D3FE261BF7A0"
+      "sha256": "8A21207AB03AE8F13C0F2A7401A5D3C9F88C6BEEEB7544BFDA2F0C78EB2A06E9"
     },
     {
       "role": "control",
@@ -29,8 +29,8 @@
     {
       "role": "control",
       "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/README.md",
-      "size": 5035,
-      "sha256": "1EDFCC920837CA22D4B99CA5DF9BA138D100F88F4E8D0B746202772CBB1F24D2"
+      "size": 5502,
+      "sha256": "E9ED4D1F78E457C74FBF68FDE4B9377B2059A22B8A0E65AE5955188073EC8B15"
     },
     {
       "role": "protected",
@@ -127,7 +127,20 @@
       "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/authority/sealed-b0-converted-provider.zig.txt",
       "size": 5011,
       "sha256": "22AF40935E75D8BD371B5876AE817946344CE6301A7AB17CF8F39A6974768EC8"
+    },
+    {
+      "role": "historical-seal",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/original-399-prepared.json",
+      "size": 5017,
+      "sha256": "664CC79BC5A1F2C6443835E38DD5D0DD1D0124B62963041C425CE537DBA8B095"
+    },
+    {
+      "role": "authority",
+      "path": "verification/jiti-lazy-profile-completion-sourceonly-20261017/authority/closed-a579-converted-provider.zig.txt",
+      "size": 5239,
+      "sha256": "B07763D8C4B1C8F596C043D119158EAAACAD55E3056B428958C71978B0E6A05C"
     }
   ],
-  "root_lexical_carry": "exact b34833e8 publicfactory pending_reason / controls actual_length / import_meta replacement_text; no semantic change"
+  "root_lexical_carry": "exact b34833e8 publicfactory pending_reason / controls actual_length / import_meta replacement_text; no semantic change",
+  "corrected_provider_review": "AuthFailure exacta579 source closure16CD;13controls prepared/unrun"
 }
