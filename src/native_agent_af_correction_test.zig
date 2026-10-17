@@ -43,7 +43,10 @@ test "native Agent AF correction successful constructor ignores catchable fresh 
     const good = try s.own(try functions.createArrow(engine, "", 1, noop, &.{}));
     c.JS_SetUncatchableError(engine.context, fresh); // Historical data; no pending event.
     _ = try p.construct(&s, constructor, &.{good});
-    const lookalike = try s.object(); c.JS_SetUncatchableError(engine.context, lookalike);
+    const lookalike = try s.own(try engine.checked(c.JS_NewError(engine.context)));
+    c.JS_SetUncatchableError(engine.context, lookalike);
+    try std.testing.expect(c.JS_IsUncatchableError(lookalike));
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(lookalike) == 0);
     if (engine.captured_exception) |old| engine.freeValue(old);
     engine.captured_exception = c.JS_DupValue(engine.context, lookalike);
     _ = try p.construct(&s, constructor, &.{good});

@@ -1,0 +1,25 @@
+{
+  "status": "actual-Error-marked-lookalike-control-source-only-unrun",
+  "baseline": "80231ed17c0d451eb3ab5f3899fd0d7c057b944a",
+  "product": {
+    "path": "src/native_agent_af_correction_test.zig",
+    "sha256": "9D3924F6481C36B02EAEC0053C57E9D37AE1E60AADCB6ED994DE082BBF9BB359",
+    "bytes": 5426
+  },
+  "correction": "Actualjs_set_uncatchable_error requiresJS_CLASS_ERROR; useJS_NewError andassertflagtrue/privateTag0beforeconstructGood, no productionorobserverchange",
+  "preserved_original": [
+    {
+      "path": "verification/agent-full-methods-af-corrections-sourceonly-20261017/prepared.json",
+      "sha256": "B21C874F01F436C806F6B47CEAFBEE79332C12D764908CC566EAA0AA9CF13CAC",
+      "bytes": 9857
+    },
+    {
+      "path": "verification/agent-full-methods-af-corrections-sourceonly-20261017/README.md",
+      "sha256": "E8968DDD42BDDADB6E5AFDAA2C9D125F46545506A0757E97C1899BFF05DC0C5F",
+      "bytes": 3025
+    }
+  ],
+  "jobs_launched": false,
+  "C_Engine_Main_modified": false,
+  "expected_files": []
+}
