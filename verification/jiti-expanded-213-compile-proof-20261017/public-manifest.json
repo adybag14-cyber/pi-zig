@@ -1,0 +1,315 @@
+{
+  "status": "evidence_only_compact_privacy_capsule_prepared_and_all_entries_rehashed",
+  "intended_Main_base": "ff67219412c3bdba14acccac9d60aeef0c67c4e4",
+  "qualified_source": "6097d0985e72343e0f6ce8699d14a8be5f5e475a",
+  "archive": {
+    "name": "jiti-expanded-213-compile-raw-proof.zip",
+    "bytes": 146452,
+    "sha256": "4333BAB55791C415B5C2F7C2C6BF08FFE25538A971CF0A245F0732985B520975",
+    "members": 41,
+    "deterministic_repeat_same_sha256": true
+  },
+  "members": [
+    {
+      "member": "README.md",
+      "bytes": 2825,
+      "sha256": "21309374A038C4B8D27F33AAE15A9708EF76BB2BD5B6827BE863A0126B94638D",
+      "kind": "scope and limitations",
+      "source_reference": "Authored packaging scope; no execution"
+    },
+    {
+      "member": "audit/Audit-213.ps1",
+      "bytes": 19970,
+      "sha256": "059147AED984A6A18EAA4A303ACCB825D360F45E13566080099E8C020650F822",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\Audit-213.ps1"
+    },
+    {
+      "member": "audit/Extract-213Metadata.ps1",
+      "bytes": 5180,
+      "sha256": "E3DB79B0AB4A5D5548DB02B2C47F65CB7BD5EF248BD33E89F36B2F2F977053E4",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\Extract-213Metadata.ps1"
+    },
+    {
+      "member": "audit/actual213-anchor-symbols.json",
+      "bytes": 62437,
+      "sha256": "E4E78E5D1E5A1D1C15F236E8F6CD76F2D0A72046EF06748EA7869ED515737995",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\actual213-anchor-symbols.json"
+    },
+    {
+      "member": "audit/independent-acceptance.json",
+      "bytes": 24077,
+      "sha256": "D45AEFC01A885A5AEB1C0948E9B0FF94576B00AE7B9C9BA1C14C4ACBAACB0A71",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\independent-acceptance.json"
+    },
+    {
+      "member": "controls/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\Get-ModelsNativeCandidates.ps1"
+    },
+    {
+      "member": "controls/Run-JitiCompileOnly-Expanded213-OSFix.ps1",
+      "bytes": 24465,
+      "sha256": "5EAFBAE694D235B5FB10660CA0C79916EA9A8D8D32A40054D183217C5DF477DB",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\Run-JitiCompileOnly-Expanded213-OSFix.ps1"
+    },
+    {
+      "member": "controls/lexicalfix-readiness.json",
+      "bytes": 3767,
+      "sha256": "C2D84C9A77F24AA542126A0BBA5AF3FEF23C858EDF67FC3E6BB8F5B802755F6A",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\lexicalfix-readiness.json"
+    },
+    {
+      "member": "controls/metafix-readiness.json",
+      "bytes": 4269,
+      "sha256": "CA44EF16D414E830CCC79920A1325FC0109F12C67EF498E9CBDC88AB1208E4D6",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\metafix-readiness.json"
+    },
+    {
+      "member": "controls/osfix-final-source-readiness.json",
+      "bytes": 1311,
+      "sha256": "3088AF9143A3837FA6CA7B210D900053C6ECA3B9842CD6ECF510B945812C6D6C",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\osfix-final-source-readiness.json"
+    },
+    {
+      "member": "controls/osfix-independent-body-review.json",
+      "bytes": 1013,
+      "sha256": "A8E8A0CB035A55A47C1A7303C71212FDAC3B2630B596458808E3F385F032E3EF",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\osfix-independent-body-review.json"
+    },
+    {
+      "member": "controls/osfix-readiness.json",
+      "bytes": 19992,
+      "sha256": "869D8FA629B6BA2A0A339AFF8E9ABA72C27C5043273658E3058B0EECA42D2084",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\osfix-readiness.json"
+    },
+    {
+      "member": "controls/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\outer-owned-process.ps1"
+    },
+    {
+      "member": "controls/typefix-readiness.json",
+      "bytes": 16529,
+      "sha256": "CBB1A6653775E59A9CB3A33C3D619FDA3173350A12B8CC7149D482475F6C7BBC",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\typefix-readiness.json"
+    },
+    {
+      "member": "digests/full-seals.json",
+      "bytes": 2264,
+      "sha256": "7B1F414D69006C67FFBB7E0F7493938C1F23194E4CE137840F5569E5CAC57791",
+      "kind": "full original inventories identified by exact file/group digests",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108"
+    },
+    {
+      "member": "digests/original-negative-SHAs.json",
+      "bytes": 58050,
+      "sha256": "79DFD758487A7F0E9F402CCAC8728BDF522072C03648D40A82AC904AE28D4257",
+      "kind": "original negative hash ledger, no negative reclassification",
+      "source_reference": "All failed result directories in explicit83/172/213 evidence families"
+    },
+    {
+      "member": "metadata/PDB-S_PUB32-anchor-records.bin",
+      "bytes": 15528,
+      "sha256": "E10B36CAD3C22C72AEE162A3BEB641B59E446800B57198EDC27CFD298860550F",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\PDB-S_PUB32-anchor-records.bin"
+    },
+    {
+      "member": "metadata/PDB-info-identity-header.bin",
+      "bytes": 28,
+      "sha256": "DE63C0C9DC1858F00CA45409BD3F49C83EED417AF500E1CC5D75B8A836A6DAD1",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\PDB-info-identity-header.bin"
+    },
+    {
+      "member": "metadata/PE-RSDS-identity-header.bin",
+      "bytes": 24,
+      "sha256": "752B1EF0C91A80330532747F44430991610741EBC7B8A9092A26872377031E98",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\PE-RSDS-identity-header.bin"
+    },
+    {
+      "member": "metadata/PE-section-headers.bin",
+      "bytes": 280,
+      "sha256": "52ED1A4A509E1121F7ADFCF80104EEF252928324558CB5ECDDAD4ABDB82B78C8",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\PE-section-headers.bin"
+    },
+    {
+      "member": "metadata/fragment-provenance.json",
+      "bytes": 2012,
+      "sha256": "2974108CD6992087F9AFF57CAEDA81618A92780BC0E965FF21BE3B107A64EE72",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\fragment-provenance.json"
+    },
+    {
+      "member": "metadata/raw-anchor-record-index.json",
+      "bytes": 75065,
+      "sha256": "CE585613C890527DBFD0B16C72EA25DC4D089083F144B8C8F196A930449AC747",
+      "kind": "inert debug identity/public-function metadata fragment",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-independent-raw-audit-20261017\\metadata-fragments\\raw-anchor-record-index.json"
+    },
+    {
+      "member": "raw/outer/grant.json",
+      "bytes": 2069,
+      "sha256": "96B0E7AE82501A56DD88CF14769128F47BDED0EE531C6383DE951F6DD15A8D4C",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-expanded-213-osfix-20261017-183108-grant.json"
+    },
+    {
+      "member": "raw/outer/outer-absence.json",
+      "bytes": 1801,
+      "sha256": "5AEACFF5246584E0F8871305D8138C13D42DCD9CFE822359709D41C6DEE1AB3D",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-expanded-213-osfix-20261017-183108-outer-absence.json"
+    },
+    {
+      "member": "raw/outer/outer.json",
+      "bytes": 1561,
+      "sha256": "F9FA8C088FF5C6D21A1D64BDFC9F93653BC0B5CFB29120FC6BA20952E7D40E4D",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-expanded-213-osfix-20261017-183108-outer.json"
+    },
+    {
+      "member": "raw/outer/outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-expanded-213-osfix-20261017-183108-outer.stderr.log"
+    },
+    {
+      "member": "raw/outer/outer.stdout.bin",
+      "bytes": 3559,
+      "sha256": "4437A0E549C13DAEBB01306D6B99BC95D02D2BD43BDD1F1EB572245740777E57",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-expanded-213-osfix-20261017-183108-outer.stdout.bin"
+    },
+    {
+      "member": "raw/positive/artifacts-before.json",
+      "bytes": 936,
+      "sha256": "F8FF6CFAF43F78198A2BFEAE7FAB98327FCA289A1E92F67EB121612FCF34211B",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\artifacts-before.json"
+    },
+    {
+      "member": "raw/positive/artifacts-final.json",
+      "bytes": 1078,
+      "sha256": "292D9B6AC9BF9B762C7107FA129530DECE1F4C6E8F8E4A84C13041E2D374B226",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\artifacts-final.json"
+    },
+    {
+      "member": "raw/positive/cache-reuse-source.json",
+      "bytes": 1019,
+      "sha256": "1AB4655FCD846BD15FD6365FF37E24E57A433351E68915C13A241188D5B00E2F",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\cache-reuse-source.json"
+    },
+    {
+      "member": "raw/positive/compile-admission.json",
+      "bytes": 179,
+      "sha256": "397DE83D6C12FF72A1A4456EE9AFE15A250C804B7DBB783FFA477018C577640F",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\compile-admission.json"
+    },
+    {
+      "member": "raw/positive/compile-plan.json",
+      "bytes": 1693,
+      "sha256": "7651EBF9A94DD6CF3EFC5DDBE9F21E426FF9848C2EA8B7CECC084B9E3D5B27CD",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\compile-plan.json"
+    },
+    {
+      "member": "raw/positive/compile.json",
+      "bytes": 2287,
+      "sha256": "0FC5B4AE051091C80AE3EF6EC3CEB3911CD77A8A80180B15B08E327F4870FF7E",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\compile.json"
+    },
+    {
+      "member": "raw/positive/compile.stderr.log",
+      "bytes": 14327,
+      "sha256": "A2BBB2F0D8AD242F8237CBDD185C48459E41BDCF041F275C004F2A9128E4E05A",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\compile.stderr.log"
+    },
+    {
+      "member": "raw/positive/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\compile.stdout.bin"
+    },
+    {
+      "member": "raw/positive/initial-admission.json",
+      "bytes": 179,
+      "sha256": "20672638C026DEFF52301A99742CC846AB106B0D72377872220B9FF0932F9A36",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\initial-admission.json"
+    },
+    {
+      "member": "raw/positive/owner-absence.json",
+      "bytes": 324,
+      "sha256": "9EE22D22289318AF78005B4BF96578A48C911A549E4426661B776169693E2247",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\owner-absence.json"
+    },
+    {
+      "member": "raw/positive/result.json",
+      "bytes": 3559,
+      "sha256": "4437A0E549C13DAEBB01306D6B99BC95D02D2BD43BDD1F1EB572245740777E57",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\result.json"
+    },
+    {
+      "member": "raw/positive/root-grant.json",
+      "bytes": 2069,
+      "sha256": "96B0E7AE82501A56DD88CF14769128F47BDED0EE531C6383DE951F6DD15A8D4C",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-expanded-213-controlfix-prepared-20261017\\root-expanded-213-osfix-20261017-183108\\root-grant.json"
+    },
+    {
+      "member": "source/build.zig",
+      "bytes": 347284,
+      "sha256": "5837DE41F1D08C520A38D049895A817F6BE71F11475AC7AB7CBD07928D815B05",
+      "kind": "exact qualified source closure",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\jiti-current-172-lexical-fix\\build.zig"
+    },
+    {
+      "member": "source/src/native_jiti_expanded_compile_only_root.zig",
+      "bytes": 17015,
+      "sha256": "026E723E6DFC1025D07C53485500F609C78DCCC41F8ACB067AF487ACCDDA031A",
+      "kind": "exact qualified source closure",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\jiti-current-172-lexical-fix\\src\\native_jiti_expanded_compile_only_root.zig"
+    }
+  ],
+  "intended_repo_paths": [
+    "verification/jiti-expanded-213-compile-proof-20261017/jiti-expanded-213-compile-raw-proof.zip",
+    "verification/jiti-expanded-213-compile-proof-20261017/public-manifest.json",
+    "verification/jiti-expanded-213-compile-proof-20261017/README.md"
+  ],
+  "exclusions": [
+    "Entire EXE/PDB/DLL/library/object/cache payloads",
+    "Global54MB CIM and unrelated process inventory",
+    "Full source/compiler/control inventory payloads: exact original file/group digests retained instead",
+    "TypeBox Product4 frame/CodeView analysis, assigned separately"
+  ],
+  "no_Main_edits_commits_push_or_jobs": true,
+  "original_subject_runtime_scope": "No metadata/runtime/Node/sentinel execution",
+  "full_application_or_default_activation_claim": false
+}

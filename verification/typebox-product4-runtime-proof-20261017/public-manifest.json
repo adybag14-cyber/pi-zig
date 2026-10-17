@@ -1,0 +1,455 @@
+{
+  "status": "evidence_only_compact_privacy_capsule_prepared_and_all_entries_rehashed",
+  "intended_Main_base": "ff67219412c3bdba14acccac9d60aeef0c67c4e4",
+  "qualified_source": "fdf6f25e4ef61321abaa4b9884eeb1cf97be6d18",
+  "archive": {
+    "name": "typebox-product4-raw-proof.zip",
+    "bytes": 782913,
+    "sha256": "748FDA6012AC9766F0EEF7CBF1E49C146B0742B6970DC457207DBED82B6B9F04",
+    "members": 61,
+    "deterministic_repeat_same_sha256": true
+  },
+  "members": [
+    {
+      "member": "README.md",
+      "bytes": 2624,
+      "sha256": "7C4701840E9B69180B479B7D7B67D87898B5A4AD33022572715ECBCB1FB7124C",
+      "kind": "scope and limitations",
+      "source_reference": "Authored packaging scope; no execution"
+    },
+    {
+      "member": "audit/Audit-Product4.ps1",
+      "bytes": 20387,
+      "sha256": "6E0791EDD65E9709C85FD93BB9989FFE6CCDDDA37FE3B3B6674303F8CEBC9C3C",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-product4-independent-raw-audit-20261017\\Audit-Product4.ps1"
+    },
+    {
+      "member": "audit/independent-acceptance.json",
+      "bytes": 16647,
+      "sha256": "59D41FF6409A3901B93D12DEF0D85FBECCDCC8C45E2D614B00D88DA413A79E9D",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-product4-independent-raw-audit-20261017\\independent-acceptance.json"
+    },
+    {
+      "member": "controls/Run-HeapProduct4V7Fdf6.ps1",
+      "bytes": 42401,
+      "sha256": "E7761BD34F651D3DDE5529D5D2FE3356E7C16184CF69D82C2EA1D597B874888A",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-heap-execution-prepared-20261017\\Run-HeapProduct4V7Fdf6.ps1"
+    },
+    {
+      "member": "digests/full-seals.json",
+      "bytes": 14946,
+      "sha256": "5222768450471C4057AF810ACC5F035001035192DDF63D444CB5B9B1F2E30ADB",
+      "kind": "all ten original full seal file/group digests",
+      "source_reference": "Original BuildQuery and RuntimeOnly immutable inventories"
+    },
+    {
+      "member": "digests/original-negative-SHAs.json",
+      "bytes": 76177,
+      "sha256": "9EF36C214AB789438EE0A94E3C9DB71C34C50274BF7755A5946BF534CD5F2925",
+      "kind": "original negative hash ledger, no frame/stack interpretation",
+      "source_reference": "Saved failed TypeBox result directories only"
+    },
+    {
+      "member": "provenance/actual-intake-fdf6.json",
+      "bytes": 14285,
+      "sha256": "DCB8DE188D677AB8CBAC5A2062D1A65B07912349CD6921ADD339B55260B85257",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\typebox-heap-root-fdf6-qualification-prepared-20261017\\actual-intake-fdf6.json"
+    },
+    {
+      "member": "provenance/generated34-acceptance.json",
+      "bytes": 39375,
+      "sha256": "6ACF20AFE71D79EB554D8068BFA15627D58DA487E38C7D73A81A98CE19D56562",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-heap-package34-independent-audit-20261017\\independent-acceptance-controller-schema.json"
+    },
+    {
+      "member": "raw/build-query/build-artifacts.json",
+      "bytes": 1114,
+      "sha256": "F886F41747FD64F5D4D1055568113CDEEEB89A3FE0D0383D636E9E33928DA99F",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\build-artifacts.json"
+    },
+    {
+      "member": "raw/build-query/commands.json",
+      "bytes": 1706,
+      "sha256": "A3510B2C8377F62D1A29039B0CCFE89B3A5809B7C12F526B6C2C3A18FD5B45E3",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\commands.json"
+    },
+    {
+      "member": "raw/build-query/compile-absence.json",
+      "bytes": 3029,
+      "sha256": "2853227BA96845F4C32B61182A14E1316C4986B57C0139FD0320D02F04E86867",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\compile-absence.json"
+    },
+    {
+      "member": "raw/build-query/compile-admission.json",
+      "bytes": 580,
+      "sha256": "B49494714CFE9ABAA1E7B1B48F65A97FAF20F518299E6C60DFE9B982DAC6A354",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\compile-admission.json"
+    },
+    {
+      "member": "raw/build-query/compile.json",
+      "bytes": 2052,
+      "sha256": "3AEE9D83202F4478EC117042A99DD44C1B38562D7F9305E2F595F2E98884BA38",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\compile.json"
+    },
+    {
+      "member": "raw/build-query/compile.stderr.log",
+      "bytes": 13917,
+      "sha256": "41C7D94AF1A4C8B34DC51383EBB37AC0E9DDCD51A8FC71A8B96C5189A7D75F87",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\compile.stderr.log"
+    },
+    {
+      "member": "raw/build-query/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\compile.stdout.bin"
+    },
+    {
+      "member": "raw/build-query/metadata-absence.json",
+      "bytes": 2051,
+      "sha256": "BE0422CBA2B765AFB713F98A37DF3B89CE0580E1CE205A6C045DECBC60FFA848",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\metadata-absence.json"
+    },
+    {
+      "member": "raw/build-query/metadata-admission.json",
+      "bytes": 583,
+      "sha256": "790A59B627DEB4D640A8A3EB2ECB0CF57CD30B354FCFF1360B2D3C60F65E4CEE",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\metadata-admission.json"
+    },
+    {
+      "member": "raw/build-query/metadata.json",
+      "bytes": 1133,
+      "sha256": "DBCCFD5974EFB984E62C7E6FA9088DDCE0119CD96944B4F05E0CD9093D127355",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\metadata.json"
+    },
+    {
+      "member": "raw/build-query/metadata.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\metadata.stderr.log"
+    },
+    {
+      "member": "raw/build-query/metadata.stdout.bin",
+      "bytes": 485,
+      "sha256": "2F9A75C910C6E90331700641D943C07F034DF4F71258B48987E4A352D0B33ADA",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\metadata.stdout.bin"
+    },
+    {
+      "member": "raw/build-query/result.json",
+      "bytes": 14264,
+      "sha256": "40913E9B32286C2069AF54421B339B7D8C08E56639CF24A15512828F96EAFDB6",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\result.json"
+    },
+    {
+      "member": "raw/build-query/selected-tests.json",
+      "bytes": 814,
+      "sha256": "C0270971139FE7E7EB88435F421E8857180EE6268B6F1B6F4A6C77CB124B29E1",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950\\selected-tests.json"
+    },
+    {
+      "member": "raw/outer/build-query/grant.json",
+      "bytes": 2903,
+      "sha256": "9A5C9AE31ED89BA1E4C819395C2F3AA6B2E223395B640CAD1A230DD58774814E",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950-grant.json"
+    },
+    {
+      "member": "raw/outer/build-query/outer-absence.json",
+      "bytes": 1718,
+      "sha256": "3415EB8B6ECDDBC62956A501E7DB38C5567B8A072E4FA0301811C5FC951DD417",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950-outer-absence.json"
+    },
+    {
+      "member": "raw/outer/build-query/outer.json",
+      "bytes": 1469,
+      "sha256": "C3EA8FAF15D08F86FDFC9BE7A23DEE24D29263145CE2B485CBA026B5ACC9BF37",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950-outer.json"
+    },
+    {
+      "member": "raw/outer/build-query/outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950-outer.stderr.log"
+    },
+    {
+      "member": "raw/outer/build-query/outer.stdout.bin",
+      "bytes": 14264,
+      "sha256": "40913E9B32286C2069AF54421B339B7D8C08E56639CF24A15512828F96EAFDB6",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-buildquery-20261017-181950-outer.stdout.bin"
+    },
+    {
+      "member": "raw/outer/runtime/grant.json",
+      "bytes": 3385,
+      "sha256": "17A61B3AF30D47712969A0995BC36D5730F5CE1672F5413F02058A740F14FC78",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754-grant.json"
+    },
+    {
+      "member": "raw/outer/runtime/outer-absence.json",
+      "bytes": 1708,
+      "sha256": "FFCABB96377F02B64EDC86F3D04926594AD2B3073D8E47CF5BEF2C069EEB3EB2",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754-outer-absence.json"
+    },
+    {
+      "member": "raw/outer/runtime/outer.json",
+      "bytes": 1464,
+      "sha256": "ED759C7BD5B0437E06033DF73B7F35FA832A75942FEF399430A570FF25567718",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754-outer.json"
+    },
+    {
+      "member": "raw/outer/runtime/outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754-outer.stderr.log"
+    },
+    {
+      "member": "raw/outer/runtime/outer.stdout.bin",
+      "bytes": 8989,
+      "sha256": "A521AD0013146071D55120BCCE12B39030CFAEAC014165194777AD324C492111",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754-outer.stdout.bin"
+    },
+    {
+      "member": "raw/runtime/commands.json",
+      "bytes": 1707,
+      "sha256": "D0EFB0B20ACCE68372A183688EF7D7B40B7A50949A127D164355C10C84BB1C1A",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\commands.json"
+    },
+    {
+      "member": "raw/runtime/final-artifacts.json",
+      "bytes": 1114,
+      "sha256": "F886F41747FD64F5D4D1055568113CDEEEB89A3FE0D0383D636E9E33928DA99F",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\final-artifacts.json"
+    },
+    {
+      "member": "raw/runtime/result.json",
+      "bytes": 8989,
+      "sha256": "A521AD0013146071D55120BCCE12B39030CFAEAC014165194777AD324C492111",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\result.json"
+    },
+    {
+      "member": "raw/runtime/runtime-absence.json",
+      "bytes": 2974,
+      "sha256": "F48A653F1BD6D924D90DCF00F7B3A84B7ED8634E05C0D394DD772C75A2A9A5D7",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime-absence.json"
+    },
+    {
+      "member": "raw/runtime/runtime-admission.json",
+      "bytes": 580,
+      "sha256": "8FF927A280D01D9A091396FD2590C34908CF4A3A24B4DA140F7D85449766C069",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime-admission.json"
+    },
+    {
+      "member": "raw/runtime/runtime-prerequisite-artifacts.json",
+      "bytes": 1114,
+      "sha256": "F886F41747FD64F5D4D1055568113CDEEEB89A3FE0D0383D636E9E33928DA99F",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime-prerequisite-artifacts.json"
+    },
+    {
+      "member": "raw/runtime/runtime-raw-frame-observation.json",
+      "bytes": 823,
+      "sha256": "533D96230C02BDDE6E2E0BCD77C6025D2C66697AB2B637829E37B91CC4210A51",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime-raw-frame-observation.json"
+    },
+    {
+      "member": "raw/runtime/runtime.json",
+      "bytes": 1134,
+      "sha256": "FAA2C03265560001B10F6F2B04F4731321FAA02CDC93F293D46FEC7D79AB4FEC",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime.json"
+    },
+    {
+      "member": "raw/runtime/runtime.results.json",
+      "bytes": 808,
+      "sha256": "FE43320578C4E0DDDC0F9C0503B43B5B0591784E831AA1F408CCAEAFA99F65BA",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime.results.json"
+    },
+    {
+      "member": "raw/runtime/runtime.stderr.log",
+      "bytes": 355,
+      "sha256": "FBDAE7C8C898A8BCD6E2EC75E852CF3EF50353C9223063881CF83F8F082A13D5",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime.stderr.log"
+    },
+    {
+      "member": "raw/runtime/runtime.stdout.bin",
+      "bytes": 126,
+      "sha256": "FB0D3AF85B02A8610D216651CDEC6114A70E470397F07FD0F098C7F40AFF3E38",
+      "kind": "raw scoped evidence",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\evidence\\root-typebox-product4-runtime-20261017-182754\\runtime.stdout.bin"
+    },
+    {
+      "member": "source/src/extensions/engine.zig",
+      "bytes": 85495,
+      "sha256": "FA18C560F18D535591512CAB36CF289B8DE898A9B04D651BF51A8B50DEECA381",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\engine.zig"
+    },
+    {
+      "member": "source/src/extensions/engine_abi.c",
+      "bytes": 7528,
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\engine_abi.c"
+    },
+    {
+      "member": "source/src/extensions/engine_abi.h",
+      "bytes": 1544,
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\engine_abi.h"
+    },
+    {
+      "member": "source/src/extensions/fixtures/ai-model-schemas-partial-4954.json",
+      "bytes": 966953,
+      "sha256": "A29A7FF43504C73BA436AA697D284C86F08E67F7965BA99603E100ED5F77D742",
+      "kind": "unchanged original replay input/expected authority, no newly generated expected",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\fixtures\\ai-model-schemas-partial-4954.json"
+    },
+    {
+      "member": "source/src/extensions/fixtures/typebox-compile-production.input.mjs",
+      "bytes": 13930,
+      "sha256": "B7DC5B8F18B42E70410438DE323B408D4BB268CF45E19BE923952D9097BE60AB",
+      "kind": "unchanged original replay input/expected authority, no newly generated expected",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\fixtures\\typebox-compile-production.input.mjs"
+    },
+    {
+      "member": "source/src/extensions/fixtures/typebox-compile-production.json",
+      "bytes": 41564,
+      "sha256": "54303EE9477C4632F408963887DD58E5103775D1C8B75B37DF8F27A020984DE2",
+      "kind": "unchanged original replay input/expected authority, no newly generated expected",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\fixtures\\typebox-compile-production.json"
+    },
+    {
+      "member": "source/src/extensions/fixtures/typebox-operators-production.expected.json",
+      "bytes": 476883,
+      "sha256": "888586A031E42C1C33A4A119F7196F5EE3E60A6466B1D9712BD28E28186E728C",
+      "kind": "unchanged original replay input/expected authority, no newly generated expected",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\fixtures\\typebox-operators-production.expected.json"
+    },
+    {
+      "member": "source/src/extensions/fixtures/typebox-operators-production.input.txt",
+      "bytes": 15690,
+      "sha256": "37CEEAC103C70BF1C587F03CAA11C5EE4EC0A6AE414222D8653116E94DB5C9AA",
+      "kind": "unchanged original replay input/expected authority, no newly generated expected",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\fixtures\\typebox-operators-production.input.txt"
+    },
+    {
+      "member": "source/src/extensions/native_node_function.zig",
+      "bytes": 7548,
+      "sha256": "61B6953887A331B654AC765FE7A793E29B9F0A3889E0508E09C9875F9A2A176B",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_node_function.zig"
+    },
+    {
+      "member": "source/src/extensions/native_typebox_compile_ir.zig",
+      "bytes": 32231,
+      "sha256": "BBBC4E2CD596F3BCC17DC5F1449EBF24118D54F8E295F31A594F704918B5D655",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_typebox_compile_ir.zig"
+    },
+    {
+      "member": "source/src/extensions/native_typebox_continuation.zig",
+      "bytes": 25604,
+      "sha256": "9A30B08487EA04018851A996CDCC9704E8F2020187180CCD5DC1853CCC100CCE",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_typebox_continuation.zig"
+    },
+    {
+      "member": "source/src/extensions/native_typebox_operators_production.zig",
+      "bytes": 3281481,
+      "sha256": "22388C87878FB42B5AEE58C87FBCF1955D985922EBCB2D040698F2A502D1E08D",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_typebox_operators_production.zig"
+    },
+    {
+      "member": "source/src/extensions/native_typebox_operators_runtime.zig",
+      "bytes": 11919,
+      "sha256": "76E0B40EC9C55F6945C68900436F4D3E35BEEC4EBF251D5B240A76393BA790A7",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_typebox_operators_runtime.zig"
+    },
+    {
+      "member": "source/src/extensions/native_typebox_production_graph.zig",
+      "bytes": 1310,
+      "sha256": "BABB14FFA26A4F770B84339F50F8131AB2A4BC0F9B34B7669C687AEA876C4676",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\extensions\\native_typebox_production_graph.zig"
+    },
+    {
+      "member": "source/src/native_ai_model_schemas_partial_test.zig",
+      "bytes": 1585,
+      "sha256": "C89ED1B5C637BF1DD7193F18FD0972572E005952E765DC8BD06C09972CF11BD2",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\native_ai_model_schemas_partial_test.zig"
+    },
+    {
+      "member": "source/src/native_typebox_compile_production_test.zig",
+      "bytes": 8014,
+      "sha256": "194F848EEF6FBB27D4AE5A9E17015EAA1893A5930929AE0AF1856EBE108E128F",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\src\\native_typebox_compile_production_test.zig"
+    },
+    {
+      "member": "source/vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\vendor\\quickjs\\quickjs.c"
+    },
+    {
+      "member": "source/vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "kind": "exact thirteen actual intake source joins",
+      "source_reference": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-typebox-heap-qualification\\vendor\\quickjs\\quickjs.h"
+    }
+  ],
+  "intended_repo_paths": [
+    "verification/typebox-product4-runtime-proof-20261017/typebox-product4-raw-proof.zip",
+    "verification/typebox-product4-runtime-proof-20261017/public-manifest.json",
+    "verification/typebox-product4-runtime-proof-20261017/README.md"
+  ],
+  "exclusions": [
+    "Entire EXE/PDB/DLL/library/object/cache payloads",
+    "Global54MB CIM and unrelated process inventory",
+    "Full source/compiler/control inventory payloads: exact original file/group digests retained instead",
+    "TypeBox Product4 frame/CodeView analysis, assigned separately"
+  ],
+  "no_Main_edits_commits_push_or_jobs": true,
+  "original_subject_runtime_scope": "Actual four tests passed at exact fdf6; no runtime by packager",
+  "full_application_or_default_activation_claim": false
+}
