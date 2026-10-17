@@ -12,7 +12,7 @@ fn install(engine: *em.Engine, name: [*:0]const u8, value: c.JSValue) !void {
 pub fn verifyBrands(engine: *em.Engine, actual_loader: c.JSValue) !void {
     inline for (.{ "loadExtensions", "loadExtensionsCached", "loadExtensionFromFactory" }) |name| {
         const function = try js.get(engine, actual_loader, name); defer engine.freeValue(function);
-        try std.testing.expect(c.JS_IsAsyncFunction(function) != 0);
+        try std.testing.expect(c.JS_IsAsyncFunction(function));
         try std.testing.expect(!c.JS_IsConstructor(engine.context, function));
         const length = try js.get(engine, function, "length"); defer engine.freeValue(length);
         var count: i32 = 0;

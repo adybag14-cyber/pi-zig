@@ -12,7 +12,7 @@ fn assertEmptyCapture(engine: *em.Engine, _: c.JSValue, _: []const c.JSValue, _:
 pub fn verifyBrandsAndEarlyRejections(engine: *em.Engine, actual_factory: c.JSValue) !void {
     for (names, [_]i32{ 0, 1, 1, 2 }, 0..) |name, length, index| {
         const function = try js.get(engine, actual_factory, name); defer engine.freeValue(function);
-        try std.testing.expect(c.JS_IsAsyncFunction(function) != 0);
+        try std.testing.expect(c.JS_IsAsyncFunction(function));
         try std.testing.expect(!c.JS_IsConstructor(engine.context, function));
         const actual_length = try js.get(engine, function, "length"); defer engine.freeValue(actual_length);
         var count: i32 = 0;
