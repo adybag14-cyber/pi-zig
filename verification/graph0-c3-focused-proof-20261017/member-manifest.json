@@ -1,0 +1,728 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-17T11:39:35.4597614+00:00",
+  "status": "prepared_public_proof_not_publication",
+  "scope": "focused C3 v2 queued8+binding3 raw pass; v1 binding compile negative retained",
+  "payload_count": 102,
+  "excluded": [
+    "Installed executable/PDB payloads from both runs",
+    "Compiler payloads",
+    "Mutable compiler caches"
+  ],
+  "members": [
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/prepared.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\prepared.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 4252,
+      "sha256": "95D7152CD3BF78566274A939513504F7907EBA4B9A807CA768FA9C81C4E4652D"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\README.md",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 4021,
+      "sha256": "1C419FAA08BA9CC2E8D0F3924D3A2FEF36F647D08B996E91B3BBED2DC2BA0961"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-grant.template.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-grant.template.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1018,
+      "sha256": "59F8961B6945B95F4192E7D32BDD782B733CF350A128681ED224AECCBDA3A89E"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927-grant.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1079,
+      "sha256": "373F64813B0C1F2D2B2A991FB1537E660E6DFEABD1BDD466DC5EAD8FAE5F1852"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/Run-Graph0C3Native.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\Run-Graph0C3Native.ps1",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 15969,
+      "sha256": "57BD735AD1D6622AAC437E4BF27BC97232F3B138B8B2B92D94806008B924861B"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\before.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "E7BAA5CF7845AA859E179D4B79FDF345611251D8BE929715AB8EB60DAD9AD512"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/binding-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\binding-compile-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "6D83467BD90776F6D17D1B6E419EE337CAE76E59699901D681B4F36723C1DCED"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/binding-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\binding-compile.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2223,
+      "sha256": "35C912680876BF8558A2FA9EB177ED1314D47B236693DE1B398029D68664B921"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/binding-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\binding-compile.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 19626,
+      "sha256": "AF4F7D64FDA445456722BC5C396222B1CFEA33675899284DCA20CA05F7CAAD89"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/binding-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\binding-compile.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "6AEA591A0390001D4B8B2330572060AA35B22F1A161B00A420F75E1E50EE4C69"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/initial-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\initial-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "B1839333BA85CFDDE10705E5297B4DF12B39CC9BAF04A28C68A8CAAE29EB421B"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/native-roots-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\native-roots-final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/owner-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\owner-absence.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1344,
+      "sha256": "20E8D10B9D62AB4EE7B3E07A3B69B9F53C3A7CF5A126DAB78F1BA7A2010DBCB4"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "5B7F385BFC881F63BA4895AEA284DB79454FCB8F7705A0793E5FC3A8A15DBD4E"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-artifacts-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-artifacts-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 911,
+      "sha256": "88671906D85F5F99F8850FC4A0F654AA424787054E8BD8F1B97623BBD71088E9"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-artifacts-before.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 769,
+      "sha256": "14741804417F8EDCE41460C858E4AC6D1F58F1F9E875605D47B019B92524A610"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-artifacts-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 911,
+      "sha256": "7111846DBF02FB1E17ADDFD5D1BEEBA8D7BE0CF1CC42AD6BBAA4245B857AA104"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-artifacts-final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 911,
+      "sha256": "484A8175614DE0E93CCAC8C7CB0880CEECCC9814BD459FEF6A186034F214CB57"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "DAACB40B3F003884AA46CF7C9CE2372DC7B0D3728C84AF82E1B8E536D447BBFE"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-compile-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "4D790BA9535E8F6A0B468ACF5C3D7BF449A17AB0B165D75FB225B409DB1D5049"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-compile.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2125,
+      "sha256": "2D3CA6BADEBEDF0F53CE5277CDED76154202BF60C8D4D05AF225A0B5C0D37E70"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-compile.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 14061,
+      "sha256": "C1B07EB0E26BAD86246E7B3676065A7C63C96451BCE733444180FA9979702F3C"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-compile.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-metadata-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "FBDF7682FDDDEC1F28BEF4C90510BA80044D746D5086E19C2160C7F918D18D59"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-metadata.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1202,
+      "sha256": "2469092E78FB52E16330D638223E6ADF32BE3EAA27B6729B59213EB77D276DDE"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-metadata.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-metadata.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1012,
+      "sha256": "BE42702C83F0DA2E7E8A322CF08134433DF83EC38CF6D0D22594E87B8DF9E3AC"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-runtime-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "DA534EB6F7BE551DBA7C3D2911A755D6619F0D0FC36E851CE61274AE0649D3B3"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-runtime.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1203,
+      "sha256": "66CD085803FBE14FE9C8BAFD41EF4783EC75C85CDEA841F5BB8F7684CA883EA7"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-runtime.results.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1165,
+      "sha256": "649FA0AC8063FCB41DDD901CF607C14E282C2C5E40C48A394C0071988AF618D5"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-runtime.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-runtime.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 238,
+      "sha256": "685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/queued-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\queued-selected-tests.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2452,
+      "sha256": "6656B4080E9FD0693678BCB650A3299E9EAF67EB3F3E837067C99D526E0227DB"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\result.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9854,
+      "sha256": "63884F56BFED4133912550CB8D53AA1166F776388513316A09F4707793C8E883"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-prepared-20261016/root-graph0-c3-20261016-230927/root-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-prepared-20261016\\root-graph0-c3-20261016-230927\\root-grant.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1079,
+      "sha256": "373F64813B0C1F2D2B2A991FB1537E660E6DFEABD1BDD466DC5EAD8FAE5F1852"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/prepared.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\prepared.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 12539,
+      "sha256": "38D723D698DB2259D62CE96A8AF56863D37A4E631DEDC890F5027FB87C3FA8DB"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\README.md",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 3479,
+      "sha256": "39378C5DAE873CDC526D79F1C7975267887AF5992268286989D86DB8CB833BD4"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-grant.template.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-grant.template.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1067,
+      "sha256": "3002368B14726136A45A91A76EE95389D9C519E98A88CCA8E6E43DA2684CA133"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029-grant.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1131,
+      "sha256": "5906F9A188144CD1862E6BA513C663A9399456EEB33B2096D0F64AD58BC84DB2"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/Run-Graph0C3Native.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\Run-Graph0C3Native.ps1",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 16156,
+      "sha256": "AE10B08B65C1430B636FEF79481F9B346413069AE691B49D347EFF25ED22FFAD"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\before.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "C3C400B1F887FCFBCBB36F4E51CB8E189844F9722C54B3273E7DA9AC3E0893C9"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "0F721D93C852316BE35A6438613971277A8C55065BF576EFD065DE7587C1025D"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-artifacts-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-artifacts-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 932,
+      "sha256": "35970DB2594ACDD2431068ADE796B445861477DC3FA70F3E66DB9D84E084F482"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-artifacts-before.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 790,
+      "sha256": "7487D99C9C79BA8C012EDA784798679B789486979F58C1DE635837EE2DB2585C"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-artifacts-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 932,
+      "sha256": "72D760241F92311C8CD67A4F65AB81CD65E0F9732CB25D05E3B638FF2A6A87C5"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-artifacts-final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 932,
+      "sha256": "5F5AA0802B428743EB5B8839F4FD8A201DD0A6CABA48889CC4ADD9A33C3C9052"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "CE8BD6B8CD2F8BF3FEA768980CDC6462F999441013C822698196A9C241A1DD85"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-compile-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "91383475AA4E95AB159DB8DEB1B5C04E71EB94E78FAF202069490891DAF5000B"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-compile.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2125,
+      "sha256": "4F5B1C91A0E57A1B0396021FFF6DCAA4E74BE9B3DD3EBA6F6987247C2E37D373"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-compile.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 14055,
+      "sha256": "07B51B243236663410CBFE47B244B3856730AA39F64DCF16D88328576F3FADDD"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-compile.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-metadata-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "843242DC1289BC6EC894F2BE92FB8D090EAAD150B6EAC92DF3716968A9138FC4"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-metadata.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1223,
+      "sha256": "CE988976836C0CCE0A42F5D77EA8AEA21787A03C211A4439E9D9054315379084"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-metadata.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-metadata.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 327,
+      "sha256": "DB2AE0B1D36A63315D3C6470C41692A6495E27140883E6D925361B71F712EE73"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-runtime-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "40077B76C186113B9BEE28BA0EF97018711271B268C18BC35F1B6B322F0FDC1E"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-runtime.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1224,
+      "sha256": "638F61365B9F21EBC7A6C43E4B8B0A5ADF3C45D5CD68160B592AB553956F5A6D"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-runtime.results.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 804,
+      "sha256": "C3C6EF5DCB11F8D98C1FB3F0702760F0DBF5AA42CA2EC986B30A86BFA498B737"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-runtime.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-runtime.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 98,
+      "sha256": "33ED66EE95600A2E1783CF21EA51E3BB0A714099B2B9C70073DD6D4B216E072B"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/binding-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\binding-selected-tests.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1089,
+      "sha256": "1A20B1CA90709034FBC26F97F15BF274789FAF0102DA04B05F4CE50F25BB0E71"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "AEC07494BD4855C66CB6F5C3AB4ADED37067612BAADFFB2F85620DCDC1D93AB9"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/initial-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\initial-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "76143EE7A6703FB4E2BB61320CD9D2601E355657578AEC93AF07D8CE062C5CD8"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/native-roots-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\native-roots-final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 4,
+      "sha256": "A5338D955B09046EC0B16F3A9625B7955C763AAE07DC722E474E6078745F932F"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/owner-absence.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\owner-absence.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2053,
+      "sha256": "2E82E68AB67C5B5DD514610E6D9C2B2032E21CAAE5FBD5AF905A90E6A6488580"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "4C9A74AC58381091660F00B16E9F358E1A6F6A2895EC40177E8767987902249A"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-artifacts-after.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-artifacts-after.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 929,
+      "sha256": "BDE0A5F49B2E65A59AB2A3AF0971ED5516374F1CCE036B13C7BCFADFC7A70BD2"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-artifacts-before.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-artifacts-before.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 787,
+      "sha256": "633EF269903FED815F11535EEFC4583E8924BF4CEAEC170418B37570940A2D09"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-artifacts-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-artifacts-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 929,
+      "sha256": "F11A4E1265EDE6B36C903FE2135807D9A35ABFF3875C2A84D85385E5FC2BB1D5"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-artifacts-final.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-artifacts-final.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 929,
+      "sha256": "8396AC412923A2F982514BD623FD7E6B01D3DD25DB45919C81D40CF5F21958BD"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-between.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-between.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 9648817,
+      "sha256": "2D21839243C2569D8F06C743DA5418846529083022ADD1AED867F8FDFFE36782"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-compile-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-compile-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "41C43CD8630D9B0FC4BA1AFDBC6A920CF43E695233B7FD280D18091435DCE605"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-compile.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-compile.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2137,
+      "sha256": "BAB9C532B3F8D61CBADC03878EBDFCF665F27456AA9172AEF8E5B89E367A3C88"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-compile.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-compile.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 14063,
+      "sha256": "B13A78264A51D3C08297FCBF27BA80EDD555C83F7B04B5F8F9568E8F32D6F122"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-compile.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-compile.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-metadata-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-metadata-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "86F6236A84FB49E6C1E867694EE5BB65CCEC3FCA909764559C1C01DE290A3200"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-metadata.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-metadata.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1220,
+      "sha256": "27D0202A52C97D7377215DB5A901C45C948FBCB86BFD6A57AB71E98ADEF2B15C"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-metadata.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-metadata.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-metadata.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-metadata.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1012,
+      "sha256": "BE42702C83F0DA2E7E8A322CF08134433DF83EC38CF6D0D22594E87B8DF9E3AC"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-runtime-admission.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-runtime-admission.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 418,
+      "sha256": "81A04806E2FF54018CCCE70CD95E8B5CA55E81B44730188BC424C56D89C47FCB"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-runtime.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-runtime.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1221,
+      "sha256": "4345B2305340834A36BEAB0DB8CF184B61B4607D89412F7DDF179A635950BD93"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-runtime.results.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-runtime.results.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1177,
+      "sha256": "D9027BBBF7470908990FA270FBAF6EBA917CCE6FF7C5D4905F8B88748DF2D17F"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-runtime.stderr.log",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-runtime.stderr.log",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-runtime.stdout.bin",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-runtime.stdout.bin",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 238,
+      "sha256": "685FF003D8E574A4200C9CBC1554FA3E6B717EE0EB19A355CB254AC59D06D8D5"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/queued-selected-tests.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\queued-selected-tests.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 2458,
+      "sha256": "62CFC01B26EF6B29A4E8B3FD89E4E826D0BFC33843F4D0EB94EB7435CE66AEB2"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/result.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\result.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 14612,
+      "sha256": "D27FDC697E601C4C285D457402FEB73A72A39FF7FBC64EAD423BCB2AD1195AEE"
+    },
+    {
+      "member": "evidence/root-graph0-c3-native-v2-prepared-20261017/root-graph0-c3-v2-20261016-234029/root-grant.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-graph0-c3-native-v2-prepared-20261017\\root-graph0-c3-v2-20261016-234029\\root-grant.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 1131,
+      "sha256": "5906F9A188144CD1862E6BA513C663A9399456EEB33B2096D0F64AD58BC84DB2"
+    },
+    {
+      "member": "evidence/graph0-c3-two-run-independent-async-review-20261017/Audit-Graph0C3.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-two-run-independent-async-review-20261017\\Audit-Graph0C3.ps1",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 11580,
+      "sha256": "09A01DFC2A92EBB4FEA2B7999A698AB4753EFE1DF8F9F6F287ABE29EF1989E39"
+    },
+    {
+      "member": "evidence/graph0-c3-two-run-independent-async-review-20261017/audit.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-two-run-independent-async-review-20261017\\audit.json",
+      "role": "unchanged original control/manifest/raw receipt or independent audit",
+      "bytes": 19285,
+      "sha256": "AB547DFD8D35D1959586AF3374E349F25805C9B047A72BDDD570D8C80541D38F"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/vendor/quickjs/quickjs.c",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\vendor\\quickjs\\quickjs.c",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/vendor/quickjs/quickjs.h",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\vendor\\quickjs\\quickjs.h",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/tools/ci/native_qualification_ci.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\tools\\ci\\native_qualification_ci.ps1",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/tools/ci/Invoke-NativeTestProtocol.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\tools\\ci\\Invoke-NativeTestProtocol.ps1",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 3354,
+      "sha256": "39F273D35A5B28E9D60FBE93355828314458A67FB472D60E0A8A6D4DD1FB704D"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/src/extensions/native_extension_dynamic_import_graph0.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\src\\extensions\\native_extension_dynamic_import_graph0.zig",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 1247,
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/src/native_dynamic_import_graph0_test.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\src\\native_dynamic_import_graph0_test.zig",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 17791,
+      "sha256": "E70628423F2F5CE9A93996DFD2644521AF1877D38D7CDCC91918B2B7CCBD8155"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/src/native_extension_graph0_binding_controls.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\src\\native_extension_graph0_binding_controls.zig",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 2474,
+      "sha256": "F792178095EE891B9E434692E519D2D7148297174FBBE69F8404E289743698C2"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/src/native_extension_graph0_binding_test.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\src\\native_extension_graph0_binding_test.zig",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 1088,
+      "sha256": "E5EB7CCC4C96B917E9412E6C4A723B589A1F0E1CB4AB0C1939A35E0C375C8C39"
+    },
+    {
+      "member": "worktrees/root-graph0-c3-qualification/build.zig",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\root-graph0-c3-qualification\\build.zig",
+      "role": "exact tested C3/ABI/binding/control/build/owner leaf",
+      "bytes": 341710,
+      "sha256": "7581916197ABEF04672B5A29899B41BFB41D977A1E7CA91C1FBD571ADD45A325"
+    },
+    {
+      "member": "evidence/durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\durable-latest89-full-inspect-53ae-tool-prehash-20261011.json",
+      "role": "complete original compiler authority manifest; historical paths retained",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+    },
+    {
+      "member": "evidence/graph0-c3-two-run-public-proof-prepared-20261017/README.md",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-two-run-public-proof-prepared-20261017\\README.md",
+      "role": "new honest scope and exclusions",
+      "bytes": 3874,
+      "sha256": "9833CBB378057F2264F084B06FC1391333C08C4D099D7F99B712E8196059591A"
+    },
+    {
+      "member": "evidence/graph0-c3-two-run-public-proof-prepared-20261017/Package-Graph0C3.ps1",
+      "original_path": "C:\\Users\\adyba\\pi-zig\\evidence\\graph0-c3-two-run-public-proof-prepared-20261017\\Package-Graph0C3.ps1",
+      "role": "new packaging source",
+      "bytes": 8698,
+      "sha256": "41821AE2F40F649A0E311DA42A11AFE654D06073A5E99DABE98E6406B5BE7366"
+    }
+  ]
+}
