@@ -1,0 +1,19 @@
+{
+  "status": "verified_public_raw_compile_only_package",
+  "zip": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-raw-proof-20261017\\runtime-owner-compile-first9ab-secondda24-third4b69-raw-proof.zip",
+  "zip_sha256": "1C9A3F4FA44E54A7E11E61A46DADE3D33592B04CF263EE80017B0863B2FA30FE",
+  "zip_bytes": 9889177,
+  "members": 148,
+  "controller_source_members": 105,
+  "member_hash_or_size_drift": 0,
+  "original_file_hash_drift": 0,
+  "forbidden_binary_or_cache_members": 0,
+  "binary_and_cache_status": "LOCAL_NOT_PACKAGED",
+  "compiled_head": "4b69e7fcf15d01ba60fda763165d367485fccb3f",
+  "controller_run": false,
+  "controls_run": false,
+  "runtime_restored": false,
+  "newer_google36_qualified": false,
+  "reviewer_jobs_started": 0,
+  "main_modified": false
+}

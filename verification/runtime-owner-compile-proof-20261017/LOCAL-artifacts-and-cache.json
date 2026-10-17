@@ -1,0 +1,81 @@
+[
+  {
+    "run": "first9ab",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-first9ab-20261017\\cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 21,
+    "bytes": 21621400.0
+  },
+  {
+    "run": "first9ab",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-first9ab-20261017\\global-cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 834,
+    "bytes": 44930380.0
+  },
+  {
+    "run": "first9ab",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-first9ab-20261017\\out",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 0,
+    "bytes": null
+  },
+  {
+    "run": "secondda24",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-secondda24-20261017\\cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 38,
+    "bytes": 22237474.0
+  },
+  {
+    "run": "secondda24",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-secondda24-20261017\\global-cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 834,
+    "bytes": 44930382.0
+  },
+  {
+    "run": "secondda24",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-secondda24-20261017\\out",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 0,
+    "bytes": null
+  },
+  {
+    "run": "third4b69",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 41,
+    "bytes": 37327071.0
+  },
+  {
+    "run": "third4b69",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\global-cache",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 834,
+    "bytes": 44930382.0
+  },
+  {
+    "run": "third4b69",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\out",
+    "status": "LOCAL_NOT_PACKAGED",
+    "files": 2,
+    "bytes": 7446528.0
+  },
+  {
+    "run": "third4b69",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\out\\bin\\runtime-job-owner.exe",
+    "sha256": "04C5C0D2633758D879CCC67E6DDC460AFBAD6D84BEC55B3A6BD6A504BAC29528",
+    "bytes": 3362816,
+    "status": "LOCAL_NOT_PACKAGED",
+    "executed": false
+  },
+  {
+    "run": "third4b69",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\out\\bin\\runtime-job-owner.pdb",
+    "sha256": "3CB83D0898CD493AA7D208FDB39BB8FFCAE416F22A045964A20F5938E30881FE",
+    "bytes": 4083712,
+    "status": "LOCAL_NOT_PACKAGED",
+    "executed": false
+  }
+]

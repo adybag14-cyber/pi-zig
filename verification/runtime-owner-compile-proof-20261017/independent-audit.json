@@ -1,0 +1,143 @@
+{
+  "schema": 1,
+  "status": "accepted_standalone_compile_only",
+  "reviewer": "/root/minimatch_native_resume",
+  "compiled_head": "4b69e7fcf15d01ba60fda763165d367485fccb3f",
+  "runs": [
+    {
+      "name": "first9ab",
+      "head": "9abf40630710a037faf85ad900279808c21f22c8",
+      "pid": 46048,
+      "retained_handle": 2400,
+      "created_utc": "2026-10-17T00:13:30.7522648Z",
+      "exit_code": 1,
+      "terminal": "failed",
+      "summary": "0/3 failed",
+      "errors": [
+        "verification\\runtime_job_owner\\common.zig:52:32: error: function parameter shadows declaration of 'frame'",
+        "verification\\runtime_job_owner\\common.zig:64:30: error: capture shadows declaration of 'frame'",
+        "verification\\runtime_job_owner\\supervisor.zig:244:25: error: expected pointer dereference, optional unwrap, or field access, found 'resume'",
+        "verification\\runtime_job_owner\\worker.zig:124:14: error: expected pointer dereference, optional unwrap, or field access, found 'resume'"
+      ],
+      "source_files": 10126,
+      "compiler_files": 19546,
+      "controller_files": 35,
+      "raw_before_final_byte_drift": 0,
+      "original_DEE_compiler_drift": 0,
+      "controller_map_drift": 0,
+      "control_drift": 0,
+      "owned_identity_argv_match": true,
+      "free_kib": 20275216,
+      "minimum_free_kib": 16777216,
+      "admission_age_ms": 25.7925,
+      "recorded_owner_absence": true,
+      "recorded_native_roots_after": 0,
+      "controller_executed": false,
+      "controls_executed": false,
+      "runtime_restored": false
+    },
+    {
+      "name": "secondda24",
+      "head": "da240c54626c13e086a016f803ed5a82050f641b",
+      "pid": 50048,
+      "retained_handle": 2532,
+      "created_utc": "2026-10-17T11:36:42.1225524Z",
+      "exit_code": 1,
+      "terminal": "failed",
+      "summary": "0/3 failed",
+      "errors": [
+        "verification\\runtime_job_owner\\main.zig:18:13: error: error set is discarded",
+        "verification\\runtime_job_owner\\seal_set.zig:44:30: error: unable to resolve comptime value"
+      ],
+      "source_files": 10126,
+      "compiler_files": 19546,
+      "controller_files": 35,
+      "raw_before_final_byte_drift": 0,
+      "original_DEE_compiler_drift": 0,
+      "controller_map_drift": 0,
+      "control_drift": 0,
+      "owned_identity_argv_match": true,
+      "free_kib": 23048548,
+      "minimum_free_kib": 16777216,
+      "admission_age_ms": 22.2623,
+      "recorded_owner_absence": true,
+      "recorded_native_roots_after": 0,
+      "controller_executed": false,
+      "controls_executed": false,
+      "runtime_restored": false
+    },
+    {
+      "name": "third4b69",
+      "head": "4b69e7fcf15d01ba60fda763165d367485fccb3f",
+      "pid": 45652,
+      "retained_handle": 2324,
+      "created_utc": "2026-10-17T11:37:50.3562801Z",
+      "exit_code": 0,
+      "terminal": "passed",
+      "summary": "3/3 succeeded",
+      "errors": [],
+      "source_files": 10126,
+      "compiler_files": 19546,
+      "controller_files": 35,
+      "raw_before_final_byte_drift": 0,
+      "original_DEE_compiler_drift": 0,
+      "controller_map_drift": 0,
+      "control_drift": 0,
+      "owned_identity_argv_match": true,
+      "free_kib": 21858548,
+      "minimum_free_kib": 16777216,
+      "admission_age_ms": 19.7022,
+      "recorded_owner_absence": true,
+      "recorded_native_roots_after": 0,
+      "controller_executed": false,
+      "controls_executed": false,
+      "runtime_restored": false
+    }
+  ],
+  "canonical_ci_sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285",
+  "original_compiler_authority_sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB",
+  "current_source_hash_drift": 0,
+  "current_compiler_hash_drift": 0,
+  "current_compiler_files": 19546,
+  "current_compiler_reparse_points": 0,
+  "source_snapshots": [
+    {
+      "name": "first9ab",
+      "head": "9abf40630710a037faf85ad900279808c21f22c8",
+      "files": 35,
+      "sha256": "7C58CD84549497992B23DD321B2C2401C568630FF7DC1E7FE925F312AE8D46ED"
+    },
+    {
+      "name": "secondda24",
+      "head": "da240c54626c13e086a016f803ed5a82050f641b",
+      "files": 35,
+      "sha256": "179D688A81FD0D6C3300C556A00603076B465A378DC114CDCA8CB654FE06E8D0"
+    },
+    {
+      "name": "third4b69",
+      "head": "4b69e7fcf15d01ba60fda763165d367485fccb3f",
+      "files": 35,
+      "sha256": "E2C838F1E3B64AF72C1E02F511A666F3CD630FD73B2DC12BAF2FBB5AD23E8EC1"
+    }
+  ],
+  "local_artifacts": [
+    {
+      "relative": "bin/runtime-job-owner.exe",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\out\\bin\\runtime-job-owner.exe",
+      "sha256": "04C5C0D2633758D879CCC67E6DDC460AFBAD6D84BEC55B3A6BD6A504BAC29528"
+    },
+    {
+      "relative": "bin/runtime-job-owner.pdb",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-runtime-owner-compile-third4b69-20261017\\out\\bin\\runtime-job-owner.pdb",
+      "sha256": "3CB83D0898CD493AA7D208FDB39BB8FFCAE416F22A045964A20F5938E30881FE"
+    }
+  ],
+  "source_scope": "Entire35-file standalone controller closure at each exact run commit; full10126 tracked source inventories in raw seals",
+  "controller_executed": false,
+  "controls_executed": false,
+  "runtime_restored": false,
+  "newer_google36_successor_qualified": false,
+  "reviewer_started_compile_or_native_jobs": false,
+  "main_modified": false,
+  "reviewed_utc": "2026-10-17T11:48:22.4346867+00:00"
+}
