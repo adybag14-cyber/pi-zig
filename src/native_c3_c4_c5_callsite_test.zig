@@ -21,6 +21,7 @@ test "VM query link iterator CallSite composition preserves real declaration and
     defer engine.deinit();
     const error_owner = try @import("extensions/native_error_stack.zig").install(engine);
     defer engine.freeValue(error_owner);
+    defer @import("extensions/native_error_stack.zig").uninstall(engine);
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     const probe = try engine.checked(c.JS_NewCFunction(engine.context, capture, "captureComposed", 0));

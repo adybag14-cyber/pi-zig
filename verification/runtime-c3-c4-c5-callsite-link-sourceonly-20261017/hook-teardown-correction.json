@@ -1,0 +1,16 @@
+{
+  "schema": "pi-zig-source-correction-v1",
+  "parent": "8b7c1101941ce36c22d89b8a3f789afe8e513de2",
+  "status": "source_only_unrun",
+  "finding": "The joint control must detach the native error-stack raw hook before releasing its owner or context, including assertion failure paths.",
+  "correction": "Install uninstall defer immediately after owner free defer; LIFO detaches hook first.",
+  "changed_path": "src/native_c3_c4_c5_callsite_test.zig",
+  "changed_sha256": "73B3D8EB045D34A16DCD08AE71E717486A2B72B33AB5E18CB2C932CA0D6688E7",
+  "c_sha256": "E9292FD42185B2C9EDC00AB781AFE21DBBD01BAB11C9BBBAFE814ECD3E46A72C",
+  "h_sha256": "2102E448F700AB8EF530E604915F2B604A778319DE04B0FFB098DD9092242BCD",
+  "named_control_count": 62,
+  "metadata_count": null,
+  "runtime_result": null,
+  "original_8b_manifest_preserved": true,
+  "no_product_or_original_control_changes": true
+}
