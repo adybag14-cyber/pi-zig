@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "kind": "selected_public_projection_not_original_receipt",
+  "private_original": {
+    "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-byte-audit.json",
+    "bytes": 1469,
+    "sha256": "841458E110F83BA7DB03C9BBA40E9B6CF73D221AEBA3F49F05A9AF884C6BB19C",
+    "private_original_retained": true
+  },
+  "selected": {
+    "status": "current_original31064_bytes_verified_pending_final_actor_confirmation_and_Root_review",
+    "full_original_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "actual_current_files": 31064,
+    "original_complete_hash_drift": 0,
+    "original_input28293_exact": true,
+    "generated2771_exact": true,
+    "specific508_exact": 508,
+    "original_junctions": 16,
+    "original_absences": 84,
+    "protected30555_exact": true,
+    "Node1838_exact": true,
+    "historical1774_exact": true,
+    "private2_exact": true,
+    "source_controls_exact": 37,
+    "original_negative_proof_drift": 0,
+    "known_recorded_actors_absent_before_after": true,
+    "original_Node_exit": 0,
+    "original_Node_pid": 60696,
+    "original_observer_lifecycle_qualification": "negative preserved",
+    "original_recipe_lifecycle_accepted": false,
+    "current_byte_authority_only": true,
+    "workspace_or_stage_changed": false,
+    "Node_or_build_or_generator_started": false,
+    "completed_utc": "2026-10-17T22:55:20.2414299+01:00",
+    "intermediate_status_superseded_by_final_acceptance_EFEC": true
+  },
+  "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+}

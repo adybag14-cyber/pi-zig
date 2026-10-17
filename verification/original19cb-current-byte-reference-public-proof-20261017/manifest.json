@@ -1,0 +1,66 @@
+{
+  "schema": 1,
+  "status": "REFERENCE_BYTES_ONLY_SAVED_INDEPENDENT_ACCEPTANCE_PUBLIC_CAPSULE",
+  "accepted_private_reference_receipt_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "records": [
+    {
+      "path": "actor-generation-history.projection.json",
+      "bytes": 4670,
+      "sha256": "BC8990248485B94A51DB8F572B8DF654ADE44B81FFF205650F349E0B49061596"
+    },
+    {
+      "path": "audit-manifest.original.json",
+      "bytes": 4553,
+      "sha256": "1C122276F8D8BCD109070DF6B9B273D84DA8DEBDCBD8F87B1D9CE7E940378D7F"
+    },
+    {
+      "path": "byte-audit.projection.json",
+      "bytes": 1711,
+      "sha256": "1E1733D94CD1F91A1A240D497AB52B10092F1D598977A06A3C9BEBD698DB931D"
+    },
+    {
+      "path": "junctions-and-explicit-absences.json",
+      "bytes": 17696,
+      "sha256": "9872E69839FA2ADA85CFDBBBFFC1E6A7AF6E37E3065B76D4BB114225BF2E56B6"
+    },
+    {
+      "path": "original-build-and-observer-negative.projection.json",
+      "bytes": 3858,
+      "sha256": "4F02F0CE56474D2291D87B44B072371EDFB0278BBA7FA921E7076A018BFFEFD1"
+    },
+    {
+      "path": "original31064-normalized-inventory.json",
+      "bytes": 9482410,
+      "sha256": "CDBE3D9C0A11E7FE31D43636436CEF2A265AB4CB74A712C5FF10D22168E4A276"
+    },
+    {
+      "path": "private-original-provenance.json",
+      "bytes": 10880,
+      "sha256": "43C3D64EFDCF58846D9ACA6FD66C2FED2A6B40B7C8AECCF6B5AC93B290946F12"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3495,
+      "sha256": "31DD5663D16A3CEDAECCD1E8B7C606C242CB5AFA469D81C7ECEA099A2D40B13E"
+    },
+    {
+      "path": "reference-acceptance.projection.json",
+      "bytes": 2981,
+      "sha256": "8E3B4F1138EC1AAF8303542893CF622FB288510D37B581A3C98E570558CD5FEA"
+    },
+    {
+      "path": "saved-comparison-receipts.json",
+      "bytes": 5115,
+      "sha256": "426907EB93B96B6CECE1C0AF341A48C8E53BE752EB5FC544D8A4DF44B5D7F2CB"
+    },
+    {
+      "path": "tools-and-source-controls.json",
+      "bytes": 494269,
+      "sha256": "ECBDC394AC7ED38C47FE5716C8F46325DBD76D47611F6FCCD3B7EE80A01E78ED"
+    }
+  ],
+  "original_Node_exit0_does_not_rehabilitate_observer_negative": true,
+  "later_numeric_PID_check_negative_preserved": true,
+  "Source20_or_runtime_execution_or_full_SDK_or_default_activation_qualified": false,
+  "file_bodies_or_private_paths_or_process_census_or_environment_included": false
+}

@@ -1,0 +1,124 @@
+{
+  "schema": 1,
+  "comparisons": [
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-complete31064-comparison.json",
+        "bytes": 87,
+        "sha256": "874B66AE77EA60696C37A0BF944685E8CCCFE6C3F9ED1D46597041D8F27E8465",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 31064,
+        "differences": [],
+        "exact": true,
+        "expected": 31064
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original-input28293-comparison.json",
+        "bytes": 87,
+        "sha256": "D1ABF6D0B9EB467E2D879C3D99308C59545576EF7FA0DDEFA0D1E5D5D087DDD3",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 28293,
+        "differences": [],
+        "exact": true,
+        "expected": 28293
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original-generated2771-comparison.json",
+        "bytes": 85,
+        "sha256": "EBB516DA4A10937A436E7A796692788A5275B66817BBEE86D034A0B3D9BAA816",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 2771,
+        "differences": [],
+        "exact": true,
+        "expected": 2771
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-protected30555-comparison.json",
+        "bytes": 87,
+        "sha256": "89E0065331A49CFE6809E2B06FB6422F9AF3C8E9C4CD56DDDA0064C92CDC86E6",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 30555,
+        "differences": [],
+        "exact": true,
+        "expected": 30555
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-Node1838-comparison.json",
+        "bytes": 85,
+        "sha256": "33647B8355ABBB4478E963C7158D866B40CB8CD38A2B462C22D38A58BADB63A7",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 1838,
+        "differences": [],
+        "exact": true,
+        "expected": 1838
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-private-tools-comparison.json",
+        "bytes": 79,
+        "sha256": "A92EC917D060AC9DDFC3FBE3B3BD507D0480E6EC20B277D6613015CADC0B8101",
+        "private_original_retained": true
+      },
+      "selected": {
+        "actual": 2,
+        "differences": [],
+        "exact": true,
+        "expected": 2
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/original-proof-immutability",
+        "bytes": 45,
+        "sha256": "30AB1D6B14A18A234DD3D2B1C083D36B0D39B4FEA73BB890D6AFDC46BD62DE0D",
+        "private_original_retained": true
+      },
+      "selected": {
+        "exact": true,
+        "differences": []
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    }
+  ],
+  "saved_receipts_only": true,
+  "no_reexecution_or_live_audit": true
+}

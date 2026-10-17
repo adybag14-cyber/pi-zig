@@ -1,0 +1,237 @@
+{
+  "schema": 1,
+  "kind": "original_private_SHA256_provenance_not_public_projection_hashes",
+  "records": [
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/acceptance.json",
+      "bytes": 3297,
+      "sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/original-proof-before.json",
+      "bytes": 33419,
+      "sha256": "46BAE52BF71D9FDBFFBACA876B649267C2239669B118B017C494779BF968825B",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/original-proof-immutability",
+      "bytes": 45,
+      "sha256": "30AB1D6B14A18A234DD3D2B1C083D36B0D39B4FEA73BB890D6AFDC46BD62DE0D",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/preserved-observation-negative",
+      "bytes": 19010,
+      "sha256": "CD567493284459E0BF823E2293609CCCE09C4E770A7E07D48E8D84CA2D1F0C4F",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/README.md",
+      "bytes": 2818,
+      "sha256": "84B92C8842C934DE730C43BBF641DDD706546240B317B93DA736A28451FD1532",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/workspace-activation-proposal.json",
+      "bytes": 2146,
+      "sha256": "FA0683745BF813421E12437D6B0D19053C50C4F6E769410DFDD3639EA1E298C5",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/runtime-reproduction-preparation-20261016-184519-d57a890f/inputs/runtime31064.json",
+      "bytes": 7153406,
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/runtime-reproduction-preparation-20261016-184519-d57a890f/inputs/prebuild28293.json",
+      "bytes": 6548448,
+      "sha256": "2FBFE1B3679065B0A33827D3612E45654C5D54BFEE7CF7CED69A5B10570CAF40",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/runtime-reproduction-preparation-20261016-184519-d57a890f/inputs/generated2771.json",
+      "bytes": 604963,
+      "sha256": "5169D3B3DD4AC2A12EB8596724D1D8BBBAF1CCCD1A5F00C325D269CD035BC94F",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/runtime-reproduction-preparation-20261016-184519-d57a890f/inputs/tools1774.json",
+      "bytes": 352993,
+      "sha256": "F834312AAC6AC8D79EF4B49CCB806096D80E92FCA403CC650A05E901D4C280DD",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/root-console-v2-reuse-20261017-214610-grant.json",
+      "bytes": 13599,
+      "sha256": "3B6E18D0409197960DB22EF350103891C9129504E703275791C8EC74F83BD334",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-external-actor-absence-root-console-v2-reuse-20261017-214610-bc29a956c2604c168341e4e19e22648a.json",
+      "bytes": 83008,
+      "sha256": "3E265991CDB91E60F998573467D543B5936F68ED86483F74E1E7AAEDAE4F01E0",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-external-actor-absence-root-console-v2-reuse-20261017-214610-8b62b2884a764a1cabfae9f328720363.json",
+      "bytes": 197826,
+      "sha256": "C16C4067CD476B1F00747A4DC8B4D627693E82AAAE908203E65459AB49BB1721",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-full-prebuild-dist-root-console-v2-reuse-20261017-214610/node.json",
+      "bytes": 1421,
+      "sha256": "986B45F9FC756DB24B0C2E043AD4AE76ACBA5EF523201A1CA22CE2D689F6CCEC",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-full-prebuild-dist-root-console-v2-reuse-20261017-214610/result.json",
+      "bytes": 2324,
+      "sha256": "3B0EF1009689FD931344022490E8A4F9E68EEE6F4687C4EB4BEB130FD002AE3B",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-full-prebuild-dist-root-console-v2-reuse-20261017-214610/node.stdout.bin",
+      "bytes": 2135,
+      "sha256": "EB0307AD022B606E97290F0CECE3D5B8354D7E2A6CB0A6AE92DCC0C53CC6C100",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/original-proof-after.json",
+      "bytes": 33419,
+      "sha256": "CB160DDC0D6060482AB548849E6839D2267B60BF22A858909D4BA2C8A655C12F",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-specific508-comparison",
+      "bytes": 142502,
+      "sha256": "DD037B0385A7EF4438793178F2E37291383025C546DACE92C57C3155F0B297DB",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-source-controls",
+      "bytes": 6142,
+      "sha256": "13FAC0B74ED24DAB82C397A028AEAAACCC6EA9E44F2F513A4303BE9A9C0F027F",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-protected30555.json",
+      "bytes": 6358528,
+      "sha256": "39BCE5EF43CAF52EB85A8A6AB50910F7375E6208C05FE1CE3C27A30167F496E7",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/audit-manifest.json",
+      "bytes": 4553,
+      "sha256": "1C122276F8D8BCD109070DF6B9B273D84DA8DEBDCBD8F87B1D9CE7E940378D7F",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-byte-audit.json",
+      "bytes": 1469,
+      "sha256": "841458E110F83BA7DB03C9BBA40E9B6CF73D221AEBA3F49F05A9AF884C6BB19C",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/after-recorded-actor-census.json",
+      "bytes": 489,
+      "sha256": "0E28925AC89E6B29F9C91D55F3841AC8B91B0CC1C10F6D1653A3118ABD8CFB50",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/Audit-Current31064Bytes.ps1",
+      "bytes": 16397,
+      "sha256": "DB0F26479B2350204558095DC5B2799584D48FA40475499FFCBFDAB3CEC513D4",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/before-recorded-actor-census.json",
+      "bytes": 489,
+      "sha256": "A304A9404E4D46A5DB346DB1227EBBD532E2E2FC5CB768365E391D3A4A583DF2",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-absence84.json",
+      "bytes": 22229,
+      "sha256": "5B4B87733CBCB469866352C63EE4FE570AA2AEA936C5591D8CEF826E7DAE14E3",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-complete31064-comparison.json",
+      "bytes": 87,
+      "sha256": "874B66AE77EA60696C37A0BF944685E8CCCFE6C3F9ED1D46597041D8F27E8465",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-full-prebuild-dist-root-console-v2-reuse-20261017-214610/node.stderr.log",
+      "bytes": 3959,
+      "sha256": "A5E80057704FFC487C7E645A92AD1628B19FC18914BDC8B55E91A9DD817C8615",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-complete31064.json",
+      "bytes": 6460566,
+      "sha256": "CE867FAF1358B9B937C4C3BF134056CD8687CBD8CB35D86D17632701BF646FE3",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-Node1838.json",
+      "bytes": 376734,
+      "sha256": "55037DEEA1DE4F4A40C77D0B63188B93D58C13477936679859A6280B26423A87",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original-generated2771-comparison.json",
+      "bytes": 85,
+      "sha256": "EBB516DA4A10937A436E7A796692788A5275B66817BBEE86D034A0B3D9BAA816",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original-input28293-comparison.json",
+      "bytes": 87,
+      "sha256": "D1ABF6D0B9EB467E2D879C3D99308C59545576EF7FA0DDEFA0D1E5D5D087DDD3",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original16-junctions.json",
+      "bytes": 8975,
+      "sha256": "4B788D166F3A28FAED153DA72C402E2859CD068BF9E28D96D72DFDF46A7352A5",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-private-tools-comparison.json",
+      "bytes": 79,
+      "sha256": "A92EC917D060AC9DDFC3FBE3B3BD507D0480E6EC20B277D6613015CADC0B8101",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-private-tools.json",
+      "bytes": 526,
+      "sha256": "CE72303E8C03E0BFFE55B76FD20290EF92DB5487F5AB0FD57115036BCB2CD805",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-protected30555-comparison.json",
+      "bytes": 87,
+      "sha256": "89E0065331A49CFE6809E2B06FB6422F9AF3C8E9C4CD56DDDA0064C92CDC86E6",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-Node1838-comparison.json",
+      "bytes": 85,
+      "sha256": "33647B8355ABBB4478E963C7158D866B40CB8CD38A2B462C22D38A58BADB63A7",
+      "private_original_retained": true
+    },
+    {
+      "id": "project/evidence/original19cb-full-prebuild-dist-root-console-v2-reuse-20261017-214610/controller-identity.json",
+      "bytes": 675,
+      "sha256": "28147CE6F7900C7AEA5E4E94A2382942447AB6753EDD933ACB1F64AABAEE627B",
+      "private_original_retained": true
+    }
+  ],
+  "original_private_bytes_unchanged": true,
+  "no_body_or_census_or_environment_copied": true,
+  "no_live_process_or_stage_scan_performed": true
+}

@@ -1,0 +1,590 @@
+{
+  "schema": 1,
+  "junctions": {
+    "schema": 1,
+    "kind": "selected_public_projection_not_original_receipt",
+    "private_original": {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-original16-junctions.json",
+      "bytes": 8975,
+      "sha256": "4B788D166F3A28FAED153DA72C402E2859CD068BF9E28D96D72DFDF46A7352A5",
+      "private_original_retained": true
+    },
+    "selected": [
+      {
+        "relative": "node_modules/@earendil-works/chord",
+        "expected_target": "reference/packages/chord",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/chord",
+            "targets": [
+              "reference/packages/chord"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-agent-core",
+        "expected_target": "reference/packages/agent",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-agent-core",
+            "targets": [
+              "reference/packages/agent"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-ai",
+        "expected_target": "reference/packages/ai",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-ai",
+            "targets": [
+              "reference/packages/ai"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-codemode",
+        "expected_target": "reference/packages/codemode",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-codemode",
+            "targets": [
+              "reference/packages/codemode"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-coding-agent",
+        "expected_target": "reference/packages/coding-agent",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-coding-agent",
+            "targets": [
+              "reference/packages/coding-agent"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-durable",
+        "expected_target": "reference/packages/durable",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-durable",
+            "targets": [
+              "reference/packages/durable"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-env",
+        "expected_target": "reference/packages/env",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-env",
+            "targets": [
+              "reference/packages/env"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-evals",
+        "expected_target": "reference/packages/evals",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-evals",
+            "targets": [
+              "reference/packages/evals"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-mcp",
+        "expected_target": "reference/packages/mcp",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-mcp",
+            "targets": [
+              "reference/packages/mcp"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-telemetry",
+        "expected_target": "reference/packages/telemetry",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-telemetry",
+            "targets": [
+              "reference/packages/telemetry"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/@earendil-works/pi-tui",
+        "expected_target": "reference/packages/tui",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/@earendil-works/pi-tui",
+            "targets": [
+              "reference/packages/tui"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/pi-extension-custom-provider-anthropic",
+        "expected_target": "reference/packages/coding-agent/examples/extensions/custom-provider-anthropic",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/pi-extension-custom-provider-anthropic",
+            "targets": [
+              "reference/packages/coding-agent/examples/extensions/custom-provider-anthropic"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/pi-extension-custom-provider-gitlab-duo",
+        "expected_target": "reference/packages/coding-agent/examples/extensions/custom-provider-gitlab-duo",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/pi-extension-custom-provider-gitlab-duo",
+            "targets": [
+              "reference/packages/coding-agent/examples/extensions/custom-provider-gitlab-duo"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/pi-extension-gondolin",
+        "expected_target": "reference/packages/coding-agent/examples/extensions/gondolin",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/pi-extension-gondolin",
+            "targets": [
+              "reference/packages/coding-agent/examples/extensions/gondolin"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/pi-extension-sandbox",
+        "expected_target": "reference/packages/coding-agent/examples/extensions/sandbox",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/pi-extension-sandbox",
+            "targets": [
+              "reference/packages/coding-agent/examples/extensions/sandbox"
+            ]
+          }
+        ],
+        "exact": true
+      },
+      {
+        "relative": "node_modules/pi-extension-with-deps",
+        "expected_target": "reference/packages/coding-agent/examples/extensions/with-deps",
+        "actual": [
+          {
+            "type": "Junction",
+            "relative": "node_modules/pi-extension-with-deps",
+            "targets": [
+              "reference/packages/coding-agent/examples/extensions/with-deps"
+            ]
+          }
+        ],
+        "exact": true
+      }
+    ],
+    "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+  },
+  "explicit_absences": {
+    "schema": 1,
+    "kind": "selected_public_projection_not_original_receipt",
+    "private_original": {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-absence84.json",
+      "bytes": 22229,
+      "sha256": "5B4B87733CBCB469866352C63EE4FE570AA2AEA936C5591D8CEF826E7DAE14E3",
+      "private_original_retained": true
+    },
+    "selected": [
+      {
+        "relative": "node_modules/@biomejs/cli-darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-darwin-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-linux-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-linux-arm64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-linux-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-linux-x64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@biomejs/cli-win32-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@earendil-works/gondolin-krun-runner-darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@earendil-works/gondolin-krun-runner-linux-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/aix-ppc64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/android-arm",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/android-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/android-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/darwin-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/freebsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/freebsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-arm",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-ia32",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-loong64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-mips64el",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-ppc64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-riscv64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-s390x",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/linux-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/netbsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/netbsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/openbsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/openbsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/openharmony-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/sunos-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/win32-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@esbuild/win32-ia32",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@napi-rs/wasm-runtime",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-android-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-darwin-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-freebsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-arm-gnueabihf",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-arm64-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-arm64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-ppc64-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-s390x-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-x64-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-linux-x64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-openharmony-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-wasm32-wasi",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@rolldown/binding-win32-arm64-msvc",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@tybys/wasm-util",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-aix-ppc64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-darwin-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-freebsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-freebsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-arm",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-loong64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-mips64el",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-ppc64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-riscv64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-s390x",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-linux-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-netbsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-netbsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-openbsd-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-openbsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-sunos-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/@typescript/typescript-win32-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/fsevents",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-android-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-darwin-arm64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-darwin-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-freebsd-x64",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-linux-arm-gnueabihf",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-linux-arm64-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-linux-arm64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-linux-x64-gnu",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-linux-x64-musl",
+        "state": "absent"
+      },
+      {
+        "relative": "node_modules/lightningcss-win32-arm64-msvc",
+        "state": "absent"
+      },
+      {
+        "relative": "packages/agent/node_modules/@earendil-works/pi-ai/node_modules/typebox",
+        "state": "absent"
+      },
+      {
+        "relative": "packages/coding-agent/node_modules/@earendil-works/pi-agent-core/node_modules/typebox",
+        "state": "absent"
+      },
+      {
+        "relative": "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/@anthropic-ai/sdk",
+        "state": "absent"
+      },
+      {
+        "relative": "packages/coding-agent/node_modules/@earendil-works/pi-ai/node_modules/typebox",
+        "state": "absent"
+      }
+    ],
+    "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+  },
+  "new_filesystem_or_link_probe": false
+}

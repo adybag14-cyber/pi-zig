@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "initial": {
+    "schema": 1,
+    "kind": "selected_public_projection_not_original_receipt",
+    "private_original": {
+      "id": "project/evidence/original19cb-external-actor-absence-root-console-v2-reuse-20261017-214610-bc29a956c2604c168341e4e19e22648a.json",
+      "bytes": 83008,
+      "sha256": "3E265991CDB91E60F998573467D543B5936F68ED86483F74E1E7AAEDAE4F01E0",
+      "private_original_retained": true
+    },
+    "selected": {
+      "status": "verified_current_exact_actor_absence",
+      "passed": true,
+      "completed_utc": "2026-10-17T22:51:42.0197749+01:00",
+      "observation_utc": "2026-10-17T22:51:41.7629005+01:00",
+      "actor_ids_distinct": 29,
+      "actual_fresh_native_ERROR87_count": 29,
+      "current_recorded_id_census_count": 0,
+      "process_control_performed": false,
+      "fresh_native_error87_required": true,
+      "successful_terminal_or_reuse_modes_accepted": false,
+      "post_controls_exact": true,
+      "post_runtime_exact": true,
+      "original_gap_rehabilitation_claim": false,
+      "full_runtime_or_recipe_acceptance": false
+    },
+    "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+  },
+  "audit_census": [
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/before-recorded-actor-census.json",
+        "bytes": 489,
+        "sha256": "A304A9404E4D46A5DB346DB1227EBBD532E2E2FC5CB768365E391D3A4A583DF2",
+        "private_original_retained": true
+      },
+      "selected": {
+        "observed_utc": "2026-10-17T22:53:44.507557+01:00",
+        "recorded_distinct_actor_ids": 29,
+        "current_recorded_id_count": 0,
+        "native_probe_or_control": false
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    },
+    {
+      "schema": 1,
+      "kind": "selected_public_projection_not_original_receipt",
+      "private_original": {
+        "id": "project/evidence/original19cb-current31064-byte-independent-20261017/after-recorded-actor-census.json",
+        "bytes": 489,
+        "sha256": "0E28925AC89E6B29F9C91D55F3841AC8B91B0CC1C10F6D1653A3118ABD8CFB50",
+        "private_original_retained": true
+      },
+      "selected": {
+        "observed_utc": "2026-10-17T22:55:20.0410449+01:00",
+        "recorded_distinct_actor_ids": 29,
+        "current_recorded_id_count": 0,
+        "native_probe_or_control": false
+      },
+      "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+    }
+  ],
+  "later": {
+    "schema": 1,
+    "kind": "selected_public_projection_not_original_receipt",
+    "private_original": {
+      "id": "project/evidence/original19cb-external-actor-absence-root-console-v2-reuse-20261017-214610-8b62b2884a764a1cabfae9f328720363.json",
+      "bytes": 197826,
+      "sha256": "C16C4067CD476B1F00747A4DC8B4D627693E82AAAE908203E65459AB49BB1721",
+      "private_original_retained": true
+    },
+    "selected": {
+      "status": "negative",
+      "passed": false,
+      "completed_utc": "2026-10-17T22:56:17.8381143+01:00",
+      "strict_numeric_id_check_remains_negative": true,
+      "observation_count": 20,
+      "successful_terminal_or_reuse_modes_accepted": false,
+      "process_control_or_child_launch_performed": false,
+      "all_process_rows_and_image_names_and_command_lines_omitted": true
+    },
+    "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+  },
+  "chronology": {
+    "original_actor_id": 34264,
+    "original_generation_fresh_native_ERROR87_utc": "2026-10-17T22:51:41.7624935+01:00",
+    "last_empty_saved_actor_census_utc": "2026-10-17T22:55:20.0410449+01:00",
+    "byte_audit_completed_utc": "2026-10-17T22:55:20.2414299+01:00",
+    "later_unrelated_generation_kernel_birth_utc": "2026-10-17T21:56:02.9907684Z",
+    "later_generation_born_after_completed_audit": true,
+    "basis": "actual native error87 before audit; later allocation does not resurrect retired generation",
+    "successful_handle_or_different_birth_retirement_mode_added": false,
+    "later_negative_not_reclassified": true,
+    "no_process_control_or_new_probe": true
+  }
+}

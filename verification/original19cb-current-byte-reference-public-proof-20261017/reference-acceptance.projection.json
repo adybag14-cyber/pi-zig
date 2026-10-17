@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "kind": "selected_public_projection_not_original_receipt",
+  "private_original": {
+    "id": "project/evidence/original19cb-current31064-byte-independent-20261017/acceptance.json",
+    "bytes": 3297,
+    "sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+    "private_original_retained": true
+  },
+  "selected": {
+    "status": "independently_accepted_current_original31064_byte_reference_authority_only",
+    "accepted": true,
+    "byte_identity_as_of_utc": "2026-10-17T22:55:20.2414299+01:00",
+    "actual_current_regular_files": 31064,
+    "original_complete_file_path_or_hash_differences": 0,
+    "original_inputs28293_exact": true,
+    "all2771_generated_files_exact": true,
+    "all508_recovery_targets_exact": true,
+    "original16_junctions_exact": true,
+    "original84_absences_exact": true,
+    "protected_original30555_unchanged": true,
+    "Node1838_and_historical1774_exact": true,
+    "private2_tools_exact": true,
+    "source37_controls_exact": true,
+    "original_negative_proof_unchanged": true,
+    "all29_original_actor_ids_fresh_native87_before_audit": true,
+    "recorded_actor_census_before_and_after_audit_empty": true,
+    "later_strict_numeric_pid_confirmation_remains_negative": true,
+    "original_generation_retirement_basis": "actual native error87 before audit; later allocation does not resurrect retired generation",
+    "successful_handle_or_different_birth_retirement_mode_added": false,
+    "original_Node60696_exit_code": 0,
+    "original_recipe_observer_lifecycle_qualification": "negative preserved; parent/capture/terminal-observer gaps not rehabilitated",
+    "original_recipe_lifecycle_pass_claim": false,
+    "Source20_qualified": false,
+    "production_qualified": false,
+    "whole_application_qualified": false,
+    "stage_no_longer_original28293_prebuild_eligible": true,
+    "workspace_reference_or_relocation_updated": false,
+    "Node_rebuilt_or_repeated": false,
+    "stage_protected_or_Main_modified": false,
+    "no_process_control_performed": true,
+    "direct_stage_container_relative": "upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+    "original_complete_manifest": {
+      "id": "project/evidence/runtime-reproduction-preparation-20261016-184519-d57a890f/inputs/runtime31064.json",
+      "bytes": 7153406,
+      "sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+      "private_original_retained": true
+    },
+    "audit_summary": {
+      "id": "project/evidence/original19cb-current31064-byte-independent-20261017/current-byte-audit.json",
+      "bytes": 1469,
+      "sha256": "841458E110F83BA7DB03C9BBA40E9B6CF73D221AEBA3F49F05A9AF884C6BB19C",
+      "private_original_retained": true
+    }
+  },
+  "omitted": "Private local roots, process command lines, full census, environment and all unselected fields. Original private SHA256 is not the projection SHA256."
+}

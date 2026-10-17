@@ -1,0 +1,135 @@
+{
+  "later_numeric_pid_reuse_negative_preserved": true,
+  "Node_or_build_repeated": false,
+  "members": [
+    {
+      "name": "acceptance.json",
+      "bytes": 3297,
+      "sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0"
+    },
+    {
+      "name": "after-recorded-actor-census.json",
+      "bytes": 489,
+      "sha256": "0E28925AC89E6B29F9C91D55F3841AC8B91B0CC1C10F6D1653A3118ABD8CFB50"
+    },
+    {
+      "name": "Audit-Current31064Bytes.ps1",
+      "bytes": 16397,
+      "sha256": "DB0F26479B2350204558095DC5B2799584D48FA40475499FFCBFDAB3CEC513D4"
+    },
+    {
+      "name": "before-recorded-actor-census.json",
+      "bytes": 489,
+      "sha256": "A304A9404E4D46A5DB346DB1227EBBD532E2E2FC5CB768365E391D3A4A583DF2"
+    },
+    {
+      "name": "current-absence84.json",
+      "bytes": 22229,
+      "sha256": "5B4B87733CBCB469866352C63EE4FE570AA2AEA936C5591D8CEF826E7DAE14E3"
+    },
+    {
+      "name": "current-byte-audit.json",
+      "bytes": 1469,
+      "sha256": "841458E110F83BA7DB03C9BBA40E9B6CF73D221AEBA3F49F05A9AF884C6BB19C"
+    },
+    {
+      "name": "current-complete31064-comparison.json",
+      "bytes": 87,
+      "sha256": "874B66AE77EA60696C37A0BF944685E8CCCFE6C3F9ED1D46597041D8F27E8465"
+    },
+    {
+      "name": "current-complete31064.json",
+      "bytes": 6460566,
+      "sha256": "CE867FAF1358B9B937C4C3BF134056CD8687CBD8CB35D86D17632701BF646FE3"
+    },
+    {
+      "name": "current-Node1838-comparison.json",
+      "bytes": 85,
+      "sha256": "33647B8355ABBB4478E963C7158D866B40CB8CD38A2B462C22D38A58BADB63A7"
+    },
+    {
+      "name": "current-Node1838.json",
+      "bytes": 376734,
+      "sha256": "55037DEEA1DE4F4A40C77D0B63188B93D58C13477936679859A6280B26423A87"
+    },
+    {
+      "name": "current-original-generated2771-comparison.json",
+      "bytes": 85,
+      "sha256": "EBB516DA4A10937A436E7A796692788A5275B66817BBEE86D034A0B3D9BAA816"
+    },
+    {
+      "name": "current-original-input28293-comparison.json",
+      "bytes": 87,
+      "sha256": "D1ABF6D0B9EB467E2D879C3D99308C59545576EF7FA0DDEFA0D1E5D5D087DDD3"
+    },
+    {
+      "name": "current-original16-junctions.json",
+      "bytes": 8975,
+      "sha256": "4B788D166F3A28FAED153DA72C402E2859CD068BF9E28D96D72DFDF46A7352A5"
+    },
+    {
+      "name": "current-private-tools-comparison.json",
+      "bytes": 79,
+      "sha256": "A92EC917D060AC9DDFC3FBE3B3BD507D0480E6EC20B277D6613015CADC0B8101"
+    },
+    {
+      "name": "current-private-tools.json",
+      "bytes": 526,
+      "sha256": "CE72303E8C03E0BFFE55B76FD20290EF92DB5487F5AB0FD57115036BCB2CD805"
+    },
+    {
+      "name": "current-protected30555-comparison.json",
+      "bytes": 87,
+      "sha256": "89E0065331A49CFE6809E2B06FB6422F9AF3C8E9C4CD56DDDA0064C92CDC86E6"
+    },
+    {
+      "name": "current-protected30555.json",
+      "bytes": 6358528,
+      "sha256": "39BCE5EF43CAF52EB85A8A6AB50910F7375E6208C05FE1CE3C27A30167F496E7"
+    },
+    {
+      "name": "current-source-controls",
+      "bytes": 6142,
+      "sha256": "13FAC0B74ED24DAB82C397A028AEAAACCC6EA9E44F2F513A4303BE9A9C0F027F"
+    },
+    {
+      "name": "current-specific508-comparison",
+      "bytes": 142502,
+      "sha256": "DD037B0385A7EF4438793178F2E37291383025C546DACE92C57C3155F0B297DB"
+    },
+    {
+      "name": "original-proof-after.json",
+      "bytes": 33419,
+      "sha256": "CB160DDC0D6060482AB548849E6839D2267B60BF22A858909D4BA2C8A655C12F"
+    },
+    {
+      "name": "original-proof-before.json",
+      "bytes": 33419,
+      "sha256": "46BAE52BF71D9FDBFFBACA876B649267C2239669B118B017C494779BF968825B"
+    },
+    {
+      "name": "original-proof-immutability",
+      "bytes": 45,
+      "sha256": "30AB1D6B14A18A234DD3D2B1C083D36B0D39B4FEA73BB890D6AFDC46BD62DE0D"
+    },
+    {
+      "name": "preserved-observation-negative",
+      "bytes": 19010,
+      "sha256": "CD567493284459E0BF823E2293609CCCE09C4E770A7E07D48E8D84CA2D1F0C4F"
+    },
+    {
+      "name": "README.md",
+      "bytes": 2818,
+      "sha256": "84B92C8842C934DE730C43BBF641DDD706546240B317B93DA736A28451FD1532"
+    },
+    {
+      "name": "workspace-activation-proposal.json",
+      "bytes": 2146,
+      "sha256": "FA0683745BF813421E12437D6B0D19053C50C4F6E769410DFDD3639EA1E298C5"
+    }
+  ],
+  "original_observer_negative_preserved": true,
+  "stage_or_protected_or_Main_modified": false,
+  "status": "final_independent_current_original31064_byte_authority_only",
+  "workspace_activation_applied": false
+}
