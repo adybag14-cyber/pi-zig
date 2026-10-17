@@ -1,0 +1,167 @@
+[
+  {
+    "relative": "anonymous-default-name/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\anonymous-default-name\\entry.ts",
+    "sha256": "FFEA2D6DEA41FD94EF43BF64EF8199DF2CB6D40D0B065A662DD519E0F760E084"
+  },
+  {
+    "relative": "async-real-import/dep.cjs",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\async-real-import\\dep.cjs",
+    "sha256": "37BC5C3FAC3B430679BE18CBA7C2102997C911B04434D26A4557A3169F030F66"
+  },
+  {
+    "relative": "async-real-import/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\async-real-import\\entry.ts",
+    "sha256": "6AA7FF11D7F947C6C4C114C43C17C8BDC442697B21F0BACC0E7CEB14533C1BB7"
+  },
+  {
+    "relative": "bare-meta/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\bare-meta\\entry.ts",
+    "sha256": "45E5371A66691AB74B4F980F6BAD278B4666AD3147DD1C01FB5026E760F7684D"
+  },
+  {
+    "relative": "computed-identifier-meta/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\computed-identifier-meta\\entry.ts",
+    "sha256": "BFF10DAB41434154ADB3F892D6E3B5786228F1CCAC7E40795C1B0FDD554CF3CE"
+  },
+  {
+    "relative": "computed-string-meta/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\computed-string-meta\\entry.ts",
+    "sha256": "97846AF21084E1C7DB03AA5400A9F94AA6F3F0EAE1F23005A392B3681577E6F5"
+  },
+  {
+    "relative": "custom-plugin-option/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\custom-plugin-option\\entry.ts",
+    "sha256": "C504694A78AF4C2FD507F0923D02E9CA593A9F3DD0A1326EB7D1B3B2264CDE55"
+  },
+  {
+    "relative": "decorator/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\decorator\\entry.ts",
+    "sha256": "2534BD93795F9AAAB9FC690B054F987805C295EE3F45B58BCFC02ED49CB584C6"
+  },
+  {
+    "relative": "default-import/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\default-import\\entry.ts",
+    "sha256": "9EBA851E302E9547501A7DD0788B41F3BF6BCC6E13BFE34E78E2412C5FB508F3"
+  },
+  {
+    "relative": "env-process-binding-frontier/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\env-process-binding-frontier\\entry.ts",
+    "sha256": "6102BA1AA46DCEACE1BCD3EBB62E3218824163F313D98484CA5FEB887CE3672A"
+  },
+  {
+    "relative": "jsx/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\jsx\\entry.ts",
+    "sha256": "C93050FE7A4B468D1C91E017F7A22C297D6A490B1DB3786F053E6264D5A99970"
+  },
+  {
+    "relative": "live-named-import/dep.cjs",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\live-named-import\\dep.cjs",
+    "sha256": "606D22E5834144EA4335B26FA178CFB24C7CD7780C42218F9F84E513DCBE7838"
+  },
+  {
+    "relative": "live-named-import/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\live-named-import\\entry.ts",
+    "sha256": "3A4DFC6527D2305C827AA2FE8441D8C8A4334094E4B9C6E80A6292E1FF488D4E"
+  },
+  {
+    "relative": "malformed-source-diagnostic/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\malformed-source-diagnostic\\entry.ts",
+    "sha256": "0085261CD305FFF26BB4ADDD7977F9CE433686489D02B67D474DF76AA2CBD5EC"
+  },
+  {
+    "relative": "meta-delete/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\meta-delete\\entry.ts",
+    "sha256": "3010382BD9C2A9D7EE6A8BFACFF36B552B04CD1A56D3C4AB17E606B7E7467322"
+  },
+  {
+    "relative": "meta-direct-write/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\meta-direct-write\\entry.ts",
+    "sha256": "5C1B73ECE50BD0B10A394C8CF81AD67587F8A2A5CE38069564EEA9496555551D"
+  },
+  {
+    "relative": "meta-env-dummy/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\meta-env-dummy\\entry.ts",
+    "sha256": "A8E681D87F500CF261112D17124C3BF63E4AC2ABCE19124048B37E393CC81532"
+  },
+  {
+    "relative": "meta-paths-grouped/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\meta-paths-grouped\\entry.ts",
+    "sha256": "1A8455FA184A503B903F5D0F54477458C650FC75A2752CB578006B2E39CBB663"
+  },
+  {
+    "relative": "meta-resolve-real-builtin/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\meta-resolve-real-builtin\\entry.ts",
+    "sha256": "3F3AA9E96E31EB9DD9CBDC49F539FA1249582F003B62B0B5385280052B82E150"
+  },
+  {
+    "relative": "mutable-export/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\mutable-export\\entry.ts",
+    "sha256": "8606929E569264AD159E6EFA44D5E414A822B23F0D6F46D757F1738A6217BDD8"
+  },
+  {
+    "relative": "named-class-method/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\named-class-method\\entry.ts",
+    "sha256": "15703DC05C709BD4916743D4EEF9211B0F1F45CA1E67EF11C8D96D8567531030"
+  },
+  {
+    "relative": "namespace-import/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\namespace-import\\entry.ts",
+    "sha256": "C0728D597BE80D824D0CED6266E4F33146A8407D1F800D1AE26D560E88809604"
+  },
+  {
+    "relative": "node-start.json",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\node-start.json",
+    "sha256": "934F0450E73174F4A8FD7263EBFA0475A55F82E53E3CC99BF13FA612337B66AC"
+  },
+  {
+    "relative": "optional-meta/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\optional-meta\\entry.ts",
+    "sha256": "F9CC8EB107A6E5D69D02A7992991A1BFAC00627E5BCAE8143D1738A2A0FC5E51"
+  },
+  {
+    "relative": "parenthesized-comment-meta/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\parenthesized-comment-meta\\entry.ts",
+    "sha256": "A3F284711DD7C35B9E41D36B88F602B6CCDBD854D5CEF6A28E05E7104BBCF830"
+  },
+  {
+    "relative": "readonly-javascript/entry.js",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\readonly-javascript\\entry.js",
+    "sha256": "0795FB109C4E145CE391CBA065E97437AA3DE665FCB036A5E7778D4A4030DA07"
+  },
+  {
+    "relative": "resource-management/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\resource-management\\entry.ts",
+    "sha256": "F135F6CDEA1D05C65526B092D3403383E8A617BE8BE91E7737EC5B30F1173683"
+  },
+  {
+    "relative": "retain-lines-false/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\retain-lines-false\\entry.ts",
+    "sha256": "C504694A78AF4C2FD507F0923D02E9CA593A9F3DD0A1326EB7D1B3B2264CDE55"
+  },
+  {
+    "relative": "shebang-outer-transform-boundary/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\shebang-outer-transform-boundary\\entry.ts",
+    "sha256": "20F70B4B0B5BB340C0343CD9CC2162C605BD3F387B20D36A6D1941F989AC6136"
+  },
+  {
+    "relative": "source-maps/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\source-maps\\entry.ts",
+    "sha256": "C504694A78AF4C2FD507F0923D02E9CA593A9F3DD0A1326EB7D1B3B2264CDE55"
+  },
+  {
+    "relative": "strict-top-level-this/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\strict-top-level-this\\entry.ts",
+    "sha256": "34D37D9B0F2A5B0574DBD5D42C3EDD9AF8F1BE22872A8F45AEBC71457BB0C3F3"
+  },
+  {
+    "relative": "typed-default-extension/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\typed-default-extension\\entry.ts",
+    "sha256": "A5DC9B3A129B35DA404CE7DDDAE1EA666B5781A5C60319C78338A6ACCCE785C6"
+  },
+  {
+    "relative": "typescript-enum/entry.ts",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-original-babel30-20261017-145214\\fixtures\\typescript-enum\\entry.ts",
+    "sha256": "676E123FA19F248900E7819439A824D20ABAE5E27FDF785672A69FEC3E2BDAA4"
+  }
+]

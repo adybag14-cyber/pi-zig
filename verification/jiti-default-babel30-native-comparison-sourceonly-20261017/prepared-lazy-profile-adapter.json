@@ -1,0 +1,29 @@
+{
+  "status": "source_only_lazy_profile_adapter_pending_peer_uncompiled_unrun",
+  "parent": "20c4ce446c8cf973f3dac945ce787740db27222d",
+  "required_integrated_Root": "6205bad48b9455e14715829f19d367d01924cade",
+  "changed_files": [
+    {
+      "path": "src/native_jiti_babel30_controls.zig",
+      "bytes": 7253,
+      "sha256": "29EF5445746A8F7658391F828C6B21DFF1F00565B1218C03365A4F83C4F8C26E"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/LAZY-PROFILE-ADAPTER.md",
+      "bytes": 1813,
+      "sha256": "BA1BBB8EC7D662CE1AB7E4A6067929E27573668263A5634A9C75A7FF0F73BFB9"
+    }
+  ],
+  "historical_lifetime_manifest": {
+    "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/prepared-plugin-lifetime-successor.json",
+    "bytes": 9777,
+    "sha256": "DFF2D9A19B3EE4DE8F2324AFBE77164BA64DB0AAB7148CE8C3BCB1BB1469A727"
+  },
+  "api": "profile.complete(engine,staged); collectCompleted(engine,io,staged); verifyCompleted(engine,io,staged,absolute_report_path)",
+  "no_eager_Babel_Module_input": true,
+  "actual_createRequire_bootstrap_unpatched_CJS_compiler_still_required": true,
+  "jobs_run": [],
+  "expected_or_observed_created": false,
+  "Main_shared_dependencies_changed": false,
+  "runtime_qualified": false
+}

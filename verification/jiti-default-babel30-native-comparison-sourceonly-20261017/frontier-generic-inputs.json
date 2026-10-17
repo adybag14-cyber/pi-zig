@@ -1,0 +1,24 @@
+{
+  "status": "additional_original_programs_prepared_unrun_no_expected",
+  "original30_replaced": false,
+  "expected_files": [],
+  "cases": [
+    {"id":"default-and-named","ts":true,"source":"import primary,{other as second} from './owned.cjs';export default function run(){return [primary,second]}"},
+    {"id":"default-specifier","ts":true,"source":"import {default as primary} from './owned.cjs';export const value=primary;"},
+    {"id":"namespace-and-default","ts":true,"source":"import primary,* as ns from './owned.cjs';export const value=[primary,ns];"},
+    {"id":"type-only-before-enum","ts":true,"source":"import {type Missing} from './absent';enum Level{Low,High};export const value=Level.High;"},
+    {"id":"type-only-after-enum","ts":true,"source":"enum Level{Low,High};import {type Missing} from './absent';export const value=Level.High;"},
+    {"id":"mutable-no-initializer","ts":true,"source":"export let value;"},
+    {"id":"computed-identifier-paths","ts":true,"source":"export const value=[import.meta[url],import.meta[filename],import.meta[dirname],import.meta[env]];"},
+    {"id":"computed-literal-and-optional","ts":true,"source":"export const value=[import.meta['filename'],import.meta?.dirname,import.meta];"},
+    {"id":"local-process-and-meta-write","ts":true,"source":"const process={env:{}};import.meta.env={owned:true};export const value=process.env;"},
+    {"id":"decorator-evaluation-order","ts":true,"source":"@first @factory() @last export class Decorated{}"},
+    {"id":"decorator-helper-collision","ts":true,"source":"const _class=1,_dec=2;@factory() export class Decorated{}"},
+    {"id":"resource-multiple","ts":true,"source":"using first=openFirst(),second=openSecond();export const value=1;"},
+    {"id":"resource-nullish","ts":true,"source":"using first=null,second=undefined;export const value=1;"},
+    {"id":"empty-plugin-iterator","ts":true,"babel":{"plugins":[]},"source":"export const value=5;"},
+    {"id":"empty-filename-inline-map","ts":true,"babel":{"sourceMaps":"inline"},"source":"export const value='owned-source-map';"},
+    {"id":"pretty-preserves-return-ASI","ts":true,"retainLines":false,"source":"export default function run(){return\n 42}"}
+  ],
+  "capture_requirements": "Genuine pinned official default backend under a separately reviewed bounded original owner. Preserve full code/error/function observations. No native-generated expected data."
+}

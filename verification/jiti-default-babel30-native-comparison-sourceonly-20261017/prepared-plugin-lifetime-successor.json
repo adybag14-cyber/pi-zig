@@ -1,0 +1,239 @@
+{
+  "status": "source_only_plugin_lifetime_successor_pending_peer_uncompiled_unrun",
+  "parent": "29c70f73076a3eef7fa13e5372b3d9aeddef6156",
+  "parent_manifest_sha256": "E0A281D1896DD93F54A00BC18947AF72C533750B0E294D49BB3EC6A761059ECA",
+  "changed_files": [
+    {
+      "path": "src/extensions/native_jiti_babel_plugins.zig",
+      "bytes": 4839,
+      "sha256": "97AC902A0B0D859801FA9A60D6A140045F43AC61B6CE16766C03EAD4682390A8"
+    },
+    {
+      "path": "src/native_jiti_babel_corrections_test.zig",
+      "bytes": 17945,
+      "sha256": "6E22A33D1486832B483634C5D7CE0648AE31E95ECC717B6BED2E4481AFB94EFE"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/PLUGIN-LIFETIME-SUCCESSOR.md",
+      "bytes": 3054,
+      "sha256": "2E4E1F52AC0A3035059EDBFC4C18507022553864AD6B5F6E929A508A5BEE09C8"
+    }
+  ],
+  "retained_files": [
+    {
+      "path": "build.zig",
+      "bytes": 342998,
+      "sha256": "0B07A19F4B1DEE98177B8129ED52F50F23CABAB04666F7C9A254F531ABF8D2AD"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_generator.zig",
+      "bytes": 6646,
+      "sha256": "8D871E36776591526A428D0AC85ED95FE4EB656E4830F8735314D18A0F77AB0B"
+    },
+    {
+      "path": "src/extensions/native_jiti_default_transform.zig",
+      "bytes": 9326,
+      "sha256": "E758EDE33C418ADE5ACF97172FA38263DE3F5FDBAC0529B777CE6BC5B6A456C2"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/CORRECTION-SUCCESSOR.md",
+      "bytes": 4487,
+      "sha256": "0645D2913B694AA5C5B10AB9C73542572339501CFA39DF96EC10623272E177B6"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/correction-original-input.mjs",
+      "bytes": 2542,
+      "sha256": "808F82E8CA1699794B63A57E8D0DF4AA726295C0175390B3B49771C4CA2AA4A1"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_meta.zig",
+      "bytes": 6492,
+      "sha256": "C5D501677F3B7F6DE86855C7C79F1FD5114F13088855AC0FCC999CEC6E05E71F"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_modules.zig",
+      "bytes": 40256,
+      "sha256": "D7D299A5F422E8CF805B6E37D135E9BE5531C029699780E799619C631DA4C9C6"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_runtime.zig",
+      "bytes": 2289,
+      "sha256": "89A80E1479043B606FF5C1E8753C5C96AF68B4EC6F5ED248025A28DAF53F46A7"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_syntax.zig",
+      "bytes": 11949,
+      "sha256": "517D60FEDC6D9032B66D84ACEBA1787316CA973F88003E3478E162E0E966F369"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_diagnostics.zig",
+      "bytes": 3614,
+      "sha256": "75F6923D0D2F684A6CB748E2D7E96500509477714E0F111BC9A4610051576F8D"
+    },
+    {
+      "path": "src/native_jiti_babel30_test.zig",
+      "bytes": 1861,
+      "sha256": "106C2C2F18A36186745E2D51B6A32EA0A93DC4EF1B0AE3F848A1DA7DF1A238B8"
+    },
+    {
+      "path": "src/extensions/fixtures/jiti-default-babel30-native-observer.mjs",
+      "bytes": 5950,
+      "sha256": "EE9BFCCD08D5229CFEDA9940587C6A329BFB363A182E45CDC5DEC7DA3E6F8938"
+    },
+    {
+      "path": "src/native_jiti_babel_ast_allocation_test.zig",
+      "bytes": 1406,
+      "sha256": "C2463D210C1D6CD0E3005F6C78AE0C6522BCF7D1EDF8CF00A006A8BE513BB6E8"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/AST-FRONTIER-SUCCESSOR.md",
+      "bytes": 6905,
+      "sha256": "98C51651BEDCA6981E5348B67A061A315DFD9FBFD2A1C7D8C9DED4AFC7A6B742"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/frontier-generic-inputs.json",
+      "bytes": 2410,
+      "sha256": "AB952F4332F6DA491F69D324DB4E5E8A3BD01B93249A885EDF3F8C1C49EE73BD"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-generator-buffer-7.29.1.ts.txt",
+      "bytes": 10822,
+      "sha256": "ABB889CE7E94FCAEF27F5FEE9AF2330B6311DC0F5FAFE122BF0233E14385C6D9"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-generator-source-map-7.29.1.ts.txt",
+      "bytes": 4495,
+      "sha256": "11A63696946665D6FD5F7F1B81B1F25FB391319DA8DF71AB9C0D010954BAE257"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-legacy-decorators-7.29.0.ts.txt",
+      "bytes": 11932,
+      "sha256": "3A63C35C3AF72145369191FF06DCB8370A5AC5F6A9C93AA326A4E23E4CDF0D85"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-resource-management-7.28.6.ts.txt",
+      "bytes": 8239,
+      "sha256": "B10C1DA215B623381A6BF2AFAB593AE950EA92A978EDED9A2D195424486B9B52"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-usingCtx-7.28.6.ts.txt",
+      "bytes": 4715,
+      "sha256": "1D10CEF4572308C29F05397363610FFA13A279A1AAB705892678056ED143F5F7"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/gen-mapping-0.3.13.mjs.txt",
+      "bytes": 7969,
+      "sha256": "06678AC1DE98E6697F68ACC5F34C1967A88ACFF9995E4ADEFC6CB3BF563465C9"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/gen-mapping-LICENSE",
+      "bytes": 1080,
+      "sha256": "769D154FBDE32A915AF110B1123650BC79F4CBE675ACC66E005265BF069C6C6C"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/jridgewell-gen-mapping-0.3.13.tgz",
+      "bytes": 17972,
+      "sha256": "BC16F658C1F6D63E0C8738AB881D03F49F1955D8F853CDCB8F7D315CF62F0082"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/primary-pins.json",
+      "bytes": 2898,
+      "sha256": "F8F2E639FB82AA4CD4BCF33A7881D99FCBE70C4B22940E951787BF4F1C693EAF"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/retained-Babel-license",
+      "bytes": 1106,
+      "sha256": "117DA2AF0D4CE0FE1C8E19B5CFF9DCD806ADF973D328D27B11D4448C4FF24F76"
+    },
+    {
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35190,
+      "sha256": "F4A9D4D22FB6F4E721EF9B80B8669C3C97A44506C749F664261E010D12510220"
+    },
+    {
+      "path": "src/extensions/native_jiti_import_meta.zig",
+      "bytes": 8857,
+      "sha256": "829343ACCBBDE2E20ED34D0BB255AE8526652BA134842F0D0A7361214D840E83"
+    },
+    {
+      "path": "src/extensions/typescript.zig",
+      "bytes": 24307,
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9"
+    },
+    {
+      "path": "src/extensions/native_jiti_profile.zig",
+      "bytes": 12109,
+      "sha256": "950E320EFADC7C463E0EFC391F2925B463BEBC1121E9EA0427BA04BD106C1DC7"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/jiti-default-transform-sourceonly-20261017/inputs.json",
+      "bytes": 3765,
+      "sha256": "4BD4707F127820EE482F7E9A808BCE5AAAA05E0DA3C5261CC44BF4A99E50B8FE"
+    },
+    {
+      "path": "verification/jiti-default-transform-sourceonly-20261017/source-caller.mjs",
+      "bytes": 3096,
+      "sha256": "A3C1C5FC70E78A32C4362841F81732077CF82128982697A96BCAD820ADA4B178"
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/original-output.json",
+      "bytes": 33061,
+      "sha256": "96DA1A507001E61D539E067E99203B4F35BF982BEF64D8A3A7E152B350DC5C37"
+    },
+    {
+      "path": "src/native_jiti_babel30_controls.zig",
+      "bytes": 7265,
+      "sha256": "6014D16985E42F2BBDB76BD957E761566E4152A14CBD378C120DC307E236AD20"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/prepared.json",
+      "bytes": 5426,
+      "sha256": "974B21F5E33879EC0C65C84265E4EEC1D1C2C8D2D226A20D879353D02E57C9A2"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/original-fixture-inventory.json",
+      "bytes": 8915,
+      "sha256": "2D87AF009D38E3C2A05187C9D35ED641471615A2FF6E54B6BD2A1B3295E5AD9D"
+    },
+    {
+      "path": "src/extensions/native_jiti_budget.zig",
+      "bytes": 1767,
+      "sha256": "B3ECB37B66C11A0FDC343BAC9BA6D259EAB796463065825F4EED29E457AE35A8"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/prepared-correction-successor.json",
+      "bytes": 10367,
+      "sha256": "E0A281D1896DD93F54A00BC18947AF72C533750B0E294D49BB3EC6A761059ECA"
+    }
+  ],
+  "retained_mismatches": 0,
+  "named_native_controls_prepared": 9,
+  "new_native_control": "prior-job WeakRefs with explicit kept-object release and eleven collection checkpoints; real plugin boundary, no Module/bootstrap substitute",
+  "actual_metadata_count": null,
+  "native_controls_run": false,
+  "jobs_run": [],
+  "original30_and_correction_inputs_unchanged": true,
+  "old29c_checkpoint_preserved": true,
+  "Main_Engine_C_shared_helpers_changed": false,
+  "runtime_default_Babel_or_full_Jiti_qualified": false
+}

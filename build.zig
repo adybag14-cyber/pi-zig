@@ -3134,6 +3134,26 @@ pub fn build(b: *std.Build) void {
     typescript_test_step.dependOn(&run_typescript_tests.step);
     test_step.dependOn(&run_typescript_tests.step);
 
+    // Isolated original30 comparison; no default test/CLI/SDK selection. Compile
+    // target installs the real artifact only; runtime is separately Root-owned.
+    const babel30_module = b.createModule(.{ .root_source_file = b.path("src/native_jiti_babel30_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, babel30_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, babel30_module, typescript_parser);
+    const babel30_tests = b.addTest(.{ .root_module = babel30_module, .use_llvm = use_llvm, .filters = &.{"native default Babel30"} });
+    b.step("build-native-jiti-babel30-backend", "Install original30 native backend comparator without executing it").dependOn(&b.addInstallArtifact(babel30_tests, .{ .dest_sub_path = "native-jiti-babel30-backend.exe" }).step);
+    b.step("test-native-jiti-babel30-backend", "Compare all original30 backend records, retaining full mismatches in required owned report").dependOn(&b.addRunArtifact(babel30_tests).step);
+    const babel_ast_gpa_module = b.createModule(.{ .root_source_file = b.path("src/native_jiti_babel_ast_allocation_test.zig"), .target = target, .optimize = optimize });
+    linkTypeScriptParser(b, babel_ast_gpa_module, typescript_parser);
+    const babel_ast_gpa = b.addTest(.{ .root_module = babel_ast_gpa_module, .use_llvm = use_llvm, .filters = &.{"native Babel AST GPA lifecycle"} });
+    b.step("build-native-jiti-babel-ast-gpa", "Install separate authored native Babel AST GPA ownership control without running").dependOn(&b.addInstallArtifact(babel_ast_gpa, .{ .dest_sub_path = "native-jiti-babel-ast-gpa.exe" }).step);
+    b.step("test-native-jiti-babel-ast-gpa", "Run separate actual allocation lifecycle only after an explicit Root grant").dependOn(&b.addRunArtifact(babel_ast_gpa).step);
+    const babel_corrections_module = b.createModule(.{ .root_source_file = b.path("src/native_jiti_babel_corrections_test.zig"), .target = target, .optimize = optimize });
+    linkQuickJs(b, babel_corrections_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, babel_corrections_module, typescript_parser);
+    const babel_corrections = b.addTest(.{ .root_module = babel_corrections_module, .use_llvm = use_llvm, .filters = &.{"native Babel correction"} });
+    b.step("build-native-jiti-babel-corrections", "Install separate authored Babel token/iterator correction controls without running").dependOn(&b.addInstallArtifact(babel_corrections, .{ .dest_sub_path = "native-jiti-babel-corrections.exe" }).step);
+    b.step("test-native-jiti-babel-corrections", "Run actual token and iterator controls only after explicit Root grant").dependOn(&b.addRunArtifact(babel_corrections).step);
+
     const maintenance = b.addExecutable(.{
         .name = "pi-maintenance",
         .root_module = b.createModule(.{

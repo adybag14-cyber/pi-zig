@@ -1,0 +1,17 @@
+[
+  {
+    "path": "reviews/jiti-babel-ast-20c4-independent-body-review-20261017.json",
+    "bytes": 2599,
+    "sha256": "4E6A0BE7C130B0453540E899FA89E6F6A5502236B85D61E287A0E875443D8824"
+  },
+  {
+    "path": "reviews/jiti-babel-lazy-adapter-d988-independent-body-review-20261017.json",
+    "bytes": 1369,
+    "sha256": "232BF6509686155AB14275A3CFEA176CD000A40FCF8DC6CABF47AF8C7BC1272E"
+  },
+  {
+    "path": "reviews/jiti-default-babel30-comparator-independent-body-review-20261017.json",
+    "bytes": 2434,
+    "sha256": "02DFEDD8724028176E49E31B64CD345213F7523C06296F1007D8A3057E993EAF"
+  }
+]

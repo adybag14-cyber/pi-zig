@@ -1,0 +1,63 @@
+{
+  "status": "inert_original_version_bound_primary_Source_only_no_execution",
+  "versions_from_original_pnpm_lock": true,
+  "license": "retained-Babel-license",
+  "gen_mapping_original_pnpm_integrity": "sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==",
+  "gen_mapping_integrity_verified": true,
+  "files": [
+    {
+      "file": "babel-resource-management-7.28.6.ts.txt",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/packages/babel-plugin-transform-explicit-resource-management/src/index.ts",
+      "bytes": 8239,
+      "sha256": "B10C1DA215B623381A6BF2AFAB593AE950EA92A978EDED9A2D195424486B9B52"
+    },
+    {
+      "file": "babel-legacy-decorators-7.29.0.ts.txt",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.29.0/packages/babel-plugin-proposal-decorators/src/transformer-legacy.ts",
+      "bytes": 11932,
+      "sha256": "3A63C35C3AF72145369191FF06DCB8370A5AC5F6A9C93AA326A4E23E4CDF0D85"
+    },
+    {
+      "file": "babel-usingCtx-7.28.6.ts.txt",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/packages/babel-helpers/src/helpers/usingCtx.ts",
+      "bytes": 4715,
+      "sha256": "1D10CEF4572308C29F05397363610FFA13A279A1AAB705892678056ED143F5F7"
+    },
+    {
+      "file": "babel-generator-source-map-7.29.1.ts.txt",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.29.1/packages/babel-generator/src/source-map.ts",
+      "bytes": 4495,
+      "sha256": "11A63696946665D6FD5F7F1B81B1F25FB391319DA8DF71AB9C0D010954BAE257"
+    },
+    {
+      "file": "babel-generator-buffer-7.29.1.ts.txt",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.29.1/packages/babel-generator/src/buffer.ts",
+      "bytes": 10822,
+      "sha256": "ABB889CE7E94FCAEF27F5FEE9AF2330B6311DC0F5FAFE122BF0233E14385C6D9"
+    },
+    {
+      "file": "jridgewell-gen-mapping-0.3.13.tgz",
+      "uri": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+      "bytes": 17972,
+      "sha256": "BC16F658C1F6D63E0C8738AB881D03F49F1955D8F853CDCB8F7D315CF62F0082"
+    },
+    {
+      "file": "gen-mapping-0.3.13.mjs.txt",
+      "uri": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+      "bytes": 7969,
+      "sha256": "06678AC1DE98E6697F68ACC5F34C1967A88ACFF9995E4ADEFC6CB3BF563465C9"
+    },
+    {
+      "file": "gen-mapping-LICENSE",
+      "uri": "https://registry.npmjs.org/@jridgewell/gen-mapping/-/gen-mapping-0.3.13.tgz",
+      "bytes": 1080,
+      "sha256": "769D154FBDE32A915AF110B1123650BC79F4CBE675ACC66E005265BF069C6C6C"
+    },
+    {
+      "file": "retained-Babel-license",
+      "uri": "https://raw.githubusercontent.com/babel/babel/v7.28.6/LICENSE",
+      "bytes": 1106,
+      "sha256": "117DA2AF0D4CE0FE1C8E19B5CFF9DCD806ADF973D328D27B11D4448C4FF24F76"
+    }
+  ]
+}

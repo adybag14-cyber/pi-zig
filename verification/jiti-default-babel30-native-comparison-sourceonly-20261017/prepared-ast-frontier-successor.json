@@ -1,0 +1,225 @@
+{
+  "status": "authored_native_AST_frontier_successor_pending_independent_review_uncompiled_unrun",
+  "parent_comparator": "46384a403722b67c291c728b53a20ad91052a7b1",
+  "base": "ad0210496f3609a883a732057d6a8a6cbbb9e5b8",
+  "product_files": [
+    {
+      "path": "src/extensions/native_jiti_default_transform.zig",
+      "bytes": 9795,
+      "sha256": "E0B115BBC91EF7D089A5CA57D9A4F2C016984EB8F65A7D29C39D3028B8707947"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_meta.zig",
+      "bytes": 6492,
+      "sha256": "C5D501677F3B7F6DE86855C7C79F1FD5114F13088855AC0FCC999CEC6E05E71F"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_modules.zig",
+      "bytes": 40256,
+      "sha256": "D7D299A5F422E8CF805B6E37D135E9BE5531C029699780E799619C631DA4C9C6"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_runtime.zig",
+      "bytes": 2289,
+      "sha256": "89A80E1479043B606FF5C1E8753C5C96AF68B4EC6F5ED248025A28DAF53F46A7"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_syntax.zig",
+      "bytes": 11949,
+      "sha256": "517D60FEDC6D9032B66D84ACEBA1787316CA973F88003E3478E162E0E966F369"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_diagnostics.zig",
+      "bytes": 3614,
+      "sha256": "75F6923D0D2F684A6CB748E2D7E96500509477714E0F111BC9A4610051576F8D"
+    },
+    {
+      "path": "src/extensions/native_jiti_babel_generator.zig",
+      "bytes": 6267,
+      "sha256": "39ADB0EC6F40890100C04CAF49E89F074CBD6AEC32675F64AD8A249724A87F69"
+    }
+  ],
+  "control_files": [
+    {
+      "path": "build.zig",
+      "bytes": 342103,
+      "sha256": "375BAC87FC97872AA7808873A7CA99B689010C2EBC72E71C87E4F9FCF5712E8E"
+    },
+    {
+      "path": "src/native_jiti_babel30_test.zig",
+      "bytes": 1861,
+      "sha256": "106C2C2F18A36186745E2D51B6A32EA0A93DC4EF1B0AE3F848A1DA7DF1A238B8"
+    },
+    {
+      "path": "src/extensions/fixtures/jiti-default-babel30-native-observer.mjs",
+      "bytes": 5950,
+      "sha256": "EE9BFCCD08D5229CFEDA9940587C6A329BFB363A182E45CDC5DEC7DA3E6F8938"
+    },
+    {
+      "path": "src/native_jiti_babel_ast_allocation_test.zig",
+      "bytes": 1406,
+      "sha256": "C2463D210C1D6CD0E3005F6C78AE0C6522BCF7D1EDF8CF00A006A8BE513BB6E8"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/AST-FRONTIER-SUCCESSOR.md",
+      "bytes": 6905,
+      "sha256": "98C51651BEDCA6981E5348B67A061A315DFD9FBFD2A1C7D8C9DED4AFC7A6B742"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/frontier-generic-inputs.json",
+      "bytes": 2410,
+      "sha256": "AB952F4332F6DA491F69D324DB4E5E8A3BD01B93249A885EDF3F8C1C49EE73BD"
+    }
+  ],
+  "primary_files": [
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-generator-buffer-7.29.1.ts.txt",
+      "bytes": 10822,
+      "sha256": "ABB889CE7E94FCAEF27F5FEE9AF2330B6311DC0F5FAFE122BF0233E14385C6D9"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-generator-source-map-7.29.1.ts.txt",
+      "bytes": 4495,
+      "sha256": "11A63696946665D6FD5F7F1B81B1F25FB391319DA8DF71AB9C0D010954BAE257"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-legacy-decorators-7.29.0.ts.txt",
+      "bytes": 11932,
+      "sha256": "3A63C35C3AF72145369191FF06DCB8370A5AC5F6A9C93AA326A4E23E4CDF0D85"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-resource-management-7.28.6.ts.txt",
+      "bytes": 8239,
+      "sha256": "B10C1DA215B623381A6BF2AFAB593AE950EA92A978EDED9A2D195424486B9B52"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/babel-usingCtx-7.28.6.ts.txt",
+      "bytes": 4715,
+      "sha256": "1D10CEF4572308C29F05397363610FFA13A279A1AAB705892678056ED143F5F7"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/gen-mapping-0.3.13.mjs.txt",
+      "bytes": 7969,
+      "sha256": "06678AC1DE98E6697F68ACC5F34C1967A88ACFF9995E4ADEFC6CB3BF563465C9"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/gen-mapping-LICENSE",
+      "bytes": 1080,
+      "sha256": "769D154FBDE32A915AF110B1123650BC79F4CBE675ACC66E005265BF069C6C6C"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/jridgewell-gen-mapping-0.3.13.tgz",
+      "bytes": 17972,
+      "sha256": "BC16F658C1F6D63E0C8738AB881D03F49F1955D8F853CDCB8F7D315CF62F0082"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/primary-pins.json",
+      "bytes": 2898,
+      "sha256": "F8F2E639FB82AA4CD4BCF33A7881D99FCBE70C4B22940E951787BF4F1C693EAF"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/authority/retained-Babel-license",
+      "bytes": 1106,
+      "sha256": "117DA2AF0D4CE0FE1C8E19B5CFF9DCD806ADF973D328D27B11D4448C4FF24F76"
+    }
+  ],
+  "protected_predecessor_files": [
+    {
+      "path": "src/extensions/native_jiti_cjs_lower.zig",
+      "bytes": 35190,
+      "sha256": "F4A9D4D22FB6F4E721EF9B80B8669C3C97A44506C749F664261E010D12510220"
+    },
+    {
+      "path": "src/extensions/native_jiti_import_meta.zig",
+      "bytes": 8857,
+      "sha256": "829343ACCBBDE2E20ED34D0BB255AE8526652BA134842F0D0A7361214D840E83"
+    },
+    {
+      "path": "src/extensions/typescript.zig",
+      "bytes": 24307,
+      "sha256": "2EAD34AE21DE48659B068F2E1FC596314A2029CCEF97D00A5E689507261380E9"
+    },
+    {
+      "path": "src/extensions/native_jiti_profile.zig",
+      "bytes": 12109,
+      "sha256": "950E320EFADC7C463E0EFC391F2925B463BEBC1121E9EA0427BA04BD106C1DC7"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 85125,
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/jiti-default-transform-sourceonly-20261017/inputs.json",
+      "bytes": 3765,
+      "sha256": "4BD4707F127820EE482F7E9A808BCE5AAAA05E0DA3C5261CC44BF4A99E50B8FE"
+    },
+    {
+      "path": "verification/jiti-default-transform-sourceonly-20261017/source-caller.mjs",
+      "bytes": 3096,
+      "sha256": "A3C1C5FC70E78A32C4362841F81732077CF82128982697A96BCAD820ADA4B178"
+    },
+    {
+      "path": "verification/original-jiti-default-babel30-proof-20261017/original-output.json",
+      "bytes": 33061,
+      "sha256": "96DA1A507001E61D539E067E99203B4F35BF982BEF64D8A3A7E152B350DC5C37"
+    },
+    {
+      "path": "src/native_jiti_babel30_controls.zig",
+      "bytes": 7265,
+      "sha256": "6014D16985E42F2BBDB76BD957E761566E4152A14CBD378C120DC307E236AD20"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/prepared.json",
+      "bytes": 5426,
+      "sha256": "974B21F5E33879EC0C65C84265E4EEC1D1C2C8D2D226A20D879353D02E57C9A2"
+    },
+    {
+      "path": "verification/jiti-default-babel30-native-comparison-sourceonly-20261017/original-fixture-inventory.json",
+      "bytes": 8915,
+      "sha256": "2D87AF009D38E3C2A05187C9D35ED641471615A2FF6E54B6BD2A1B3295E5AD9D"
+    }
+  ],
+  "primary_count": 10,
+  "gen_mapping_original_pnpm_sha512_matched": true,
+  "original_input_counts": [
+    12,
+    18
+  ],
+  "original30_or_corrective9plus7_substituted": false,
+  "additional_generic_input_count": 16,
+  "additional_expected_and_observed_present": false,
+  "native_metadata_count": null,
+  "GPA_baseline_count": null,
+  "GPA_test_authored_not_run": true,
+  "compiler_Node_native_AST_formatter_generator_jobs": false,
+  "Main_edited": false,
+  "generic_shared_owner_or_C_Engine_changed": false,
+  "frozen9f_tree_changed": false,
+  "default_selection_or_full_runtime_qualification": false,
+  "strict_byte_diagnostic_function_text_mismatches_preserved": true,
+  "bounded_residuals": [
+    "General mutable writes/scope-aware rebinding",
+    "Member/metadata/anonymous decorators",
+    "Nested using scopes/anonymous using naming/exported function hoisting",
+    "Actual TSX parser/code generation",
+    "Alternate Babel filename/config/plugin/sourceMap inputs",
+    "Exact Babel formatting/error message/position/stack/reflection/complete syntax",
+    "Complete genuine public bootstrap/evaluation and allocator/GC qualification"
+  ]
+}
