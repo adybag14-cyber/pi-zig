@@ -1,0 +1,9 @@
+Actual native172 compile/link proof for candidate6f0214152c1813974af99c9f3d6f7658825ce400 only
+
+The Root-owned build completed158/158 steps, and inert PDB CodeView public-function record inspection and executable-section address checks independently confirmed all172 actual typed body anchors; the EXE/PDB GUID and age agree. Compiler and outer exited0 with saved exact-owner absence; full11473 source/19546 compiler/28 control before-final seals and artifact roles were independently audited. The artifact/sentinel was never run; no query, metadata, Node, SDK runtime/default, or newer Main qualification is claimed.
+
+This used the explicitly authorized terminal-owned154003 mutable UNSEALED cache/global-cache pair. It is not a fresh-cache reproducibility result. EXE/PDB bytes and caches are excluded; their exact saved identities remain in raw receipts. Original negatives8→1→9→3, complete raw seals/owners/grants/logs and compact candidate fix diffs are retained.
+
+Privacy: full original workstation process censuses remain LOCAL unchanged. Public JSON projections are explicitly DERIVED: exact compiler/outer PID+executable+UTC microsecond birth, descendants born after their selected parent, and saved native candidates, with only relevant identity columns. Each derivation gives original SHA256/length/row counts/filter and withheld counts. Public projections do not reproduce private full censuses. Actual source/compiler/control seals and logs remain byte-exact; no claim that a filtered public census alone proves full workstation absence is made.
+
+The external capsule-manifest lists every ZIP member with SHA256/length; archive-verification records two deterministic streaming ZIPs and every decompressed member. Preparation for Root intake only; not published by this lane. No Main/product changes.

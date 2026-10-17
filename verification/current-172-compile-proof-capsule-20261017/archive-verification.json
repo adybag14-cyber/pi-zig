@@ -1,0 +1,750 @@
+{
+  "status": "two_deterministic_stream_archives_and_all_decompressed_members_verified",
+  "archive": {
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\jiti-resolver-dependencies\\verification\\current-172-compile-proof-capsule-20261017\\current-172-compile-proof.zip",
+    "bytes": 16376528,
+    "sha256": "6CA0F14EAEAC8B415CA49830745FD9AFA5DC7D8793D7A629060E5E9C9A9CA6B4"
+  },
+  "second_archive": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\jiti-current-172-independent-raw-audit-20261017\\deterministic-second.zip",
+    "bytes": 16376528,
+    "sha256": "6CA0F14EAEAC8B415CA49830745FD9AFA5DC7D8793D7A629060E5E9C9A9CA6B4"
+  },
+  "member_count": 146,
+  "members": [
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/before.json",
+      "bytes": 9911581,
+      "sha256": "DFDFAE27F68A9F34C31DE313EC976F4D9C7433399DFE0D028CFB1599FA80A0CC"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/typefix-derivation.json",
+      "bytes": 1322,
+      "sha256": "39AA57FDC855924A4FB73C161719C718172989A5C777FF8FCD2CF885FC047969"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/before.json",
+      "bytes": 9952547,
+      "sha256": "13830B9D23A70202E2452F6D4EE53AB649D2CC93D7D65A43123EABD6BA288CEA"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/cache-reuse-source.json",
+      "bytes": 798,
+      "sha256": "DCDC00A1C51CAD95B78478067351BA4A6958E7240DBDF158824970995D44F4BC"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/compile-admission.json",
+      "bytes": 179,
+      "sha256": "24CEC14C15E7F23590D66A77CE08F0E1FC0D32691D127B6B3D6F273D3C6E87B1"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/compile-plan.json",
+      "bytes": 1706,
+      "sha256": "48508532C2B0081A47F1E0DFCD74C3FCBB2914FAEE0E2E6D80FF763DE64CD9C0"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/compile.json",
+      "bytes": 2423,
+      "sha256": "FA7DF7298F68EC55F5507F13C7CF63C5409326CB4A831557EC0AF44E0135A047"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/terminal-source-verification.json",
+      "bytes": 3161,
+      "sha256": "D2A8FBCA7256443F8C4F0C7FE0CAFFA88FA136855476659E7429F09140ACB70C"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/compile.stderr.log",
+      "bytes": 22242,
+      "sha256": "ED39CD2B56BC2891EDF96A6285FC10897153C5C0DF00E3609295C96F0F421CF3"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/final.json",
+      "bytes": 9952547,
+      "sha256": "85A24352EE4CDE6D3C7E8356E0BAD596C219413FC4313EC8BADF446F6DEA5792"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/initial-admission.json",
+      "bytes": 179,
+      "sha256": "B6C4503EF5BAEDA73C46A8BCB2E0667EC2FBE6B47106D261CF16CF5154CC16C6"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/owner-absence.json",
+      "bytes": 338,
+      "sha256": "EA7351FD5D10F8C90EE9AF32ED085A6DAD52AA6569E86A0E9373EE1DDC5C05DF"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/result.json",
+      "bytes": 1184,
+      "sha256": "84680FE82D3BDAFA2E954DFC1DCC7E822ECDC75A17CC2960369675719FE8066A"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-grant.json",
+      "bytes": 1813,
+      "sha256": "8FB4017D4495400B00F080BAA13AFB5677E8014C3DBA081C51BAFF98C79EFA14"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-current-172-types-retry-20261017-163533-outer.json",
+      "bytes": 1774,
+      "sha256": "8C3518CD9FD56F3E847843975F7F813345057C23616E6A2A241A3532126658A3"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-current-172-types-retry-20261017-163533-outer-absence.json",
+      "bytes": 402,
+      "sha256": "1F1FB5FFAEAA395E549C5BFDE28D8D3537BD02E037130DFC0BD718E273331DE8"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/target-independent-body-review.json",
+      "bytes": 1862,
+      "sha256": "4F290B6175E502B2324BAB32550EAD6AAF8A3EC6E6C128748A52E152B1768B57"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/Run-JitiCompileOnly-TypeFix.ps1",
+      "bytes": 20881,
+      "sha256": "38C356A95ADA73FC94669DB91E2041C6622DD63C32C1095BA132867125EF1E5A"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/driver-independent-body-review.json",
+      "bytes": 2624,
+      "sha256": "2EB30C37D547E07FDC526D4BBF22C19ABB54381A49042D18EDE7E1C3B351245C"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/final-source-readiness.json",
+      "bytes": 1901,
+      "sha256": "D8124E2DE7B8294079784B804FD026C7D5D71CBAD0543769440A115199442193"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/packagefix-derivation.json",
+      "bytes": 1323,
+      "sha256": "9670040DA54A957C0814E58B24B48FF311DDBCF394EDA5DB22478AE3F96DE9FE"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/packagefix-independent-body-review.json",
+      "bytes": 1671,
+      "sha256": "2E2E257B0C66CEFADB7F6004DAC07F67F3A8D2C9FB719DC269CAE2AD8E5DC0FC"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 20881,
+      "sha256": "AA047EDE7B01D1A9832FE597253E51EEBC55FC80ACFB5B38AE3792FE5CFB85B8"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/predecessor-prepared-manifest.json",
+      "bytes": 1832,
+      "sha256": "3D2AD60CDEE45E60C800648DEB1F1ECFDE1EBF8AC8D9C97181D4B7DCF61543B3"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/README.md",
+      "bytes": 4270,
+      "sha256": "3AA93B7BE4AB8468D6020A3A59867F8535A5EF26EEB119AC4762E5BC1364411A"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/retry4.prepared-manifest.json",
+      "bytes": 2894,
+      "sha256": "2885A2E05AF7D07ACBFDD2101454E8FFAA004B054FE288E4146F89BD699FD66C"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/root-grant-packagefix.template.json",
+      "bytes": 1722,
+      "sha256": "DBE53B52BBB90660D4E10427253286A44F2D22D9B2FCA68992DBA6640090C9BF"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/root-grant-typefix.template.json",
+      "bytes": 1722,
+      "sha256": "56A2CDF18D159BCA9A8D4D9C0AC2EDA15B4A4539AD0064F0CD6CDF90300B3A0E"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/root-grant.template.json",
+      "bytes": 1722,
+      "sha256": "42739C96C7E33BEA5DCEB0A9379F3A3B956B8C3678BE905CD9D4DECA4EEC9333"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/Run-JitiCompileOnly-PackageFix.ps1",
+      "bytes": 20881,
+      "sha256": "EF61538313B5E98F721972759DE3EA4A4838E4CA782DECD56002B218683A3487"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/prepared-manifest.json",
+      "bytes": 4368,
+      "sha256": "EE08649807B5BB7710CA2AE48BF2D9AD6878A8D4119A83058D39292E78128565"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-current-172-types-retry-20261017-163533-outer.stdout.bin",
+      "bytes": 1184,
+      "sha256": "84680FE82D3BDAFA2E954DFC1DCC7E822ECDC75A17CC2960369675719FE8066A"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-current-172-types-retry-20261017-163533-outer.stderr.log",
+      "bytes": 342,
+      "sha256": "676CCC41636876119307385E301DFC1248B2C7B41B56FDC4FDAB7C74F2FD673B"
+    },
+    {
+      "name": "runs/root-current-172-types-retry-20261017-163533/root-current-172-types-retry-20261017-163533-grant.json",
+      "bytes": 1813,
+      "sha256": "8FB4017D4495400B00F080BAA13AFB5677E8014C3DBA081C51BAFF98C79EFA14"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-current-172-package-retry-20261017-163830-grant.json",
+      "bytes": 1849,
+      "sha256": "8C68BAED52DEB8768BE92E24B4CA30F9403CD67CD64916717E3B7C29E97C8F08"
+    },
+    {
+      "name": "privacy/root-current-172-package-retry-20261017-163830-project-processes.json",
+      "bytes": 1918,
+      "sha256": "A1D51BC53C51F9108128A5F08719162EFCF8343537690BA2BB2718BF2E7E2999"
+    },
+    {
+      "name": "audit/Audit-Saved172.ps1",
+      "bytes": 14609,
+      "sha256": "A7B825C80857FD85026A6881BFC6B58D052344634FAFA130AF7BB565B3AFA620"
+    },
+    {
+      "name": "audit/raw-audit.json",
+      "bytes": 18664,
+      "sha256": "932583699124643A8AB09D356E7EDE1ABC26EB4CC5C211F079377EE934946A69"
+    },
+    {
+      "name": "audit/actual-anchor-symbols.json",
+      "bytes": 37190,
+      "sha256": "6A43F8C052B0502ED9372733713124A6ECB0349419333B52424BAE52AE7A921D"
+    },
+    {
+      "name": "audit/Package-Saved172.ps1",
+      "bytes": 14288,
+      "sha256": "7F56C532089323B333423F7E699EDFFC8425696B398D019CC81D2CB15FF8FCFE"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-current-172-package-retry-20261017-163830-outer.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "source/src/native_jiti_current_compile_only_root.zig.txt",
+      "bytes": 12477,
+      "sha256": "7E3EC66E0D2424ECB36AC1CF3E277CEF528DBFE663D97A3341C823704F09A631"
+    },
+    {
+      "name": "source/tools/ci/native_qualification_ci.ps1.txt",
+      "bytes": 11699,
+      "sha256": "607BEDBB91FE318D214CD2C3B9C83D80437335C0062C320C0EACB3A745B38285"
+    },
+    {
+      "name": "authority/compiler19546-original.json",
+      "bytes": 4665338,
+      "sha256": "DEE259F171F720AB2C08E8DD473975E22C876417CD62E4F016C71A7C662794EB"
+    },
+    {
+      "name": "fixes/b34833e8ec18c8721ac44d1aee3684f6ac3ffb43.patch.txt",
+      "bytes": 10676,
+      "sha256": "BDE7BB5BCE27FBBD772A35099FAB6C2E584CB2DBB598528857F3F7974FD4147E"
+    },
+    {
+      "name": "fixes/a7c7ef6b84e99cc018e75b2725c1b1375c41e56a.patch.txt",
+      "bytes": 1027,
+      "sha256": "334D6E39FABD201981FF00C161E2273A4A4A6634A559F6F5F1A24F5C9900B3C0"
+    },
+    {
+      "name": "fixes/5d3626fa3fd8ea74070c4ce7cabc7b6feec122be.patch.txt",
+      "bytes": 1319,
+      "sha256": "CE0CBDADB2EE27D5915ED8497EC65232C918D050498348FB6A288FFEC26F9FC1"
+    },
+    {
+      "name": "fixes/c2af41ef8c0d5edfd20e8e653f459b68abc7a136.patch.txt",
+      "bytes": 8606,
+      "sha256": "8A9942F107C8819928BA9B635E394D1890914C1452CA728BE07782383CF9C498"
+    },
+    {
+      "name": "source/build.zig.txt",
+      "bytes": 341704,
+      "sha256": "DC584097914202614D4722EB22FE5BBC6275F4327C65DDA76B1502A957533762"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-current-172-package-retry-20261017-163830-outer.stdout.bin",
+      "bytes": 3558,
+      "sha256": "7AD359BB83CDD9FDB7F3AD0334DF7AF25D1EB140F66DFB22C46059B655F9535E"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-current-172-package-retry-20261017-163830-outer-absence.json",
+      "bytes": 404,
+      "sha256": "0005B04BA728DEA265C8A81B416E30C3D4924D218B30BF94B72D3A030059ED88"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-current-172-package-retry-20261017-163830-outer.json",
+      "bytes": 1707,
+      "sha256": "4DF6C359D605887C50F63ABCE8999495D74031F5FE5028E958A1840F2DB385AA"
+    },
+    {
+      "name": "privacy/root-current-172-types-retry-20261017-163533-project-processes.json",
+      "bytes": 1909,
+      "sha256": "FEECD7062805656957C465C2C3805C1B1C13D96497DF1872D8B99DE1559BF884"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/artifacts-before.json",
+      "bytes": 980,
+      "sha256": "C26D0795DF56CD51CBCE03B6EFE821C3E1924C76AEC776F6FC86FF99464D3DC5"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/artifacts-final.json",
+      "bytes": 1122,
+      "sha256": "1FA8EA05E267314EA55C93617FFDDF72D26B50D5BDC3354B5C3A5821A4554766"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/before.json",
+      "bytes": 9952863,
+      "sha256": "3D94680ABD0442A24B9432CFE205587BBE1E1C9A39590B6A26184E438099D239"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/cache-reuse-source.json",
+      "bytes": 798,
+      "sha256": "A1C704A84FCFF1BBE3532D722E04F1809FFB9803C4DF5B7DD5596B0C67D263FC"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/compile-admission.json",
+      "bytes": 179,
+      "sha256": "E41183E542B8C2DCA3E93B924E0AF0846E7602BD1CD7E55D66134B65B73CB4E3"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/compile-plan.json",
+      "bytes": 1708,
+      "sha256": "11068267D5493023784FEB50D1B1BDE849C8756FC5F90D30A81DE11BFC875D72"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/compile.json",
+      "bytes": 2317,
+      "sha256": "8B2BA0BC469253764C71ECD76AEB5DC486C0118D9D228E41CA56094C4D9F0546"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/compile.stderr.log",
+      "bytes": 14324,
+      "sha256": "003992F72AA1BE64AAB21AFF442CD44EC513C419B007C22CBB02755337814279"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/final.json",
+      "bytes": 9952863,
+      "sha256": "D667C3361A28657DC6D90D3CF0338E0FEED9C932CCF56F7DEFD74C82D5BAB579"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/initial-admission.json",
+      "bytes": 179,
+      "sha256": "22BFF6514DA86743D0225561190A85C49BD0D01C035D7FC69971BAD8A57299A8"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/owner-absence.json",
+      "bytes": 340,
+      "sha256": "DDAEFEBB36BFAE33D669B64FC97A7922F9EA9FF01F0491C65119F5AECB8B3B95"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/result.json",
+      "bytes": 3558,
+      "sha256": "7AD359BB83CDD9FDB7F3AD0334DF7AF25D1EB140F66DFB22C46059B655F9535E"
+    },
+    {
+      "name": "runs/root-current-172-package-retry-20261017-163830/root-grant.json",
+      "bytes": 1849,
+      "sha256": "8C68BAED52DEB8768BE92E24B4CA30F9403CD67CD64916717E3B7C29E97C8F08"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/derivation.json",
+      "bytes": 1753,
+      "sha256": "FB751B14831BE5C7FE48F0A10962B65624BA82B99BF5353FA13DDB0B77CF939A"
+    },
+    {
+      "name": "controls/jiti-current-172-terminal-cache-reuse-prepared-20261017/control-count-erratum.json",
+      "bytes": 532,
+      "sha256": "9152EAE381408F31B96C3668F323647EC818084777DB113D46AD1ABDB444FF3E"
+    },
+    {
+      "name": "privacy/root-current-172-cache-retry-20261017-162129-project-processes.json",
+      "bytes": 1901,
+      "sha256": "24FBD1D476F4FDE668B5D11CF496B926D9E19B3CF9CF30BAD815E0FD02418A0D"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-current-172-cache-retry-20261017-162129-grant.json",
+      "bytes": 1797,
+      "sha256": "9B3E593A9895957CC4A6E15EAB745CB48C1315FE06A5606B4749FEA48134B7C8"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/prepared-manifest.json",
+      "bytes": 3505,
+      "sha256": "C6A2F64033A98B3E1A8E3C08C7F2E25E39EF42CA923FAC55A8008E7402D893FB"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/README.md",
+      "bytes": 4339,
+      "sha256": "666D28FC8E03BA10757D21FC928E10798C302063DAC8977DE05E10B2CB03B9FC"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/retry4.prepared-manifest.json",
+      "bytes": 2894,
+      "sha256": "2885A2E05AF7D07ACBFDD2101454E8FFAA004B054FE288E4146F89BD699FD66C"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/root-grant.template.json",
+      "bytes": 952,
+      "sha256": "8DFC47C47A44446CDBD8595B102F0B0D62B38932DBF640A1D7C34C04BE01FF41"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/final-source-readiness.json",
+      "bytes": 1324,
+      "sha256": "AF34CB638CA3C065B8A31EF4AFF98E2C0B7ECAA61238CB200F28F5CDBCD7A052"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 14200,
+      "sha256": "9B3A1B72433D07C84A1FB7987CEDCEAEE109F194F511F4D752DEE46E1BC99FA9"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/before.json",
+      "bytes": 9949584,
+      "sha256": "DB4EFF492A63960452FA627929DB01BA9CBA9F83C95D10DA62868278BF487096"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/compile-admission.json",
+      "bytes": 179,
+      "sha256": "D7853E55C5393ADA3B6B78B473C24B81474D4F36901592303DAA241A96E7082C"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/compile-plan.json",
+      "bytes": 1329,
+      "sha256": "4D7ABA55413FAF3620FCEBC3B0D6766409CA8F7407ADAF65103738CDE7585945"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/compile.json",
+      "bytes": 2413,
+      "sha256": "BC5E7D5125548DDEA32059D5B0702FA614247D85370B6D0F365BA224CEB69C55"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/compile.stderr.log",
+      "bytes": 20792,
+      "sha256": "72E00F9FCFFD99BC222025D1901667A816C9005E42179F2CF0BC87574A5F1E74"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/target-independent-body-review.json",
+      "bytes": 1862,
+      "sha256": "4F290B6175E502B2324BAB32550EAD6AAF8A3EC6E6C128748A52E152B1768B57"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/driver-independent-body-review.json",
+      "bytes": 2633,
+      "sha256": "6004FAD4DEF3CCB612BF177EC7A193C15D21189AC453471E1948E91E1C580AA6"
+    },
+    {
+      "name": "controls/jiti-current-172-compile-only-prepared-20261017/derivation.json",
+      "bytes": 1623,
+      "sha256": "734FD2F7246586BFC3B98EC41D0BC56F1DB2B8307F06899E98F403C1A4BABCE2"
+    },
+    {
+      "name": "privacy/root-current-172-compile-20261017-152608-project-processes.json",
+      "bytes": 1865,
+      "sha256": "B2706550B3BC55FA1B49755EE2DC4EFFB6A61DE29AB9CBADA89CE7390B3159A7"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/compile-admission.json",
+      "bytes": 179,
+      "sha256": "6968F21E7B86C8ED8E214313E02CAA54F0236B34CA3280602BAF6FCF153759C4"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/compile-plan.json",
+      "bytes": 1294,
+      "sha256": "0BA4B00B02C1EF05E73C31AB26A8C7B1B27594FC9A4D1097B85D69E67052D2F8"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/compile.json",
+      "bytes": 2368,
+      "sha256": "0EEC779412EAFA1E24FBF0AB517A16EC1AD4FDE53C6E4A9CC50931BA1E43808E"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/compile.stderr.log",
+      "bytes": 23337,
+      "sha256": "B08D104B5461410A6C0B4DA77949D2AFA1CF24B1EFE775BA4B18B473909A3CAB"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/final.json",
+      "bytes": 9911581,
+      "sha256": "44709482EE7A3ED063826A22454CCB05E742077B35BC7D2B78386D430872E447"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/initial-admission.json",
+      "bytes": 179,
+      "sha256": "F542EB33773B401EADAE4F4423BE7E94FF585D7B99A207DB4DA4D144C76AF9E7"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/owner-absence.json",
+      "bytes": 326,
+      "sha256": "5510D44FA982D9430ABBEB4A5AFD5F7A4A0FFEBCAA56549457772B9F9AD49C2D"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/result.json",
+      "bytes": 1067,
+      "sha256": "97E9D248FC8B8EE34F285929A9B099911ACF949D2E710ED8FEF09D452D58D1E1"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-grant.json",
+      "bytes": 1023,
+      "sha256": "0CE9D6C6A8CC2716A96999ACCC2C5C2A56BB5060632BE3E1CB0A954A3A57C670"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-current-172-compile-20261017-152608-outer.json",
+      "bytes": 1710,
+      "sha256": "1E3308B47A11CCBAB6E8F432C4C5DE1697BFBA5DEA59BAEEFA2918A4CFE9B90B"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-current-172-compile-20261017-152608-outer-absence.json",
+      "bytes": 390,
+      "sha256": "956E5D588F1308B822BAEBA62C36245845061E5EB09DA73A533B283C77EB3D0A"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-current-172-compile-20261017-152608-outer.stdout.bin",
+      "bytes": 1067,
+      "sha256": "97E9D248FC8B8EE34F285929A9B099911ACF949D2E710ED8FEF09D452D58D1E1"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-current-172-compile-20261017-152608-outer.stderr.log",
+      "bytes": 326,
+      "sha256": "0DA6FC37DB88034C2E15CF484D8E4E29D3351149D558A16113CFABA17A76B8B1"
+    },
+    {
+      "name": "runs/root-current-172-compile-20261017-152608/root-current-172-compile-20261017-152608-grant.json",
+      "bytes": 1023,
+      "sha256": "0CE9D6C6A8CC2716A96999ACCC2C5C2A56BB5060632BE3E1CB0A954A3A57C670"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/final.json",
+      "bytes": 9949584,
+      "sha256": "BE8448FF1D9E00A1FBD7BEDB169ACAC548D7626E86103020DD9A54FE02AC5FCC"
+    },
+    {
+      "name": "fixes/6f0214152c1813974af99c9f3d6f7658825ce400.patch.txt",
+      "bytes": 7778,
+      "sha256": "629FB4A38CA440D8AC63EE4446E555D43DFF5956B9A3040280A7A0A3E6165833"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/initial-admission.json",
+      "bytes": 179,
+      "sha256": "5244A5C751333D6501768EFC8E37AF23BD10AA20F6EA16FC051F7CC7C9C645D4"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/result.json",
+      "bytes": 1067,
+      "sha256": "52E5B70F9F471A3530A9814F84EF565F4070F72B127121268F813A4425BCD9C4"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/compile-admission.json",
+      "bytes": 179,
+      "sha256": "7D9AF01C237237A7E3F8E8298E8D736A505041ED2D0C08498E7B801AA530D71D"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/compile-plan.json",
+      "bytes": 1706,
+      "sha256": "2D6485A4F8036611331F5948926DB86961007797E248D3210BD9231E9BA04146"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/compile.json",
+      "bytes": 2423,
+      "sha256": "66FEE253839956C85F7526B5CAF1B1F3BC8DA22A5EB7522886D58026687F8B75"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/compile.stderr.log",
+      "bytes": 28905,
+      "sha256": "E9DD8E4D587BC51C097C0837DDD410FB6262F68B6D9E637DB83EEB63FC76BAD2"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/compile.stdout.bin",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/final.json",
+      "bytes": 9952539,
+      "sha256": "A656073652490170D7E75B7D5E2B4545C52F59E78680C2035128EAE05B813C86"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/cache-reuse-source.json",
+      "bytes": 798,
+      "sha256": "0AC7A3A9A1F8F69D975CEED9F5C5E09F276836B1E2B68B8A320C4BB9D3A2E375"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/initial-admission.json",
+      "bytes": 179,
+      "sha256": "30C67F3BE2C3DCFE14F988281398A364775D01743356D4B6097FA7CC1581CBAC"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/result.json",
+      "bytes": 1184,
+      "sha256": "D976CA53B4786CA23669CFF0AE78FB782138E66D6B6D9AC0916CE6E0B61A76DC"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-grant.json",
+      "bytes": 1797,
+      "sha256": "9B3E593A9895957CC4A6E15EAB745CB48C1315FE06A5606B4749FEA48134B7C8"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-current-172-cache-retry-20261017-162129-outer.json",
+      "bytes": 1758,
+      "sha256": "13CECAE99602AC5DA55B998F10CA6C430FA6A331435A0DE72EC280C7481489E3"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-current-172-cache-retry-20261017-162129-outer-absence.json",
+      "bytes": 402,
+      "sha256": "B003142B63D2ADA81B574E13B7DAAF94599FADF96E5ECB690C529B7EBD7890FE"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-current-172-cache-retry-20261017-162129-outer.stdout.bin",
+      "bytes": 1184,
+      "sha256": "D976CA53B4786CA23669CFF0AE78FB782138E66D6B6D9AC0916CE6E0B61A76DC"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/root-current-172-cache-retry-20261017-162129-outer.stderr.log",
+      "bytes": 334,
+      "sha256": "F8B5CCEE1E3F4B98BE621C9E8382CB125DA8D291C2E65AF5CD3DEC1BA96F9145"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/owner-absence.json",
+      "bytes": 338,
+      "sha256": "E3ECAFB3721104FB7C9D8AEDE9BE9FD672FD39ADA89A0E4C29A93A49DF80214C"
+    },
+    {
+      "name": "runs/root-current-172-cache-retry-20261017-162129/before.json",
+      "bytes": 9952539,
+      "sha256": "9983C324B08CD4F1FA45B3E11F08BC13B5FAED90D3B21B7D83AFBCB12750A95C"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/target-independent-body-review.json",
+      "bytes": 1862,
+      "sha256": "4F290B6175E502B2324BAB32550EAD6AAF8A3EC6E6C128748A52E152B1768B57"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/Run-JitiCompileOnly.ps1",
+      "bytes": 14203,
+      "sha256": "F3785E9858B528DC050851C963CEBDE0A51D894F975B9D194D0A96CAA6D4EB18"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-grant.json",
+      "bytes": 1029,
+      "sha256": "19027D2940331BEA8C2CD31920C9A4887B30F042B944122DB5423F3062C69A79"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-current-172-lexical-retry-20261017-154003-outer.json",
+      "bytes": 1738,
+      "sha256": "F4EFA7880B4771BA69ED178CE47E5718BF2BA93D79A166762B86AD2CBDF7A8C8"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-current-172-lexical-retry-20261017-154003-outer-absence.json",
+      "bytes": 397,
+      "sha256": "031D1B28785194492C6046414DC9627D56ECE6A27B52A62F4BF66055DA103013"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-current-172-lexical-retry-20261017-154003-outer.stdout.bin",
+      "bytes": 1067,
+      "sha256": "52E5B70F9F471A3530A9814F84EF565F4070F72B127121268F813A4425BCD9C4"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-current-172-lexical-retry-20261017-154003-outer.stderr.log",
+      "bytes": 327,
+      "sha256": "3B3AF3A64A6951D04D890A25CEC76707D3259B67B1104C268225B782FFE6BB3C"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/root-current-172-lexical-retry-20261017-154003-grant.json",
+      "bytes": 1029,
+      "sha256": "19027D2940331BEA8C2CD31920C9A4887B30F042B944122DB5423F3062C69A79"
+    },
+    {
+      "name": "privacy/root-current-172-lexical-retry-20261017-154003-project-processes.json",
+      "bytes": 1886,
+      "sha256": "038D72E176A56BEF168EDAD6AD321C0E04640848420BCC77B9209921A920714B"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/derivation.json",
+      "bytes": 1623,
+      "sha256": "734FD2F7246586BFC3B98EC41D0BC56F1DB2B8307F06899E98F403C1A4BABCE2"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/driver-independent-body-review.json",
+      "bytes": 2633,
+      "sha256": "6004FAD4DEF3CCB612BF177EC7A193C15D21189AC453471E1948E91E1C580AA6"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/Get-ModelsNativeCandidates.ps1",
+      "bytes": 1786,
+      "sha256": "3413A2A50B4D4C3BFF8709E4EE08C76BE449AAB1EDCB1E0C5C167DC7A804E301"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/outer-owned-process.ps1",
+      "bytes": 11658,
+      "sha256": "53E522C8397B5F7EE9AF721D8160B227E97FADA4E1DA36A938656E2403D56B6B"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/prepared-manifest.json",
+      "bytes": 1832,
+      "sha256": "3D2AD60CDEE45E60C800648DEB1F1ECFDE1EBF8AC8D9C97181D4B7DCF61543B3"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/README.md",
+      "bytes": 761,
+      "sha256": "D69AA8187D9A53AA2791E7CD14596D7414766AB6A0094BC28059E86AEB49C674"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/retry4.prepared-manifest.json",
+      "bytes": 2894,
+      "sha256": "2885A2E05AF7D07ACBFDD2101454E8FFAA004B054FE288E4146F89BD699FD66C"
+    },
+    {
+      "name": "controls/jiti-current-172-lexical-retry-prepared-20261017/root-grant.template.json",
+      "bytes": 952,
+      "sha256": "6F1FB3899A506B005C5EF101A9F5304A905DAF0A2A52B5844A718B34E6E173C7"
+    },
+    {
+      "name": "runs/root-current-172-lexical-retry-20261017-154003/owner-absence.json",
+      "bytes": 333,
+      "sha256": "D81F4BDA1843C82A39C88F3CCCE6320FDA4364EE8F7AA3EB074810191FE9FA2F"
+    },
+    {
+      "name": "capsule-scope-and-derivation.json",
+      "bytes": 5234,
+      "sha256": "8379DAD3D0AAF82F1A40BCB4FFB549F7B15E257B5C2FD8A23DF542C98C8FD825"
+    }
+  ],
+  "all_original_payload_readbacks_zero_drift": true,
+  "all_private_census_originals_unchanged": true,
+  "no_binary_PDB_cache_payload": true,
+  "no_jobs_or_Main_writes": true
+}
