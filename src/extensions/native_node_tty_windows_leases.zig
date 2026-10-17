@@ -26,7 +26,7 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
             retirement_failure: ?anyerror = null,
         };
         var gate: std.atomic.Value(bool) = .init(false);
-        var slots: [maximum_leases]Slot = .{.{}} ** maximum_leases;
+        var slots: [maximum_leases]Slot = .{Slot{}} ** maximum_leases;
         fn lock() void { while (gate.cmpxchgWeak(false, true, .acquire, .monotonic) != null) std.atomic.spinLoopHint(); }
         fn unlock() void { gate.store(false, .release); }
         fn valid(reference: Reference) !*Slot {

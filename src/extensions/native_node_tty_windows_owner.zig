@@ -105,7 +105,7 @@ pub fn Owner(comptime Socket: type, comptime Hub: type, comptime Scheduler: type
                 const admitted = if (self.qualification_admission) try Registry.admitForQualification(fd, self.wake) else try Registry.admit(fd, self.wake);
                 const native = switch (admitted) { .reference => |value| value, .failure => |failure| return .{ .failure = failure } };
                 // No fallible allocation follows actual native ownership.
-                endpoint.* = .{ .provider = self, .native = native, .table_index = slot, .references = 2, .writable = (Registry.kind(native) catch unreachable) == .output }; // table + returned handle
+                endpoint.* = .{ .provider = self, .native = native, .table_index = slot, .references = 2, .writable = (Registry.kind(native) catch unreachable) == .output, .weak_socket = c.pi_js_undefined() }; // table + returned handle
                 self.retain(); self.endpoints[slot] = endpoint; attached = true; return .{ .endpoint = endpoint };
             }
             pub fn installFailure(self: *Provider, engine: *v.em.Engine, context: c.JSValue, failure: consoles.Failure) !void {
@@ -160,7 +160,7 @@ pub fn Owner(comptime Socket: type, comptime Hub: type, comptime Scheduler: type
         pub const Endpoint = struct {
             provider: *Provider, native: Registry.Ref, table_index: usize,
             references: usize,
-            weak_socket: c.JSValue = c.pi_js_undefined(),
+            weak_socket: c.JSValue,
             strong: ?Socket.Owned = null,
             bound: bool = false, referenced: bool = true, demand: bool = false, read_ended: bool = false,
             closing: bool = false, closed: bool = false, detached: bool = false,

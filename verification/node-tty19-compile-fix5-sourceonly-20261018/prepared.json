@@ -1,0 +1,89 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_ACTUAL_6DB2_FIVE_DIAGNOSTIC_CORRECTION_PEER_PENDING",
+  "base": "6db2239b85050d0a994d975fd0ea6b24c90ea521",
+  "actual_diagnostic": {
+    "sha256": "65DDF54206226DE7A4840344269D06DCEE7B4B6CB6A16D733E042DAC35330B24",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-tty19-6db2-buildquery-20261017-230732\\compile.stderr.log",
+    "headers": [
+      "src\\extensions\\native_node_tty_assembly_cleanup.zig:64:21: error: operator == not allowed for type 'error{OutOfMemory}!?anyerror'",
+      "src\\extensions\\native_node_tty_windows_input_worker.zig:51:44: error: expected type 'extensions.native_node_tty_windows_input_worker.Pool(extensions.native_owner_wake,extensions.native_node_tty_windows_leases.Registry(extensions.native_node_fs_windows_close_worker.Pool(extensions.native_owner_wake),extensions.native_owner_wake)).Slot', found '@TypeOf(.{})'",
+      "src\\extensions\\native_node_tty_windows_leases.zig:29:44: error: expected type 'extensions.native_node_tty_windows_leases.Registry(extensions.native_node_fs_windows_close_worker.Pool(extensions.native_owner_wake),extensions.native_owner_wake).Slot', found '@TypeOf(.{})'",
+      "src\\extensions\\native_node_tty_windows_owner.zig:163:55: error: comptime call of extern function",
+      "src\\extensions\\native_owner_wake_windows.zig:16:24: error: expected type 'extensions.native_owner_wake_windows.Slot', found '@TypeOf(.{})'"
+    ]
+  },
+  "products": [
+    {
+      "path": "src/extensions/native_node_tty_assembly_cleanup.zig",
+      "sha256": "07839B9548DB9211489C1FD131E6E8B4B28E24481C2AF5CFEFDAAAECAEFC8EBF"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_input_worker.zig",
+      "sha256": "5858118E4D6522A3452FBED3912E6FF8B1E275C2285D83888C903D04AA9CA598"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "sha256": "A8243AEB5EE6C55B9455D0451089B1DA39734ACA238C36FC411F393C55C7BEBF"
+    },
+    {
+      "path": "src/extensions/native_owner_wake_windows.zig",
+      "sha256": "E34D27D6CDC3F9ECAB15DD2D6EAF0392845C18AEC294F9F786754DF5E27A41A9"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_owner.zig",
+      "sha256": "F7258C010811D99485AF88917A7261D4BC72EB07D8918696E160C707A13B0E5A"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "sha256": "C70B0BD6CD884073B3E448CA0140511994A5D21C1F3980FB11DD36C69F0BAA28"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "7AFE96C109C3391665E33B4FB64B8FF71D02889389E6B6842A1099D7B2EE7C23"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "6F3AE3AF715887CDB6E42E25107236323EC690BE1A05FA16DC1256E8BB10DFF7"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "sha256": "1FDA28DCE467A2E43E019E52F73D80B51BFD7D4A19183CEDEB8C0E453BB4A8A4"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    }
+  ],
+  "changes": [
+    "Unwrap optional failure before same OutOfMemory equality/fatal condition; event synthesis and cleanup ordering unchanged",
+    "Explicit Slot{} repeat operands in three actualdiagnostic arrays plus adjacent same-form Worker{}; same defaults/caps",
+    "Remove extern JSundefined from comptime Endpoint fielddefault; supply same actualvalue in sole runtime allocation before publication"
+  ],
+  "source_assertions": 19,
+  "actual_metadata": null,
+  "allowed_anonymous": [],
+  "execution_authorized": false,
+  "agent_jobs": 0,
+  "physical_fix4": "UNCHANGED/HOLD pending Root complete negative seals+release",
+  "future_advance": "Root-only exactclean6db ff-only to sealed successor; newdriverpinshead+sameactualfix4path; no cache edits/no sourceauthority",
+  "all_prior_negatives": "Five actual compile failures preserved; no pass inferred"
+}

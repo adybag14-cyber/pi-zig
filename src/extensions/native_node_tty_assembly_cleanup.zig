@@ -61,13 +61,13 @@ pub const Cleanup = struct {
     /// classifying its flags. On a real current event release history under the
     /// same reducer before publishing the winner once, after all root cleanup.
     pub fn finish(self: *Cleanup, failure: ?anyerror) !void {
-        if (failure == error.OutOfMemory and !self.fatal) {
+        if (failure) |err| { if (err == error.OutOfMemory and !self.fatal) {
             // A trusted direct allocator failure cannot become catchable just
             // because ordinary cleanup threw. An already selected NEW fatal
             // wins without synthesizing another allocation event.
             const generation = self.engine.native_allocation_generation;
             _ = self.engine.throwNativeOutOfMemory(); self.collect(generation);
-        }
+        } }
         if (self.selected != null) {
             if (self.history) |history| { self.history = null; self.release(history); }
             const reason = self.selected.?; self.selected = null;

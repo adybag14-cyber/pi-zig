@@ -48,8 +48,8 @@ pub fn Pool(comptime Wake: type, comptime Lifetime: type) type {
         };
         const Worker = struct { event: ?H = null, thread: ?H = null, current: ?ReadTicket = null, arm: u64 = 0 };
         var gate: w.SRWLOCK = .{};
-        var slots: [Limits.tickets]Slot = .{.{}} ** Limits.tickets;
-        var workers: [Limits.read_threads]Worker = .{.{}} ** Limits.read_threads;
+        var slots: [Limits.tickets]Slot = .{Slot{}} ** Limits.tickets;
+        var workers: [Limits.read_threads]Worker = .{Worker{}} ** Limits.read_threads;
         var cancel_event: ?H = null;
         var initialized: bool = false;
         var initialization_failed: bool = false;
