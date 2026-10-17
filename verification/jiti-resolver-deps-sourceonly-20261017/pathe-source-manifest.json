@@ -1,0 +1,487 @@
+{
+  "scope": "Source-only actual pathe dependency checkpoint; mlly resolver remains in progress",
+  "base_head": "a45abd95e6335346eb1e860a7a5a0677df0b5148",
+  "methods": [
+    "normalize",
+    "join",
+    "dirname",
+    "basename",
+    "extname",
+    "isAbsolute",
+    "normalizeAliases",
+    "resolveAlias"
+  ],
+  "subject_input_count": 313,
+  "native_controls_authored": 5,
+  "native_controls_run": 0,
+  "source_or_native_jobs_run": false,
+  "expected_present": false,
+  "public_default_selected": false,
+  "product_files": [
+    {
+      "relative": "src/extensions/native_pathe.zig",
+      "sha256": "1D27A8AB60DB4C093BAD08048C8932D2177A23F3BBD353C98AD52778C68A8D54"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3.input.mjs",
+      "sha256": "107731619B2C31B33F50F35C0F93EF8B8C2BF030C949E22372DEA3916E657582"
+    },
+    {
+      "relative": "src/native_jiti_pathe_test.zig",
+      "sha256": "9182B4827534F6B52DEF047E5A30F55C6F488E643310F8F09B918C96A03EFF68"
+    }
+  ],
+  "authority_files": [
+    {
+      "relative": "dependency-archive-manifest.json",
+      "sha256": "E3D8C723E152E38EA110B781DDD6E8C44F31A69E218F194225B48E6DA12064AC",
+      "bytes": 6681
+    },
+    {
+      "relative": "dependency-pins.json",
+      "sha256": "F83B427E34D3206F7D38DC1F816733FB0F018D86446A3B3316E0D2AFA0F78235",
+      "bytes": 617
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0.tgz",
+      "sha256": "89D5895C64D5B1099DF79BA1F6CF3F054FD0265CB5E17ACB94DE84D46BC01085",
+      "bytes": 20839
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\index.d.ts.map.txt",
+      "sha256": "A57172C8AFE87FEBE6A1558B7EA766EB7D7AA03C9ED75F41596B8E8D105BBFDB",
+      "bytes": 192
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\index.d.ts.txt",
+      "sha256": "946A2F0F21B8B76613AA7FC83DAC4EC074525B188488DF8872D5686398BC4FFA",
+      "bytes": 754
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\index.js.txt",
+      "sha256": "2264946BC18B04FD021FD28C4315B38BB5344B7DF24164D2A339658108180AC8",
+      "bytes": 1362
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\errors.d.ts.map.txt",
+      "sha256": "7E92CAE70C4B9FC409FCBD9BDF1321C619ECACAD82172278B1739ED5CF92F211",
+      "bytes": 734
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\errors.d.ts.txt",
+      "sha256": "776822840BBBAA052460038966ECD0816FE0FDB6F2E8030398F82DCEA69DEBAE",
+      "bytes": 1327
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\errors.js.txt",
+      "sha256": "1D34BBDF963B8B99A14EFDAB5079C40AF5479A696CFCFE94AF91E122721ADEFA",
+      "bytes": 13538
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\get-format.d.ts.map.txt",
+      "sha256": "A8157400C58F3DB309DA645FBCF9FF420DE914BA4BEF045C65FBBBF7E9331EA1",
+      "bytes": 317
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\get-format.d.ts.txt",
+      "sha256": "8DDF61BA026247504DF78DDA31EFB8E91EA0640F0A10D2BEAE2C957C0A9797A0",
+      "bytes": 395
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\get-format.js.txt",
+      "sha256": "FFC08FD48638244F1B308DB9E697D3A545A66848C16F82938AB9B088335C4263",
+      "bytes": 3521
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\package-json-reader.d.ts.map.txt",
+      "sha256": "12A3AF486C2BCE87E432FDEF83E0842B52A33E2BCD1738232D0BF37C21D4CD72",
+      "bytes": 545
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\package-json-reader.d.ts.txt",
+      "sha256": "0A87B891CE3621AE4D33CEF7DE2D5EA491B29B8CB64DD721177FFC7BAA4FEFBE",
+      "bytes": 960
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\package-json-reader.js.txt",
+      "sha256": "B7D3A5C669B8AFE7308248CDBA652C792518297F04335B696EDCD4A3136C359A",
+      "bytes": 4435
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\resolve.d.ts.map.txt",
+      "sha256": "B215A72344BBF7F70477AA5B1E1082781C7F60C14099F69F64A28010FD79E41F",
+      "bytes": 401
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\resolve.d.ts.txt",
+      "sha256": "FFCE3278D6A3E1E328A1018933BB977FDA839F41D6D54A3F60FFD055322FF985",
+      "bytes": 1028
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\resolve.js.txt",
+      "sha256": "61CEEEEA76B473D43CAF62AAAB4EF28110E4F8F3CE055CBCB8F78AD406CAFA83",
+      "bytes": 34732
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\utils.d.ts.map.txt",
+      "sha256": "9FBF8B6DCC15EC8FB4B39B5692CB06355944B58CC146E6A8CC9DCA76E9ABF74E",
+      "bytes": 172
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\utils.d.ts.txt",
+      "sha256": "01D8F3F73ABC55B06B46D37A5FBC4B974667D543994C1E1A95A35D4D5D2B4B71",
+      "bytes": 183
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\lib\\utils.js.txt",
+      "sha256": "C6D4CDE552DFB9B1DEB2574EE11899A3FC3FE684BC32FBB85483F01BB22E4177",
+      "bytes": 1188
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\license.txt",
+      "sha256": "8770A1A4B69EE722636643E81340CE4A8F0B8415B1C568487EDC9062338BFCC7",
+      "bytes": 3493
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\package.json.txt",
+      "sha256": "41E75CAC3CC4460B5E442CD4AB60907BA24A01B8A081C3FD8A84371B8F76D39B",
+      "bytes": 2237
+    },
+    {
+      "relative": "import-meta-resolve-4.2.0\\readme.md.txt",
+      "sha256": "932CAE2095AAF3D9F9774D592EC6659F6B2B1AB7C4837A21F9AD05C1F34532FF",
+      "bytes": 7682
+    },
+    {
+      "relative": "import-meta-resolve-registry.json",
+      "sha256": "BF06F12E9E3ECBB38CC3737BA86276A0901E28912B4379E8CF86E68E4EC56560",
+      "bytes": 2889
+    },
+    {
+      "relative": "jiti-pnpm-lock.yaml",
+      "sha256": "3E3F3C611EF1A854A9FC4D50868EFB1472E02758C68B54E26D801EE162A1A34C",
+      "bytes": 158470
+    },
+    {
+      "relative": "mlly-1.8.2.tgz",
+      "sha256": "74B820E74909A6EB6378E03139BFA2D1C2A6660D16CFD83E1A00F71E89AC7AD7",
+      "bytes": 52640
+    },
+    {
+      "relative": "mlly-1.8.2\\dist\\index.cjs.txt",
+      "sha256": "5EFF0719B8C589EC720F013928A4B61063077B6220E5BABC6133D81FEBF8D901",
+      "bytes": 77213
+    },
+    {
+      "relative": "mlly-1.8.2\\dist\\index.d.cts.txt",
+      "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+      "bytes": 23149
+    },
+    {
+      "relative": "mlly-1.8.2\\dist\\index.d.mts.txt",
+      "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+      "bytes": 23149
+    },
+    {
+      "relative": "mlly-1.8.2\\dist\\index.d.ts.txt",
+      "sha256": "66D0A61B3B0DF6C9C2EB09DBE26E3C2AEF71D9043FED17CD56DE6669CB706325",
+      "bytes": 23149
+    },
+    {
+      "relative": "mlly-1.8.2\\dist\\index.mjs.txt",
+      "sha256": "170C8B21A62ADF2803AD08305B5B7D1C0AD1C45DB35136F5FFAA4572BF961656",
+      "bytes": 75345
+    },
+    {
+      "relative": "mlly-1.8.2\\LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "relative": "mlly-1.8.2\\package.json.txt",
+      "sha256": "E521AB6B33AC365A19E0EC4463A7FB831C39218DCB0A34625C55CB4233B84F5E",
+      "bytes": 1425
+    },
+    {
+      "relative": "mlly-1.8.2\\README.md.txt",
+      "sha256": "F56BB029C4A1CE45476CF84C0E62951AFC469B3A8BE11D7C4266FEC71CCEB18D",
+      "bytes": 13449
+    },
+    {
+      "relative": "mlly-build.config.ts",
+      "sha256": "C9C4ACA71DA00A7F0D617BEB8B1BC1C6E5197ED61378CBB907538CA330F6F218",
+      "bytes": 198
+    },
+    {
+      "relative": "mlly-LICENSE",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "relative": "mlly-package.json",
+      "sha256": "E521AB6B33AC365A19E0EC4463A7FB831C39218DCB0A34625C55CB4233B84F5E",
+      "bytes": 1425
+    },
+    {
+      "relative": "mlly-pnpm-lock.yaml",
+      "sha256": "120AA89EC48165BEB38B0E6452051D401C709A91A8AF30666123870D550EDD2F",
+      "bytes": 140831
+    },
+    {
+      "relative": "mlly-registry.json",
+      "sha256": "5CB048E497A0C690169078F6CD48F45560A7EADEB398EB5CA2A7E9DF85C055DE",
+      "bytes": 2147
+    },
+    {
+      "relative": "mlly-resolve.ts.txt",
+      "sha256": "0E4952168D0EC8626A3FEA5743F1C7E39F960DC77CA129C0E7EB2F6A9F499D55",
+      "bytes": 8584
+    },
+    {
+      "relative": "mlly-src___utils.ts",
+      "sha256": "4BEC3E1D61A77EC4424A69715C168FA2184BA14FFF98E5C9AC129A32162D5B78",
+      "bytes": 1179
+    },
+    {
+      "relative": "mlly-utils.ts.txt",
+      "sha256": "D3669D6D13678E871A86E0A2A43CB41CF356330AB28245B989F69237CE932FC6",
+      "bytes": 4183
+    },
+    {
+      "relative": "pathe-2.0.3.tgz",
+      "sha256": "6E3B73BC5DBB7F8A108FF5D8459B07DA04062E822C662339416525510696DF36",
+      "bytes": 10514
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\index.cjs.txt",
+      "sha256": "1F4CA8018D88814E25EA558A3AED3532DA23CA0B426EEAD27B0A4F101EE62AE9",
+      "bytes": 1249
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\index.d.cts.txt",
+      "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+      "bytes": 1901
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\index.d.mts.txt",
+      "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+      "bytes": 1901
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\index.d.ts.txt",
+      "sha256": "199B8737F31CCAD3C57FFA105CC5BDA788431DF584F620429CF385A3A0E6709D",
+      "bytes": 1901
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\index.mjs.txt",
+      "sha256": "9998AF9290974A85A0DEA395AABE596DD267C3E3EA8668F0ABF9248D04FD75B9",
+      "bytes": 876
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\shared\\pathe.BSlhyZSM.cjs.txt",
+      "sha256": "216F157B0D829B31F0709A706E5A59CE4CFC45CA4156F7467A3520A5062E6829",
+      "bytes": 13027
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\shared\\pathe.M-eThtNZ.mjs.txt",
+      "sha256": "5A087C7848E128640D114AAC23965F9FE73DCE651A1E4C307F399DC72800AFBC",
+      "bytes": 12786
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\utils.cjs.txt",
+      "sha256": "2FBF157878053BFE5F298B2F2233105AF0E6A1B6E1BB46F24B7D8D4CF084F51C",
+      "bytes": 2521
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\utils.d.cts.txt",
+      "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+      "bytes": 1599
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\utils.d.mts.txt",
+      "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+      "bytes": 1599
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\utils.d.ts.txt",
+      "sha256": "6B713044588D07735DFC31BBE5EBD41CB608C9982643AF703641BB683D69F882",
+      "bytes": 1599
+    },
+    {
+      "relative": "pathe-2.0.3\\dist\\utils.mjs.txt",
+      "sha256": "12BF9533748EB9B718D277884C258908ACB27E94213604F57DA60787CECB9465",
+      "bytes": 2406
+    },
+    {
+      "relative": "pathe-2.0.3\\LICENSE.txt",
+      "sha256": "52E92576851154BAD7737E90CC72818936F43665CB0E3F7428ED8EDC8CC5709B",
+      "bytes": 3355
+    },
+    {
+      "relative": "pathe-2.0.3\\package.json.txt",
+      "sha256": "6CCCFFE6BB2A39E2E4F257AEFC3F5D553D98199A0C79558BDB5EA2880FA030A3",
+      "bytes": 1534
+    },
+    {
+      "relative": "pathe-2.0.3\\README.md.txt",
+      "sha256": "47B7EA0D3DFAA71BF75FC69BD5239FFCBF4540249637DB84CBEC2285CEB2CF11",
+      "bytes": 3048
+    },
+    {
+      "relative": "pathe-2.0.3\\utils.d.ts.txt",
+      "sha256": "0A9392A978EA08E5C58D8801C15864694157FFA0B9019CCDB2BB533183F091DF",
+      "bytes": 30
+    },
+    {
+      "relative": "pathe-internal.ts.txt",
+      "sha256": "EF828FFB7A9BA4E78E4623DD1990E24F07118D10FAA7A14979136B2D78DA65FB",
+      "bytes": 285
+    },
+    {
+      "relative": "pathe-LICENSE",
+      "sha256": "52E92576851154BAD7737E90CC72818936F43665CB0E3F7428ED8EDC8CC5709B",
+      "bytes": 3355
+    },
+    {
+      "relative": "pathe-path.ts.txt",
+      "sha256": "48897415CB5BB019D682A1FD104BA7660A6FFF356D38BCC40CDA9B15438ABCF5",
+      "bytes": 8321
+    },
+    {
+      "relative": "pathe-registry.json",
+      "sha256": "D7CCC7BB83F21BC447B4C211AD631273715863B2AB20485D485C23D61C2042D1",
+      "bytes": 2417
+    },
+    {
+      "relative": "pathe-utils.ts.txt",
+      "sha256": "49280940C26F12ADAD467FACB52E1B70CBA01C83D69506E9E0DED94E64634E17",
+      "bytes": 4167
+    },
+    {
+      "relative": "src__resolve.ts.txt",
+      "sha256": "D4346A7D6220F7DDCF8805DCFFB77A62158ED90A10BD4C52C7D367A2FFE46044",
+      "bytes": 3078
+    },
+    {
+      "relative": "transitive-archive-manifest.json",
+      "sha256": "635C05BFDD9EDE3ED958606E143AFF4F85C94BA4060A6D5D0A311D5E06C66D5C",
+      "bytes": 8169
+    },
+    {
+      "relative": "transitive-package-pins.json",
+      "sha256": "2AE527A71816B5760779294A1E646794848524905868827AF6FAA89913D2FD8F",
+      "bytes": 2015
+    },
+    {
+      "relative": "ufo-1.6.3.tgz",
+      "sha256": "17CF1908F276F024099F160AC06C6DE17622EB0580F9AF90D91FBEFE5D9AD245",
+      "bytes": 21419
+    },
+    {
+      "relative": "ufo-1.6.3\\dist\\index.cjs.txt",
+      "sha256": "BE94F73C9236DF68CF678DA5EC285309ACDF23B8CFE1308657B37B1527E45EF6",
+      "bytes": 21091
+    },
+    {
+      "relative": "ufo-1.6.3\\dist\\index.d.cts.txt",
+      "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+      "bytes": 18770
+    },
+    {
+      "relative": "ufo-1.6.3\\dist\\index.d.mts.txt",
+      "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+      "bytes": 18770
+    },
+    {
+      "relative": "ufo-1.6.3\\dist\\index.d.ts.txt",
+      "sha256": "FEA1842BB12C05E5BF3DE6F05CB2E93D1405981BB589136222308F9EB177D10C",
+      "bytes": 18770
+    },
+    {
+      "relative": "ufo-1.6.3\\dist\\index.mjs.txt",
+      "sha256": "29F65B5DBD36134DD75BE3C21D502A7EB77B973CC726D7F6B763AB9F4C19E305",
+      "bytes": 19903
+    },
+    {
+      "relative": "ufo-1.6.3\\LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "relative": "ufo-1.6.3\\package.json.txt",
+      "sha256": "BAD224C9BBCBC6303CBCED2A8A2C0B1C339BBE8F90DA4DE7E209B4B74BE25F96",
+      "bytes": 1252
+    },
+    {
+      "relative": "ufo-1.6.3\\README.md.txt",
+      "sha256": "E1E73226D840B47332B904542D1066EAE4B6F89839B6A455945B102BAF65B4DC",
+      "bytes": 12619
+    },
+    {
+      "relative": "ufo-1.6.4-registry.json",
+      "sha256": "EC1AC749A48876FE2C84FA6C554EEF75710FC5EC749DD81AF81EF497170E05AB",
+      "bytes": 1991
+    },
+    {
+      "relative": "ufo-1.6.4.tgz",
+      "sha256": "B060E20D485EF8F6A8B9D58DC0FB28E8B9607DFEABF2B6007A73E60F012E6AB0",
+      "bytes": 21428
+    },
+    {
+      "relative": "ufo-1.6.4\\dist\\index.cjs.txt",
+      "sha256": "5FD54C9B0443AF32217E4262E92778A4619A126A10AF94ECC4FBE134160B7377",
+      "bytes": 21080
+    },
+    {
+      "relative": "ufo-1.6.4\\dist\\index.d.cts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    },
+    {
+      "relative": "ufo-1.6.4\\dist\\index.d.mts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    },
+    {
+      "relative": "ufo-1.6.4\\dist\\index.d.ts.txt",
+      "sha256": "80CEDFE54FB47500E102DACD4FBD779E0F44879303567EFE0043DC2AD7E198DB",
+      "bytes": 18775
+    },
+    {
+      "relative": "ufo-1.6.4\\dist\\index.mjs.txt",
+      "sha256": "893199FAF3AAFC1B2A03018DE7C87738BCD78ED5153E7C2767D62E09B323B042",
+      "bytes": 19892
+    },
+    {
+      "relative": "ufo-1.6.4\\LICENSE.txt",
+      "sha256": "46231DF5A7733C3F52F11B71F3DF61813007745B62B09031ACFB45FB42D75082",
+      "bytes": 1078
+    },
+    {
+      "relative": "ufo-1.6.4\\package.json.txt",
+      "sha256": "4EF029B2BDE70C3007F3520D3D4BA14B754E4E8C4DEFA8D58A8E53434EBDF028",
+      "bytes": 1250
+    },
+    {
+      "relative": "ufo-1.6.4\\README.md.txt",
+      "sha256": "E1E73226D840B47332B904542D1066EAE4B6F89839B6A455945B102BAF65B4DC",
+      "bytes": 12619
+    },
+    {
+      "relative": "ufo-registry.json",
+      "sha256": "5DBABA62FF0BE47044DC0583A3900CF7E118DCFAA9BDC75E24C31C549A74A9C1",
+      "bytes": 1992
+    },
+    {
+      "relative": "ufo-selected-archive-manifest.json",
+      "sha256": "4C83DD418185D66470AC089CD5E884773C44A524141C2AF4DF4694DDC90C63BD",
+      "bytes": 2420
+    }
+  ],
+  "pathe_version": "2.0.3",
+  "mlly_version": "1.8.2",
+  "bundled_import_meta_resolve": "4.2.0",
+  "actual_runtime_ufo": "1.6.4",
+  "unselected_ufo_build_reference": "1.6.3",
+  "mlly_resolver_complete": false
+}

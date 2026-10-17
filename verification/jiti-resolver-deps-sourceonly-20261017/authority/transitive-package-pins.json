@@ -1,0 +1,52 @@
+[
+  {
+    "name": "import-meta-resolve",
+    "version": "4.2.0",
+    "gitHead": "88a0e387cb4617c0f03217026adef2208018d41a",
+    "license": "MIT",
+    "repository": {
+      "url": "git+https://github.com/wooorm/import-meta-resolve.git",
+      "type": "git"
+    },
+    "dist": {
+      "shasum": "08cb85b5bd37ecc8eb1e0f670dc2767002d43734",
+      "tarball": "https://registry.npmjs.org/import-meta-resolve/-/import-meta-resolve-4.2.0.tgz",
+      "fileCount": 21,
+      "integrity": "sha512-Iqv2fzaTQN28s/FwZAoFq0ZSs/7hMAHJVX+w8PZl3cY19Pxk6jFFalxQoIfW2826i/fDLXv8IiEZRIT0lDuWcg==",
+      "signatures": [
+        {
+          "sig": "MEUCIQCTVeflmv6K9KQq2YDXNNZvh7r1wlb0b/rAttZwWMLC5AIgNYgKVGg4z/HqNPv/U2M6ihXL1zSsAtYRfalIszF3F4M=",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 79196
+    },
+    "metadata_url": "https://registry.npmjs.org/import-meta-resolve/4.2.0",
+    "metadata_sha256": "BF06F12E9E3ECBB38CC3737BA86276A0901E28912B4379E8CF86E68E4EC56560"
+  },
+  {
+    "name": "ufo",
+    "version": "1.6.3",
+    "gitHead": "11308c0bb5cb4a4bc3bfcbdc5c03177b097423e6",
+    "license": "MIT",
+    "repository": {
+      "url": "git+https://github.com/unjs/ufo.git",
+      "type": "git"
+    },
+    "dist": {
+      "shasum": "799666e4e88c122a9659805e30b9dc071c3aed4f",
+      "tarball": "https://registry.npmjs.org/ufo/-/ufo-1.6.3.tgz",
+      "fileCount": 8,
+      "integrity": "sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==",
+      "signatures": [
+        {
+          "sig": "MEYCIQDZ5bhrq3AM3kE5qzKeQvaC7XhI/mudMVTks9RxeZiLnQIhAPWq4ykENLXdX1XFgZk+0u0XErRO5t8E/Q8Yy7liJjKH",
+          "keyid": "SHA256:DhQ8wR5APBvFHLF/+Tc+AYvPOdTpcIDqOhxsBHRwC7U"
+        }
+      ],
+      "unpackedSize": 112253
+    },
+    "metadata_url": "https://registry.npmjs.org/ufo/1.6.3",
+    "metadata_sha256": "5DBABA62FF0BE47044DC0583A3900CF7E118DCFAA9BDC75E24C31C549A74A9C1"
+  }
+]

@@ -1,0 +1,60 @@
+{
+  "scope": "Add actual jiti cache consumed pathe resolve and utils filename SOURCE ONLY",
+  "base_commit": "54489dcd021f56a35564ee21185bda998805198a",
+  "previous_pathe_commit": "b5cd48dcf7a0a7a113a4ce6e50b2a9abfe5b61cf",
+  "previous_pathe_leaf_sha256": "1ECFF4FEB3E8C229A59E7457D4DBE73DFD79953B32AC71AA073683211B6A914F",
+  "product_files": [
+    {
+      "relative": "src/extensions/native_pathe.zig",
+      "sha256": "5E40B0889809BFF459E967369F26FB84C3A01976419425C3C09FB3BE72D10D50",
+      "bytes": 34614
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-cache-2.0.3.input.mjs",
+      "sha256": "19B93084E4DD4AA12A63508525D878361A67919BFEFD8820BD47012B7A070D13",
+      "bytes": 2740
+    },
+    {
+      "relative": "src/native_jiti_pathe_cache_test.zig",
+      "sha256": "FEE94DEB99125CF9B199F0C8CB66AE54EF205C6968D82E0A8FE10991B9FF9F33",
+      "bytes": 3785
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/PATHE-CACHE-SUCCESSOR.md",
+      "sha256": "D2DC281464E847649FB673644AA9A6A3ACCBEBD5383D0324DB54C57D829D427A",
+      "bytes": 1880
+    }
+  ],
+  "retained_original_files": [
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3.input.mjs",
+      "sha256": "107731619B2C31B33F50F35C0F93EF8B8C2BF030C949E22372DEA3916E657582"
+    },
+    {
+      "relative": "src/native_jiti_pathe_test.zig",
+      "sha256": "9182B4827534F6B52DEF047E5A30F55C6F488E643310F8F09B918C96A03EFF68"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.input.mjs",
+      "sha256": "5FBD4C5C9DDA797AAC8BC1A344BC98B3F63B09276F64132B30C20B3A0B160223"
+    },
+    {
+      "relative": "src/native_jiti_pathe_supplement_test.zig",
+      "sha256": "50F2C8C96F4265701998F2C7353C3D64028AC85CD87AF656D08E54B92E2F30AA"
+    }
+  ],
+  "retained_authority_count": 89,
+  "authority_drift": 0,
+  "additional_original_observations": 40,
+  "additional_native_controls": 3,
+  "additional_native_controls_run": 0,
+  "expected_absent": [
+    "src/extensions/fixtures/jiti-pathe-2.0.3.json",
+    "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.json",
+    "src/extensions/fixtures/jiti-pathe-cache-2.0.3.json",
+    "src/extensions/fixtures/jiti-mlly-1.8.2.json"
+  ],
+  "source_or_native_jobs_run": false,
+  "public_default_selected": false,
+  "qualified": false
+}

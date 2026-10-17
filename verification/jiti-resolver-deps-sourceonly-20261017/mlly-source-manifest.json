@@ -1,0 +1,197 @@
+{
+  "scope": "Authored mlly1.8.2/import-meta-resolve4.2/ufo1.6.4 resolver component, SOURCE ONLY",
+  "base_commit": "b5cd48dcf7a0a7a113a4ce6e50b2a9abfe5b61cf",
+  "product_files": [
+    {
+      "relative": "src/extensions/native_mlly_values.zig",
+      "sha256": "65F6318A2FF4732A355D2FB7B7F345A8EE213121F55F2D442BC6492B02C1FA92",
+      "bytes": 11232
+    },
+    {
+      "relative": "src/extensions/native_mlly_errors.zig",
+      "sha256": "06A4070D1353B3E3F43170A6B19EE79B29A10157A4707166824B8DED74CB713C",
+      "bytes": 6315
+    },
+    {
+      "relative": "src/extensions/native_mlly_package_reader.zig",
+      "sha256": "E805882AFD50F4E5CD8AB42AE96216059435BE704601ED632F903ADE469CBFA0",
+      "bytes": 5333
+    },
+    {
+      "relative": "src/extensions/native_mlly_package_targets.zig",
+      "sha256": "7670DB4FB1EB709480B2040DA386EAF6FE69EA099AAAE4D5056CEBDA4576858F",
+      "bytes": 20141
+    },
+    {
+      "relative": "src/extensions/native_mlly_module_resolve.zig",
+      "sha256": "49D156A4A694B5F92F5F06469A97023A9A7900810D29CE6537910F0BD70B1BAC",
+      "bytes": 19960
+    },
+    {
+      "relative": "src/extensions/native_mlly_resolve.zig",
+      "sha256": "F8B904996295FE1E391E87D89A28FC2788FB471FF35F4477CF1AF91C70BBB46D",
+      "bytes": 13441
+    },
+    {
+      "relative": "src/extensions/native_ufo_join_url.zig",
+      "sha256": "C7A1432FBAFF5A413990A4C4B33931001E8D4B78BDF6F96C66C5D3992EF2D505",
+      "bytes": 2075
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-1.8.2.input.mjs",
+      "sha256": "66E41954A694A05B8CA6D19A5F8E1CA426A6FA9A508292E7549AAF130FDF7BCE",
+      "bytes": 4868
+    },
+    {
+      "relative": "src/native_jiti_mlly_test.zig",
+      "sha256": "2B7A2719ABD535E178152F946DAC0128C3DB4B81670475871CBACAC056C19961",
+      "bytes": 8134
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/MLLY-RESOLVER-SOURCE-ONLY.md",
+      "sha256": "B5ED8A1CD34B64261A85A03C6459FB0E9194599BE95D197E14EA539BB02B2E8A",
+      "bytes": 5342
+    }
+  ],
+  "fixture_files": [
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/entry.mjs",
+      "sha256": "D64E3CECF6900641FDF1B31442EE3777F034161C2A30E32FFD79B358C848C5B7",
+      "bytes": 27
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/bad-config/package.json",
+      "sha256": "B765A1F978D6A334071F50AB7801963E54E84E530E201638018D20E58EC99097",
+      "bytes": 24
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/conditional/custom.js",
+      "sha256": "685B51AD48A13ECBD5F8D1ACE84D0061756622645A44880A752BD3C1555ACF1B",
+      "bytes": 32
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/conditional/default.js",
+      "sha256": "78C9DED7748304166944842D41E32444C9FEA1C30EFEBE5463A6EA133EDE51A3",
+      "bytes": 33
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/conditional/import.js",
+      "sha256": "94AD386F45FF1A2EB98001B4E79E3477357FA8136F9D5DA9D41204E10691B04B",
+      "bytes": 32
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/conditional/lib/a.js",
+      "sha256": "E09FA06BA6DFA3A900A149EC33F003570F402BC3D03A9DF15DA7E9CB11510B70",
+      "bytes": 28
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/conditional/package.json",
+      "sha256": "CE1F7FD76E7755B0A14CE387E350404D6E7C56DE8B4D5AC4A27D56A90F918973",
+      "bytes": 330
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/legacy-module/index.js",
+      "sha256": "BE1C246881FABC2F3635D92D34F3294F2D48684014005E2155E1F9B8FB6DBB68",
+      "bytes": 28
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/legacy-module/package.json",
+      "sha256": "2C39EAD50CC1DD829675094C6A7F88AAC5D1DC5C06375864EBAE308632AB7D12",
+      "bytes": 41
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/legacy/lib/start.js",
+      "sha256": "FCB60668FA19453453C0664C1B25323BEB19E6A40279BC02CA14490681AEE7E8",
+      "bytes": 27
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/legacy/package.json",
+      "sha256": "4FFCEA230B85A0E6C5832B1CF17002B51DFF27DFE1A1B68870BF76AB4D9D4AEB",
+      "bytes": 55
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/mixed/index.js",
+      "sha256": "2995F9386571CA6DD77B1D54E3A427764AB86E6D2242CB8BC02E53C5E43BA324",
+      "bytes": 27
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/node_modules/mixed/package.json",
+      "sha256": "0346F08CA18F91D1C0F3F048AF9D510349D9591A589D2187F177AB8086166754",
+      "bytes": 69
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/package.json",
+      "sha256": "40A7325BD320CF5DF39A9AFA30809094ACCB49D9664A7082D810020862571D36",
+      "bytes": 186
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/src/folder/index.js",
+      "sha256": "DAB742800B8AD8F3C30D92B0352C7D19C5B1B1466F826DCD56BC6BEE2BC75908",
+      "bytes": 28
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/src/local.js",
+      "sha256": "154A6CC9501A4034C463647254C7FA2C09EBCD73B0C3D02A4D53C1475021DF3A",
+      "bytes": 27
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-tree/src/tool.ts",
+      "sha256": "52836BD88C4D07FF2AAD5A3011455075AF72386017BF15CB0F83D99A78FE82DA",
+      "bytes": 35
+    }
+  ],
+  "fixture_count": 17,
+  "retained_files": [
+    {
+      "relative": "src/extensions/native_pathe.zig",
+      "sha256": "1ECFF4FEB3E8C229A59E7457D4DBE73DFD79953B32AC71AA073683211B6A914F"
+    },
+    {
+      "relative": "src/extensions/native_mlly_urls.zig",
+      "sha256": "C739439B3B8FACE0C7B7F224A555A3F6BF14F57910AAA32D15F3CABE8B3FF920"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3.input.mjs",
+      "sha256": "107731619B2C31B33F50F35C0F93EF8B8C2BF030C949E22372DEA3916E657582"
+    },
+    {
+      "relative": "src/native_jiti_pathe_test.zig",
+      "sha256": "9182B4827534F6B52DEF047E5A30F55C6F488E643310F8F09B918C96A03EFF68"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.input.mjs",
+      "sha256": "5FBD4C5C9DDA797AAC8BC1A344BC98B3F63B09276F64132B30C20B3A0B160223"
+    },
+    {
+      "relative": "src/native_jiti_pathe_supplement_test.zig",
+      "sha256": "50F2C8C96F4265701998F2C7353C3D64028AC85CD87AF656D08E54B92E2F30AA"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-source-manifest.json",
+      "sha256": "2204D3671B29A27A8F825B377611D0D8960658FB2A17788FF1447E81BADC76DE"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-finite-successor-manifest.json",
+      "sha256": "CF22AA9A683A4E8C5A3B152F93CB4FE0031CADC35ABAAD68437390482DAEB1AC"
+    }
+  ],
+  "retained_authority_count": 89,
+  "retained_authority_drift": 0,
+  "original_observations_prepared": 51,
+  "native_controls_prepared": 5,
+  "native_controls_run": 0,
+  "expected_absent": [
+    "src/extensions/fixtures/jiti-mlly-1.8.2.json",
+    "src/extensions/fixtures/jiti-pathe-2.0.3.json",
+    "src/extensions/fixtures/jiti-pathe-2.0.3-supplement.json"
+  ],
+  "source_or_native_jobs_run": false,
+  "public_default_selected": false,
+  "qualification_claim": false,
+  "known_gaps": [
+    "V8 internal error stack/reflection protocol",
+    "deep adversarial native recursion and arbitrary proxy/global/String replacement returns",
+    "actual node module builtin table and full platform binding qualification",
+    "unconsumed mlly exports remain separate"
+  ]
+}

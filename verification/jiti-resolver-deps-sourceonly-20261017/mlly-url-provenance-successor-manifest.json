@@ -1,0 +1,153 @@
+{
+  "scope": "SOURCE ONLY: reviewed public URL wrapper trusted-generation correction",
+  "base_commit": "7b9a685f960ac527b19eb540450dff634704b478",
+  "product_files": [
+    {
+      "relative": "src/extensions/native_mlly_urls.zig",
+      "sha256": "FFB5EC98DB759A62C5B19A9023A6B1D0F7D112AB7338856513B7C884D259B94C",
+      "bytes": 4760
+    },
+    {
+      "relative": "src/native_jiti_mlly_boundary_test.zig",
+      "sha256": "3703AE67C432C24FE8E98D4EC10A94F6DA3FD6963D27C6C5747956CD4C140607",
+      "bytes": 29169
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/MLLY-URL-PROVENANCE-REVIEW-CORRECTION.md",
+      "sha256": "50CA07B0E58DC2691650A71C73F8DE431ED8785A9F90D6ABCEAF6F70D346DBBB",
+      "bytes": 1779
+    }
+  ],
+  "retained_files": [
+    {
+      "relative": "src/extensions/native_mlly_function.zig",
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4"
+    },
+    {
+      "relative": "src/extensions/native_mlly_format.zig",
+      "sha256": "66ABEB0466571FC7B70F94A33FA4D03A257DDE95C9499C43E015950B4BB8C089"
+    },
+    {
+      "relative": "src/extensions/native_mlly_values.zig",
+      "sha256": "FF04FAA7786C54665187BCB493FFD1E3A0F9A93CD9F5DB789429D4F92F078CD2"
+    },
+    {
+      "relative": "src/extensions/native_mlly_resolve.zig",
+      "sha256": "86613BC9CD05DC749484B53DF1F761B3D3E422F720D24D4AF776427CACEA338D"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-normal-close-numeric-4.2.input.mjs",
+      "sha256": "32F4879116C8F8D1927C84422AAF4A610FEDCB6D344B0C83E8ABCC72629BF595"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/MLLY-NORMAL-CLOSE-NUMERIC-SUCCESSOR.md",
+      "sha256": "7432285E18B01B90F5D76A883C55065EFFDCEA7DF5D3EBDB1B920E1A48190F52"
+    },
+    {
+      "relative": "src/extensions/native_mlly_module_resolve.zig",
+      "sha256": "F88C17145127868CDB0A523439EAC497737880CC6FD937DC52A3DDC035D87FBC"
+    },
+    {
+      "relative": "src/extensions/native_mlly_errors.zig",
+      "sha256": "12BBCD6FD2D1B322D177E8B3BBE63BACFE81D04F9ADEBBDADA11F0460ADB6143"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-boundaries-4.2.input.mjs",
+      "sha256": "72028603D2E69BCDD4AEA8C0A22CB488C91AEB7CFCB32514DF2A9A9932F1045D"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/MLLY-BOUNDARY-SUCCESSOR.md",
+      "sha256": "FEAADD7DFA4F88160B9AF09DFBA5E7EF002E2471399BAF4D0EA5A22FD54EB8D9"
+    },
+    {
+      "relative": "src/extensions/native_pathe.zig",
+      "sha256": "5E40B0889809BFF459E967369F26FB84C3A01976419425C3C09FB3BE72D10D50"
+    },
+    {
+      "relative": "src/extensions/fixtures/jiti-mlly-1.8.2.input.mjs",
+      "sha256": "66E41954A694A05B8CA6D19A5F8E1CA426A6FA9A508292E7549AAF130FDF7BCE"
+    },
+    {
+      "relative": "src/native_jiti_mlly_test.zig",
+      "sha256": "2B7A2719ABD535E178152F946DAC0128C3DB4B81670475871CBACAC056C19961"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/mlly-source-manifest.json",
+      "sha256": "994A2C0CF5853A06FD8265695F90707A244FD1015C89CCFAE5979CC5E875855C"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/pathe-cache-successor-manifest.json",
+      "sha256": "C9BA5FB83B983A3F10DF102000BC0FACD9B0E5930D17A7A6DBD676C3BFB9F7F4"
+    },
+    {
+      "relative": "src/extensions/native_node_function.zig",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347"
+    },
+    {
+      "relative": "src/extensions/native_js_values.zig",
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "relative": "src/extensions/native_async_body.zig",
+      "sha256": "8B25F3591C65240476CDD670710C14408E062CC7F3CB888A67DC9C272453EC07"
+    },
+    {
+      "relative": "src/extensions/native_class.zig",
+      "sha256": "CD684CCB549EFA88094251077354B54B7FE9702450C640B1AE6A6040DFBE58A0"
+    },
+    {
+      "relative": "src/extensions/engine.zig",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499"
+    },
+    {
+      "relative": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "relative": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.c",
+      "sha256": "2FA2E26E35B7D5C45D1FFD3F6F10EE3A5DE9A984738486128399A20BD8E4D88D"
+    },
+    {
+      "relative": "vendor/quickjs/quickjs.h",
+      "sha256": "341CF06F8041B8311D49767026C85C7B859BCFEE3088380F3FFE6D77527052AB"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/mlly-boundary-successor-manifest.json",
+      "sha256": "8BA0911B32C8A5F81E639E6D55C1EF72A3F5E52885C42F25F583612C3B921BD4"
+    },
+    {
+      "relative": "verification/jiti-resolver-deps-sourceonly-20261017/mlly-normal-close-numeric-successor-manifest.json",
+      "sha256": "EEB1776CDAD36C0C896C8B8E6C0ED5107AFEDC9D1F93FF61863581F84590B688"
+    }
+  ],
+  "authority_count": 89,
+  "authority_drift": 0,
+  "retained_fixture_count": 17,
+  "retained_fixture_drift": 0,
+  "native_test_declarations": 21,
+  "actual_import_entrypoints": 4,
+  "new_actual_url_profiles": [
+    "fileURLToPath ordinary",
+    "fileURLToPath later fresh",
+    "pathToFileURL ordinary",
+    "pathToFileURL later fresh"
+  ],
+  "native_tests_run": 0,
+  "original_observations_prepared": [
+    51,
+    8,
+    15
+  ],
+  "expected_absent": [
+    "src/extensions/fixtures/jiti-mlly-1.8.2.json",
+    "src/extensions/fixtures/jiti-mlly-boundaries-4.2.json",
+    "src/extensions/fixtures/jiti-mlly-normal-close-numeric-4.2.json"
+  ],
+  "shared_c_engine_node_helpers_changed": false,
+  "source_jobs_run": false,
+  "qualified": false
+}
