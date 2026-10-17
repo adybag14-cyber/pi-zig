@@ -1,0 +1,124 @@
+{
+  "status": "source-only-uncompiled-unrun",
+  "baseline": "8b36501abcc98563e7ba78c7c417fb024d672361",
+  "products": [
+    {
+      "bytes": 16519,
+      "baseline_blob": "084bbd74f917f9c2643020260bce1977d729ffc9",
+      "sha256": "2AC31667D0969994326C13E64504A43D9B8B33ECC5C0B90F882D2511A721AFB9",
+      "path": "src/extensions/native_file_stat.zig"
+    },
+    {
+      "bytes": 20077,
+      "baseline_blob": "4f30583a6edbc74a9c23111dfe16e62c3189e0bd",
+      "sha256": "5C6457F7A6D04B337F3AFCD93159FC8D0444879E16200B65CD16EA53F2FC6FC8",
+      "path": "src/extensions/node_fs_metadata.zig"
+    }
+  ],
+  "protected": [
+    {
+      "baseline_blob": "f00a5a3c6ac791a861ca899b83a93dad2daaef41",
+      "sha256": "EF91CE4F73BEE4B64426BA5FAB6F1C56A5B76DF7ED3E4A8FCEFF4754E01DC499",
+      "path": "src/extensions/engine.zig"
+    },
+    {
+      "baseline_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "path": "src/extensions/engine_abi.c"
+    },
+    {
+      "baseline_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "path": "src/extensions/engine_abi.h"
+    },
+    {
+      "baseline_blob": "8a317c650660be6ccd5d3cd5201404b678fd12b3",
+      "sha256": "4AF0F3C1057A95E6BD4913074A11E0D9356F27152094567E281F535BFA8965CB",
+      "path": "src/extensions/commonjs.zig"
+    },
+    {
+      "baseline_blob": "6527db3f4ef4a5c887e9551d7fd87ac05e8884de",
+      "sha256": "1FC3CF74C16C35BE02F528F3C33E1D128C306B94ACFA9424D8C51CBC34AF8771",
+      "path": "src/extensions/node_fs.zig"
+    },
+    {
+      "baseline_blob": "390157c1ae6264e314137b799b269e8c0f18f366",
+      "sha256": "AA19A50ECBD4589874CF6572392742527F733B86EAC446168543DBDF51E96347",
+      "path": "src/extensions/native_node_function.zig"
+    },
+    {
+      "baseline_blob": "0d6df1b1e37e3bdf60bee327a02ae6cf8fc403ea",
+      "sha256": "2C86A712ECA2ECD47277B39DCF689C60090E2DC816754C30BD30D5D0958667F0",
+      "path": "src/extensions/native_jiti_cjs_lower.zig"
+    },
+    {
+      "baseline_blob": "87b039ccb99ca17ad27785b8cec975864bdeb51b",
+      "sha256": "AF53F76B7C33246BA2BCE474EB640799EA3179D55499EE2FD07212B879728DFA",
+      "path": "src/extensions/native_jiti_cjs_eval.zig"
+    },
+    {
+      "baseline_blob": "310d1d4c3e4226a1b278b298b229538e26bb5acc",
+      "sha256": "4B4A0380A1F02C918E76843D64F00B03C54F516B29FE8BC3F17F3E655C0C8F9D",
+      "path": "src/extensions/native_jiti_eval_module.zig"
+    }
+  ],
+  "packet": [
+    {
+      "bytes": 4003,
+      "sha256": "53A0870ABDCDD45CA2F98F988C180900A11D97EACA195F323F3EC2B1BC040A16",
+      "path": "verification/node-lstat-sourceonly-20261017/controls.json"
+    },
+    {
+      "bytes": 3241,
+      "sha256": "FA6352704A7D5EF026ACDDA6FB17B61CC0A136B55D0DC8265F815DED4408EC55",
+      "path": "verification/node-lstat-sourceonly-20261017/README.md"
+    },
+    {
+      "bytes": 4232,
+      "sha256": "AFD5C2A6E44113173EF3834BE1D5BBD05E5B8A4A69B97677528052EE420CB66F",
+      "path": "verification/node-lstat-sourceonly-20261017/source-caller.mjs"
+    },
+    {
+      "bytes": 1079,
+      "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-LICENSE"
+    },
+    {
+      "bytes": 59847,
+      "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-unix-fs.c.txt"
+    },
+    {
+      "bytes": 105366,
+      "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/libuv-win-fs.c.txt"
+    },
+    {
+      "bytes": 139328,
+      "sha256": "A66830C168B90CA599A1B7BB2504DCB3EB17892358E6EE91A35FAF5C5F0E12D3",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-file.cc.txt"
+    },
+    {
+      "bytes": 88259,
+      "sha256": "AC0C9FB29D7CA80E90AD25D60009CB8BE9781E0753B5787CCCA090128FCAA39A",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-fs.js.txt"
+    },
+    {
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/node-LICENSE"
+    },
+    {
+      "bytes": 1077,
+      "sha256": "53BC6AA67AC86F9F95040AD0D8B54DEF2EB8953680C0F716CAD84A51909A2DAF",
+      "path": "verification/node-lstat-sourceonly-20261017/authority/pins.json"
+    }
+  ],
+  "no_c_h_engine_or_main_edits": true,
+  "no_new_native_io_primitive_needed": true,
+  "source_capture_expected_absent": true,
+  "native_controls": 12,
+  "jobs_started": false,
+  "known_existing_stat_windows_directory_execute_bits_gap": "reported separately; stat.read existing behavior preserved; new lstat follows actual libuv permissions",
+  "scope": "actual lstatSync/native final-component metadata seam; not full Node fs/permissions qualification"
+}

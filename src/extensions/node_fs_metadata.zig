@@ -126,6 +126,7 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     if (c.JS_DefinePropertyValueStr(engine.context, deprecated, "prototype", c.JS_DupValue(engine.context, prototypes[0]), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
     try scope.put(exports, "Stats", deprecated);
     try scope.put(exports, "statSync", try scope.own(try functions.create(engine, "statSync", 1, statSync, &prototypes)));
+    try scope.put(exports, "lstatSync", try scope.own(try functions.create(engine, "lstatSync", 1, lstatSync, &prototypes)));
     const realpath_function = try scope.own(try functions.create(engine, "realpathSync", 2, realpathSync, &.{}));
     const native = try scope.own(try engine.checked(c.JS_NewCFunction(engine.context, realpathNative, "", 2)));
     try scope.put(realpath_function, "native", native);
@@ -231,6 +232,12 @@ fn integer(engine: *em.Engine, value: i128, big: bool) !c.JSValue {
     return js.call(engine, constructor, c.pi_js_undefined(), &.{text});
 }
 fn statSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return readStats(engine, args, roots, true);
+}
+fn lstatSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return readStats(engine, args, roots, false);
+}
+fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, follow: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const path = try pathText(engine, argument(args, 0), false);
@@ -239,9 +246,9 @@ fn statSync(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
     const defaults = c.JS_IsUndefined(options);
     const big = !defaults and c.JS_IsStrictEqual(engine.context, try scope.get(options, "bigint"), c.pi_js_bool(engine.context, 1));
     const throw_missing = defaults or !c.JS_IsStrictEqual(engine.context, try scope.get(options, "throwIfNoEntry"), c.pi_js_bool(engine.context, 0));
-    const info = stat.read(engine.gpa, path) catch |err| {
+    const info = (if (follow) stat.read(engine.gpa, path) else stat.readLink(engine.gpa, path)) catch |err| {
         if (err == error.FileNotFound and !throw_missing) return c.pi_js_undefined();
-        return throwFilesystem(engine, err, path, "stat");
+        return throwFilesystem(engine, err, path, if (follow) "stat" else "lstat");
     };
     const result = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, roots[@intFromBool(big)])));
     const values = [_]i128{ info.dev, info.mode, info.nlink, info.uid, info.gid, info.rdev, info.blksize, info.ino, info.size, info.blocks };
