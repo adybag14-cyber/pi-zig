@@ -1,0 +1,52 @@
+{
+  "schema": 1,
+  "head": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "base": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "recursive_trees_truncated": false,
+  "exact_changed_blobs": [
+    "packages/chord/CHANGELOG.md",
+    "packages/chord/package.json",
+    "packages/chord/README.md",
+    "packages/chord/src/sqlite/cloudflare.ts",
+    "packages/chord/src/sqlite/database.ts",
+    "packages/chord/src/sqlite/index.ts",
+    "packages/chord/src/sqlite/migrations.ts",
+    "packages/chord/src/sqlite/node.ts",
+    "packages/chord/src/sqlite/schema.ts",
+    "packages/chord/test/sqlite/cloudflare.test.ts",
+    "packages/chord/test/sqlite/helpers.ts",
+    "packages/chord/test/sqlite/migrations.test.ts",
+    "packages/chord/test/sqlite/node.test.ts",
+    "packages/durable/CHANGELOG.md",
+    "packages/durable/src/storage/sqlite/cloudflare.ts",
+    "packages/durable/src/storage/sqlite/database.ts",
+    "packages/durable/src/storage/sqlite/index.ts",
+    "packages/durable/src/storage/sqlite/migrations.ts",
+    "packages/durable/src/storage/sqlite/node.ts",
+    "packages/durable/src/storage/sqlite/schema.ts",
+    "packages/durable/src/storage/sqlite/storage.ts",
+    "packages/durable/test/sqlite-cloudflare.test.ts",
+    "packages/durable/test/sqlite-facade.test.ts",
+    "packages/durable/test/sqlite-migrations.test.ts",
+    "tsconfig.json"
+  ],
+  "changed_blob_count": 25,
+  "official_compare_exactly_matches": true,
+  "all34_authority_records_match_git_tree_blobs": true,
+  "unchanged_subtree_blobs": [
+    {
+      "path": "packages/agent",
+      "git_tree": "592223b3a39566ddb6c5cd2181c5c2f0d04c6eee"
+    },
+    {
+      "path": "packages/coding-agent",
+      "git_tree": "3b3b4ec28e935892d81b51eefd593c8bd6fa62bc"
+    },
+    {
+      "path": "packages/ai",
+      "git_tree": "f73d587e4c5a60a78a09add33798d7df8bf8bb3d"
+    }
+  ],
+  "jobs_run": [],
+  "runtime_qualified": false
+}

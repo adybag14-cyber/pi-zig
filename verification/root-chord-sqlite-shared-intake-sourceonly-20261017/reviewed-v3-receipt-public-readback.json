@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "receipt_head": "48c0f11e06afdc0744fcce051039dac85eb812f6",
+  "records": [
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/public-readback.json",
+      "size": 24059,
+      "sha256": "3C7CD969F74C9EC0049317994997E74324AAAE481F3BFEE846C8A42AB4B1A1F8",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/48c0f11e06afdc0744fcce051039dac85eb812f6/verification/chord-sqlite-c268-sourceonly-20261017/public-readback.json"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/source-ready.json",
+      "size": 2081,
+      "sha256": "65B46FED12FCA31ADC0293182EF45C51D58732A57D6914E44DD5F4A59A654BCC",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/48c0f11e06afdc0744fcce051039dac85eb812f6/verification/chord-sqlite-c268-sourceonly-20261017/source-ready.json"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/independent-source-review.json",
+      "size": 3253,
+      "sha256": "A76442DCFC2AF501B194022CC882C0ADC699A9325E86AB3305CCF98C3FFC98E3",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/48c0f11e06afdc0744fcce051039dac85eb812f6/verification/chord-sqlite-c268-sourceonly-20261017/independent-source-review.json"
+    },
+    {
+      "path": "verification/chord-sqlite-c268-sourceonly-20261017/prepared-v3.json",
+      "size": 32567,
+      "sha256": "BD08F4AD4A11D1FE27F02DFED4FB7A2BB34412CE9E82661AF9E8AB1B2200C574",
+      "url": "https://raw.githubusercontent.com/adybag14-cyber/pi-zig/48c0f11e06afdc0744fcce051039dac85eb812f6/verification/chord-sqlite-c268-sourceonly-20261017/prepared-v3.json"
+    }
+  ],
+  "all_equal": true,
+  "execution_claim": false
+}

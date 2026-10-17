@@ -1,0 +1,307 @@
+{
+  "schema": 1,
+  "head": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "base": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "official_compare_sha256": "AC10B894DFEC0B6ABD23E91AFA5C8454671BDE6F919676F447EC5EA5CA3CA179",
+  "changed_file_count": 25,
+  "all25_current_git_blobs_verified": true,
+  "records": [
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/CHANGELOG.md",
+      "blob": "49089b5ca6d65218170d17148e7aa42dedfbaeff",
+      "size": 18923,
+      "sha256": "1FF9E3869535DF3FD829474EB9778FECECA5EE131D90A3B1B2B47B650CEF72F5",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/CHANGELOG.md.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/CHANGELOG.md"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/README.md",
+      "blob": "157b4b51d17224561ccf2504b77d44cbf7151295",
+      "size": 8524,
+      "sha256": "371B46574F339A3970991A795F599227F73315640B6897CCF1C115B5D675B7B8",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/README.md.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/README.md"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/package.json",
+      "blob": "973063fb570c05e3a3c750d57bf09ca1cc4ced18",
+      "size": 2082,
+      "sha256": "C22C4EC33F676C06E41573367DAE4AF89FC816BCF11A8972121B58729E3E5B9C",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/package.json.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/package.json"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/cloudflare.ts",
+      "blob": "897a660b7c3caf1f39f38e30822835f6459c3d25",
+      "size": 5864,
+      "sha256": "2DEE7C2AEE058FD570FD8B0E0B9488F9382189362519C1A8EADF37FD6C0E0E28",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/cloudflare.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/cloudflare.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/database.ts",
+      "blob": "fc5a814c6141a18e519c4a461377c4068eb044ac",
+      "size": 1861,
+      "sha256": "94BE8E6030B986E273E135C1C1327AB063C07C7A884D05AB6280C52E6D81BFC2",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/database.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/database.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/index.ts",
+      "blob": "322d402364261bb289540191c999e4b63219fb23",
+      "size": 219,
+      "sha256": "BE968D2152471D455323BBFD06802EA73D1470B03B2123E2A4E1F680DA38B0E8",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/index.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/index.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/migrations.ts",
+      "blob": "d4dc7efe88c2142af3ff281bebf56df72c87e1fb",
+      "size": 1805,
+      "sha256": "BD21356D008B67C1C9C2DA00BB49FCF439822D0FE8C2AFAA17FAC075474BBC40",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/migrations.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/migrations.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/node.ts",
+      "blob": "b156477e8749c5b0315f0444396e82b8ee79a5bf",
+      "size": 6288,
+      "sha256": "87EEE26EC2CD23F0EC19FA785C4B985546D85CF791FD6454E75BBE643E6EAC68",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/node.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/node.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/src/sqlite/schema.ts",
+      "blob": "2ee01bc5e9291f4f624f6a24af8426386876a803",
+      "size": 406,
+      "sha256": "156D8191D7BCFCA84F04E3745323645B2102F270649FB9B2603985A812A12AF7",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/src/sqlite/schema.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/src/sqlite/schema.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/test/sqlite/cloudflare.test.ts",
+      "blob": "0e7521d25b54d8665a1f22a5391039846350602c",
+      "size": 5254,
+      "sha256": "31794743762C5280107A5B171439091ECCF353D339CCEA158BAFDA9E9AAB3373",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/cloudflare.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/test/sqlite/cloudflare.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/test/sqlite/helpers.ts",
+      "blob": "042696e455b8a07d33defa7f3e788e261e0746e3",
+      "size": 2345,
+      "sha256": "FF8FA49F17A6A85C8B4076CD7D7D7BF9F4F9F8B570325362D26DCE4ECC7CD002",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/helpers.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/test/sqlite/helpers.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/test/sqlite/migrations.test.ts",
+      "blob": "a94e765fecb6f2b395a0f83fd5a7d6d0be43456a",
+      "size": 3999,
+      "sha256": "92781852CC08E850066320182D5578BCEDD7F51E331FF7D53C306E97F7311903",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/migrations.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/test/sqlite/migrations.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/chord/test/sqlite/node.test.ts",
+      "blob": "11098d1c5cfdadc71b75f6ba832a35ef349aaec9",
+      "size": 6974,
+      "sha256": "0D19D1F9AFF5592C695CBC53ABFF0502B6175BEA7D9737037AF301F3232A0828",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/chord/test/sqlite/node.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/chord/test/sqlite/node.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/CHANGELOG.md",
+      "blob": "e587541e657c088e179dcdc9dc0f41f2ef7d47ad",
+      "size": 24017,
+      "sha256": "D17DF2DC6F8B07017F0F92DC39D5EEFD6F348A645F3ED8836C5C75A53391EB41",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/CHANGELOG.md.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/CHANGELOG.md"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/cloudflare.ts",
+      "blob": "3bce64417c1685a6f66e218cdce417394809a60c",
+      "size": 712,
+      "sha256": "CDCF6D443E0A03296F74732B6EB1AD7C3EBD00FFE5A8F8BC4C66B65D72948D10",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/cloudflare.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/database.ts",
+      "blob": "0af83a65f2c96a050d264e366bdb4f6198a35d6a",
+      "size": 97,
+      "sha256": "970E243D7589603DB5C5838155764A71B30B4730F70C29854C72BFC99927117E",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/database.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/database.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/index.ts",
+      "blob": "2ba0ac9285af68509dd08c49c000af555b68dad0",
+      "size": 304,
+      "sha256": "C81D2041CBD6C217ECC1F8E5C2C90A1B4EA1E3DF8CDD6DC4362DC0EC73614310",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/index.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/index.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/migrations.ts",
+      "blob": "bd2b6dd89c9515b423f2f981812f755f50ca084c",
+      "size": 5389,
+      "sha256": "855356E8C4FBF1481A1E4587921374D04670242AE15889D3302A39442FD8E6DC",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/migrations.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/migrations.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/node.ts",
+      "blob": "210478ae58d23e3b97acb48029295b325332a7cd",
+      "size": 998,
+      "sha256": "A71180A69E8D9225CCDBA50F8EB7E908A3454B6B537657BA18A964D891F29E1C",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/node.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/node.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/schema.ts",
+      "blob": "b807ba52910cb370426dc21d7dc40c9b2495e85e",
+      "size": 2415,
+      "sha256": "A5247F752DF8707D98B63A3F8E292124AE09AFA50B731935E3C2D4864370B1BE",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/schema.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/schema.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/src/storage/sqlite/storage.ts",
+      "blob": "7dc5903828740fe278fdc692ef9f40dbf68982c7",
+      "size": 35871,
+      "sha256": "6778529DADA8AC79D54328F7E8924D14A2A25BF33BEFC186C078482D27E8FE4A",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/src/storage/sqlite/storage.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/src/storage/sqlite/storage.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/test/sqlite-cloudflare.test.ts",
+      "blob": "4c64772db255bdd5ab438f0ba1fa032f654f9543",
+      "size": 3780,
+      "sha256": "A216634489B1704A5C82D96720EBE675BBF9C0342447DFBD5C372DE5B55B54CD",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-cloudflare.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/test/sqlite-cloudflare.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/test/sqlite-facade.test.ts",
+      "blob": "46662535f24c95bcfee1313c63a3bc29e9e20875",
+      "size": 9429,
+      "sha256": "629868B0D9879551685DE2DBCDF14861F9770FC25E9E45F1C1B0484D48013B52",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-facade.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/test/sqlite-facade.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "packages/durable/test/sqlite-migrations.test.ts",
+      "blob": "a1936f62669e6ef7c1eb7546d0ccd307853d98b9",
+      "size": 4183,
+      "sha256": "3014289C1457937831544B5E5FE8F42D5CBA6E34DD9346040A04FE06BA8F3D1A",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/packages/durable/test/sqlite-migrations.test.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/packages/durable/test/sqlite-migrations.test.ts"
+    },
+    {
+      "revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+      "path": "tsconfig.json",
+      "blob": "8c3b4d13305bc4ce78f5be6f7c912f84b3102a1c",
+      "size": 3216,
+      "sha256": "864D1FADC39E9D117133A6735DF7E10EAEAFF2DEC82EE4A4B83DCA4CECE72037",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/c268154/tsconfig.json.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/c268154ca1171c2f9eefe75d3d7372a68aada2d5/tsconfig.json"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/cloudflare.ts",
+      "size": 6335,
+      "sha256": "428B68034173066227C8D2BEFF111E3A9852AFD9B4215E30BC4FF6C315F47B20",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/cloudflare.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/cloudflare.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/database.ts",
+      "size": 1877,
+      "sha256": "E7F392B01995A12ABF83BA03209DEA25D2CCD26673BF79E2E4D41FD9CF2CD543",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/database.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/database.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/index.ts",
+      "size": 289,
+      "sha256": "1FABC79DF58729F28BEEF38D25AF290E2A0A767E9B76CFAC517B3B0E331B3D63",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/index.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/index.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/migrations.ts",
+      "size": 6615,
+      "sha256": "3BBFF65FE5630DDA9AF4DA43032CEC7648B401D6A7060F2D868CCB9A3FB49285",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/migrations.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/migrations.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/node.ts",
+      "size": 7035,
+      "sha256": "4EB34B79D18B812B818F976737617593BBC3D25D0562B118810AED9E4EFC123A",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/node.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/node.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/src/storage/sqlite/schema.ts",
+      "size": 2670,
+      "sha256": "45EE91B7658BB52BA9E3DB830A02C91CC118EF534FECB4330AEAF7A65DE5FB9B",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/src/storage/sqlite/schema.ts.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/src/storage/sqlite/schema.ts"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "LICENSE",
+      "size": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/LICENSE.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/LICENSE"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/chord/package.json",
+      "size": 1643,
+      "sha256": "1CFCCB1C93B8E96D1BE4AE8A19B4F10E545B9D3E0B9F005B199C3722DA0512F8",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/chord/package.json.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/chord/package.json"
+    },
+    {
+      "revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+      "path": "packages/durable/package.json",
+      "size": 5309,
+      "sha256": "7877411C036932F74AF4226563FF37F121013A9F69D4F9CEB55F5CDBCF6E5C54",
+      "local": "verification/chord-sqlite-c268-sourceonly-20261017/authority/8efd314/packages/durable/package.json.txt",
+      "url": "https://raw.githubusercontent.com/earendil-works/pi/8efd314fa3d3232ce197d8d7a6a5660530b9d83e/packages/durable/package.json"
+    }
+  ]
+}
