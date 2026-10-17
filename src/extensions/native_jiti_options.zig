@@ -60,6 +60,10 @@ fn invokeIgnored(engine: *v.em.Engine, receiver: c.JSValue, name: [*:0]const u8,
 }
 /// Owned Source result. No factory, file cache or namespace is synthesized.
 pub fn resolve(engine: *v.em.Engine, user_options: c.JSValue) !c.JSValue {
+    // Actual factory/host callers also use this entry directly, bypassing the
+    // ordinary callable's boundary. Source catch{} runs before diagnostics.
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     const yes = c.pi_js_bool(engine.context, 1);
     const no = c.pi_js_bool(engine.context, 0);

@@ -21,12 +21,19 @@ direct OOM/preexisting uncatchable/fresh exact private allocation reasons
 propagate. Historical/lookalike names are not classified. Nested Boolean
 fallback temporaries are released after their field expression, before later
 guest callbacks. Shared helper/Scope/Engine/C/H code is unchanged.
+The public host resolve entry balances diagnostic suppression itself, so direct
+real factory calls preserve the same catch-before-formatting boundary as the
+ordinary callable wrapper.
 
-Three prepared native entrypoints check ordinary metadata/defaults/overrides,
+Four prepared native entrypoints check ordinary metadata/defaults/overrides,
 Source literal/assignment/spread behavior with inherited setters and symbols,
 and an independently accepted getter/catch/Boolean trace. They use the actual
 realm process/JSON/Boolean, restoring controlled property descriptors, and
 create no fake jiti factory or cache. None are compiled or run.
+The additive direct-host control bypasses the wrapper, observes raw reason
+coercion and Engine slot state from later real Boolean callbacks, and asserts
+balanced suppression and an empty captured slot. The original19 Source inputs
+remain byte-identical; this is a separate unrun native boundary control.
 
 options-reference-input.mjs prepares19 genuine Source observations by loading
 the exact original options.ts through the official self-contained jiti2.7
