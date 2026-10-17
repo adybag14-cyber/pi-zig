@@ -5,7 +5,9 @@ const js = @import("native_js_values.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
+const module_cache_key = "pi-private:ai-transcript-context";
 pub fn exports(engine: *em.Engine) !c.JSValue {
+    if (engine.native_module_values.get(module_cache_key)) |cached| return c.JS_DupValue(engine.context, cached);
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const result = try scope.object();
@@ -20,6 +22,11 @@ pub fn exports(engine: *em.Engine) !c.JSValue {
         };
         try scope.put(result, name, try scope.own(try @import("native_node_function.zig").create(engine, name, if (kind == 0) 2 else 1, Adapter.call, &.{})));
     }
+    const retained = c.JS_DupValue(engine.context, result);
+    engine.native_module_values.put(engine.gpa, module_cache_key, retained) catch |err| {
+        engine.freeValue(retained);
+        return err;
+    };
     return c.JS_DupValue(engine.context, result);
 }
 pub fn initial(engine: *em.Engine, prompt: c.JSValue, tools: c.JSValue) !c.JSValue {
