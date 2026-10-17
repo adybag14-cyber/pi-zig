@@ -30,10 +30,7 @@ fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args: 
     if (completion == .fulfilled) return .{ .returned = c.pi_js_undefined() };
     var s: Scope = .{ .engine = engine }; defer s.deinit();
     if (completion == .rejected) {
-        var generation: u64 = 0;
-        if (c.JS_ToBigUint64(engine.context, &generation, try s.get(state.*, "awaitGeneration")) < 0) return v.js.capture(engine);
-        // Rejected data's uncatchable bit alone is not a trusted boundary.
-        try body.rethrowRecognizedAllocation(engine, input, generation);
+        try body.enterRejectedContinuation(engine);
         return .{ .thrown = c.JS_DupValue(engine.context, input) };
     }
     const owner = try s.own(try engine.checked(c.JS_NewObjectProto(engine.context, c.pi_js_null())));
@@ -76,11 +73,10 @@ fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args: 
     const handler = try s.get(receiver, "runContinuation");
     return awaitCall(&s, owner, handler, receiver, &.{});
 }
-fn awaitCall(s: *Scope, owner: c.JSValue, handler: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !af.Action {
+fn awaitCall(s: *Scope, _: c.JSValue, handler: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !af.Action {
     // Callee lookup and argument preparation have finished. This generation
     // belongs only to the selected call/Await, not earlier user getter work.
     const generation = s.engine.native_allocation_generation;
-    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation))));
     const value = s.call(handler, receiver, args) catch |err| {
         if (err == error.JavaScriptException) if (s.engine.captured_exception) |reason| {
             try body.rethrowRecognizedAllocation(s.engine, reason, generation);
