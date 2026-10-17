@@ -1,0 +1,41 @@
+{
+  "status": "selected-call-exact-boundary-source-successor-unrun-review-pending",
+  "baseline": "e3d1e0b2e02e3127497fa29f815f73ba3c838c40",
+  "product": {
+    "bytes": 6606,
+    "path": "src/extensions/native_agent_prompt_async.zig",
+    "sha256": "B01B4363ACD48F935D80FFC04E6FC5DD660A5C1ECB2E8B7F2E420D75AECDCFE5"
+  },
+  "sole_change": "Selected synchronous call catch classifies at same generation as rejected Await and returns ordinaryowned .thrown before outerbroadAdapter; no double historical classification",
+  "causal_native_controls": [
+    "Earlier getter catches fresh native Ccallback tag, returnsnormally; selectedhandler synchronouslythrows savedreason: ordinarysamevalue",
+    "Same earliergetterreason returned via selectedPromise.reject: ordinarysamevalue",
+    "Fresh currentselectedcall tag sync/async: exact fatalreason",
+    "Historicaltag/lookalike/flaggedrejectdata withoutpendingfatal ordinary"
+  ],
+  "native_controls_status": "prepared specifications only; expected absent",
+  "preserved_e3_packet": [
+    {
+      "bytes": 4169,
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/observer.mjs",
+      "sha256": "FD30493132E6614DC3B4EAACF369E60AA373D5B2EE22236B295EE7896D0B0EE0"
+    },
+    {
+      "bytes": 5457,
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/prepared.json",
+      "sha256": "9FF2365C41A99779B86132C73DDCC66058933EE9BCF10277CB2CB2440221812E"
+    },
+    {
+      "bytes": 4519,
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/README.md",
+      "sha256": "04EA90BCD8286828052D4EDA18AE7B0C965A460D4551395212DA0BBF37298816"
+    },
+    {
+      "bytes": 260,
+      "path": "verification/agent-routing-genuine-af-sourceonly-20261017/reference-input.mjs",
+      "sha256": "1C65EAE0356FFBFF4D137C3BE7DAF96BAFFE6E6D93BEBC7951D83481F8C45AE4"
+    }
+  ],
+  "jobs_launched": false,
+  "main_c_h_engine_modified": false
+}

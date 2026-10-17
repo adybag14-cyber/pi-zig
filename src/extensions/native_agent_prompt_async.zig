@@ -79,8 +79,18 @@ fn invoke(engine: *v.em.Engine, comptime kind: Kind, receiver: c.JSValue, args: 
 fn awaitCall(s: *Scope, owner: c.JSValue, handler: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !af.Action {
     // Callee lookup and argument preparation have finished. This generation
     // belongs only to the selected call/Await, not earlier user getter work.
-    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, s.engine.native_allocation_generation))));
-    return .{ .awaited = c.JS_DupValue(s.engine.context, try s.call(handler, receiver, args)) };
+    const generation = s.engine.native_allocation_generation;
+    try s.put(owner, "awaitGeneration", try s.own(try s.engine.checked(c.JS_NewBigUint64(s.engine.context, generation))));
+    const value = s.call(handler, receiver, args) catch |err| {
+        if (err == error.JavaScriptException) if (s.engine.captured_exception) |reason| {
+            try body.rethrowRecognizedAllocation(s.engine, reason, generation);
+            if (c.JS_IsUncatchableError(reason)) return err;
+            s.engine.captured_exception = null;
+            return .{ .thrown = reason };
+        };
+        return body.failure(s.engine, err);
+    };
+    return .{ .awaited = c.JS_DupValue(s.engine.context, value) };
 }
 fn systemOnly(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit();
