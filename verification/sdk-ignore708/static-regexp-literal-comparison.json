@@ -1,0 +1,188 @@
+{
+  "scope": "static primary literal text only; no library pattern execution",
+  "source_index_sha256": "643735013BDCF86DFECA4D38FB74D9A4FAFA7A640AD2D251077862F18B2556FE",
+  "compiler_steps": {
+    "primary": [
+      {
+        "pattern": "^\\uFEFF",
+        "flags": ""
+      },
+      {
+        "pattern": "[\\r\\n]+$",
+        "flags": ""
+      },
+      {
+        "pattern": "((?:\\\\\\\\)*?)(\\\\? +)$",
+        "flags": ""
+      },
+      {
+        "pattern": "(\\\\+?) ",
+        "flags": "g"
+      },
+      {
+        "pattern": "[\\\\$.|*+(){^]",
+        "flags": "g"
+      },
+      {
+        "pattern": "(?!\\\\)\\?",
+        "flags": "g"
+      },
+      {
+        "pattern": "^\\/",
+        "flags": ""
+      },
+      {
+        "pattern": "\\/",
+        "flags": "g"
+      },
+      {
+        "pattern": "^\\^*(?:\\\\\\*\\\\\\*\\\\\\/)+",
+        "flags": ""
+      },
+      {
+        "pattern": "\\\\\\/\\\\\\*\\\\\\*(?=\\\\\\/|$)",
+        "flags": "g"
+      },
+      {
+        "pattern": "(^|[^\\\\]+)(\\\\\\*)+(?=.+)",
+        "flags": "g"
+      },
+      {
+        "pattern": "(^|[^\\\\])((?:\\\\\\\\)*)\\\\\\*$",
+        "flags": ""
+      },
+      {
+        "pattern": "\\\\\\\\\\\\(?=[$.|*+(){^])",
+        "flags": "g"
+      },
+      {
+        "pattern": "\\\\\\\\",
+        "flags": "g"
+      },
+      {
+        "pattern": "\\\\\\[([^\\]/]*?)(\\\\*)($|\\])",
+        "flags": "g"
+      }
+    ],
+    "candidate": [
+      {
+        "pattern": "^\\uFEFF",
+        "flags": ""
+      },
+      {
+        "pattern": "[\\r\\n]+$",
+        "flags": ""
+      },
+      {
+        "pattern": "((?:\\\\\\\\)*?)(\\\\? +)$",
+        "flags": ""
+      },
+      {
+        "pattern": "(\\\\+?) ",
+        "flags": "g"
+      },
+      {
+        "pattern": "[\\\\$.|*+(){^]",
+        "flags": "g"
+      },
+      {
+        "pattern": "(?!\\\\)\\?",
+        "flags": "g"
+      },
+      {
+        "pattern": "^\\/",
+        "flags": ""
+      },
+      {
+        "pattern": "\\/",
+        "flags": "g"
+      },
+      {
+        "pattern": "^\\^*(?:\\\\\\*\\\\\\*\\\\\\/)+",
+        "flags": ""
+      },
+      {
+        "pattern": "\\\\\\/\\\\\\*\\\\\\*(?=\\\\\\/|$)",
+        "flags": "g"
+      },
+      {
+        "pattern": "(^|[^\\\\]+)(\\\\\\*)+(?=.+)",
+        "flags": "g"
+      },
+      {
+        "pattern": "(^|[^\\\\])((?:\\\\\\\\)*)\\\\\\*$",
+        "flags": ""
+      },
+      {
+        "pattern": "\\\\\\\\\\\\(?=[$.|*+(){^])",
+        "flags": "g"
+      },
+      {
+        "pattern": "\\\\\\\\",
+        "flags": "g"
+      },
+      {
+        "pattern": "\\\\\\[([^\\]/]*?)(\\\\*)($|\\])",
+        "flags": "g"
+      }
+    ],
+    "differences": []
+  },
+  "other_literal_presence": [
+    {
+      "name": "blank",
+      "pattern": "^ +$",
+      "flags": "",
+      "exact_literal_present": true
+    },
+    {
+      "name": "invalidBackslash",
+      "pattern": "(?:[^\\\\]|^)\\\\$",
+      "flags": "",
+      "exact_literal_present": true
+    },
+    {
+      "name": "leadingBang",
+      "pattern": "^\\\\!",
+      "flags": "",
+      "exact_literal_present": true
+    },
+    {
+      "name": "leadingHash",
+      "pattern": "^\\\\#",
+      "flags": "",
+      "exact_literal_present": true
+    },
+    {
+      "name": "splitLines",
+      "pattern": "\\r?\\n",
+      "flags": "g",
+      "exact_literal_present": true
+    },
+    {
+      "name": "windowsNamespace",
+      "pattern": "^\\\\\\\\\\?\\\\",
+      "flags": "",
+      "exact_literal_present": true
+    },
+    {
+      "name": "windowsInvalid",
+      "pattern": "[\"<>|\\u0000-\\u001F]+",
+      "flags": "u",
+      "exact_literal_present": true
+    },
+    {
+      "name": "windowsSeparators",
+      "pattern": "\\\\",
+      "flags": "g",
+      "exact_literal_present": true
+    },
+    {
+      "name": "windowsAbsolute",
+      "pattern": "^[a-z]:\\/",
+      "flags": "i",
+      "exact_literal_present": true
+    }
+  ],
+  "Source_or_Node_executed": false
+}

@@ -1,0 +1,105 @@
+{
+  "schema": 1,
+  "scope": "private consumed original ignore7.0.8 default/add/ignores supplier source-only",
+  "base": "c5c23ab6595cb265d9985340930d7b6e934f54d9",
+  "members": [
+    {
+      "path": "src/extensions/native_sdk_ignore708.zig",
+      "bytes": 18627,
+      "sha256": "B32AAFBF0B751D52EE30D6CEECF02B136056641E5EC8213EE300C3BF148BE081"
+    },
+    {
+      "path": "src/extensions/native_sdk_ignore708_compile.zig",
+      "bytes": 18961,
+      "sha256": "E1F5091FC7951E193278BDA4EAD3911C482D59B05B4317CEFBE1A542A6DB7D5A"
+    },
+    {
+      "path": "src/extensions/native_sdk_ignore708_values.zig",
+      "bytes": 6224,
+      "sha256": "E8DB00449ED22C70C29BB01B9EDDEB59C094671031904D5F21A866454B3AAB74"
+    },
+    {
+      "path": "src/extensions/native_sdk_chalk_scope.zig",
+      "bytes": 9127,
+      "sha256": "B9FE5A0E567BAFCC059BED79505623B22AA1740DDD5A23816F5BAF85AFA0233F"
+    },
+    {
+      "path": "src/extensions/native_sdk_ignore708_test.zig",
+      "bytes": 3313,
+      "sha256": "19A618480F4BEACDAEE31F491562D8FD74920D2F9473CBCC5312BB6695623567"
+    },
+    {
+      "path": "src/extensions/native_sdk_ignore708_cleanup_test.zig",
+      "bytes": 8341,
+      "sha256": "9B1E0FE54232A9B815ADCDD0ECD2E156043336E712244F2F23280F0F47180252"
+    },
+    {
+      "path": "src/native_sdk_ignore708_test.zig",
+      "bytes": 220,
+      "sha256": "17D0393010C7539866EEF42D831576E447ACD2B8D805826619186B0318C1F46F"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-ignore708-consumed.input.txt",
+      "bytes": 8927,
+      "sha256": "F64F73C89A7A7D05D0D056C7B302DB1923E6FBDDA6282764CA59D3928D74EC03"
+    },
+    {
+      "path": "verification/sdk-ignore708/authored-case-ids.json",
+      "bytes": 6293,
+      "sha256": "05A084DB67BF4E17C4901CFBB124B2FA1CE0869BFE9FE15C6618BC324C001478"
+    },
+    {
+      "path": "verification/sdk-ignore708/build-snippet.zig.txt",
+      "bytes": 905,
+      "sha256": "FDB08FA004AA5BB57B0F39F6FDF7B90E5B68A6A0FDA40FA0E453AED910FE2372"
+    },
+    {
+      "path": "verification/sdk-ignore708/capture-primary.mjs",
+      "bytes": 2046,
+      "sha256": "05B54E40A8C542FD52BD597DF2437788D57C8CA69257681B53FA48AC0230AEC8"
+    },
+    {
+      "path": "verification/sdk-ignore708/ignore-consumed-callers.mjs",
+      "bytes": 8927,
+      "sha256": "F64F73C89A7A7D05D0D056C7B302DB1923E6FBDDA6282764CA59D3928D74EC03"
+    },
+    {
+      "path": "verification/sdk-ignore708/LICENSE-MIT.txt",
+      "bytes": 1095,
+      "sha256": "9C94DB23DC4B1E9AAEE5D195668B916AFC71EFED54AF226B66CF0CCC4389C1C0"
+    },
+    {
+      "path": "verification/sdk-ignore708/primary-provenance.json",
+      "bytes": 3171,
+      "sha256": "518959805C524DBD576566E5EE7EFCAE5C85A39A75777EB4E8FDF58811356E38"
+    },
+    {
+      "path": "verification/sdk-ignore708/README.md",
+      "bytes": 5026,
+      "sha256": "8F542902312588070CFCD80866E9ECC69B9CBF092C200473B3FFB17FA473D862"
+    },
+    {
+      "path": "verification/sdk-ignore708/root-caller-config.template.json",
+      "bytes": 316,
+      "sha256": "396DA15B3E54B9F53BE7944D6041CC61C5A5A3B447862E8F879BA92FD362AFCA"
+    },
+    {
+      "path": "verification/sdk-ignore708/static-regexp-literal-comparison.json",
+      "bytes": 3894,
+      "sha256": "EEF8A2A83BF214641FD4257D636440D34EDC33FBE4D0F50CC11943A56128E545"
+    }
+  ],
+  "owned_completion_already_in_base_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "raw_scope_exact_cd145_sha256": "B9FE5A0E567BAFCC059BED79505623B22AA1740DDD5A23816F5BAF85AFA0233F",
+  "planned_ordered_original_observations": 246,
+  "planned_named_native_tests": 3,
+  "actual_metadata": "unknown",
+  "Node_or_native_jobs": false,
+  "fmt_or_AST_commands": false,
+  "Source_expected_authored": false,
+  "Source_expected_absent": true,
+  "global_ignore_or_minimatch_alias": false,
+  "shared_Engine_C_or_build_changed": false,
+  "cold_function_class_and_atomic_VM_frontier": "unqualified",
+  "default_activation": false
+}
