@@ -1,0 +1,161 @@
+{
+  "schema": 1,
+  "status": "source_only_auth_owner_draft_prerequisites_pending",
+  "parent_adapter": "ae6d4fc606f0deea3f908f7f2eb0b80c6b1be002",
+  "fs_api_authority": "a4dbdb3a0558d435aa136e03630764a8cd175caa",
+  "helper_authority": "733517fb9670ad92f556141a5d3ede069ea2423d",
+  "standalone_compile_ready": false,
+  "selected": false,
+  "metadata_execution": false,
+  "runtime_execution": false,
+  "original_reference_capture": false,
+  "runtime_metadata": null,
+  "prepared_profiles": [
+    "original_auth_observer",
+    "actual_memory_roundtrip",
+    "read_ordinary_cleanup",
+    "read_new_fatal_cleanup",
+    "read_rejected_diagnostic",
+    "sync_reload_raw_pending"
+  ],
+  "next_genuine_requirement": "Canonical frontend Inputs builder and Root FS/Stream/TTY/Errno intake; real providers and borrowed live lease, no dummy Inputs",
+  "payload": [
+    {
+      "path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "bytes": 9710,
+      "sha256": "BA9E9D81C86FF1D33CC1B208CF5A6389BFBB6F550D8752F688D583440FB594BF"
+    },
+    {
+      "path": "src/native_sdk_auth_runtime_owner_controls.zig",
+      "bytes": 4345,
+      "sha256": "B9FAF5A6B52DBDBBCC48D9F874892B45B7CFCE56F81327A4314438CEF932953B"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/README.md",
+      "bytes": 5320,
+      "sha256": "225557483365D29A021E19FB547B34B7415E62C9AB7942F65DB407CCC8D2DC08"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/authority/native_child_process_sdk_transport.zig.txt",
+      "bytes": 5302,
+      "sha256": "F70EB406E9A5F2B32F12B664170044050C908A2295556488D21FD0A68E44DB13"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/authority/native_node_child_process_public.zig.txt",
+      "bytes": 75389,
+      "sha256": "03D82CA89AA9D0FE165C9B3A56C91A432241F88C2D10195496C736AA3422CC98"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/authority/native_sdk_output_guard.zig.txt",
+      "bytes": 11176,
+      "sha256": "C7EB56960A594C78B0C25F0DEFB57C8C630DAC6CDB38BB5B790963DF5D0E2F76"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/authority/native_process_streams.zig.txt",
+      "bytes": 23317,
+      "sha256": "12D12EED01CB2B567CA8DC9BC234CF62B9480353BE15BE66DC3F8A92DA370B37"
+    }
+  ],
+  "protected": [
+    {
+      "path": "build.zig",
+      "bytes": 350108,
+      "sha256": "5B669E1DA32E99BA66C612283B1F3C8C62C829D7772F94FD31860EDA6EC91B63"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 46256,
+      "sha256": "F7A4892D2DF999A44E9A3995AC7CC939642F45E0E9AD2F6D3B9631228DAB0B51"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31582,
+      "sha256": "DD676DF61B0486772FF6B00580A24455C84F5B140A42FE13E6BF106B5C0E95F3"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "src/native_auth_resource_cleanup_controls.zig",
+      "bytes": 13000,
+      "sha256": "3E8A4946BCA4EC40E252FCAD81390A8011F739EF27E219D4DAC73418A5ECB60C"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_compile_root.zig",
+      "bytes": 3425,
+      "sha256": "122BAAC93A4A906B116E4374B5E78F7DA79B2791235960B925663384428930D6"
+    },
+    {
+      "path": "src/native_auth_resource_genuine_af_controls.zig",
+      "bytes": 7328,
+      "sha256": "71DE9986B95E84BD4C11C77C077F2FAAE841FB63A723A632130F7F49A886B351"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-storage-resource-genuine-af-observer.mjs",
+      "bytes": 10625,
+      "sha256": "5ED71BFE261AE91845413107E2CBA36C658AB64A2DF868AA01101F741429B8E4"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 3079,
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 5203,
+      "sha256": "DDC4F419BE7353831855F2B0183D6944B89007BFABA9872D4CBE32CD57CABA54"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_process_streams.zig",
+      "bytes": 23317,
+      "sha256": "12D12EED01CB2B567CA8DC9BC234CF62B9480353BE15BE66DC3F8A92DA370B37"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/ignored-reload-reason-corrective.json",
+      "bytes": 4560,
+      "sha256": "2855D02EB0626DCCE84135458CF8D857909F017E74D8BF6C06AFC74E83014DF9"
+    }
+  ]
+}

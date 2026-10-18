@@ -1,0 +1,54 @@
+{
+  "schema": 1,
+  "status": "source_only_auth_owner_admission_successor_unrun",
+  "predecessor": "5e1746c0eed13e8c124b73e796e77c7ef651f6b6",
+  "initial_genuine_af_methods": 6,
+  "selected": false,
+  "standalone_compile_ready": false,
+  "metadata_execution": false,
+  "runtime_execution": false,
+  "payload": [
+    {
+      "path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "bytes": 10417,
+      "sha256": "A85A3E5F23EC1A07689289137572F12507B3842D99FB1ECA76A57677225800C3"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/GENUINE-AF-ADMISSION.md",
+      "bytes": 1201,
+      "sha256": "25350EE326F5AAD388E70D477E8520030A072B51A568EF9368D1888611F6E6F5"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/native_sdk_auth_runtime_owner_controls.zig",
+      "bytes": 4345,
+      "sha256": "B9FAF5A6B52DBDBBCC48D9F874892B45B7CFCE56F81327A4314438CEF932953B"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/prepared.json",
+      "bytes": 6132,
+      "sha256": "12BA9F9A360E4DB5DAD0FEFF69980EEE3420BD2D10B9B75C6E72D244B18AF918"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 46256,
+      "sha256": "F7A4892D2DF999A44E9A3995AC7CC939642F45E0E9AD2F6D3B9631228DAB0B51"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31582,
+      "sha256": "DD676DF61B0486772FF6B00580A24455C84F5B140A42FE13E6BF106B5C0E95F3"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 350108,
+      "sha256": "5B669E1DA32E99BA66C612283B1F3C8C62C829D7772F94FD31860EDA6EC91B63"
+    }
+  ]
+}

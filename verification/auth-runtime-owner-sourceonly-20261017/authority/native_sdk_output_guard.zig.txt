@@ -1,0 +1,145 @@
+//! Actual Source output-guard takeover/restore/query closure on a genuine
+//! frontend lease. This does not advertise unimplemented raw-output AF helpers.
+const std = @import("std");
+const js = @import("native_js_values.zig");
+const c = js.c;
+const Scope = @import("native_node_socket_scope.zig").Scope;
+const functions = @import("native_node_socket_function.zig");
+const streams = @import("native_process_streams.zig");
+const key = "\x00native.sdk.stdout-takeover-owner";
+const Entry = struct { engine: *js.Engine, previous: ?*Entry };
+threadlocal var initializing: ?*Entry = null;
+pub const Exports = struct {
+    take_over_stdout: c.JSValue, restore_stdout: c.JSValue, is_stdout_taken_over: c.JSValue,
+    pub fn deinit(self: Exports, engine: *js.Engine) void { inline for (std.meta.fields(Exports)) |field| engine.freeValue(@field(self, field.name)); }
+};
+const Owner = struct { engine: *js.Engine, process: c.JSValue, lease: streams.Lease, takeover: ?c.JSValue = null, exports: Exports };
+fn finalize(runtime: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
+    const self: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
+    c.JS_FreeValueRT(runtime, self.process);
+    if (self.takeover) |value| c.JS_FreeValueRT(runtime, value);
+    inline for (std.meta.fields(Exports)) |field| c.JS_FreeValueRT(runtime, @field(self.exports, field.name));
+    const engine = self.engine; engine.gpa.destroy(self); c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(Owner));
+}
+fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, visitor: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const self: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
+    c.JS_MarkValue(runtime, self.process, visitor);
+    if (self.takeover) |value| c.JS_MarkValue(runtime, value, visitor);
+    inline for (std.meta.fields(Exports)) |field| c.JS_MarkValue(runtime, @field(self.exports, field.name), visitor);
+}
+fn guard(self: *Owner, engine: *js.Engine) anyerror!void {
+    if (self.engine != engine) return error.NativeStdoutGuardForeignEngine;
+    try streams.assertLease(engine, self.lease); try engine.checkNativeEntry();
+}
+fn owner(engine: *js.Engine, roots: []const c.JSValue) anyerror!*Owner {
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[1]) < 0) return js.capture(engine);
+    const self: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], id) orelse return error.NativeStdoutGuardBrand));
+    try guard(self, engine); return self;
+}
+fn stream(scope: *Scope, name: [*:0]const u8) anyerror!c.JSValue { return scope.get(try scope.global("process"), name); }
+fn boundWrite(scope: *Scope, name: [*:0]const u8) anyerror!c.JSValue {
+    const write = try scope.get(try stream(scope, name), "write");
+    const bind = try scope.get(write, "bind");
+    // Source evaluates the second live process.<stream> after the bind getter.
+    const receiver = try stream(scope, name);
+    return scope.call(bind, write, &.{receiver});
+}
+fn redirect(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    _ = try owner(engine, roots);
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
+    const chunk = if (args.len > 0) args[0] else c.pi_js_undefined();
+    const encoding_or_callback = if (args.len > 1) args[1] else c.pi_js_undefined();
+    const callback = if (c.JS_IsFunction(engine.context, encoding_or_callback)) encoding_or_callback else if (args.len > 2) args[2] else c.pi_js_undefined();
+    // Source calls LIVE global String(chunk), including Symbol conversion;
+    // neither intrinsic ToString nor a byte-only host approximation is correct.
+    const text = try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{chunk});
+    return c.JS_DupValue(engine.context, try scope.call(roots[2], c.pi_js_undefined(), &.{text, callback}));
+}
+fn takeOver(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    const self = try owner(engine, roots); if (self.takeover != null) return c.pi_js_undefined();
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
+    const raw_stdout = try boundWrite(&scope, "stdout");
+    const raw_stderr = try boundWrite(&scope, "stderr");
+    const original = try scope.get(try stream(&scope, "stdout"), "write");
+    const redirected = try scope.own(try functions.createArrow(engine, "", 3, redirect, &.{roots[0], roots[1], raw_stderr}));
+    try scope.set(try stream(&scope, "stdout"), "write", redirected);
+    // State becomes defined ONLY after the real live assignment and real Source
+    // record allocation. No TTY/mode/active-frontend inference supplies this bit.
+    const record = try scope.object();
+    try scope.put(record, "rawStdoutWrite", raw_stdout); try scope.put(record, "rawStderrWrite", raw_stderr); try scope.put(record, "originalStdoutWrite", original);
+    const previous = self.takeover; self.takeover = c.JS_DupValue(engine.context, record);
+    if (previous) |value| engine.freeValue(value); // Source permits live reentry.
+    return c.pi_js_undefined();
+}
+fn restore(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    const self = try owner(engine, roots); if (self.takeover == null) return c.pi_js_undefined();
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
+    const stdout = try stream(&scope, "stdout");
+    // Resolve LHS first, then re-read CURRENT Source state. A live stdout
+    // getter may reenter restore and clear it; the real undefined-property get
+    // must then throw instead of using a stale saved snapshot.
+    const record = if (self.takeover) |current| try scope.own(c.JS_DupValue(engine.context, current)) else c.pi_js_undefined();
+    const original = try scope.get(record, "originalStdoutWrite");
+    try scope.set(stdout, "write", original);
+    // A throwing setter leaves Source state defined. Successful assignment
+    // clears it before releasing the replaced private record/callback roots.
+    const previous = self.takeover; self.takeover = null; if (previous) |value| engine.freeValue(value);
+    return c.pi_js_undefined();
+}
+fn isTaken(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) anyerror!c.JSValue {
+    const self = try owner(engine, roots); return c.pi_js_bool(engine.context, @intFromBool(self.takeover != null));
+}
+fn duplicate(engine: *js.Engine, exports: Exports) Exports {
+    return .{ .take_over_stdout = c.JS_DupValue(engine.context, exports.take_over_stdout), .restore_stdout = c.JS_DupValue(engine.context, exports.restore_stdout), .is_stdout_taken_over = c.JS_DupValue(engine.context, exports.is_stdout_taken_over) };
+}
+fn createInner(engine: *js.Engine, actual_process: c.JSValue, lease: streams.Lease) anyerror!Exports {
+    var cursor = initializing; while (cursor) |prior| : (cursor = prior.previous) if (prior.engine == engine) return error.NativeStdoutGuardInitializing;
+    var entry: Entry = .{ .engine = engine, .previous = initializing }; initializing = &entry; defer initializing = entry.previous;
+    try streams.assertLease(engine, lease); try engine.checkNativeEntry();
+    var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
+    if (!scope.equal(try scope.global("process"), actual_process)) return error.NativeStdoutGuardProcessChanged;
+    if (engine.native_module_values.get(key)) |holder| {
+        const self: *Owner = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return error.NativeStdoutGuardBrand));
+        if (self.engine != engine or !scope.equal(self.process, actual_process)) return error.NativeStdoutGuardForeignEngine;
+        // This SDK graph belongs to one genuine owner lifetime. Do not silently
+        // retarget old public callbacks or cached child stdio maps on handoff.
+        if (self.lease.context != lease.context or self.lease.generation != lease.generation) return error.NativeStdoutGuardFrontendChanged;
+        try streams.assertLease(engine, lease);
+        return duplicate(engine, self.exports);
+    }
+    var id: c.JSClassID = 0; if (c.JS_NewClassID(engine.runtime, &id) == 0) return error.OutOfMemory;
+    const definition: c.JSClassDef = .{ .class_name = "Actual Source stdout takeover owner", .finalizer = finalize, .gc_mark = mark };
+    if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
+    const holder = try scope.own(c.JS_NewObjectClass(engine.context, id));
+    if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(Owner)) == 0) return error.OutOfMemory;
+    var attached = false; errdefer if (!attached) c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(Owner));
+    const self = try engine.gpa.create(Owner);
+    self.* = .{ .engine = engine, .process = c.JS_DupValue(engine.context, actual_process), .lease = lease,
+        .exports = .{ .take_over_stdout = c.pi_js_undefined(), .restore_stdout = c.pi_js_undefined(), .is_stdout_taken_over = c.pi_js_undefined() } };
+    _ = c.JS_SetOpaque(holder, self); attached = true;
+    const roots = [_]c.JSValue{holder, c.JS_NewUint32(engine.context, id)};
+    self.exports.take_over_stdout = try functions.create(engine, "takeOverStdout", 0, takeOver, &roots);
+    self.exports.restore_stdout = try functions.create(engine, "restoreStdout", 0, restore, &roots);
+    self.exports.is_stdout_taken_over = try functions.create(engine, "isStdoutTakenOver", 0, isTaken, &roots);
+    try streams.assertLease(engine, lease);
+    try engine.checkNativeEntry();
+    const retained = c.JS_DupValue(engine.context, holder);
+    engine.native_module_values.put(engine.gpa, key, retained) catch |err| { engine.freeValue(retained); return err; };
+    return duplicate(engine, self.exports);
+}
+pub fn create(engine: *js.Engine, actual_process: c.JSValue, lease: streams.Lease) anyerror!Exports {
+    engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
+    try engine.checkNativeEntry();
+    var invocation: js.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
+    const result = createInner(engine, actual_process, lease) catch |err| {
+        const failure = normalizeFailure(engine, err);
+        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
+        return failure;
+    };
+    _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |err| { result.deinit(engine); return err; };
+    return result;
+}
+fn normalizeFailure(engine: *js.Engine, err: anyerror) anyerror {
+    const thrown = if (err == error.OutOfMemory) engine.throwNativeOutOfMemoryFatal() else if (err == error.JavaScriptException or c.JS_HasException(engine.context)) engine.throwCaptured() else return err;
+    _ = engine.checked(thrown) catch |actual| return actual; unreachable;
+}

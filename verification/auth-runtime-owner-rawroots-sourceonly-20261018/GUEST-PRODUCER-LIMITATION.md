@@ -1,0 +1,7 @@
+# Additive guest-producer boundary limitation
+
+The exact BE5514 review addendum is retained beside this note. This expressly limits the earlier exact-operation guard wording: guest code within one GetProperty/Call can create private DATA successfully, then throw that same DATA ordinarily. A generation interval does not prove the origin of the later throw. The actual owner's local guards still contain that pattern. This successor does not claim the case closed; Root's canonical producer/Bfb correction must compose separately before broader guest-producer/current-runtime readiness. C435 append failure and per-free retirement remain their distinct trusted/no-guest contracts. The original0e448/prepared9A13 source packet and f599 are immutable historical authorities, not retroactively relabelled.
+
+The only additional product delta from0e448 is balanced diagnostic suppression around direct deinit and retireInto, covering native finalizer callbacks during public owner root retirement. No checkNativeEntry is added to retirement: it must consume owned roots under an already recorded pending outcome. The direct deinit suppression also covers finishVoid. Caller still owns its stable Completion and final finish when using retireInto.
+
+No compiler/parser/AST/Node/native/controller/test execution. Eight owner profiles remain authored/unrun, actual metadata unknown. Real frontend/Stream/TTY/Errno/internal builtin, current runtime/filesystem owner, Engine G2 and DATA-safe C/Bfb prerequisites remain independent and unqualified by this packet.

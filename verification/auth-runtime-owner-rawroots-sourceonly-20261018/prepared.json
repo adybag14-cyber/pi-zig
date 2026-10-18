@@ -1,0 +1,95 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_GENUINE_OWNER_SUCCESSOR_PENDING_INDEPENDENT_REVIEW",
+  "predecessor": "f599e31064b936c3643f118bdd99ee708fa5249f",
+  "helper_source": "62ded415ce3ebdeb99fb17b6a1ccf1b48b9dd54b",
+  "helper_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+  "profiles_authored": 8,
+  "actual_metadata": false,
+  "runtime_execution": false,
+  "standalone_compile_candidate": false,
+  "payload": [
+    {
+      "path": "src/extensions/native_sdk_auth_runtime_owner.zig",
+      "bytes": 12216,
+      "sha256": "20BFA5AC1C9DDAD59E75324BE224CCF729161888DCC8D543D01EB8B962B582F7"
+    },
+    {
+      "path": "src/native_sdk_auth_runtime_owner_controls.zig",
+      "bytes": 11173,
+      "sha256": "20F8B9DE10459405B2E3D49BFCB432483CA68B2AE6D8333D1A3FE73FF2CF39DB"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F"
+    },
+    {
+      "path": "verification/auth-runtime-owner-rawroots-sourceonly-20261018/SCOPE.md",
+      "bytes": 3696,
+      "sha256": "AC79C87ADCC27D1820ED9E4D71793A57A959411642A3EE474CEEB3426C561167"
+    },
+    {
+      "path": "verification/auth-runtime-owner-rawroots-sourceonly-20261018/canonical-ownroot-independent-async-source-review.json",
+      "bytes": 6038,
+      "sha256": "CD583672D0E0942DC5417EDBCEB7E3E38223352559C1E682A862B86DBF56FC7A"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 3079,
+      "sha256": "77F53B20A609B3DDBE45E925571B65051D71859279CC172DB2180D7FD1E06899"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 46256,
+      "sha256": "F7A4892D2DF999A44E9A3995AC7CC939642F45E0E9AD2F6D3B9631228DAB0B51"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31582,
+      "sha256": "DD676DF61B0486772FF6B00580A24455C84F5B140A42FE13E6BF106B5C0E95F3"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 350108,
+      "sha256": "5B669E1DA32E99BA66C612283B1F3C8C62C829D7772F94FD31860EDA6EC91B63"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/prepared.json",
+      "bytes": 6132,
+      "sha256": "12BA9F9A360E4DB5DAD0FEFF69980EEE3420BD2D10B9B75C6E72D244B18AF918"
+    },
+    {
+      "path": "verification/auth-runtime-owner-sourceonly-20261017/genuine-af-admission-prepared.json",
+      "bytes": 1866,
+      "sha256": "75580450A6E339B53C99DE03213CFC29222F611060D1724310485CA21CC27835"
+    }
+  ]
+}
