@@ -1,0 +1,76 @@
+{
+  "schema": "sdk-guest-operation-sourceonly-corrective-v2",
+  "historical": "96801c9081ac433295737930fc6000d6f8ccd589",
+  "source_only": true,
+  "execution_grant": false,
+  "native_metadata": null,
+  "expected_outputs": "absent",
+  "test_declarations": 6,
+  "rows": [
+    {
+      "path": "src/extensions/native_sdk_guest_operation.zig",
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+      "length": 7009
+    },
+    {
+      "path": "src/native_sdk_guest_operation_test.zig",
+      "sha256": "9CF158CE4E1E4F50950C8189E655A3FEE0B02F794EA37911D321C7238FDF5FA6",
+      "length": 10535
+    },
+    {
+      "path": "build.zig",
+      "sha256": "869CB85D08A0601EB99F442D068200044B3FFE93D042E927F9193E538CA048DC",
+      "length": 373297
+    },
+    {
+      "path": "verification/sdk-guest-operation-sourceonly-20261018/README.md",
+      "sha256": "D519FB88A8AECD2C0100905DADC6BB4EADB339520052377B06FB7042030DCB8C",
+      "length": 3103
+    },
+    {
+      "path": "verification/sdk-guest-operation-sourceonly-20261018/CORE-CORRECTION.md",
+      "sha256": "1B1FEC322C307CBAE66C3FF2940BB702C5D2ABC0F70FDF4530F0AF70C4D25391",
+      "length": 1134
+    },
+    {
+      "path": "verification/sdk-guest-operation-sourceonly-20261018/prepared.json",
+      "sha256": "3E51839AE3B70C3BC33AEEA28CAFF81D86C289190812620350D83463E9F61B33",
+      "length": 2273
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "length": 13354
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "length": 93573
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "length": 5566
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "length": 7826
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "length": 163154
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "length": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "length": 76220
+    }
+  ]
+}

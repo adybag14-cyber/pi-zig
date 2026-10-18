@@ -119,3 +119,25 @@ test "SDK guest boundary definitions assignment receiver binary and scope-root o
     try owned.finishVoid(&s, {});
     try balanced(engine);
 }
+test "SDK guest boundary negative status without reason and actual pending precede host error" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    const historical = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(historical);
+    engine.captured_exception = c.JS_DupValue(engine.context, historical);
+    var missing: guest.Boundary = .{ .engine = engine }; try missing.begin();
+    try std.testing.expectError(error.JavaScriptException, missing.finishStatus(-1));
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, historical, engine.captured_exception orelse return error.RequiredContractFailure));
+    try balanced(engine);
+    for ([_]bool{ false, true }) |fatal| {
+        const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
+        if (fatal) c.JS_SetUncatchableError(engine.context, reason);
+        var boundary: guest.Boundary = .{ .engine = engine }; try boundary.begin();
+        // Actual native pending error, not a tagged argument/diagnostic. The
+        // marked variant is a privileged native fatal-event fixture.
+        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, reason));
+        const generation = engine.native_allocation_generation;
+        try std.testing.expectError(error.JavaScriptException, boundary.finishVoid(error.OutOfMemory));
+        try same(engine, reason, engine.captured_exception orelse return error.RequiredOriginalPending);
+        try std.testing.expectEqual(generation, engine.native_allocation_generation);
+        try balanced(engine);
+    }
+}

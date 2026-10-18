@@ -3,7 +3,6 @@
 //! The caller records its final outcome before retiring its Scope (C435).
 const std = @import("std");
 const em = @import("engine.zig");
-const js = @import("native_js_values.zig");
 const sdk = @import("native_sdk.zig");
 const owned = @import("native_sdk_owned_completion.zig");
 pub const c = em.c;
@@ -34,6 +33,7 @@ pub const Boundary = struct {
         return self.engine.checked(self.engine.leaveNativeInvocation(&self.invocation, result));
     }
     fn failure(self: *Boundary, err: anyerror) anyerror!c.JSValue {
+        self.engine.checkNativeEntry() catch |current| return self.close(sdk.fail(self.engine, current));
         // sdk.fail publishes a genuine typed host OOM at its producer. A JS
         // diagnostic is transferred without inspecting its tag/flag/newness.
         return self.close(sdk.fail(self.engine, err));
@@ -52,7 +52,13 @@ pub const Boundary = struct {
         _ = try self.close(c.pi_js_undefined());
     }
     pub fn finishStatus(self: *Boundary, status: c_int) anyerror!void {
-        if (status < 0) return self.finishVoid(js.capture(self.engine));
+        if (status < 0) {
+            // Match checked(value)'s missing-pending contract. Calling capture
+            // without a real event would manufacture a thrown null diagnostic.
+            self.engine.checkNativeEntry() catch |err| return self.finishVoid(err);
+            _ = self.engine.checked(c.JS_ThrowInternalError(self.engine.context, "Native callback returned exception without a pending reason")) catch |err| return self.finishVoid(err);
+            unreachable;
+        }
         return self.finishVoid({});
     }
 };
