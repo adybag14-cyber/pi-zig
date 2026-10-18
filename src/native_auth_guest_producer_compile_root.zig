@@ -2,15 +2,16 @@
 const em = @import("extensions/engine.zig");
 const c = em.c;
 const controls = @import("native_auth_guest_producer_controls.zig");
-const Control = enum { auth_getter_data, auth_getter_fatal, auth_call_data, auth_call_fatal, readonly_getter_data, readonly_getter_fatal, reload_getter_data, reload_getter_fatal };
+const Control = enum { auth_getter_data, auth_getter_fatal, auth_call_data, auth_call_fatal, readonly_getter_data, readonly_getter_fatal, reload_getter_data, reload_getter_fatal, retained_callback_data, retained_callback_fatal };
 fn run(engine: *em.Engine, inputs: controls.Inputs, comptime control: Control) !void {
     const route: controls.Route = switch (control) {
         .auth_getter_data, .auth_getter_fatal => .auth_getter,
         .auth_call_data, .auth_call_fatal => .auth_call,
         .readonly_getter_data, .readonly_getter_fatal => .readonly_getter,
         .reload_getter_data, .reload_getter_fatal => .reload_getter,
+        .retained_callback_data, .retained_callback_fatal => .retained_callback,
     };
-    const fatal = switch (control) { .auth_getter_fatal, .auth_call_fatal, .readonly_getter_fatal, .reload_getter_fatal => true, else => false };
+    const fatal = switch (control) { .auth_getter_fatal, .auth_call_fatal, .readonly_getter_fatal, .reload_getter_fatal, .retained_callback_fatal => true, else => false };
     try controls.verify(engine, inputs, route, fatal);
 }
 comptime {

@@ -99,7 +99,16 @@ fn set(engine: *em.Engine, target: c.JSValue, name: [*:0]const u8, value: c.JSVa
 }
 fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    return observed(engine, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
+    engine.checkNativeEntry() catch return engine.throwCaptured();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    // A live Array method can retain this genuine callback and invoke it after
+    // the enclosing AF body has returned. Its own stable pre-guest invocation
+    // retains actual producer authority without relying on that outer frame.
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const result = observed(engine, @enumFromInt(magic), if (argc > 0) argv[0] else c.pi_js_undefined(), roots) catch |err| sdk.fail(engine, err);
+    return engine.leaveNativeInvocation(&invocation, result);
 }
 fn observed(engine: *em.Engine, kind: Callback, input: c.JSValue, roots: [*c]c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

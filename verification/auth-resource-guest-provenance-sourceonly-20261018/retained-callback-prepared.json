@@ -1,0 +1,170 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_LOCAL_PREGUEST_FRAME_SUCCESSOR_CANONICAL_GUARD_UNCOMPOSED",
+  "predecessor": "af6f2388948cf98db90226f8b1a0e7fb7b326835",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 373385,
+      "sha256": "2D95C9B685E6C9F999F9CD19843349BE0423094F210A16F558A41533A04516A6"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 32135,
+      "sha256": "415C80E22711A3634194F8FD57768A0B2CC444AE81F4767499EA4A84BB497492"
+    },
+    {
+      "path": "src/native_auth_guest_producer_controls.zig",
+      "bytes": 10183,
+      "sha256": "42D603EF6254D16B3E14443D5A6CD9AE35D0B47FF634128A03B02BA9D9307708"
+    },
+    {
+      "path": "src/native_auth_guest_producer_compile_root.zig",
+      "bytes": 1893,
+      "sha256": "5A4A52E484B22EBCBCE6551377899A1500F306241C9CFD584543EE828C56292C"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/RETAINED-CALLBACK-PREGUEST-FRAME.md",
+      "bytes": 2902,
+      "sha256": "24C56E3CEABEC5E59155B6FD732F8B25EF3980F508F412836020239FED5AABB2"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/historical-af6f-independent-async-source-review.json",
+      "bytes": 9644,
+      "sha256": "6056EC9635D54CF7967860923B755201F95B9F514A18EE62C631CD021C224296"
+    }
+  ],
+  "retained": [
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 48829,
+      "sha256": "65607C75860C74D736501495E5A6E003C09D86189358B34DF988FB9CCAF8E1DB"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/SCOPE.md",
+      "bytes": 4199,
+      "sha256": "0EF3C5A88915A54850376B7D008986D435E08C6994A76A70383BF1494A383708"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/original-caller.mjs",
+      "bytes": 1746,
+      "sha256": "52A57E1196053B7D39473BD36A03192B2C83C15BA989575091DB4C7A692C155C"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/auth-storage.ts.txt",
+      "bytes": 16670,
+      "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/resource-loader.ts.txt",
+      "bytes": 48270,
+      "sha256": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/Pi-LICENSE",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/historical-guest-operation-generation-source-limitation.json",
+      "bytes": 1746,
+      "sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "bytes": 34518,
+      "sha256": "90AB96A887AFB5FE16F3EB153DEDE4E3D278C226507B60A92D72B81997089FE4"
+    },
+    {
+      "path": "src/extensions/native_auth_directory_lock.zig",
+      "bytes": 29486,
+      "sha256": "C5A71EB69B6776EC97B2EEF9FD7C376B44C91865F42BAC2130971650B54ED02B"
+    },
+    {
+      "path": "src/extensions/native_auth_readonly_production.zig",
+      "bytes": 32419,
+      "sha256": "F03AA3B9D989E98E0665EE2C8D2C393377C74BFDBFC449E9CA9A5F55B54968D0"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 10257,
+      "sha256": "B94C85471054DA28DE011D0F19BFC0A48F95A0310BC64951C0E80DE0786934C7"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 4593,
+      "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/native_auth_readonly_genuine_af_controls.zig",
+      "bytes": 12741,
+      "sha256": "632D7EAC3475B5D97CBDDDD05D6494C269B00956E11623B69BE3B3B13FF20FB6"
+    },
+    {
+      "path": "src/native_auth_file_genuine_af_test.zig",
+      "bytes": 28419,
+      "sha256": "FD3AD89BFF0516D06DD0D6C74A2F304721F09DF8A7139252A398D8673B887578"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "bytes": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+    }
+  ],
+  "original_manifest_sha256": "9D4F47A39E7539BE0B8417A3D55398F382EEC222BC03ECC9FD2C596148C65BF6",
+  "canonical_guest_guard_composed": false,
+  "canonical_helper_pin": null,
+  "authored_owner_required_profiles": 10,
+  "actual_metadata": false,
+  "runtime_execution": false
+}

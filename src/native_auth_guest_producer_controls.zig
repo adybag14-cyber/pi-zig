@@ -5,12 +5,16 @@ const em = @import("extensions/engine.zig");
 const c = em.c;
 const Scope = @import("extensions/native_sdk_prompt_scope.zig").Scope;
 const owned = @import("extensions/native_sdk_owned_completion.zig");
-pub const Route = enum { auth_getter, auth_call, readonly_getter, reload_getter };
+pub const Route = enum { auth_getter, auth_call, readonly_getter, reload_getter, retained_callback };
 pub const Inputs = struct {
     auth_exports: c.JSValue,
     /// Exact constructor from the real ResourceLoader assembly. Used only by
     /// reload_getter, where a borrowed method receiver is the actual input.
     resource_constructor: c.JSValue = c.pi_js_undefined(),
+    /// Exact enabled-resource callback retained by a delegating live Array
+    /// method during genuine ResourceLoader.reload. The real owner must run
+    /// that capture; no substitute callback may be supplied for these profiles.
+    retained_resource_callback: c.JSValue = c.pi_js_undefined(),
     /// Real owned physical path required by the genuine readonly constructor.
     auth_path: c.JSValue,
 };
@@ -45,7 +49,7 @@ fn expose(scope: *Scope, global: c.JSValue, name: [*:0]const u8, value: c.JSValu
     try scope.put(global, name, value);
     _ = try scope.engine.checked(c.pi_js_undefined());
 }
-/// All eight route/fatal combinations require an actual assembled Auth graph.
+/// All ten route/fatal combinations require an actual assembled Auth graph.
 /// Each runs in a fresh realm; no guest restoration after a native fatal.
 pub fn verify(engine: *em.Engine, inputs: Inputs, comptime route: Route, comptime fatal: bool) !void {
     var scope: Scope = .{ .engine = engine };
@@ -68,6 +72,10 @@ fn run(scope: *Scope, inputs: Inputs, comptime route: Route, comptime fatal: boo
         const reload = try owned.ownRoot(scope, try @import("extensions/native_sdk.zig").get(engine, prototype, "reload"));
         if (!c.JS_IsAsyncFunction(reload)) return error.RequiredActualResourceReloadAF;
         try expose(scope, global, "__actualGuestReload", reload);
+    }
+    if (route == .retained_callback) {
+        if (!c.JS_IsFunction(engine.context, inputs.retained_resource_callback)) return error.RequiredActuallyRetainedResourceCallback;
+        try expose(scope, global, "__actualRetainedResourceCallback", inputs.retained_resource_callback);
     }
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
@@ -105,6 +113,13 @@ fn run(scope: *Scope, inputs: Inputs, comptime route: Route, comptime fatal: boo
             \\const receiver={loaded:false};
             \\const options={get resolveProjectTrust(){return throwActual()}};
             \\try{await __actualGuestReload.call(receiver,options)}catch(reason){caught=reason===actualThrown;__actualGuestAfter++}
+        ,
+        .retained_callback => if (fatal)
+            \\const input={get enabled(){const promise=new Promise(()=>{__actualGuestMaker()});promise.catch(()=>{});return promise}};
+            \\try{__actualRetainedResourceCallback(input)}catch(reason){caught=reason===actualThrown;__actualGuestAfter++}
+        else
+            \\const input={get enabled(){return throwActual()}};
+            \\try{__actualRetainedResourceCallback(input)}catch(reason){caught=reason===actualThrown;__actualGuestAfter++}
         ,
     };
     const source = try std.mem.concat(engine.gpa, u8, &.{ prelude, "\n", subject, "\nexport const completed=true;" });

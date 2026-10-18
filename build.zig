@@ -1698,7 +1698,7 @@ pub fn build(b: *std.Build) void {
         auth_guest_producer_controls.root_module.linkSystemLibrary("advapi32", .{});
         auth_guest_producer_controls.root_module.linkSystemLibrary("userenv", .{});
     }
-    b.step("build-native-auth-guest-producer-controls-artifact", "Compile/link eight genuine owner-required guest-producer bodies; NEVER RUN sentinel").dependOn(&b.addInstallArtifact(auth_guest_producer_controls, .{}).step);
+    b.step("build-native-auth-guest-producer-controls-artifact", "Compile/link ten genuine owner-required guest-producer bodies; NEVER RUN sentinel").dependOn(&b.addInstallArtifact(auth_guest_producer_controls, .{}).step);
 
     const sdk_application_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_native_test.zig"), .target = target, .optimize = optimize }),

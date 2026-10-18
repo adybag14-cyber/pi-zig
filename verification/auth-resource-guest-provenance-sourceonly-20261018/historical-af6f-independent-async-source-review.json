@@ -1,0 +1,188 @@
+{
+  "schema": 1,
+  "reviewer": "async_c_review_resume",
+  "status": "FINITE_LOCAL_HANDLERS_SOURCE_REVIEW_CLOSED_CANONICAL_GUARD_UNCOMPOSED",
+  "head": "af6f2388948cf98db90226f8b1a0e7fb7b326835",
+  "base": "311a8dfe9a72b049cd4ee2a5ef509526101c3e3a",
+  "manifest_sha256": "9D4F47A39E7539BE0B8417A3D55398F382EEC222BC03ECC9FD2C596148C65BF6",
+  "scope": [
+    "Actual two-product delta: Auth.failed and Resource.guardAction/reloadBody error handlers.",
+    "checkNativeEntry surfaces independently retained NativeInvocation/B1 or actual pending reason before ordinary diagnostic ownership transfer; local handlers no longer classify captured DATA flags or private-generation spans.",
+    "Captured ordinary reason transfers exactly once after captured_exception is nulled; unchanged C435 completion boundaries record outcome before Scope retirement. Trusted host errors remain host errors for the existing typed producer path.",
+    "Existing Source Await/return/finally and swallowed sync reload completion order remain unchanged. No state/stage or rejected input policy changed.",
+    "Eight genuine-owner route/fatal profile bodies read: Auth getter/call, Readonly getter and actual Resource reload getter. Ordinary native maker returns actual unmarked private DATA then guest throws the same A; positive producer publishes actual fatal B1. Heap opaque holder traces and owns reason, frees native storage without escaped stack pointer. Exact identity/birth/continuation/coercion/frame assertions are causal and unrun.",
+    "Compile root forces eight typed exported bodies and one fail-if-run sentinel. Fifteen build lines add install-only canonical test.exe artifact target; no Run edge or invented metadata/count."
+  ],
+  "findings": [],
+  "mandatory_open_prerequisites": [
+    "Canonical native_agent_af_values correction is UNCOMPOSED, its corrective pin is null in the manifest and protected old helper remains F01E575E. This receipt DOES NOT close full guest-operation provenance or the old helper.",
+    "Current producer/B1 participation, Root Engine G2, intended DATA-safe C/AF1116, genuine SDK Auth/Readonly/Resource/FS owners and their own callback contracts remain independent. Historical base DA14/A79 is not runtime qualification."
+  ],
+  "qualification_limits": [
+    "Inherited constructors, internal Scope/helper/heartbeat/customFS and generic Engine flag provenance are not requalified. C435 trusted append/per-free contracts stay separate.",
+    "Eight authored profile bodies and compile-only sentinel remain unrun; actual test metadata and original caller expected output absent. No compiler/parser/VM/Node/controller/probe execution, Main intake or default activation claim."
+  ],
+  "payload_count": 11,
+  "protected_count": 15,
+  "pin_checks": [
+    {
+      "path": "build.zig",
+      "bytes": 373387,
+      "sha256": "5A455D6AB7637B80728BE30EE3D5346B7A3D92253B3A6CBB4B167BD10BE1ADA9",
+      "raw_git_blob": "fc1d543e247128273f61ff52124ef1b14e2f9ca0"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 48829,
+      "sha256": "65607C75860C74D736501495E5A6E003C09D86189358B34DF988FB9CCAF8E1DB",
+      "raw_git_blob": "3ba24d59e145606807292d5047fb3312488465d5"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31540,
+      "sha256": "71C493C76BDE7E92236DB53AC2F4FEBAFFC3A460FB90EE07168CB16B9863E9B7",
+      "raw_git_blob": "101008e4ea8da99b20d52034a6e9e5edd70a655f"
+    },
+    {
+      "path": "src/native_auth_guest_producer_controls.zig",
+      "bytes": 9070,
+      "sha256": "BC1DB7D41DC7ABF3099F31F53E4F88B7047592396B0E375CC0E607B9B78B32D0",
+      "raw_git_blob": "517921ebfc200e445ed66efba6e298bfd150acaf"
+    },
+    {
+      "path": "src/native_auth_guest_producer_compile_root.zig",
+      "bytes": 1737,
+      "sha256": "05F133A16936FBEA4DA4369CC4FD2B74FC1D4F5F47057DB4D7775DB70BFEEEBC",
+      "raw_git_blob": "a98c387ce077477044342b69762767a76d5f09ba"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/SCOPE.md",
+      "bytes": 4199,
+      "sha256": "0EF3C5A88915A54850376B7D008986D435E08C6994A76A70383BF1494A383708",
+      "raw_git_blob": "768d23fdd6a08515c6e8adf75340f3d0fb6b517a"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/original-caller.mjs",
+      "bytes": 1746,
+      "sha256": "52A57E1196053B7D39473BD36A03192B2C83C15BA989575091DB4C7A692C155C",
+      "raw_git_blob": "ad0a2bbb9c963ede7aa8ef6ecf2b7cf9bfcfba0d"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/auth-storage.ts.txt",
+      "bytes": 16670,
+      "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68",
+      "raw_git_blob": "5a8fa417add67691beb7072d7b50967ca06bf872"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/resource-loader.ts.txt",
+      "bytes": 48270,
+      "sha256": "CCC798224D070E7A18C918F74BE48C15EACC67F76AAA66B9809C015327B555D4",
+      "raw_git_blob": "3d59416af4c22974a6f176cecf621ba16860edc3"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/authority/Pi-LICENSE",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "raw_git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/auth-resource-guest-provenance-sourceonly-20261018/historical-guest-operation-generation-source-limitation.json",
+      "bytes": 1746,
+      "sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+      "raw_git_blob": "13267ac80b016de8288191ffa2b57f93bea72e57"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "raw_git_blob": "131ef6fa0cbb047fa9f4aa38d07aa5f14ccb3c3a"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "raw_git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "raw_git_blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "bytes": 34518,
+      "sha256": "90AB96A887AFB5FE16F3EB153DEDE4E3D278C226507B60A92D72B81997089FE4",
+      "raw_git_blob": "4d9dc537ee1e4faf0b6c4db26f11c7bc0bdeff46"
+    },
+    {
+      "path": "src/extensions/native_auth_directory_lock.zig",
+      "bytes": 29486,
+      "sha256": "C5A71EB69B6776EC97B2EEF9FD7C376B44C91865F42BAC2130971650B54ED02B",
+      "raw_git_blob": "c90620b7e974119d9344b04ee17b4efdbe64f68d"
+    },
+    {
+      "path": "src/extensions/native_auth_readonly_production.zig",
+      "bytes": 32419,
+      "sha256": "F03AA3B9D989E98E0665EE2C8D2C393377C74BFDBFC449E9CA9A5F55B54968D0",
+      "raw_git_blob": "1f5092c067891c02c7e7b14aa10bb8d30daee0a4"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 10257,
+      "sha256": "B94C85471054DA28DE011D0F19BFC0A48F95A0310BC64951C0E80DE0786934C7",
+      "raw_git_blob": "8a58b899e077c67c548ee732ae986ccd20270509"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 4593,
+      "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4",
+      "raw_git_blob": "62dffa445875e9f3a676f58d12cf6484f8a0cdd7"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "raw_git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "raw_git_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "raw_git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "raw_git_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "raw_git_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "src/native_auth_readonly_genuine_af_controls.zig",
+      "bytes": 12741,
+      "sha256": "632D7EAC3475B5D97CBDDDD05D6494C269B00956E11623B69BE3B3B13FF20FB6",
+      "raw_git_blob": "4e2b5610205cb9c17a1431f6d75fb86433e1edd1"
+    },
+    {
+      "path": "src/native_auth_file_genuine_af_test.zig",
+      "bytes": 28419,
+      "sha256": "FD3AD89BFF0516D06DD0D6C74A2F304721F09DF8A7139252A398D8673B887578",
+      "raw_git_blob": "6486fc3a1b2918245599c63059723668c260f755"
+    }
+  ],
+  "pin_drift": [],
+  "execution_performed": false,
+  "main_mutated": false
+}
