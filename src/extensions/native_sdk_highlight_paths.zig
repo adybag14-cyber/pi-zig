@@ -1,21 +1,20 @@
-//! Actual Source theme.ts getLanguageFromPath. No highlighting approximation.
-const em = @import("engine.zig");
+//! Actual c268 theme.ts getLanguageFromPath over scoped live guest operations.
+const v = @import("native_public_values.zig");
 const sdk = @import("native_sdk.zig");
-const js = @import("native_js_values.zig");
-const temporary = @import("native_sdk_prompt_scope.zig");
-const Scope = temporary.Scope;
-const c = em.c;
+const c = v.c;
+const Scope = v.Scope;
+const Engine = v.em.Engine;
 
-pub fn get(engine: *em.Engine, file_path: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const segments = try scope.invoke(file_path, "split", &.{try scope.text(".")});
-    const last = try scope.invoke(segments, "pop", &.{});
-    const extension = if (temporary.nullish(last)) c.pi_js_undefined() else try scope.invoke(last, "toLowerCase", &.{});
-    if (!scope.truthy(extension)) return c.pi_js_undefined();
-    // Source uses a fresh ordinary object, so inherited property lookup and
-    // property-key coercion remain observable to caller-controlled inputs.
-    const mappings = try scope.object();
+pub fn get(engine: *Engine, file_path: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&s, getBody(&s, file_path));
+}
+fn getBody(s: *Scope, file_path: c.JSValue) !c.JSValue {
+    const extension = try v.own(s, try extensionOwned(s.engine, file_path));
+    if (!v.truthy(s, extension)) return c.pi_js_undefined();
+    // Source creates an ordinary mapping on each call. Inherited lookup and
+    // ToPropertyKey therefore remain observable to non-string path methods.
+    const mappings = try v.object(s);
     inline for (.{
         .{ "ts", "typescript" },   .{ "tsx", "typescript" }, .{ "js", "javascript" }, .{ "jsx", "javascript" },    .{ "mjs", "javascript" },        .{ "cjs", "javascript" },
         .{ "py", "python" },       .{ "rb", "ruby" },        .{ "rs", "rust" },       .{ "go", "go" },             .{ "java", "java" },             .{ "kt", "kotlin" },
@@ -27,11 +26,28 @@ pub fn get(engine: *em.Engine, file_path: c.JSValue) !c.JSValue {
         .{ "cmake", "cmake" },     .{ "lua", "lua" },        .{ "perl", "perl" },     .{ "r", "r" },               .{ "scala", "scala" },           .{ "clj", "clojure" },
         .{ "ex", "elixir" },       .{ "exs", "elixir" },     .{ "erl", "erlang" },    .{ "hs", "haskell" },        .{ "ml", "ocaml" },              .{ "vim", "vim" },
         .{ "graphql", "graphql" }, .{ "proto", "protobuf" }, .{ "tf", "hcl" },        .{ "hcl", "hcl" },
-    }) |entry| try scope.put(mappings, entry[0], try scope.text(entry[1]));
-    return js.getKey(engine, mappings, extension);
+    }) |entry| try v.put(s, mappings, entry[0], try v.text(s, entry[1]));
+    return v.duplicate(s, try v.key(s, mappings, extension));
+}
+fn extensionOwned(engine: *Engine, file_path: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&s, extensionBody(&s, file_path));
+}
+fn extensionBody(s: *Scope, file_path: c.JSValue) !c.JSValue {
+    const last = try v.own(s, try lastOwned(s.engine, file_path));
+    if (v.nullish(last)) return c.pi_js_undefined();
+    return v.invokeOwned(s.engine, last, "toLowerCase", &.{});
+}
+fn lastOwned(engine: *Engine, file_path: c.JSValue) !c.JSValue {
+    var s: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&s, lastBody(&s, file_path));
+}
+fn lastBody(s: *Scope, file_path: c.JSValue) !c.JSValue {
+    const segments = try v.own(s, try v.invokeTextOwned(s.engine, file_path, "split", "."));
+    return v.invokeOwned(s.engine, segments, "pop", &.{});
 }
 
 pub fn callback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
+    const engine = Engine.fromContext(context.?);
     return get(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
 }

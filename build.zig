@@ -1782,6 +1782,19 @@ pub fn build(b: *std.Build) void {
         public_cli_args_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-cli-args", "Install actual c268 public CLI controls without execution").dependOn(&b.addInstallArtifact(public_cli_args_tests, .{}).step);
+    const public_theme_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_theme_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Public Theme actual"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, public_theme_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, public_theme_tests.root_module, typescript_parser);
+    linkSqlite(public_theme_tests.root_module, sqlite_lib_dir, sqlite_library);
+    public_theme_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        public_theme_tests.root_module.linkSystemLibrary("advapi32", .{});
+        public_theme_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-public-theme", "Install actual c268 public Theme helper controls without execution").dependOn(&b.addInstallArtifact(public_theme_tests, .{}).step);
     const sdk_actual_paths_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_paths_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual paths owner"}, .use_llvm = use_llvm,

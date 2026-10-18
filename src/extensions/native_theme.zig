@@ -791,15 +791,29 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     if (c.JS_NewClass(engine.runtime, class_id, &definition) < 0 or c.JS_NewClass(engine.runtime, constructor_class, &constructor_definition) < 0 or c.JS_NewClass(engine.runtime, proxy_class, &proxy_definition) < 0) return error.OutOfMemory;
     const prototype = try object(engine);
     defer engine.freeValue(prototype);
-    inline for (std.meta.fields(Method)) |field| {
-        const name: [:0]const u8 = if (field.value == @intFromEnum(Method.concreteColors)) "colors" else field.name;
+    // A class prototype inserts constructor first, followed by methods in
+    // declaration order. Replacing the placeholder below preserves that order.
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
+    inline for (.{
+        Method.appearance, Method.concreteColors, Method.style, Method.fg, Method.bg,
+        Method.bold, Method.italic, Method.underline, Method.inverse, Method.strikethrough,
+        Method.getFgAnsi, Method.getBgAnsi, Method.getColorMode,
+        Method.getThinkingBorderColor, Method.getBashModeBorderColor,
+    }) |method| {
+        const name: [:0]const u8 = if (method == .concreteColors) "colors" else @tagName(method);
+        const callback_name: [:0]const u8 = if (method == .appearance) "get appearance" else if (method == .concreteColors) "get colors" else name;
+        const arity: c_int = switch (method) {
+            .fg, .bg, .style => 2,
+            .appearance, .concreteColors, .getColorMode, .getBashModeBorderColor => 0,
+            else => 1,
+        };
         var data = [_]c.JSValue{ c.JS_NewInt64(engine.context, class_id), c.JS_NewInt64(engine.context, proxy_class) };
-        const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, name.ptr, 1, @intCast(field.value), data.len, &data));
-        if (field.value == @intFromEnum(Method.appearance) or field.value == @intFromEnum(Method.concreteColors)) {
+        const callback = try engine.checked(c.JS_NewCFunctionData2(engine.context, methodCall, callback_name.ptr, arity, @intFromEnum(method), data.len, &data));
+        if (method == .appearance or method == .concreteColors) {
             const atom = c.JS_NewAtom(engine.context, name.ptr);
             defer c.JS_FreeAtom(engine.context, atom);
             if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, callback, c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
-        } else try put(engine, prototype, name.ptr, callback);
+        } else if (c.JS_DefinePropertyValueStr(engine.context, prototype, name.ptr, callback, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return error.JavaScriptException;
     }
     const module = try object(engine);
     defer engine.freeValue(module);
@@ -828,7 +842,8 @@ pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     _ = c.JS_SetOpaque(constructor, state);
     _ = c.JS_SetConstructorBit(engine.context, constructor, true);
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return error.JavaScriptException;
-    try put(engine, constructor, "name", try jsString(engine, "Theme"));
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "name", try jsString(engine, "Theme"), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
+    if (c.JS_DefinePropertyValueStr(engine.context, constructor, "length", c.JS_NewInt32(engine.context, 3), c.JS_PROP_CONFIGURABLE) < 0) return error.JavaScriptException;
     try put(engine, exports, "Theme", c.JS_DupValue(engine.context, constructor));
     const proxy = try engine.checked(c.JS_NewObjectClass(engine.context, @intCast(proxy_class)));
     defer engine.freeValue(proxy);
