@@ -1,0 +1,45 @@
+{
+  "schema": 1,
+  "base_head": "311a8dfe9a72b049cd4ee2a5ef509526101c3e3a",
+  "source_only": true,
+  "semver": {
+    "path": "src/extensions/native_semver785_scope.zig",
+    "finding": "SAME pattern: complete/take uses a generation spanning raw guest get/call/construct/coercion/iterator property access/status. A DATA-maker+ordinarythrow within one callback is fresh in that span and is incorrectly marked fatal.",
+    "needed_hunks": "Introduce an explicit guest-operation completion path driven only by actual pending/current NativeInvocation retention. Preserve per-release freshAllocation, trusted nonguest constructors/allocation, direct root OOM and release precedence exactly. Replace only guest call sites, not aggregate or per-free provenance.",
+    "changed": false,
+    "source_pins": [
+      {
+        "path": "src/extensions/native_semver785_scope.zig",
+        "sha256": "A6582E13540F97B37E528875B6B7BBE48FC248460440CC9DC7297405400DE4CC",
+        "bytes": 14868
+      }
+    ]
+  },
+  "minimatch": {
+    "paths": [
+      "src/extensions/native_minimatch_namespace.zig",
+      "src/extensions/native_minimatch.zig",
+      "src/extensions/native_minimatch_ast.zig"
+    ],
+    "finding": "No equivalent boundary-generation/private-tag classifier in this supplier. Namespace uses shared Scope/Engine checked guest operations.",
+    "limitation": "This inspection is not broad raw-success/cleanup/factory/GPA or runtime qualification.",
+    "changed": false,
+    "source_pins": [
+      {
+        "path": "src/extensions/native_minimatch_namespace.zig",
+        "sha256": "5403D7F30AF956F6671E86D9BE2C4F2CB86CFA0AC3B1E7F55FBA7828353386D8",
+        "bytes": 9569
+      },
+      {
+        "path": "src/extensions/native_minimatch.zig",
+        "sha256": "C9D8FF0221267C505D749E3421CFB84ABF7F4538B92E19B7CD05E46E7274005E",
+        "bytes": 30166
+      },
+      {
+        "path": "src/extensions/native_minimatch_ast.zig",
+        "sha256": "572288D2EA9EC9AB00D4EA8A515C0B7A3D31F961E5229E7062EECA231AC85801",
+        "bytes": 19414
+      }
+    ]
+  }
+}

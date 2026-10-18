@@ -106,8 +106,7 @@ fn unsafePartBody(o: *x.Ops, value: c.JSValue, allow_slash: bool) !bool {
 fn unsafeLoop(o: *x.Ops, iterator: *v.js.Iterator, allow_slash: bool) !bool {
     const s = o.s;
     while (true) {
-        const generation = s.engine.native_allocation_generation;
-        const next = x.iterators.advance(s.engine, iterator) catch |err| return x.iterators.closeAbrupt(s.engine, iterator, x.current(s.engine, err, generation), s.engine.native_allocation_generation);
+        const next = x.iterators.advance(s.engine, iterator) catch |err| return x.iterators.closeAbrupt(s.engine, iterator, x.current(s.engine, err), s.engine.native_allocation_generation);
         const raw = next orelse return false;
         const candidate = o.own(raw) catch |err| return x.iterators.closeAbrupt(s.engine, iterator, err, s.engine.native_allocation_generation);
         const unsafe = unsafeCandidate(o, candidate, allow_slash) catch |err| return x.iterators.closeAbrupt(s.engine, iterator, err, s.engine.native_allocation_generation);
@@ -189,8 +188,7 @@ fn candidatesLoop(o: *x.Ops, owner: c.JSValue, split: c.JSValue, candidates: c.J
 }
 fn candidatesBody(o: *x.Ops, owner: c.JSValue, split: c.JSValue, iterator: *v.js.Iterator, force_https: bool) !?c.JSValue {
     while (true) {
-        const generation = o.s.engine.native_allocation_generation;
-        const next = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err, generation), o.s.engine.native_allocation_generation);
+        const next = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err), o.s.engine.native_allocation_generation);
         const raw = next orelse return null;
         const candidate = o.own(raw) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, err, o.s.engine.native_allocation_generation);
         const result = tryCandidate(o, owner, split, candidate, force_https) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, err, o.s.engine.native_allocation_generation);

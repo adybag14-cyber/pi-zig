@@ -23,6 +23,7 @@ fn retain(comptime module: type, comptime names: anytype) void {
 comptime {
     @setEvalBranchQuota(100_000);
     retain(@import("extensions/native_sdk_git_url.zig"), .{"create"});
+    retain(@import("native_sdk_git_guest_provenance_controls.zig"), .{"verifySameGuestOperationDataThrowRemainsOrdinary"});
     retain(@import("native_sdk_git_url_controls.zig"), .{
         "captureActualCallerRows", "verifyAcceptedOriginalRows", "verifyFreshNativeAllocationBypassesSourceCatch",
         "verifyHistoricalCapturedDataDoesNotSkipBody", "verifyCancellationIsUncatchable",

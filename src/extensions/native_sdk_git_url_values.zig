@@ -4,7 +4,6 @@ const v = @import("native_ai_provider_values.zig");
 pub const c = v.c;
 pub const Scope = v.Scope;
 pub const em = v.em;
-const allocation = @import("native_async_body.zig");
 pub const owned = @import("native_sdk_owned_completion.zig");
 pub const iterators = struct {
     pub const v = @import("native_ai_provider_values.zig");
@@ -48,7 +47,6 @@ pub const iterators = struct {
     }
 };
 pub fn duplicate(engine: *em.Engine, result: anyerror!c.JSValue) anyerror!c.JSValue { return c.JS_DupValue(engine.context, try result); }
-fn guarded(engine: *em.Engine, generation: u64, result: anyerror!c.JSValue) !c.JSValue { return result catch |err| return current(engine, err, generation); }
 pub fn initIterator(parent: *Scope, iterable: c.JSValue) !v.js.Iterator {
     var s: Scope = .{ .engine = parent.engine };
     const result = iteratorBody(&s, iterable);
@@ -91,6 +89,49 @@ pub fn retireNative(engine: *em.Engine, actual: *v.js.Iterator, result: anytype)
     try retireIterator(engine, actual, status);
     return value;
 }
+/// This caller-stable guard spans one actual guest operation, raw-result
+/// normalization and root retention. A generation counter around guest code is
+/// not producer authority: guest code may create DATA and throw it in one call.
+/// NativeInvocation.first independently retains actual native producer exits.
+const Guest = struct {
+    engine: *em.Engine,
+    invocation: em.Engine.NativeInvocation = .{},
+    previous_suppression: usize = 0,
+    fn enter(self: *Guest) !void {
+        try self.engine.checkNativeEntry();
+        self.previous_suppression = self.engine.native_exception_diagnostics_suppressed;
+        self.engine.native_exception_diagnostics_suppressed += 1;
+        self.engine.enterNativeInvocation(&self.invocation);
+    }
+    fn leave(self: *Guest) !void {
+        defer self.engine.native_exception_diagnostics_suppressed = self.previous_suppression;
+        // Scope already owns retained results. Only this independently owned
+        // sentinel crosses leave; a borrowed Scope root must never be consumed.
+        _ = try self.engine.checked(self.engine.leaveNativeInvocation(&self.invocation, c.pi_js_undefined()));
+    }
+    fn failed(self: *Guest, err: anyerror) anyerror {
+        if (err == error.OutOfMemory) _ = self.engine.throwNativeOutOfMemoryFatal();
+        self.leave() catch |actual| return actual;
+        // An ordinary failed-operation capture is transported unchanged. Its
+        // private tag/flag never supplies provenance to this leaf.
+        return err;
+    }
+    fn check(self: *Guest) !void {
+        _ = self.engine.checked(self.engine.nativeCallbackResult(c.pi_js_undefined())) catch |err| return self.failed(err);
+    }
+    fn value(self: *Guest, o: *Ops, raw: c.JSValue) !c.JSValue {
+        const actual = self.engine.checked(self.engine.nativeCallbackResult(raw)) catch |err| return self.failed(err);
+        const retained = o.own(actual) catch |err| return self.failed(err);
+        try self.leave();
+        return retained;
+    }
+    fn status(self: *Guest, raw: c_int) !c_int {
+        if (raw < 0 and !c.JS_HasException(self.engine.context)) return self.failed(error.GitGuestStatusMissingActualException);
+        _ = self.engine.checked(self.engine.nativeCallbackResult(c.pi_js_undefined())) catch |err| return self.failed(err);
+        try self.leave();
+        return raw;
+    }
+};
 pub const Ops = struct {
     s: *Scope,
     pub fn own(o: *Ops, value: c.JSValue) !c.JSValue {
@@ -115,35 +156,42 @@ pub const Ops = struct {
             _ = o.s.engine.checked(c.JS_ThrowTypeError(o.s.engine.context, "Cannot read properties of %s (reading '%s')", @as([*:0]const u8, if (c.JS_IsNull(target)) "null" else "undefined"), name)) catch |err| return err;
             unreachable;
         }
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(v.js.get(o.s.engine, target, name) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return guest.value(o, c.JS_GetPropertyStr(o.s.engine.context, target, name));
     }
     pub fn key(o: *Ops, target: c.JSValue, name: c.JSValue) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(v.js.getKey(o.s.engine, target, name) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        const atom = c.JS_ValueToAtom(o.s.engine.context, name);
+        if (atom == c.JS_ATOM_NULL) {
+            _ = guest.status(-1) catch |err| return err;
+            unreachable;
+        }
+        // Freeing a retained atom does not execute Source IteratorClose or
+        // guest code. Its lifetime still ends before this operation returns.
+        defer c.JS_FreeAtom(o.s.engine.context, atom);
+        try guest.check();
+        return guest.value(o, c.JS_GetProperty(o.s.engine.context, target, atom));
     }
     pub fn at(o: *Ops, target: c.JSValue, index: u32) !c.JSValue { return o.key(target, c.JS_NewUint32(o.s.engine.context, index)); }
     pub fn global(o: *Ops, name: [*:0]const u8) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
         const global_object = c.JS_GetGlobalObject(o.s.engine.context);
-        const generation = o.s.engine.native_allocation_generation;
-        var completion = owned.Completion.initValue(o.s.engine, guarded(o.s.engine, generation, v.js.get(o.s.engine, global_object, name)));
+        const raw = c.JS_GetPropertyStr(o.s.engine.context, global_object, name);
+        var completion = owned.Completion.initValue(o.s.engine, o.s.engine.checked(o.s.engine.nativeCallbackResult(raw)));
         completion.release(global_object);
-        return o.own(try completion.finishValue());
+        const result = completion.finishValue() catch |err| return guest.failed(err);
+        return guest.value(o, result);
     }
     pub fn call(o: *Ops, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(v.js.call(o.s.engine, function, receiver, args) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return guest.value(o, c.JS_Call(o.s.engine.context, function, receiver, @intCast(args.len), @constCast(args.ptr)));
     }
     pub fn invoke(o: *Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return o.call(try o.get(receiver, name), receiver, args); }
     pub fn sliceAfter(o: *Ops, receiver: c.JSValue, position: c.JSValue) !c.JSValue { const method = try o.get(receiver, "slice"); return o.call(method, receiver, &.{try o.binary(0, position, o.number(1))}); }
     pub fn sliceToAfter(o: *Ops, receiver: c.JSValue, position: c.JSValue) !c.JSValue { const method = try o.get(receiver, "slice"); return o.call(method, receiver, &.{ o.number(0), try o.binary(0, position, o.number(1)) }); }
     pub fn construct(o: *Ops, function: c.JSValue, args: []const c.JSValue) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(o.s.engine.checked(c.JS_CallConstructor(o.s.engine.context, function, @intCast(args.len), @constCast(args.ptr))) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return guest.value(o, c.JS_CallConstructor(o.s.engine.context, function, @intCast(args.len), @constCast(args.ptr)));
     }
     pub fn put(o: *Ops, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
         try o.s.engine.checkNativeEntry();
@@ -156,20 +204,20 @@ pub const Ops = struct {
         try o.s.engine.checkNativeEntry();
     }
     pub fn set(o: *Ops, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        o.s.set(target, name, value) catch |err| return current(o.s.engine, err, generation);
-        o.s.engine.checkNativeEntry() catch |err| return current(o.s.engine, err, generation);
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        _ = try guest.status(c.JS_SetPropertyStr(o.s.engine.context, target, name, c.JS_DupValue(o.s.engine.context, value)));
     }
     pub fn stringify(o: *Ops, value: c.JSValue) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(o.s.engine.checked(c.JS_ToString(o.s.engine.context, value)) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return guest.value(o, c.JS_ToString(o.s.engine.context, value));
     }
     pub fn binary(o: *Ops, operation: c_int, a: c.JSValue, b: c.JSValue) !c.JSValue {
-        try o.s.engine.checkNativeEntry();
-        const generation = o.s.engine.native_allocation_generation;
-        return o.own(o.s.engine.checked(c.JS_PiBinaryOperator(o.s.engine.context, operation, a, b)) catch |err| return current(o.s.engine, err, generation));
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return guest.value(o, c.JS_PiBinaryOperator(o.s.engine.context, operation, a, b));
+    }
+    pub fn instanceOf(o: *Ops, value: c.JSValue, constructor: c.JSValue) !bool {
+        var guest: Guest = .{ .engine = o.s.engine }; try guest.enter();
+        return try guest.status(c.JS_IsInstanceOf(o.s.engine.context, value, constructor)) == 1;
     }
     pub fn compare(o: *Ops, operation: c_int, a: c.JSValue, b: c.JSValue) !bool { return o.truthy(try o.binary(operation, a, b)); }
     pub fn truthy(o: *Ops, value: c.JSValue) bool { return o.s.truthy(value); }
@@ -207,23 +255,18 @@ pub fn allocationFailure(engine: *em.Engine) anyerror {
     const reason = c.JS_GetException(engine.context); c.JS_SetUncatchableError(engine.context, reason);
     _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |err| return err; unreachable;
 }
-pub fn current(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
-    if (err == error.JavaScriptException) {
-        if (c.JS_HasException(engine.context)) { const captured = v.js.capture(engine); if (captured != error.JavaScriptException) return captured; }
-        if (engine.captured_exception) |reason| {
-            if (c.JS_IsUncatchableError(reason)) return err;
-            allocation.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
-        }
-    }
+pub fn current(engine: *em.Engine, err: anyerror) anyerror {
+    // Only actual pending/current native producer retention can override the
+    // operation's ordinary error. A captured value supplies no classifier.
+    engine.checkNativeEntry() catch |actual| return actual;
     return err;
 }
 /// Transfer one actual ordinary catch reason. Every VM operation above already
 /// classified its own failure boundary, so an outer catch never widens it.
 pub fn takeOrdinary(engine: *em.Engine, err: anyerror) !c.JSValue {
     if (err != error.JavaScriptException) return err;
-    if (c.JS_HasException(engine.context)) { const captured = v.js.capture(engine); if (captured != error.JavaScriptException) return captured; }
+    try engine.checkNativeEntry();
     const reason = engine.captured_exception orelse return error.MissingActualGitParserCatchReason;
-    if (c.JS_IsUncatchableError(reason)) return err;
     engine.captured_exception = null;
     return reason;
 }

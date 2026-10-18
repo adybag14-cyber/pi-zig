@@ -172,8 +172,7 @@ fn destructureBody(o: *x.Ops, iterator: *x.iterators.v.js.Iterator, count: usize
     for (values[0..count], 0..) |*slot, index| {
         if (iterator.closed) continue;
         if (index == 0) { try elision(o, iterator); continue; }
-        const generation = o.s.engine.native_allocation_generation;
-        const next = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err, generation), o.s.engine.native_allocation_generation);
+        const next = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err), o.s.engine.native_allocation_generation);
         if (next) |value| slot.* = o.own(value) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, err, o.s.engine.native_allocation_generation);
     }
     try x.iterators.closeNormal(o.s.engine, iterator);
@@ -335,11 +334,7 @@ fn hostArgsBody(o: *x.Ops, state: *State, input: c.JSValue) !c.JSValue {
     return parseFields(o, state, parsed, shortcut_name, host_name, host, auth) catch |err| {
         const reason = try o.own(try x.takeOrdinary(o.s.engine, err));
         const constructor = try o.global("URIError");
-        const generation = o.s.engine.native_allocation_generation;
-        const instance = c.JS_IsInstanceOf(o.s.engine.context, reason, constructor);
-        if (instance < 0) return x.current(o.s.engine, @import("native_js_values.zig").capture(o.s.engine), generation);
-        o.s.engine.checkNativeEntry() catch |err| return x.current(o.s.engine, err, generation);
-        if (instance == 1) return c.pi_js_undefined();
+        if (try o.instanceOf(reason, constructor)) return c.pi_js_undefined();
         return x.throwReason(o.s.engine, reason);
     };
 }
@@ -383,8 +378,7 @@ fn spreadBody(o: *x.Ops, iterator: *x.iterators.v.js.Iterator) ![7]c.JSValue {
     var result: [7]c.JSValue = undefined; for (&result) |*value| value.* = c.pi_js_undefined();
     var index: usize = 0;
     while (true) {
-        const generation = o.s.engine.native_allocation_generation;
-        const value = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err, generation), o.s.engine.native_allocation_generation);
+        const value = x.iterators.advance(o.s.engine, iterator) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, x.current(o.s.engine, err), o.s.engine.native_allocation_generation);
         const item = value orelse break;
         const retained = o.own(item) catch |err| return x.iterators.closeAbrupt(o.s.engine, iterator, err, o.s.engine.native_allocation_generation);
         if (index < result.len) result[index] = retained;
