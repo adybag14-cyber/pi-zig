@@ -1,0 +1,64 @@
+{
+  "schema": 1,
+  "status": "source_prepared_not_executed",
+  "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "source_path": "packages/ai/src/auth/oauth/device-code.ts",
+  "source_map_equals_frozen_git_blob": true,
+  "runtime_acceptance": "C:/Users/adyba/pi-zig/evidence/original19cb-current31064-byte-independent-20261017/acceptance.json",
+  "runtime_acceptance_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "files": [
+    {
+      "path": "verification/provider-device-code-genuine-af-20261018/authority/device-code.ts.txt",
+      "sha256": "B402BBBF66D693EE7DD6C5E2C4E45544050722D5BFA3668B100DF76284A4FB37"
+    },
+    {
+      "path": "verification/provider-device-code-genuine-af-20261018/authority/device-code.js.txt",
+      "sha256": "8F197CC9AF67BE64B82939573D719D1B55388F96F2E53CB8C47F9618FC1297EB"
+    },
+    {
+      "path": "verification/provider-device-code-genuine-af-20261018/authority/device-code.js.map",
+      "sha256": "5822E6E874A76E61293F77307F8A0090E4063537CB3B3EBB282AB60057B15F67"
+    },
+    {
+      "path": "verification/provider-device-code-genuine-af-20261018/authority/LICENSE.upstream.txt",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "src/extensions/fixtures/oauth-device-code-c268-source.mjs",
+      "sha256": "8F197CC9AF67BE64B82939573D719D1B55388F96F2E53CB8C47F9618FC1297EB"
+    },
+    {
+      "path": "src/extensions/fixtures/oauth-device-code-genuine-af-observer.mjs",
+      "sha256": "4DEB2DE5E3490CDE0852F1593E920C83982717CEE399E32CA59A66448EA7714E"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_device_code.zig",
+      "sha256": "E303D8A1047CB75FE4BAC3CDCA61E6703B5B3A59C22307EA97EC246988341C17"
+    },
+    {
+      "path": "src/native_ai_oauth_device_code_genuine_af_test.zig",
+      "sha256": "1472BE6D9F81D9BEF729E03EFDBA394404510AA42268CE80305E3F0DE10D4BC2"
+    }
+  ],
+  "target": "build-native-ai-oauth-device-code-genuine-af",
+  "root_source": "src/native_ai_oauth_device_code_genuine_af_test.zig",
+  "filter": "native OAuth device code",
+  "declared_tests": [
+    "native OAuth device code actual ordinary sleep and genuine polling declaration metadata",
+    "native OAuth device code exact Source polling deadline slow down thenable and getter traces",
+    "native OAuth device code exact Source sleep callbacks live Promise constructor and timeout TDZ",
+    "native OAuth device code zero Await timeout rejects immediately while poll completion awaits",
+    "native OAuth device code same-operation private DATA getter call and constructor throws remain ordinary",
+    "native OAuth device code captured actual B precedes later thrown DATA A",
+    "native OAuth device code successful flagged Error constructor DATA rejects through Source throw and reject",
+    "native OAuth device code options and loop result survive their actual Await and retire before next Date",
+    "native OAuth device code status comparison holders retire before the next actual getter",
+    "native OAuth device code replaced slow interval holder retires before subsequent Date",
+    "native OAuth device code actual status retirement fatal stops the next getter"
+  ],
+  "native_execution": false,
+  "metadata_query": false,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "observation_inputs": "Exact accepted JS caller against native exports; live guest clock/timer/Promise/Date/Math/Error hooks, actual C native holder finalizers and actual job checkpoints. These inputs are not production substitute owners."
+}

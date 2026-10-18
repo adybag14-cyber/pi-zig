@@ -1,139 +1,282 @@
-//! Native bodies for auth/oauth/device-code.ts; no network or host bridge.
-const v = @import("native_ai_provider_values.zig");
-const Scope = v.Scope;
-const c = v.c;
-const flow = @import("native_agent_async.zig");
+//! c268154c auth/oauth/device-code.ts: an ordinary Promise constructor producer
+//! and a genuine async polling declaration with its exact Source Await edges.
+const x = @import("native_ai_auth_helper_values.zig");
+const c = x.c;
+const af = x.af;
 const functions = @import("native_node_function.zig");
-const arithmetic = @import("native_image_arithmetic.zig");
-pub fn create(engine: *v.em.Engine) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const exports = try scope.object();
-    const Adapter = struct {
-        fn sleepCall(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            return sleep(host, arg(args, 0), arg(args, 1), arg(args, 2));
-        }
-        fn pollCall(host: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-            return poll(host, arg(args, 0));
-        }
-    };
-    try scope.put(exports, "abortableSleep", try scope.own(try functions.create(engine, "abortableSleep", 3, Adapter.sleepCall, &.{})));
-    try scope.put(exports, "pollOAuthDeviceCodeFlow", try scope.own(try @import("native_ai_auth_helpers.zig").asyncArrow(engine, "pollOAuthDeviceCodeFlow", 1, Adapter.pollCall, &.{})));
-    return c.JS_DupValue(engine.context, exports);
+const cancel_message = "Login cancelled";
+const timeout_message = "Device flow timed out";
+const slow_timeout_message = "Device flow timed out after one or more slow_down responses. This is often caused by clock drift in WSL or VM environments. Please sync or restart the VM clock and try again.";
+
+fn expression(engine: *x.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    var scope: x.Scope = .{ .engine = engine };
+    var o: x.Ops = .{ .s = &scope };
+    return x.owned.finishValue(&scope, @call(.auto, body, .{&o} ++ args));
 }
-fn arg(args: []const c.JSValue, index: usize) c.JSValue {
-    return if (args.len > index) args[index] else c.pi_js_undefined();
+fn statement(engine: *x.em.Engine, comptime body: anytype, args: anytype) !void {
+    var scope: x.Scope = .{ .engine = engine };
+    var o: x.Ops = .{ .s = &scope };
+    return x.owned.finishVoid(&scope, @call(.auto, body, .{&o} ++ args));
 }
-fn failure(scope: *Scope, owner: c.JSValue, message: c.JSValue) !void {
-    return flow.settle(scope.engine, owner, true, try scope.own(try v.js.builtin(scope.engine, "Error", &.{message})));
+fn invocation(engine: *x.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    try engine.checkNativeEntry();
+    var frame: x.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&frame);
+    return x.finishInvocation(engine, &frame, expression(engine, body, args));
 }
-pub fn sleep(engine: *v.em.Engine, milliseconds: c.JSValue, signal: c.JSValue, cancel_message: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    startSleep(&scope, pending.owner, milliseconds, signal, cancel_message) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+fn boolean(o: *x.Ops, value: bool) c.JSValue { return c.pi_js_bool(o.s.engine.context, @intFromBool(value)); }
+fn integer(o: *x.Ops, value: i32) c.JSValue { return c.JS_NewInt32(o.s.engine.context, value); }
+
+pub fn create(engine: *x.em.Engine) !c.JSValue { return invocation(engine, createBody, .{}); }
+fn createBody(o: *x.Ops) !c.JSValue {
+    const exports = try o.object();
+    try o.put(exports, "abortableSleep", try o.own(try functions.create(o.s.engine, "abortableSleep", 3, sleepCall, &.{})));
+    try o.put(exports, "pollOAuthDeviceCodeFlow", try o.own(try af.createResumable(o.s.engine, "pollOAuthDeviceCodeFlow", 1, pollBody, &.{})));
+    return c.JS_DupValue(o.s.engine.context, exports);
 }
-fn startSleep(scope: *Scope, owner: c.JSValue, milliseconds: c.JSValue, signal: c.JSValue, cancel_message: c.JSValue) !void {
-    if (scope.truthy(try scope.get(signal, "aborted"))) return failure(scope, owner, cancel_message);
-    try scope.put(owner, "signal", signal);
-    try scope.put(owner, "cancelMessage", cancel_message);
-    const Adapter = struct {
-        fn aborted(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            var local: Scope = .{ .engine = engine };
-            defer local.deinit();
-            _ = try local.call(try local.global("clearTimeout"), c.pi_js_undefined(), &.{try local.get(roots[0], "timeout")});
-            try failure(&local, roots[0], try local.get(roots[0], "cancelMessage"));
-            return c.pi_js_undefined();
-        }
-        fn elapsed(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            var local: Scope = .{ .engine = engine };
-            defer local.deinit();
-            _ = try local.invoke(try local.get(roots[0], "signal"), "removeEventListener", &.{ try local.text("abort"), try local.get(roots[0], "onAbort") });
-            try flow.settle(engine, roots[0], false, c.pi_js_undefined());
-            return c.pi_js_undefined();
-        }
-    };
-    const on_abort = try scope.own(try functions.createArrow(scope.engine, "onAbort", 0, Adapter.aborted, &.{owner}));
-    try scope.put(owner, "onAbort", on_abort);
-    const elapsed = try scope.own(try functions.createArrow(scope.engine, "", 0, Adapter.elapsed, &.{owner}));
-    try scope.put(owner, "timeout", try scope.call(try scope.global("setTimeout"), c.pi_js_undefined(), &.{ elapsed, milliseconds }));
-    const options = try scope.object();
-    try scope.put(options, "once", c.pi_js_bool(scope.engine.context, 1));
-    _ = try scope.invoke(signal, "addEventListener", &.{ try scope.text("abort"), on_abort, options });
+fn sleepCall(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return expression(engine, sleepExpression, .{ x.arg(args, 0), x.arg(args, 1), x.arg(args, 2) });
 }
-fn binary(scope: *Scope, operation: arithmetic.Operation, left: c.JSValue, right: c.JSValue) !c.JSValue {
-    return scope.own(try arithmetic.binary(scope.engine, operation, left, right));
+pub fn sleep(engine: *x.em.Engine, milliseconds: c.JSValue, signal: c.JSValue, message: c.JSValue) !c.JSValue {
+    return invocation(engine, sleepExpression, .{ milliseconds, signal, message });
 }
-fn now(scope: *Scope) !c.JSValue {
-    return scope.invoke(try scope.global("Date"), "now", &.{});
+fn sleepExpression(o: *x.Ops, milliseconds: c.JSValue, signal: c.JSValue, message: c.JSValue) !c.JSValue {
+    // The Source producer reads the mutable global Promise before constructing
+    // its ordinary arrow executor. It is not an AsyncFunction.
+    const constructor = try o.global("Promise");
+    const executor = try o.own(try functions.createArrow(o.s.engine, "", 2, sleepExecutor, &.{ milliseconds, signal, message }));
+    return c.JS_DupValue(o.s.engine.context, try x.guest.construct(o.s, constructor, &.{executor}));
 }
-pub fn poll(engine: *v.em.Engine, options: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const pending = try flow.create(engine, options);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    startPoll(&scope, pending.owner) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
+fn sleepExecutor(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, executorBody, .{ roots[0], roots[1], roots[2], x.arg(args, 0), x.arg(args, 1) });
+    return c.pi_js_undefined();
 }
-fn startPoll(scope: *Scope, owner: c.JSValue) !void {
-    const options = try scope.get(owner, "agent");
-    const deadline = if (c.JS_IsNumber(try scope.get(options, "expiresInSeconds"))) try binary(scope, .add, try now(scope), try binary(scope, .multiply, try scope.get(options, "expiresInSeconds"), c.JS_NewInt32(scope.engine.context, 1000))) else try scope.get(try scope.global("Number"), "POSITIVE_INFINITY");
-    try scope.put(owner, "deadline", deadline);
-    const outer_math = try scope.global("Math");
-    const maximum = try scope.get(outer_math, "max");
-    const inner_math = try scope.global("Math");
-    const floor = try scope.get(inner_math, "floor");
-    const interval = try scope.get(options, "intervalSeconds");
-    const initial = try scope.call(floor, inner_math, &.{try binary(scope, .multiply, if (v.nullish(interval)) c.JS_NewInt32(scope.engine.context, 5) else interval, c.JS_NewInt32(scope.engine.context, 1000))});
-    try scope.put(owner, "interval", try scope.call(maximum, outer_math, &.{ c.JS_NewInt32(scope.engine.context, 1000), initial }));
-    try scope.put(owner, "slowDownResponses", c.JS_NewInt32(scope.engine.context, 0));
-    if (scope.truthy(try scope.get(options, "waitBeforeFirstPoll"))) {
-        const remaining = try binary(scope, .subtract, deadline, try now(scope));
-        if (try arithmetic.compare(scope.engine, .greater, remaining, c.JS_NewInt32(scope.engine.context, 0))) return waitSleep(scope, owner, remaining);
+fn executorBody(o: *x.Ops, milliseconds: c.JSValue, signal: c.JSValue, message: c.JSValue, resolve: c.JSValue, reject: c.JSValue) !void {
+    if (o.truthy(try o.own(try expression(o.s.engine, propertyTruth, .{ signal, "aborted" })))) {
+        return statement(o.s.engine, rejectError, .{ reject, message });
     }
-    return nextPoll(scope, owner);
+    // Only the timeout binding is shared by onAbort; unrelated lexical inputs
+    // are not retained by a broad native owner object.
+    const timeout = try o.cell();
+    try o.put(timeout, "initialized", boolean(o, false));
+    const on_abort = try o.own(try functions.createArrow(o.s.engine, "onAbort", 0, abortCall, &.{ timeout, reject, message }));
+    const handle = try o.own(try expression(o.s.engine, startTimer, .{ milliseconds, signal, on_abort, resolve }));
+    try o.put(timeout, "value", handle);
+    try o.put(timeout, "initialized", boolean(o, true));
+    try statement(o.s.engine, addAbortListener, .{ signal, on_abort });
 }
-fn nextPoll(scope: *Scope, owner: c.JSValue) !void {
-    if (!try arithmetic.compare(scope.engine, .less, try now(scope), try scope.get(owner, "deadline"))) return timedOut(scope, owner);
-    const options = try scope.get(owner, "agent");
-    if (scope.truthy(try scope.get(try scope.get(options, "signal"), "aborted"))) return failure(scope, owner, try scope.text("Login cancelled"));
-    return flow.wait(continued, scope.engine, owner, try scope.invoke(options, "poll", &.{}), 0);
+fn abortCall(engine: *x.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, clearTimer, .{roots[0]});
+    try statement(engine, rejectError, .{ roots[1], roots[2] });
+    return c.pi_js_undefined();
 }
-fn waitSleep(scope: *Scope, owner: c.JSValue, remaining: c.JSValue) !void {
-    const duration = try scope.invoke(try scope.global("Math"), "min", &.{ try scope.get(owner, "interval"), remaining });
-    const promise = try scope.own(try sleep(scope.engine, duration, try scope.get(try scope.get(owner, "agent"), "signal"), try scope.text("Login cancelled")));
-    return flow.wait(continued, scope.engine, owner, promise, 1);
+fn elapsedCall(engine: *x.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try statement(engine, removeAbortListener, .{ roots[0], roots[1] });
+    try statement(engine, callEmpty, .{roots[2]});
+    return c.pi_js_undefined();
 }
-fn timedOut(scope: *Scope, owner: c.JSValue) !void {
-    const slow = try arithmetic.compare(scope.engine, .greater, try scope.get(owner, "slowDownResponses"), c.JS_NewInt32(scope.engine.context, 0));
-    return failure(scope, owner, try scope.text(if (slow) "Device flow timed out after one or more slow_down responses. This is often caused by clock drift in WSL or VM environments. Please sync or restart the VM clock and try again." else "Device flow timed out"));
+fn startTimer(o: *x.Ops, milliseconds: c.JSValue, signal: c.JSValue, on_abort: c.JSValue, resolve: c.JSValue) !c.JSValue {
+    const timer = try o.global("setTimeout");
+    const elapsed = try o.own(try functions.createArrow(o.s.engine, "", 0, elapsedCall, &.{ signal, on_abort, resolve }));
+    return c.JS_DupValue(o.s.engine.context, try o.call(timer, c.pi_js_undefined(), &.{ elapsed, milliseconds }));
 }
-fn continued(engine: *v.em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, stage: c_int) !void {
-    if (rejected) return flow.settle(engine, owner, true, value);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    if (stage == 1) nextPoll(&scope, owner) catch |err| try flow.rejectError(engine, owner, err) else afterPoll(&scope, owner, value) catch |err| try flow.rejectError(engine, owner, err);
-}
-fn afterPoll(scope: *Scope, owner: c.JSValue, result: c.JSValue) !void {
-    if (try v.eq(scope, try scope.get(result, "status"), "complete")) return flow.settle(scope.engine, owner, false, try scope.get(result, "value"));
-    if (try v.eq(scope, try scope.get(result, "status"), "failed")) return failure(scope, owner, try scope.get(result, "message"));
-    if (try v.eq(scope, try scope.get(result, "status"), "slow_down")) {
-        try scope.put(owner, "slowDownResponses", try binary(scope, .add, try scope.get(owner, "slowDownResponses"), c.JS_NewInt32(scope.engine.context, 1)));
-        const server_interval = c.JS_IsNumber(try scope.get(result, "intervalSeconds")) and scope.truthy(try scope.invoke(try scope.global("Number"), "isFinite", &.{try scope.get(result, "intervalSeconds")})) and try arithmetic.compare(scope.engine, .greater, try scope.get(result, "intervalSeconds"), c.JS_NewInt32(scope.engine.context, 0));
-        const outer_math = try scope.global("Math");
-        const maximum = try scope.get(outer_math, "max");
-        const minimum = if (server_interval) blk: {
-            const inner_math = try scope.global("Math");
-            const floor = try scope.get(inner_math, "floor");
-            break :blk try scope.call(floor, inner_math, &.{try binary(scope, .multiply, try scope.get(result, "intervalSeconds"), c.JS_NewInt32(scope.engine.context, 1000))});
-        } else try binary(scope, .add, try scope.get(owner, "interval"), c.JS_NewInt32(scope.engine.context, 5000));
-        try scope.put(owner, "interval", try scope.call(maximum, outer_math, &.{ c.JS_NewInt32(scope.engine.context, 1000), minimum }));
+fn clearTimer(o: *x.Ops, timeout: c.JSValue) !void {
+    const clear = try o.global("clearTimeout");
+    if (!o.truthy(try o.get(timeout, "initialized"))) {
+        // A guest setTimeout can synchronously invoke the elapsed callback,
+        // whose removeEventListener may reenter onAbort before const timeout.
+        const generation = try o.beforeAllocation();
+        _ = try o.allocation(c.JS_ThrowReferenceError(o.s.engine.context, "timeout is not initialized"), generation);
+        unreachable;
     }
-    const remaining = try binary(scope, .subtract, try scope.get(owner, "deadline"), try now(scope));
-    if (try arithmetic.compare(scope.engine, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0))) return timedOut(scope, owner);
-    return waitSleep(scope, owner, remaining);
+    _ = try o.call(clear, c.pi_js_undefined(), &.{try o.get(timeout, "value")});
+}
+fn rejectError(o: *x.Ops, reject: c.JSValue, message: c.JSValue) !void {
+    const reason = try o.own(try expression(o.s.engine, constructError, .{message}));
+    _ = try o.call(reject, c.pi_js_undefined(), &.{reason});
+}
+fn constructError(o: *x.Ops, message: c.JSValue) !c.JSValue {
+    return c.JS_DupValue(o.s.engine.context, try x.guest.construct(o.s, try o.global("Error"), &.{message}));
+}
+fn addAbortListener(o: *x.Ops, signal: c.JSValue, on_abort: c.JSValue) !void {
+    const add = try o.get(signal, "addEventListener");
+    const name = try o.text("abort");
+    const options = try o.object();
+    try o.put(options, "once", boolean(o, true));
+    _ = try o.call(add, signal, &.{ name, on_abort, options });
+}
+fn removeAbortListener(o: *x.Ops, signal: c.JSValue, on_abort: c.JSValue) !void {
+    const remove = try o.get(signal, "removeEventListener");
+    _ = try o.call(remove, signal, &.{ try o.text("abort"), on_abort });
+}
+fn callEmpty(o: *x.Ops, callable: c.JSValue) !void { _ = try o.call(callable, c.pi_js_undefined(), &.{}); }
+
+pub fn poll(engine: *x.em.Engine, options: c.JSValue) !c.JSValue { return invocation(engine, pollCall, .{options}); }
+fn pollCall(o: *x.Ops, options: c.JSValue) !c.JSValue {
+    const function = try o.own(try af.createResumable(o.s.engine, "pollOAuthDeviceCodeFlow", 1, pollBody, &.{}));
+    return c.JS_DupValue(o.s.engine.context, try o.call(function, c.pi_js_undefined(), &.{options}));
+}
+fn pollBody(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var scope: x.Scope = .{ .engine = engine };
+    var o: x.Ops = .{ .s = &scope };
+    return x.owned.finishAction(&scope, advance(&o, args, state, completion, input));
+}
+fn advance(o: *x.Ops, args: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) {
+        try @import("native_async_body.zig").enterRejectedContinuation(o.s.engine);
+        return .{ .thrown = c.JS_DupValue(o.s.engine.context, input) };
+    }
+    if (completion == .start) {
+        const owner = try o.cell();
+        af.replaceState(o.s.engine, state, c.JS_DupValue(o.s.engine.context, owner));
+        const options = x.arg(args, 0);
+        try o.put(owner, "options", options);
+        try o.put(owner, "deadline", try o.own(try expression(o.s.engine, deadlineValue, .{options})));
+        try o.put(owner, "interval", try o.own(try expression(o.s.engine, boundedFloorProperty, .{ options, "intervalSeconds", true })));
+        try o.put(owner, "slow", integer(o, 0));
+        try o.put(owner, "awaitPoll", boolean(o, false));
+        if (o.truthy(try o.own(try expression(o.s.engine, propertyTruth, .{ options, "waitBeforeFirstPoll" })))) {
+            const remaining = try o.own(try expression(o.s.engine, remainingValue, .{try o.get(owner, "deadline")}));
+            try o.put(owner, "remaining", remaining);
+            if (o.truthy(try o.binary(6, remaining, integer(o, 0)))) return awaitSleep(o, owner);
+            try o.put(owner, "remaining", c.pi_js_undefined());
+        }
+        return nextPoll(o, owner);
+    }
+    if (o.truthy(try o.get(state.*, "awaitPoll"))) return afterPoll(o, state.*, input);
+    // Source closes the prior first-poll/loop block before its next Date.now.
+    try o.put(state.*, "result", c.pi_js_undefined());
+    try o.put(state.*, "remaining", c.pi_js_undefined());
+    return nextPoll(o, state.*);
+}
+fn nextPoll(o: *x.Ops, owner: c.JSValue) !af.Action {
+    if (!o.truthy(try o.own(try expression(o.s.engine, withinDeadline, .{try o.get(owner, "deadline")})))) return timedOut(o, owner);
+    const options = try o.get(owner, "options");
+    if (o.truthy(try o.own(try expression(o.s.engine, abortedOption, .{options})))) {
+        return .{ .thrown = try expression(o.s.engine, errorText, .{cancel_message}) };
+    }
+    try o.put(owner, "awaitPoll", boolean(o, true));
+    return .{ .awaited = try expression(o.s.engine, callPoll, .{options}) };
+}
+fn callPoll(o: *x.Ops, options: c.JSValue) !c.JSValue {
+    return c.JS_DupValue(o.s.engine.context, try o.invoke(options, "poll", &.{}));
+}
+fn afterPoll(o: *x.Ops, owner: c.JSValue, result: c.JSValue) !af.Action {
+    try o.put(owner, "result", result);
+    if (o.truthy(try o.own(try expression(o.s.engine, statusIs, .{ result, "complete" })))) {
+        return .{ .returned = c.JS_DupValue(o.s.engine.context, try o.get(result, "value")) };
+    }
+    if (o.truthy(try o.own(try expression(o.s.engine, statusIs, .{ result, "failed" })))) {
+        return .{ .thrown = try expression(o.s.engine, failedError, .{result}) };
+    }
+    if (o.truthy(try o.own(try expression(o.s.engine, statusIs, .{ result, "slow_down" })))) {
+        try o.put(owner, "slow", try o.binary(0, try o.get(owner, "slow"), integer(o, 1)));
+        const valid = o.truthy(try o.own(try expression(o.s.engine, validServerInterval, .{result})));
+        const interval = if (valid)
+            try expression(o.s.engine, boundedFloorProperty, .{ result, "intervalSeconds", false })
+        else
+            try expression(o.s.engine, incrementedInterval, .{owner});
+        try o.put(owner, "interval", try o.own(interval));
+    }
+    const remaining = try o.own(try expression(o.s.engine, remainingValue, .{try o.get(owner, "deadline")}));
+    try o.put(owner, "remaining", remaining);
+    if (o.truthy(try o.binary(5, remaining, integer(o, 0)))) {
+        try o.put(owner, "result", c.pi_js_undefined());
+        try o.put(owner, "remaining", c.pi_js_undefined());
+        return timedOut(o, owner);
+    }
+    return awaitSleep(o, owner);
+}
+fn awaitSleep(o: *x.Ops, owner: c.JSValue) !af.Action {
+    try o.put(owner, "awaitPoll", boolean(o, false));
+    return .{ .awaited = try expression(o.s.engine, sleepAwaitValue, .{owner}) };
+}
+fn sleepAwaitValue(o: *x.Ops, owner: c.JSValue) !c.JSValue {
+    // Math.min and its receiver retire before options.signal is read.
+    const duration = try o.own(try expression(o.s.engine, minimumDuration, .{owner}));
+    const signal = try o.get(try o.get(owner, "options"), "signal");
+    return sleep(o.s.engine, duration, signal, try o.text(cancel_message));
+}
+fn minimumDuration(o: *x.Ops, owner: c.JSValue) !c.JSValue {
+    const math = try o.global("Math");
+    const minimum = try o.get(math, "min");
+    return c.JS_DupValue(o.s.engine.context, try o.call(minimum, math, &.{ try o.get(owner, "interval"), try o.get(owner, "remaining") }));
+}
+fn timedOut(o: *x.Ops, owner: c.JSValue) !af.Action {
+    return .{ .thrown = try expression(o.s.engine, timeoutError, .{try o.get(owner, "slow")}) };
+}
+fn timeoutError(o: *x.Ops, slow: c.JSValue) !c.JSValue {
+    const constructor = try o.global("Error");
+    const message = if (o.truthy(try o.binary(6, slow, integer(o, 0)))) slow_timeout_message else timeout_message;
+    return c.JS_DupValue(o.s.engine.context, try x.guest.construct(o.s, constructor, &.{try o.text(message)}));
+}
+fn errorText(o: *x.Ops, message: []const u8) !c.JSValue {
+    const constructor = try o.global("Error");
+    return c.JS_DupValue(o.s.engine.context, try x.guest.construct(o.s, constructor, &.{try o.text(message)}));
+}
+fn failedError(o: *x.Ops, result: c.JSValue) !c.JSValue {
+    const constructor = try o.global("Error");
+    return c.JS_DupValue(o.s.engine.context, try x.guest.construct(o.s, constructor, &.{try o.get(result, "message")}));
+}
+fn propertyTruth(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue { return boolean(o, o.truthy(try o.get(receiver, name))); }
+fn propertyIsNumber(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue { return boolean(o, c.JS_IsNumber(try o.get(receiver, name))); }
+fn statusIs(o: *x.Ops, result: c.JSValue, status: []const u8) !c.JSValue {
+    const actual = try o.get(result, "status");
+    return boolean(o, o.s.equal(actual, try o.text(status)));
+}
+fn dateNow(o: *x.Ops) !c.JSValue {
+    return c.JS_DupValue(o.s.engine.context, try o.invoke(try o.global("Date"), "now", &.{}));
+}
+fn multiplyProperty(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8, default_interval: bool) !c.JSValue {
+    const value = try o.get(receiver, name);
+    return c.JS_DupValue(o.s.engine.context, try o.binary(2, if (default_interval and x.nullish(value)) integer(o, 5) else value, integer(o, 1000)));
+}
+fn deadlineValue(o: *x.Ops, options: c.JSValue) !c.JSValue {
+    if (!o.truthy(try o.own(try expression(o.s.engine, propertyIsNumber, .{ options, "expiresInSeconds" }))))
+        return c.JS_DupValue(o.s.engine.context, try o.get(try o.global("Number"), "POSITIVE_INFINITY"));
+    const current = try o.own(try expression(o.s.engine, dateNow, .{}));
+    const duration = try o.own(try expression(o.s.engine, multiplyProperty, .{ options, "expiresInSeconds", false }));
+    return c.JS_DupValue(o.s.engine.context, try o.binary(0, current, duration));
+}
+fn flooredProperty(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8, default_interval: bool) !c.JSValue {
+    const math = try o.global("Math");
+    const floor = try o.get(math, "floor");
+    const milliseconds = try o.own(try expression(o.s.engine, multiplyProperty, .{ receiver, name, default_interval }));
+    return c.JS_DupValue(o.s.engine.context, try o.call(floor, math, &.{milliseconds}));
+}
+fn boundedFloorProperty(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8, default_interval: bool) !c.JSValue {
+    const math = try o.global("Math");
+    const maximum = try o.get(math, "max");
+    const floored = try o.own(try expression(o.s.engine, flooredProperty, .{ receiver, name, default_interval }));
+    return c.JS_DupValue(o.s.engine.context, try o.call(maximum, math, &.{ integer(o, 1000), floored }));
+}
+fn remainingValue(o: *x.Ops, deadline: c.JSValue) !c.JSValue {
+    const now = try o.own(try expression(o.s.engine, dateNow, .{}));
+    return c.JS_DupValue(o.s.engine.context, try o.binary(1, deadline, now));
+}
+fn withinDeadline(o: *x.Ops, deadline: c.JSValue) !c.JSValue {
+    const now = try o.own(try expression(o.s.engine, dateNow, .{}));
+    return c.JS_DupValue(o.s.engine.context, try o.binary(4, now, deadline));
+}
+fn abortedOption(o: *x.Ops, options: c.JSValue) !c.JSValue {
+    return boolean(o, o.truthy(try o.get(try o.get(options, "signal"), "aborted")));
+}
+fn finiteProperty(o: *x.Ops, result: c.JSValue) !c.JSValue {
+    const number = try o.global("Number");
+    const finite = try o.get(number, "isFinite");
+    return boolean(o, o.truthy(try o.call(finite, number, &.{try o.get(result, "intervalSeconds")})));
+}
+fn positiveProperty(o: *x.Ops, result: c.JSValue) !c.JSValue {
+    return c.JS_DupValue(o.s.engine.context, try o.binary(6, try o.get(result, "intervalSeconds"), integer(o, 0)));
+}
+fn validServerInterval(o: *x.Ops, result: c.JSValue) !c.JSValue {
+    if (!o.truthy(try o.own(try expression(o.s.engine, propertyIsNumber, .{ result, "intervalSeconds" })))) return boolean(o, false);
+    if (!o.truthy(try o.own(try expression(o.s.engine, finiteProperty, .{result})))) return boolean(o, false);
+    return positiveProperty(o, result);
+}
+fn incrementedInterval(o: *x.Ops, owner: c.JSValue) !c.JSValue {
+    const math = try o.global("Math");
+    const maximum = try o.get(math, "max");
+    const next = try o.binary(0, try o.get(owner, "interval"), integer(o, 5000));
+    return c.JS_DupValue(o.s.engine.context, try o.call(maximum, math, &.{ integer(o, 1000), next }));
 }
