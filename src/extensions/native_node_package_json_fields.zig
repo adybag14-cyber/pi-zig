@@ -145,7 +145,7 @@ pub fn parse(gpa: std.mem.Allocator, input: []const u8) anyerror!Fields {
         if (parser.cursor == bytes.len) return error.InvalidNativePackageJson;
         if (bytes[parser.cursor] == '}') { parser.cursor += 1; break; }
         try parser.byte(',');
-    };
+    }
     parser.whitespace();
     if (parser.cursor != bytes.len) return error.InvalidNativePackageJson;
     return result;
