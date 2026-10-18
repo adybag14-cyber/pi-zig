@@ -152,7 +152,7 @@ pub const Owner = struct {
     /// Native Process.spawn phase: bind actual endpoints without entering any
     /// guest Socket constructor or _read hook before the native call returns.
     pub fn bindRecords(self: *Owner, driver: *scheduler.OwnerBridge, stdio: [3]transport.Stdio, records: ?*[3]?pipe_record.Owned) !void {
-        if (self.driver != null or driver.hooks.context != self) return error.NativeChildSocketDriverOwnerMismatch;
+        if (self.driver != null or driver.hooks.context != @as(*anyopaque, @ptrCast(self))) return error.NativeChildSocketDriverOwnerMismatch;
         self.driver = driver;
         errdefer self.rollbackAssembly();
         try driver.setDemand(self.demand);

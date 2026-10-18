@@ -144,7 +144,7 @@ pub const Owner = struct {
         try self.createSockets(provider, stdio);
     }
     pub fn adoptDriver(self: *Owner, driver: *scheduler.Driver) !void {
-        if (driver.hooks.context != self or (self.driver != null and self.driver != driver)) return error.NativeChildSocketDriverOwnerMismatch;
+        if (driver.hooks.context != @as(*anyopaque, @ptrCast(self)) or (self.driver != null and self.driver != driver)) return error.NativeChildSocketDriverOwnerMismatch;
         self.driver = driver; self.process_live = driver.transport.process.exited == null;
     }
     pub fn enable(self: *Owner) !void {
