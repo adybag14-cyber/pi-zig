@@ -1031,7 +1031,7 @@ typedef struct JSAsyncFunctionData {
     /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
     JSPiAsyncFunctionBody *native_body;
     JSContext *native_ctx;
-    JSValue native_function, native_this, native_state;
+    JSValue native_function, native_this, native_receiver, native_state;
     int native_argc;
     JSValue *native_argv;
 } JSAsyncFunctionData;
@@ -7663,6 +7663,7 @@ static void mark_children(JSRuntime *rt, JSGCObjectHeader *gp,
                 if (s->is_active) {
                     JS_MarkValue(rt, s->native_function, mark_func);
                     JS_MarkValue(rt, s->native_this, mark_func);
+                    JS_MarkValue(rt, s->native_receiver, mark_func);
                     JS_MarkValue(rt, s->native_state, mark_func);
                     for (i = 0; i < s->native_argc; i++)
                         JS_MarkValue(rt, s->native_argv[i], mark_func);
@@ -22537,7 +22538,8 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
         if (s->native_body) {
             int i;
             /* Match async_func_free: arguments, local state, function
-               (including its captures), then the effective this value. */
+               (including its captures), then lexical this and the call-site
+               receiver retained even by a lexical-this async arrow. */
             for (i = 0; i < s->native_argc; i++)
                 JS_FreeValueRT(rt, s->native_argv[i]);
             js_free_rt(rt, s->native_argv);
@@ -22549,6 +22551,8 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
             s->native_function = JS_UNDEFINED;
             JS_FreeValueRT(rt, s->native_this);
             s->native_this = JS_UNDEFINED;
+            JS_FreeValueRT(rt, s->native_receiver);
+            s->native_receiver = JS_UNDEFINED;
         } else {
             async_func_free(rt, &s->func_state);
         }
@@ -22635,7 +22639,7 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     frame.arg_buf = s->native_argv;
     frame.arg_count = min_int(s->native_argc, UINT16_MAX);
     frame.is_strict_mode = true;
-    frame.receiver = js_dup(s->native_this);
+    frame.receiver = js_dup(s->native_receiver);
     frame.cur_gc_obj = &s->header;
     ctx->rt->current_stack_frame = &frame;
     output = s->native_body(ctx, b->cpool[0], s->native_this,
@@ -22681,7 +22685,7 @@ static void js_native_async_release(JSContext *ctx, JSValue value,
 static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
                                    JSNativeAsyncPending *owned)
 {
-    JSValue state, receiver, function, resolves[2], *args;
+    JSValue state, effective_this, receiver, function, resolves[2], *args;
     int count, i;
     js_native_async_take_pending(ctx, owned);
     s->module = NULL;
@@ -22689,11 +22693,13 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
         return;
     /* Detach before a native finalizer can reenter a queued reaction. */
     s->is_active = false;
-    state = s->native_state; receiver = s->native_this;
+    state = s->native_state; effective_this = s->native_this;
+    receiver = s->native_receiver;
     function = s->native_function; args = s->native_argv;
     count = s->native_argc;
     resolves[0] = s->resolving_funcs[0]; resolves[1] = s->resolving_funcs[1];
     s->native_state = s->native_this = s->native_function = JS_UNDEFINED;
+    s->native_receiver = JS_UNDEFINED;
     s->native_argv = NULL; s->native_argc = 0;
     s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
     /* The suspended bytecode frame retires its argument slots before its
@@ -22703,6 +22709,7 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
     js_free(ctx, args);
     js_native_async_release(ctx, state, owned);
     js_native_async_release(ctx, function, owned);
+    js_native_async_release(ctx, effective_this, owned);
     js_native_async_release(ctx, receiver, owned);
     for (i = 0; i < 2; i++)
         js_native_async_release(ctx, resolves[i], owned);
@@ -23056,6 +23063,9 @@ static JSValue js_native_async_function_call(JSContext *caller,
     s->native_function = js_dup(func_obj);
     s->native_this = js_dup((b->native_async_flags & JS_PI_AF_LEXICAL_THIS)
                            ? b->cpool[1] : this_obj);
+    /* async_func_init retains the actual call receiver independently of an
+       arrow's lexical this. Native bodies are strict, so no boxing is needed. */
+    s->native_receiver = js_dup(this_obj);
     s->native_state = JS_UNDEFINED;
     s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
     s->is_active = true;

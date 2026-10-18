@@ -12,16 +12,17 @@ const Token = struct { probe: *Probe, slot: usize };
 const Probe = struct {
     engine: *Engine,
     mode: Mode,
+    arrow: bool = false,
     holder_class: c.JSClassID = 0,
-    tokens: [5]Token = undefined,
-    made: [5]bool = @splat(false),
-    counts: [5]u32 = @splat(0),
+    tokens: [6]Token = undefined,
+    made: [6]bool = @splat(false),
+    counts: [6]u32 = @splat(0),
     order: [8]u8 = @splat(255),
     length: usize = 0,
     resumed: usize = 0,
     observed: usize = 0,
     adoption_calls: usize = 0,
-    adoption_counts: [5]u32 = @splat(99),
+    adoption_counts: [6]u32 = @splat(99),
     cleanup_events: bool = false,
     first: c.JSValue = c.pi_js_undefined(),
     second: c.JSValue = c.pi_js_undefined(),
@@ -63,8 +64,12 @@ fn observe(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValu
     const p = active.?;
     if (argc != 3 or !c.JS_IsObject(argv[0]) or !c.JS_IsObject(argv[1]) or !c.JS_IsObject(argv[2]))
         return c.JS_ThrowInternalError(context, "Missing actual capture, receiver, or local");
-    if (p.counts[2] != 0 or p.counts[3] != 0 or p.counts[4] != 0)
+    if (p.counts[2] != 0 or p.counts[3] != 0 or p.counts[4] != 0 or (p.arrow and p.counts[5] != 0))
         return c.JS_ThrowInternalError(context, "Frame root retired before resumed body");
+    const effective: *Token = @ptrCast(@alignCast(c.JS_GetOpaque(argv[1], p.holder_class) orelse
+        return c.JS_ThrowInternalError(context, "Missing effective this holder")));
+    if (effective.probe != p or effective.slot != @as(usize, if (p.arrow) 5 else 4))
+        return c.JS_ThrowInternalError(context, "Async arrow used call receiver instead of lexical this");
     p.observed += 1;
     return c.pi_js_undefined();
 }
@@ -159,9 +164,10 @@ fn executeOne(p: *Probe) !void {
     p.engine.finishJob();
 }
 fn sequence(p: *Probe) !void {
-    try std.testing.expectEqual(@as(usize, 5), p.length);
-    try std.testing.expectEqualSlices(u8, &.{ 0, 1, 2, 3, 4 }, p.order[0..p.length]);
-    for (p.counts) |count| try std.testing.expectEqual(@as(u32, 1), count);
+    const expected: []const u8 = if (p.arrow) &.{ 0, 1, 2, 3, 5, 4 } else &.{ 0, 1, 2, 3, 4 };
+    try std.testing.expectEqual(expected.len, p.length);
+    try std.testing.expectEqualSlices(u8, expected, p.order[0..p.length]);
+    for (p.counts, 0..) |count, i| try std.testing.expectEqual(@as(u32, if (p.made[i]) 1 else 0), count);
 }
 fn fatalValues(p: *Probe) !void {
     p.first = try p.engine.checked(c.JS_NewError(p.engine.context));
@@ -267,4 +273,74 @@ test "VM async retirement actual native body allocation fatal survives argument 
     try sequence(&p);
     try std.testing.expectEqual(@as(usize, 1), p.resumed);
     try std.testing.expect(p.engine.native_fatal_invocation == null);
+}
+
+fn arrowFactory(engine: *Engine, receiver: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, arrowFactoryBody(&scope, receiver, v.arg(args, 0)));
+}
+fn arrowFactoryBody(s: *Scope, lexical_this: c.JSValue, captured: c.JSValue) !c.JSValue {
+    var boundary: v.guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+    return v.duplicate(s, try boundary.finishValue(s,
+        af.createResumableArrow(s.engine, "", 2, nativeBody, &.{captured}, lexical_this)));
+}
+fn installArrowFactory(s: *Scope) !void {
+    try v.put(s, try v.global(s, "globalThis"), "nativeArrowFactory",
+        try v.ordinary(s, "nativeArrowFactory", 1, arrowFactory, &.{}));
+}
+fn setupArrow(p: *Probe, native: bool, mode: Mode) !void {
+    try setup(p, native, mode);
+    p.arrow = true;
+    var scope: Scope = .{ .engine = p.engine };
+    try v.owned.finishVoid(&scope, installArrowFactory(&scope));
+    // captured is referenced before lexical this in the literal arrow body,
+    // so its actual closed var-ref holder precedes the lexical-this holder.
+    try run(p.engine, if (mode == .abandoned)
+        "globalThis.sourceArrowFactory=function(captured){return async(a,b)=>{const local=vmMake(2);await vmGate;vmObserve(captured,this,local);return vmReturn}};"
+        else
+        "globalThis.sourceArrowFactory=function(captured){return async(a,b)=>{const local=vmMake(2);await undefined;vmObserve(captured,this,local);return vmReturn}};");
+    try run(p.engine, if (native) "globalThis.selectedArrowFactory=nativeArrowFactory;"
+        else "globalThis.selectedArrowFactory=sourceArrowFactory;");
+}
+fn startArrow(p: *Probe) !c.JSValue {
+    // The ordinary factory's receiver becomes lexical this. The distinct
+    // receiver passed to the resulting arrow still belongs to its real frame.
+    try run(p.engine,
+        "globalThis.vmPending=Reflect.apply(Reflect.apply(selectedArrowFactory,vmMake(5),[vmMake(3)]),vmMake(4),[vmMake(0),vmMake(1)]);void 0;");
+    const pending = try evaluate(p.engine, "vmPending");
+    errdefer p.engine.freeValue(pending);
+    c.JS_PromiseMarkAsHandled(p.engine.context, pending);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    try std.testing.expectEqual(@as(usize, 0), p.length);
+    for (p.made) |made| try std.testing.expect(made);
+    return pending;
+}
+test "VM async retirement arrow keeps distinct call receiver and lexical this through Await and adoption" {
+    inline for (.{ false, true }) |native| {
+        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .returned };
+        defer p.deinit(); try setupArrow(&p, native, .returned);
+        try run(p.engine, "globalThis.vmReturn={get then(){vmAdoption();return undefined}};");
+        const pending = try startArrow(&p); defer p.engine.freeValue(pending);
+        // Exercise the actual suspended-frame GC traversal with both receiver
+        // identities still live. Retirement itself remains reference-driven.
+        c.JS_RunGC(p.engine.runtime);
+        try std.testing.expectEqual(@as(usize, 0), p.length);
+        try executeOne(&p); try sequence(&p);
+        try std.testing.expectEqual(@as(usize, 1), p.observed);
+        try std.testing.expectEqual(@as(usize, 1), p.adoption_calls);
+        for (p.adoption_counts) |count| try std.testing.expectEqual(@as(u32, 0), count);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+    }
+}
+test "VM async retirement abandoned arrow releases captures lexical this then ignored call receiver" {
+    inline for (.{ false, true }) |native| {
+        var p: Probe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .abandoned };
+        defer p.deinit(); try setupArrow(&p, native, .abandoned);
+        const pending = try startArrow(&p); defer p.engine.freeValue(pending);
+        try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
+        try run(p.engine, "delete globalThis.vmGate;");
+        try sequence(&p);
+        try std.testing.expectEqual(@as(usize, 0), p.observed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    }
 }

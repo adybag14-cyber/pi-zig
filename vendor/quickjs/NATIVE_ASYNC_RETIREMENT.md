@@ -62,9 +62,49 @@ fatal/adoption/cancellation regression group require Root's separate grant.
 This changes the order of roots actually owned by the VM. A body that releases
 its own lexical locals before returning its final Action has a separate earlier
 retirement problem; this C reordering cannot recover those released values.
-The current native-arrow call-site receiver retention gap also requires its
-separately authorized ownership successor. Neither is claimed fixed here.
+The terminal-order commit did not retain an async arrow's ignored supplied
+call receiver. The separate ownership successor below addresses that concrete
+root; it does not change bodies that close their own locals too early.
 
 The vendor change requires fresh compilation and qualification. Earlier BCDF
 diagnostic-cache lineage and earlier artifact/runtime receipts do not qualify
 this source.
+
+## Separate call-site receiver ownership successor
+
+Parent: 3892188c1f9806e40ba4ea5fde49127d24e9cfa4 (C SHA-256
+8553C79A6CF93CCE446A6C3C33C73619FD199FF3E6C438350823B121512EB63D).
+
+The actual bytecode async_func_init retains the supplied call-site receiver in
+both frame.receiver and this_val. An arrow reads its lexical this from a closed
+variable reference, while the supplied receiver is still retained by the
+coroutine. The native body path previously kept only the effective lexical this.
+
+The private native_receiver field now independently retains that supplied
+receiver before the first fallible Promise allocation, participates in the
+coroutine GC mark, and supplies the real running stack frame's receiver.
+native_this remains the effective receiver passed to the body. Native bodies
+are strict, so this new call-site root is a duplicate without boxing or a guest
+operation. Both terminal paths release it after the function/capture owner and
+effective this; the active path detaches it before any release and uses the
+existing actual-pending reduction for its retirement.
+
+Two additional controls in the same install-only target bring the declaration
+count to nine. An ordinary factory supplies lexical-this holder 5 and captures
+holder 3, then the returned real async arrow is called with distinct supplied
+receiver holder 4 and argument holders 0 and 1. Its native body state owns local
+holder 2 through settlement. Literal Source and native cases both check:
+
+- All six holders survive the real Await and the return-adoption then getter;
+  the resumed body receives holder 5 as lexical this.
+- Arguments and the local retire before captures and lexical this, while the
+  ignored supplied receiver retires last.
+- Dropping the sole actual awaited Promise also releases the ignored receiver
+  through the real abandoned-coroutine termination path.
+
+The completed case additionally invokes the actual runtime GC while suspended.
+The test's fixed capture-before-this order follows its literal body reference
+order; it does not claim that all possible closure capture graphs share one
+order. The generic Source/native controls retain the same five-holder behavior
+and the unused sixth slot remains uncreated. No author-side native execution
+or runtime qualification is claimed by this source successor.
