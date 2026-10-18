@@ -71,7 +71,7 @@ const Tree = struct {
         var acc: Buffer = .empty;
         var i = if (current.kind == null) position else position + 1;
         var part = if (current.kind == null) current else try self.node(null, current);
-        var alternatives: std.ArrayList(*Node) = .empty;
+        var parsed_alternatives: std.ArrayList(*Node) = .empty;
         while (i < text.len) {
             const ch = text[i];
             i += 1;
@@ -107,14 +107,14 @@ const Tree = struct {
             if (current.kind != null and ch == '|') {
                 try self.push(part, .{ .text = acc.items });
                 acc = .empty;
-                try alternatives.append(self.a, part);
+                try parsed_alternatives.append(self.a, part);
                 part = try self.node(null, current);
                 continue;
             }
             if (current.kind != null and ch == ')') {
                 if (acc.items.len == 0 and current.parts.items.len == 0) current.empty_ext = true;
                 try self.push(part, .{ .text = acc.items });
-                for (alternatives.items) |alternative| try self.push(current, .{ .node = alternative });
+                for (parsed_alternatives.items) |alternative| try self.push(current, .{ .node = alternative });
                 try self.push(current, .{ .node = part });
                 return i;
             }
