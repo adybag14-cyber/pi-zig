@@ -133,7 +133,7 @@ pub fn install(engine: *em.Engine, exports: c.JSValue) !void {
     try scope.put(exports, "realpathSync", realpath_function);
 }
 
-fn throwTyped(engine: *em.Engine, code: []const u8, message: []const u8) !c.JSValue {
+pub fn throwTyped(engine: *em.Engine, code: []const u8, message: []const u8) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     const error_value = try scope.own(try js.builtin(engine, "TypeError", &.{}));
