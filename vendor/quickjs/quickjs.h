@@ -602,6 +602,15 @@ JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
    Uses the VM's genuine async/sync-fallback path; caller captures next itself. */
 JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
 
+/* Execute the actual OP_append operation. target and iterable are borrowed
+   same-runtime values; position is a non-null host uint32 cursor. No operand
+   is consumed. Return 0 on success and -1 with the real pending exception on
+   failure. Existing pending exceptions prevent guest work. Partial target
+   mutations remain on failure; *position changes only on successful completion.
+   Guest-capable: the native caller must use its ordinary invocation boundary. */
+JS_EXTERN int JS_PiArrayAppend(JSContext *ctx, JSValueConst target,
+                               uint32_t *position, JSValueConst iterable);
+
 /* the following functions are used to select the intrinsic object to
    save memory */
 JS_EXTERN JSContext *JS_NewContextRaw(JSRuntime *rt);
@@ -1030,6 +1039,12 @@ JS_EXTERN JSValue JS_NewArray(JSContext *ctx);
 // takes ownership of the values
 JS_EXTERN JSValue JS_NewArrayFrom(JSContext *ctx, int count,
                                   const JSValue *values);
+/* Actual OP_rest array producer for a valid native call's nonnegative count.
+   argv values are borrowed; the returned array owns the VM's duplicates. This
+   is distinct from the consuming JS_NewArrayFrom API. No guest iterator or
+   global Array constructor is consulted. Pending entry prevents new work. */
+JS_EXTERN JSValue JS_PiCreateRestArray(JSContext *ctx, int count,
+                                       JSValueConst *argv);
 // reader beware: JS_IsArray used to "punch" through proxies and check
 // if the target object is an array but it no longer does; use JS_IsProxy
 // and JS_GetProxyTarget instead, and remember that the target itself can
@@ -1104,6 +1119,15 @@ JS_EXTERN JSValue JS_CallConstructor(JSContext *ctx, JSValueConst func_obj,
 JS_EXTERN JSValue JS_CallConstructor2(JSContext *ctx, JSValueConst func_obj,
                                       JSValueConst new_target,
                                       int argc, JSValueConst *argv);
+/* Actual OP_apply constructor case for a completed internal argument array.
+   All inputs are borrowed same-runtime values; the result is owned. Uses the
+   VM's existing argument limit, allocator, constructor call and root cleanup.
+   Pending exceptions at entry prevent guest work. The native caller completes
+   the owned result through its guest-operation and owned-completion boundary. */
+JS_EXTERN JSValue JS_PiCallConstructorArray(JSContext *ctx,
+                                            JSValueConst constructor,
+                                            JSValueConst new_target,
+                                            JSValueConst argument_array);
 /* Try to detect if the input is a module. Returns true if parsing the input
  * as a module produces no syntax errors. It's a naive approach that is not
  * wholly infallible: non-strict classic scripts may _parse_ okay as a module

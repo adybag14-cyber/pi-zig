@@ -18402,6 +18402,27 @@ exception:
     return -1;
 }
 
+/* Native Source array-spread bridge. The opcode's three stack operands are
+   borrowed here; js_append_enumerate consumes only its own iterator values.
+   Preserve the actual INT-tagged uint32 bit pattern, including wraparound. */
+int JS_PiArrayAppend(JSContext *ctx, JSValueConst target,
+                     uint32_t *position, JSValueConst iterable)
+{
+    JSValue stack[3];
+    int status;
+
+    if (JS_HasException(ctx))
+        return -1;
+    stack[0] = unsafe_unconst(target);
+    stack[1] = js_int32(*position);
+    stack[2] = unsafe_unconst(iterable);
+    status = js_append_enumerate(ctx, stack + 3);
+    if (status < 0 || JS_HasException(ctx))
+        return -1;
+    *position = JS_VALUE_GET_INT(stack[1]);
+    return 0;
+}
+
 static __exception int JS_CopyDataProperties(JSContext *ctx,
                                              JSValue target,
                                              JSValue source,
@@ -45285,6 +45306,20 @@ static JSValue js_function_apply(JSContext *ctx, JSValueConst this_val,
     return ret;
 }
 
+/* Native Source constructor spread has already completed OP_append into the
+   array operand. Reuse the unchanged OP_apply constructor case, including its
+   argument cap, VM allocation and argument-root retirement. */
+JSValue JS_PiCallConstructorArray(JSContext *ctx, JSValueConst constructor,
+                                   JSValueConst new_target,
+                                   JSValueConst argument_array)
+{
+    JSValueConst argv[2] = { new_target, argument_array };
+
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    return js_function_apply(ctx, constructor, 2, argv, 1);
+}
+
 static JSValue js_function_call(JSContext *ctx, JSValueConst this_val,
                                 int argc, JSValueConst *argv)
 {
@@ -47698,6 +47733,16 @@ static JSValue js_create_array(JSContext *ctx, int len, JSValueConst *tab)
         set_value(ctx, &p->prop[0].u.value, js_int32(len));
     }
     return obj;
+}
+
+/* Native Source rest-parameter operand. The native argc/argv pair has already
+   passed the real call's argument bounds; preserve OP_rest's borrowed inputs
+   and the actual VM allocator/duplication path without a host argv buffer. */
+JSValue JS_PiCreateRestArray(JSContext *ctx, int count, JSValueConst *argv)
+{
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    return js_create_array(ctx, count, argv);
 }
 
 static JSValue js_create_array_iterator(JSContext *ctx, JSValueConst this_val,
