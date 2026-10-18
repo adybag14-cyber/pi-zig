@@ -150,9 +150,7 @@ fn encodedFields(o: *x.Ops, kind: Request, source: c.JSValue) !c.JSValue {
     const parameters = try value(o, fields, .{kind, source});
     return duplicate(o, try value(o, form, .{parameters}));
 }
-fn request(o: *x.Ops, host: c.JSValue, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
-    const fetch = try o.global("fetch");
-    const url = try concat(o, try o.stringify(host), try o.text(if (kind == .device) "/api/oauth/device_authorization" else "/api/oauth/token"));
+fn requestInit(o: *x.Ops, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
     const init = try o.object();
     try o.put(init, "method", try o.text("POST"));
     const headers = try o.object();
@@ -161,6 +159,12 @@ fn request(o: *x.Ops, host: c.JSValue, signal: c.JSValue, kind: Request, source:
     try o.put(init, "headers", headers);
     try o.put(init, "body", try value(o, encodedFields, .{kind, source}));
     try o.put(init, "signal", try value(o, requestSignal, .{signal}));
+    return duplicate(o, init);
+}
+fn request(o: *x.Ops, host: c.JSValue, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
+    const fetch = try o.global("fetch");
+    const url = try concat(o, try o.stringify(host), try o.text(if (kind == .device) "/api/oauth/device_authorization" else "/api/oauth/token"));
+    const init = try value(o, requestInit, .{signal, kind, source});
     return duplicate(o, try o.call(fetch, c.pi_js_undefined(), &.{url, init}));
 }
 fn invokeJson(o: *x.Ops, response: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(response, "json", &.{})); }
@@ -295,7 +299,7 @@ fn trustedUrlTry(o: *x.Ops, input: c.JSValue) !c.JSValue {
         !try truth(o, propertyEqualsText, .{url, @as([*:0]const u8, "protocol"), @as([]const u8, "http:")})) return c.pi_js_null();
     return duplicate(o, try o.get(url, "href"));
 }
-fn finite(o: *x.Ops, input: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(try o.global("Number"), "isFinite", &.{input})); }
+fn finite(o: *x.Ops, input: c.JSValue) !c.JSValue { return boolean(o, o.truthy(try o.invoke(try o.global("Number"), "isFinite", &.{input}))); }
 fn positive(o: *x.Ops, input: c.JSValue) !bool { return c.JS_IsNumber(input) and o.truthy(try o.binary(6, input, integer(o, 0))); }
 fn finitePositive(o: *x.Ops, input: c.JSValue) !bool { return c.JS_IsNumber(input) and try truth(o, finite, .{input}) and try positive(o, input); }
 fn parseDevice(o: *x.Ops, owner: c.JSValue, json: c.JSValue) !af.Action {

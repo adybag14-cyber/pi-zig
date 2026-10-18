@@ -3897,6 +3897,19 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { meta_actual.root_module.linkSystemLibrary("advapi32", .{}); meta_actual.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-ai-oauth-meta-genuine-af", "Install actual Meta OAuth caller controls without execution").dependOn(&b.addInstallArtifact(meta_actual, .{ .dest_sub_path = b.fmt("native-ai-oauth-meta-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual Xai provider caller controls; install only, no runtime step.
+    const xai_actual = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_xai_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native OAuth Xai"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, xai_actual.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, xai_actual.root_module, typescript_parser);
+    linkSqlite(xai_actual.root_module, sqlite_lib_dir, sqlite_library);
+    xai_actual.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { xai_actual.root_module.linkSystemLibrary("advapi32", .{}); xai_actual.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-ai-oauth-xai-genuine-af", "Install actual Xai OAuth caller controls without execution").dependOn(&b.addInstallArtifact(xai_actual, .{ .dest_sub_path = b.fmt("native-ai-oauth-xai-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
