@@ -2,7 +2,7 @@
 
 SOURCE ONLY, prepared from Root d093c62bd03e0a43f5817a3b9feaa7b39b98e69d.
 No Zig/fmt/AST/parser/compiler/native/Node/reference jobs have run. No expected
-reference JSON exists. Three named native tests are authored; actual metadata,
+reference JSON exists. Five named native tests are authored; actual metadata,
 pass counts, allocation behavior and full genuine owner bootstrap are UNKNOWN.
 
 The two original async methods bindExtensions and extendResourcesFromExtensions
@@ -54,3 +54,25 @@ remain external, as do Source166/full index/default application gates.
 The install-only build snippet includes actual TypeScript parser/platform linker
 requirements. It does not edit build.zig or activate a run/default route. Root
 owns a later exact candidate build/metadata/runtime grant and independent audit.
+
+## Successor to open4f0 retirement review
+
+The original4f0 checkpoint remains published and immutable. Body findings receipt
+AA0AE352AE441399302F72EF20284C6730F0F11C6CB9BEB92F42C5380B098D5A
+identified actual expression/statement roots retained past their Source pop.
+The successor gives each first binding comparison, second-read assignment,
+hasHandlers truth test, reload reason comparison and individual strict length
+comparison its own C435 completion/retirement scope. Discarded apply/report/
+extendResources/rebuild statement results retire before the next Source getter.
+No Await/job is added. Actual lexical discovery results and path object remain
+in their enclosing body scope. Shared C435/local raw producer code is unchanged.
+
+The new unwrapped C getter transfers a sole native finalizer holder, then checks
+retirement at its independent second read. Seven other cases use genuine sole
+native holders returned from assignment/apply/report/reason/hasHandlers/length/
+extendResources, checking finalization before the next observable operation.
+A separate control arms an actual current native fatal event with the VM pending
+slot emptied, then calls the genuine-input host seam and verifies no factory
+getter ran. createAndBind now checks entry first and balances its own invocation
+around body+scope retirement+final result normalization. These controls are
+prepared native mechanisms, not captured observations or runtime passes.

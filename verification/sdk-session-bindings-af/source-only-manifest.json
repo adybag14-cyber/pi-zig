@@ -1,12 +1,15 @@
 {
-  "schema": 1,
-  "status": "source_only_prepared_peer_pending",
+  "schema": 2,
+  "status": "source_only_retirement_successor_peer_pending",
   "base": "d093c62bd03e0a43f5817a3b9feaa7b39b98e69d",
+  "preserved_negative": "4f0ec9e459a13a01c53cf4282d8b06c09a6a2893",
+  "findings_receipt": "C:/Users/adyba/pi-zig/evidence/sdk-session-bindings-4f0-independent-body-findings-20261018.json",
+  "findings_sha256": "AA0AE352AE441399302F72EF20284C6730F0F11C6CB9BEB92F42C5380B098D5A",
   "members": [
     {
       "path": "src/extensions/native_sdk_session_bindings.zig",
-      "sha256": "21607DBB4BE4EB28FD79A0344720A68D34A2FA41CBE22B054B8132ECB8940D8E",
-      "bytes": 12644
+      "sha256": "C2EAE3553F0A446F910838257E37FDD0A28B897FEEEE5EF31CF1B48B00574723",
+      "bytes": 15341
     },
     {
       "path": "src/extensions/native_sdk_session_bindings_values.zig",
@@ -15,13 +18,13 @@
     },
     {
       "path": "src/native_sdk_session_bindings_af_test.zig",
-      "sha256": "F53E415A97216E0873D0CA96E81AF07AA6B015F921B14A527DE9A78ABAB9D149",
-      "bytes": 5098
+      "sha256": "919382E51FA79223DC89890C0AC559744386900DE703580601106FC4DBDBD18B",
+      "bytes": 5175
     },
     {
       "path": "src/native_sdk_session_bindings_actual_controls.zig",
-      "sha256": "F570C7DCE8800953147EE1D392AAADB8E8247D456B48E61F3445B7CC52C9C684",
-      "bytes": 1746
+      "sha256": "61F38A1CD364A839FD05CEDAE2960396612C7C2F05B6132EDC4B25E074ACD653",
+      "bytes": 2053
     },
     {
       "path": "src/extensions/fixtures/sdk-session-bindings-af.input.txt",
@@ -45,8 +48,8 @@
     },
     {
       "path": "verification/sdk-session-bindings-af/README.md",
-      "sha256": "2A102BD61A5FD489E5B6797CA90203B8761E80F950C6C62E4106CF1946309BC0",
-      "bytes": 3741
+      "sha256": "5DC6A7CA21127740602BBC99D71F5E37D3557D725F6FA604834BC359328E5813",
+      "bytes": 5184
     },
     {
       "path": "verification/sdk-session-bindings-af/primary-provenance.json",
@@ -62,6 +65,11 @@
       "path": "verification/sdk-session-bindings-af/original-agent-session-methods.ts.txt",
       "sha256": "86BE0A9A24A548A4ACB3D4FEFFE53236F20413CB28F9186612E9312622DE1C13",
       "bytes": 2608
+    },
+    {
+      "path": "src/native_sdk_session_bindings_retirement_test.zig",
+      "sha256": "8E909E1254B2523F487F20E77288DD80A4CE51895CBC01CD4DA88680496A1771",
+      "bytes": 9559
     }
   ],
   "protected": [
@@ -141,9 +149,12 @@
   "planned_native_names": [
     "native session bindings use two genuine AF and ordinary resource methods",
     "native session bindings borrowed receivers preserve live order actual Awaits and raw rejections",
-    "native session bindings both Await rejection routes retain flagged private DATA"
+    "native session bindings both Await rejection routes retain flagged private DATA",
+    "native session binding expression sole holder retires before next Source getter without Await",
+    "native actual session binding control entry rejects active event before factory getter"
   ],
   "actual_metadata": null,
+  "shared_caller_unchanged": true,
   "reference_expected_absent": true,
   "executions": 0,
   "parser_fmt_AST_jobs": 0,

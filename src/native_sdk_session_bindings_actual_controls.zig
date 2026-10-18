@@ -5,8 +5,12 @@ const Scope = @import("extensions/native_sdk_session_bindings_values.zig").Scope
 const owned = @import("extensions/native_sdk_owned_completion.zig");
 const c = em.c;
 pub fn createAndBind(engine: *em.Engine, factory: c.JSValue, options: c.JSValue, bindings: c.JSValue) !c.JSValue {
+    try engine.checkNativeEntry();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
     var scope: Scope = .{ .engine = engine };
-    return owned.finishValue(&scope, run(&scope, factory, options, bindings));
+    const result = owned.finishValue(&scope, run(&scope, factory, options, bindings));
+    return engine.checked(engine.leaveNativeInvocation(&invocation, if (result) |value| value else |err| @import("extensions/native_sdk.zig").fail(engine, err)));
 }
 fn run(scope: *Scope, factory: c.JSValue, options: c.JSValue, bindings: c.JSValue) !c.JSValue {
     const engine = scope.engine;

@@ -117,6 +117,60 @@ fn stage(scope: *Scope, state: c.JSValue) !Stage {
     try scope.status(c.JS_ToInt32(scope.engine.context, &number, value), generation);
     return @enumFromInt(number);
 }
+// Expression results are popped before the following Source getter/statement.
+// These small scopes preserve that boundary without adding a VM Await/job.
+fn defined(engine: *em.Engine, target: c.JSValue, name: [*:0]const u8) !bool {
+    var expression: Scope = .{ .engine = engine };
+    const result = try owned.finishValue(&expression, definedValue(&expression, target, name));
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn definedValue(scope: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return c.pi_js_bool(scope.engine.context, @intFromBool(!c.JS_IsUndefined(try scope.get(target, name))));
+}
+fn assignBinding(engine: *em.Engine, session: c.JSValue, bindings: c.JSValue, name: [*:0]const u8, slot: [*:0]const u8) !void {
+    var expression: Scope = .{ .engine = engine };
+    return owned.finishVoid(&expression, assignValue(&expression, session, bindings, name, slot));
+}
+fn assignValue(scope: *Scope, session: c.JSValue, bindings: c.JSValue, name: [*:0]const u8, slot: [*:0]const u8) !void {
+    try scope.set(session, slot, try scope.get(bindings, name));
+}
+const Statement = enum { apply, report, extend, rebuild };
+fn statement(engine: *em.Engine, session: c.JSValue, which: Statement, paths: c.JSValue) !void {
+    var expression: Scope = .{ .engine = engine };
+    return owned.finishVoid(&expression, statementValue(&expression, session, which, paths));
+}
+fn statementValue(scope: *Scope, session: c.JSValue, which: Statement, paths: c.JSValue) !void {
+    _ = switch (which) {
+        .apply => value: {
+            const apply = try scope.get(session, "_applyExtensionBindings");
+            break :value try scope.call(apply, session, &.{try scope.get(session, "_extensionRunner")});
+        },
+        .report => try scope.invoke(try scope.get(session, "_extensionRunner"), "reportUnhandledMcpServers", &.{}),
+        .extend => try scope.invoke(try scope.get(session, "_resourceLoader"), "extendResources", &.{paths}),
+        .rebuild => value: {
+            const rebuild = try scope.get(session, "_rebuildSystemPrompt");
+            break :value try scope.call(rebuild, session, &.{try scope.invoke(session, "getActiveToolNames", &.{})});
+        },
+    };
+}
+const Condition = enum { handlers, reload, length_zero };
+fn condition(engine: *em.Engine, target: c.JSValue, which: Condition) !bool {
+    var expression: Scope = .{ .engine = engine };
+    const result = try owned.finishValue(&expression, conditionValue(&expression, target, which));
+    return c.JS_ToBool(engine.context, result) == 1;
+}
+fn conditionValue(scope: *Scope, target: c.JSValue, which: Condition) !c.JSValue {
+    const result = switch (which) {
+        .handlers => value: {
+            const runner = try scope.get(target, "_extensionRunner");
+            const has_handlers = try scope.get(runner, "hasHandlers");
+            break :value scope.truthy(try scope.call(has_handlers, runner, &.{try scope.text("resources_discover")}));
+        },
+        .reload => scope.equal(try scope.get(try scope.get(target, "_sessionStartEvent"), "reason"), try scope.text("reload")),
+        .length_zero => scope.equal(try scope.get(target, "length"), c.JS_NewInt32(scope.engine.context, 0)),
+    };
+    return c.pi_js_bool(scope.engine.context, @intFromBool(result));
+}
 fn bindBody(engine: *em.Engine, session: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
     // Await rejection is completion DATA. Actual pending wins before ANY stage
     // read; no flags/private tags on input are consulted or reclassified.
@@ -135,20 +189,19 @@ fn bindStep(scope: *Scope, session: c.JSValue, bindings: c.JSValue, state: *c.JS
             .{ "shutdownHandler", "_extensionShutdownHandler" }, .{ "onError", "_extensionErrorListener" },
         }) |binding| {
             // Source tests then evaluates the property AGAIN for assignment.
-            if (!c.JS_IsUndefined(try scope.get(bindings, binding[0]))) try scope.set(session, binding[1], try scope.get(bindings, binding[0]));
+            if (try defined(scope.engine, bindings, binding[0])) try assignBinding(scope.engine, session, bindings, binding[0], binding[1]);
         }
-        const apply = try scope.get(session, "_applyExtensionBindings");
-        _ = try scope.call(apply, session, &.{try scope.get(session, "_extensionRunner")});
+        try statement(scope.engine, session, .apply, c.pi_js_undefined());
         const runner = try scope.get(session, "_extensionRunner");
         const emit = try scope.get(runner, "emit");
         return wait(scope, state, try scope.call(emit, runner, &.{try scope.get(session, "_sessionStartEvent")}), .bound);
     }
     switch (try stage(scope, state.*)) {
         .bound => {
-            _ = try scope.invoke(try scope.get(session, "_extensionRunner"), "reportUnhandledMcpServers", &.{});
+            try statement(scope.engine, session, .report, c.pi_js_undefined());
             // Source captures the callee before evaluating reason's live getter.
             const extend = try scope.get(session, "extendResourcesFromExtensions");
-            const reason = if (scope.equal(try scope.get(try scope.get(session, "_sessionStartEvent"), "reason"), try scope.text("reload"))) "reload" else "startup";
+            const reason = if (try condition(scope.engine, session, .reload)) "reload" else "startup";
             return wait(scope, state, try scope.call(extend, session, &.{try scope.text(reason)}), .extended);
         },
         .extended => return .{ .returned = c.pi_js_undefined() },
@@ -165,9 +218,7 @@ fn discoverBody(engine: *em.Engine, session: c.JSValue, args: []const c.JSValue,
 }
 fn discoverStep(scope: *Scope, session: c.JSValue, reason: c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     if (completion == .start) {
-        const handlers_runner = try scope.get(session, "_extensionRunner");
-        const has_handlers = try scope.get(handlers_runner, "hasHandlers");
-        if (!scope.truthy(try scope.call(has_handlers, handlers_runner, &.{try scope.text("resources_discover")}))) return .{ .returned = c.pi_js_undefined() };
+        if (!try condition(scope.engine, session, .handlers)) return .{ .returned = c.pi_js_undefined() };
         const runner = try scope.get(session, "_extensionRunner");
         const emit = try scope.get(runner, "emitResourcesDiscover");
         return wait(scope, state, try scope.call(emit, runner, &.{ try scope.get(session, "_cwd"), reason }), .discovered);
@@ -177,14 +228,12 @@ fn discoverStep(scope: *Scope, session: c.JSValue, reason: c.JSValue, state: *c.
     const skills = try scope.get(input, "skillPaths");
     const prompts = try scope.get(input, "promptPaths");
     const themes = try scope.get(input, "themePaths");
-    const zero = c.JS_NewInt32(scope.engine.context, 0);
-    if (scope.equal(try scope.get(skills, "length"), zero) and scope.equal(try scope.get(prompts, "length"), zero) and scope.equal(try scope.get(themes, "length"), zero)) return .{ .returned = c.pi_js_undefined() };
+    if (try condition(scope.engine, skills, .length_zero) and try condition(scope.engine, prompts, .length_zero) and try condition(scope.engine, themes, .length_zero)) return .{ .returned = c.pi_js_undefined() };
     const paths = try scope.object();
     try scope.put(paths, "skillPaths", try scope.invoke(session, "buildExtensionResourcePaths", &.{skills}));
     try scope.put(paths, "promptPaths", try scope.invoke(session, "buildExtensionResourcePaths", &.{prompts}));
     try scope.put(paths, "themePaths", try scope.invoke(session, "buildExtensionResourcePaths", &.{themes}));
-    _ = try scope.invoke(try scope.get(session, "_resourceLoader"), "extendResources", &.{paths});
-    const rebuild = try scope.get(session, "_rebuildSystemPrompt");
-    _ = try scope.call(rebuild, session, &.{try scope.invoke(session, "getActiveToolNames", &.{})});
+    try statement(scope.engine, session, .extend, paths);
+    try statement(scope.engine, session, .rebuild, c.pi_js_undefined());
     return .{ .returned = c.pi_js_undefined() };
 }

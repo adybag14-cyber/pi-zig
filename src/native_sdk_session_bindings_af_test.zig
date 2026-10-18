@@ -5,6 +5,7 @@ const Scope = @import("extensions/native_sdk_session_bindings_values.zig").Scope
 const owned = @import("extensions/native_sdk_owned_completion.zig");
 const bindings = @import("extensions/native_sdk_session_bindings.zig");
 const c = em.c;
+comptime { _ = @import("native_sdk_session_bindings_retirement_test.zig"); }
 fn expose(scope: *Scope) !c.JSValue {
     const prototype = try scope.object();
     try bindings.install(scope.engine, prototype);
