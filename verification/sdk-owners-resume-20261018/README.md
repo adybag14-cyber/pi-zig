@@ -41,3 +41,9 @@ The ordered declared names are recorded in remote-catalog-controls.json.
 There has been no build, metadata query, native test run, or Node Source capture
 for this unit. The controls and Source observer are authored inputs, not observed
 passes. Full public coding-agent namespace selection remains separate work.
+
+### RemoteCatalog internal Source Throw successor
+
+The internal parseCatalog scope now returns an owned Action to the actual readCatalog async body. This avoids restoring a successful live Error-constructor result into an actual pending exception slot before intrinsic Promise rejection. The original constructor result may be arbitrary DATA, including an Error carrying an old private allocation tag and uncatchable flag. Actual pending/current producer events still pass through C435 and retain precedence. Shared completion and guest-operation code are unchanged.
+
+A ninth declared `SDK RemoteCatalog` control exercises that live global Error-constructor path through the real wrapper, real retry helper and actual invalid JSON-value parser branch. It verifies rejection identity, preserved DATA flags and clean native invocation/suppression state. This successor is authored source only, with no compiler, metadata, native runtime or Source execution claim.

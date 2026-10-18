@@ -168,3 +168,32 @@ test "SDK RemoteCatalog prior job condition and method temporaries retire before
         \\if(reads<3)throw Error('all Source type condition reads required');
     );
 }
+
+fn flaggedData(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, args: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const value = privateData(context, receiver, argc, args);
+    c.JS_SetUncatchableError(context, value);
+    return value;
+}
+test "SDK RemoteCatalog successful flagged Error constructor value rejects as DATA" {
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    const engine = try x.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit(); try prepare(engine, &environment);
+    try engine.bindFunction("remoteFlaggedData", flaggedData, 0);
+    try run(engine,
+        \\const descriptor=Object.getOwnPropertyDescriptor(globalThis,'Error'),OriginalError=Error;
+        \\globalThis.remoteErrorData=remoteFlaggedData();globalThis.remoteErrorCaught=undefined;let constructors=0,publishes=0;
+        \\try{Object.defineProperty(globalThis,'Error',{configurable:true,writable:true,value:function Error(){constructors++;return remoteErrorData}});
+        \\await withFetch(()=>({status:200,ok:true,headers:{get(){return null}},json(){return 17}}),async()=>{
+        \\const wrapped=actualRemoteCatalog.withRemoteCatalog({id:'actual',getModels(){return[]}});
+        \\try{await wrapped.refreshModels({force:true,allowNetwork:true,signal:new AbortController().signal,publish(record){publishes++;record.update?.();return true}})}
+        \\catch(error){remoteErrorCaught=error}
+        \\});}finally{Object.defineProperty(globalThis,'Error',descriptor)}
+        \\if(constructors!==1||publishes!==1||remoteErrorCaught!==remoteErrorData)throw new OriginalError('Source Error-constructor DATA completion');
+    );
+    const data = try rawRead(engine, "remoteErrorData"); defer engine.freeValue(data);
+    const caught = try rawRead(engine, "remoteErrorCaught"); defer engine.freeValue(caught);
+    try std.testing.expect(c.JS_IsStrictEqual(engine.context, data, caught));
+    try std.testing.expect(c.JS_IsUncatchableError(data));
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(data) != 0);
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+}

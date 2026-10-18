@@ -269,9 +269,15 @@ fn remoteModels(scope: *Scope, entry: c.JSValue, generated: c.JSValue) !c.JSValu
     if (scope.truthy(entry) and try isNewer(scope, try scope.get(entry, "lastModified"), generated)) return scope.get(entry, "models");
     return scope.array();
 }
-fn parseCatalog(scope: *Scope, imports: c.JSValue, provider_id: c.JSValue, value: c.JSValue) !c.JSValue {
+fn parseCatalog(scope: *Scope, imports: c.JSValue, provider_id: c.JSValue, value: c.JSValue) !af.Action {
     var storage: x.Scope = .{ .engine = scope.s.engine }; var local: Scope = .{ .s = &storage };
-    return scope.own(try x.owned.finishValue(&storage, parseCatalogBody(&local, imports, provider_id, value)));
+    var completion = x.owned.Completion.initValue(scope.s.engine, parseCatalogBody(&local, imports, provider_id, value));
+    completion.releaseScope(&storage);
+    // A successful live Error constructor may return any object, including
+    // flagged historical DATA. Keep Source Throw as an Action while crossing
+    // this internal scope; restoring it into the pending slot creates a new
+    // event that Source's intrinsic async rejection never creates.
+    return completion.finishAction();
 }
 fn parseCatalogBody(scope: *Scope, imports: c.JSValue, provider_id: c.JSValue, value: c.JSValue) !c.JSValue {
     var entries = c.pi_js_undefined();
@@ -558,7 +564,13 @@ fn readBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue, st
         return .{ .awaited = c.JS_DupValue(engine.context, json) };
     }
     const result = try scope.get(state.*, "result");
-    try scope.put(result, "models", try parseCatalog(scope, roots[0], try scope.get(state.*, "providerId"), value));
+    const parsed = try parseCatalog(scope, roots[0], try scope.get(state.*, "providerId"), value);
+    const models = switch (parsed) {
+        .returned => |entry_models| try scope.own(entry_models),
+        .thrown => return parsed,
+        .awaited => unreachable,
+    };
+    try scope.put(result, "models", models);
     const last = try scope.get(state.*, "lastModified");
     try scope.put(result, "lastModified", if (try invalidDate(scope, last)) c.JS_NewInt32(engine.context, 0) else last);
     const etag = try readHeader(scope, try scope.get(state.*, "response"), "etag");

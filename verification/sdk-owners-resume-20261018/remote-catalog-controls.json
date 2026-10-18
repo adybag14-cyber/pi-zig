@@ -13,7 +13,8 @@
     "SDK RemoteCatalog actual independent async continuations and thenable rejection identity",
     "SDK RemoteCatalog actual spread and live iterator close precedence",
     "SDK RemoteCatalog SAME publish callback DATA A remains ordinary and actual B1 wins",
-    "SDK RemoteCatalog prior job condition and method temporaries retire before downstream getters"
+    "SDK RemoteCatalog prior job condition and method temporaries retire before downstream getters",
+    "SDK RemoteCatalog successful flagged Error constructor value rejects as DATA"
   ],
   "source_authority": "c268154c packages/coding-agent/src/core/remote-catalog-provider.ts",
   "source_authority_copy": "verification/sdk-owners-resume-20261018/remote-catalog-provider.c268.ts.txt",
