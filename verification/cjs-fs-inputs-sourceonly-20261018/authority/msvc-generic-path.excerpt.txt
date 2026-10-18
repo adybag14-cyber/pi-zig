@@ -1,0 +1,80 @@
+auto u8string() const { // convert the native path from this instance into a UTF-8 string
+#ifdef __cpp_lib_char8_t
+            using _U8Ty = char8_t;
+#else // ^^^ defined(__cpp_lib_char8_t) / !defined(__cpp_lib_char8_t) vvv
+            using _U8Ty = char;
+#endif // ^^^ !defined(__cpp_lib_char8_t) ^^^
+            return _Convert_wide_to_narrow<char_traits<_U8Ty>>(__std_code_page::_Utf8, _Text, allocator<_U8Ty>{});
+        }
+
+        _NODISCARD _STD u16string u16string() const { // convert the native path from this instance into a u16string
+            return string<char16_t>();
+        }
+
+        _NODISCARD _STD u32string u32string() const { // convert the native path from this instance into a u32string
+            return string<char32_t>();
+        }
+
+        template <class _EcharT, class _Traits = char_traits<_EcharT>, class _Alloc = allocator<_EcharT>,
+            enable_if_t<_Is_EcharT<_EcharT>, int> = 0>
+        _NODISCARD basic_string<_EcharT, _Traits, _Alloc> generic_string(const _Alloc& _Al = _Alloc()) const {
+            // convert the native path from this instance into a generic basic_string
+            using _Alwide = _Rebind_alloc_t<_Alloc, wchar_t>;
+            _Alwide _Al_wchar(_Al);
+            basic_string<wchar_t, char_traits<wchar_t>, _Alwide> _Generic_str(_Al_wchar);
+            _Generic_str.resize(_Text.size());
+            _STD replace_copy(_Text.begin(), _Text.end(), _Generic_str.begin(), L'\\', L'/');
+            return _Convert_wide_to<_Traits>(_Generic_str, _Al);
+        }
+
+        _NODISCARD _STD string generic_string() const {
+            // convert the native path from this instance into a generic string
+            return generic_string<char>();
+        }
+
+        _NODISCARD _STD wstring generic_wstring() const {
+            // convert the current native path into a copy of it in the generic format
+            // note: intra-filename() observers stem() and extension() strip alternate data
+            // streams, but filenames with alternate data streams inside can serve as
+            // perfectly valid values of filename in the generic format, so in the interest of
+            // destroying less information we have preserved them here.
+            _STD wstring _Result;
+            _Result.resize(_Text.size());
+            _STD replace_copy(_Text.begin(), _Text.end(), _Result.begin(), L'\\', L'/');
+            return _Result;
+        }
+
+        _NODISCARD auto generic_u8string() const {
+            // convert the native path from this instance into a generic UTF-8 string
+            auto _Result = u8string();
+            using _U8Ty  = decltype(_Result)::value_type;
+            _STD replace(_Result.begin(), _Result.end(), _U8Ty{u8'\\'}, _U8Ty{u8'/'});
+            return _Result;
+        }
+
+        _NODISCARD _STD u16string generic_u16string() const {
+            // convert the native path from this instance into a generic u16string
+            _STD u16string _Result = u16string();
+            _STD replace(_Result.begin(), _Result.end(), u'\\', u'/');
+            return _Result;
+        }
+
+        _NODISCARD _STD u32string generic_u32string() const {
+            // convert the native path from this instance into a generic u32string
+            _STD u32string _Result = u32string();
+            _STD replace(_Result.begin(), _Result.end(), U'\\', U'/');
+            return _Result;
+        }
+
+        _NODISCARD int compare(const path& _Other) const noexcept { // compare *this with _Other
+            return compare(static_cast<wstring_view>(_Other._Text));
+        }
+
+        _NODISCARD int compare(const string_type& _Other) const noexcept /* strengthened */ {
+            // compare *this with _Other
+            return compare(static_cast<wstring_view>(_Other));
+        }
+
+        _NODISCARD int compare(const basic_string_view<value_type> _Other) const noexcept /* strengthened */ {
+            // compare *this with _Other
+    

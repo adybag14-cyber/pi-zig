@@ -4003,7 +4003,23 @@ pub fn build(b: *std.Build) void {
     linkSqlite(sdk_public_session.root_module, sqlite_lib_dir, sqlite_library);
     sdk_public_session.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { sdk_public_session.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_session.root_module.linkSystemLibrary("userenv", .{}); }
-    b.step("build-native-sdk-public-session-helpers", "Install actual public Session helper and real owner controls without execution").dependOn(&b.addInstallArtifact(sdk_public_session, .{ .dest_sub_path = b.fmt("native-sdk-public-session-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    b.step("build-native-sdk-public-session-helpers", "Install actual public Session helper and real owner controls without execution").dependOn(&b.addInstallArtifact(sdk_public_session, .{ .dest_sub_path = b.fmt("native-sdk-public-session-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);    // Actual Node package reader and native filesystem controls. Installation
+    // only; metadata and runtime require Root's separately bounded controller.
+    const node_package_reader = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_package_reader_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native package"},
+    });
+    linkQuickJs(b, node_package_reader.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_package_reader.root_module, typescript_parser);
+    linkSqlite(node_package_reader.root_module, sqlite_lib_dir, sqlite_library);
+    node_package_reader.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_package_reader.root_module.linkSystemLibrary("advapi32", .{});
+        node_package_reader.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-package-reader", "Install twenty-one declared actual package reader and native path controls without running").dependOn(&b.addInstallArtifact(node_package_reader, .{ .dest_sub_path = b.fmt("native-node-package-reader{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
