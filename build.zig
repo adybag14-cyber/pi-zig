@@ -3854,6 +3854,35 @@ pub fn build(b: *std.Build) void {
         ai_sleep_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-ai-sleep", "Install actual Source sleep producer and timer ownership controls").dependOn(&b.addInstallArtifact(ai_sleep_tests, .{ .dest_sub_path = b.fmt("native-ai-sleep{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    const kimi_genuine_af_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_kimi_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native OAuth Kimi"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, kimi_genuine_af_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, kimi_genuine_af_tests.root_module, typescript_parser);
+    linkSqlite(kimi_genuine_af_tests.root_module, sqlite_lib_dir, sqlite_library);
+    kimi_genuine_af_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        kimi_genuine_af_tests.root_module.linkSystemLibrary("advapi32", .{});
+        kimi_genuine_af_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-ai-oauth-kimi-genuine-af", "Install actual Kimi Source and genuine OAuth continuation controls").dependOn(&b.addInstallArtifact(kimi_genuine_af_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-kimi-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    const provider_env_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_provider_env_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native provider env"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, provider_env_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, provider_env_tests.root_module, typescript_parser);
+    linkSqlite(provider_env_tests.root_module, sqlite_lib_dir, sqlite_library);
+    provider_env_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        provider_env_tests.root_module.linkSystemLibrary("advapi32", .{});
+        provider_env_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-provider-env", "Install actual provider environment Source and native lifetime controls").dependOn(&b.addInstallArtifact(provider_env_tests, .{ .dest_sub_path = b.fmt("native-provider-env{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
 }
 
