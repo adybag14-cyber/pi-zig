@@ -1741,6 +1741,19 @@ pub fn build(b: *std.Build) void {
         sdk_manager_worker_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-manager-worker-bootstrap", "Install actual worker manager projection controls without running").dependOn(&b.addInstallArtifact(sdk_manager_worker_tests, .{}).step);
+    const sdk_guest_operation_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_guest_operation_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK guest boundary"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_guest_operation_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_guest_operation_tests.root_module, typescript_parser);
+    linkSqlite(sdk_guest_operation_tests.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_guest_operation_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_guest_operation_tests.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_guest_operation_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-guest-operation", "Compile SDK guest DATA/current producer controls without execution").dependOn(&b.addInstallArtifact(sdk_guest_operation_tests, .{}).step);
     const sdk_actual_paths_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_paths_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual paths owner"}, .use_llvm = use_llvm,

@@ -1,0 +1,67 @@
+{
+  "schema": "sdk-guest-operation-sourceonly-v1",
+  "base": "311a8dfe9a72b049cd4ee2a5ef509526101c3e3a",
+  "source_only": true,
+  "execution_grant": false,
+  "native_metadata": null,
+  "expected_outputs": "absent",
+  "test_declarations": 5,
+  "install_only_target": "build-native-sdk-guest-operation",
+  "rows": [
+    {
+      "path": "src/extensions/native_sdk_guest_operation.zig",
+      "sha256": "343DC0A0FE3AF5DF5B21060095E47D93653D00991570D0AF7EC186F3CA31E5C9",
+      "length": 6529
+    },
+    {
+      "path": "src/native_sdk_guest_operation_test.zig",
+      "sha256": "D163C8D01205461D2047EBB672B3B539F5411A3163FA55FFE953A65B7B50BCAF",
+      "length": 8899
+    },
+    {
+      "path": "build.zig",
+      "sha256": "869CB85D08A0601EB99F442D068200044B3FFE93D042E927F9193E538CA048DC",
+      "length": 373297
+    },
+    {
+      "path": "verification/sdk-guest-operation-sourceonly-20261018/README.md",
+      "sha256": "D519FB88A8AECD2C0100905DADC6BB4EADB339520052377B06FB7042030DCB8C",
+      "length": 3103
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "length": 13354
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "length": 93573
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "length": 5566
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "length": 7826
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "length": 163154
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "length": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "length": 76220
+    }
+  ]
+}
