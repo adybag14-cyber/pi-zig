@@ -2547,30 +2547,27 @@ fn staticMethod(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.J
 /// private install creates the same manager bodies/prototypes as existing SDK
 /// callers; none of its legacy session/model/loader exports is selected here.
 pub fn managerImports(engine: *engine_mod.Engine) !c.JSValue {
-    const cache_key = "\x00sdk-actual-manager-imports";
-    if (engine.native_module_values.get(cache_key)) |cached| return c.JS_DupValue(engine.context, cached);
-    // install's existing class guard cannot populate another namespace. Require
-    // this projection at fresh bootstrap rather than reconstructing a binding
-    // from a guest-mutable prototype.constructor property.
-    if (engine.native_sdk_class != 0) return error.RequiredOriginalSdkManagerModuleOwner;
-    const all = try object(engine);
-    defer engine.freeValue(all);
-    try install(engine, all);
-    const managers = try object(engine);
-    errdefer engine.freeValue(managers);
-    inline for (.{ "SessionManager", "SettingsManager" }) |name| {
-        const value = try get(engine, all, name);
-        try put(engine, managers, name, value);
-    }
-    const retained = c.JS_DupValue(engine.context, managers);
-    engine.native_module_values.put(engine.gpa, cache_key, retained) catch |err| {
-        engine.freeValue(retained);
-        return err;
-    };
-    return managers;
+    return @import("native_sdk_manager_imports.zig").acquire(engine, installBody);
 }
 
 pub fn install(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    try engine.checkNativeEntry();
+    var invocation: engine_mod.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    installWithManagers(engine, exports) catch |err| {
+        _ = try engine.checked(engine.leaveNativeInvocation(&invocation, fail(engine, err)));
+        unreachable;
+    };
+    engine.freeValue(try engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())));
+}
+fn installWithManagers(engine: *engine_mod.Engine, exports: c.JSValue) !void {
+    const original_install = engine.native_sdk_class == 0;
+    try installBody(engine, exports);
+    if (original_install) try @import("native_sdk_manager_imports.zig").captureInstalled(engine, exports);
+}
+fn installBody(engine: *engine_mod.Engine, exports: c.JSValue) !void {
     try @import("native_theme_assets.zig").install(engine, exports);
     try @import("native_async_scope.zig").install(engine);
     if (engine.native_sdk_class != 0) return;

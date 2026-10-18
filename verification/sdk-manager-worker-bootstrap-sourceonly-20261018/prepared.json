@@ -1,0 +1,194 @@
+{
+  "schema": "sdk-manager-worker-bootstrap-sourceonly-v1",
+  "base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "source_only": true,
+  "native_executed": false,
+  "compiler_or_parser_executed": false,
+  "node_executed": false,
+  "default_activation": false,
+  "public_sdk_namespace_replaced": false,
+  "owned": [
+    {
+      "path": "build.zig",
+      "length": 365058,
+      "sha256": "77D4B000E148FB00F7F70891E2F0066389C179CBADA340B6BC20BA2BDB7A5D37",
+      "blob": "be051913b2dea8c8d8bc9d60fe876eec15393511"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "length": 163088,
+      "sha256": "4C1121B5F0A4FAD82D27B8B40074E5F732F3AFDF793F61BA3B3AADB91EF5CE36",
+      "blob": "f3193ad174bfaeda1fe741463bd378011126904d"
+    },
+    {
+      "path": "src/extensions/native_sdk_manager_imports.zig",
+      "length": 4757,
+      "sha256": "B953B815DD9098F8FC4AAF9DA05EADB8F1190598DED5A5348EEC37610DC10856",
+      "blob": "bcbe0e99b32b697592fa5fc9e6cd68ffa7f2a0df"
+    },
+    {
+      "path": "src/native_sdk_manager_worker_bootstrap_test.zig",
+      "length": 7735,
+      "sha256": "955120041919EF6937952657A1CCD75690402F4282D9F5FB011A0F0B559738C1",
+      "blob": "2c41c694f16ab75271e8c662b46946efc5c5e3d8"
+    },
+    {
+      "path": "verification/sdk-manager-worker-bootstrap-sourceonly-20261018/README.md",
+      "length": 3470,
+      "sha256": "39F0C4BC01D8D2AEE9640F865D4C42B84EB4EE4ED629F03B2EB1B193BC4D86D6",
+      "blob": "99e3b47430ddc037369f230079cdd5ef4ce57f84"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "length": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "length": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "length": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "length": 7528,
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "length": 1544,
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "length": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "length": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "length": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "length": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "length": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "blob": "3fb29a972197fc86cd9997928841a435e7eb9fa6"
+    },
+    {
+      "path": "src/extensions/native_worker.zig",
+      "length": 125917,
+      "sha256": "6ADE82CD59D5AD6B5BACA2260FEA18F5F420418E3CBFAA4CFE85D4835C4C1342",
+      "blob": "67e6873c81fe0e09182bf181c6fa0fb3cf333fb2"
+    },
+    {
+      "path": "src/extensions/native_bindings.zig",
+      "length": 242598,
+      "sha256": "211362EFE481A02359A5B9ED550E93E6A18598752BADAA3EE7D12C993EAE0F2F",
+      "blob": "ed3cb23e6401bc1c6376df3f2ddee142bc6a4e5b"
+    },
+    {
+      "path": "src/extensions/native_tui.zig",
+      "length": 68382,
+      "sha256": "673A2949AAAD5C8544FEEDAB20D1DDFD543DC00B9A50A324FC3F1A5F1BE3B5D7",
+      "blob": "d65cd0c9cae9ae54989c2c54d4e56869753224d8"
+    },
+    {
+      "path": "src/extensions/native_editor.zig",
+      "length": 37514,
+      "sha256": "36F18D0B908E1E3F27A0B79106E41D1B97593D2D8A252DD24F8180E65455C4CC",
+      "blob": "4d25462432d86f702d2a037e3d4e2a8a28d7b8aa"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "length": 34518,
+      "sha256": "90AB96A887AFB5FE16F3EB153DEDE4E3D278C226507B60A92D72B81997089FE4",
+      "blob": "4d9dc537ee1e4faf0b6c4db26f11c7bc0bdeff46"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "length": 46256,
+      "sha256": "F7A4892D2DF999A44E9A3995AC7CC939642F45E0E9AD2F6D3B9631228DAB0B51",
+      "blob": "2cd60ed8e5876610ff99541f843535a91d38b7a8"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "length": 4504,
+      "sha256": "17251401E8837228C006FFD2A1AEF010048BB7CA51035597AE1B65D0DB985812",
+      "blob": "e393a03f89b618311833c8cf400389262682270c"
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "length": 8132,
+      "sha256": "7518F398B520FF978096DD85C2B026F3F2BFB3F41A992F5B98A8D75D984E1F85",
+      "blob": "f30f3274c9e85bda6d0f0028778522d50c729db4"
+    },
+    {
+      "path": "src/extensions/native_sdk_exec.zig",
+      "length": 9961,
+      "sha256": "12CE747D63A1401A99850ED3AC641413642D25863B2059536BA657B8451A5AE4",
+      "blob": "a6ac0b364cbd23ff73099c93b8a46cb212fce0fe"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "length": 20482,
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A",
+      "blob": "be0995ba8affb8fd529df795165f4da71649975c"
+    }
+  ],
+  "original_sdk_git_blob": "e7aa62358c84c89feeec479ffe055dea9fbfdce2",
+  "original_installer_body_unchanged_bytes": 6309,
+  "original_installer_body_unchanged_sha256": "F80C72DD89A0CD7840BBBD03455FF65E9772CCA4438D0066EBB0EADBE93206AB",
+  "actual_production_path": [
+    "native_worker.runOwner/runSdkFileWithEnvironment",
+    "Bindings.installSchemas",
+    "native_tui.install",
+    "native_editor.install",
+    "native_sdk.install",
+    "later native_sdk_application_bootstrap.createNativeFromOwners",
+    "native_sdk.managerImports"
+  ],
+  "private_projection_key": "NULsdk-actual-manager-imports",
+  "preserves_actual_manager_constructors": true,
+  "prototype_constructor_reflection_used": false,
+  "comptime_installer_is_actual_private_body": true,
+  "helper_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+  "helper_source_review_sha256": "CD583672D0E0942DC5417EDBCEB7E3E38223352559C1E682A862B86DBF56FC7A",
+  "install_only_target": "build-native-sdk-manager-worker-bootstrap",
+  "prepared_test_names": [
+    "SDK manager worker bootstrap captures same original managers during real TUI editor install",
+    "SDK manager worker bootstrap never reconstructs from guest mutable prototype constructor",
+    "SDK manager worker bootstrap fresh private route retains real manager identity without public selection",
+    "SDK manager worker bootstrap actual entry reason precedes armed GPA and class effects",
+    "SDK manager worker bootstrap never publishes projection before diagnostic retirement succeeds"
+  ],
+  "actual_metadata_known": false,
+  "actual_metadata": [],
+  "expected_or_observed_outputs": [],
+  "qualification": "README finite capture/retirement only; unchanged old public factory/selector and inner producer frontiers remain unqualified"
+}
