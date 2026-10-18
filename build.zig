@@ -1689,6 +1689,19 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-sdk-owned-completion", "Compile SDK owned outcome/cleanup controls without execution").dependOn(&b.addInstallArtifact(sdk_owned_completion_tests, .{}).step);
     b.step("test-native-sdk-owned-completion", "Run SDK owned cleanup controls only after explicit qualification grant").dependOn(&b.addRunArtifact(sdk_owned_completion_tests).step);
+    const sdk_manager_worker_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_manager_worker_bootstrap_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK manager worker bootstrap"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_manager_worker_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_manager_worker_tests.root_module, typescript_parser);
+    linkSqlite(sdk_manager_worker_tests.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_manager_worker_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_manager_worker_tests.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_manager_worker_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-manager-worker-bootstrap", "Install actual worker manager projection controls without running").dependOn(&b.addInstallArtifact(sdk_manager_worker_tests, .{}).step);
     const sdk_package_af_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_package_af_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK package AF"}, .use_llvm = use_llvm,
