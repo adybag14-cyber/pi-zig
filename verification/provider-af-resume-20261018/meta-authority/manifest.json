@@ -1,0 +1,18 @@
+{
+  "status": "source_authority_verified_unexecuted",
+  "source_head": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "verified_utc": "2026-10-18T20:01:19.688087+00:00",
+  "git_equals_physical_equals_accepted_map_source": true,
+  "source_ts_sha256": "B885A59E1EA71CE718C9246B4907B79D3E70524639A8A49589FA96F465AD38AD",
+  "accepted_js_sha256": "852CEB0CB0D14E92F78DBC5AACBE345E0416E3B65C574F6ACC1F5191566B6870",
+  "accepted_map_sha256": "16BC7112032B4742B077F8C1391BF4FA8178C442B314424566FBFF4A94D3456E",
+  "fixture_sha256": "953BC8B902643EB2DDCCBCFB59793315F68D591017F73DC44CED1680A15AFCD7",
+  "fixture_transform": "Replace only the exact single DeviceCode import with a test dependency binding; actual module body unchanged. The dependency is actual Source DeviceCode evaluated through the linked C VM.",
+  "production": "src/extensions/native_ai_oauth_meta.zig",
+  "production_sha256": "2BB2777923E07771DA31306AB8B7DD48D487F003387BF5C9BCDD02F6230E545D",
+  "production_peer": "vm_foundation finite body review closed no concrete blocker on2BB27779; no execution claim",
+  "controls": "src/native_ai_oauth_meta_genuine_af_test.zig",
+  "declared_controls": 13,
+  "runtime_qualified": false,
+  "whole_application_qualified": false
+}
