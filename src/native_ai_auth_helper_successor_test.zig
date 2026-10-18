@@ -24,8 +24,21 @@ fn fatalB(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) call
 }
 fn capturedData(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = x.em.Engine.fromContext(context.?); const data = privateData(context, c.pi_js_undefined(), 0, null);
+    defer engine.freeValue(data);
     c.JS_SetUncatchableError(context, data);
-    engine.captured_exception = data; // Captured-only flagged DATA, no event.
+    var resolving: [2]c.JSValue = undefined;
+    const promise = c.JS_NewPromiseCapability(context, &resolving);
+    if (c.JS_IsException(promise)) return promise;
+    defer engine.freeValue(promise); defer engine.freeValue(resolving[0]); defer engine.freeValue(resolving[1]);
+    var arguments = [_]c.JSValue{data};
+    const rejected = c.JS_Call(context, resolving[1], c.pi_js_undefined(), 1, &arguments);
+    if (c.JS_IsException(rejected)) return rejected;
+    engine.freeValue(rejected);
+    // Actual PromiseResult DATA is captured by the real Engine path. No slot
+    // assignment, actual pending producer, private-tag policy or B1 is forged.
+    if (engine.awaitValueOnly(promise)) |value| {
+        engine.freeValue(value); return c.JS_ThrowInternalError(context, "Expected rejected Promise DATA");
+    } else |err| if (err != error.JavaScriptException) return @import("extensions/native_sdk.zig").fail(engine, err);
     return c.JS_NewString(context, "Owned");
 }
 fn pendingKey(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
@@ -129,30 +142,65 @@ test "AI auth successor prior job iterator result abort temporaries and iteratio
         \\assert(closed===1,'close exactly once');
     );
 }
-const Retirement = struct { engine: *x.em.Engine, token: c.JSValue, reason: ?c.JSValue = null, calls: usize = 0 };
+const Retirement = struct {
+    engine: *x.em.Engine,
+    gpa: std.mem.Allocator,
+    refs: usize = 1,
+    armed: bool = true,
+    token: c.JSValue,
+    reason: ?c.JSValue = null,
+    calls: usize = 0,
+    fn release(self: *Retirement) void {
+        self.refs -= 1;
+        if (self.refs == 0) self.gpa.destroy(self);
+    }
+    fn disarm(self: *Retirement) void {
+        // Host cleanup runs while context is live and BEFORE Engine teardown.
+        // Surviving traced holders may subsequently free the heap record but
+        // cannot publish an event or touch Engine/context during teardown.
+        self.armed = false;
+        const token = self.token; self.token = c.pi_js_undefined(); self.engine.freeValue(token);
+        if (self.reason) |reason| { self.reason = null; self.engine.freeValue(reason); }
+    }
+};
+fn releaseRetirement(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const state: *Retirement = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    state.release();
+}
+fn markRetirement(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const state: *Retirement = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    c.JS_MarkValue(runtime, state.token, visit);
+    if (state.reason) |reason| c.JS_MarkValue(runtime, reason, visit);
+}
 fn retireStep(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const state: *Retirement = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+    defer state.release();
     state.calls += 1;
+    if (!state.armed) return;
     _ = state.engine.checked(state.engine.throwNativeOutOfMemoryFatal()) catch {};
     state.reason = c.JS_DupValue(state.engine.context, state.engine.captured_exception.?);
 }
-fn takeNativeStep(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    var address: i64 = 0; if (c.JS_ToInt64(context, &address, roots[0]) < 0) return c.JS_ThrowInternalError(context, "Invalid owned test state");
-    const state: *Retirement = @ptrFromInt(@as(usize, @intCast(address)));
+fn takeNativeStep(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const state: *Retirement = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], c.JS_GetClassID(roots[0])).?));
     const token = state.token; state.token = c.pi_js_undefined(); return token;
 }
 test "AI auth successor actual iterator result retirement fatal B preempts ctx env with exact reason" {
     const engine = try x.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit(); try prepare(engine);
-    var state: Retirement = .{ .engine = engine, .token = c.pi_js_undefined() };
-    defer { engine.freeValue(state.token); if (state.reason) |reason| engine.freeValue(reason); }
+    const state = try engine.gpa.create(Retirement);
+    state.* = .{ .engine = engine, .gpa = engine.gpa, .token = c.pi_js_undefined() };
+    defer { state.disarm(); state.release(); }
     var class: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Actual owned iterator result retirement", .finalizer = retireStep };
     if (c.JS_NewClass(engine.runtime, class, &definition) < 0) return error.OutOfMemory;
-    state.token = try engine.checked(c.JS_NewObjectClass(engine.context, class)); _ = c.JS_SetOpaque(state.token, &state);
+    state.token = try engine.checked(c.JS_NewObjectClass(engine.context, class)); _ = c.JS_SetOpaque(state.token, state); state.refs += 1;
     try @import("extensions/native_js_values.zig").define(engine, state.token, "done", c.pi_js_bool(engine.context, 0));
     try @import("extensions/native_js_values.zig").define(engine, state.token, "value", try engine.checked(c.JS_NewString(engine.context, "ONLY")));
-    var roots = [_]c.JSValue{c.JS_NewInt64(engine.context, @intCast(@intFromPtr(&state)))};
-    defer engine.freeValue(roots[0]);
+    var holder_class: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &holder_class);
+    const holder_definition: c.JSClassDef = .{ .class_name = "Traced owned retirement control", .finalizer = releaseRetirement, .gc_mark = markRetirement };
+    if (c.JS_NewClass(engine.runtime, holder_class, &holder_definition) < 0) return error.OutOfMemory;
+    const holder = try engine.checked(c.JS_NewObjectClass(engine.context, holder_class)); _ = c.JS_SetOpaque(holder, state); state.refs += 1;
+    defer engine.freeValue(holder);
+    var roots = [_]c.JSValue{holder};
     const take = try engine.checked(c.JS_NewCFunctionData2(engine.context, takeNativeStep, "actualTakeNativeStep", 0, 0, roots.len, &roots)); defer engine.freeValue(take);
     try put(engine, "actualTakeNativeStep", take);
     const result = engine.evalModule(
