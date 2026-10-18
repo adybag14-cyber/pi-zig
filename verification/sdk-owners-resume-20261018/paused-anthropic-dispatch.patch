@@ -1,0 +1,12 @@
+diff --git a/src/extensions/native_ai_provider_auth_methods.zig b/src/extensions/native_ai_provider_auth_methods.zig
+index 42bdffac..fc3a6cd8 100644
+--- a/src/extensions/native_ai_provider_auth_methods.zig
++++ b/src/extensions/native_ai_provider_auth_methods.zig
+@@ -48,6 +48,7 @@ fn raise(s: *Scope, prefix: []const u8, value: c.JSValue) !void {
+ }
+ 
+ pub fn create(engine: *v.em.Engine, kind: Kind) !c.JSValue {
++    if (kind == .anthropic) return @import("native_ai_provider_anthropic_auth.zig").create(engine);
+     var s: Scope = .{ .engine = engine };
+     defer s.deinit();
+     const result = try s.object();
