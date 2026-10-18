@@ -43,7 +43,7 @@ fn integer(o: *x.Ops, input: i32) c.JSValue { return c.JS_NewInt32(o.s.engine.co
 
 fn boolean(o: *x.Ops, input: bool) c.JSValue { return c.pi_js_bool(o.s.engine.context, @intFromBool(input)); }
 
-fn text(o: *x.Ops, input: []const u8) !c.JSValue { return o.text(input); }
+fn text(o: *x.Ops, input: []const u8) !c.JSValue { return duplicate(o, try o.text(input)); }
 
 fn concat(o: *x.Ops, left: c.JSValue, right: c.JSValue) !c.JSValue { return o.binary(0, left, right); }
 
