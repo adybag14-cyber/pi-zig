@@ -2,6 +2,7 @@
 // function/local annotations erased. Dependency bodies below are exact c268
 // settings-manager.ts and cli/args.ts algorithms. No production owner evaluates this.
 globalThis.publicCliSource = (() => {
+"use strict";
 const VALID_THINKING_LEVELS = ["off", "minimal", "low", "medium", "high", "xhigh", "max"];
 function isValidThinkingLevel(level) { return VALID_THINKING_LEVELS.includes(level); }
 function normalizeSessionName(value) { const name = value.trim(); return name.length > 0 ? name : undefined; }

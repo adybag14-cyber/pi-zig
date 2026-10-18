@@ -285,3 +285,176 @@ test "Public CLI actual thinking template result retires before diagnostic push"
         try check(engine, "cliSelected(['--thinking','invalid']);cliDiagnosticObserved");
     }
 }
+
+const lexical = @import("extensions/native_public_values.zig");
+fn installLexicalHooks(engine: *em.Engine, use_native: bool) !void {
+    const hooks = try @import("native_sdk_initial_model_retirement_controls.zig").createNativeRetirementHooks(engine);
+    const global = c.JS_GetGlobalObject(engine.context); defer engine.freeValue(global);
+    if (c.JS_DefinePropertyValueStr(engine.context, global, "cliLifetimeHooks", hooks, c.JS_PROP_C_W_E) < 0) return @import("extensions/native_js_values.zig").capture(engine);
+    const selected = try engine.eval(if (use_native) "globalThis.cliSelected=publicCliNative.parseArgs" else "globalThis.cliSelected=publicCliSource.parseArgs", "cli-lexical-selection.js", c.JS_EVAL_TYPE_GLOBAL);
+    engine.freeValue(selected);
+}
+test "Public CLI actual loop head survives condition and retires at body entry" {
+    inline for (.{ false, true }) |use_native| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try install(engine); try installLexicalHooks(engine, use_native);
+        try check(engine,
+            \\(() => {
+            \\ let lengths=0;
+            \\ const args={
+            \\  get length(){if(lengths++===1&&cliLifetimeHooks.count(0)!==0)throw Error("Arg retired before condition");return 2},
+            \\  get 0(){return {holder:cliLifetimeHooks.make(0),startsWith(prefix){return prefix==="@"},slice(){return "file"}}},
+            \\  get 1(){if(cliLifetimeHooks.count(0)!==1)throw Error("Prior arg retained into new index");return "--help"}
+            \\ };
+            \\ const result=cliSelected(args);
+            \\ if(result.fileArgs[0]!=="file"||!result.help||lengths!==3||cliLifetimeHooks.count(0)!==1)throw Error("Actual loop head result");
+            \\ return true;
+            \\})()
+        );
+    }
+}
+test "Public CLI actual positional head survives next done value and final completion" {
+    inline for (.{ false, true }) |use_native| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try install(engine); try installLexicalHooks(engine, use_native);
+        try check(engine,
+            \\(() => {
+            \\ let calls=0,doneReads=0,valueReads=0;
+            \\ const args={0:"--",length:1,slice(start){if(start!==1)throw Error("Actual tail slice");return {[Symbol.iterator](){return {next(){
+            \\  calls++;
+            \\  if(calls===1)return {done:false,value:{holder:cliLifetimeHooks.make(0),startsWith(){return true},slice(){return "a"}}};
+            \\  if(calls===2){
+            \\   if(cliLifetimeHooks.count(0)!==0)throw Error("Head retired before next");
+            \\   return {get done(){doneReads++;if(cliLifetimeHooks.count(0)!==0)throw Error("Head retired before done");return false},get value(){
+            \\    valueReads++;if(cliLifetimeHooks.count(0)!==0)throw Error("Head retired before value");
+            \\    return {holder:cliLifetimeHooks.make(1),get startsWith(){if(cliLifetimeHooks.count(0)!==1)throw Error("Prior head retained into new body");return function(){return true}},slice(){return "b"}};
+            \\   }};
+            \\  }
+            \\  if(calls!==3||cliLifetimeHooks.count(1)!==0)throw Error("Final head retired before next");
+            \\  return {get done(){doneReads++;if(cliLifetimeHooks.count(1)!==0)throw Error("Final head retired before done");return true},get value(){throw Error("Done must skip value")}};
+            \\ },get return(){throw Error("Normal completion must not close")}}}}}};
+            \\ const result=cliSelected(args);
+            \\ if(result.fileArgs.join()!=="a,b"||calls!==3||doneReads!==2||valueReads!==1||cliLifetimeHooks.count(0)!==1||cliLifetimeHooks.count(1)!==1)throw Error("Actual positional slot completion");
+            \\ return true;
+            \\})()
+        );
+    }
+}
+test "Public CLI actual branch lexical value survives other branches until reentry" {
+    inline for (.{ false, true }) |use_native| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try install(engine); try installLexicalHooks(engine, use_native);
+        try check(engine,
+            \\(() => {
+            \\ let lengths=0;
+            \\ const args={
+            \\  get length(){const read=lengths++;if((read===1||read===2)&&cliLifetimeHooks.count(0)!==0)throw Error("Branch mode retired before reentry");return 5},
+            \\  0:"--mode",
+            \\  get 1(){return {holder:cliLifetimeHooks.make(0),startsWith(){return false},[Symbol.toPrimitive](hint){if(hint!=="string")throw Error("Template hint");return "invalid"}}},
+            \\  get 2(){if(cliLifetimeHooks.count(0)!==0)throw Error("Mode retired before other branch");return "--help"},
+            \\  3:"--mode",
+            \\  get 4(){if(cliLifetimeHooks.count(0)!==1)throw Error("Old mode retained into branch reentry");return "rpc"}
+            \\ };
+            \\ const result=cliSelected(args);
+            \\ if(result.mode!=="rpc"||!result.help||result.diagnostics.length!==1||lengths!==4||cliLifetimeHooks.count(0)!==1)throw Error("Actual branch lexical completion");
+            \\ return true;
+            \\})()
+        );
+    }
+}
+test "Public CLI actual abrupt positional body preserves head during IteratorClose" {
+    inline for (.{ false, true }) |use_native| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try install(engine); try installLexicalHooks(engine, use_native);
+        try check(engine,
+            \\(() => {
+            \\ const reason={kind:"actual-tail"};let closed=0;
+            \\ const args={0:"--",length:1,slice(){return {[Symbol.iterator](){return {
+            \\  next(){return {done:false,value:{holder:cliLifetimeHooks.make(0),get startsWith(){throw reason}}}},
+            \\  get return(){if(cliLifetimeHooks.count(0)!==0)throw Error("Head retired before close getter");return function(){closed++;if(cliLifetimeHooks.count(0)!==0)throw Error("Head retired before close call");return {}}}
+            \\ }}}}};
+            \\ let caught;try{cliSelected(args)}catch(error){caught=error}
+            \\ if(caught!==reason||closed!==1||cliLifetimeHooks.count(0)!==1)throw Error("Actual abrupt head completion");
+            \\ return true;
+            \\})()
+        );
+    }
+}
+
+// Separate real native carrier records exact finalizer order. This is a
+// control-only observer: no iterator, parser, or completion is substituted.
+const IteratorOrder = struct { engine: *em.Engine, holder_class: c.JSClassID, values: [4]u32 = @splat(0), count: usize = 0 };
+const IteratorOrderHolder = struct { record: c.JSValue, index: u32 };
+fn orderRecord(value: c.JSValue) *IteratorOrder {
+    return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
+}
+fn orderRecordFinalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const record: *IteratorOrder = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    record.engine.gpa.destroy(record);
+}
+fn orderHolderMark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
+    const holder: *IteratorOrderHolder = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    c.JS_MarkValue(runtime, holder.record, visit);
+}
+fn orderHolderFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const holder: *IteratorOrderHolder = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    const record = orderRecord(holder.record); const engine = record.engine;
+    if (record.count < record.values.len) { record.values[record.count] = holder.index; record.count += 1; }
+    c.JS_FreeValueRT(runtime, holder.record);
+    engine.gpa.destroy(holder);
+}
+fn makeOrderCarrier(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s: lexical.Scope = .{ .engine = engine };
+    return lexical.owned.finishValue(&s, makeOrderCarrierBody(&s, lexical.arg(args, 0), roots[0]));
+}
+fn makeOrderCarrierBody(s: *lexical.Scope, input: c.JSValue, record_value: c.JSValue) !c.JSValue {
+    var index: u32 = 0;
+    var boundary: lexical.guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+    try boundary.finishStatus(c.JS_ToUint32(s.engine.context, &index, input));
+    if (index > 1) return error.ActualIteratorOrderControlIndex;
+    const carrier = try lexical.objectClass(s, orderRecord(record_value).holder_class);
+    const holder = try s.engine.gpa.create(IteratorOrderHolder);
+    holder.* = .{ .record = c.JS_DupValue(s.engine.context, record_value), .index = index };
+    _ = c.JS_SetOpaque(carrier, holder);
+    return lexical.duplicate(s, carrier);
+}
+fn installOrderCarrier(engine: *em.Engine, output: **IteratorOrder) !void {
+    var s: lexical.Scope = .{ .engine = engine };
+    return lexical.owned.finishVoid(&s, installOrderCarrierBody(&s, output));
+}
+fn installOrderCarrierBody(s: *lexical.Scope, output: **IteratorOrder) !void {
+    var record_class: c.JSClassID = 0; _ = c.JS_NewClassID(s.engine.runtime, &record_class);
+    const record_definition: c.JSClassDef = .{ .class_name = "Actual CLI iterator finalizer order", .finalizer = orderRecordFinalizer };
+    if (c.JS_NewClass(s.engine.runtime, record_class, &record_definition) < 0) return error.OutOfMemory;
+    var holder_class: c.JSClassID = 0; _ = c.JS_NewClassID(s.engine.runtime, &holder_class);
+    const holder_definition: c.JSClassDef = .{ .class_name = "Actual CLI iterator sole holder", .finalizer = orderHolderFinalizer, .gc_mark = orderHolderMark };
+    if (c.JS_NewClass(s.engine.runtime, holder_class, &holder_definition) < 0) return error.OutOfMemory;
+    const record_value = try lexical.objectClass(s, record_class);
+    const record = try s.engine.gpa.create(IteratorOrder); record.* = .{ .engine = s.engine, .holder_class = holder_class };
+    _ = c.JS_SetOpaque(record_value, record);
+    output.* = record;
+    const callable = try lexical.ordinary(s, "cliOrderMake", 1, makeOrderCarrier, &.{record_value});
+    try lexical.put(s, try lexical.own(s, c.JS_GetGlobalObject(s.engine.context)), "cliOrderMake", callable);
+}
+test "Public CLI actual Iterator done value retires before result object" {
+    inline for (.{ false, true }) |use_native| {
+        const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+        try install(engine); try installLexicalHooks(engine, use_native);
+        var order: *IteratorOrder = undefined; try installOrderCarrier(engine, &order);
+        try check(engine,
+            \\(() => {
+            \\ const args={0:"--",length:1,slice(){return {[Symbol.iterator](){return {next(){
+            \\  return Object.defineProperties(cliOrderMake(1),{
+            \\   done:{get(){return cliOrderMake(0)}},
+            \\   value:{get(){throw Error("Truthy done must skip value")}}
+            \\  });
+            \\ }}}}}};
+            \\ const result=cliSelected(args);
+            \\ return result.messages.length===0&&result.fileArgs.length===0;
+            \\})()
+        );
+        try std.testing.expectEqual(@as(usize, 2), order.count);
+        try std.testing.expectEqual(@as(u32, 0), order.values[0]);
+        try std.testing.expectEqual(@as(u32, 1), order.values[1]);
+    }
+}

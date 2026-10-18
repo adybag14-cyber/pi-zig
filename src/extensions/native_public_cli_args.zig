@@ -94,16 +94,59 @@ fn findPatternBody(s: *Scope, modifiers: c.JSValue) !c.JSValue {
     return v.duplicate(s, pattern);
 }
 
+// BCDF keeps uncaptured lexical locals in the actual function frame. A block
+// exit leaves them live; only its next enter_scope resets them, in reverse
+// declaration order. Function exit retires slots in declaration order.
+const Slot = enum { arg, positional_arg, mode, tools, tool_error, level, print_next, theme_name, tui_mode, equal_index, flag_name, unknown_next };
+const ParseSlots = struct {
+    values: [@typeInfo(Slot).@"enum".fields.len]c.JSValue,
+    fn init() ParseSlots {
+        var self: ParseSlots = undefined;
+        for (&self.values) |*value| value.* = c.pi_js_undefined();
+        return self;
+    }
+    fn take(self: *ParseSlots, engine: *Engine, slot: Slot, incoming: c.JSValue) !c.JSValue {
+        const previous = self.values[@intFromEnum(slot)];
+        self.values[@intFromEnum(slot)] = incoming;
+        var completion = v.owned.Completion.initVoid(engine, {});
+        completion.release(previous);
+        try completion.finishVoid();
+        return incoming;
+    }
+    fn copy(self: *ParseSlots, s: *Scope, slot: Slot, value: c.JSValue) !c.JSValue {
+        return self.take(s.engine, slot, v.duplicate(s, value));
+    }
+    fn reset(self: *ParseSlots, engine: *Engine, slots: []const Slot) !void {
+        var completion = v.owned.Completion.initVoid(engine, {});
+        for (slots) |slot| {
+            const previous = self.values[@intFromEnum(slot)];
+            self.values[@intFromEnum(slot)] = c.pi_js_undefined();
+            completion.release(previous);
+        }
+        try completion.finishVoid();
+    }
+    fn releaseInto(self: *ParseSlots, completion: *v.owned.Completion) void {
+        for (&self.values) |*value| {
+            const previous = value.*;
+            value.* = c.pi_js_undefined();
+            completion.release(previous);
+        }
+    }
+};
 fn parseArgs(engine: *Engine, _: c.JSValue, arguments: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var slots = ParseSlots.init();
     var s: Scope = .{ .engine = engine };
-    return v.owned.finishValue(&s, parseBody(&s, v.arg(arguments, 0), roots));
+    var completion = v.owned.Completion.initValue(engine, parseBody(&s, v.arg(arguments, 0), roots, &slots));
+    completion.releaseScope(&s);
+    slots.releaseInto(&completion);
+    return completion.finishValue();
 }
-fn parseBody(s: *Scope, arguments: c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn parseBody(s: *Scope, arguments: c.JSValue, roots: []const c.JSValue, slots: *ParseSlots) !c.JSValue {
     const result = try v.own(s, try initialResult(s.engine));
     var i: f64 = 0;
     var steps: usize = 0;
     while (try loopTest(s.engine, arguments, i, &steps)) : (i += 1) {
-        if (try iteration(s.engine, result, arguments, &i, roots)) break;
+        if (try iteration(s.engine, result, arguments, &i, roots, slots)) break;
     }
     return v.duplicate(s, result);
 }
@@ -132,9 +175,9 @@ fn lengthTest(s: *Scope, arguments: c.JSValue, position: f64) !c.JSValue {
     return v.duplicate(s, try v.binary(s, 4, v.number(s, position), try v.get(s, arguments, "length")));
 }
 fn atPosition(s: *Scope, arguments: c.JSValue, position: f64) !c.JSValue { return v.key(s, arguments, v.number(s, position)); }
-fn iteration(engine: *Engine, result: c.JSValue, arguments: c.JSValue, position: *f64, roots: []const c.JSValue) !bool {
+fn iteration(engine: *Engine, result: c.JSValue, arguments: c.JSValue, position: *f64, roots: []const c.JSValue, slots: *ParseSlots) !bool {
     var s: Scope = .{ .engine = engine };
-    const value = try v.owned.finishValue(&s, iterationBody(&s, result, arguments, position, roots));
+    const value = try v.owned.finishValue(&s, iterationBody(&s, result, arguments, position, roots, slots));
     return c.JS_ToBool(engine.context, value) == 1;
 }
 const Flag = struct { long: []const u8, short: ?[]const u8 = null, field: [*:0]const u8, value: bool = true };
@@ -176,10 +219,13 @@ const append_flags = [_]AppendFlag{
 fn matches(s: *Scope, value: c.JSValue, long: []const u8, short: ?[]const u8) !bool {
     return try v.eq(s, value, long) or if (short) |alias| try v.eq(s, value, alias) else false;
 }
-fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *f64, roots: []const c.JSValue) !c.JSValue {
-    const arg = try atPosition(s, arguments, position.*);
+fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *f64, roots: []const c.JSValue, slots: *ParseSlots) !c.JSValue {
+    // The preceding loop condition observes the old arg. The successful body
+    // entry clears it before the fresh live args[i] getter.
+    try slots.reset(s.engine, &.{.arg});
+    const arg = try slots.copy(s, .arg, try atPosition(s, arguments, position.*));
     if (try v.eq(s, arg, "--")) {
-        try positionalTail(s.engine, result, arguments, position.* + 1);
+        try positionalTail(s.engine, result, arguments, position.* + 1, slots);
         return v.boolean(s, true);
     }
     for (flags) |flag| if (try matches(s, arg, flag.long, flag.short)) {
@@ -187,7 +233,8 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
         return v.boolean(s, false);
     };
     if (try v.eq(s, arg, "--mode")) {
-        const mode = try atPosition(s, arguments, position.* + 1);
+        try slots.reset(s.engine, &.{.mode});
+        const mode = try slots.copy(s, .mode, try atPosition(s, arguments, position.* + 1));
         if (c.JS_IsUndefined(mode) or try v.testText(s, mode, "startsWith", "-")) {
             try diagnosticText(s.engine, result, "error", "--mode requires text, json, or rpc");
             return v.boolean(s, false);
@@ -233,9 +280,10 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
     }
     if (try matches(s, arg, "--tools", "-t")) {
         if (try hasNext(s.engine, arguments, position.* + 1)) {
+            try slots.reset(s.engine, &.{ .tool_error, .tools });
             position.* += 1;
-            const tools = try v.own(s, try commaList(s.engine, arguments, position.*));
-            const error_value = try v.call(s, roots[2], c.pi_js_undefined(), &.{tools});
+            const tools = try slots.take(s.engine, .tools, try commaList(s.engine, arguments, position.*));
+            const error_value = try slots.copy(s, .tool_error, try v.call(s, roots[2], c.pi_js_undefined(), &.{tools}));
             if (v.truthy(s, error_value)) try diagnosticPair(s.engine, result, "error", arg, error_value)
             else try v.set(s, result, "tools", tools);
             return v.boolean(s, false);
@@ -251,16 +299,18 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
     }
     if (try v.eq(s, arg, "--thinking")) {
         if (try hasNext(s.engine, arguments, position.* + 1)) {
+            try slots.reset(s.engine, &.{.level});
             position.* += 1;
-            const level = try atPosition(s, arguments, position.*);
+            const level = try slots.copy(s, .level, try atPosition(s, arguments, position.*));
             if (try validLevelTest(s.engine, roots[1], level)) try v.set(s, result, "thinking", level)
             else try invalidThinking(s.engine, result, roots[0], level);
             return v.boolean(s, false);
         }
     }
     if (try matches(s, arg, "--print", "-p")) {
+        try slots.reset(s.engine, &.{.print_next});
         try v.set(s, result, "print", v.boolean(s, true));
-        const next = try atPosition(s, arguments, position.* + 1);
+        const next = try slots.copy(s, .print_next, try atPosition(s, arguments, position.* + 1));
         if (!c.JS_IsUndefined(next) and !try v.testText(s, next, "startsWith", "@") and
             (!try v.testText(s, next, "startsWith", "-") or try v.testText(s, next, "startsWith", "---")))
         {
@@ -269,7 +319,8 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
         return v.boolean(s, false);
     }
     if (try v.eq(s, arg, "--use-theme")) {
-        const name = try atPosition(s, arguments, position.* + 1);
+        try slots.reset(s.engine, &.{.theme_name});
+        const name = try slots.copy(s, .theme_name, try atPosition(s, arguments, position.* + 1));
         if (c.JS_IsUndefined(name) or try v.testText(s, name, "startsWith", "-"))
             try diagnosticText(s.engine, result, "error", "--use-theme requires a theme name")
         else { try v.set(s, result, "useTheme", name); position.* += 1; }
@@ -285,7 +336,8 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
         return v.boolean(s, false);
     }
     if (try v.eq(s, arg, "--tui-mode")) {
-        const mode = try atPosition(s, arguments, position.* + 1);
+        try slots.reset(s.engine, &.{.tui_mode});
+        const mode = try slots.copy(s, .tui_mode, try atPosition(s, arguments, position.* + 1));
         if (try v.eq(s, mode, "regular") or try v.eq(s, mode, "fullscreen")) {
             try v.set(s, result, "tuiMode", mode); position.* += 1;
         } else if (c.JS_IsUndefined(mode) or try v.testText(s, mode, "startsWith", "-")) {
@@ -299,12 +351,14 @@ fn iterationBody(s: *Scope, result: c.JSValue, arguments: c.JSValue, position: *
     if (try v.testText(s, arg, "startsWith", "@")) {
         try appendSliced(s.engine, result, arg);
     } else if (try v.testText(s, arg, "startsWith", "--")) {
-        const eq_index = try v.own(s, try v.invokeTextOwned(s.engine, arg, "indexOf", "="));
+        try slots.reset(s.engine, &.{.equal_index});
+        const eq_index = try slots.take(s.engine, .equal_index, try v.invokeTextOwned(s.engine, arg, "indexOf", "="));
         if (!v.equal(s, eq_index, v.number(s, -1))) {
             try unknownEquals(s.engine, result, arg, eq_index);
         } else {
-            const flag_name = try v.invoke(s, arg, "slice", &.{v.number(s, 2)});
-            const next = try atPosition(s, arguments, position.* + 1);
+            try slots.reset(s.engine, &.{ .unknown_next, .flag_name });
+            const flag_name = try slots.copy(s, .flag_name, try v.invoke(s, arg, "slice", &.{v.number(s, 2)}));
+            const next = try slots.copy(s, .unknown_next, try atPosition(s, arguments, position.* + 1));
             if (!c.JS_IsUndefined(next) and !try v.testText(s, next, "startsWith", "-") and !try v.testText(s, next, "startsWith", "@")) {
                 try unknownValue(s.engine, result, flag_name, next); position.* += 1;
             } else try unknownValue(s.engine, result, flag_name, v.boolean(s, true));
@@ -481,19 +535,22 @@ fn unknownEqualsBody(s: *Scope, result: c.JSValue, value: c.JSValue, equal_index
     _ = try v.call(s, set, receiver, &.{ name, flag_value });
 }
 
-fn positionalTail(engine: *Engine, result: c.JSValue, arguments: c.JSValue, position: f64) !void {
+fn positionalTail(engine: *Engine, result: c.JSValue, arguments: c.JSValue, position: f64, slots: *ParseSlots) !void {
     const sliced = try v.invokeOwned(engine, arguments, "slice", &.{c.JS_NewFloat64(engine.context, position)});
     var iterator = try v.Iterator.initOwned(engine, sliced);
-    return iterator.finish(tailBody(engine, result, &iterator));
+    return iterator.finish(tailBody(engine, result, &iterator, slots));
 }
-fn tailBody(engine: *Engine, result: c.JSValue, iterator: *v.Iterator) !void {
-    while (try iterator.next()) |value| {
+fn tailBody(engine: *Engine, result: c.JSValue, iterator: *v.Iterator, slots: *ParseSlots) !void {
+    // next()/done/value observe the old uncaptured head. Successful assignment
+    // then replaces it. Final done and IteratorClose keep the final head live
+    // until the enclosing parseArgs function retires its lexical slots.
+    while (try iterator.next()) |incoming| {
+        const value = try slots.take(engine, .positional_arg, incoming);
         var s: Scope = .{ .engine = engine };
         try v.owned.finishVoid(&s, tailItem(&s, result, value));
     }
 }
-fn tailItem(s: *Scope, result: c.JSValue, incoming: c.JSValue) !void {
-    const value = try v.own(s, incoming);
+fn tailItem(s: *Scope, result: c.JSValue, value: c.JSValue) !void {
     if (try v.testText(s, value, "startsWith", "@")) try appendSliced(s.engine, result, value)
     else try appendValue(s.engine, result, "messages", value);
 }
