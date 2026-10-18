@@ -1,0 +1,112 @@
+{
+  "schema": 1,
+  "status": "source-only-awaiting-independent-core-review",
+  "base": "6be4a789c69bee98da06ea57190e519c06b1a551",
+  "products": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "bytes": 13354
+    },
+    {
+      "path": "src/native_sdk_owned_completion_test.zig",
+      "sha256": "E7803466B03306C2BF2F40C2DEAC987D5A671262DB799C7E97627A0A9C98BD54",
+      "bytes": 17533
+    },
+    {
+      "path": "src/native_sdk_own_root_test.zig",
+      "sha256": "5979E8E9A3965B095AA136849FC00ADA75FB446B5DECE32D2B108CA2FE26DE7E",
+      "bytes": 16314
+    }
+  ],
+  "protected": [
+    {
+      "path": "build.zig",
+      "sha256": "E13245ED65ABC14129EB8B97F40A5EC4A38F0A7640B2BEF82F2940F003C1D266",
+      "bytes": 361925
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D",
+      "bytes": 4809
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "bytes": 3430
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "bytes": 3878
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "bytes": 6692
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "bytes": 163154
+    },
+    {
+      "path": "src/extensions/native_sdk_application_bootstrap.zig",
+      "sha256": "7518F398B520FF978096DD85C2B026F3F2BFB3F41A992F5B98A8D75D984E1F85",
+      "bytes": 8132
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "sha256": "17251401E8837228C006FFD2A1AEF010048BB7CA51035597AE1B65D0DB985812",
+      "bytes": 4504
+    },
+    {
+      "path": "src/extensions/native_sdk_package_settings.zig",
+      "sha256": "6EF35E4B19E014F3D42DE0E29C63B4F374ED294AF8A4647860EEE9929DFEA7F9",
+      "bytes": 17720
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220
+    }
+  ],
+  "owned": {
+    "path": "verification/sdk-own-root-sourceonly-20261018/README.md",
+    "sha256": "240500795CF9E6817CCA27000093DB1B73154F9F7315AF7749BB84A550A8EFCB",
+    "bytes": 3992
+  },
+  "old_helper_prefix_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "old_helper_bytes": 11357,
+  "old_test_minus_import_sha256": "E1998519D030B8F66366E4ACAF1BC0596B7D3A502F19FC25BAB663F285570C45",
+  "native_new_declarations": 7,
+  "native_original_declarations_unchanged": 8,
+  "actual_metadata": null,
+  "API": "ownRoot(scope:anytype,checked_owned_value) anyerror!JSValue",
+  "adapters_selected": false,
+  "scope_engine_C_modified": false,
+  "reference_expected_modified": false,
+  "execution_authorized": false,
+  "Node_native_compiler_parser_AST_generator_jobs": 0,
+  "activation": false
+}

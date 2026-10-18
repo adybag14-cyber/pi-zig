@@ -1,5 +1,6 @@
 //! Prepared real native-finalizer and allocator controls for SDK completion.
 const std = @import("std");
+comptime { _ = @import("native_sdk_own_root_test.zig"); }
 const em = @import("extensions/engine.zig");
 const c = em.c;
 const owned = @import("extensions/native_sdk_owned_completion.zig");
