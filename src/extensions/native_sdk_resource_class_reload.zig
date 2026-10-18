@@ -13,9 +13,12 @@ fn guardVoid(engine: *em.Engine, generation: u64, result: anyerror!void) anyerro
     const value: anyerror!c.JSValue = if (result) |_| c.pi_js_undefined() else |err| err;
     _ = try guards.guard(engine, generation, value);
 }
-fn guardAction(engine: *em.Engine, generation: u64, result: anyerror!af.Action) anyerror!af.Action {
+fn guardAction(engine: *em.Engine, _: u64, result: anyerror!af.Action) anyerror!af.Action {
     return result catch |err| {
-        if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation);
+        // The scoped body may run guest code that creates private DATA before
+        // throwing it ordinarily. Only an actual retained/pending native event
+        // may bypass Source completion; diagnostic age/flags are not authority.
+        try engine.checkNativeEntry();
         return err;
     };
 }
@@ -37,11 +40,9 @@ pub fn install(engine: *em.Engine, prototype: c.JSValue, deps: Dependencies) !vo
     if (c.JS_DefinePropertyValueStr(engine.context, prototype, "reload", c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
 }
 fn reloadBody(engine: *em.Engine, loader: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
-    const generation = engine.native_allocation_generation;
     return reloadStep(engine, loader, args, roots, state, completion, input) catch |err| {
+        try engine.checkNativeEntry();
         if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-            try body.rethrowRecognizedAllocation(engine, reason, generation);
-            if (c.JS_IsUncatchableError(reason)) return err;
             engine.captured_exception = null;
             return .{ .thrown = reason };
         };

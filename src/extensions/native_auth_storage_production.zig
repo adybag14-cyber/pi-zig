@@ -46,10 +46,13 @@ fn guardVoid(engine: *v.em.Engine, generation: u64, result: anyerror!void) anyer
     const value: anyerror!c.JSValue = if (result) |_| c.pi_js_undefined() else |err| err;
     _ = try guards.guard(engine, generation, value);
 }
-fn failed(engine: *v.em.Engine, err: anyerror, generation: u64) !af.Action {
+fn failed(engine: *v.em.Engine, err: anyerror, _: u64) !af.Action {
+    // A guest-capable operation can successfully create private DATA and then
+    // throw that same value. Neither a body/call generation span nor a flag on
+    // the diagnostic slot proves a native fault. Independently retained actual
+    // invocation/pending events escape before ordinary diagnostic transfer.
+    try engine.checkNativeEntry();
     if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        try body.rethrowRecognizedAllocation(engine, reason, generation);
-        if (c.JS_IsUncatchableError(reason)) return err;
         // Transfer this failed producer's ordinary owned reason into AF THROW.
         // A later guest catch must not retain a duplicate native diagnostic root.
         engine.captured_exception = null;

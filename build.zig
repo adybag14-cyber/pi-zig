@@ -1685,6 +1685,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-auth-readonly-genuine-af-controls-artifact", "Compile/link six genuine owner-required Readonly bodies; NEVER RUN sentinel").dependOn(&b.addInstallArtifact(auth_readonly_af_controls, .{}).step);
 
+    const auth_guest_producer_controls = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_guest_producer_compile_root.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Auth guest-producer actual-owner"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, auth_guest_producer_controls.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, auth_guest_producer_controls.root_module, typescript_parser);
+    linkSqlite(auth_guest_producer_controls.root_module, sqlite_lib_dir, sqlite_library);
+    auth_guest_producer_controls.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        auth_guest_producer_controls.root_module.linkSystemLibrary("advapi32", .{});
+        auth_guest_producer_controls.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-auth-guest-producer-controls-artifact", "Compile/link eight genuine owner-required guest-producer bodies; NEVER RUN sentinel").dependOn(&b.addInstallArtifact(auth_guest_producer_controls, .{}).step);
+
     const sdk_application_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_native_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual application"},
