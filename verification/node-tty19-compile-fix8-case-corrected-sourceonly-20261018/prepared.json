@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_CASE_CORRECTED_ACTUAL_D141_ONE_ERROR_SUCCESSOR_PEER_PENDING",
+  "actual_native_base": "d1414dfd87c225ee2ba7c8eeb9b75ee7802c1bf0",
+  "superseded_unexecuted_source_proposal": "3ad296f14d6e6898e56c98fcd1ec3541a844a358",
+  "proposal_rejection": "Uppercase std.Enums notexported; Windowscaseinsensitivefilepath lookup isnotZignamespaceauthority; rejectedBEFOREjobs/ff",
+  "product": {
+    "sha256": "EC3EE410D9F16DAA8C198F4814170CFE20A9A82D340A83D3520A191D1A72BD85",
+    "path": "src/extensions/native_node_tty_windows_owner.zig"
+  },
+  "actual_namespace_export": {
+    "sha256": "0FD86E29AD15F771866FA372871D2EE59F364CF7BE4FA4CB19012B870F6E6C1B",
+    "exact": "pub const enums = @import(\"enums.zig\");",
+    "line": 74,
+    "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\std.zig"
+  },
+  "checked_conversion": {
+    "sha256": "9CD5147A7775EF2125BA1EA3C9610A6DB4203119444E1C6CBB46488AF2028A83",
+    "api": "fromInt(comptime E:type,integer:anytype)?E",
+    "line": 11,
+    "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\enums.zig"
+  },
+  "net_product_diff_vs_actual_d141": "ONLYoneconversionline: std.meta.intToEnum catch →std.enums.fromInt orelse; SAMEunknownerror beforepropertymutations",
+  "old_source_unit_ff71": "Preservedhistoricalunexecuteduppercaseproposal, NOTselectedauthority; thisadditiveunit supersedesitsAPIcasing",
+  "entire_src_removed_or_wrongcase_api_hits": 0,
+  "native_compile_negatives": 8,
+  "native_jobs_for_proposal_or_successor": 0,
+  "source_assertions": 19,
+  "metadata": null,
+  "allowed_anonymous": [],
+  "execution_authorized": false,
+  "physical_fix4": "Actuald141stillHOLD; noagentff/cachemutation"
+}

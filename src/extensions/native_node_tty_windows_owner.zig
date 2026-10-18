@@ -113,7 +113,7 @@ pub fn Owner(comptime Socket: type, comptime Hub: type, comptime Scheduler: type
                 if (!c.JS_IsObject(context)) return; // Source CollectUVExceptionInfo.
                 var s: v.Scope = .{ .engine = engine }; defer s.deinit();
                 const number = switch (failure) { .windows => |code| uv.fromWindows(code), .crt => @intFromEnum(uv.Code.EBADF), .not_tty => @intFromEnum(uv.Code.EBADF) };
-                const code = std.Enums.fromInt(uv.Code, number) orelse return error.RequiredUnknownNativeUvErrorFormatting;
+                const code = std.enums.fromInt(uv.Code, number) orelse return error.RequiredUnknownNativeUvErrorFormatting;
                 // Actual env.cc CollectExceptionInfo order: errno, code,
                 // message, optional path/dest, then syscall.
                 try contextSet(&s, context, "errno", c.JS_NewInt32(engine.context, number));
