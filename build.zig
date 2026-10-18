@@ -1769,6 +1769,19 @@ pub fn build(b: *std.Build) void {
         sdk_guest_operation_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-guest-operation", "Compile SDK guest DATA/current producer controls without execution").dependOn(&b.addInstallArtifact(sdk_guest_operation_tests, .{}).step);
+    const public_cli_args_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_cli_args_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Public CLI actual"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, public_cli_args_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, public_cli_args_tests.root_module, typescript_parser);
+    linkSqlite(public_cli_args_tests.root_module, sqlite_lib_dir, sqlite_library);
+    public_cli_args_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        public_cli_args_tests.root_module.linkSystemLibrary("advapi32", .{});
+        public_cli_args_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-public-cli-args", "Install actual c268 public CLI controls without execution").dependOn(&b.addInstallArtifact(public_cli_args_tests, .{}).step);
     const sdk_actual_paths_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_paths_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual paths owner"}, .use_llvm = use_llvm,
