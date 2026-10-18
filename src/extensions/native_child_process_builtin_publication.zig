@@ -101,7 +101,9 @@ pub fn install(engine: *js.Engine, state: *State, node: c.JSValue, net: c.JSValu
         // and graph; no rollback fiction or retry after partial publication.
         if (state.phase != .failed) {
             state.phase = .failed; state.failure = err;
-            if (err == error.JavaScriptException) if (engine.captured_exception) |reason| state.reason = c.JS_DupValue(engine.context, reason);
+            if (err == error.JavaScriptException) {
+                if (engine.captured_exception) |reason| state.reason = c.JS_DupValue(engine.context, reason);
+            }
         }
         return err;
     }

@@ -501,8 +501,8 @@ fn installAbortActual(self: *Child, signal: c.JSValue) !void {
     const listener = try scope.own(try fnc.create(self.engine, "onAbortListener", 0, abortTick, &.{ self.holder, c.JS_NewUint32(self.engine.context, self.module.child_brand) }));
     if (scope.truthy(try scope.get(signal, "aborted"))) { _ = try scope.invoke(self.module.process, "nextTick", &.{listener}); return; }
     const disposable = try scope.invoke(self.module.events, "addAbortListener", &.{ signal, listener }); self.set(&self.disposable, disposable);
-    const dispose = try frontier.getKey(&scope, disposable, self.module.dispose_symbol);
-    _ = try scope.invoke(self.child, "once", &.{ try scope.text("exit"), dispose });
+    const dispose_callback = try frontier.getKey(&scope, disposable, self.module.dispose_symbol);
+    _ = try scope.invoke(self.child, "once", &.{ try scope.text("exit"), dispose_callback });
 }
 const PlatformAttempt = if (builtin.os.tag == .linux) driver_api.Attempt else driver_api.OwnerBridge.Attempt;
 fn launchAttempt(self: *Child, config: options.Config, hooks: driver_api.Hooks) !PlatformAttempt {

@@ -129,7 +129,7 @@ pub const Owner = struct {
             waits.withdraw(self.admission.lease) catch {};
             self.native_owner.closeInput(); self.native_owner.destroyOutput(0) catch {}; self.native_owner.destroyOutput(1) catch {};
             waits.requestStep(self.admission.lease);
-        };
+        }
         for (self.admission.config.options.stdio, 0..) |mode, index| if (mode == .pipe) {
             if (records) |actual| {
                 const record = actual[index] orelse return error.NativeProcessStdioRecordRequired;
