@@ -42,7 +42,7 @@ fn accessor(s: *Scope, target: c.JSValue, name: [*:0]const u8, get: c.JSValue, s
     try s.put(descriptor, "get", get);
     if (!c.JS_IsUndefined(set)) try s.put(descriptor, "set", set);
     if (enumerable) try s.put(descriptor, "enumerable", c.pi_js_bool(s.engine.context, 1));
-    _ = try objectCall(s, "defineProperty", &.{ target, try s.text(name), descriptor });
+    _ = try objectCall(s, "defineProperty", &.{ target, try s.text(std.mem.span(name)), descriptor });
 }
 fn makeMethod(s: *Scope, name: [*:0]const u8, length: c_int, comptime callback: Body, roots: []const c.JSValue) !c.JSValue { return s.own(try functions.createMethod(s.engine, name, length, adapt(callback), roots)); }
 fn validLevel(s: *Scope, value: c.JSValue) !void {
@@ -50,7 +50,7 @@ fn validLevel(s: *Scope, value: c.JSValue) !void {
     if (!s.truthy(safe) or try s.compare(.less, value, c.JS_NewInt32(s.engine.context, 0)) or try s.compare(.greater, value, c.JS_NewInt32(s.engine.context, 3))) {
         const ctor = try s.global("Error"); const args = [_]c.JSValue{try s.text("The `level` should be an integer from 0 to 3")};
         const reason = try s.construct(ctor, &args);
-        return s.raise(reason);
+        return try s.raise(reason);
     }
 }
 fn rootLevelGet(s: *Scope, receiver: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {

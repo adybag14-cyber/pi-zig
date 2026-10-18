@@ -51,14 +51,14 @@ pub fn three(s: *Scope, entry: c.JSValue) anyerror![3]c.JSValue {
     const generation = s.engine.native_allocation_generation;
     const symbol = try s.own(try s.raw(c.JS_GetIteratorSymbol(s.engine.context), generation));
     const iterator = try s.call(try s.getKey(entry, symbol), entry, &.{});
-    if (!c.JS_IsObject(iterator)) return throwType(s, "TypeError", try s.text("Iterator is not an object"));
+    if (!c.JS_IsObject(iterator)) return try throwType(s, "TypeError", try s.text("Iterator is not an object"));
     const next = try s.get(iterator, "next");
     var result = [_]c.JSValue{c.pi_js_undefined(),c.pi_js_undefined(),c.pi_js_undefined()};
     var done = false;
     for (&result) |*value| {
         if (done) continue;
         const step = try s.call(next, iterator, &.{});
-        if (!c.JS_IsObject(step)) return throwType(s, "TypeError", try s.text("Iterator result is not an object"));
+        if (!c.JS_IsObject(step)) return try throwType(s, "TypeError", try s.text("Iterator result is not an object"));
         done = s.truthy(try s.get(step, "done"));
         if (!done) value.* = try s.get(step, "value");
     }
@@ -66,7 +66,7 @@ pub fn three(s: *Scope, entry: c.JSValue) anyerror![3]c.JSValue {
         const finish = try s.get(iterator, "return");
         if (!c.JS_IsUndefined(finish) and !c.JS_IsNull(finish)) {
             const closed = try s.call(finish, iterator, &.{});
-            if (!c.JS_IsObject(closed)) return throwType(s, "TypeError", try s.text("Iterator return result is not an object"));
+            if (!c.JS_IsObject(closed)) return try throwType(s, "TypeError", try s.text("Iterator return result is not an object"));
         }
     }
     return result;

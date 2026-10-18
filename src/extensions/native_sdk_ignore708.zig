@@ -158,9 +158,9 @@ fn notRelative(s:*Scope,path:c.JSValue,context:c.JSValue)!bool {
     return s.equal(try v.len(s,path),v.num(s,2)) or s.equal(try s.invoke(path,"charCodeAt",&.{v.num(s,2)}),v.num(s,47));
 }
 fn checkPath(s:*Scope,path:c.JSValue,original:c.JSValue,strict:bool,context:c.JSValue)!void {
-    if(!c.JS_IsString(path)) { if(!strict)return; const text=try s.concat(try s.concat(try s.text("path must be a string, but got `"),try v.string(s,original)),try s.text("`")); return v.throwType(s,"TypeError",text); }
-    if(!s.truthy(path)){if(!strict)return; return v.throwType(s,"TypeError",try s.text("path must not be empty"));}
-    if(try notRelative(s,path,context)){if(!strict)return; const text=try s.concat(try s.concat(try s.text("path should be a `path.relative()`d string, but got \""),try v.string(s,original)),try s.text("\"")); return v.throwType(s,"RangeError",text);}
+    if(!c.JS_IsString(path)) { if(!strict)return; const text=try s.concat(try s.concat(try s.text("path must be a string, but got `"),try v.string(s,original)),try s.text("`")); return try v.throwType(s,"TypeError",text); }
+    if(!s.truthy(path)){if(!strict)return; return try v.throwType(s,"TypeError",try s.text("path must not be empty"));}
+    if(try notRelative(s,path,context)){if(!strict)return; const text=try s.concat(try s.concat(try s.text("path should be a `path.relative()`d string, but got \""),try v.string(s,original)),try s.text("\"")); return try v.throwType(s,"RangeError",text);}
 }
 fn parent(s:*Scope,path:c.JSValue)!c.JSValue {
     const first=try s.invoke(path,"charCodeAt",&.{v.num(s,0)});
