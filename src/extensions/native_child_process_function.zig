@@ -36,8 +36,8 @@ fn call(_: ?*c.JSContext, function: c.JSValue, receiver: c.JSValue, argc: c_int,
 fn invoke(engine: *js.Engine, state: *State, target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit();
     errdefer |err| scope.captureUnwind(err);
-    if (state.new_only and !constructing) return js.typeError(engine, "Native constructor requires new");
-    if (constructing and !state.constructible) return js.typeError(engine, "Socket accessor is not a constructor");
+    if (state.new_only and !constructing) return @as(anyerror!c.JSValue, js.typeError(engine, "Native constructor requires new"));
+    if (constructing and !state.constructible) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket accessor is not a constructor"));
     const receiver = if (constructing) try scope.receiver(target) else if (state.arrow) c.pi_js_undefined() else target;
     const result = try scope.own(try state.callback(engine, receiver, args, state.values));
     return c.JS_DupValue(engine.context, if (constructing and !c.JS_IsObject(result)) receiver else result);
@@ -71,13 +71,13 @@ fn createKind(engine: *js.Engine, name: [*:0]const u8, length: c_int, callback: 
     state.* = .{ .engine = engine, .callback = callback, .values = roots, .charged = charged, .constructible = constructible, .arrow = arrow, .new_only = new_only };
     _ = c.JS_SetOpaque(function, state); attached = true;
     _ = c.JS_SetConstructorBit(engine.context, function, constructible);
-    if (c.JS_DefinePropertyValueStr(engine.context, function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, function, "length", c.JS_NewInt32(engine.context, length), c.JS_PROP_CONFIGURABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     const actual_name = try scope.text(std.mem.span(name));
-    if (c.JS_DefinePropertyValueStr(engine.context, function, "name", c.JS_DupValue(engine.context, actual_name), c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, function, "name", c.JS_DupValue(engine.context, actual_name), c.JS_PROP_CONFIGURABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (constructible) {
         const instance = try scope.object();
-        if (c.JS_DefinePropertyValueStr(engine.context, instance, "constructor", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-        if (c.JS_DefinePropertyValueStr(engine.context, function, "prototype", c.JS_DupValue(engine.context, instance), c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
+        if (c.JS_DefinePropertyValueStr(engine.context, instance, "constructor", c.JS_DupValue(engine.context, function), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
+        if (c.JS_DefinePropertyValueStr(engine.context, function, "prototype", c.JS_DupValue(engine.context, instance), c.JS_PROP_WRITABLE) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     }
     return c.JS_DupValue(engine.context, function);
 }
