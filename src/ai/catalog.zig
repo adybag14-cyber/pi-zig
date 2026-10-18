@@ -141,7 +141,7 @@ test "latest pinned Pi ae7 FFA3 catalog preserves disabled thinking and Kimi Cha
 
 test "latest pinned Pi ae7 FFA3 full typed input metadata and official builtin manifest remain exact" {
     const gpa = std.testing.allocator;
-    const typed = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("../../verification/upstream-ae7-ffa3-20261015/models.all.json"), .{});
+    const typed = try std.json.parseFromSlice(std.json.Value, gpa, @embedFile("fixtures/upstream-ae7-ffa3-models.all.json"), .{});
     defer typed.deinit();
     var index: usize = 0;
     var api_names: std.StringHashMap(void) = .init(gpa);

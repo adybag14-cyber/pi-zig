@@ -1484,7 +1484,7 @@ test "Bedrock adaptive Claude thinking maps effort and omits legacy beta" {
 test "Source5ab Bedrock retains success tool images and moves only Claude error images after the results" {
     const gpa = std.testing.allocator;
     const transcript = [_]ai.ChatMessage{
-        .{ .role = "assistant", .tool_calls_json = "[{\"id\":\"c1\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}},{\"id\":\"c2\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}}]" },
+        .{ .role = "assistant", .content = "", .tool_calls_json = "[{\"id\":\"c1\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}},{\"id\":\"c2\",\"function\":{\"name\":\"shot\",\"arguments\":\"{}\"}}]" },
         .{ .role = "tool", .content = "failed", .tool_call_id = "c1", .tool_name = "shot", .tool_is_error = true, .image_b64 = "AQ==", .image_mime = "image/png" },
         .{ .role = "tool", .content = "ok", .tool_call_id = "c2", .tool_name = "shot", .image_b64 = "Ag==", .image_mime = "image/png" },
     };

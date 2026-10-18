@@ -190,7 +190,7 @@ fn spawnOwned(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8
         }
     };
     if (prepared) |source| { endpoints = try source.take(options.stdio, options.windows_stdio); initialized = 3; }
-    else for (&endpoints, options.stdio, 0..) |*slot, mode, index| { slot.* = try endpoint(mode, index == 0, &attributes, if (index == 0) null else output_slots[index - 1], options.windows_stdio[index]); initialized += 1; };
+    else for (&endpoints, options.stdio, 0..) |*slot, mode, index| { slot.* = try endpoint(mode, index == 0, &attributes, if (index == 0) null else output_slots[index - 1], options.windows_stdio[index]); initialized += 1; }
     var required: usize = 0;
     _ = Native.InitializeProcThreadAttributeList(null, 1, 0, &required);
     if (required == 0) return error.NativeChildHandleListFailed;
