@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "status": "finite_source_projection_review_closed",
+  "candidate_head": "896d1e7d72e60dbb839aa0a35cee01d1d4fc8379",
+  "root_base": "d093c62bd03e0a43f5817a3b9feaa7b39b98e69d",
+  "projection_parent": "281e7675189838f5055566cdb6f14b7bfa9cbc9d",
+  "source_head": "5f9f269b1593be9327b223c750249de54cdc1674",
+  "projection_sha256": "4CC0919078643C3D773F6A9ED8D180AB7AA4AF9235381BCFD99A39A5BE7B6BE9",
+  "source_review_sha256": "017D9F4CDDBCCB9E00BE8E371384056929671FC2B5BC5D7A6D2296079BAF0A42",
+  "checked_rows": 47,
+  "projected_rows_byte_exact": 31,
+  "delta_additions_only": 36,
+  "helper_unchanged": true,
+  "helper_prefix_bytes": 11357,
+  "helper_prefix_byte_exact_original": true,
+  "anchor_count": 10,
+  "anchor_review": "Actual typed ArgsTuple/@call never_inline exported bodies; error-union payloads checked against ten real public declarations. Sentinel error remains MUST NEVER RUN/QUERY. Install-only prospective snippet references same root without RunArtifact/default/name override. No compiler execution or metadata claim.",
+  "limitations": [
+    "Inherited opaque shared checked-result producer frontier remains historical exclusion; this projection does not claim that G2 or all host-fatal policy is qualified.",
+    "Original95+6 inputs and expected absences preserved; no native/Node/parser/jobs.",
+    "Current Root build/Engine/C/H/helper unmodified; separate prospective snippet only."
+  ]
+}

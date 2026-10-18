@@ -1,0 +1,2 @@
+# Preserve exact immutable upstream input bytes, including original whitespace.
+authority/** -whitespace

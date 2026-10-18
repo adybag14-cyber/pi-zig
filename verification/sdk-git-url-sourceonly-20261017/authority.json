@@ -1,0 +1,107 @@
+{
+  "schema": "pi-zig-sdk-git-url-authority-v1",
+  "pi_source_sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+  "pi_8efd_retained_sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+  "runtime_root": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "runtime_authority": "C:\\Users\\adyba\\pi-zig\\evidence\\original19cb-current31064-byte-independent-20261017\\acceptance.json",
+  "runtime_authority_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "original_manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\runtime-reproduction-preparation-20261016-184519-d57a890f\\inputs\\runtime31064.json",
+  "original_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+  "runtime_byte_authority_only": true,
+  "reference_execution": false,
+  "hosted_git_info_version": "9.0.3",
+  "lru_cache_version": "11.4.0",
+  "files": [
+    {
+      "original_relative_path": "packages/coding-agent/dist/utils/git.js",
+      "copy": "authority/packages__coding-agent__dist__utils__git.js",
+      "sha256": "FF37BD23B2A2B39478E8F6959812CCC9C9B36ED87782894475B96945FB7BF35B",
+      "length": 6597,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "packages/coding-agent/dist/utils/git.js.map",
+      "copy": "authority/packages__coding-agent__dist__utils__git.js.map",
+      "sha256": "720C65F85469D3CA753AA151B1B32CA2F8D1059DE6A3C8A16AC6D579E70FDF98",
+      "length": 14173,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/package.json",
+      "copy": "authority/node_modules__hosted-git-info__package.json",
+      "sha256": "7C3774E4843581832AEC08133A19DF318625A91C1CA6C90FEF1A328D4E02705E",
+      "length": 1727,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/LICENSE",
+      "copy": "authority/node_modules__hosted-git-info__LICENSE",
+      "sha256": "C1476EC53119CD4C8370F91F5152AC76312A29B4FAE2D49B5E0E0970FE0FA5EE",
+      "length": 733,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/lib/index.js",
+      "copy": "authority/node_modules__hosted-git-info__lib__index.js",
+      "sha256": "37F3C1042F5202D6E10EE1B39797A281E8BA1D3620193427A51C89B55101BA77",
+      "length": 5445,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/lib/from-url.js",
+      "copy": "authority/node_modules__hosted-git-info__lib__from-url.js",
+      "sha256": "BE08A3F35F54A3A9510B0C2ED3E6DB03E1427965D5B189EB00BD09659938F52A",
+      "length": 4219,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/lib/parse-url.js",
+      "copy": "authority/node_modules__hosted-git-info__lib__parse-url.js",
+      "sha256": "BD9D79DAE9D686824DB3488BC8F1C7DD387CF43A2888EFB83A33620CD25C32A4",
+      "length": 2745,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/hosted-git-info/lib/hosts.js",
+      "copy": "authority/node_modules__hosted-git-info__lib__hosts.js",
+      "sha256": "B9941C9D4F3D9166A4ABFA41899E519B66CC5AE0FBC7360EA3AE81EFFB62A140",
+      "length": 9021,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/lru-cache/package.json",
+      "copy": "authority/node_modules__lru-cache__package.json",
+      "sha256": "F46461A60CE544A6A1CAD7DABC1EE1A260841E66C353A5DB0179CFD21CC0EFB5",
+      "length": 4362,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/lru-cache/LICENSE.md",
+      "copy": "authority/node_modules__lru-cache__LICENSE.md",
+      "sha256": "8A1AF140FDFBF5AFD3DF27F7E662F989C5B963A300020DFAFCE42033CAE9E004",
+      "length": 1552,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/lru-cache/dist/commonjs/index.js",
+      "copy": "authority/node_modules__lru-cache__dist__commonjs__index.js",
+      "sha256": "A1B0CE295FAA12144A37BB69880609D7EBCC6054CE0C105B7CB20C9021FCB217",
+      "length": 62289,
+      "original_manifest_match": true
+    },
+    {
+      "original_relative_path": "node_modules/lru-cache/dist/commonjs/diagnostics-channel.js",
+      "copy": "authority/node_modules__lru-cache__dist__commonjs__diagnostics-channel.js",
+      "sha256": "2CA4BEC4056A88FF22E80E3A48C11AF153E75B6D76DF31DE98D19D8D09AC3407",
+      "length": 264,
+      "original_manifest_match": true
+    },
+    {
+      "original_path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\packages\\coding-agent\\src\\utils\\git.ts",
+      "copy": "authority/git.ts",
+      "sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+      "length": 6247,
+      "source_kind": "immutable c268 retained primary"
+    }
+  ]
+}

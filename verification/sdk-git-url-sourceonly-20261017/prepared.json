@@ -1,0 +1,228 @@
+{
+  "schema": "sdk-git-url-sourceonly-v1",
+  "base_head": "93f768cb60d45486ab63dc7bf4d6eb47482e4e24",
+  "source_only": true,
+  "reference_executed": false,
+  "native_executed": false,
+  "compiler_executed": false,
+  "selected_default": false,
+  "reference_input_count": 95,
+  "additional_original_observations": 6,
+  "proposed_original_rows": 101,
+  "native_entrypoints": [
+    "captureActualCallerRows",
+    "verifyAcceptedOriginalRows",
+    "verifyFreshNativeAllocationBypassesSourceCatch",
+    "verifyHistoricalCapturedDataDoesNotSkipBody",
+    "verifyCancellationIsUncatchable"
+  ],
+  "owned": [
+    {
+      "path": "src/extensions/native_sdk_git_url.zig",
+      "length": 15523,
+      "sha256": "0851A866A88340E0EF1B0C1533CB54EA9E4620794D2BAE3F5AE6D09F6FEC3229"
+    },
+    {
+      "path": "src/extensions/native_sdk_git_url_values.zig",
+      "length": 9438,
+      "sha256": "A57BED4B9F366E95BAF04036B626E096474E8298179D87DBA12D7742E342057D"
+    },
+    {
+      "path": "src/extensions/native_sdk_hosted_git_info.zig",
+      "length": 30194,
+      "sha256": "0967C7FE9A9BE5857FA94E5308201E1FE71B9F87578BC4227D08FB8C35DDD340"
+    },
+    {
+      "path": "src/native_sdk_git_url_controls.zig",
+      "length": 6157,
+      "sha256": "7E93923230981FEDE41C03918EE12EE30C7BC9D849267C9D1B9669F3B47726D7"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-git-url-caller.mjs",
+      "length": 3105,
+      "sha256": "C3FBE65CC895E7B22A86CDBD248E3E71B2F7D40B88C366B7AE60EB94B091DB1D"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-git-url-cases.json",
+      "length": 7738,
+      "sha256": "4FD20DBCBADF5B32CC2F457689049C73297BB5B38451BED3DBA7CC16484AC9D6"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority.json",
+      "length": 5142,
+      "sha256": "B14D6C6E85F1E1C68332634CC2AE3A48EF879F30FE6D0912DADBA63C2CAE6041"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/git.ts",
+      "length": 6247,
+      "sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__from-url.js",
+      "length": 4219,
+      "sha256": "BE08A3F35F54A3A9510B0C2ED3E6DB03E1427965D5B189EB00BD09659938F52A"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__hosts.js",
+      "length": 9021,
+      "sha256": "B9941C9D4F3D9166A4ABFA41899E519B66CC5AE0FBC7360EA3AE81EFFB62A140"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__index.js",
+      "length": 5445,
+      "sha256": "37F3C1042F5202D6E10EE1B39797A281E8BA1D3620193427A51C89B55101BA77"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__parse-url.js",
+      "length": 2745,
+      "sha256": "BD9D79DAE9D686824DB3488BC8F1C7DD387CF43A2888EFB83A33620CD25C32A4"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__LICENSE",
+      "length": 733,
+      "sha256": "C1476EC53119CD4C8370F91F5152AC76312A29B4FAE2D49B5E0E0970FE0FA5EE"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__package.json",
+      "length": 1727,
+      "sha256": "7C3774E4843581832AEC08133A19DF318625A91C1CA6C90FEF1A328D4E02705E"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__dist__commonjs__diagnostics-channel.js",
+      "length": 264,
+      "sha256": "2CA4BEC4056A88FF22E80E3A48C11AF153E75B6D76DF31DE98D19D8D09AC3407"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__dist__commonjs__index.js",
+      "length": 62289,
+      "sha256": "A1B0CE295FAA12144A37BB69880609D7EBCC6054CE0C105B7CB20C9021FCB217"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__LICENSE.md",
+      "length": 1552,
+      "sha256": "8A1AF140FDFBF5AFD3DF27F7E662F989C5B963A300020DFAFCE42033CAE9E004"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__package.json",
+      "length": 4362,
+      "sha256": "F46461A60CE544A6A1CAD7DABC1EE1A260841E66C353A5DB0179CFD21CC0EFB5"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/packages__coding-agent__dist__utils__git.js",
+      "length": 6597,
+      "sha256": "FF37BD23B2A2B39478E8F6959812CCC9C9B36ED87782894475B96945FB7BF35B"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/packages__coding-agent__dist__utils__git.js.map",
+      "length": 14173,
+      "sha256": "720C65F85469D3CA753AA151B1B32CA2F8D1059DE6A3C8A16AC6D579E70FDF98"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/pi-LICENSE",
+      "length": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/caller.mjs",
+      "length": 3105,
+      "sha256": "C3FBE65CC895E7B22A86CDBD248E3E71B2F7D40B88C366B7AE60EB94B091DB1D"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/capture-original.mjs",
+      "length": 1422,
+      "sha256": "99752B8FEBC6A333D610F5D3A9F80B507F80AC9F41F63D4125CB00E7B04CE62B"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/cases.json",
+      "length": 7738,
+      "sha256": "4FD20DBCBADF5B32CC2F457689049C73297BB5B38451BED3DBA7CC16484AC9D6"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/README.md",
+      "length": 4648,
+      "sha256": "793392416DBC186B9C86B50C3684F97A2AE23356386230FB5628A701A132405C"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/.gitattributes",
+      "length": 105,
+      "sha256": "F6A6F2037B7DF67E4C16F6C90FE9E254CFD3DF3EE22D35884F76BE6929B885D4"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "length": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "length": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "length": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_mlly_values.zig",
+      "length": 13014,
+      "sha256": "CFC96F8E1D0B6D7F7D56287D1B02F626D22264D2A28FDFBEF25D952C89F3F2D3"
+    },
+    {
+      "path": "src/extensions/native_mlly_function.zig",
+      "length": 14905,
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "length": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "length": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/node_url.zig",
+      "length": 12179,
+      "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8"
+    },
+    {
+      "path": "src/extensions/native_url.zig",
+      "length": 40574,
+      "sha256": "B91E8923284E7E951EE6E59D1E65C48165821DEFECBF6D13A012DCC3CD1C6424"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_source.zig",
+      "length": 5685,
+      "sha256": "C2591904CF8303767036FD6F1E734939A402D5D54C115922D966C9925103DAB8"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_assembly.zig",
+      "length": 7938,
+      "sha256": "C8B4B69784B982AE4C9F9233272E85C6369B144FFB3F4A6FD928B2AF374DAD13"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_git.zig",
+      "length": 13147,
+      "sha256": "E941DF7CFEB8F1AB326723EC4CBB5C863DE1D7BC074C864C41E27A7460AD0E60"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "length": 20482,
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A"
+    },
+    {
+      "path": "build.zig",
+      "length": 353674,
+      "sha256": "3081C2B0E26F238E79A6CB6EAABD7D8F8FB99B94A12327A4E158895DC9FDC8BC"
+    }
+  ],
+  "expected_absent": [
+    "verification/sdk-git-url-sourceonly-20261017/original.expected.json",
+    "verification/sdk-git-url-sourceonly-20261017/native.actual.json"
+  ],
+  "review": "pending independent source review"
+}

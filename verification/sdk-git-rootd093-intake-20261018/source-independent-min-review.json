@@ -1,0 +1,340 @@
+{
+  "schema": 1,
+  "status": "finite_source_review_closed_three_reported_correction_groups",
+  "reviewer": "minimatch_native_resume independent of author and original Async findings",
+  "candidate_head": "5f9f269b1593be9327b223c750249de54cdc1674",
+  "candidate_path": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-git-url-producer",
+  "manifest_path": "verification/sdk-git-url-sourceonly-20261017/correction-prepared.json",
+  "manifest_sha256": "5C27DD188FB19B029A9C8C2515595B4C9BA31443258B1EE6FCA764E698BC7735",
+  "historical_head": "da04a416aaffd13a6d3510c462afb67cd452987a",
+  "original_findings_sha256": "627AE97600541AA5DEB3DF1CC9338630EB5C8F7C656906FDC353A7AA43B5588A",
+  "helper_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "helper_git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346",
+  "corrections_reviewed": [
+    "Outcome escrow precedes scope, iterator, descriptor and cache retirement; ordinary primary remains owned outside mutable slots; actual fatal cleanup has priority; iterator language close remains separate",
+    "Direct factory has balanced suppression and stable actual invocation; successful setter/definition/index/own-property/instanceof statuses normalize actual pending before later Source effects",
+    "Map constructor equals pre-extension intrinsic; insert equals intrinsic Map.insert; genuine string-key set/get/delete/absent checks reject WeakMap; later map/prototype interposition remains explicit unsupported"
+  ],
+  "consumed_source_review": [
+    "Pi SCP and protocol/ref splitting, live global URL versus captured actual node:url.URL and generic fallback",
+    "Raw/decoded path validation, exact return field insertion order including own undefined ref and Boolean(ref)",
+    "Hosted five-host extraction, shorthand/protocol/domain/order, URIError-only parse-fields catch and construction outside that catch",
+    "Real array iterator next/step/done/value, elision, early normal versus abrupt close; actual callback GC roots; bounded charged private LRU replacement topology and retirement"
+  ],
+  "limitations": [
+    "This closes ONLY the three original correction groups and bounded consumed Source/default policy; not full host fatal or public hosted-git-info/LRU/bootstrap/reflection parity",
+    "Known inherited shared value-returning frontier remains: Ops.get/call/construct call Engine.checked before local ownership/current. A successful raw result plus ordinary pending A whose sole carrier finalizer emits unmarked fresh private OOM B may lose B inside shared checked. No closure of this semver-style G2/atomic VM or shared function creation frontier is inferred; author confirmed exclusion in team message",
+    "Per-primitive runtime-only finalizers and underlying C/Engine internal releases are not newly qualified",
+    "Original95 plus six caller observations and original five controls remain unrun/expected outputs absent; four new entry functions provide five prepared profiles, not actual metadata",
+    "Raw successful setter control must actually establish status>=0 and pending before its guarded call; inability must fail, not fabricate a status event"
+  ],
+  "authority_versions": {
+    "Pi": "c268/8efd byte-identical retained git.ts",
+    "hosted_git_info": "9.0.3",
+    "lru_cache": "11.4.0",
+    "runtime_receipt_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+    "selected_original_and_inert_copy_files_checked": 13,
+    "current_selected_original_hash_differences": 0
+  },
+  "owned_pins": 7,
+  "retained_pins": 24,
+  "protected_pins": 16,
+  "physical_and_immutable_Git_payload_differences": 0,
+  "original_case_count": 95,
+  "additional_original_observations": 6,
+  "expected_absences": [
+    "verification/sdk-git-url-sourceonly-20261017/original.expected.json",
+    "verification/sdk-git-url-sourceonly-20261017/native.actual.json"
+  ],
+  "actual_metadata_count": null,
+  "native_or_reference_controls_executed": false,
+  "parser_compiler_formatter_Node_native_jobs": 0,
+  "Main_or_owner_source_modified": false,
+  "qualification_or_selection_authorized": false,
+  "runtime_qualified": false,
+  "whole_sdk_qualified": false,
+  "pins": [
+    {
+      "path": "src/extensions/native_sdk_git_url.zig",
+      "bytes": 17169,
+      "sha256": "C4376ED916BE89953AD8022FBA4E7F9468F2C58477EBF79509958AD9CEC6A81D",
+      "git_blob": "27f4c4112638780991c97992dc845b54a3a25205"
+    },
+    {
+      "path": "src/extensions/native_sdk_git_url_values.zig",
+      "bytes": 15458,
+      "sha256": "1A81BA09D72B8F8B0B5B42F5CF32B77CB1F5AC183085C2459E683E3760A48F70",
+      "git_blob": "6ca38be09612fcd14a3b9fb0fc045ff6319e1832"
+    },
+    {
+      "path": "src/extensions/native_sdk_hosted_git_info.zig",
+      "bytes": 33948,
+      "sha256": "39474FFAF6A6117EB2644BB9644F23C0FB531555BB7D2FD71E8E7F4063A7BAAB",
+      "git_blob": "5a82e2e357a1b066039fc4c7c94907cb287fa029"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346"
+    },
+    {
+      "path": "src/native_sdk_git_url_retirement_controls.zig",
+      "bytes": 9709,
+      "sha256": "9E41E74B47B130B5D7F340C833C3813B10126620154CF47D01C9D90853B84421",
+      "git_blob": "c86706bdc4b01a63297fe2e152fea7db0e009f14"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/RETIREMENT-SUCCESSOR.md",
+      "bytes": 3901,
+      "sha256": "212E3D7634C4EFF6C7844C5476FD46094E79279DADD2FA52496FB9E79C4444F4",
+      "git_blob": "1a534f186480d65a7dad42df663800dd44ad5660"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/da04-independent-source-findings.json",
+      "bytes": 11359,
+      "sha256": "627AE97600541AA5DEB3DF1CC9338630EB5C8F7C656906FDC353A7AA43B5588A",
+      "git_blob": "14ce04ceac52e66526526f150aa1774ae9b684e1"
+    },
+    {
+      "path": "src/native_sdk_git_url_controls.zig",
+      "bytes": 6157,
+      "sha256": "7E93923230981FEDE41C03918EE12EE30C7BC9D849267C9D1B9669F3B47726D7",
+      "git_blob": "db4130b486e0de86bac4c85b351965b21cc31e03"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-git-url-caller.mjs",
+      "bytes": 3105,
+      "sha256": "C3FBE65CC895E7B22A86CDBD248E3E71B2F7D40B88C366B7AE60EB94B091DB1D",
+      "git_blob": "7099d89b333b12b65d37ca2663c11f9914b45165"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-git-url-cases.json",
+      "bytes": 7738,
+      "sha256": "4FD20DBCBADF5B32CC2F457689049C73297BB5B38451BED3DBA7CC16484AC9D6",
+      "git_blob": "e98117fdad7fe610d44e79f21eb8481d6b880422"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority.json",
+      "bytes": 5142,
+      "sha256": "B14D6C6E85F1E1C68332634CC2AE3A48EF879F30FE6D0912DADBA63C2CAE6041",
+      "git_blob": "7c0b44da2e9d84db969bc6fa11bd1b09ff0bdf5c"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/git.ts",
+      "bytes": 6247,
+      "sha256": "BFF4590AEFA988BA625026769AC5AD02F02558D59BD7D566F4728E1EE4DA1DA9",
+      "git_blob": "1314edea7c78a139471734aae96532c3e8060e77"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__from-url.js",
+      "bytes": 4219,
+      "sha256": "BE08A3F35F54A3A9510B0C2ED3E6DB03E1427965D5B189EB00BD09659938F52A",
+      "git_blob": "efc1247d59d126a6009c23b7dc590944c59a927c"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__hosts.js",
+      "bytes": 9021,
+      "sha256": "B9941C9D4F3D9166A4ABFA41899E519B66CC5AE0FBC7360EA3AE81EFFB62A140",
+      "git_blob": "a1635d3c898fed555ef042f76edb3a138c88d6fe"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__index.js",
+      "bytes": 5445,
+      "sha256": "37F3C1042F5202D6E10EE1B39797A281E8BA1D3620193427A51C89B55101BA77",
+      "git_blob": "2a7100dcee6e78b0cb50178af8dabb03520df8c3"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__lib__parse-url.js",
+      "bytes": 2745,
+      "sha256": "BD9D79DAE9D686824DB3488BC8F1C7DD387CF43A2888EFB83A33620CD25C32A4",
+      "git_blob": "bfd54b9140c1160f2660e43c88a113702e07da2f"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__LICENSE",
+      "bytes": 733,
+      "sha256": "C1476EC53119CD4C8370F91F5152AC76312A29B4FAE2D49B5E0E0970FE0FA5EE",
+      "git_blob": "45055763dc838d98e35b6f3bd9a94bf15218a16d"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__hosted-git-info__package.json",
+      "bytes": 1727,
+      "sha256": "7C3774E4843581832AEC08133A19DF318625A91C1CA6C90FEF1A328D4E02705E",
+      "git_blob": "f21e546a64bfa57a6442e3253d11f4c42d172ae5"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__dist__commonjs__diagnostics-channel.js",
+      "bytes": 264,
+      "sha256": "2CA4BEC4056A88FF22E80E3A48C11AF153E75B6D76DF31DE98D19D8D09AC3407",
+      "git_blob": "bdd4f41f903666aa1d989767d0af245ef5a7efb4"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__dist__commonjs__index.js",
+      "bytes": 62289,
+      "sha256": "A1B0CE295FAA12144A37BB69880609D7EBCC6054CE0C105B7CB20C9021FCB217",
+      "git_blob": "08029221bdc1c17f2d3f084e3eec9997b3932bba"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__LICENSE.md",
+      "bytes": 1552,
+      "sha256": "8A1AF140FDFBF5AFD3DF27F7E662F989C5B963A300020DFAFCE42033CAE9E004",
+      "git_blob": "c5402b9577a8cdd966c0974e5b74cc7b85f536c5"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/node_modules__lru-cache__package.json",
+      "bytes": 4362,
+      "sha256": "F46461A60CE544A6A1CAD7DABC1EE1A260841E66C353A5DB0179CFD21CC0EFB5",
+      "git_blob": "03f7ba08923e4ff915f71d84837c4ca1afbcc1e8"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/packages__coding-agent__dist__utils__git.js",
+      "bytes": 6597,
+      "sha256": "FF37BD23B2A2B39478E8F6959812CCC9C9B36ED87782894475B96945FB7BF35B",
+      "git_blob": "a4005a94e75909bcae37f6530738003a9eddb09c"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/packages__coding-agent__dist__utils__git.js.map",
+      "bytes": 14173,
+      "sha256": "720C65F85469D3CA753AA151B1B32CA2F8D1059DE6A3C8A16AC6D579E70FDF98",
+      "git_blob": "112122535a7b7427ff8a335b40262e25178c518f"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/authority/pi-LICENSE",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/caller.mjs",
+      "bytes": 3105,
+      "sha256": "C3FBE65CC895E7B22A86CDBD248E3E71B2F7D40B88C366B7AE60EB94B091DB1D",
+      "git_blob": "7099d89b333b12b65d37ca2663c11f9914b45165"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/capture-original.mjs",
+      "bytes": 1422,
+      "sha256": "99752B8FEBC6A333D610F5D3A9F80B507F80AC9F41F63D4125CB00E7B04CE62B",
+      "git_blob": "827c2510adfc7ca13a67ddf4b40a1634ecf08a1a"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/cases.json",
+      "bytes": 7738,
+      "sha256": "4FD20DBCBADF5B32CC2F457689049C73297BB5B38451BED3DBA7CC16484AC9D6",
+      "git_blob": "e98117fdad7fe610d44e79f21eb8481d6b880422"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/README.md",
+      "bytes": 4648,
+      "sha256": "793392416DBC186B9C86B50C3684F97A2AE23356386230FB5628A701A132405C",
+      "git_blob": "3b31f181cdda4d768c4455d6a263933504bb8f4b"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/.gitattributes",
+      "bytes": 105,
+      "sha256": "F6A6F2037B7DF67E4C16F6C90FE9E254CFD3DF3EE22D35884F76BE6929B885D4",
+      "git_blob": "8a6ef27ff02cf1649e473c48d2d51baafe3e7e56"
+    },
+    {
+      "path": "verification/sdk-git-url-sourceonly-20261017/prepared.json",
+      "bytes": 8731,
+      "sha256": "4DF1F365F8FF6FD4DA071541C8CD6CAA8333C2672B23304B4D75C237A394F27F",
+      "git_blob": "070d2df184fd0bb5ea58ac1d28658e5885a3260e"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe"
+    },
+    {
+      "path": "src/extensions/native_mlly_values.zig",
+      "bytes": 13014,
+      "sha256": "CFC96F8E1D0B6D7F7D56287D1B02F626D22264D2A28FDFBEF25D952C89F3F2D3",
+      "git_blob": "6756c8ba5ae73c4623750e650f04ec28540707a2"
+    },
+    {
+      "path": "src/extensions/native_mlly_function.zig",
+      "bytes": 14905,
+      "sha256": "CA1AAA927D6CD091506233B9A3C499B99CE19A2F4266BD82ED3A181142B2D8D4",
+      "git_blob": "b56f32948c23dafa26a0b27ba92e57ac538a29c1"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6",
+      "git_blob": "dc74667547037fd639eb4e9d7f6204ea2c626787"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "src/extensions/node_url.zig",
+      "bytes": 12179,
+      "sha256": "61B4200BCE8AB01D4051492FCAAE130B049139770E3727E4B110A193C401EDC8",
+      "git_blob": "fb5db5263ecd4a125b57769ec3503152a9b4a8e8"
+    },
+    {
+      "path": "src/extensions/native_url.zig",
+      "bytes": 40574,
+      "sha256": "B91E8923284E7E951EE6E59D1E65C48165821DEFECBF6D13A012DCC3CD1C6424",
+      "git_blob": "45a7abd305ad6b7f6761094aad5b4176f26d666d"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_source.zig",
+      "bytes": 5685,
+      "sha256": "C2591904CF8303767036FD6F1E734939A402D5D54C115922D966C9925103DAB8",
+      "git_blob": "d6983bdea2538e364db9cb047dd8d70b0d69c62f"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_assembly.zig",
+      "bytes": 7938,
+      "sha256": "C8B4B69784B982AE4C9F9233272E85C6369B144FFB3F4A6FD928B2AF374DAD13",
+      "git_blob": "b01ed04463ecb14a1a38fe21f28505db4b58febf"
+    },
+    {
+      "path": "src/extensions/native_sdk_package_git.zig",
+      "bytes": 13147,
+      "sha256": "E941DF7CFEB8F1AB326723EC4CBB5C863DE1D7BC074C864C41E27A7460AD0E60",
+      "git_blob": "95eba2b0fcf53269213c9b896d4a5df75eab4f3b"
+    },
+    {
+      "path": "src/extensions/native_sdk_extension_loader_production.zig",
+      "bytes": 20482,
+      "sha256": "25F12B81384CAEF565D19C5721BC972AEF9DDF3E6555700C3037978E2532106A",
+      "git_blob": "be0995ba8affb8fd529df795165f4da71649975c"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 353674,
+      "sha256": "3081C2B0E26F238E79A6CB6EAABD7D8F8FB99B94A12327A4E158895DC9FDC8BC",
+      "git_blob": "9139c8d90568aa78bf1174d8180b4e6b7a00026a"
+    },
+    {
+      "path": "src/extensions/native_clone_intrinsics.zig",
+      "bytes": 3671,
+      "sha256": "92BBBEB85369F78E64D4D37A1FB1A34E373F724933E8967F76C1E0901D864DAD",
+      "git_blob": "5eff1503080fd5900eb55d0c48eb2506c4f541bb"
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "bytes": 163154,
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "git_blob": "e7aa62358c84c89feeec479ffe055dea9fbfdce2"
+    }
+  ]
+}

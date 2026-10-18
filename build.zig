@@ -3500,6 +3500,20 @@ pub fn build(b: *std.Build) void {
         sdk_exec_compile_only.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-exec-compile-only", "Compile actual SDK exec and its real controls; never run/query sentinel").dependOn(&b.addInstallArtifact(sdk_exec_compile_only, .{}).step);
+    // Prospective install-only actual-call compile target. No Run/query edge.
+    const sdk_git_compile_only = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_git_url_compile_only_root.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_git_compile_only.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_git_compile_only.root_module, typescript_parser);
+    linkSqlite(sdk_git_compile_only.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_git_compile_only.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_git_compile_only.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_git_compile_only.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-git-url-compile-only", "Compile actual SDK Git supplier and real controls; never run/query sentinel").dependOn(&b.addInstallArtifact(sdk_git_compile_only, .{}).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

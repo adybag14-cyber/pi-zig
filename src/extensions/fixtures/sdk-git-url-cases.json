@@ -1,0 +1,382 @@
+[
+  {
+    "id": "git-string-001",
+    "value": "git:pi/extensions"
+  },
+  {
+    "id": "git-string-002",
+    "value": "pi/extensions"
+  },
+  {
+    "id": "git-string-003",
+    "value": "git:github:pi/extensions"
+  },
+  {
+    "id": "git-string-004",
+    "value": "git:github.com/pi/extensions"
+  },
+  {
+    "id": "git-string-005",
+    "value": "https://github.com/pi/extensions"
+  },
+  {
+    "id": "git-string-006",
+    "value": "http://github.com/pi/extensions.git"
+  },
+  {
+    "id": "git-string-007",
+    "value": "ssh://git@github.com/pi/extensions.git"
+  },
+  {
+    "id": "git-string-008",
+    "value": "git://github.com/pi/extensions.git"
+  },
+  {
+    "id": "git-string-009",
+    "value": "git:git@github.com:pi/extensions.git"
+  },
+  {
+    "id": "git-string-010",
+    "value": "git:git@github.com:pi/extensions@next"
+  },
+  {
+    "id": "git-string-011",
+    "value": "https://github.com/pi/extensions@next"
+  },
+  {
+    "id": "git-string-012",
+    "value": "https://github.com/pi/extensions.git#next"
+  },
+  {
+    "id": "git-string-013",
+    "value": "git:github:pi/extensions#v1.2.3"
+  },
+  {
+    "id": "git-string-014",
+    "value": "git:bitbucket:pi/extensions#next"
+  },
+  {
+    "id": "git-string-015",
+    "value": "https://bitbucket.org/pi/extensions.git"
+  },
+  {
+    "id": "git-string-016",
+    "value": "https://bitbucket.org/pi/extensions/get/x"
+  },
+  {
+    "id": "git-string-017",
+    "value": "git:gitlab:team/subgroup/extensions#next"
+  },
+  {
+    "id": "git-string-018",
+    "value": "https://gitlab.com/team/subgroup/extensions.git"
+  },
+  {
+    "id": "git-string-019",
+    "value": "https://gitlab.com/team/repo/-/tree/main"
+  },
+  {
+    "id": "git-string-020",
+    "value": "https://gitlab.com/team/repo/archive.tar.gz"
+  },
+  {
+    "id": "git-string-021",
+    "value": "git:gist:123456"
+  },
+  {
+    "id": "git-string-022",
+    "value": "git:gist:user/123456#next"
+  },
+  {
+    "id": "git-string-023",
+    "value": "https://gist.github.com/user/123456.git"
+  },
+  {
+    "id": "git-string-024",
+    "value": "https://gist.github.com/123456"
+  },
+  {
+    "id": "git-string-025",
+    "value": "https://gist.github.com/user/123456/raw"
+  },
+  {
+    "id": "git-string-026",
+    "value": "git:sourcehut:~user/repo#next"
+  },
+  {
+    "id": "git-string-027",
+    "value": "https://git.sr.ht/~user/repo"
+  },
+  {
+    "id": "git-string-028",
+    "value": "https://git.sr.ht/~user/repo/archive/main"
+  },
+  {
+    "id": "git-string-029",
+    "value": "git:https://example.org/team/repo.git@feature/a"
+  },
+  {
+    "id": "git-string-030",
+    "value": "git:example.org/team/repo@feature/a"
+  },
+  {
+    "id": "git-string-031",
+    "value": "git:localhost/team/repo@main"
+  },
+  {
+    "id": "git-string-032",
+    "value": "git:ssh://git@example.org/team/repo"
+  },
+  {
+    "id": "git-string-033",
+    "value": "git:git@example.org:team/repo@main"
+  },
+  {
+    "id": "git-string-034",
+    "value": "https://example.org/team/repo.git"
+  },
+  {
+    "id": "git-string-035",
+    "value": "https://user:password@example.org/team/repo.git?x=1#old"
+  },
+  {
+    "id": "git-string-036",
+    "value": "https://example.org/team/repo@main?x=1#old"
+  },
+  {
+    "id": "git-string-037",
+    "value": "HTTPS://github.com/pi/extensions"
+  },
+  {
+    "id": "git-string-038",
+    "value": "git:HTTPS://github.com/pi/extensions"
+  },
+  {
+    "id": "git-string-039",
+    "value": "  git: https://github.com/pi/extensions.git  "
+  },
+  {
+    "id": "git-string-040",
+    "value": "git:git+https://github.com/pi/extensions.git"
+  },
+  {
+    "id": "git-string-041",
+    "value": "git:git+ssh://git@github.com/pi/extensions.git"
+  },
+  {
+    "id": "git-string-042",
+    "value": "git:github.com/pi/repo@"
+  },
+  {
+    "id": "git-string-043",
+    "value": "git:github.com/pi/@main"
+  },
+  {
+    "id": "git-string-044",
+    "value": "git:github.com/pi/repo@a@b"
+  },
+  {
+    "id": "git-string-045",
+    "value": "git:github.com/pi/repo@feature/with/slash"
+  },
+  {
+    "id": "git-string-046",
+    "value": "git:github.com/pi/repo.git.git"
+  },
+  {
+    "id": "git-string-047",
+    "value": "git:github.com/pi/repo/"
+  },
+  {
+    "id": "git-string-048",
+    "value": "git:github.com/pi/repo/tree/main"
+  },
+  {
+    "id": "git-string-049",
+    "value": "git:github.com/pi/repo/issues/1"
+  },
+  {
+    "id": "git-string-050",
+    "value": "git:www.github.com/pi/repo"
+  },
+  {
+    "id": "git-string-051",
+    "value": "git:gitlab.com/team/sub/repo@next"
+  },
+  {
+    "id": "git-string-052",
+    "value": "git:example.org/team/repo%2Egit"
+  },
+  {
+    "id": "git-string-053",
+    "value": "git:example.org/team/repo%2F..%2Fx"
+  },
+  {
+    "id": "git-string-054",
+    "value": "git:example.org/team/%2e%2e"
+  },
+  {
+    "id": "git-string-055",
+    "value": "git:example.org/team/.."
+  },
+  {
+    "id": "git-string-056",
+    "value": "git:example.org/team/repo%00x"
+  },
+  {
+    "id": "git-string-057",
+    "value": "git:example.org/team/repo%5cx"
+  },
+  {
+    "id": "git-string-058",
+    "value": "git:example.org/team/repo%"
+  },
+  {
+    "id": "git-string-059",
+    "value": "git:example.org/team/repo%ZZ"
+  },
+  {
+    "id": "git-string-060",
+    "value": "git:example.org/team/%2Frepo"
+  },
+  {
+    "id": "git-string-061",
+    "value": "git:example.org/team/repo%252e"
+  },
+  {
+    "id": "git-string-062",
+    "value": "git:example.org/team/repo%252f.."
+  },
+  {
+    "id": "git-string-063",
+    "value": "git:example.org/team/repo%40next"
+  },
+  {
+    "id": "git-string-064",
+    "value": "git:example.org/team/repo@v%2Fnext"
+  },
+  {
+    "id": "git-string-065",
+    "value": "git:example.org/team/repo@%"
+  },
+  {
+    "id": "git-string-066",
+    "value": "git:localhost/team/repo"
+  },
+  {
+    "id": "git-string-067",
+    "value": "git:127.0.0.1/team/repo"
+  },
+  {
+    "id": "git-string-068",
+    "value": "git:[::1]/team/repo"
+  },
+  {
+    "id": "git-string-069",
+    "value": "git:unknown/team/repo"
+  },
+  {
+    "id": "git-string-070",
+    "value": "git:unknown"
+  },
+  {
+    "id": "git-string-071",
+    "value": "git:"
+  },
+  {
+    "id": "git-string-072",
+    "value": "git:../repo"
+  },
+  {
+    "id": "git-string-073",
+    "value": "git:/tmp/repo"
+  },
+  {
+    "id": "git-string-074",
+    "value": "git:C:\\repo"
+  },
+  {
+    "id": "git-string-075",
+    "value": "git:github.com/single"
+  },
+  {
+    "id": "git-string-076",
+    "value": "https://example.org/single"
+  },
+  {
+    "id": "git-string-077",
+    "value": "https://example.org/"
+  },
+  {
+    "id": "git-string-078",
+    "value": "ssh://git@example.org/team/repo"
+  },
+  {
+    "id": "git-string-079",
+    "value": "ftp://example.org/team/repo"
+  },
+  {
+    "id": "git-string-080",
+    "value": "file:///tmp/repo"
+  },
+  {
+    "id": "git-string-081",
+    "value": "git:ftp://example.org/team/repo"
+  },
+  {
+    "id": "git-string-082",
+    "value": "git:https://github.com/pi/repo@main#hash"
+  },
+  {
+    "id": "git-string-083",
+    "value": "git:github.com/pi/repo#hash"
+  },
+  {
+    "id": "git-string-084",
+    "value": "git:github.com/pi/repo#feature/a"
+  },
+  {
+    "id": "git-string-085",
+    "value": "git:github.com/pi/repo#at@hash"
+  },
+  {
+    "id": "git-string-086",
+    "value": "git:github.com/pi/repo#space here"
+  },
+  {
+    "id": "git-string-087",
+    "value": "git:github.com/pi/repo withspace"
+  },
+  {
+    "id": "git-string-088",
+    "value": "git:github.com/pi/repo.git#"
+  },
+  {
+    "id": "git-string-089",
+    "value": "Git:github.com/pi/repo"
+  },
+  {
+    "id": "git-string-090",
+    "value": ""
+  },
+  {
+    "id": "git-string-091",
+    "value": "  "
+  },
+  {
+    "id": "git-type-null",
+    "value": null
+  },
+  {
+    "id": "git-type-number",
+    "value": 7
+  },
+  {
+    "id": "git-type-boolean",
+    "value": true
+  },
+  {
+    "id": "git-type-array",
+    "value": []
+  }
+]
