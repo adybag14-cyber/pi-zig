@@ -1,0 +1,294 @@
+{
+  "schema": 1,
+  "status": "finite-SOURCE-review-closed-no-established-leaf-blocker",
+  "reviewer": "/root/api_sdk_http_resume",
+  "head": "5b74429fd817764d90e34e1a9ffa1e451ab914e6",
+  "base": "c3888788a1af513f3e8ba9f4659221a22b2888e9",
+  "manifest_sha256": "D9984A7A9C4B11BD4EA22CF23430AD83B4DC695525ABAFBE6641A8D496B395BC",
+  "pins": [
+    {
+      "path": "src/extensions/native_sdk_exec.zig",
+      "sha256": "12CE747D63A1401A99850ED3AC641413642D25863B2059536BA657B8451A5AE4",
+      "bytes": 9961,
+      "git_blob": "a6ac0b364cbd23ff73099c93b8a46cb212fce0fe",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_exec_values.zig",
+      "sha256": "3197B9C1A60D771AAB50797C2692944115650E7CA5EE565199B3306B63878122",
+      "bytes": 5718,
+      "git_blob": "cc3959022ad9ed9840f9b1b9e173b609802b4cad",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_exec_fatal.zig",
+      "sha256": "629226E5124258816AEDCD52A478DDE7F7C4B5E0A4C74918DC4DCDC1BC8510D6",
+      "bytes": 3431,
+      "git_blob": "84a4c7beb01bd75ced7ba5af5116f900e5dc6b81",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/native_sdk_exec_controls.zig",
+      "sha256": "BCE023B971ADC74CD01A84DB19D31013C84FC16CBEED0061D4AF728C63B357E4",
+      "bytes": 4597,
+      "git_blob": "06e3bd5697c35f06394ad6c8de1f03c48f3500ff",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-exec-command-caller.mjs",
+      "sha256": "1FD322A7D902E3290755B684CEDC8175254B44DFF198F587B326701F683B2C9E",
+      "bytes": 1808,
+      "git_blob": "e6e0b760a7213d9ffc3b6f23bfc7d3925a430226",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/.gitattributes",
+      "sha256": "A95130628C1639AE6E20840735AA9AD99CF7F5DE04DEF70726E2186C2D8E3E38",
+      "bytes": 100,
+      "git_blob": "8c573ee24a0e9e08f539d8789d34409adf4c4f7c",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority.json",
+      "sha256": "058E49F9D6161A67EE38C1292E1B531C1E3FE79FC46C9473D5549B3646710AEA",
+      "bytes": 2154,
+      "git_blob": "bce94a107b68fd35b6c4fd3782b1fa7bf1bb17d5",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/exec.ts",
+      "sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F",
+      "bytes": 2419,
+      "git_blob": "5afe9ec367257ae4b7bd62fd1502e9b1fa275684",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__core__exec.js",
+      "sha256": "6AED92ABE5273445A9BDDCD92D4178264D0A23890B54B175A0EFC73B20CDF53F",
+      "bytes": 2500,
+      "git_blob": "29657fa0006e5dc6173d8f058e83bdb4451c72b4",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__core__exec.js.map",
+      "sha256": "F2BAC54604D0782AD7A3BE4D0AD370D99786F751E1509842472F60780EB40CA1",
+      "bytes": 5059,
+      "git_blob": "672da3d9b372e0be13f927e3e61e9fb911c0d668",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__utils__child-process.js",
+      "sha256": "CFC7B3361E42B61EE75AECC2B436FF7462F7E4431B4B646DA7166F3C5706C9B8",
+      "bytes": 4056,
+      "git_blob": "48e5724c50f719449e4ef4e20f3497eed779ae35",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__utils__child-process.js.map",
+      "sha256": "16E0A92E167D8597E4A9ABCD58BBDC49BADBDF427FBB85653BB6BCE370832CFB",
+      "bytes": 7896,
+      "git_blob": "87f891597e0528dbdf1de33eeafef740a5c4b36e",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/pi-LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069,
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/caller.mjs",
+      "sha256": "1FD322A7D902E3290755B684CEDC8175254B44DFF198F587B326701F683B2C9E",
+      "bytes": 1808,
+      "git_blob": "e6e0b760a7213d9ffc3b6f23bfc7d3925a430226",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/capture-original.mjs",
+      "sha256": "F5169276C4F6AC483DBD5E8ED650213AAB75F51E0B710701B6E094646FF1E065",
+      "bytes": 1304,
+      "git_blob": "65d2701813266d589450d2d0c582e48e4c806fbf",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/child.cjs",
+      "sha256": "BF408C3F7853B19D272595D1EE1498FCDC657EF0E298FB92BAB925C92D2665D1",
+      "bytes": 435,
+      "git_blob": "e05ecbdfee054630fc5fd1f399a1f950fc9a454e",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/README.md",
+      "sha256": "59B1CC282ADA441CDF7BBCE9C63B092A8E3555AAD20550B63965026F471C7443",
+      "bytes": 5790,
+      "git_blob": "2e258842ea449105379fb714c7822d96c2cec92e",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573,
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "bytes": 7528,
+      "git_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "bytes": 1544,
+      "git_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+      "bytes": 11357,
+      "git_blob": "c7e11f0893f333b46cc71dee648b2c8b50d27346",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "bytes": 6692,
+      "git_blob": "8f00e796a280f9a0e329f9a2784e1550f5b0c7e5",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615,
+      "git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826,
+      "git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "bytes": 3878,
+      "git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "bytes": 5566,
+      "git_blob": "131ef6fa0cbb047fa9f4aa38d07aa5f14ccb3c3a",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_agent_executor_fatal.zig",
+      "sha256": "5B133CD26AEDB994DC8BB732530094BCB56D4A123950ABF437E5694A61FA9837",
+      "bytes": 5090,
+      "git_blob": "0b3757b334dc4e13056826e650503dc11e392fd5",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "sha256": "E4042A06E23E48DCA115AB872B81175B930AAE947C21D907B54E3DA85BF5DF07",
+      "bytes": 163154,
+      "git_blob": "e7aa62358c84c89feeec479ffe055dea9fbfdce2",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_builtin_execution.zig",
+      "sha256": "DD55988DC1135D54635F9B9D835A893A18FB47BD80D347003B1E6DA24C989200",
+      "bytes": 71705,
+      "git_blob": "84aa17ccb816a1f3a31442ad53c333eff19893c3",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_command_execution.zig",
+      "sha256": "CBFE52D82141E93A113250130005B65A3C6BC97F924451ADB6EDDE18AE1C76D1",
+      "bytes": 5539,
+      "git_blob": "8c6f77fe46831fb81199d66231351fae0470942f",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "src/extensions/native_sdk_package_commands.zig",
+      "sha256": "6401F4168C7D2BE2402A53FEE1B4073222CFDB4F3D2447D339F834407ADFCB4C",
+      "bytes": 12315,
+      "git_blob": "7884dd1ab385d39a99c0dfee3a5a7dbf44b6935d",
+      "physical_equals_immutable_git": true
+    },
+    {
+      "path": "build.zig",
+      "sha256": "95936E7F75D3788FA4ABDC87AF14E11DA77E1FD51FC0185BCF6CDFC2DAE2947D",
+      "bytes": 360592,
+      "git_blob": "26a201397f3ffbfc7f8d76d4b552f482c4b91ea8",
+      "physical_equals_immutable_git": true
+    }
+  ],
+  "pin_count": 32,
+  "pin_drift": 0,
+  "scope": [
+    "Actual exec.ts5afe9 Source algorithm and native_exec/_values/_fatal three leaves",
+    "GenuineAF length4 zeroAwait live-global-Promise returnadoption, no additional Promise/then wrapper",
+    "Executor order spawn/cells/signal rereads/timer/stdout/stderr/wait.then(success).catch(failure)",
+    "Callee capture and undefined/method receivers, timeout greater-than VM operation, real UTF16 addition without byte/chunk clamp",
+    "Source kill flag before SIGTERM; live5000ms timer; force proc.killed read before SIGKILL",
+    "Terminal timeout cleanup and signal rereads before raw resolve, success code nullish0 versus rejection1; ignored rejected DATA no tag/flag inspection",
+    "SDK41AA recorded outcome before Scope and failed-root cleanup; actual pending normalization before owned carrier retirement",
+    "Private live-construction holder records only actual NativeInvocation.first; traces/charges ownership; inactive after constructor returns"
+  ],
+  "controls": {
+    "direct_native_fatal_control": "Actual throwNativeOutOfMemoryFatal transport, not failing-allocator coverage",
+    "original_rows": 9,
+    "executed": false,
+    "native_entries": 5,
+    "fake_child_or_wait_graph": false,
+    "expected_or_observed_output_exists": false,
+    "allocator_stage_qualification": false
+  },
+  "authority": {
+    "reference_runtime_byte_authority": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+    "pi_blob": "5afe9ec367257ae4b7bd62fd1502e9b1fa275684",
+    "reference_executed": false,
+    "selected_original_current_files_checked": 4,
+    "map_sourcesContent_matches": true,
+    "original_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+    "pi_sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F"
+  },
+  "external_prerequisites": [
+    {
+      "name": "Generic Promise undefined rejection forwarding DATA",
+      "status": "OPEN-at-retained-DA14; Root assigned vm_promise_data_forwarding",
+      "location": "vendor/quickjs/quickjs.c promise_reaction_job: undefined rejection handler calls JS_Throw(dup(arg)) before uncatchable check",
+      "actual_source_route": "waitForChildProcess(proc).then(fulfillmentOnly).catch(failure)",
+      "consequence": "Already flagged rejected DATA can abort before Source catch on old VM",
+      "required": "Narrow realVM forwarding correction and Root combined qualification; no leaf flag clear or extra catch workaround"
+    },
+    {
+      "name": "Promise constructor fatal producer exit",
+      "status": "Separately unqualified",
+      "required": "Holder retains first actual fatal after live constructor consumes it; does not prove no extra Guest work inside current constructor after a swallowed event"
+    },
+    {
+      "name": "Shared G2/raw ordinary-callable/AF/GC/real frontend",
+      "status": "Separate Root-owned composition/runtime gates",
+      "required": "Keep newer shared Engine, actual native child/wait/stream/event/IO/lease owners; qualify exact union"
+    }
+  ],
+  "excluded": [
+    "No compiler metadata/runtime/reference capture",
+    "No full Source GC reachability or eager expression-temporary retirement equivalence proof",
+    "No actual GPA stage fault matrix or physical child/descendant/resource retirement qualification",
+    "No complete SDK/public namespace/default/backend activation"
+  ],
+  "source_or_fixture_changed": false,
+  "Main_changed": false,
+  "native_Node_compiler_parser_AST_generator_jobs": 0,
+  "execution_authorized": false
+}

@@ -1,0 +1,14 @@
+{
+  "schema": "sdk-exec-intake-snippet-canonical-basename-v1",
+  "prior_projection_head": "e2a2643361aa6359b29dd40248d2d4d9fe2adec6",
+  "prior_projection_sha256": "62316A2FC75129616728D42C3B80982AA47A314C79CA9EA6D01417AD3415AD41",
+  "historical_snippet_sha256": "C159C1280E6A0BAE48CE583B15F35FC50A5FEFF0C2362A029246CC5F4FBC5F5F",
+  "successor_snippet_path": "verification/sdk-exec-rootd093-intake-20261018/build-snippet-current.zig.txt",
+  "successor_snippet_sha256": "F2A457A2CCD93D8DDA2DFE05909855D5B7476BED819E2079EAC4551F5CACC11F",
+  "only_change": "Remove .name line; cached artifact basename remains canonical test.exe/test.pdb",
+  "producer_bytes_changed": false,
+  "root_build_changed": false,
+  "source_only": true,
+  "execution": false,
+  "sentinel_never_run_or_query": true
+}

@@ -1,0 +1,243 @@
+{
+  "schema": "sdk-exec-rootd093-independent-intake-source-review-v1",
+  "reviewer": "api_sdk_http_resume",
+  "disposition": "closed_finite_source_byte_scope_only",
+  "candidate": "281e7675189838f5055566cdb6f14b7bfa9cbc9d",
+  "original_preserved_candidate": "e2a2643361aa6359b29dd40248d2d4d9fe2adec6",
+  "base": "d093c62bd03e0a43f5817a3b9feaa7b39b98e69d",
+  "donor": "5b74429fd817764d90e34e1a9ffa1e451ab914e6",
+  "independent_source_review_sha256": "1094087731D11E9D493577842B69F515AD87516477AF9DA512A5B98819355876",
+  "source_rows_exact": 18,
+  "current_root_dependencies_exact": 10,
+  "all_root_paths_preserved_by_A_only_diff": true,
+  "additions": 25,
+  "existing_root_build_unchanged": true,
+  "helper_C435_unchanged": true,
+  "original41AAprefix_bytes": 11357,
+  "original41AAprefix_sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6",
+  "typed_actual_call_anchors": 6,
+  "anchors_are_runtime_subjects": false,
+  "failing_sentinel_must_not_run_or_query": true,
+  "new_snippet_only_change": "remove custom addTest.name; preserve canonical test.exe/test.pdb; no run/query edge",
+  "pins": [
+    {
+      "path": "src/extensions/fixtures/sdk-exec-command-caller.mjs",
+      "sha256": "1FD322A7D902E3290755B684CEDC8175254B44DFF198F587B326701F683B2C9E",
+      "length": 1808,
+      "git_blob": "e6e0b760a7213d9ffc3b6f23bfc7d3925a430226"
+    },
+    {
+      "path": "src/extensions/native_sdk_exec.zig",
+      "sha256": "12CE747D63A1401A99850ED3AC641413642D25863B2059536BA657B8451A5AE4",
+      "length": 9961,
+      "git_blob": "a6ac0b364cbd23ff73099c93b8a46cb212fce0fe"
+    },
+    {
+      "path": "src/extensions/native_sdk_exec_fatal.zig",
+      "sha256": "629226E5124258816AEDCD52A478DDE7F7C4B5E0A4C74918DC4DCDC1BC8510D6",
+      "length": 3431,
+      "git_blob": "84a4c7beb01bd75ced7ba5af5116f900e5dc6b81"
+    },
+    {
+      "path": "src/extensions/native_sdk_exec_values.zig",
+      "sha256": "3197B9C1A60D771AAB50797C2692944115650E7CA5EE565199B3306B63878122",
+      "length": 5718,
+      "git_blob": "cc3959022ad9ed9840f9b1b9e173b609802b4cad"
+    },
+    {
+      "path": "src/native_sdk_exec_controls.zig",
+      "sha256": "BCE023B971ADC74CD01A84DB19D31013C84FC16CBEED0061D4AF728C63B357E4",
+      "length": 4597,
+      "git_blob": "06e3bd5697c35f06394ad6c8de1f03c48f3500ff"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/.gitattributes",
+      "sha256": "A95130628C1639AE6E20840735AA9AD99CF7F5DE04DEF70726E2186C2D8E3E38",
+      "length": 100,
+      "git_blob": "8c573ee24a0e9e08f539d8789d34409adf4c4f7c"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/README.md",
+      "sha256": "59B1CC282ADA441CDF7BBCE9C63B092A8E3555AAD20550B63965026F471C7443",
+      "length": 5790,
+      "git_blob": "2e258842ea449105379fb714c7822d96c2cec92e"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority.json",
+      "sha256": "058E49F9D6161A67EE38C1292E1B531C1E3FE79FC46C9473D5549B3646710AEA",
+      "length": 2154,
+      "git_blob": "bce94a107b68fd35b6c4fd3782b1fa7bf1bb17d5"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/exec.ts",
+      "sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F",
+      "length": 2419,
+      "git_blob": "5afe9ec367257ae4b7bd62fd1502e9b1fa275684"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__core__exec.js",
+      "sha256": "6AED92ABE5273445A9BDDCD92D4178264D0A23890B54B175A0EFC73B20CDF53F",
+      "length": 2500,
+      "git_blob": "29657fa0006e5dc6173d8f058e83bdb4451c72b4"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__core__exec.js.map",
+      "sha256": "F2BAC54604D0782AD7A3BE4D0AD370D99786F751E1509842472F60780EB40CA1",
+      "length": 5059,
+      "git_blob": "672da3d9b372e0be13f927e3e61e9fb911c0d668"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__utils__child-process.js",
+      "sha256": "CFC7B3361E42B61EE75AECC2B436FF7462F7E4431B4B646DA7166F3C5706C9B8",
+      "length": 4056,
+      "git_blob": "48e5724c50f719449e4ef4e20f3497eed779ae35"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/packages__coding-agent__dist__utils__child-process.js.map",
+      "sha256": "16E0A92E167D8597E4A9ABCD58BBDC49BADBDF427FBB85653BB6BCE370832CFB",
+      "length": 7896,
+      "git_blob": "87f891597e0528dbdf1de33eeafef740a5c4b36e"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/authority/pi-LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "length": 1069,
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/caller.mjs",
+      "sha256": "1FD322A7D902E3290755B684CEDC8175254B44DFF198F587B326701F683B2C9E",
+      "length": 1808,
+      "git_blob": "e6e0b760a7213d9ffc3b6f23bfc7d3925a430226"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/capture-original.mjs",
+      "sha256": "F5169276C4F6AC483DBD5E8ED650213AAB75F51E0B710701B6E094646FF1E065",
+      "length": 1304,
+      "git_blob": "65d2701813266d589450d2d0c582e48e4c806fbf"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/child.cjs",
+      "sha256": "BF408C3F7853B19D272595D1EE1498FCDC657EF0E298FB92BAB925C92D2665D1",
+      "length": 435,
+      "git_blob": "e05ecbdfee054630fc5fd1f399a1f950fc9a454e"
+    },
+    {
+      "path": "verification/sdk-exec-command-sourceonly-20261018/prepared.json",
+      "sha256": "D9984A7A9C4B11BD4EA22CF23430AD83B4DC695525ABAFBE6641A8D496B395BC",
+      "length": 7830,
+      "git_blob": "68c74605cbd279438898cbb2edc02658e5448694"
+    },
+    {
+      "path": "src/native_sdk_exec_compile_only_root.zig",
+      "sha256": "CB693213465A2A220719C3FA54236C6B624F667F70554E83ED10AE2B2A044D8F",
+      "length": 1595,
+      "git_blob": "391c7d3a0c04dfbf8971c7e3c6ad3c6eb4d9295b"
+    },
+    {
+      "path": "verification/sdk-exec-rootd093-intake-20261018/source-independent-api-review.json",
+      "sha256": "1094087731D11E9D493577842B69F515AD87516477AF9DA512A5B98819355876",
+      "length": 13653,
+      "git_blob": "abb4d41dbe8d4537dc0c0cb4613dbee0f2255ec6"
+    },
+    {
+      "path": "verification/sdk-exec-rootd093-intake-20261018/build-snippet.zig.txt",
+      "sha256": "C159C1280E6A0BAE48CE583B15F35FC50A5FEFF0C2362A029246CC5F4FBC5F5F",
+      "length": 1089,
+      "git_blob": "98e140fceeb49b6cf9d09bdd392090229215a804"
+    },
+    {
+      "path": "verification/sdk-exec-rootd093-intake-20261018/README.md",
+      "sha256": "1BD56A6947C55E012396233E822FBB79F69EBA8013B7F46562F305D08B83DECD",
+      "length": 2067,
+      "git_blob": "238fd96a1e9556d490019da54c4fdfd533708019"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "length": 13354,
+      "git_blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "length": 93573,
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37",
+      "length": 7528,
+      "git_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50",
+      "length": 1544,
+      "git_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "length": 2219518,
+      "git_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "length": 76220,
+      "git_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "length": 6692,
+      "git_blob": "8f00e796a280f9a0e329f9a2784e1550f5b0c7e5"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "length": 7826,
+      "git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "length": 3878,
+      "git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "0F617A215DCD240E7A62B4BEDD6FD613533ECEFC505BCCA1CD8022B551CAD539",
+      "length": 362976,
+      "git_blob": "dae7188d2b1a04e7350c53e4daf2bb5ee2c5248e"
+    }
+  ],
+  "successor_pins": [
+    {
+      "path": "verification/sdk-exec-rootd093-intake-20261018/build-snippet-current.zig.txt",
+      "sha256": "F2A457A2CCD93D8DDA2DFE05909855D5B7476BED819E2079EAC4551F5CACC11F",
+      "length": 1041,
+      "git_blob": "012fd1dbeb3fbbf89aa0409b28bd01817083c207"
+    },
+    {
+      "path": "verification/sdk-exec-rootd093-intake-20261018/snippet-successor.json",
+      "sha256": "F8B3B5E4767157D7C544470FE23D56DDD026205967CE6912F0C87E2A61C7E9E6",
+      "length": 787,
+      "git_blob": "35696ab41a8935433500a93e9007ca238b027372"
+    }
+  ],
+  "source_only": true,
+  "native_executed": false,
+  "node_executed": false,
+  "compiler_or_parser_executed": false,
+  "Main_or_index_writes": false,
+  "metadata_known": false,
+  "new_runtime_or_wholeSDK_claim": false,
+  "prerequisites": [
+    "Root separately selected exact C/AF/G2/Promise forwarding union and qualification",
+    "actual canonical child spawn/wait frontend and live native contexts",
+    "real public native SDK owner and module publication",
+    "no historical runtime qualification transfer"
+  ]
+}

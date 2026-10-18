@@ -1,0 +1,42 @@
+{
+  "schema": "sdk-exec-command-authority-v1",
+  "pi_git_blob": "5afe9ec367257ae4b7bd62fd1502e9b1fa275684",
+  "pi_c268_sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F",
+  "pi_8efd_sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F",
+  "runtime_root": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "runtime_byte_authority": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "original_manifest": "C:\\Users\\adyba\\pi-zig\\evidence\\runtime-reproduction-preparation-20261016-184519-d57a890f\\inputs\\runtime31064.json",
+  "original_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+  "selected_original_files": [
+    {
+      "relative_path": "packages/coding-agent/dist/core/exec.js",
+      "copy": "authority/packages__coding-agent__dist__core__exec.js",
+      "length": 2500,
+      "sha256": "6AED92ABE5273445A9BDDCD92D4178264D0A23890B54B175A0EFC73B20CDF53F",
+      "original_manifest_match": true
+    },
+    {
+      "relative_path": "packages/coding-agent/dist/core/exec.js.map",
+      "copy": "authority/packages__coding-agent__dist__core__exec.js.map",
+      "length": 5059,
+      "sha256": "F2BAC54604D0782AD7A3BE4D0AD370D99786F751E1509842472F60780EB40CA1",
+      "original_manifest_match": true
+    },
+    {
+      "relative_path": "packages/coding-agent/dist/utils/child-process.js",
+      "copy": "authority/packages__coding-agent__dist__utils__child-process.js",
+      "length": 4056,
+      "sha256": "CFC7B3361E42B61EE75AECC2B436FF7462F7E4431B4B646DA7166F3C5706C9B8",
+      "original_manifest_match": true
+    },
+    {
+      "relative_path": "packages/coding-agent/dist/utils/child-process.js.map",
+      "copy": "authority/packages__coding-agent__dist__utils__child-process.js.map",
+      "length": 7896,
+      "sha256": "16E0A92E167D8597E4A9ABCD58BBDC49BADBDF427FBB85653BB6BCE370832CFB",
+      "original_manifest_match": true
+    }
+  ],
+  "reference_executed": false,
+  "original_map_source_content_sha256": "1A55E7416847EA0C548775B28596BB817C8CD4AA97BC36B8DA7403959FCD350F"
+}
