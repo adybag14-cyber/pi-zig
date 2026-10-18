@@ -20,7 +20,12 @@
     "startActualFactoryCaller",
     "verifyAcceptedOriginalRows",
     "verifyActualPendingBeforeEntry",
-    "verifyFlaggedHistoricalDiagnosticData"
+    "verifyFlaggedHistoricalDiagnosticData",
+    "createNativeRetirementHooks",
+    "prepareActualRetirementCaller",
+    "startPreparedRetirementCaller",
+    "verifyActualRetirementFatal",
+    "verifyActualCancellationNoGuestClose"
   ],
   "owned": [
     {
@@ -30,13 +35,13 @@
     },
     {
       "path": "src/extensions/native_sdk_initial_model.zig",
-      "length": 9275,
-      "sha256": "0C93DCE0E8F66609A15EFDFA5FCEBF8C9567616976FEE466E629E8148F9C23E0"
+      "length": 16837,
+      "sha256": "3099B4BF0742556A107253805BCF556DF0E2F63AE4AF219D8AEE151DC3CC10F6"
     },
     {
       "path": "src/extensions/native_sdk_initial_model_values.zig",
-      "length": 7061,
-      "sha256": "B93A86AC7E66CA846DB5B860FEE71A81E477768155075F7531938C21DF61EFE1"
+      "length": 7743,
+      "sha256": "0BC57C2E9C2081F25C9DC05EAEDF7A8642C183B0382FB6C80CEFFDC4F550E890"
     },
     {
       "path": "src/native_sdk_initial_model_controls.zig",
@@ -55,8 +60,8 @@
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/README.md",
-      "length": 4335,
-      "sha256": "C65F787AD7DA130764D0CA8AD6315521DE286E4EBFD739BDD0AC4A80FE1EC224"
+      "length": 6632,
+      "sha256": "BB62D9BE577B0383B45E288E21F6D3A1E334234669FD38C595A3DB8DFF2EEB82"
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/install-only-build-snippet.zig.txt",
@@ -82,6 +87,16 @@
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/pi-LICENSE",
       "length": 1069,
       "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "length": 9067,
+      "sha256": "F23DC2D90F4C9BB0E4AD0C7D4F3DE086898BFA65F46193F147E4ECEBCBBAF0AF"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-retirement-caller.mjs",
+      "length": 3208,
+      "sha256": "41F9EEA4C1C9E3A8DAA1DAD478F237F195A43250C603956FE900B4482AB61B05"
     }
   ],
   "protected": [
@@ -167,5 +182,13 @@
     "real ModelRuntime/Models/auth inputs and real factory/session lifecycle",
     "original Source and exact native common-caller comparison"
   ],
-  "source_review": "pending finite Body review"
+  "source_review": "pending finite Body review",
+  "predecessor_source_review_negative": {
+    "commit": "f1eeb4606582cb443aa6ad5d297869a1dde2371d",
+    "manifest_sha256": "9E6AF952874758404598CE87E3AEE1AC320B1C972663155CC77B43F38033F549",
+    "findings": [
+      "iterator and expression temporaries retained across later Source getters",
+      "ordinary manual cancellation branch allowed guest close"
+    ]
+  }
 }

@@ -21,6 +21,20 @@ only when no model was supplied/restored. That Await remains in the actual SDK
 factory; this leaf does not add another one. Shared mutable defaults retain
 their existing cached identity. Other exports and their bodies are unchanged.
 
+Frozen predecessor f1eeb4606582cb443aa6ad5d297869a1dde2371d is preserved as
+source-review negative, with prepared-manifest hash
+9E6AF952874758404598CE87E3AEE1AC320B1C972663155CC77B43F38033F549. Body found
+function-wide retention of iterator methods/results and discarded auth/find
+temporaries, plus an ordinary manual cancellation exit. The successor uses
+expression/block/step/iteration scopes: the iterator method, then temporary
+iterable retire before cached-next lookup; done retires before value lookup;
+step retires before body delivery; auth/callee/predicate/iteration temporaries
+retire before later live Source operations; exhausted iterators retire before
+fallback selection. The actual newly produced manual interruption is marked
+terminal before checked/current-event recording. Source/C retirement order was
+read directly from protected vendor/quickjs/quickjs.c JS_GetIterator,
+js_for_of_start, JS_IteratorNext, and JS_IteratorClose, without parser or jobs.
+
 The new resolver-local raw Ops use the unchanged canonical
 `native_sdk_owned_completion.zig` ownRoot and Completion. Actual status/pending
 events are normalized before incoming roots retire, and the real outcome is
@@ -51,6 +65,24 @@ flagged diagnostic DATA control are separate from those real positive cases.
 Native metadata checks use JS_IsAsyncFunction, so prototype decoration alone
 cannot pass. `startActualFactoryCaller` invokes real createAgentSession and
 returns its actual Promise to Root; Root owns the real lifecycle/retirement.
+
+`native_sdk_initial_model_retirement_controls.zig` creates actual native C
+sole-holder finalizers and a heap-owned opaque counter record. The paired
+borrowed-iterator fixture consumes a callable carrier at @@iterator lookup and
+a step carrier at next(), then independently checks native finalizer counts and
+WeakRef death at cached-next and default-provider property frontiers. It still
+uses the genuine shared default binding and real nonempty ModelRuntime data.
+The fixture never supplies replacement models/auth results. Preparation and
+execution MUST be separated by Root's normal idle job/kept-object boundary;
+the control does not manually clear WeakRefs or claim an Await in the resolver.
+Optional fatal retirement uses an actual engine.throwNativeOutOfMemoryFatal
+event and records its raw identity; cancellation sets real engine.cancelled at
+method retirement. Separate host assertions require exact native fatal identity
+or terminal interruption, with zero guest next body/IteratorClose on cancellation.
+No guest restoration is attempted after an actual fatal exit. These controls
+remain authored and unexecuted, including whether the intended manual poll
+frontier is reached by Root's composed VM. Their patterns were read from the
+frozen genuine session-binding/Agent-loop controls, without copying their files.
 
 All controls are parameterized and **unexecuted**. The build fragment only
 installs Root's already composed actual-owner profile; it does not run it.

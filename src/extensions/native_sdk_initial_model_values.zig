@@ -55,7 +55,17 @@ pub const Ops = struct {
         const e = o.s.engine; try e.checkNativeEntry(); const generation = e.native_allocation_generation;
         return o.accept(c.JS_Call(e.context, function, receiver, @intCast(args.len), @constCast(args.ptr)), generation);
     }
-    pub fn invoke(o: *Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return o.call(try o.get(receiver, name), receiver, args); }
+    pub fn invoke(o: *Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue { return o.own(try o.invokeOwned(receiver, name, args)); }
+    /// Consumes method-expression temporaries before delivering the owned call
+    /// value. The receiver/arguments are borrowed actual Source lexical refs.
+    pub fn invokeOwned(o: *Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+        var s: Scope = .{ .engine = o.s.engine }; var local: Ops = .{ .s = &s };
+        return owned.finishValue(&s, invokeBody(&local, receiver, name, args));
+    }
+    fn invokeBody(o: *Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+        const value = try o.call(try o.get(receiver, name), receiver, args);
+        return c.JS_DupValue(o.s.engine.context, value);
+    }
     pub fn allocation(o: *Ops, value: c.JSValue, generation: u64) !c.JSValue {
         if (c.JS_IsException(value) and c.JS_HasException(o.s.engine.context)) {
             const reason = c.JS_GetException(o.s.engine.context);
