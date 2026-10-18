@@ -112,7 +112,7 @@ pub const Boundary = struct {
         const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);
         if(host_error!=null or self.reason!=null)self.failureRoots(values)
         else if(self.engine.captured_exception==null){self.engine.captured_exception=self.previous;self.previous=null;}
-        else if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);};
+        else if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);}
         if(host_error!=null or self.reason!=null)self.failureRoots(values);
     }
     pub fn failed(self:*Boundary,host_error:?anyerror)bool{self.observe(null);return host_error!=null or self.reason!=null;}
