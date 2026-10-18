@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "finite_source_peer_no_new_blocker",
+  "reviewer": "vm_foundation",
+  "observed_utc": "2026-10-18T17:36:34.765496+00:00",
+  "production_sha256": "E303D8A1047CB75FE4BAC3CDCA61E6703B5B3A59C22307EA97EC246988341C17",
+  "controls_sha256": "1472BE6D9F81D9BEF729E03EFDBA394404510AA42268CE80305E3F0DE10D4BC2",
+  "scope": "Genuine AF/Sleep shape, reviewed interval correction,16 poll and7 sleep actual Source observers, actual host job checkpoints, C native holders, same-operation DATA/current B controls",
+  "source_only": true,
+  "native_execution": false,
+  "runtime_qualified": false
+}
