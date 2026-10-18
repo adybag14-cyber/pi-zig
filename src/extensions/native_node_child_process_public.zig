@@ -202,13 +202,14 @@ fn systemError(engine: *js.Engine, code: []const u8, errno: i32, syscall: []cons
     }
     return c.JS_DupValue(engine.context, value);
 }
-fn spawnError(engine: *js.Engine, failure: anyerror, file: []const u8, args: []const []const u8) !struct { value: c.JSValue, errno: i32, asynchronous: bool } {
+const SpawnError = struct { value: c.JSValue, errno: i32, asynchronous: bool };
+fn spawnError(engine: *js.Engine, failure: anyerror, file: []const u8, args: []const []const u8) !SpawnError {
     const selected: struct { code: []const u8, errno: i32, asynchronous: bool } = switch (failure) {
         error.FileNotFound => .{ .code = "ENOENT", .errno = if (builtin.os.tag == .windows) -4058 else -2, .asynchronous = true },
         error.AccessDenied => if (builtin.os.tag == .windows) .{ .code = "EPERM", .errno = -4048, .asynchronous = false } else .{ .code = "EACCES", .errno = -13, .asynchronous = true },
         error.PermissionDenied => .{ .code = "EPERM", .errno = if (builtin.os.tag == .windows) -4048 else -1, .asynchronous = false },
         error.InvalidExe => .{ .code = if (builtin.os.tag == .windows) "EFTYPE" else "ENOEXEC", .errno = if (builtin.os.tag == .windows) -4028 else -8, .asynchronous = false },
-        else => return failure, // no fabricated EIO for missing native support
+        else => return @as(anyerror!SpawnError, failure), // no fabricated EIO for missing native support
     };
     const syscall = try std.fmt.allocPrint(engine.gpa, "spawn {s}", .{file}); defer engine.gpa.free(syscall);
     return .{ .value = try systemError(engine, selected.code, selected.errno, syscall, file, args), .errno = selected.errno, .asynchronous = selected.asynchronous };
@@ -294,7 +295,7 @@ fn driverEvent(engine: *js.Engine, raw: *anyopaque, driver: *driver_api.OwnerBri
             const name = if (signal) |value| try signalName(&scope, self.module, value) else c.pi_js_null();
             if (!self.handle_closed) _ = try scope.invoke(self.holder, "onexit", &.{c.JS_NewInt64(engine.context, result.code), name});
         },
-        .failure => |failure| return failure, // private ownership failure, not false Node EIO
+        .failure => |failure| return @as(anyerror!void, failure), // private ownership failure, not false Node EIO
         else => {},
     }
     if (builtin.os.tag != .linux) switch (event) {

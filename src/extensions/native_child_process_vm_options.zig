@@ -25,24 +25,24 @@ fn arg(args: []const c.JSValue, index: usize) c.JSValue { return common.arg(args
 fn nullish(value: c.JSValue) bool { return c.JS_IsNull(value) or c.JS_IsUndefined(value); }
 fn invalid(engine: *js.Engine, code: []const u8, message: []const u8) anyerror { return @import("node_events.zig").codedError(engine, "TypeError", code, message); }
 fn requireObject(engine: *js.Engine, value: c.JSValue) !void {
-    if (!c.JS_IsObject(value) or c.JS_IsNull(value) or c.JS_IsArray(value) or c.JS_IsFunction(engine.context, value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "The options argument must be an object");
+    if (!c.JS_IsObject(value) or c.JS_IsNull(value) or c.JS_IsArray(value) or c.JS_IsFunction(engine.context, value)) return @as(anyerror!void, invalid(engine, "ERR_INVALID_ARG_TYPE", "The options argument must be an object"));
 }
-fn requireString(engine: *js.Engine, value: c.JSValue, message: []const u8) !void { if (!c.JS_IsString(value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", message); }
-fn requireBoolean(engine: *js.Engine, value: c.JSValue, message: []const u8) !void { if (!nullish(value) and !c.JS_IsBool(value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", message); }
+fn requireString(engine: *js.Engine, value: c.JSValue, message: []const u8) !void { if (!c.JS_IsString(value)) return @as(anyerror!void, invalid(engine, "ERR_INVALID_ARG_TYPE", message)); }
+fn requireBoolean(engine: *js.Engine, value: c.JSValue, message: []const u8) !void { if (!nullish(value) and !c.JS_IsBool(value)) return @as(anyerror!void, invalid(engine, "ERR_INVALID_ARG_TYPE", message)); }
 fn nullCheck(scope: *Scope, value: c.JSValue, label: []const u8) !void {
     // Preserve the original error construction with a temporary original scope;
     // its input is already a primitive string, not a coercion/getter boundary.
     try frontier.pending(scope.engine);
     var original: @import("native_sdk_prompt_scope.zig").Scope = .{ .engine = scope.engine };
     defer original.deinit();
-    @import("native_child_process_options.zig").nullCheck(&original, value, label) catch |err| return frontier.failure(scope.engine, err);
+    @import("native_child_process_options.zig").nullCheck(&original, value, label) catch |err| return @as(anyerror!void, frontier.failure(scope.engine, err));
     try frontier.pending(scope.engine);
 }
 fn requireInt32(engine: *js.Engine, value: c.JSValue, message: []const u8) !void {
     if (nullish(value)) return;
-    if (!c.JS_IsNumber(value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", message);
-    var number: f64 = 0; if (c.JS_ToFloat64(engine.context, &number, value) < 0) return js.capture(engine);
-    if (@trunc(number) != number or number < -2147483648 or number > 2147483647) return invalid(engine, "ERR_INVALID_ARG_TYPE", message);
+    if (!c.JS_IsNumber(value)) return @as(anyerror!void, invalid(engine, "ERR_INVALID_ARG_TYPE", message));
+    var number: f64 = 0; if (c.JS_ToFloat64(engine.context, &number, value) < 0) return @as(anyerror!void, js.capture(engine));
+    if (@trunc(number) != number or number < -2147483648 or number > 2147483647) return @as(anyerror!void, invalid(engine, "ERR_INVALID_ARG_TYPE", message));
 }
 fn snapshot(scope: *Scope, value: c.JSValue) !c.JSValue {
     const copy = try scope.objectProto(c.pi_js_null());
@@ -51,7 +51,7 @@ fn snapshot(scope: *Scope, value: c.JSValue) !c.JSValue {
 }
 fn element(scope: *Scope, array: c.JSValue, index: u32) !c.JSValue { return scope.getIndex(array, index); }
 fn length(scope: *Scope, value: c.JSValue) !u32 {
-    var result: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &result, try scope.get(value, "length")) < 0) return js.capture(scope.engine); try frontier.pending(scope.engine); return result;
+    var result: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &result, try scope.get(value, "length")) < 0) return @as(anyerror!u32, js.capture(scope.engine)); try frontier.pending(scope.engine); return result;
 }
 fn append(scope: *Scope, array: c.JSValue, value: c.JSValue, push: c.JSValue) !void { _ = try scope.call(push, array, &.{value}); }
 fn ownKeys(scope: *Scope, environment: c.JSValue, push: c.JSValue) !c.JSValue {
@@ -61,7 +61,7 @@ fn ownKeys(scope: *Scope, environment: c.JSValue, push: c.JSValue) !c.JSValue {
     var object = environment;
     while (!c.JS_IsNull(object)) {
         var names: [*c]c.JSPropertyEnum = null; var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(scope.engine.context, &names, &count, object, c.JS_GPN_STRING_MASK) < 0) return js.capture(scope.engine);
+        if (c.JS_GetOwnPropertyNames(scope.engine.context, &names, &count, object, c.JS_GPN_STRING_MASK) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         defer c.JS_FreePropertyEnum(scope.engine.context, names, count);
         try frontier.pending(scope.engine);
         for (0..count) |index| {
@@ -71,13 +71,13 @@ fn ownKeys(scope: *Scope, environment: c.JSValue, push: c.JSValue) !c.JSValue {
             if (seen.contains(text)) { row.engine.gpa.free(text); continue; }
             var descriptor: c.JSPropertyDescriptor = undefined;
             const exists = c.JS_GetOwnProperty(row.engine.context, &descriptor, object, names[index].atom);
-            if (exists < 0) { row.engine.gpa.free(text); return js.capture(row.engine); }
+            if (exists < 0) { row.engine.gpa.free(text); return @as(anyerror!c.JSValue, js.capture(row.engine)); }
             if (exists == 0) { row.engine.gpa.free(text); try frontier.pending(row.engine); continue; }
             // key is the first root. Adopt all descriptor owners atomically
             // before any pending check can unwind/retire one of the others.
             row.inline_values[1] = descriptor.value; row.inline_values[2] = descriptor.getter; row.inline_values[3] = descriptor.setter; row.inline_count = 4;
-            frontier.pending(row.engine) catch |err| { row.engine.gpa.free(text); return err; };
-            seen.put(text, {}) catch |failure| { row.engine.gpa.free(text); return failure; };
+            frontier.pending(row.engine) catch |err| { row.engine.gpa.free(text); return @as(anyerror!c.JSValue, err); };
+            seen.put(text, {}) catch |failure| { row.engine.gpa.free(text); return @as(anyerror!c.JSValue, failure); };
             if (descriptor.flags & c.JS_PROP_ENUMERABLE != 0) try append(&row, keys, key, push);
         }
         object = try frontier.prototype(scope, object);
@@ -144,11 +144,11 @@ pub fn normalize(engine: *js.Engine, args: []const c.JSValue, inputs: Inputs, st
     var file = arg(args, 0);
     try requireString(engine, file, "The file argument must be a string"); try nullCheck(&scope, file, "file");
     const file_text = try engine.toString(file); defer engine.gpa.free(file_text);
-    if (file_text.len == 0) return invalid(engine, "ERR_INVALID_ARG_VALUE", "The file argument cannot be empty");
+    if (file_text.len == 0) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_VALUE", "The file argument cannot be empty"));
     var arguments = arg(args, 1); var options = arg(args, 2);
     if (c.JS_IsArray(arguments)) arguments = try scope.call(inputs.primordials.array_slice, arguments, &.{})
     else if (nullish(arguments)) arguments = try scope.array()
-    else if (!c.JS_IsObject(arguments) or c.JS_IsFunction(engine.context, arguments)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "The args argument must be an object")
+    else if (!c.JS_IsObject(arguments) or c.JS_IsFunction(engine.context, arguments)) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_TYPE", "The args argument must be an object"))
     else { options = arguments; arguments = try scope.array(); }
     var index: f64 = 0;
     while (true) : (index += 1) {
@@ -173,7 +173,7 @@ pub fn normalize(engine: *js.Engine, args: []const c.JSValue, inputs: Inputs, st
     try requireInt32(engine, try scope.get(options, "uid"), "The options.uid property must be int32");
     try requireInt32(engine, try scope.get(options, "gid"), "The options.gid property must be int32");
     const shell = try scope.get(options, "shell");
-    if (!nullish(shell) and !c.JS_IsBool(shell) and !c.JS_IsString(shell)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.shell property must be a boolean or string");
+    if (!nullish(shell) and !c.JS_IsBool(shell) and !c.JS_IsString(shell)) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.shell property must be a boolean or string"));
     const argv0 = try scope.get(options, "argv0");
     if (!nullish(argv0)) { try requireString(engine, argv0, "The options.argv0 property must be a string"); try nullCheck(&scope, argv0, "options.argv0"); }
     try requireBoolean(engine, try scope.get(options, "windowsHide"), "The options.windowsHide property must be a boolean");

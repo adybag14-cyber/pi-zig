@@ -26,7 +26,7 @@ pub fn create(engine: *js.Engine, inputs: Inputs) !Exports {
     const result = createInner(engine, inputs) catch |err| {
         const failure = functions.directFailure(engine, err, generation);
         _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        return @as(anyerror!Exports, failure);
     };
     const terminal = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
     if (c.JS_IsException(terminal) or c.JS_HasException(engine.context)) {
@@ -85,7 +85,7 @@ pub fn createForFrontend(engine: *js.Engine, inputs: Inputs) anyerror!FrontendEx
     const result = createFrontendInner(engine, inputs) catch |err| {
         const failure = functions.directFailure(engine, err, engine.native_allocation_generation);
         _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        return @as(anyerror!FrontendExports, failure);
     };
     const terminal = engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
     if (c.JS_IsException(terminal) or c.JS_HasException(engine.context)) {

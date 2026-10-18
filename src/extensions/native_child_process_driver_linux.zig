@@ -77,7 +77,7 @@ pub const Controller = struct {
 fn controller(engine: *js.Engine) !*Controller {
     if (@import("builtin").os.tag != .linux) return error.RequiredLinuxChildReadiness;
     const hub = try env.get(engine); try hub.assertOwner(); if (hub.stopping) return error.NativeEnvClosed;
-    for (hub.resources.items) |resource| if (resource.tag == &controller_tag) return @ptrCast(@alignCast(resource.raw));
+    for (hub.resources.items) |resource| if (resource.tag == @as(?*const anyopaque, &controller_tag)) return @ptrCast(@alignCast(resource.raw));
     const reference = try @import("native_owner_completion.zig").acquireNativeWake(engine);
     errdefer wake.release(reference);
     const self = try engine.gpa.create(Controller); errdefer engine.gpa.destroy(self);

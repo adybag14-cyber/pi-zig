@@ -39,7 +39,7 @@ const Owner = struct {
 pub fn acquireNativeWake(engine: *js.Engine) !wake.Ref {
     const hub = try hub_module.get(engine); try hub.assertOwner();
     if (hub.stopping) return error.NativeEnvClosed;
-    for (hub.resources.items) |resource| if (resource.tag == &tag) {
+    for (hub.resources.items) |resource| if (resource.tag == @as(?*const anyopaque, &tag)) {
         const existing: *Owner = @ptrCast(@alignCast(resource.raw));
         if (existing.hub != hub or existing.stopped) return error.NativeOwnerCompletionClosed;
         return wake.retain(existing.reference);
