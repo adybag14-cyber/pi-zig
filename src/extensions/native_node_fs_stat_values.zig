@@ -35,7 +35,7 @@ fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, visit: ?*const c.JS_MarkFunc)
     c.JS_MarkValue(runtime, self.bigint, visit);
 }
 fn typedArray(s: *Scope, kind: c.JSTypedArrayEnum) !c.JSValue {
-    const args = [_]c.JSValue{c.JS_NewInt32(s.engine.context, buffer_count)};
+    var args = [_]c.JSValue{c.JS_NewInt32(s.engine.context, buffer_count)};
     const generation = try s.beforeAllocation();
     // Primitive length, real intrinsic typed-array constructor, no guest input.
     return s.checkedAllocation(c.JS_NewTypedArray(s.engine.context, 1, &args, kind), generation);
@@ -83,7 +83,7 @@ fn timeBits(value: i128) u64 {
     return @bitCast(@as(i64, @intFromFloat(timePart(value))));
 }
 fn fill(bytes: []u8, info: stat.Stat, use_bigint: bool, second: bool) void {
-    const first = if (second) field_count else 0;
+    const first: usize = if (second) field_count else 0;
     const fields = [_]u64{ info.dev, info.mode, info.nlink, info.uid, info.gid, info.rdev, info.blksize, info.ino, info.size, info.blocks };
     for (fields, 0..) |field, position| {
         const bits: u64 = if (use_bigint) field else @bitCast(@as(f64, @floatFromInt(field)));

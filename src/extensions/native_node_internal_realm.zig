@@ -78,7 +78,7 @@ pub fn global(holder: c.JSValue) c.JSValue { return state(holder).global_value; 
 /// rethrow a reason merely because this function comes from the private realm.
 pub fn regexpExec(s: *Scope, holder: c.JSValue, expression: c.JSValue, input: c.JSValue) !c.JSValue {
     const self = state(holder);
-    const args = [_]c.JSValue{input};
+    var args = [_]c.JSValue{input};
     try s.pending();
     // Argument ToString is guest-capable; no allocation-generation span.
     return s.checked(c.JS_Call(self.context.?, self.regexp_exec, expression, 1, &args));
