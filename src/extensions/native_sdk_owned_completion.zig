@@ -226,3 +226,40 @@ pub fn finishRecorded(scope: anytype, result: anyerror!void, state: c.JSValue) a
     completion.releaseScope(scope);
     return completion.finishRecorded();
 }
+
+/// Consume a checked, owned ordinary JS value into SDK temporary storage.
+/// Caller normalizes its actual get/call/allocation result BEFORE this method;
+/// JS_EXCEPTION without a pending event is a native callback-contract failure,
+/// not a stored value. No flag/tag on `value` or diagnostic DATA is inspected.
+/// Both prompt ArrayList and provider inline32+overflow storage are supported.
+pub fn ownRoot(scope: anytype, value: c.JSValue) anyerror!c.JSValue {
+    const engine = scope.engine;
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    // Surface actual pending/Bfb events WITHOUT first capturing/freeing an old
+    // diagnostic. initValue snapshots both slots before the incoming root can
+    // retire. With no event this leaves captured-only history entirely DATA.
+    _ = engine.nativeCallbackResult(c.pi_js_undefined());
+    if (c.JS_HasException(engine.context)) return rejectRoot(scope, value, error.JavaScriptException);
+    std.debug.assert(!c.JS_IsException(value));
+    if (comptime @hasField(@TypeOf(scope.*), "inline_values")) {
+        if (scope.inline_count < scope.inline_values.len) {
+            scope.inline_values[scope.inline_count] = value;
+            scope.inline_count += 1;
+            return value;
+        }
+    }
+    scope.values.append(engine.gpa, value) catch |err| {
+        // This typed allocator failure is the actual producer. Publish/own it
+        // before freeing a sole carrier, even with an old flagged/private DATA
+        // reason in captured_exception. The existing completion core delegates
+        // typed OOM directly to throwNativeOutOfMemoryFatal, not throwCaptured.
+        return rejectRoot(scope, value, err);
+    };
+    return value;
+}
+fn rejectRoot(scope: anytype, value: c.JSValue, err: anyerror) anyerror!c.JSValue {
+    var completion = Completion.initValue(scope.engine, err);
+    completion.release(value);
+    return completion.finishValue();
+}
