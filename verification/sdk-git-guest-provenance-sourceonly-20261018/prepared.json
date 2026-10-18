@@ -45,21 +45,21 @@
     },
     {
       "path": "src/extensions/fixtures/sdk-git-guest-operation-caller.mjs",
-      "bytes": 1739,
-      "sha256": "513CB579FF027809110F11AD199C669C763A8F2FB12095632CD9ADFCC187937F",
-      "raw_git_blob": "aec7a66d968a00502dc8e936be3209891673a51c"
+      "bytes": 1708,
+      "sha256": "6AE2F2A01D17B4DD3D4E0AF4AFD4FD1D5397F087BE6DEE7E36BB40C985E7D66D",
+      "raw_git_blob": "2b2f37ea318de96535c28e14b4659bd0a086df28"
     },
     {
       "path": "verification/sdk-git-guest-provenance-sourceonly-20261018/README.md",
-      "bytes": 3557,
-      "sha256": "756BD81E25BB87F46F94C709C7F4B0514FDFBC3BF79070D10E8532ADCCB83F4E",
-      "raw_git_blob": "b7548bce36ceceaee421e79772edbd98a0eb381d"
+      "bytes": 3542,
+      "sha256": "BE1C0924E6A8617095A147967096801CB0E89F96BB26E961B94C2E091E7D351F",
+      "raw_git_blob": "f57d94f5a388472540c5749591a5130e1ac691f8"
     },
     {
       "path": "verification/sdk-git-guest-provenance-sourceonly-20261018/same-pattern-inspection.json",
-      "bytes": 2100,
-      "sha256": "46CC444F3FA7FE60A6FD86FD9E90A3E60ACE2EAFD49CD0DACA50325E12A65A73",
-      "raw_git_blob": "f41fe6d779f71b2c7d642008cf2ebadd37332ffd"
+      "bytes": 2055,
+      "sha256": "BD7D0D4F04D24744D81D55C27AAD9A921BA343DA7DC2D59D293443EAB3FC07DA",
+      "raw_git_blob": "46f914a5a9475582453f50c39007fe9eaad1ad45"
     }
   ],
   "protected": [
@@ -371,5 +371,7 @@
   "verified_absent_paths": [
     "verification/sdk-git-url-sourceonly-20261017/original.expected.json",
     "verification/sdk-git-url-sourceonly-20261017/native.actual.json"
-  ]
+  ],
+  "historical_source_closed_checkpoint": "eb349d8f1727f293638bba69c00771c3000a5ccb",
+  "successor_change": "Only normalize newly authored original caller/README/inspection/prepared JSON to LF and refresh their raw byte pins. All Git product/control Zig blobs remain exact eb349; historical proofs untouched."
 }
