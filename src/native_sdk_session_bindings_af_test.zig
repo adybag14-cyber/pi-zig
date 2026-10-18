@@ -26,11 +26,11 @@ fn brands(scope: *Scope) !void {
     const api = try expose(scope);
     inline for (.{ "bindExtensions", "extendResourcesFromExtensions" }) |name| {
         const function = try scope.get(api, name);
-        try std.testing.expect(c.JS_IsAsyncFunction(scope.engine.context, function));
+        try std.testing.expect(c.JS_IsAsyncFunction(function));
     }
     inline for (.{ "buildExtensionResourcePaths", "getExtensionSourceLabel" }) |name| {
         const function = try scope.get(api, name);
-        try std.testing.expect(!c.JS_IsAsyncFunction(scope.engine.context, function));
+        try std.testing.expect(!c.JS_IsAsyncFunction(function));
     }
 }
 test "native session bindings borrowed receivers preserve live order actual Awaits and raw rejections" {

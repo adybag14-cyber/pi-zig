@@ -24,7 +24,7 @@ fn run(scope: *Scope, factory: c.JSValue, options: c.JSValue, bindings: c.JSValu
     try scope.status(if (instance < 0) -1 else 0, generation);
     if (instance == 0 or (engine.native_sdk_class != 0 and c.JS_GetOpaque(session, engine.native_sdk_class) != null)) return error.GenuineSessionRequired;
     const function = try scope.get(session, "bindExtensions");
-    if (!c.JS_IsAsyncFunction(engine.context, function)) return error.GenuineSessionBindingAsyncFunctionRequired;
+    if (!c.JS_IsAsyncFunction(function)) return error.GenuineSessionBindingAsyncFunctionRequired;
     _ = try scope.own(try engine.awaitValue(try scope.call(function, session, &.{bindings})));
     return c.JS_DupValue(engine.context, result);
 }

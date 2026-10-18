@@ -49,3 +49,8 @@ The original caller fixture, Source snapshots, old5ab/3b9 controls, license,
 build target and historical manifests remain unchanged. The existing install-only
 target imports the three new tests through the selected root. No Main/default
 activation or actual whole-SDK-owner qualification is performed.
+
+Body also identified a pre-existing mechanical control ABI mismatch: the pinned
+quickjs.h declares JS_IsAsyncFunction(JSValueConst) with one argument. Three
+calls in two control files now use that exact ABI; names/assertions are unchanged.
+Product1091 guestguard code is unchanged by this separate control-only correction.

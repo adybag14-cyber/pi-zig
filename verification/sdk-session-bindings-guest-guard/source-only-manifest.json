@@ -18,8 +18,8 @@
     },
     {
       "path": "src/native_sdk_session_bindings_af_test.zig",
-      "sha256": "ABCFAE4720607C11E32C61C6096334A86C95A269A9208270A83F3BDAAE21CD0C",
-      "bytes": 5253
+      "sha256": "9129CF71AC0094D9346F56623C034FE64FAD6092D56E6CCE48C52B8AFF34CD4D",
+      "bytes": 5209
     },
     {
       "path": "src/native_sdk_session_bindings_guest_guard_test.zig",
@@ -28,13 +28,18 @@
     },
     {
       "path": "verification/sdk-session-bindings-guest-guard/README.md",
-      "sha256": "BEB7AA7B291934C1026B068DCA6A0FCC484D036AB4FEC2F17195098EC50936EC",
-      "bytes": 3245
+      "sha256": "69D1ADE5B26112AC71AD59257B333FA639D8E4105C4486610420772D2E1E7A2F",
+      "bytes": 3574
     },
     {
       "path": "verification/sdk-session-bindings-guest-guard/guest-operation-generation-limitation.json",
       "sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
       "bytes": 1746
+    },
+    {
+      "path": "src/native_sdk_session_bindings_actual_controls.zig",
+      "sha256": "7A11E19CFB24BBF73CD8BABC73ADE2461F7BF890CAEB9F8C0C182FEADACEB00D",
+      "bytes": 2037
     }
   ],
   "protected": [
@@ -79,12 +84,6 @@
       "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
       "bytes": 3430,
       "git_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
-    },
-    {
-      "path": "src/native_sdk_session_bindings_actual_controls.zig",
-      "sha256": "61F38A1CD364A839FD05CEDAE2960396612C7C2F05B6132EDC4B25E074ACD653",
-      "bytes": 2053,
-      "git_blob": "7259b4d33850664b0be4133e2ecfdaaf40374e24"
     },
     {
       "path": "src/native_sdk_session_bindings_retirement_test.zig",
@@ -152,5 +151,6 @@
   "actual_observations": null,
   "Root_Main_written": false,
   "parser_fmt_AST_native_Node_compiler_jobs": 0,
-  "runtime_qualification": false
+  "runtime_qualification": false,
+  "control_ABI_fix": "Pinned JS_IsAsyncFunction takes one JSValue argument; three inherited calls corrected without changing assertions or product1091"
 }
