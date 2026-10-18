@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "upstream_path": "packages/ai/src/utils/sleep.ts",
+  "authority_sha256": "C6D01D46A40B0AA99D3308A5ECEC37417F434BDC839EA8F8853F776E2FB1981C",
+  "runtime_js_sha256": "C09F7F9033A4516BFC3EC5796D587DEA958C1BC0FC5D3FE4B847CA10BDDBED4F",
+  "runtime_map_sha256": "D68542CB8039D69D74BD58345CD93481F1ACB403CCFA70D5DCA57C759473A9FD",
+  "git_physical_map_content_equal": true,
+  "source_pins": [
+    {
+      "path": "src/extensions/native_ai_sleep.zig",
+      "sha256": "8D18AAD0839385E4935147E9533A2985B63B260B283AFE5815CC7AEF42E6AD35"
+    },
+    {
+      "path": "src/extensions/native_ai_oauth_subscription_values.zig",
+      "sha256": "15B409DB2AA8E334FCF5B44F3629E11F027A819A4FF898BBE9960C91C4C8980E"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-sleep-c268-source.mjs",
+      "sha256": "C09F7F9033A4516BFC3EC5796D587DEA958C1BC0FC5D3FE4B847CA10BDDBED4F"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-sleep-observer.mjs",
+      "sha256": "F0A5016AC82CD6787F24A41393D5530012CA73B9A3FE61D59002A302A9219D09"
+    },
+    {
+      "path": "src/native_ai_sleep_test.zig",
+      "sha256": "AFF19761128EFD145D2C31D6D4CC44006203DBB7BE6D67EA5B5615683EE6FAD5"
+    }
+  ],
+  "target": "build-native-ai-sleep",
+  "artifact": "native-ai-sleep",
+  "required_named": [
+    "native AI sleep actual ordinary constructible declaration metadata",
+    "native AI sleep exact Source live Promise timer cancellation receiver and TDZ observations",
+    "native AI sleep same-operation private DATA from throwIfAborted remains an ordinary rejection",
+    "native AI sleep actual B preempts later private DATA A inside the Promise executor",
+    "native AI sleep throwIfAborted temporary retires before the setTimeout getter",
+    "native AI sleep clearTimeout return retires before the actual signal reason getter",
+    "native AI sleep pending closure retains the real signal and releases it after callback disposal"
+  ],
+  "named_count": 7,
+  "declared_only": true,
+  "compiler_started": false,
+  "runtime_started": false,
+  "whole_application_qualified": false,
+  "finite_peer": {
+    "reviewer": "sdk_owners",
+    "observed_production_sha256": "8D18AAD0839385E4935147E9533A2985B63B260B283AFE5815CC7AEF42E6AD35",
+    "source_sha256": "C6D01D46A40B0AA99D3308A5ECEC37417F434BDC839EA8F8853F776E2FB1981C",
+    "conclusion": "No concrete blocker in ordinary live Promise/timeout TDZ/actual lexical captures/per-statement retirement delta. No execution."
+  }
+}
