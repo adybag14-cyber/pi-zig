@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "status": "finite_source_correction_reviewed_no_blocker",
+  "reviewer": "vm_foundation and Root independent C source inspection",
+  "observed_utc": "2026-10-18T17:48:01.276581+00:00",
+  "supersedes_lifetime_assumption_in": "finite-peer.json",
+  "previous_receipt_preserved": true,
+  "linked_vm_sha256": "BCDF923F343846EFDA4305EDA2C7C1D8F44908A27296D5C50A97506E06B2A8BC",
+  "vm_source": "vendor/quickjs/quickjs.c",
+  "vm_sections": {
+    "while_condition_before_body": 31581,
+    "enter_scope_resets_slots": 37692,
+    "leave_scope_closes_only_captured": 37726,
+    "set_loc_uninitialized_retires_value": 20119,
+    "break_uses_leave_scope": 31867
+  },
+  "finding": "Noncaptured Source loop locals survive leave_scope and next while condition. A true next body entry resets them in reverse declaration order; a false condition or break retains them through timeout construction. First-wait and loop remaining are distinct Source slots.",
+  "correction": "Keep prior loop values through condition/timeout, clear remaining then result on true body entry, retain firstRemaining separately. Actual C holder controls check both paths without same-job WeakRef deref pinning.",
+  "source_sha256": "9AA3EAFB659042ACDEB498E469311FE5CEACD7EDF4EF993A4BA6D9762DF7EE2A",
+  "controls_sha256": "51C826FAE183EA0DEA014F9F37511989EA1F0148B9A6B45ED91C7504F10510D2",
+  "declared_controls": 12,
+  "source_only": true,
+  "native_execution": false,
+  "runtime_qualification": false
+}

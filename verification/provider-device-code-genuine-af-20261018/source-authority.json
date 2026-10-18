@@ -33,11 +33,11 @@
     },
     {
       "path": "src/extensions/native_ai_oauth_device_code.zig",
-      "sha256": "E303D8A1047CB75FE4BAC3CDCA61E6703B5B3A59C22307EA97EC246988341C17"
+      "sha256": "9AA3EAFB659042ACDEB498E469311FE5CEACD7EDF4EF993A4BA6D9762DF7EE2A"
     },
     {
       "path": "src/native_ai_oauth_device_code_genuine_af_test.zig",
-      "sha256": "1472BE6D9F81D9BEF729E03EFDBA394404510AA42268CE80305E3F0DE10D4BC2"
+      "sha256": "51C826FAE183EA0DEA014F9F37511989EA1F0148B9A6B45ED91C7504F10510D2"
     }
   ],
   "target": "build-native-ai-oauth-device-code-genuine-af",
@@ -51,14 +51,17 @@
     "native OAuth device code same-operation private DATA getter call and constructor throws remain ordinary",
     "native OAuth device code captured actual B precedes later thrown DATA A",
     "native OAuth device code successful flagged Error constructor DATA rejects through Source throw and reject",
-    "native OAuth device code options and loop result survive their actual Await and retire before next Date",
+    "native OAuth device code loop result survives its Await and condition then retires on body entry",
     "native OAuth device code status comparison holders retire before the next actual getter",
     "native OAuth device code replaced slow interval holder retires before subsequent Date",
-    "native OAuth device code actual status retirement fatal stops the next getter"
+    "native OAuth device code actual status retirement fatal stops the next getter",
+    "native OAuth device code false loop condition retains prior result through timeout construction"
   ],
   "native_execution": false,
   "metadata_query": false,
   "runtime_qualification": false,
   "application_qualification": false,
-  "observation_inputs": "Exact accepted JS caller against native exports; live guest clock/timer/Promise/Date/Math/Error hooks, actual C native holder finalizers and actual job checkpoints. These inputs are not production substitute owners."
+  "observation_inputs": "Exact accepted JS caller against native exports; live guest clock/timer/Promise/Date/Math/Error hooks, actual C native holder finalizers and actual job checkpoints. These inputs are not production substitute owners.",
+  "linked_vm_sha256": "BCDF923F343846EFDA4305EDA2C7C1D8F44908A27296D5C50A97506E06B2A8BC",
+  "lexical_lifetime_correction": "scope-retirement-correction.json"
 }

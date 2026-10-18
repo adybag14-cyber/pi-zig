@@ -137,20 +137,22 @@ fn advance(o: *x.Ops, args: []const c.JSValue, state: *c.JSValue, completion: af
         try o.put(owner, "awaitPoll", boolean(o, false));
         if (o.truthy(try o.own(try expression(o.s.engine, propertyTruth, .{ options, "waitBeforeFirstPoll" })))) {
             const remaining = try o.own(try expression(o.s.engine, remainingValue, .{try o.get(owner, "deadline")}));
-            try o.put(owner, "remaining", remaining);
-            if (o.truthy(try o.binary(6, remaining, integer(o, 0)))) return awaitSleep(o, owner);
-            try o.put(owner, "remaining", c.pi_js_undefined());
+            try o.put(owner, "firstRemaining", remaining);
+            if (o.truthy(try o.binary(6, remaining, integer(o, 0)))) return awaitSleep(o, owner, "firstRemaining");
         }
         return nextPoll(o, owner);
     }
     if (o.truthy(try o.get(state.*, "awaitPoll"))) return afterPoll(o, state.*, input);
-    // Source closes the prior first-poll/loop block before its next Date.now.
-    try o.put(state.*, "result", c.pi_js_undefined());
-    try o.put(state.*, "remaining", c.pi_js_undefined());
+    // BCDF keeps uncaptured lexical slots across leave_scope. A while
+    // condition runs before the next enter_scope resets the prior body slots.
     return nextPoll(o, state.*);
 }
 fn nextPoll(o: *x.Ops, owner: c.JSValue) !af.Action {
     if (!o.truthy(try o.own(try expression(o.s.engine, withinDeadline, .{try o.get(owner, "deadline")})))) return timedOut(o, owner);
+    // Actual enter_scope resets body lexicals in reverse declaration order.
+    // A false condition retains them through the final Error construction.
+    try o.put(owner, "remaining", c.pi_js_undefined());
+    try o.put(owner, "result", c.pi_js_undefined());
     const options = try o.get(owner, "options");
     if (o.truthy(try o.own(try expression(o.s.engine, abortedOption, .{options})))) {
         return .{ .thrown = try expression(o.s.engine, errorText, .{cancel_message}) };
@@ -180,27 +182,23 @@ fn afterPoll(o: *x.Ops, owner: c.JSValue, result: c.JSValue) !af.Action {
     }
     const remaining = try o.own(try expression(o.s.engine, remainingValue, .{try o.get(owner, "deadline")}));
     try o.put(owner, "remaining", remaining);
-    if (o.truthy(try o.binary(5, remaining, integer(o, 0)))) {
-        try o.put(owner, "result", c.pi_js_undefined());
-        try o.put(owner, "remaining", c.pi_js_undefined());
-        return timedOut(o, owner);
-    }
-    return awaitSleep(o, owner);
+    if (o.truthy(try o.binary(5, remaining, integer(o, 0)))) return timedOut(o, owner);
+    return awaitSleep(o, owner, "remaining");
 }
-fn awaitSleep(o: *x.Ops, owner: c.JSValue) !af.Action {
+fn awaitSleep(o: *x.Ops, owner: c.JSValue, remaining_name: [*:0]const u8) !af.Action {
     try o.put(owner, "awaitPoll", boolean(o, false));
-    return .{ .awaited = try expression(o.s.engine, sleepAwaitValue, .{owner}) };
+    return .{ .awaited = try expression(o.s.engine, sleepAwaitValue, .{ owner, remaining_name }) };
 }
-fn sleepAwaitValue(o: *x.Ops, owner: c.JSValue) !c.JSValue {
+fn sleepAwaitValue(o: *x.Ops, owner: c.JSValue, remaining_name: [*:0]const u8) !c.JSValue {
     // Math.min and its receiver retire before options.signal is read.
-    const duration = try o.own(try expression(o.s.engine, minimumDuration, .{owner}));
+    const duration = try o.own(try expression(o.s.engine, minimumDuration, .{ owner, remaining_name }));
     const signal = try o.get(try o.get(owner, "options"), "signal");
     return sleep(o.s.engine, duration, signal, try o.text(cancel_message));
 }
-fn minimumDuration(o: *x.Ops, owner: c.JSValue) !c.JSValue {
+fn minimumDuration(o: *x.Ops, owner: c.JSValue, remaining_name: [*:0]const u8) !c.JSValue {
     const math = try o.global("Math");
     const minimum = try o.get(math, "min");
-    return c.JS_DupValue(o.s.engine.context, try o.call(minimum, math, &.{ try o.get(owner, "interval"), try o.get(owner, "remaining") }));
+    return c.JS_DupValue(o.s.engine.context, try o.call(minimum, math, &.{ try o.get(owner, "interval"), try o.get(owner, remaining_name) }));
 }
 fn timedOut(o: *x.Ops, owner: c.JSValue) !af.Action {
     return .{ .thrown = try expression(o.s.engine, timeoutError, .{try o.get(owner, "slow")}) };
