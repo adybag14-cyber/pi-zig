@@ -199,7 +199,7 @@ fn copy(s: *Scope, from: c.JSValue, to: c.JSValue, prototype_copy: bool, state: 
     for (keys.values[0..keys.count]) |key| try copyProperty(s.engine, from, to, key.atom, prototype_copy, state, symbol);
 }
 fn acquireBody(s: *Scope, comptime collection: Collection) !c.JSValue {
-    const cache_key = cacheKey(collection);
+    const cache_key = comptime cacheKey(collection);
     try s.pending();
     if (s.engine.native_module_values.get(cache_key)) |known| return c.JS_DupValue(s.engine.context, known);
     const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
@@ -223,7 +223,7 @@ fn acquireBody(s: *Scope, comptime collection: Collection) !c.JSValue {
     return c.JS_DupValue(s.engine.context, constructor_value);
 }
 fn acquire(engine: *v.em.Engine, comptime collection: Collection) !c.JSValue {
-    const cache_key = cacheKey(collection);
+    const cache_key = comptime cacheKey(collection);
     var s = Scope.init(engine);
     const result = try s.finish(acquireBody(&s, collection));
     if (engine.native_module_values.get(cache_key)) |known| {
