@@ -3992,6 +3992,18 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-ai-sleep", "Install actual Source sleep producer and timer ownership controls").dependOn(&b.addInstallArtifact(ai_sleep_tests, .{ .dest_sub_path = b.fmt("native-ai-sleep{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual public Session helpers; install-only pending a separate native grant.
+    const sdk_public_session = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_session_helpers_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public session"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_session.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_session.root_module, typescript_parser);
+    linkSqlite(sdk_public_session.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_session.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_session.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_session.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-session-helpers", "Install actual public Session helper and real owner controls without execution").dependOn(&b.addInstallArtifact(sdk_public_session, .{ .dest_sub_path = b.fmt("native-sdk-public-session-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

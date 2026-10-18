@@ -123,13 +123,7 @@ fn uuid(engine: *em.Engine, receiver: c.JSValue, _: []const c.JSValue, roots: []
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     try brand(&scope, roots[0], receiver, false);
-    var bytes: [16]u8 = undefined;
-    try std.Io.randomSecure(engine.native_io orelse return error.NativeCryptoIoRequired, &bytes);
-    bytes[6] = (bytes[6] & 0x0f) | 0x40;
-    bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const hex = std.fmt.bytesToHex(bytes, .lower);
-    var result: [36]u8 = undefined;
-    _ = try std.fmt.bufPrint(&result, "{s}-{s}-{s}-{s}-{s}", .{ hex[0..8], hex[8..12], hex[12..16], hex[16..20], hex[20..32] });
+    const result = try @import("native_secure_uuid.zig").generate(engine.native_io orelse return error.NativeCryptoIoRequired);
     return engine.checked(c.JS_NewStringLen(engine.context, &result, result.len));
 }
 fn dispatch(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
