@@ -4,7 +4,6 @@ const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 pub const Boundary = struct {
     engine: *v.em.Engine,
-    generation: u64,
     previous: ?c.JSValue,
     reason: ?c.JSValue = null,
     fatal: bool = false,
@@ -14,14 +13,24 @@ pub const Boundary = struct {
         const previous=engine.captured_exception;engine.captured_exception=null;
         engine.native_exception_diagnostics_suppressed+=1;
         // Returned INACTIVE by value. No pointer into this temporary escapes.
-        return .{.engine=engine,.generation=engine.native_allocation_generation,.previous=previous};
+        return .{.engine=engine,.previous=previous};
     }
     pub fn start(self:*Boundary)void{
         if(!self.finished and !self.invocation.active)self.engine.enterNativeInvocation(&self.invocation);
     }
     pub fn checkCurrent(self:*Boundary)!void{
+        return self.checkPendingSince(null);
+    }
+    /// A snapshot belongs only to a proven non-guest allocation, never a JS
+    /// getter/call/coercion or entire body. Evaluate operands BEFORE this point.
+    pub fn beforeAllocation(self:*Boundary)!u64{
+        try self.checkCurrent();return self.engine.native_allocation_generation;
+    }
+    pub fn checkPendingSince(self:*Boundary,generation:?u64)!void{
         self.start();_=self.engine.nativeCallbackResult(c.pi_js_undefined());
-        if(c.JS_HasException(self.engine.context))return self.rejectOwned(c.pi_js_undefined());
+        if(c.JS_HasException(self.engine.context)){
+            self.observe(generation);return error.JavaScriptException;
+        }
     }
     fn select(self:*Boundary,value:c.JSValue,fatal:bool)void{
         if(self.reason)|previous|{
@@ -51,7 +60,7 @@ pub const Boundary = struct {
     /// Only an explicit escaping JS completion calls this. A diagnostic may
     /// supply an ordinary thrown value, but its flag/tag is never fatal proof.
     pub fn escaping(self:*Boundary)void{
-        self.observe(self.generation);
+        self.observe(null);
         if(self.reason==null)if(self.engine.captured_exception)|value|{
             self.engine.captured_exception=null;self.reason=value;self.fatal=false;
         };
@@ -61,12 +70,17 @@ pub const Boundary = struct {
         _=self.engine.nativeCallbackResult(c.pi_js_undefined());
         if(c.JS_HasException(self.engine.context))return self.rejectOwned(value);
         if(scope.inline_count<scope.inline_values.len){scope.inline_values[scope.inline_count]=value;scope.inline_count+=1;return value;}
-        scope.values.append(self.engine.gpa,value) catch |err|{var old=value;self.release(&old);return err;};return value;
+        scope.values.append(self.engine.gpa,value) catch |err|{
+            // This allocator failure precedes incoming-root retirement. Publish
+            // its real event before a sole carrier can run a later finalizer.
+            if(err==error.OutOfMemory){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);}
+            var old=value;self.release(&old);return err;
+        };return value;
     }
     pub fn release(self:*Boundary,slot:*c.JSValue)void{
         self.start();const value=slot.*;slot.*=c.pi_js_undefined();
         const diagnostic=self.engine.captured_exception;self.engine.captured_exception=null;
-        self.observe(self.generation);
+        self.observe(null);
         const generation=self.engine.native_allocation_generation;
         self.engine.freeValue(value);
         self.observe(generation);
@@ -89,12 +103,13 @@ pub const Boundary = struct {
     /// Retire native ownership without popping/materializing the completion.
     /// Args owner rollback uses this SAME stable frame before finishRetired.
     pub fn retire(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)void{
-        self.start();self.observe(self.generation);
+        self.start();self.observe(null);
         if(host_error==error.JavaScriptException and self.reason==null)self.escaping();
+        // A trusted direct host allocation failure precedes root retirement.
+        if(host_error==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);}
         const count=scope.inline_count;scope.inline_count=0;for(scope.inline_values[0..count])|*value|self.release(value);
         const dynamic=scope.values.items;scope.values.items=dynamic[0..0];for(dynamic)|*value|self.release(value);
         const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);
-        if(host_error==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);}
         if(host_error!=null or self.reason!=null)self.failureRoots(values)
         else if(self.engine.captured_exception==null){self.engine.captured_exception=self.previous;self.previous=null;}
         else if(self.previous)|value|{self.previous=null;var old=value;self.release(&old);};
