@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "status": "finite_raw_byte_and_install_hunk_source_review_closed",
+  "reviewer": "models_class_resume",
+  "intake_sha256": "B7E114DBF8C49BA9403F94ACBF2772DDAB78E0A6578789826A11EDEF11AA46CF",
+  "patch_sha256": "D5EC8B2E7ADBDEA6C33BFC8178E9636FBF2FFD3A776CAA79E71280C975CB2C17",
+  "Root_base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "donor": "ac784fd02cb277e4e9f40c3727714e770f8c65c1",
+  "proposed_tree": "3e5b44b850f6a68f162ac544958852317981506e",
+  "selected_paths": 18,
+  "new_exact_donor_blobs": 17,
+  "raw_blob_drift": 0,
+  "unselected_Root_blobs_preserved": 12165,
+  "unselected_differences": 0,
+  "build_scope": "Only9added install-only lines, with actual TypeScript parser/catalog/platform links and no run/default edge. Current Root Exec additions preserved.",
+  "protected": "Root C/H/Engine/function/class/C435/B9FE untouched; oldC237 proposal preserved.",
+  "limits": [
+    "Source read/Git object comparison only; no privateindex or Main mutation.",
+    "No parser/fmt/AST/compiler/Node/native execution or actual metadata/pass.",
+    "Existing consumed-library finite peer C878 remains separate; no shared factory/atomic VM or default activation qualification."
+  ],
+  "execution_authorized": false,
+  "Main_written": false
+}

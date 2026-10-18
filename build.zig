@@ -3514,6 +3514,15 @@ pub fn build(b: *std.Build) void {
         sdk_git_compile_only.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-git-url-compile-only", "Compile actual SDK Git supplier and real controls; never run/query sentinel").dependOn(&b.addInstallArtifact(sdk_git_compile_only, .{}).step);
+    // Private consumed ignore supplier: install-only; runtime needs a separate Root grant.
+    const sdk_ignore708_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_ignore708_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"private consumed ignore708"}, .use_llvm = use_llvm });
+    linkQuickJs(b, sdk_ignore708_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_ignore708_tests.root_module, typescript_parser);
+    linkSqlite(sdk_ignore708_tests.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_ignore708_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_ignore708_tests.root_module.linkSystemLibrary("advapi32", .{}); sdk_ignore708_tests.root_module.linkSystemLibrary("userenv", .{}); }
+    const sdk_ignore708_install = b.addInstallArtifact(sdk_ignore708_tests, .{ .dest_sub_path = b.fmt("native-sdk-ignore708{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) });
+    b.step("build-native-sdk-ignore708", "Install genuine private ignore708 controls without execution").dependOn(&sdk_ignore708_install.step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

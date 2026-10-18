@@ -1,0 +1,62 @@
+{
+  "scope": "private consumed default/add/ignores only",
+  "source_only": true,
+  "integration_base": "c5c23ab6595cb265d9985340930d7b6e934f54d9",
+  "name": "ignore",
+  "version": "7.0.8",
+  "license": "MIT kael",
+  "byte_reference_acceptance_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+  "original_complete_manifest_path": "C:\\Users\\adyba\\pi-zig\\evidence\\runtime-reproduction-preparation-20261016-184519-d57a890f\\inputs\\runtime31064.json",
+  "original_complete_manifest_sha256": "38223DB79BE24C7F9F5833A662D3C73FF2531F78489699DBF87F9F52A9B4BFBA",
+  "primary_sources": [
+    {
+      "relative": "node_modules/ignore/package.json",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\package.json",
+      "sha256": "809E28F354ACA6AC273E9D455EE2EBD8F2C0E8676D0B62417A5B11DDDA4BA8CD",
+      "bytes": 3279,
+      "original_manifest_exact": true
+    },
+    {
+      "relative": "node_modules/ignore/index.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\index.js",
+      "sha256": "643735013BDCF86DFECA4D38FB74D9A4FAFA7A640AD2D251077862F18B2556FE",
+      "bytes": 42967,
+      "original_manifest_exact": true
+    },
+    {
+      "relative": "node_modules/ignore/legacy.js",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\legacy.js",
+      "sha256": "BAB293F55B63F4890FA0F720EADCB83F8F85CDA591481D0805567C755007A82F",
+      "bytes": 48239,
+      "original_manifest_exact": true
+    },
+    {
+      "relative": "node_modules/ignore/index.d.ts",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\index.d.ts",
+      "sha256": "8B61608C154F87E13C88B21B5208A3ACB906DDCEE5E3001F3B27EF13703B61E8",
+      "bytes": 1958,
+      "original_manifest_exact": true
+    },
+    {
+      "relative": "node_modules/ignore/LICENSE-MIT",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\LICENSE-MIT",
+      "sha256": "9C94DB23DC4B1E9AAEE5D195668B916AFC71EFED54AF226B66CF0CCC4389C1C0",
+      "bytes": 1095,
+      "original_manifest_exact": true
+    },
+    {
+      "relative": "node_modules/ignore/README.md",
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\node_modules\\ignore\\README.md",
+      "sha256": "9D7632EFCC2CD133E5E48572900C53E5859C583BE1947CCA76B60027D958D8EC",
+      "bytes": 15541,
+      "original_manifest_exact": true
+    }
+  ],
+  "consumer": {
+    "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi\\packages\\coding-agent\\src\\core\\package-manager.ts",
+    "sha256": "61BB2F0B434B0F5C48AB6BFACD9DFF1D99084320EECF695755CD32BD88099310"
+  },
+  "declared_runtime_import_dependencies": [],
+  "expected_outputs_authored": false,
+  "Node_or_native_execution": false
+}
