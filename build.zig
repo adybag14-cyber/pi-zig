@@ -3672,6 +3672,23 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-fs-primitives", "Install ten declared actual filesystem binding primitive controls without running").dependOn(&b.addInstallArtifact(node_fs_primitives, .{ .dest_sub_path = b.fmt("native-node-fs-primitives{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual captured Node inspector entry and provenance controls, installed
+    // without running the artifact or its separately sealed Source observer.
+    const node_inspect_entry = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_inspect_entry_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual inspect"},
+    });
+    linkQuickJs(b, node_inspect_entry.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_inspect_entry.root_module, typescript_parser);
+    linkSqlite(node_inspect_entry.root_module, sqlite_lib_dir, sqlite_library);
+    node_inspect_entry.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_inspect_entry.root_module.linkSystemLibrary("advapi32", .{});
+        node_inspect_entry.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-inspect-entry", "Install thirteen declared actual inspector entry controls without running").dependOn(&b.addInstallArtifact(node_inspect_entry, .{ .dest_sub_path = b.fmt("native-node-inspect-entry{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
