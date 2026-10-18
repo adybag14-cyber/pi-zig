@@ -274,7 +274,8 @@ fn dateTime(engine: *Engine, timestamp: c.JSValue) !c.JSValue {
 }
 fn dateTimeBody(s: *Scope, timestamp: c.JSValue) !c.JSValue {
     const date = try v.own(s, try h.construct(s.engine, "Date", &.{timestamp}));
-    return v.duplicate(s, try v.invoke(s, date, "getTime", &.{}));
+    const method = try v.get(s, date, "getTime");
+    return v.duplicate(s, try v.call(s, method, date, &.{}));
 }
 fn customArray(s: *Scope, entry: c.JSValue) !c.JSValue {
     const result = try v.array(s);
@@ -290,7 +291,7 @@ fn customFromEntry(s: *Scope, entry: c.JSValue) !c.JSValue {
     const timestamp = try v.get(s, entry, "timestamp");
     return h.expression(s.engine, customMessage, .{ custom_type, content, display, details, timestamp });
 }
-fn customMessage(s: *Scope, custom_type: c.JSValue, content: c.JSValue, display: c.JSValue, details: c.JSValue, timestamp: c.JSValue) !c.JSValue {
+pub fn customMessage(s: *Scope, custom_type: c.JSValue, content: c.JSValue, display: c.JSValue, details: c.JSValue, timestamp: c.JSValue) !c.JSValue {
     const result = try v.object(s);
     try v.put(s, result, "role", try v.text(s, "custom")); try v.put(s, result, "customType", custom_type);
     try v.put(s, result, "content", content); try v.put(s, result, "display", display); try v.put(s, result, "details", details);
@@ -307,7 +308,7 @@ fn branchFromEntry(s: *Scope, entry: c.JSValue) !c.JSValue {
     const timestamp = try v.get(s, entry, "timestamp");
     return h.expression(s.engine, branchMessage, .{ summary, from_id, timestamp });
 }
-fn branchMessage(s: *Scope, summary: c.JSValue, from_id: c.JSValue, timestamp: c.JSValue) !c.JSValue {
+pub fn branchMessage(s: *Scope, summary: c.JSValue, from_id: c.JSValue, timestamp: c.JSValue) !c.JSValue {
     const result = try v.object(s); try v.put(s, result, "role", try v.text(s, "branchSummary"));
     try v.put(s, result, "summary", summary); try v.put(s, result, "fromId", from_id);
     try v.put(s, result, "timestamp", try v.own(s, try dateTime(s.engine, timestamp)));
@@ -318,7 +319,7 @@ fn compactionMessage(s: *Scope, entry: c.JSValue) !c.JSValue {
     const timestamp = try v.get(s, entry, "timestamp");
     return h.expression(s.engine, compactionRecord, .{ summary, tokens_before, timestamp });
 }
-fn compactionRecord(s: *Scope, summary: c.JSValue, tokens_before: c.JSValue, timestamp: c.JSValue) !c.JSValue {
+pub fn compactionRecord(s: *Scope, summary: c.JSValue, tokens_before: c.JSValue, timestamp: c.JSValue) !c.JSValue {
     const result = try v.object(s); try v.put(s, result, "role", try v.text(s, "compactionSummary"));
     try v.put(s, result, "summary", summary); try v.put(s, result, "tokensBefore", tokens_before);
     try v.put(s, result, "timestamp", try v.own(s, try dateTime(s.engine, timestamp)));

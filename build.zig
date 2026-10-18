@@ -4260,6 +4260,19 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-argument-errors", "Install twenty-one declared actual Node argument owner controls without running").dependOn(&b.addInstallArtifact(node_argument_errors, .{ .dest_sub_path = b.fmt("native-node-argument-errors{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual branch collection and preparation controls; install-only target.
+    const sdk_public_branch_entries = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_branch_entries_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public branch entries"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_branch_entries.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_branch_entries.root_module, typescript_parser);
+    linkSqlite(sdk_public_branch_entries.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_branch_entries.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_branch_entries.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_branch_entries.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-branch-entries", "Install actual branch collection budget preparation and ownership controls without execution").dependOn(&b.addInstallArtifact(sdk_public_branch_entries, .{ .dest_sub_path = b.fmt("native-sdk-public-branch-entries{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

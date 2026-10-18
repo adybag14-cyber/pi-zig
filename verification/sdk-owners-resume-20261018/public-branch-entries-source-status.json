@@ -1,0 +1,171 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-branch-entries",
+  "executable": "native-sdk-public-branch-entries.exe",
+  "root": "src/native_sdk_public_branch_entries_test.zig",
+  "filters": [
+    "SDK public branch entries"
+  ],
+  "authored_declared_test_names": [
+    "SDK public branch entries actual ordinary exports and completed cache",
+    "SDK public branch entries actual ancestor collection chronological identities and empty guards",
+    "SDK public branch entries actual Set getBranch and map expression retirement",
+    "SDK public branch entries actual has callee indexed receiver and repeated matching id",
+    "SDK public branch entries actual while entry survives final condition and reverse",
+    "SDK public branch entries actual message records estimates and cumulative file tracking",
+    "SDK public branch entries actual budget and important summary exception",
+    "SDK public branch entries actual first-pass head survives next done and second pass",
+    "SDK public branch entries actual details and nested path heads survive later source operations",
+    "SDK public branch entries actual reverse body slots reset before next index",
+    "SDK public branch entries actual record argument getters and Date method receiver",
+    "SDK public branch entries actual message role receiver retires before repeated getter",
+    "SDK public branch entries actual budget threshold insertion and total coercion order",
+    "SDK public branch entries actual nested IteratorClose preserves body throw",
+    "SDK public branch entries actual private DATA remains ordinary through nested close",
+    "SDK public branch entries actual current B preempts both closes and guest catch",
+    "SDK public branch entries actual token retirement B preempts following index and catch",
+    "SDK public branch entries actual token retirement cancellation preempts following index and catch"
+  ],
+  "production_exports": [
+    "collectEntriesForBranchSummary",
+    "prepareBranchEntries"
+  ],
+  "production_files": [
+    {
+      "path": "src/extensions/native_sdk_public_branch_entries.zig",
+      "sha256": "C12BD3BA11520AF04525E7BAA11E56C93C9B060A7F9A328708020DC013AD52E4",
+      "bytes": 15090
+    },
+    {
+      "path": "src/extensions/native_sdk_session_projection_live.zig",
+      "sha256": "846C8191F02AFC9C10B8043E16C157A81F9FAB494BCF9E0176F7FD6E75B11ECB",
+      "bytes": 26941
+    },
+    {
+      "path": "src/extensions/native_sdk_branch_summary.zig",
+      "sha256": "AF8A55C6F03B202509826B9FA16B9F78C4E3A84776162A260881A9440D38D1E1",
+      "bytes": 12971
+    }
+  ],
+  "control_files": [
+    {
+      "path": "src/native_sdk_public_branch_entries_test.zig",
+      "sha256": "5300F7D488F339D871382155C83F46E9598AAD19BE6A066DD6D940FAEAECAE18",
+      "bytes": 7569
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-branch-entries-c268-source.mjs",
+      "sha256": "22A65898DB4E2F1DBF6A10D32A13C60BFC4AC2A8BCF59D6C5E7AEF96C4B01E27",
+      "bytes": 9505
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-branch-entries-observer.mjs",
+      "sha256": "3E599228A5689D9D2C64DCB3CA5BCAEA0118F1186FBB98C0ACE8684484F3D69F",
+      "bytes": 20188
+    }
+  ],
+  "source_authority": "c268154c",
+  "source_authority_copies": [
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/branch-summarization.ts.txt",
+      "sha256": "CDFFDCB3CA37F5121383D0F5BA98295EB07CE0E2085C8D57D8CB2FB5DC5E9243",
+      "bytes": 12601
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/compaction.ts.txt",
+      "sha256": "F5BBC427E337BE708BD15297806C0ACAF7CB0EE65CC4AF77E6E48C3E3937894F",
+      "bytes": 35245
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/utils.ts.txt",
+      "sha256": "37EAB7698CDBFF8B5987D4529005EA16D7E1AE4A5344D7D0443C3466444AA90E",
+      "bytes": 5951
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/messages.c268.ts.txt",
+      "sha256": "5397E3C96C9504266E4EE8B6E88D5098B3280EE7DBB0C687B74708C62A06C8D4",
+      "bytes": 5206
+    }
+  ],
+  "source_fixture_kind": "Selected branch collection/preparation and exact real file-operation, estimator and record helper Source bodies, with only TypeScript annotations erased, retained in one strict ordinary factory.",
+  "source_fixture_erasures": [
+    {
+      "source": "export function collectEntriesForBranchSummary(\n\tsession: ReadonlySessionManager,\n\toldLeafId: string | null,\n\ttargetId: string,\n): CollectEntriesResult {",
+      "replacement": "function collectEntriesForBranchSummary(session, oldLeafId, targetId) {"
+    },
+    {
+      "source": "let commonAncestorId: string | null = null;",
+      "replacement": "let commonAncestorId = null;"
+    },
+    {
+      "source": "const entries: SessionEntry[] = [];",
+      "replacement": "const entries = [];"
+    },
+    {
+      "source": "let current: string | null = oldLeafId;",
+      "replacement": "let current = oldLeafId;"
+    },
+    {
+      "source": "function getMessageFromEntry(entry: SessionEntry): AgentMessage | undefined {",
+      "replacement": "function getMessageFromEntry(entry) {"
+    },
+    {
+      "source": "export function prepareBranchEntries(entries: SessionEntry[], tokenBudget: number = 0): BranchPreparation {",
+      "replacement": "function prepareBranchEntries(entries, tokenBudget = 0) {"
+    },
+    {
+      "source": "const messages: AgentMessage[] = [];",
+      "replacement": "const messages = [];"
+    },
+    {
+      "source": "const details = entry.details as BranchSummaryDetails;",
+      "replacement": "const details = entry.details;"
+    },
+    {
+      "source": "export function createBranchSummaryMessage(summary: string, fromId: string, timestamp: string): BranchSummaryMessage {",
+      "replacement": "function createBranchSummaryMessage(summary, fromId, timestamp) {"
+    },
+    {
+      "source": "export function createCompactionSummaryMessage(\n\tsummary: string,\n\ttokensBefore: number,\n\ttimestamp: string,\n): CompactionSummaryMessage {",
+      "replacement": "function createCompactionSummaryMessage(summary, tokensBefore, timestamp) {"
+    },
+    {
+      "source": "export function createCustomMessage(\n\tcustomType: string,\n\tcontent: string | (TextContent | ImageContent)[],\n\tdisplay: boolean,\n\tdetails: unknown | undefined,\n\ttimestamp: string,\n): CustomMessage {",
+      "replacement": "function createCustomMessage(customType, content, display, details, timestamp) {"
+    }
+  ],
+  "imported_control_roots": [
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41",
+      "declared_test_names": []
+    }
+  ],
+  "integration": {
+    "file_ops_commit": "d0aa1d840458e6563b1cda526c8448e2ade369de",
+    "actual_array_append_commit": "7233B0A30DA5866326163BBBF7F39CB745C24A9B",
+    "shared_public_values_commit": "425f8aaa",
+    "shared_public_values_sha256": "31178ADB24033B123C8DE22CFD7EE3981F8B993E8C2F4CA6563510A5E66FA1AD",
+    "guest_sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+    "owned_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "build_delta": "Append only the thirteen-line install-only target; preserve all newer Main build blocks.",
+    "record_owner": "Expose three existing real projection record bodies; complete temporary Date receiver and getTime callee in their actual source order. Other projection behavior is preserved.",
+    "old_branch_owner": "Only existing collect and prepare entry points delegate to these actual bodies. Its old asynchronous summary body remains pending the following unit.",
+    "cache_publication": "Finish the function record and expression owners, prefer any reentrant completed owner, then reserve and transfer its sole cache root."
+  },
+  "source_peer": {
+    "production": "VM finite source peer closed C12BD3BA plus projection846C8191 against CDFFDCB3: live getter/callee and repeated id order, proper loop scope slots, budget coercions, helper reuse and the Date receiver/callee correction; no concrete blocker.",
+    "controls": "VM finite source peer closed all eighteen declarations on 5300F7D4 / full observer 3E599228 / exact strict fixture 22A65898. No concrete blocker in real Set/getBranch/map retirement, repeated id/message getters, while and nested for-of heads, reverse slots, Date dependencies, budget coercion, two-level IteratorClose, or causal DATA/current-B/fatal/cancellation controls. Fresh Source/native Engines and actual algorithms; no execution or runtime qualification."
+  },
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "remaining_public_compaction": [
+    "compact",
+    "generateBranchSummary",
+    "generateSummary",
+    "generateSummaryWithUsage"
+  ],
+  "whole_public_namespace_qualification": false
+}

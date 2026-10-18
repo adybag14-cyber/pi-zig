@@ -68,55 +68,7 @@ fn predicateBody(engine: *em.Engine, kind: Callback, value: c.JSValue) !c.JSValu
     return c.pi_js_bool(engine.context, @intFromBool(try is(&scope, try scope.get(value, "type"), "toolCall")));
 }
 pub fn collect(engine: *em.Engine, session: c.JSValue, old_leaf: c.JSValue, target: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const result = try scope.object();
-    if (!scope.truthy(old_leaf)) {
-        try scope.put(result, "entries", try scope.array());
-        try scope.put(result, "commonAncestorId", c.pi_js_null());
-        return c.JS_DupValue(engine.context, result);
-    }
-    const set_class = try scope.global("Set");
-    const branch = try scope.invoke(session, "getBranch", &.{old_leaf});
-    const map = try scope.get(branch, "map");
-    const mapper = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, predicate, "", 1, @intFromEnum(Callback.id))));
-    var input = [_]c.JSValue{try scope.call(map, branch, &.{mapper})};
-    const old_path = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, set_class, input.len, &input)));
-    const target_path = try scope.invoke(session, "getBranch", &.{target});
-    var ancestor = c.pi_js_null();
-    var index = try binary(&scope, .subtract, try scope.get(target_path, "length"), c.JS_NewInt32(engine.context, 1));
-    var steps: usize = 0;
-    while (try math.compare(engine, .greater_equal, index, c.JS_NewInt32(engine.context, 0))) {
-        steps +|= 1;
-        try budget(engine, steps);
-        var frame: Scope = .{ .engine = engine };
-        defer frame.deinit();
-        const has = try frame.get(old_path, "has");
-        if (frame.truthy(try frame.call(has, old_path, &.{try frame.get(try at(&frame, target_path, index), "id")}))) {
-            ancestor = try scope.own(c.JS_DupValue(engine.context, try frame.get(try at(&frame, target_path, index), "id")));
-            break;
-        }
-        index = try binary(&scope, .subtract, index, c.JS_NewInt32(engine.context, 1));
-    }
-    const entries = try scope.array();
-    var current = c.JS_DupValue(engine.context, old_leaf);
-    defer engine.freeValue(current);
-    while (scope.truthy(current) and !scope.equal(current, ancestor)) {
-        steps +|= 1;
-        try budget(engine, steps);
-        var frame: Scope = .{ .engine = engine };
-        defer frame.deinit();
-        const entry = try frame.invoke(session, "getEntry", &.{current});
-        if (!frame.truthy(entry)) break;
-        _ = try frame.invoke(entries, "push", &.{entry});
-        const next = c.JS_DupValue(engine.context, try frame.get(entry, "parentId"));
-        engine.freeValue(current);
-        current = next;
-    }
-    _ = try scope.invoke(entries, "reverse", &.{});
-    try scope.put(result, "entries", entries);
-    try scope.put(result, "commonAncestorId", ancestor);
-    return c.JS_DupValue(engine.context, result);
+    return @import("native_sdk_public_branch_entries.zig").collect(engine, session, old_leaf, target);
 }
 fn messageFromEntry(scope: *Scope, entry: c.JSValue) !c.JSValue {
     const kind = try scope.get(entry, "type");
@@ -156,67 +108,7 @@ fn isArray(scope: *Scope, object: c.JSValue, name: [*:0]const u8) !bool {
     return scope.truthy(try scope.call(method, array, &.{try scope.get(object, name)}));
 }
 pub fn prepare(engine: *em.Engine, entries: c.JSValue, supplied_budget: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const token_budget = if (c.JS_IsUndefined(supplied_budget)) c.JS_NewInt32(engine.context, 0) else supplied_budget;
-    const messages = try scope.array();
-    const operations = try scope.own(try files.create(engine));
-    var total = c.JS_NewInt32(engine.context, 0);
-    var rows = try iterator(&scope, entries);
-    defer rows.deinit();
-    errdefer rows.closePreserving();
-    while (try rows.next()) |entry| {
-        defer engine.freeValue(entry);
-        var frame: Scope = .{ .engine = engine };
-        defer frame.deinit();
-        if (try is(&frame, try frame.get(entry, "type"), "branch_summary") and !frame.truthy(try frame.get(entry, "fromHook")) and frame.truthy(try frame.get(entry, "details"))) {
-            const details = try frame.get(entry, "details");
-            inline for (.{ "readFiles", "modifiedFiles" }, .{ "read", "edited" }) |name, set_name| {
-                if (try isArray(&frame, details, name)) {
-                    var paths = try iterator(&frame, try frame.get(details, name));
-                    defer paths.deinit();
-                    errdefer paths.closePreserving();
-                    while (try paths.next()) |path| {
-                        defer engine.freeValue(path);
-                        var item: Scope = .{ .engine = engine };
-                        defer item.deinit();
-                        _ = try item.invoke(try item.get(operations, set_name), "add", &.{path});
-                    }
-                }
-            }
-        }
-    }
-    var index = try binary(&scope, .subtract, try scope.get(entries, "length"), c.JS_NewInt32(engine.context, 1));
-    var steps: usize = 0;
-    while (try math.compare(engine, .greater_equal, index, c.JS_NewInt32(engine.context, 0))) {
-        steps +|= 1;
-        try budget(engine, steps);
-        var frame: Scope = .{ .engine = engine };
-        defer frame.deinit();
-        const entry = try at(&frame, entries, index);
-        const message = try messageFromEntry(&frame, entry);
-        if (frame.truthy(message)) {
-            try files.extract(engine, message, operations);
-            const tokens = try frame.own(try @import("native_sdk_compaction_estimate.zig").estimateTokens(engine, message));
-            if (try math.compare(engine, .greater, token_budget, c.JS_NewInt32(engine.context, 0)) and try math.compare(engine, .greater, try frame.concat(total, tokens), token_budget)) {
-                if (try is(&frame, try frame.get(entry, "type"), "compaction") or try is(&frame, try frame.get(entry, "type"), "branch_summary")) {
-                    if (try math.compare(engine, .less, total, try binary(&frame, .multiply, token_budget, c.JS_NewFloat64(engine.context, 0.9)))) {
-                        _ = try frame.invoke(messages, "unshift", &.{message});
-                        total = try scope.concat(total, tokens);
-                    }
-                }
-                break;
-            }
-            _ = try frame.invoke(messages, "unshift", &.{message});
-            total = try scope.concat(total, tokens);
-        }
-        index = try binary(&scope, .subtract, index, c.JS_NewInt32(engine.context, 1));
-    }
-    const result = try scope.object();
-    try scope.put(result, "messages", messages);
-    try scope.put(result, "fileOps", operations);
-    try scope.put(result, "totalTokens", total);
-    return c.JS_DupValue(engine.context, result);
+    return @import("native_sdk_public_branch_entries.zig").prepare(engine, entries, supplied_budget);
 }
 fn generateCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
