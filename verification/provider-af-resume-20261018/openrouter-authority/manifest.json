@@ -1,0 +1,26 @@
+{
+  "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "accepted_runtime": "19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "git_equals_map_sources_content": true,
+  "source_only": true,
+  "runtime_qualification": false,
+  "public_login_qualification": false,
+  "authorities": [
+    {
+      "path": "openrouter.c268.ts.txt",
+      "bytes": 5807,
+      "sha256": "3D90D1955672B64E3039E760C41B4FF1C43F5B3FC6FCBE7F80FA6F552997893A"
+    },
+    {
+      "path": "openrouter.accepted.js.txt",
+      "bytes": 6152,
+      "sha256": "B69E807ED855095AA17B2C0D1A15F350C77E3A49F2A66853F227916DAACB4703"
+    },
+    {
+      "path": "openrouter.accepted.js.map.json",
+      "bytes": 11311,
+      "sha256": "EEC62AC5370B8CDA7478463D8301CDE27A2AA6CBBA3C56525247E8A9A25E0EA7"
+    }
+  ],
+  "fixture_transform": "Blank the three imports and append the private exchange/parser/errorDetail export projection. Every actual function body and public zero-Await method is retained byte-for-byte. These private controls do not invoke login or manufacture any callback/HTTP success."
+}

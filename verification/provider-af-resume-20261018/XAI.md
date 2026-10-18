@@ -56,8 +56,12 @@ Root controls55880AD8, supportF1EA123E, observerBEE9F078 and Source73ED40E2
 have completed the split finite control reviews. No build, metadata, runtime or
 whole-application acceptance is claimed by those reviews.
 
-The same concrete predicate and request-child lifetime counterexamples were
-corrected in the existing Kimi and Meta owners. Each retains all prior controls
-and adds two causal controls (Kimi12 declarations; Meta15). Their prior compile
-observations remain tied to their original source and do not transfer to these
-successors. The full combined source must be built, queried and separately run.
+The request-child lifetime counterexample was also corrected in Kimi and Meta.
+Both finite predicates now return immediate booleans from a completed helper
+scope. All prior controls are retained, with two added controls per provider
+(Kimi12 declarations; Meta15). The request-root controls distinguish both old
+implementations, and the Kimi finite control distinguishes its old helper. The
+Meta finite control records contract coverage: its previous nested positiveProperty
+scope already retired that value before the next property evaluation. Prior
+compile observations remain tied to their original source and do not transfer
+to these successors. The combined source must be built, queried and separately run.
