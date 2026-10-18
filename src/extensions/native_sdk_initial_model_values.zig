@@ -8,17 +8,15 @@ pub const Scope = @import("native_models_stream_scope.zig").Scope;
 pub const Ops = struct {
     s: *Scope,
     pub fn own(o: *Ops, value: c.JSValue) !c.JSValue { return owned.ownRoot(o.s, value); }
-    pub fn accept(o: *Ops, value: c.JSValue, generation: u64) !c.JSValue {
+    pub fn accept(o: *Ops, value: c.JSValue, _: u64) !c.JSValue {
         const e = o.s.engine;
         _ = e.nativeCallbackResult(c.pi_js_undefined());
         if (c.JS_HasException(e.context)) {
-            // Only an ACTUAL pending event produced across this operation may
-            // use its allocation generation. Never inspect a borrowed value.
-            const reason = c.JS_GetException(e.context);
-            const tag = c.pi_js_native_allocation_error_generation(reason);
-            const distance = tag -% generation;
-            if (tag != 0 and distance != 0 and distance <= e.native_allocation_generation -% generation) c.JS_SetUncatchableError(e.context, reason);
-            _ = c.JS_Throw(e.context, reason);
+            // Guest code can create successful fresh private DATA A and throw
+            // A inside this SAME operation. Neither an operation generation
+            // span nor a captured payload flag proves native failure origin.
+            // Independently retained NativeInvocation/current producer events
+            // have already been surfaced by nativeCallbackResult above.
             var completion = owned.Completion.initValue(e, @as(anyerror!c.JSValue, error.JavaScriptException));
             if (!c.JS_IsException(value)) completion.release(value);
             return o.own(try completion.finishValue());

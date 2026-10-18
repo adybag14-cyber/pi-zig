@@ -25,7 +25,10 @@
     "prepareActualRetirementCaller",
     "startPreparedRetirementCaller",
     "verifyActualRetirementFatal",
-    "verifyActualCancellationNoGuestClose"
+    "verifyActualCancellationNoGuestClose",
+    "startSameOperationPrivateDataThrowCaller",
+    "startSameOperationActualNativeFatalCaller",
+    "verifyRecordedActualNativeFatal"
   ],
   "owned": [
     {
@@ -40,8 +43,8 @@
     },
     {
       "path": "src/extensions/native_sdk_initial_model_values.zig",
-      "length": 7743,
-      "sha256": "0BC57C2E9C2081F25C9DC05EAEDF7A8642C183B0382FB6C80CEFFDC4F550E890"
+      "length": 7585,
+      "sha256": "C9A8D5CC174682BEF1C9E17A1FFB7E725EE3A3B5C2CFFCAFDFFB31E67AACBF05"
     },
     {
       "path": "src/native_sdk_initial_model_controls.zig",
@@ -60,8 +63,8 @@
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/README.md",
-      "length": 6632,
-      "sha256": "BB62D9BE577B0383B45E288E21F6D3A1E334234669FD38C595A3DB8DFF2EEB82"
+      "length": 8306,
+      "sha256": "A19E3FC3EEEA9AFB7B6A023B930116A6D7D2BD09C21B35CBE8C6CAFE051116B1"
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/install-only-build-snippet.zig.txt",
@@ -90,13 +93,18 @@
     },
     {
       "path": "src/native_sdk_initial_model_retirement_controls.zig",
-      "length": 9067,
-      "sha256": "F23DC2D90F4C9BB0E4AD0C7D4F3DE086898BFA65F46193F147E4ECEBCBBAF0AF"
+      "length": 13476,
+      "sha256": "11427C7CA5E95EEACCB89A5F981A94292F2A742EE5AF2D307B26B6C00264752D"
     },
     {
       "path": "src/extensions/fixtures/sdk-initial-model-retirement-caller.mjs",
       "length": 3208,
       "sha256": "41F9EEA4C1C9E3A8DAA1DAD478F237F195A43250C603956FE900B4482AB61B05"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-provenance-caller.mjs",
+      "length": 1451,
+      "sha256": "098E4CC4E589B5B8DB69D15D55CAA5FAD121055057A2EB181371533F12012254"
     }
   ],
   "protected": [
@@ -190,5 +198,15 @@
       "iterator and expression temporaries retained across later Source getters",
       "ordinary manual cancellation branch allowed guest close"
     ]
+  },
+  "guest_provenance_correction": {
+    "negative_predecessor": "042ab9deba7502860adc67bd7adacdaacdbc1ec8",
+    "negative_manifest_sha256": "707A84F4B122F710BEB8A664A3B23EE6F8DA3C429DD25CE1859798232959A73D",
+    "guest_generation_span_classification": "removed_entirely",
+    "authority": "independent actual NativeInvocation/nativeCallbackResult current producer plus raw status",
+    "trusted_native_allocation_and_free": "separate unchanged contracts",
+    "root_limitation_path": "evidence/root-auth-readonly-e496-merged-intake-prepared-20261018/guest-operation-generation-source-limitation-addendum.json",
+    "root_limitation_sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+    "actual_controls": "SAME getter fresh unmarked private DATA maker A then guest throw SAME A, versus genuine fresh native fatal B identity"
   }
 }

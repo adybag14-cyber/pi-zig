@@ -46,6 +46,30 @@ used to manufacture an event. Engine, shared Scope, native AF ABI and C are
 unchanged. Existing import-namespace assembly/ordinary helper dependencies are
 not newly qualified by this source edit.
 
+Frozen successor 042ab9deba7502860adc67bd7adacdaacdbc1ec8 is also preserved as
+a source-review negative (manifest
+707A84F4B122F710BEB8A664A3B23EE6F8DA3C429DD25CE1859798232959A73D). Root/Body's
+BE5514 guest-operation counterexample establishes that even a generation span
+over one guest getter/call/coercion does not establish native failure origin:
+guest code may call a successful native private DATA maker and then ordinary
+throw that same freshly created A inside the same operation. The current local
+Ops.accept performs **no generation/tag-span classification**. It surfaces only
+independent current NativeInvocation/nativeCallbackResult producer authority
+before exact raw status normalization. Explicit direct native allocators and
+canonical C435 typed append/per-free retirement retain their separate contracts.
+No Engine, C, shared guard, or global bit-clearing policy is changed.
+
+The provenance fixture runs that precise SAME-getter causal case with a real
+successful throwNativeOutOfMemory/GetException DATA maker (fresh private A,
+unmarked, no B1 event) and checks ordinary outer rejection with exact A identity
+and zero coercion. Its contrast invokes real throwNativeOutOfMemoryFatal B and
+stores B's actual identity in the native record before propagation; the host
+requires the exact terminal B and no guest catch/rejection handler, including
+a plain data-property marker that does not rely on a native callback entering
+after fatal. These controls are authored/unexecuted. A low-level unmarked native
+failure needs explicit producer participation; this unit does not infer one
+from guest-span freshness. C1116/G2/Engine/owner composition remains external.
+
 Prepared controls accept the real application owner's `graph.imports` and
 `factoryExports()` plus real caller inputs. The current source-closed actual
 owner route is donor 4514202eff19b8ec48815a3b2775f6e6ad063bee in
