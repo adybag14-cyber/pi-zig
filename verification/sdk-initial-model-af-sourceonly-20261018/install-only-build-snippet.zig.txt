@@ -1,0 +1,8 @@
+// Paste only into Root's actual-owner build projection after the genuine
+// composed profile has imported src/native_sdk_initial_model_controls.zig and
+// supplied real graph.imports/factoryExports/ModelRuntime/session inputs.
+// `actual_owner_profile` denotes that existing Compile artifact; this fragment
+// intentionally creates no substitute runtime/profile and no RunArtifact.
+const install_initial_model_owner = b.addInstallArtifact(actual_owner_profile, .{});
+const install_initial_model_step = b.step("install-sdk-initial-model-actual-owner", "Install the genuine owner profile with initial-model controls");
+install_initial_model_step.dependOn(&install_initial_model_owner.step);

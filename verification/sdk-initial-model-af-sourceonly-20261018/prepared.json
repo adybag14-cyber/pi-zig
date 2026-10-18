@@ -1,0 +1,226 @@
+{
+  "schema": "sdk-initial-model-af-sourceonly-v1",
+  "base_head": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "branch": "work/sdk-initial-model-af-20261018",
+  "source_only": true,
+  "native_executed": false,
+  "compiler_executed": false,
+  "reference_executed": false,
+  "parser_executed": false,
+  "test_executed": false,
+  "process_probes_executed": false,
+  "public_activation": false,
+  "source_await_count": 0,
+  "native_await_action_count": 0,
+  "genuine_function": "createResumable findInitialModel length1",
+  "canonical_completion": "unchanged C435 native_sdk_owned_completion.zig",
+  "native_controls": [
+    "verifyActualAsyncMetadata",
+    "startActualResolverCaller",
+    "startActualFactoryCaller",
+    "verifyAcceptedOriginalRows",
+    "verifyActualPendingBeforeEntry",
+    "verifyFlaggedHistoricalDiagnosticData",
+    "createNativeRetirementHooks",
+    "prepareActualRetirementCaller",
+    "startPreparedRetirementCaller",
+    "verifyActualRetirementFatal",
+    "verifyActualCancellationNoGuestClose",
+    "startSameOperationPrivateDataThrowCaller",
+    "startSameOperationActualNativeFatalCaller",
+    "verifyRecordedActualNativeFatal",
+    "prepareActualModelReceiverCaller",
+    "verifyActualModelReceiverFatal"
+  ],
+  "owned": [
+    {
+      "path": "src/extensions/native_sdk_factory_import_helpers.zig",
+      "length": 9783,
+      "sha256": "32984076A8BF694F8583E499C47F9AFB5091116BCE9241A699212F8AD0F53375"
+    },
+    {
+      "path": "src/extensions/native_sdk_initial_model.zig",
+      "length": 17405,
+      "sha256": "D0840D336473FDBAAE66212919D638F92E8104A889AB5B469EDADF431FB23A27"
+    },
+    {
+      "path": "src/extensions/native_sdk_initial_model_values.zig",
+      "length": 7585,
+      "sha256": "C9A8D5CC174682BEF1C9E17A1FFB7E725EE3A3B5C2CFFCAFDFFB31E67AACBF05"
+    },
+    {
+      "path": "src/native_sdk_initial_model_controls.zig",
+      "length": 6565,
+      "sha256": "1D75C26646D1D5DCD69A19DDE92EAA1E52EE7081C217A7DB7B1410B120424A27"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-caller.mjs",
+      "length": 3733,
+      "sha256": "C8EA9810AF76F658457BFC2F8B7838DE33A9F7FFCC3674F23553A882662365E4"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/.gitattributes",
+      "length": 32,
+      "sha256": "557459E7A052F7B832C36A5E09A9D6DD3CC0C671ECC6C8B1C38DE95CB5758D65"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/README.md",
+      "length": 9349,
+      "sha256": "332EDF62A797854B8F14105D8E59853BD8BF88EE15DECA0082D6BFD0808B06AE"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/install-only-build-snippet.zig.txt",
+      "length": 690,
+      "sha256": "AF4D7BBC33CFED235DBC08CA25DED338987741DB8BABCBF548A02C377E6F86E1"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority.json",
+      "length": 1800,
+      "sha256": "2517591E2C3CF8B5AA07BF924ED989AF6371E7EDA653AFE73E5D6B9C3B89E6D2"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/model-resolver.ts",
+      "length": 25183,
+      "sha256": "D624526FA0B8D66A5208C868097B8E724308130C9B5137D8ED7156DAE5548A91"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/sdk.ts",
+      "length": 18273,
+      "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28"
+    },
+    {
+      "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/pi-LICENSE",
+      "length": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "length": 14890,
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-retirement-caller.mjs",
+      "length": 3208,
+      "sha256": "41F9EEA4C1C9E3A8DAA1DAD478F237F195A43250C603956FE900B4482AB61B05"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-provenance-caller.mjs",
+      "length": 1451,
+      "sha256": "098E4CC4E589B5B8DB69D15D55CAA5FAD121055057A2EB181371533F12012254"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-model-receiver-caller.mjs",
+      "length": 2202,
+      "sha256": "26326DB97AB1B5C434A58E47B8A082B269859906A2484DB6695BF2A88CD35879"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "length": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "length": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "length": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "length": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "length": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "length": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_sdk_transcript_replay.zig",
+      "length": 10075,
+      "sha256": "09D822D0F8D842BC9CF3D739D9CCF18CA38C2335CF9E4844A0264B847FE6D21C"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "length": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_model.zig",
+      "length": 6242,
+      "sha256": "1011D2E89976D0AE312322AFBB781D398E3F10A90ACBAC22B664FE7A160A89BE"
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_production.zig",
+      "length": 40706,
+      "sha256": "E8F032BE1F6D81211366AEAE81B27B8228E64172C1FA7B20D581AA1F7C36E351"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "length": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "length": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "length": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "build.zig",
+      "length": 364017,
+      "sha256": "F16CD76274CD58C0639DACF10B3D52ED8D43774EF1F245B8988B90DBD9710AC1"
+    }
+  ],
+  "expected_absent": [
+    "verification/sdk-initial-model-af-sourceonly-20261018/original.expected.json",
+    "verification/sdk-initial-model-af-sourceonly-20261018/native.actual.json"
+  ],
+  "required_external_qualification": [
+    "C354/H0DBC current VM union",
+    "Promise forwarding/G2",
+    "actual application owner composition 4514202eff19b8ec48815a3b2775f6e6ad063bee or exact reviewed successor",
+    "real ModelRuntime/Models/auth inputs and real factory/session lifecycle",
+    "original Source and exact native common-caller comparison"
+  ],
+  "source_review": "pending finite Body review",
+  "predecessor_source_review_negative": {
+    "commit": "f1eeb4606582cb443aa6ad5d297869a1dde2371d",
+    "manifest_sha256": "9E6AF952874758404598CE87E3AEE1AC320B1C972663155CC77B43F38033F549",
+    "findings": [
+      "iterator and expression temporaries retained across later Source getters",
+      "ordinary manual cancellation branch allowed guest close"
+    ]
+  },
+  "guest_provenance_correction": {
+    "negative_predecessor": "042ab9deba7502860adc67bd7adacdaacdbc1ec8",
+    "negative_manifest_sha256": "707A84F4B122F710BEB8A664A3B23EE6F8DA3C429DD25CE1859798232959A73D",
+    "guest_generation_span_classification": "removed_entirely",
+    "authority": "independent actual NativeInvocation/nativeCallbackResult current producer plus raw status",
+    "trusted_native_allocation_and_free": "separate unchanged contracts",
+    "root_limitation_path": "evidence/root-auth-readonly-e496-merged-intake-prepared-20261018/guest-operation-generation-source-limitation-addendum.json",
+    "root_limitation_sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+    "actual_controls": "SAME getter fresh unmarked private DATA maker A then guest throw SAME A, versus genuine fresh native fatal B identity"
+  },
+  "operand_retirement_correction": {
+    "negative_predecessor": "ae535cb27eb877638b6f06c74e52da7234f5bbcc",
+    "negative_manifest_sha256": "377AF5853BE2D6E49E12D0CBF728C8DA5B29C5D4DD3887FFC674F55348BCEA76",
+    "boundary": "temporary scopedModel.model receiver retires before provider/id ToString",
+    "implementation": "scopedFieldOwned C435 result escrow, lexical row retained",
+    "controls": "actual native solemodelholder, independent provider coercion count/WeakRef, actualfatal before coercion contrast"
+  }
+}
