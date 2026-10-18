@@ -18,10 +18,11 @@ pub fn create(o: *x.Ops) !c.JSValue {
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(State)) == 0) return error.OutOfMemory;
     var attached = false; errdefer if (!attached) c.pi_js_native_memory_release(engine.native_memory_owner, @sizeOf(State));
     const data = try engine.gpa.create(State); errdefer if (!attached) engine.gpa.destroy(data);
-    var id: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &id);
+    var id: c.JSClassID = 0; if (c.JS_NewClassID(engine.runtime, &id) == 0) return error.OutOfMemory;
     const definition: c.JSClassDef = .{ .class_name = "Private SDK exec constructor event", .gc_mark = mark, .finalizer = retire };
     if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory;
-    const owner = try o.own(try engine.checked(c.JS_NewObjectClass(engine.context, id)));
+    const generation = try o.beforeAllocation();
+    const owner = try o.allocation(c.JS_NewObjectClass(engine.context, id), generation);
     data.* = .{ .engine = engine }; _ = c.JS_SetOpaque(owner, data); attached = true; return owner;
 }
 pub fn record(owner: c.JSValue, invocation: *const x.em.Engine.NativeInvocation) void {
@@ -32,7 +33,8 @@ pub fn record(owner: c.JSValue, invocation: *const x.em.Engine.NativeInvocation)
 }
 pub fn construct(o: *x.Ops, constructor: c.JSValue, executor: c.JSValue, owner: c.JSValue) !c.JSValue {
     const self = state(owner); const engine = o.s.engine;
-    try engine.checkNativeEntry(); const generation = engine.native_allocation_generation;
+    var operation: x.guest.Boundary = .{ .engine = engine };
+    try operation.begin();
     self.active = true; var args = [_]c.JSValue{executor};
     const result = c.JS_CallConstructor(engine.context, constructor, 1, &args);
     self.active = false; // A retained executor's later calls cannot poison this construction.
@@ -44,7 +46,7 @@ pub fn construct(o: *x.Ops, constructor: c.JSValue, executor: c.JSValue, owner: 
         var completion = x.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, error.JavaScriptException));
         if (!c.JS_IsException(result)) completion.release(result);
         if (old) |value| completion.release(value);
-        return o.own(try completion.finishValue());
+        return operation.finishValue(o.s, completion.finishValue());
     }
-    return o.accept(result, generation);
+    return operation.finishValue(o.s, result);
 }
