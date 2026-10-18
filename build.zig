@@ -1631,6 +1631,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-auth-resource-owned-completion-controls-artifact", "Compile/link ten genuine SDK-owner integration bodies; NEVER RUN sentinel or invent missing owners").dependOn(&b.addInstallArtifact(auth_resource_af_controls, .{}).step);
 
+    const auth_file_af_controls = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_file_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Auth file genuine AF"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, auth_file_af_controls.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, auth_file_af_controls.root_module, typescript_parser);
+    linkSqlite(auth_file_af_controls.root_module, sqlite_lib_dir, sqlite_library);
+    auth_file_af_controls.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        auth_file_af_controls.root_module.linkSystemLibrary("advapi32", .{});
+        auth_file_af_controls.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-auth-file-genuine-af-controls-artifact", "Build actual file/lock AF controls; runtime requires Root grant and accepted current VM producer").dependOn(&b.addInstallArtifact(auth_file_af_controls, .{}).step);
+
     const sdk_application_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_native_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual application"},

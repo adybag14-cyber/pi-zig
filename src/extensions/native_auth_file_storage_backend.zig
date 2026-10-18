@@ -1,14 +1,18 @@
-//! The actual ordinary FileAuthStorageBackend class from Source 4954d760.
+//! FileAuthStorageBackend from pinned c268154c auth-storage.ts. Its two async
+//! methods are genuine native AFs; the class and its other methods are ordinary.
 //! Public and TypeScript-private methods remain observable prototype methods;
 //! state is the Source own authPath field, not an opaque/plain-record adapter.
 const v = @import("native_ai_provider_values.zig");
 const Scope = v.Scope;
 const c = v.c;
 const flow = @import("native_agent_async.zig");
+const body = @import("native_async_body.zig");
+const af = body.native;
+const owned = @import("native_sdk_owned_completion.zig");
 const funcs = @import("native_node_function.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 pub const Dependencies = struct { get_agent_dir: c.JSValue };
-/// Production default for the selected immutable Source4954 package metadata.
+/// Production default retains c268154c's APP_NAME=pi, CONFIG_DIR_NAME=.pi.
 pub fn createDefault(engine: *v.em.Engine) !c.JSValue {
     const get_agent_dir = try @import("native_sdk_agent_directory.zig").create(engine, .{});
     defer engine.freeValue(get_agent_dir);
@@ -52,16 +56,19 @@ pub fn create(engine: *v.em.Engine, dependencies: Dependencies) !c.JSValue {
             fn call(host: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
                 return dispatch(host, receiver, args, roots[0], kind);
             }
+            fn run(host: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+                return methodBody(host, receiver, args, roots, state, completion, input, kind);
+            }
         };
-        const method = try scope.own(try funcs.createMethod(engine, field.name, switch (kind) {
+        const length: c_int = switch (kind) {
             .ensureParentDir, .ensureFileExists => 0,
             .acquireLockAsync, .withLockAsync => 2,
             else => 1,
-        }, Adapter.call, &.{owner}));
-        if (kind == .acquireLockAsync or kind == .withLockAsync) {
-            const async_prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-            if (c.JS_SetPrototype(engine.context, method, async_prototype) < 0) return v.js.capture(engine);
-        }
+        };
+        const method = try scope.own(if (kind == .acquireLockAsync or kind == .withLockAsync)
+            try af.createResumable(engine, field.name, length, Adapter.run, &.{owner})
+        else
+            try funcs.createMethod(engine, field.name, length, Adapter.call, &.{owner}));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, method), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return v.js.capture(engine);
     }
     return c.JS_DupValue(engine.context, constructor);
@@ -97,20 +104,92 @@ fn dispatch(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, 
         },
         .acquireLockSyncWithRetry => return acquireSync(&scope, owner, arg(args, 0)),
         .withLock => return withLock(&scope, owner, receiver, arg(args, 0)),
-        .acquireLockAsync, .withLockAsync => {
-            const pending = try flow.create(engine, owner);
-            defer engine.freeValue(pending.owner);
-            errdefer engine.freeValue(pending.promise);
-            try scope.put(pending.owner, "self", receiver);
-            try scope.put(pending.owner, "release", c.pi_js_undefined());
-            if (method == .acquireLockAsync) {
-                startAcquire(&scope, pending.owner, arg(args, 0), arg(args, 1)) catch |err| try flow.rejectError(engine, pending.owner, err);
-            } else {
-                startWithLock(&scope, pending.owner, arg(args, 0), arg(args, 1)) catch |err| try finishError(&scope, pending.owner, err);
-            }
-            return pending.promise;
-        },
+        .acquireLockAsync, .withLockAsync => unreachable,
     }
+}
+fn failed(engine: *v.em.Engine, err: anyerror) !af.Action {
+    // Exact producers have already classified their own failed operation.
+    // A body-wide generation would reclassify earlier successful DATA when a
+    // later getter throws that same historical object. Preserve that reason.
+    try engine.checkNativeEntry();
+    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
+        engine.captured_exception = null;
+        return .{ .thrown = reason };
+    };
+    return body.failure(engine, err);
+}
+fn methodBody(engine: *v.em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue, method: Method) !af.Action {
+    var scope: Scope = .{ .engine = engine };
+    return owned.finishAction(&scope, methodStep(&scope, receiver, args, roots, state, completion, input, method) catch |err| failed(engine, err));
+}
+fn methodStep(scope: *Scope, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue, method: Method) !af.Action {
+    if (completion == .start) {
+        const generation = scope.engine.native_allocation_generation;
+        var writer: StateWriter = .{ .scope = scope, .engine = scope.engine };
+        const job = try asyncNormal(scope, generation, body.init(&writer, state));
+        try store(scope, job, "agent", roots[0]);
+        try store(scope, job, "self", receiver);
+        try store(scope, job, "release", c.pi_js_undefined());
+        if (method == .acquireLockAsync) try startAcquire(scope, job, arg(args, 0), arg(args, 1))
+        else try startWithLock(scope, job, arg(args, 0), arg(args, 1));
+    } else {
+        if (completion == .rejected) try body.enterRejectedContinuation(scope.engine);
+        // The action record's extra reference to the already-awaited promise
+        // is native bookkeeping, not a Source local needed in this stage.
+        try retireAwaitedValue(scope, state.*);
+        const stage_generation = scope.engine.native_allocation_generation;
+        var reader: StateWriter = .{ .scope = scope, .engine = scope.engine };
+        const stage = body.stage(&reader, state.*) catch |err| {
+            _ = try asyncNormal(scope, stage_generation, @as(anyerror!c.JSValue, err));
+            unreachable;
+        };
+        if (method == .acquireLockAsync) try acquireContinued(scope, state.*, input, completion == .rejected, stage)
+        else try withContinued(scope, state.*, input, completion == .rejected, stage);
+    }
+    return selectedAction(scope, state.*);
+}
+fn selectedAction(scope: *Scope, job: c.JSValue) !af.Action {
+    const generation = scope.engine.native_allocation_generation;
+    var reader: StateWriter = .{ .scope = scope, .engine = scope.engine };
+    return body.action(&reader, job) catch |err| {
+        _ = try asyncNormal(scope, generation, @as(anyerror!c.JSValue, err));
+        unreachable;
+    };
+}
+fn retireAwaitedValue(scope: *Scope, job: c.JSValue) !void {
+    const engine = scope.engine;
+    const generation = engine.native_allocation_generation;
+    const previous = try @import("native_agent_af_values.zig").guard(engine, generation, v.js.get(engine, job, "nativeAsyncValue"));
+    var completion = owned.Completion.initVoid(engine, store(scope, job, "nativeAsyncValue", c.pi_js_undefined()));
+    completion.release(previous);
+    return completion.finishVoid();
+}
+fn wait(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void {
+    var writer: StateWriter = .{ .scope = scope, .engine = scope.engine };
+    return body.wait(&writer, job, value, @intFromEnum(stage));
+}
+fn settle(scope: *Scope, job: c.JSValue, rejected: bool, value: c.JSValue) !void {
+    var writer: StateWriter = .{ .scope = scope, .engine = scope.engine };
+    return if (rejected) body.reject(&writer, job, value) else body.resolve(&writer, job, value);
+}
+const StateWriter = struct {
+    scope: *Scope,
+    engine: *v.em.Engine,
+    pub fn put(self: *StateWriter, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
+        return store(self.scope, target, name, value);
+    }
+    pub fn own(self: *StateWriter, value: c.JSValue) !c.JSValue { return owned.ownRoot(self.scope, value); }
+    pub fn get(self: *StateWriter, target: c.JSValue, name: [*:0]const u8) !c.JSValue { return asyncGet(self.scope, target, name); }
+};
+fn recorded(scope: *Scope, result: anyerror!void, state: c.JSValue) owned.Completion {
+    var reader: StateWriter = .{ .scope = scope, .engine = scope.engine };
+    return owned.Completion.initRecorded(&reader, result, state);
+}
+fn store(scope: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
+    try scope.engine.checkNativeEntry();
+    const generation = scope.engine.native_allocation_generation;
+    const result = scope.put(target, name, value);
+    _ = try asyncNormal(scope, generation, if (result) |_| c.pi_js_undefined() else |err| err);
 }
 fn retryCode(scope: *Scope, reason: c.JSValue) !c.JSValue {
     const instance = c.JS_IsInstanceOf(scope.engine.context, reason, try scope.global("Error"));
@@ -188,174 +267,298 @@ fn throwValue(scope: *Scope, value: c.JSValue) anyerror {
     _ = scope.engine.checked(c.JS_Throw(scope.engine.context, c.JS_DupValue(scope.engine.context, value))) catch |err| return err;
     unreachable;
 }
+// New AF guest boundaries stop on successful native return + pending event,
+// before any later getter/call/state write. Historical captured slots alone
+// are not event authority. The inherited synchronous path above is unchanged.
+fn asyncNormal(scope: *Scope, generation: u64, result: anyerror!c.JSValue) !c.JSValue {
+    const guards = @import("native_agent_af_values.zig");
+    const value = try guards.guard(scope.engine, generation, result);
+    _ = try guards.guard(scope.engine, generation, scope.engine.checked(c.pi_js_undefined()));
+    try scope.engine.checkNativeEntry();
+    return value;
+}
+fn asyncGet(scope: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncOwned(scope, generation, v.js.get(scope.engine, receiver, name));
+}
+fn asyncGlobal(scope: *Scope, name: [*:0]const u8) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncOwned(scope, generation, v.js.global(scope.engine, name));
+}
+fn asyncText(scope: *Scope, text: []const u8) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncOwned(scope, generation, @import("native_sdk.zig").text(scope.engine, text));
+}
+fn asyncObject(scope: *Scope) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncOwned(scope, generation, v.js.object(scope.engine));
+}
+fn asyncOwned(scope: *Scope, generation: u64, result: anyerror!c.JSValue) !c.JSValue {
+    const guards = @import("native_agent_af_values.zig");
+    const value = try guards.guard(scope.engine, generation, result);
+    const checked = try guards.guard(scope.engine, generation, scope.engine.checked(value));
+    return owned.ownRoot(scope, checked);
+}
+fn asyncBinary(scope: *Scope, operation: arithmetic.Operation, left: c.JSValue, right: c.JSValue) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncNormal(scope, generation, arithmetic.binary(scope.engine, operation, left, right));
+}
+fn asyncCompare(scope: *Scope, operation: arithmetic.Operation, left: c.JSValue, right: c.JSValue) !bool {
+    return scope.truthy(try owned.ownRoot(scope, try asyncBinary(scope, operation, left, right)));
+}
+fn asyncEq(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
+    return scope.equal(value, try asyncText(scope, text));
+}
+fn asyncCall(scope: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    const generation = scope.engine.native_allocation_generation;
+    return asyncOwned(scope, generation, v.js.call(scope.engine, function, receiver, args));
+}
+fn asyncInvoke(scope: *Scope, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+    return asyncCall(scope, try asyncGet(scope, receiver, name), receiver, args);
+}
+fn asyncOptional(scope: *Scope, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return if (v.nullish(receiver)) c.pi_js_undefined() else asyncGet(scope, receiver, name);
+}
+fn asyncImported(scope: *Scope, owner: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
+    return asyncCall(scope, try asyncGet(scope, owner, name), c.pi_js_undefined(), args);
+}
+fn asyncDateNow(scope: *Scope) !c.JSValue {
+    return asyncInvoke(scope, try asyncGlobal(scope, "Date"), "now", &.{});
+}
+fn asyncRetryCode(scope: *Scope, reason: c.JSValue) !c.JSValue {
+    const constructor = try asyncGlobal(scope, "Error");
+    const generation = scope.engine.native_allocation_generation;
+    const instance = c.JS_IsInstanceOf(scope.engine.context, reason, constructor);
+    _ = try asyncNormal(scope, generation, if (instance < 0) v.js.capture(scope.engine) else c.pi_js_undefined());
+    var code = c.pi_js_undefined();
+    if (instance != 0) {
+        const atom = c.JS_NewAtom(scope.engine.context, "code");
+        if (atom == c.JS_ATOM_NULL) return error.OutOfMemory;
+        defer c.JS_FreeAtom(scope.engine.context, atom);
+        const has_generation = scope.engine.native_allocation_generation;
+        const has = c.JS_HasProperty(scope.engine.context, reason, atom);
+        _ = try asyncNormal(scope, has_generation, if (has < 0) v.js.capture(scope.engine) else c.pi_js_undefined());
+        if (has != 0) code = try asyncGet(scope, reason, "code");
+    }
+    if (try asyncEq(scope, code, "ELOCKED")) return code;
+    if (try asyncEq(scope, code, "EPERM") and try asyncEq(scope, try asyncGet(scope, try asyncGlobal(scope, "process"), "platform"), "win32")) return code;
+    return c.pi_js_undefined();
+}
+fn asyncCurrent(scope: *Scope, owner: c.JSValue, receiver: c.JSValue) !c.JSValue {
+    if (scope.truthy(try asyncImported(scope, owner, "existsSync", &.{try asyncGet(scope, receiver, "authPath")})))
+        return asyncImported(scope, owner, "readFileSync", &.{ try asyncGet(scope, receiver, "authPath"), try asyncText(scope, "utf-8") });
+    return c.pi_js_undefined();
+}
 fn checkSignal(scope: *Scope, signal: c.JSValue) !void {
-    if (!v.nullish(signal)) _ = try scope.invoke(signal, "throwIfAborted", &.{});
+    if (!v.nullish(signal)) _ = try asyncInvoke(scope, signal, "throwIfAborted", &.{});
 }
 fn checkOptions(scope: *Scope, job: c.JSValue) !void {
-    try checkSignal(scope, try v.optional(scope, try scope.get(job, "options"), "signal"));
+    try checkSignal(scope, try asyncOptional(scope, try asyncGet(scope, job, "options"), "signal"));
 }
 fn startAcquire(scope: *Scope, job: c.JSValue, signal: c.JSValue, compromised: c.JSValue) !void {
-    try scope.put(job, "signal", signal);
-    try scope.put(job, "onCompromised", compromised);
-    try scope.put(job, "deadline", try scope.own(try arithmetic.binary(scope.engine, .add, try dateNow(scope), c.JS_NewInt32(scope.engine.context, 30000))));
-    try scope.put(job, "retry", c.JS_NewInt32(scope.engine.context, 0));
-    try scope.put(job, "epermRetries", c.JS_NewInt32(scope.engine.context, 0));
+    try store(scope, job, "signal", signal);
+    try store(scope, job, "onCompromised", compromised);
+    try store(scope, job, "deadline", try owned.ownRoot(scope, try asyncBinary(scope, .add, try asyncDateNow(scope), c.JS_NewInt32(scope.engine.context, 30000))));
+    try store(scope, job, "retry", c.JS_NewInt32(scope.engine.context, 0));
+    try store(scope, job, "epermRetries", c.JS_NewInt32(scope.engine.context, 0));
     return attemptLock(scope, job);
 }
 fn attemptLock(scope: *Scope, job: c.JSValue) !void {
-    try checkSignal(scope, try scope.get(job, "signal"));
-    const generation = scope.engine.native_allocation_generation;
+    try checkSignal(scope, try asyncGet(scope, job, "signal"));
     const pending = lockAttempt(scope, job) catch |err| {
-        const reason = try scope.own(flow.reason(scope.engine, err));
-        try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
-        return retryLock(scope, job, reason);
+        const action = try failed(scope.engine, err);
+        const reason = switch (action) { .thrown => |value| value, else => unreachable };
+        var completion = recorded(scope, retryLock(scope, job, reason), job);
+        completion.release(reason);
+        return completion.finishRecorded();
     };
-    return flow.wait(acquireContinued, scope.engine, job, pending, @intFromEnum(Stage.lock));
+    return wait(scope, job, pending, .lock);
 }
 fn lockAttempt(scope: *Scope, job: c.JSValue) !c.JSValue {
-    const owner = try scope.get(job, "agent");
-    const lockfile = try scope.get(owner, "lockfile");
-    const lock = try scope.get(lockfile, "lock");
-    const path = try scope.get(try scope.get(job, "self"), "authPath");
-    const options = try scope.object();
-    try scope.put(options, "realpath", c.pi_js_bool(scope.engine.context, 0));
-    try scope.put(options, "retries", c.JS_NewInt32(scope.engine.context, 0));
-    try scope.put(options, "stale", c.JS_NewInt32(scope.engine.context, 30000));
-    try scope.put(options, "onCompromised", try scope.get(job, "onCompromised"));
-    return scope.call(lock, lockfile, &.{ path, options });
+    const owner = try asyncGet(scope, job, "agent");
+    const lockfile = try asyncGet(scope, owner, "lockfile");
+    const lock = try asyncGet(scope, lockfile, "lock");
+    const path = try asyncGet(scope, try asyncGet(scope, job, "self"), "authPath");
+    const options = try asyncObject(scope);
+    try store(scope, options, "realpath", c.pi_js_bool(scope.engine.context, 0));
+    try store(scope, options, "retries", c.JS_NewInt32(scope.engine.context, 0));
+    try store(scope, options, "stale", c.JS_NewInt32(scope.engine.context, 30000));
+    try store(scope, options, "onCompromised", try asyncGet(scope, job, "onCompromised"));
+    return asyncCall(scope, lock, lockfile, &.{ path, options });
 }
 fn retryLock(scope: *Scope, job: c.JSValue, reason: c.JSValue) !void {
-    try checkSignal(scope, try scope.get(job, "signal"));
-    const code = try retryCode(scope, reason);
-    const remaining = try scope.own(try arithmetic.binary(scope.engine, .subtract, try scope.get(job, "deadline"), try dateNow(scope)));
-    if (!scope.truthy(code) or try arithmetic.compare(scope.engine, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0))) return flow.settle(scope.engine, job, true, reason);
-    if (try v.eq(scope, code, "EPERM")) {
-        const count = try scope.own(try arithmetic.binary(scope.engine, .add, try scope.get(job, "epermRetries"), c.JS_NewInt32(scope.engine.context, 1)));
-        try scope.put(job, "epermRetries", count);
-        if (try arithmetic.compare(scope.engine, .greater, count, c.JS_NewInt32(scope.engine.context, 5))) return flow.settle(scope.engine, job, true, reason);
+    try checkSignal(scope, try asyncGet(scope, job, "signal"));
+    const code = try asyncRetryCode(scope, reason);
+    const remaining = try owned.ownRoot(scope, try asyncBinary(scope, .subtract, try asyncGet(scope, job, "deadline"), try asyncDateNow(scope)));
+    if (!scope.truthy(code) or try asyncCompare(scope, .less_equal, remaining, c.JS_NewInt32(scope.engine.context, 0))) return settle(scope, job, true, reason);
+    if (try asyncEq(scope, code, "EPERM")) {
+        const count = try owned.ownRoot(scope, try asyncBinary(scope, .add, try asyncGet(scope, job, "epermRetries"), c.JS_NewInt32(scope.engine.context, 1)));
+        try store(scope, job, "epermRetries", count);
+        if (try asyncCompare(scope, .greater, count, c.JS_NewInt32(scope.engine.context, 5))) return settle(scope, job, true, reason);
     }
-    const math = try scope.global("Math");
-    const min = try scope.get(math, "min");
-    const power = try scope.own(try arithmetic.binary(scope.engine, .power, c.JS_NewInt32(scope.engine.context, 2), try scope.get(job, "retry")));
-    const base = try scope.call(min, math, &.{ try scope.own(try arithmetic.binary(scope.engine, .multiply, c.JS_NewInt32(scope.engine.context, 10), power)), c.JS_NewInt32(scope.engine.context, 1000) });
-    try scope.put(job, "retry", try scope.own(try arithmetic.binary(scope.engine, .add, try scope.get(job, "retry"), c.JS_NewInt32(scope.engine.context, 1))));
-    const delay_math = try scope.global("Math");
-    const delay_min = try scope.get(delay_math, "min");
-    const round_math = try scope.global("Math");
-    const round = try scope.get(round_math, "round");
-    const factor = try scope.own(try arithmetic.binary(scope.engine, .add, c.JS_NewInt32(scope.engine.context, 1), try scope.invoke(try scope.global("Math"), "random", &.{})));
-    const rounded = try scope.call(round, round_math, &.{try scope.own(try arithmetic.binary(scope.engine, .multiply, base, factor))});
-    const delay = try scope.call(delay_min, delay_math, &.{ rounded, remaining });
-    const owner = try scope.get(job, "agent");
-    const signal = try scope.get(job, "signal");
+    const math = try asyncGlobal(scope, "Math");
+    const min = try asyncGet(scope, math, "min");
+    const power = try owned.ownRoot(scope, try asyncBinary(scope, .power, c.JS_NewInt32(scope.engine.context, 2), try asyncGet(scope, job, "retry")));
+    const base = try asyncCall(scope, min, math, &.{ try owned.ownRoot(scope, try asyncBinary(scope, .multiply, c.JS_NewInt32(scope.engine.context, 10), power)), c.JS_NewInt32(scope.engine.context, 1000) });
+    try store(scope, job, "retry", try owned.ownRoot(scope, try asyncBinary(scope, .add, try asyncGet(scope, job, "retry"), c.JS_NewInt32(scope.engine.context, 1))));
+    const delay_math = try asyncGlobal(scope, "Math");
+    const delay_min = try asyncGet(scope, delay_math, "min");
+    const round_math = try asyncGlobal(scope, "Math");
+    const round = try asyncGet(scope, round_math, "round");
+    const factor = try owned.ownRoot(scope, try asyncBinary(scope, .add, c.JS_NewInt32(scope.engine.context, 1), try asyncInvoke(scope, try asyncGlobal(scope, "Math"), "random", &.{})));
+    const rounded = try asyncCall(scope, round, round_math, &.{try owned.ownRoot(scope, try asyncBinary(scope, .multiply, base, factor))});
+    const delay = try asyncCall(scope, delay_min, delay_math, &.{ rounded, remaining });
+    const owner = try asyncGet(scope, job, "agent");
+    const signal = try asyncGet(scope, job, "signal");
     var sleeping: c.JSValue = undefined;
     if (scope.truthy(signal)) {
-        const options = try scope.object();
-        try scope.put(options, "signal", signal);
-        sleeping = try imported(scope, owner, "sleep", &.{ delay, c.pi_js_undefined(), options });
-    } else sleeping = try imported(scope, owner, "sleep", &.{delay});
-    return flow.wait(acquireContinued, scope.engine, job, sleeping, @intFromEnum(Stage.sleep));
+        const options = try asyncObject(scope);
+        try store(scope, options, "signal", signal);
+        sleeping = try asyncImported(scope, owner, "sleep", &.{ delay, c.pi_js_undefined(), options });
+    } else sleeping = try asyncImported(scope, owner, "sleep", &.{delay});
+    return wait(scope, job, sleeping, .sleep);
 }
-fn acquireContinued(engine: *v.em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+fn acquireContinued(scope: *Scope, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
     const stage: Stage = @enumFromInt(raw);
     if (rejected) {
-        if (stage == .lock) return retryLock(&scope, job, value);
-        return flow.settle(engine, job, true, value);
+        if (stage == .lock) return retryLock(scope, job, value);
+        return settle(scope, job, true, value);
     }
     switch (stage) {
-        .sleep => return attemptLock(&scope, job),
+        .sleep => return attemptLock(scope, job),
         .lock => {
-            try scope.put(job, "release", value);
-            const signal = try scope.get(job, "signal");
-            if (!v.nullish(signal) and scope.truthy(try scope.get(signal, "aborted"))) {
-                const released = try scope.call(value, c.pi_js_undefined(), &.{});
-                return flow.wait(acquireContinued, engine, job, released, @intFromEnum(Stage.cancelled_release));
+            try store(scope, job, "release", value);
+            const signal = try asyncGet(scope, job, "signal");
+            if (!v.nullish(signal) and scope.truthy(try asyncGet(scope, signal, "aborted"))) {
+                const released = try asyncCall(scope, value, c.pi_js_undefined(), &.{});
+                return wait(scope, job, released, .cancelled_release);
             }
-            return flow.settle(engine, job, false, value);
+            return settle(scope, job, false, value);
         },
         .cancelled_release => {
-            try checkSignal(&scope, try scope.get(job, "signal"));
+            try checkSignal(scope, try asyncGet(scope, job, "signal"));
             // A custom throwIfAborted may return. Source still returns release.
-            return flow.settle(engine, job, false, try scope.get(job, "release"));
+            return settle(scope, job, false, try asyncGet(scope, job, "release"));
         },
         else => unreachable,
     }
 }
 fn startWithLock(scope: *Scope, job: c.JSValue, function: c.JSValue, options: c.JSValue) !void {
-    try scope.put(job, "function", function);
-    try scope.put(job, "options", options);
+    try store(scope, job, "function", function);
+    try store(scope, job, "options", options);
     try checkOptions(scope, job);
-    const receiver = try scope.get(job, "self");
-    _ = try scope.invoke(receiver, "ensureParentDir", &.{});
-    _ = try scope.invoke(receiver, "ensureFileExists", &.{});
-    try scope.put(job, "lockCompromised", c.pi_js_bool(scope.engine.context, 0));
-    try scope.put(job, "lockCompromisedError", c.pi_js_undefined());
-    const method = try scope.get(receiver, "acquireLockAsync");
-    const signal = try v.optional(scope, options, "signal");
+    const receiver = try asyncGet(scope, job, "self");
+    _ = try asyncInvoke(scope, receiver, "ensureParentDir", &.{});
+    _ = try asyncInvoke(scope, receiver, "ensureFileExists", &.{});
+    try store(scope, job, "lockCompromised", c.pi_js_bool(scope.engine.context, 0));
+    try store(scope, job, "lockCompromisedError", c.pi_js_undefined());
+    const action = try withTry(scope.engine, job, c.pi_js_undefined(), .acquired, true, receiver, options);
+    return finishTryAction(scope, job, action);
+}
+fn beginWithLock(scope: *Scope, job: c.JSValue, receiver: c.JSValue, options: c.JSValue) !void {
+    const method = try asyncGet(scope, receiver, "acquireLockAsync");
+    const signal = try asyncOptional(scope, options, "signal");
     const Callback = struct {
         fn call(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             var local: Scope = .{ .engine = engine };
-            defer local.deinit();
-            try local.put(roots[0], "lockCompromised", c.pi_js_bool(engine.context, 1));
-            try local.put(roots[0], "lockCompromisedError", arg(args, 0));
+            return owned.finishValue(&local, apply(&local, args, roots));
+        }
+        fn apply(local: *Scope, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+            const engine = local.engine;
+            try store(local, roots[0], "lockCompromised", c.pi_js_bool(engine.context, 1));
+            try store(local, roots[0], "lockCompromisedError", arg(args, 0));
             return c.pi_js_undefined();
         }
     };
-    const compromised = try scope.own(try funcs.createArrow(scope.engine, "", 1, Callback.call, &.{job}));
-    return flow.wait(withContinued, scope.engine, job, try scope.call(method, receiver, &.{ signal, compromised }), @intFromEnum(Stage.acquired));
+    const generation = scope.engine.native_allocation_generation;
+    const compromised = try asyncOwned(scope, generation, funcs.createArrow(scope.engine, "", 1, Callback.call, &.{job}));
+    return wait(scope, job, try asyncCall(scope, method, receiver, &.{ signal, compromised }), .acquired);
 }
 fn checkCompromised(scope: *Scope, job: c.JSValue) !void {
-    if (!scope.truthy(try scope.get(job, "lockCompromised"))) return;
-    var reason = try scope.get(job, "lockCompromisedError");
-    if (v.nullish(reason)) reason = try scope.own(try v.js.builtin(scope.engine, "Error", &.{try scope.text("Auth storage lock was compromised")}));
+    if (!scope.truthy(try asyncGet(scope, job, "lockCompromised"))) return;
+    var reason = try asyncGet(scope, job, "lockCompromisedError");
+    if (v.nullish(reason)) {
+        const constructor = try asyncGlobal(scope, "Error");
+        var args = [_]c.JSValue{try asyncText(scope, "Auth storage lock was compromised")};
+        const generation = scope.engine.native_allocation_generation;
+        reason = try asyncOwned(scope, generation, scope.engine.checked(c.JS_CallConstructor(scope.engine.context, constructor, args.len, &args)));
+    }
     return throwValue(scope, reason);
 }
-fn finishError(scope: *Scope, job: c.JSValue, err: anyerror) !void {
-    return finish(scope, job, true, try scope.own(flow.reason(scope.engine, err)));
+fn finishTryAction(scope: *Scope, job: c.JSValue, action: af.Action) !void {
+    // The Source try block's roots have already retired under their owned
+    // completion. Only then execute Source finally's actual release/Await.
+    const Selection = struct { rejected: bool, value: c.JSValue };
+    const selected: Selection = switch (action) {
+        .awaited => |pending| {
+            var completion = recorded(scope, {}, job);
+            completion.release(pending);
+            return completion.finishRecorded();
+        },
+        .returned => |result| .{ .rejected = false, .value = result },
+        .thrown => |reason| .{ .rejected = true, .value = reason },
+    };
+    var completion = recorded(scope, finish(scope, job, selected.rejected, selected.value), job);
+    completion.release(selected.value);
+    return completion.finishRecorded();
+}
+fn withTry(engine: *v.em.Engine, job: c.JSValue, value: c.JSValue, stage: Stage, initial: bool, receiver: c.JSValue, options: c.JSValue) !af.Action {
+    var scope: Scope = .{ .engine = engine };
+    return owned.finishAction(&scope, withTryBody(&scope, job, value, stage, initial, receiver, options) catch |err| failed(engine, err));
+}
+fn withTryBody(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage, initial: bool, receiver: c.JSValue, options: c.JSValue) !af.Action {
+    if (initial) {
+        try beginWithLock(scope, job, receiver, options);
+    } else if (stage == .callback) {
+        return .{ .returned = c.JS_DupValue(scope.engine.context, try callbackResult(scope, job, value)) };
+    } else try advanceWith(scope, job, value, stage);
+    return selectedAction(scope, job);
 }
 fn finish(scope: *Scope, job: c.JSValue, rejected: bool, value: c.JSValue) !void {
-    const release = try scope.get(job, "release");
-    if (!scope.truthy(release)) return flow.settle(scope.engine, job, rejected, value);
-    try scope.put(job, "completion", value);
-    try scope.put(job, "failed", c.pi_js_bool(scope.engine.context, @intFromBool(rejected)));
-    const generation = scope.engine.native_allocation_generation;
-    const returned = scope.call(release, c.pi_js_undefined(), &.{}) catch |err| {
-        try @import("native_ai_partial_json.zig").discard(scope.engine, err, generation);
-        return flow.settle(scope.engine, job, rejected, value);
+    const release = try asyncGet(scope, job, "release");
+    if (!scope.truthy(release)) return settle(scope, job, rejected, value);
+    try store(scope, job, "completion", value);
+    try store(scope, job, "failed", c.pi_js_bool(scope.engine.context, @intFromBool(rejected)));
+    const returned = asyncCall(scope, release, c.pi_js_undefined(), &.{}) catch |err| {
+        const action = try failed(scope.engine, err);
+        const ignored = switch (action) { .thrown => |reason| reason, else => unreachable };
+        var completion = recorded(scope, settle(scope, job, rejected, value), job);
+        completion.release(ignored);
+        return completion.finishRecorded();
     };
-    return flow.wait(withContinued, scope.engine, job, returned, @intFromEnum(Stage.release));
+    return wait(scope, job, returned, .release);
 }
-fn withContinued(engine: *v.em.Engine, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+fn withContinued(scope: *Scope, job: c.JSValue, value: c.JSValue, rejected: bool, raw: c_int) !void {
     const stage: Stage = @enumFromInt(raw);
-    if (stage == .release) return flow.settle(engine, job, scope.truthy(try scope.get(job, "failed")), try scope.get(job, "completion"));
-    if (rejected) return finish(&scope, job, true, value);
-    advanceWith(&scope, job, value, stage) catch |err| try finishError(&scope, job, err);
+    if (stage == .release) return settle(scope, job, scope.truthy(try asyncGet(scope, job, "failed")), try asyncGet(scope, job, "completion"));
+    if (rejected) return finish(scope, job, true, value);
+    return finishTryAction(scope, job, try withTry(scope.engine, job, value, stage, false, c.pi_js_undefined(), c.pi_js_undefined()));
 }
 fn advanceWith(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !void {
-    const receiver = try scope.get(job, "self");
-    const owner = try scope.get(job, "agent");
+    const receiver = try asyncGet(scope, job, "self");
+    const owner = try asyncGet(scope, job, "agent");
     switch (stage) {
         .acquired => {
-            try scope.put(job, "release", value);
+            try store(scope, job, "release", value);
             try checkCompromised(scope, job);
             try checkOptions(scope, job);
-            const input = try current(scope, owner, receiver);
-            const result = try scope.call(try scope.get(job, "function"), c.pi_js_undefined(), &.{input});
-            return flow.wait(withContinued, scope.engine, job, result, @intFromEnum(Stage.callback));
-        },
-        .callback => {
-            const result = try scope.get(value, "result");
-            const next = try scope.get(value, "next");
-            try checkCompromised(scope, job);
-            try checkOptions(scope, job);
-            if (!c.JS_IsUndefined(next)) _ = try imported(scope, owner, "writeFileSync", &.{ try scope.get(receiver, "authPath"), next, try scope.get(owner, "writeOptions") });
-            try checkCompromised(scope, job);
-            return finish(scope, job, false, result);
+            const input = try asyncCurrent(scope, owner, receiver);
+            const result = try asyncCall(scope, try asyncGet(scope, job, "function"), c.pi_js_undefined(), &.{input});
+            return wait(scope, job, result, .callback);
         },
         else => unreachable,
     }
+}
+fn callbackResult(scope: *Scope, job: c.JSValue, value: c.JSValue) !c.JSValue {
+    const result = try asyncGet(scope, value, "result");
+    const next = try asyncGet(scope, value, "next");
+    try checkCompromised(scope, job);
+    try checkOptions(scope, job);
+    if (!c.JS_IsUndefined(next)) {
+        const receiver = try asyncGet(scope, job, "self");
+        const owner = try asyncGet(scope, job, "agent");
+        _ = try asyncImported(scope, owner, "writeFileSync", &.{ try asyncGet(scope, receiver, "authPath"), next, try asyncGet(scope, owner, "writeOptions") });
+    }
+    try checkCompromised(scope, job);
+    return result;
 }

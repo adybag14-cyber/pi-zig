@@ -1,0 +1,207 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_PUSH_TEMPORARY_RETIREMENT_SUCCESSOR_PENDING_PEER",
+  "base": "283e5a3d7dc0f933ca7e535039ed69d40afbbc1c",
+  "previous_head": "4200370e5708db383799e26338fda7fa4d0b97ae",
+  "previous_manifest_sha256": "29CE280EFDDF10E7E0414081E8849DB0391F57C334EFAFF2CAA5FDF81DCC7982",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 360489,
+      "sha256": "BE02A41A7D6EE5C108B78E52A4094EC9D321D987CEBB7F034C87B1785A340EC4"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-file-storage-genuine-af-observer.mjs",
+      "bytes": 6713,
+      "sha256": "9BB2EE2BB031767CCB3751C90A9290D75F7017AD5154AE59C3D2D43AC766C5EA"
+    },
+    {
+      "path": "src/extensions/native_auth_directory_lock.zig",
+      "bytes": 29274,
+      "sha256": "BE9FEAE6A96982848BBF7548F3B54DF1087FC23E07E3BA0F308DEBCC1C61E2A5"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "bytes": 33352,
+      "sha256": "A4A18B94B7B6D2EC134360B11CE8F0F116E5C7862713DA9D3694B1BA488135A3"
+    },
+    {
+      "path": "src/native_auth_file_genuine_af_test.zig",
+      "bytes": 19578,
+      "sha256": "7B3A075120B0FF394F1A090ECFAB4F8D1CA0CA5B1C1034D6E56DD9902D57DF8A"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/auth-storage.ts.txt",
+      "bytes": 16670,
+      "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/coding-agent-package.json.txt",
+      "bytes": 3873,
+      "sha256": "A253F61695FCF170FB9A5B57A4D59ADB4EB27518852FB0D285E608CE19C91CAA"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/config.ts.txt",
+      "bytes": 23328,
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/proper-lockfile-4.1.2/index.js.txt",
+      "bytes": 1025,
+      "sha256": "C11869AA340B61757C2E7A6739A1D423495FE627AC0A54CB44F8C47C393E2FDD"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/proper-lockfile-4.1.2/lib/adapter.js.txt",
+      "bytes": 1898,
+      "sha256": "C95E2408B91B70E02C625A9B1A42E0C793140DBE6C1BFF8CC183BB88BC267C6C"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/proper-lockfile-4.1.2/lib/lockfile.js.txt",
+      "bytes": 10845,
+      "sha256": "C517A976F7A31C8B1768CB8E7AC9936AEE70299AE762548495016A79D64A6434"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/proper-lockfile-4.1.2/LICENSE.txt",
+      "bytes": 1105,
+      "sha256": "AAA78451B6FECD1B9C4594C796C133C0E90CAD100372FF8BC6DE615E9EF9ADF1"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/authority/proper-lockfile-4.1.2/package.json.txt",
+      "bytes": 1707,
+      "sha256": "23888ECC7ABD83A8E98E132DA556EDA2172792CC04C4E6D157B590667802BD2A"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/current-prepared.json",
+      "bytes": 8321,
+      "sha256": "29CE280EFDDF10E7E0414081E8849DB0391F57C334EFAFF2CAA5FDF81DCC7982"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/operation-provenance-successor.json",
+      "bytes": 7466,
+      "sha256": "BA1F5385C2512E7510202BE98278D8A55EB05C91ED77D6B87029AA9AE7991627"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/OPERATION-PROVENANCE-SUCCESSOR.md",
+      "bytes": 2379,
+      "sha256": "47B6939D2932C34CDB7FD1F148EB4148775CBCF259F7EFE00893FF617F8F9CCA"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/original-caller.mjs",
+      "bytes": 1076,
+      "sha256": "05FFFE463CF285CEB526C9806E2AE17C8CEAF85C5E0DF133F8E75E394760AAD9"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/prepared.json",
+      "bytes": 8211,
+      "sha256": "09721484C8B2C9D7FC5020A81EB0C741811F9CFDD26AB20CCAA54CC63CF4CA6F"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/process-control-successor.json",
+      "bytes": 6952,
+      "sha256": "CC453AB843C9C4F248FD979F32C6AD54CCB9F31DCF3D2926132DB8DBCEA7E326"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/PUSH-RETIREMENT-SUCCESSOR.md",
+      "bytes": 2014,
+      "sha256": "F428E517BDB3FB2B1F1CD9B96CF10DC2EEF8ADFF45B48F0F1D32BCA56A47C4AC"
+    },
+    {
+      "path": "verification/auth-file-storage-genuine-af-sourceonly-20261018/SCOPE.md",
+      "bytes": 5964,
+      "sha256": "F4F41C0A13CA1B87BC5F3BCE0C5C8320A672120F6358E269FA62F49574A5DD7F"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 11357,
+      "sha256": "41AAFFBFED0B2B598D51E8B46432E1B53A373BA101DC7B0F4C396201E65432B6"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_jiti_budget.zig",
+      "bytes": 1767,
+      "sha256": "B3ECB37B66C11A0FDC343BAC9BA6D259EAB796463065825F4EED29E457AE35A8"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 46256,
+      "sha256": "F7A4892D2DF999A44E9A3995AC7CC939642F45E0E9AD2F6D3B9631228DAB0B51"
+    },
+    {
+      "path": "src/extensions/native_sdk_resource_class_reload.zig",
+      "bytes": 31582,
+      "sha256": "DD676DF61B0486772FF6B00580A24455C84F5B140A42FE13E6BF106B5C0E95F3"
+    },
+    {
+      "path": "src/extensions/native_auth_file_io.zig",
+      "bytes": 7944,
+      "sha256": "7E1B23F5565B9DD9596C1F924E715B1CD5229E529115AAA3AE281EF2EDD785B1"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_fs.zig",
+      "bytes": 6729,
+      "sha256": "3AC9886733EFB473A4A25D4B91DCD66598E12406E68F56C8AE7AA72A393F9E00"
+    },
+    {
+      "path": "src/extensions/timers.zig",
+      "bytes": 52715,
+      "sha256": "4AB5926421C7601B752F92E4306DC31A455C16437F8C904F80875EEE4B70CCCC"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "verification/auth-storage-resource-genuine-af-sourceonly-20261017/prepared.json",
+      "bytes": 5797,
+      "sha256": "B31163903AB95BD97788FDD56DC4F91932931194267ABE034D90A2D13BFD6EE6"
+    }
+  ],
+  "authored_native_test_count": 11,
+  "actual_metadata_observed": false,
+  "execution_or_parsing_run": false,
+  "original_capture_absent": true,
+  "expected_authored": false,
+  "requires_current_DATA_safe_AF1116_and_Bfb": true
+}
