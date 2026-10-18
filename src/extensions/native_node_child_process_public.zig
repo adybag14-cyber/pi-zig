@@ -93,7 +93,7 @@ const ErrorContext = struct {
     fn retain(raw: *anyopaque) void { const self: *@This() = @ptrCast(@alignCast(raw)); self.references += 1; }
     fn release(raw: *anyopaque) void { const self: *@This() = @ptrCast(@alignCast(raw)); self.references -= 1; if (self.references == 0) self.allocator.destroy(self); }
     fn value(_: *anyopaque, engine: *js.Engine, failure: anyerror) !c.JSValue {
-        if (failure == error.OutOfMemory) return failure;
+        if (failure == error.OutOfMemory) return @as(anyerror!c.JSValue, failure);
         return switch (failure) {
             error.BrokenPipe => systemError(engine, "EPIPE", if (builtin.os.tag == .windows) -4047 else -32, "write", null, &.{}),
             error.NativeStdinOperationAborted, error.NativeChildInputClosed => systemError(engine, "ECANCELED", if (builtin.os.tag == .windows) -4081 else -125, "write", null, &.{}),
@@ -139,7 +139,7 @@ fn register(engine: *js.Engine, name: [*:0]const u8, comptime finalizer: anytype
     if (c.JS_NewClass(engine.runtime, id, &definition) < 0) return error.OutOfMemory; return id;
 }
 fn capturedModule(engine: *js.Engine, roots: []const c.JSValue) !*Module {
-    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[1]) < 0) return js.capture(engine);
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[1]) < 0) return @as(anyerror!*Module, js.capture(engine));
     const self: *Module = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], id) orelse return error.NativeChildModuleBrand));
     if (self.engine != engine) return error.NativeChildModuleOwner; return self;
 }
@@ -149,7 +149,7 @@ fn getChild(scope: *Scope, module: *Module, child: c.JSValue) !*Child {
     if (self.engine != scope.engine or self.module != module or !scope.equal(self.child, child)) return error.NativeChildIncompatibleReceiver; return self;
 }
 fn capturedChild(engine: *js.Engine, roots: []const c.JSValue) !*Child {
-    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[1]) < 0) return js.capture(engine);
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[1]) < 0) return @as(anyerror!*Child, js.capture(engine));
     const self: *Child = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], id) orelse return error.NativeChildIncompatibleReceiver));
     if (self.engine != engine) return error.NativeChildIncompatibleReceiver; return self;
 }
@@ -189,7 +189,7 @@ fn construct(engine: *js.Engine, child: c.JSValue, _: []const c.JSValue, roots: 
 }
 fn rawError(scope: *Scope, message: []const u8) !c.JSValue {
     const value = try scope.own(try scope.engine.checked(c.JS_NewError(scope.engine.context)));
-    if (c.JS_DefinePropertyValueStr(scope.engine.context, value, "message", c.JS_DupValue(scope.engine.context, try scope.text(message)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(scope.engine);
+    if (c.JS_DefinePropertyValueStr(scope.engine.context, value, "message", c.JS_DupValue(scope.engine.context, try scope.text(message)), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
     return value;
 }
 fn systemError(engine: *js.Engine, code: []const u8, errno: i32, syscall: []const u8, path: ?[]const u8, args: []const []const u8) !c.JSValue {
@@ -300,7 +300,7 @@ fn driverEvent(engine: *js.Engine, raw: *anyopaque, driver: *driver_api.OwnerBri
     if (builtin.os.tag != .linux) switch (event) {
         .timeout_signal => |sent| if (sent) { self.sent_signal = self.kill_signal; try scope.set(self.child, "killed", c.pi_js_bool(engine.context, 1)); },
         .timeout_failure => |failure| {
-            if (failure != error.UnsupportedNativeChildKillSignal) return failure;
+            if (failure != error.UnsupportedNativeChildKillSignal) return @as(anyerror!void, failure);
             const reason = try scope.own(try systemError(engine, "ENOSYS", if (builtin.os.tag == .windows) -4054 else -38, "kill", null, &.{}));
             try emit(&scope, self.child, "error", &.{reason});
         },
@@ -311,20 +311,20 @@ fn driverEvent(engine: *js.Engine, raw: *anyopaque, driver: *driver_api.OwnerBri
 fn signalNumber(scope: *Scope, module: *Module, value: c.JSValue) !i32 {
     if (c.JS_IsUndefined(value) or c.JS_IsNull(value)) return 15;
     if (c.JS_IsNumber(value)) {
-        var number: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &number, value) < 0) return js.capture(scope.engine);
+        var number: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &number, value) < 0) return @as(anyerror!i32, js.capture(scope.engine));
         if (number == 0) return 0;
         const values = try scope.own(try js.objectMethod(scope.engine, "values", module.signals));
-        var count: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(values, "length")) < 0) return js.capture(scope.engine);
-        for (0..count) |index| { const entry = try scope.getIndex(values, @intCast(index)); if (scope.equal(entry, value)) { var result: i32 = 0; if (c.JS_ToInt32(scope.engine.context, &result, entry) < 0) return js.capture(scope.engine); return result; } }
+        var count: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(values, "length")) < 0) return @as(anyerror!i32, js.capture(scope.engine));
+        for (0..count) |index| { const entry = try scope.getIndex(values, @intCast(index)); if (scope.equal(entry, value)) { var result: i32 = 0; if (c.JS_ToInt32(scope.engine.context, &result, entry) < 0) return @as(anyerror!i32, js.capture(scope.engine)); return result; } }
     } else if (c.JS_IsString(value)) {
         const name = try scope.call(module.signal_upper, value, &.{}); const selected = try frontier.getKey(scope, module.signals, name);
-        if (!c.JS_IsUndefined(selected)) { var result: i32 = 0; if (c.JS_ToInt32(scope.engine.context, &result, selected) < 0) return js.capture(scope.engine); return result; }
+        if (!c.JS_IsUndefined(selected)) { var result: i32 = 0; if (c.JS_ToInt32(scope.engine.context, &result, selected) < 0) return @as(anyerror!i32, js.capture(scope.engine)); return result; }
     }
     return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal");
 }
 fn signalName(scope: *Scope, module: *Module, number: i32) !c.JSValue {
     const keys = try scope.own(try js.objectMethod(scope.engine, "keys", module.signals));
-    var count: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(keys, "length")) < 0) return js.capture(scope.engine);
+    var count: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(keys, "length")) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
     for (0..count) |index| {
         const key = try scope.getIndex(keys, @intCast(index));
         if (scope.equal(try frontier.getKey(scope, module.signals, key), c.JS_NewInt32(scope.engine.context, number))) return key;
@@ -363,7 +363,7 @@ fn abortAttempt(self: *Child, name: c.JSValue, cause: c.JSValue) !void {
     if (scope.truthy(try scope.invoke(self.child, "kill", &.{name}))) {
         const reason = try rawError(&scope, "The operation was aborted");
         try scope.put(reason, "name", try scope.text("AbortError")); try scope.put(reason, "code", try scope.text("ABORT_ERR"));
-        if (c.JS_DefinePropertyValueStr(self.engine.context, reason, "cause", c.JS_DupValue(self.engine.context, cause), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(self.engine);
+        if (c.JS_DefinePropertyValueStr(self.engine.context, reason, "cause", c.JS_DupValue(self.engine.context, cause), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!void, js.capture(self.engine));
         try emit(&scope, self.child, "error", &.{reason});
     }
 }
@@ -373,10 +373,10 @@ fn abortTick(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, roots: []co
     const cause = try scope.get(if (c.JS_IsUndefined(self.normalized_options)) self.signal else try scope.get(self.normalized_options, "signal"), "reason");
     const generation = engine.native_allocation_generation;
     abortAttempt(self, self.kill_argument, cause) catch |err| {
-        if (err != error.JavaScriptException) return err;
-        const reason = engine.captured_exception orelse return err;
-        if (fnc.freshAllocation(engine, reason, generation)) { c.JS_SetUncatchableError(engine.context, reason); return err; }
-        if (c.JS_IsUncatchableError(reason)) return err;
+        if (err != error.JavaScriptException) return @as(anyerror!c.JSValue, err);
+        const reason = engine.captured_exception orelse return @as(anyerror!c.JSValue, err);
+        if (fnc.freshAllocation(engine, reason, generation)) { c.JS_SetUncatchableError(engine.context, reason); return @as(anyerror!c.JSValue, err); }
+        if (c.JS_IsUncatchableError(reason)) return @as(anyerror!c.JSValue, err);
         // A handled ordinary kill exception transfers its one captured root.
         // Clear before emit: a new exception from emit owns a different exit.
         engine.captured_exception = null;
@@ -409,7 +409,7 @@ fn nativeClose(engine: *js.Engine, handle: c.JSValue, args: []const c.JSValue, r
     if (!c.JS_IsStrictEqual(engine.context, handle, self.holder)) return error.NativeChildHandleOwnerMismatch;
     if (self.handle_closed) return c.pi_js_undefined();
     const callback = options.arg(args, 0);
-    if (!c.JS_IsUndefined(callback) and !c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Process close callback must be a function");
+    if (!c.JS_IsUndefined(callback) and !c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Process close callback must be a function"));
     // No worker/wait array borrows the public duplicate. Physical close is
     // observed here; Driver retains its independent actual wait/reap identity.
     self.handle_closed = true;
@@ -425,7 +425,7 @@ fn nativeKill(engine: *js.Engine, handle: c.JSValue, args: []const c.JSValue, ro
     const esrch: i32 = if (builtin.os.tag == .windows) -4040 else -3;
     if (self.handle_closed) return c.JS_NewInt32(engine.context, esrch);
     const driver = self.driver orelse return c.JS_NewInt32(engine.context, esrch);
-    var number: i32 = 0; if (c.JS_ToInt32(engine.context, &number, options.arg(args, 0)) < 0) return js.capture(engine);
+    var number: i32 = 0; if (c.JS_ToInt32(engine.context, &number, options.arg(args, 0)) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     const sent = driver.signalNumber(number) catch |failure| return switch (failure) {
         error.PermissionDenied => c.JS_NewInt32(engine.context, if (builtin.os.tag == .windows) -4048 else -1),
         error.UnsupportedNativeChildKillSignal => c.JS_NewInt32(engine.context, if (builtin.os.tag == .windows) -4054 else -38),
@@ -449,10 +449,10 @@ fn timeoutTick(engine: *js.Engine, _: c.JSValue, _: []const c.JSValue, roots: []
     if (!scope.truthy(self.timer)) return c.pi_js_undefined();
     const generation = engine.native_allocation_generation;
     timeoutAttempt(self) catch |err| {
-        if (err != error.JavaScriptException) return err;
-        const reason = engine.captured_exception orelse return err;
-        if (fnc.freshAllocation(engine, reason, generation)) { c.JS_SetUncatchableError(engine.context, reason); return err; }
-        if (c.JS_IsUncatchableError(reason)) return err;
+        if (err != error.JavaScriptException) return @as(anyerror!c.JSValue, err);
+        const reason = engine.captured_exception orelse return @as(anyerror!c.JSValue, err);
+        if (fnc.freshAllocation(engine, reason, generation)) { c.JS_SetUncatchableError(engine.context, reason); return @as(anyerror!c.JSValue, err); }
+        if (c.JS_IsUncatchableError(reason)) return @as(anyerror!c.JSValue, err);
         engine.captured_exception = null;
         const retained = try scope.own(reason); try emit(&scope, self.child, "error", &.{retained});
     };
@@ -507,7 +507,7 @@ fn installAbortActual(self: *Child, signal: c.JSValue) !void {
 const PlatformAttempt = if (builtin.os.tag == .linux) driver_api.Attempt else driver_api.OwnerBridge.Attempt;
 fn launchAttempt(self: *Child, config: options.Config, hooks: driver_api.Hooks) !PlatformAttempt {
     if (builtin.os.tag == .linux) {
-        const borrow = @import("native_child_process_public_handle_linux.zig").borrowParentRecovery(self.native_ticket.?) catch |failure| { var cleanup = config; cleanup.deinit(); return failure; };
+        const borrow = @import("native_child_process_public_handle_linux.zig").borrowParentRecovery(self.native_ticket.?) catch |failure| { var cleanup = config; cleanup.deinit(); return @as(anyerror!PlatformAttempt, failure); };
         defer borrow.release() catch @panic("native public parent recovery borrow lost ownership");
         return driver_api.startAttempt(self.engine, config, hooks, &.{self.holder}, borrow.recovery, self.module.linux_handshake_budget_ms);
     } else return driver_api.OwnerBridge.startAttempt(self.engine, config, hooks, &.{self.holder});
@@ -538,13 +538,13 @@ fn spawnInto(self: *Child, owned: options.Config, signal: c.JSValue, native_phas
         self.set(&self.original_command, try scope.text(config.original_file));
     }
     var original_args: std.ArrayList([]const u8) = .empty; defer { for (original_args.items) |value| self.engine.gpa.free(value); original_args.deinit(self.engine.gpa); }
-    for (config.argv.items[1..]) |value| { const copy = try self.engine.gpa.dupe(u8, value); original_args.append(self.engine.gpa, copy) catch |err| { self.engine.gpa.free(copy); return err; }; }
+    for (config.argv.items[1..]) |value| { const copy = try self.engine.gpa.dupe(u8, value); original_args.append(self.engine.gpa, copy) catch |err| { self.engine.gpa.free(copy); return @as(anyerror!void, err); }; }
     // Capture before reserving the external Driver entitlement or transferring
     // Config. No fallible VM operation remains between that transfer and launch.
     try frontier.pending(self.engine);
     const mapper = try self.engine.gpa.create(ErrorContext); mapper.* = .{ .allocator = self.engine.gpa }; defer ErrorContext.release(mapper);
     _ = c.JS_DupValue(self.engine.context, self.holder); // external Driver context entitlement
-    const owner = pipes.Owner.create(self.engine.gpa, .{ .context = self, .deliver = driverEvent, .poll = driverPoll, .stop = driverStop, .release = driverRelease }, .{ .context = mapper, .retain = ErrorContext.retain, .release = ErrorContext.release, .value = ErrorContext.value }) catch |err| { self.engine.freeValue(self.holder); return err; };
+    const owner = pipes.Owner.create(self.engine.gpa, .{ .context = self, .deliver = driverEvent, .poll = driverPoll, .stop = driverStop, .release = driverRelease }, .{ .context = mapper, .retain = ErrorContext.retain, .release = ErrorContext.release, .value = ErrorContext.value }) catch |err| { self.engine.freeValue(self.holder); return @as(anyerror!void, err); };
     self.owner = owner;
     config_owned = false;
     const native_generation = self.engine.native_allocation_generation;
@@ -650,7 +650,7 @@ fn validateTimeout(engine: *js.Engine, value: c.JSValue) !void {
     if (c.JS_IsNull(value) or c.JS_IsUndefined(value)) return;
     var number: f64 = 0;
     if (!c.JS_IsNumber(value)) return @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer");
-    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return js.capture(engine);
+    if (c.JS_ToFloat64(engine.context, &number, value) < 0) return @as(anyerror!void, js.capture(engine));
     if (!std.math.isFinite(number) or number < 0 or @trunc(number) != number) return @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer");
 }
 fn spawn(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -703,7 +703,7 @@ fn spawnInstance(engine: *js.Engine, child: c.JSValue, args: []const c.JSValue, 
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
     const module = try capturedModule(engine, roots); const self = try getChild(&scope, module, child);
     const supplied = options.arg(args, 0);
-    if (!c.JS_IsObject(supplied) or c.JS_IsNull(supplied) or c.JS_IsArray(supplied) or c.JS_IsFunction(engine.context, supplied)) return js.typeError(engine, "ChildProcess spawn options must be an object");
+    if (!c.JS_IsObject(supplied) or c.JS_IsNull(supplied) or c.JS_IsArray(supplied) or c.JS_IsFunction(engine.context, supplied)) return @as(anyerror!c.JSValue, js.typeError(engine, "ChildProcess spawn options must be an object"));
     const requested = try scope.get(supplied, "stdio");
     const normalized = try scope.own(try stdio_vm.normalize(engine, if (scope.truthy(requested)) requested else try scope.text("pipe"), .{ .pipes = &module.pipe_records, .array_push = module.primordials.array_push, .array_reduce = module.array_reduce, .is_view = module.is_view }));
     const ipc = try scope.get(normalized, "ipc"); _ = try scope.get(normalized, "ipcFd");
@@ -714,10 +714,10 @@ fn spawnInstance(engine: *js.Engine, child: c.JSValue, args: []const c.JSValue, 
     // Source initializes its local serialization even without an IPC channel.
     _ = try scope.get(supplied, "serialization");
     if (!c.JS_IsUndefined(ipc)) return error.RequiredGenuineNativeIpcPipeProvider;
-    if (!c.JS_IsString(try scope.get(supplied, "file"))) return js.typeError(engine, "The options.file must be a string");
+    if (!c.JS_IsString(try scope.get(supplied, "file"))) return @as(anyerror!c.JSValue, js.typeError(engine, "The options.file must be a string"));
     try scope.set(child, "spawnfile", try scope.get(supplied, "file"));
     if (c.JS_IsUndefined(try scope.get(supplied, "args"))) try scope.set(child, "spawnargs", try scope.array()) else {
-        if (!c.JS_IsArray(try scope.get(supplied, "args"))) return js.typeError(engine, "The options.args must be an Array");
+        if (!c.JS_IsArray(try scope.get(supplied, "args"))) return @as(anyerror!c.JSValue, js.typeError(engine, "The options.args must be an Array"));
         try scope.set(child, "spawnargs", try scope.get(supplied, "args"));
     }
     const result = try scope.invoke(try scope.get(child, "_handle"), "spawn", &.{supplied});
@@ -793,7 +793,7 @@ fn spawnInstance(engine: *js.Engine, child: c.JSValue, args: []const c.JSValue, 
     return c.JS_DupValue(engine.context, result);
 }
 fn select(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var index: u32 = 0; if (c.JS_ToUint32(engine.context, &index, options.arg(args, 0)) < 0) return js.capture(engine);
+    var index: u32 = 0; if (c.JS_ToUint32(engine.context, &index, options.arg(args, 0)) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (index >= roots.len) return error.NativeChildNamespaceSelection; return c.JS_DupValue(engine.context, roots[index]);
 }
 pub fn create(engine: *js.Engine, inputs: Inputs) !Bundle {
@@ -804,10 +804,10 @@ pub fn create(engine: *js.Engine, inputs: Inputs) !Bundle {
     var invocation: js.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     const result = createInner(engine, inputs) catch |err| {
         const failure = fnc.directFailure(engine, err, generation);
-        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return @as(anyerror!Bundle, actual);
+        return @as(anyerror!Bundle, failure);
     };
-    _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| { result.deinit(engine); return actual; };
+    _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| { result.deinit(engine); return @as(anyerror!Bundle, actual); };
     return result;
 }
 fn createInner(engine: *js.Engine, inputs: Inputs) !Bundle {
@@ -866,7 +866,7 @@ fn createInner(engine: *js.Engine, inputs: Inputs) !Bundle {
     const constructor = try scope.own(try fnc.create(engine, "ChildProcess", 0, construct, &roots));
     module.constructor = c.JS_DupValue(engine.context, constructor);
     const prototype = try scope.get(constructor, "prototype");
-    if (c.JS_SetPrototype(engine.context, constructor, module.emitter) < 0 or c.JS_SetPrototype(engine.context, prototype, try scope.get(module.emitter, "prototype")) < 0) return js.capture(engine);
+    if (c.JS_SetPrototype(engine.context, constructor, module.emitter) < 0 or c.JS_SetPrototype(engine.context, prototype, try scope.get(module.emitter, "prototype")) < 0) return @as(anyerror!Bundle, js.capture(engine));
     try scope.put(prototype, "kill", try scope.own(try fnc.create(engine, "kill", 1, kill, &roots)));
     try scope.put(prototype, "spawn", try scope.own(try fnc.create(engine, "spawn", 1, spawnInstance, &roots)));
     inline for (.{ "ref", "unref" }, .{ true, false }) |name, value| try scope.put(prototype, name, try scope.own(try fnc.create(engine, name, 0, reference, &.{ roots[0], roots[1], c.pi_js_bool(engine.context, @intFromBool(value)) })));
@@ -889,7 +889,7 @@ fn createInner(engine: *js.Engine, inputs: Inputs) !Bundle {
     // retained owns the real selector graph while those roots are released.
     scope.deinit(); scope = .{ .engine = engine }; try frontier.pending(engine);
     const cached = c.JS_DupValue(engine.context, retained);
-    engine.native_module_values.put(engine.gpa, cache_key, cached) catch |err| { engine.freeValue(cached); return err; };
+    engine.native_module_values.put(engine.gpa, cache_key, cached) catch |err| { engine.freeValue(cached); return @as(anyerror!Bundle, err); };
     errdefer { if (engine.native_module_values.fetchRemove(cache_key)) |removed| engine.freeValue(removed.value); }
     errdefer |err| commit.captureUnwind(err);
     // Native-only atomic admission: no callback/allocation/VM call after this.

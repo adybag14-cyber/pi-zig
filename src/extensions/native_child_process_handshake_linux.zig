@@ -16,7 +16,7 @@ const Slot = struct {
     references: u32 = 0,
 };
 var gate: Mutex = .{};
-var slots: [16]Slot = .{.{}} ** 16;
+var slots: [16]Slot = @splat(Slot{});
 fn known(reference: Cancellation) !*Slot {
     if (reference.slot >= slots.len) return error.NativeLinuxSpawnCancellationStale;
     const slot = &slots[reference.slot];

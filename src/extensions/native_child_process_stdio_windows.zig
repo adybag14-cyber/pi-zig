@@ -15,8 +15,8 @@ const Slot = struct {
 const Entry = struct { mapping: Mapping, lease: Lease };
 const MapSlot = struct { generation: u64 = 0, active: bool = false, next_mapping: u64 = 0, entries: [64]?Entry = .{null} ** 64 };
 var gate: w.SRWLOCK = .{};
-var slots: [64]Slot = .{.{}} ** 64;
-var maps: [16]MapSlot = .{.{}} ** 16;
+var slots: [64]Slot = @splat(Slot{});
+var maps: [16]MapSlot = @splat(MapSlot{});
 const api = struct {
     extern "kernel32" fn AcquireSRWLockExclusive(*w.SRWLOCK) callconv(.winapi) void;
     extern "kernel32" fn ReleaseSRWLockExclusive(*w.SRWLOCK) callconv(.winapi) void;

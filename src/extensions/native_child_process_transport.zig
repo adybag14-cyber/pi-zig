@@ -138,7 +138,7 @@ pub const Process = struct {
             if (failure == 5) {
                 var status: u32 = 0; if (win.GetExitCodeProcess(handle, &status) != 0 and status != 259) return false;
                 const zero: std.os.windows.LARGE_INTEGER = 0;
-                if (std.os.windows.ntdll.NtWaitForSingleObject(handle, .FALSE, &zero) == .WAIT_0) return false;
+                if (std.os.windows.ntdll.NtWaitForSingleObject(handle, .FALSE, &zero) == .SUCCESS) return false;
                 return error.PermissionDenied;
             }
             return error.NativeExecProcessSignalFailed;

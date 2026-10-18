@@ -34,7 +34,7 @@ const Shard = struct {
 };
 const State = struct {
     guard: Mutex = .{}, phase: enum { cold, ready, failed } = .cold,
-    clients: [16]Client = .{.{}} ** 16, shards: [2]Shard = .{.{}} ** 2,
+    clients: [16]Client = @splat(Client{}), shards: [2]Shard = @splat(Shard{}),
     next_token: u64 = 0,
 };
 var state: State = .{};

@@ -117,7 +117,7 @@ pub const Slot = struct {
 };
 const Registry = struct {
     lock: w.SRWLOCK = .{},
-    slots: [capacity]Slot = .{.{}} ** capacity,
+    slots: [capacity]Slot = @splat(Slot{}),
     wake: ?w.HANDLE = null,
     initialized: bool = false,
     watcher_failed: bool = false,

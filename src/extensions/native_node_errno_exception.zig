@@ -45,7 +45,7 @@ fn constructInner(engine: *js.Engine, callee: c.JSValue, target: c.JSValue, args
     const base_generation = engine.native_allocation_generation;
     const base = try scope.ownSince(c.JS_GetPrototype(engine.context, callee), base_generation);
     const generation = engine.native_allocation_generation;
-    const parameters = [_]c.JSValue{message};
+    var parameters = [_]c.JSValue{message};
     const value = try scope.ownSince(c.JS_CallConstructor2(engine.context, base, target, 1, &parameters), generation);
     try scope.set(value, "errno", argument(args, 0));
     try scope.set(value, "code", code);
@@ -58,8 +58,8 @@ fn construct(engine: *js.Engine, callee: c.JSValue, target: c.JSValue, args: []c
     var invocation: js.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     const result = constructInner(engine, callee, target, args, roots) catch |err| {
         const failure = directFailure(engine, err);
-        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return @as(anyerror!c.JSValue, actual);
+        return @as(anyerror!c.JSValue, failure);
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, result));
 }
@@ -88,9 +88,9 @@ fn acquireInner(engine: *js.Engine, inputs: Inputs) !c.JSValue {
         result = try scope.own(try classes.create(engine, "ErrnoException", 3, prototype, inputs.error_type, construct, &.{lexical, inputs.require}));
         try engine.checkNativeEntry();
         const getter = try scope.own(try functions.createMethod(engine, "get constructor", 0, constructorGetter, &.{inputs.error_type}));
-        const atom = c.JS_NewAtom(engine.context, "constructor"); if (atom == c.JS_ATOM_NULL) return js.capture(engine); defer c.JS_FreeAtom(engine.context, atom);
+        const atom = c.JS_NewAtom(engine.context, "constructor"); if (atom == c.JS_ATOM_NULL) return @as(anyerror!c.JSValue, js.capture(engine)); defer c.JS_FreeAtom(engine.context, atom);
         const status = c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), c.JS_PROP_CONFIGURABLE | c.JS_PROP_THROW);
-        try engine.checkNativeEntry(); if (status < 0) return js.capture(engine);
+        try engine.checkNativeEntry(); if (status < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     }
     // Shared record is private/unregistered. Publish the actual class last;
     // older argument/SystemError/marker entries and their identities stay exact.
@@ -105,8 +105,8 @@ pub fn acquire(engine: *js.Engine, inputs: Inputs) !c.JSValue {
     var invocation: js.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     const result = acquireInner(engine, inputs) catch |err| {
         const failure = directFailure(engine, err);
-        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return @as(anyerror!c.JSValue, actual);
+        return @as(anyerror!c.JSValue, failure);
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, result));
 }
