@@ -1,0 +1,24 @@
+{
+  "schema": "sdk-guest-operation-causal-contract-test-v3",
+  "previous": "1f1ac9b6e81d26c33a21270e200336f6c0549a12",
+  "product_unchanged": true,
+  "assertion": "Real Error plus exact primitive InternalError/name/message excludes historical968 null manufacturing",
+  "execution_grant": false,
+  "rows": [
+    {
+      "path": "src/extensions/native_sdk_guest_operation.zig",
+      "sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+      "length": 7009
+    },
+    {
+      "path": "src/native_sdk_guest_operation_test.zig",
+      "sha256": "4BCEC20E3D70DA3D47C33C450180C380D9D4B8FD1A88E06A7CD265CD2BC147E2",
+      "length": 11211
+    },
+    {
+      "path": "verification/sdk-guest-operation-sourceonly-20261018/corrective-prepared.json",
+      "sha256": "FB0BF7D7269AA3842A851009E70D3D190BF0BD100418A6AEF2F4647B44F438C7",
+      "length": 2648
+    }
+  ]
+}

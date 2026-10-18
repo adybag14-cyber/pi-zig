@@ -125,7 +125,16 @@ test "SDK guest boundary negative status without reason and actual pending prece
     engine.captured_exception = c.JS_DupValue(engine.context, historical);
     var missing: guest.Boundary = .{ .engine = engine }; try missing.begin();
     try std.testing.expectError(error.JavaScriptException, missing.finishStatus(-1));
-    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, historical, engine.captured_exception orelse return error.RequiredContractFailure));
+    const contract = engine.captured_exception orelse return error.RequiredContractFailure;
+    try std.testing.expect(!c.JS_IsStrictEqual(engine.context, historical, contract));
+    try std.testing.expect(c.JS_IsError(contract));
+    inline for (.{ .{ "name", "InternalError" }, .{ "message", "Native callback returned exception without a pending reason" } }) |field| {
+        const text = c.JS_GetPropertyStr(engine.context, contract, field[0]); defer engine.freeValue(text);
+        try std.testing.expect(c.JS_IsString(text)); // No guest diagnostic coercion.
+        const bytes = c.JS_ToCString(engine.context, text); if (bytes == null) return error.RequiredPrimitiveContractText;
+        defer c.JS_FreeCString(engine.context, bytes);
+        try std.testing.expectEqualStrings(field[1], std.mem.span(bytes));
+    }
     try balanced(engine);
     for ([_]bool{ false, true }) |fatal| {
         const reason = try engine.checked(c.JS_NewError(engine.context)); defer engine.freeValue(reason);
