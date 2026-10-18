@@ -1,0 +1,152 @@
+
+
+};
+
+const kEnumerableProperty = { __proto__: null };
+kEnumerableProperty.enumerable = true;
+ObjectFreeze(kEnumerableProperty);
+
+const kEmptyObject = ObjectFreeze({ __proto__: null });
+
+function filterOwnProperties(source, keys) {
+  const filtered = { __proto__: null };
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    if (ObjectPrototypeHasOwnProperty(source, key)) {
+      filtered[key] = source[key];
+    }
+  }
+
+  return filtered;
+}
+
+/**
+ * Mimics `obj[key] = value` but ignoring potential prototype inheritance.
+ * @param {any} obj
+ * @param {string} key
+ * @param {any} value
+ * @returns {any}
+ */
+function setOwnProperty(obj, key, value) {
+  return ObjectDefineProperty(obj, key, {
+    __proto__: null,
+    configurable: true,
+    enumerable: true,
+    value,
+    writable: true,
+  });
+}
+
+let internalGlobal;
+function getInternalGlobal() {
+  if (internalGlobal == null) {
+    // Lazy-load to avoid a circular dependency.
+    const { runInNewContext } = require('vm');
+    internalGlobal = runInNewContext('this', undefined, { contextName: 'internal' });
+  }
+  return internalGlobal;
+}
+
+function SideEffectFreeRegExpPrototypeExec(regex, string) {
+  const { RegExp: RegExpFromAnotherRealm } = getInternalGlobal();
+  return FunctionPrototypeCall(RegExpFromAnotherRealm.prototype.exec, regex, string);
+}
+
+const crossRealmRegexes = new SafeWeakMap();
+function getCrossRealmRegex(regex) {
+  const cached = crossRealmRegexes.get(regex);
+  if (cached) return cached;
+
+  let flagString = '';
+  if (RegExpPrototypeGetHasIndices(regex)) flagString += 'd';
+  if (RegExpPrototypeGetGlobal(regex)) flagString += 'g';
+  if (RegExpPrototypeGetIgnoreCase(regex)) flagString += 'i';
+  if (RegExpPrototypeGetMultiline(regex)) flagString += 'm';
+  if (RegExpPrototypeGetDotAll(regex)) flagString += 's';
+  if (RegExpPrototypeGetUnicode(regex)) flagString += 'u';
+  if (RegExpPrototypeGetSticky(regex)) flagString += 'y';
+
+  const { RegExp: RegExpFromAnotherRealm } = getInternalGlobal();
+  const crossRealmRegex = new RegExpFromAnotherRealm(RegExpPrototypeGetSource(regex), flagString);
+  crossRealmRegexes.set(regex, crossRealmRegex);
+  return crossRealmRegex;
+}
+
+function SideEffectFreeRegExpPrototypeSymbolReplace(regex, string, replacement) {
+  return getCrossRealmRegex(regex)[SymbolReplace](string, replacement);
+}
+
+function SideEffectFreeRegExpPrototypeSymbolSplit(regex, string, limit = undefined) {
+  return getCrossRealmRegex(regex)[SymbolSplit](string, limit);
+}
+
+/**
+ * Helper function to lazy-load an initialize-once value.
+ * @template T Return value of initializer
+ * @param {()=>T} initializer Initializer of the lazily loaded value.
+ * @returns {()=>T}
+ */
+function getLazy(initializer) {
+  let value;
+  let initialized = false;
+  return function() {
+    if (initialized === false) {
+      value = initializer();
+      initialized = true;
+    }
+    return value;
+  };
+}
+
+// Setup user-facing NODE_V8_COVERAGE environment variable that writes
+// ScriptCoverage objects to a specified directory.
+function setupCoverageHooks(dir) {
+  const cwd = require('internal/process/execution').tryGetCwd();
+  const { resolve } = require('path');
+  const coverageDirectory = resolve(cwd, dir);
+  const { sourceMapCacheToObject } =
+    require('internal/source_map/source_map_cache');
+
+  if (process.features.inspector) {
+    internalBinding('profiler').setCoverageDirectory(coverageDirectory);
+    internalBinding('profiler').setSourceMapCacheGetter(sourceMapCacheToObject);
+  } else {
+    process.emitWarning('The inspector is disabled, ' +
+                        'coverage could not be collected',
+                        'Warning');
+    return '';
+  }
+  return coverageDirectory;
+}
+
+// Returns the number of ones in the binary representation of the decimal
+// number.
+function countBinaryOnes(n) {
+  // Count the number of bits set in parallel, which is faster than looping
+  n = n - ((n >>> 1) & 0x55555555);
+  n = (n & 0x33333333) + ((n >>> 2) & 0x33333333);
+  return ((n + (n >>> 4) & 0xF0F0F0F) * 0x1010101) >>> 24;
+}
+
+function getCIDR(address, netmask, family) {
+  let ones = 0;
+  let split = '.';
+  let range = 10;
+  let groupLength = 8;
+  let hasZeros = false;
+  let lastPos = 0;
+
+  if (family === 'IPv6') {
+    split = ':';
+    range = 16;
+    groupLength = 16;
+  }
+
+  for (let i = 0; i < netmask.length; i++) {
+    if (netmask[i] !== split) {
+      if (i + 1 < netmask.length) {
+        continue;
+      }
+      i++;
+    }
+    const part = StringPrototypeSlice(netmask, lastP
