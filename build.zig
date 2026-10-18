@@ -3826,6 +3826,22 @@ pub fn build(b: *std.Build) void {
     cjs_raw_provider_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-node-commonjs-raw-body-provider", "Compile actual raw CJS compiler adapter controls").dependOn(&b.addInstallArtifact(cjs_raw_provider_tests, .{}).step);
 
+
+    const pkce_genuine_af_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_pkce_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native OAuth PKCE"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, pkce_genuine_af_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, pkce_genuine_af_tests.root_module, typescript_parser);
+    linkSqlite(pkce_genuine_af_tests.root_module, sqlite_lib_dir, sqlite_library);
+    pkce_genuine_af_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        pkce_genuine_af_tests.root_module.linkSystemLibrary("advapi32", .{});
+        pkce_genuine_af_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-ai-oauth-pkce-genuine-af", "Install actual PKCE Source and genuine native AF controls").dependOn(&b.addInstallArtifact(pkce_genuine_af_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-pkce-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

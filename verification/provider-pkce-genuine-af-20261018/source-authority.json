@@ -1,0 +1,14 @@
+{
+  "status": "source_composition_not_executed",
+  "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "upstream_path": "packages/ai/src/auth/oauth/pkce.ts",
+  "accepted_runtime": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "runtime_typescript_matches_frozen": true,
+  "files": {
+    "pkce.ts": "33835111577490103DBB7509B7687DB1643691D7B425845428F3CBEB873FE9CF",
+    "pkce.js": "D54668654E89D6FE6994A09A7F9399E732A411FCB31C99EB8B5E60349763708C",
+    "pkce.js.map": "EAF98103BA19D07164A7BAD58FF8CF531ED20C03187DD0405D94177FEE58B524",
+    "LICENSE.upstream.txt": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+  },
+  "scope": "Actual genuine native AsyncFunction declaration, one digest Await, native WebCrypto/TextEncoder/base64 and live guest iterator/string hooks; no application qualification claim."
+}
