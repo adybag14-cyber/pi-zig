@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "cec90dbc2f762180c06b048a5178c070a1450cd4",
+  "current_source_head_at_record": "bd04085b5af28a54f0973d3650b1817563bbb0f7",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -12,7 +12,9 @@
     "main": "Root",
     "vm-foundation-integration-20261018": "vm_foundation",
     "sdk-owners-resume-20261018": "sdk_owners",
-    "modules-io-resume-20261018": "modules_io"
+    "modules-io-resume-20261018": "modules_io",
+    "provider-af-resume-20261018": "Root",
+    "public-modes-resume-20261018": "vm_foundation"
   },
   "af11_saved_metadata": {
     "status": "reconciled_accepted",
@@ -33,5 +35,70 @@
   },
   "application_qualification": false,
   "production_bridge_removed": false,
-  "published_release": false
+  "published_release": false,
+  "updated_utc": "2026-10-18T17:01:50.626545+00:00",
+  "record_note": "The source head field identifies the source before this ledger-only commit; runtime evidence applies only to the exact explicitly recorded artifact head.",
+  "integrated_source_units": [
+    "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls."
+  ],
+  "combined_native_execution": {
+    "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
+    "head": "00e827fa64d1e584afbd77f72f80ff22a6b4a3e7",
+    "build": {
+      "status": "passed_build_query",
+      "cache": "fresh",
+      "evidence": "../../evidence/root-combined-af-fresh-buildquery-20261018-162534",
+      "actual_metadata_count": 31
+    },
+    "independent_metadata": {
+      "status": "accepted",
+      "evidence": "../../evidence/root-combined-af-fresh-independent-20261018/acceptance.json",
+      "sha256": "EF872AFF3E8CE1F59C9352DB998B6CCAB27B47A60C7BF9B5B4374BE5842E4B2B"
+    },
+    "runtime": {
+      "status": "passed_selected_native_controls",
+      "evidence": "../../evidence/root-combined-af-runtime-20261018-163618",
+      "completed": 31,
+      "passed_flags_zero": 31,
+      "failed_or_skipped_or_logged_or_leaked": 0,
+      "stderr_bytes": 0,
+      "cancellation_control_index_7": "passed",
+      "source_postseal": true,
+      "controller_environment_restored": true,
+      "native_and_outer_owners_independently_absent": true
+    },
+    "artifact_sha256": "CA993BAC6E162CBDDD206F1E5F4D749CB2F2487AD84E8FB235D66E6FF84972E4"
+  },
+  "preserved_attempts": [
+    {
+      "status": "failed_compile",
+      "evidence": "../../evidence/root-combined-af-buildquery-20261018-155057",
+      "detail": "Eight real Zig syntax diagnostics on earlier combined head; source corrections integrated, original negative unchanged."
+    },
+    {
+      "status": "owner_failed_no_qualification",
+      "evidence": "../../evidence/root-combined-source-check-20261018-160210",
+      "detail": "Fast compiler AST commands exited before live owner binding. No AST passes claimed."
+    },
+    {
+      "status": "owner_failed_no_execution_claim",
+      "evidence": "../../evidence/root-combined-source-check-stdin-20261018-160736",
+      "detail": "Compiler exited before owned stdin source delivery. Empty stderr is not validation."
+    },
+    {
+      "status": "passed_diagnostic_only",
+      "evidence": "../../evidence/root-combined-af-diagnostic-20261018-161838",
+      "detail": "Seeded development compile and actual31 metadata; runtime and qualification explicitly excluded."
+    },
+    {
+      "status": "negative_independent_audit_then_derived_correction",
+      "evidence": "../../evidence/root-combined-af-fresh-independent-20261018/attempt1-negative.json",
+      "detail": "Original audit rejected intentional duplicate PowerShell role. Derived auditor permits only exact same pinned executable role duplicated twice; full original negative remains."
+    }
+  ],
+  "next_native_batch": {
+    "status": "prepared_not_executed",
+    "controller": "../../evidence/combined-native-batch-prepared-20261018/Run-CombinedNativeBatch.ps1",
+    "scope": "Fourteen serial actual groups; one initially fresh cache pair, distinct installed prefixes, whole-batch complete source/compiler/control seals, per-child ownership/admission/absence, independent actual metadata before separate runtime. Partial batches cannot qualify."
+  }
 }
