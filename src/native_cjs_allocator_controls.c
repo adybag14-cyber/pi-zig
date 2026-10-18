@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 typedef union CompilerBlock {
     max_align_t alignment;
@@ -17,11 +14,6 @@ typedef union CompilerBlock {
 typedef struct CompilerFixture {
     size_t events, fail_at, live;
     int induced, loads;
-    int diagnostic_mode;
-    size_t diagnostic_offset, failed_size;
-    uintptr_t failure_pcs[16], image_base;
-    size_t image_size;
-    unsigned failure_pc_count;
     JSValue first_error;
     JSContext *context;
     JSValue interrupt_reason;
@@ -30,43 +22,6 @@ typedef struct CompilerFixture {
     JSValue legacy_prototype, legacy_target, legacy_error_ctor;
     int legacy_finalizer_mode, legacy_finalizer_armed, legacy_finalizer_calls;
 } CompilerFixture;
-
-static void compiler_failure_trace(CompilerFixture *state, size_t size)
-{
-    if (!(state->diagnostic_mode == 6 && state->diagnostic_offset == 53))
-        return;
-    state->failed_size = size;
-#ifdef _WIN32
-    {
-        typedef WORD (NTAPI *TraceFunction)(DWORD, DWORD, PVOID *, PDWORD);
-        HMODULE library = GetModuleHandleW(L"ntdll.dll");
-        TraceFunction capture = library ? (TraceFunction)(uintptr_t)GetProcAddress(library, "RtlCaptureStackBackTrace") : NULL;
-        HMODULE image = GetModuleHandleW(NULL);
-        MEMORY_BASIC_INFORMATION memory;
-        void *addresses[16];
-        if (capture) {
-            state->failure_pc_count = capture(0, 16, addresses, NULL);
-            for (unsigned i = 0; i < state->failure_pc_count; i++)
-                state->failure_pcs[i] = (uintptr_t)addresses[i];
-        }
-        if (image && VirtualQuery(image, &memory, sizeof(memory)) == sizeof(memory) &&
-            memory.State == MEM_COMMIT && memory.Type == MEM_IMAGE && memory.AllocationBase == image &&
-            memory.RegionSize >= sizeof(IMAGE_DOS_HEADER)) {
-            const IMAGE_DOS_HEADER *dos = (const IMAGE_DOS_HEADER *)image;
-            if (dos->e_magic == IMAGE_DOS_SIGNATURE && dos->e_lfanew >= 0 &&
-                memory.RegionSize >= sizeof(IMAGE_NT_HEADERS64) &&
-                (size_t)dos->e_lfanew <= memory.RegionSize - sizeof(IMAGE_NT_HEADERS64)) {
-                const IMAGE_NT_HEADERS64 *nt = (const IMAGE_NT_HEADERS64 *)((const uint8_t *)image + dos->e_lfanew);
-                if (nt->Signature == IMAGE_NT_SIGNATURE && nt->OptionalHeader.Magic == IMAGE_NT_OPTIONAL_HDR64_MAGIC &&
-                    nt->OptionalHeader.SizeOfImage >= memory.RegionSize) {
-                    state->image_base = (uintptr_t)image;
-                    state->image_size = nt->OptionalHeader.SizeOfImage;
-                }
-            }
-        }
-    }
-#endif
-}
 
 static int compiler_work_interrupt(JSRuntime *runtime, void *opaque)
 {
@@ -83,7 +38,6 @@ static int compiler_fail(CompilerFixture *state, size_t size)
 {
     if (size && state->events++ == state->fail_at) {
         state->induced++;
-        compiler_failure_trace(state, size);
         return 1;
     }
     return 0;
@@ -197,8 +151,6 @@ static int compiler_attempt(int mode, size_t offset, size_t *measured,
     int valid_cjs = mode == 0 || mode == 5 || mode == 6 || mode == 7;
     JSMemoryUsage before_atoms, after_atoms;
     state.fail_at = SIZE_MAX;
-    state.diagnostic_mode = mode;
-    state.diagnostic_offset = offset;
     state.first_error = JS_UNDEFINED;
     state.interrupt_reason = JS_UNDEFINED;
     state.interrupt_stop = interrupt_stop;
@@ -369,13 +321,7 @@ static int compiler_attempt(int mode, size_t offset, size_t *measured,
         JS_FreeValue(context, meta_map); meta_map = JS_UNDEFINED;
         JS_RunGC(runtime);
         JS_ComputeMemoryUsage(runtime, &after_atoms);
-        if (before_atoms.atom_count != after_atoms.atom_count) {
-            if (mode == 6 && offset == 53)
-                fprintf(stderr, "CJS_DIAGNOSTIC atoms mode=%d offset=%zu outcome=%d category=%d induced=%d before=%lld after=%lld native_blocks_before_cleanup=%zu\n",
-                        mode, offset, outcome, (int)category, state.induced,
-                        (long long)before_atoms.atom_count, (long long)after_atoms.atom_count, state.live);
-            status = 21; goto cleanup;
-        }
+        if (before_atoms.atom_count != after_atoms.atom_count) { status = 21; goto cleanup; }
     }
     if ((mode == 0 || mode == 5) && outcome == 0) {
         JSValue actual = JS_Call(context, result, JS_UNDEFINED, 0, NULL);
@@ -422,22 +368,6 @@ cleanup:
     }
     if (runtime)
         JS_FreeRuntime(runtime);
-    if ((status || state.live) && mode == 6 && offset == 53) {
-        fprintf(stderr, "CJS_DIAGNOSTIC terminal mode=%d offset=%zu status=%d remaining_native_blocks=%zu\n",
-                mode, offset, status, state.live);
-        if (state.failed_size) {
-            fprintf(stderr, "CJS_DIAGNOSTIC allocation_trace mode=%d offset=%zu size=%zu count=%u image_base=0x%llx image_size=%zu\n",
-                    mode, offset, state.failed_size, state.failure_pc_count,
-                    (unsigned long long)state.image_base, state.image_size);
-            for (unsigned i = 0; i < state.failure_pc_count; i++) {
-                uintptr_t pc = state.failure_pcs[i];
-                bool in_image = state.image_size && pc >= state.image_base && pc - state.image_base < state.image_size;
-                fprintf(stderr, "CJS_DIAGNOSTIC allocation_pc index=%u pc=0x%llx root_image=%d rva=0x%llx\n",
-                        i, (unsigned long long)pc, in_image,
-                        (unsigned long long)(in_image ? pc - state.image_base : 0));
-            }
-        }
-    }
     return state.live ? (status ? status : 15) : status;
 }
 
