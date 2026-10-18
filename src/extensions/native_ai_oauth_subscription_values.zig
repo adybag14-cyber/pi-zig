@@ -86,40 +86,7 @@ pub fn credential(s: *Scope, access: c.JSValue, refresh: c.JSValue, expires: c.J
     try s.put(result, "expires", expires);
     return result;
 }
-/// utils/sleep.ts preserves the caller's reason, unlike device-code sleep.
+/// The Source ordinary producer is shared with the genuine OAuth bodies.
 pub fn sleep(engine: *v.em.Engine, ms: c.JSValue, input_signal: c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = engine };
-    defer s.deinit();
-    const p = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(p.owner);
-    errdefer engine.freeValue(p.promise);
-    startSleep(&s, p.owner, ms, input_signal) catch |err| try flow.rejectError(engine, p.owner, err);
-    return p.promise;
-}
-fn startSleep(s: *Scope, owner: c.JSValue, ms: c.JSValue, input_signal: c.JSValue) !void {
-    _ = try s.invoke(input_signal, "throwIfAborted", &.{});
-    try s.put(owner, "signal", input_signal);
-    const Adapter = struct {
-        fn aborted(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            var local: Scope = .{ .engine = engine };
-            defer local.deinit();
-            _ = try local.call(try local.global("clearTimeout"), c.pi_js_undefined(), &.{try local.get(roots[0], "timeout")});
-            try flow.settle(engine, roots[0], true, try local.get(try local.get(roots[0], "signal"), "reason"));
-            return c.pi_js_undefined();
-        }
-        fn elapsed(engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-            var local: Scope = .{ .engine = engine };
-            defer local.deinit();
-            _ = try local.invoke(try local.get(roots[0], "signal"), "removeEventListener", &.{ try local.text("abort"), try local.get(roots[0], "onAbort") });
-            try flow.settle(engine, roots[0], false, c.pi_js_undefined());
-            return c.pi_js_undefined();
-        }
-    };
-    const on_abort = try s.own(try functions.createArrow(s.engine, "onAbort", 0, Adapter.aborted, &.{owner}));
-    try s.put(owner, "onAbort", on_abort);
-    const elapsed = try s.own(try functions.createArrow(s.engine, "", 0, Adapter.elapsed, &.{owner}));
-    try s.put(owner, "timeout", try s.call(try s.global("setTimeout"), c.pi_js_undefined(), &.{ elapsed, ms }));
-    const options = try s.object();
-    try s.put(options, "once", c.pi_js_bool(s.engine.context, 1));
-    _ = try s.invoke(input_signal, "addEventListener", &.{ try s.text("abort"), on_abort, options });
+    return @import("native_ai_sleep.zig").sleep(engine, ms, input_signal);
 }

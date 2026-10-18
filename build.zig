@@ -3977,6 +3977,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-child-frontend-genuine", "Install eleven declared actual child frontend and live OS waiter controls without running").dependOn(&b.addInstallArtifact(child_frontend_genuine, .{ .dest_sub_path = b.fmt("native-child-frontend-genuine{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const ai_sleep_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_sleep_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"native AI sleep"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, ai_sleep_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, ai_sleep_tests.root_module, typescript_parser);
+    linkSqlite(ai_sleep_tests.root_module, sqlite_lib_dir, sqlite_library);
+    ai_sleep_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        ai_sleep_tests.root_module.linkSystemLibrary("advapi32", .{});
+        ai_sleep_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-ai-sleep", "Install actual Source sleep producer and timer ownership controls").dependOn(&b.addInstallArtifact(ai_sleep_tests, .{ .dest_sub_path = b.fmt("native-ai-sleep{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
