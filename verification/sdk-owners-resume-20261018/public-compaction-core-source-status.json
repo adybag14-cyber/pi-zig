@@ -1,0 +1,116 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-compaction-core",
+  "executable": "native-sdk-public-compaction-core.exe",
+  "root": "src/native_sdk_public_compaction_core_test.zig",
+  "filters": [
+    "SDK public compaction core"
+  ],
+  "authored_declared_test_names": [
+    "SDK public compaction core actual ordinary shapes defaults and cached owner identity",
+    "SDK public compaction core actual usage getter and coercion order",
+    "SDK public compaction core actual last valid usage and repeated live getters",
+    "SDK public compaction core actual reserve operand retires before outer comparison",
+    "SDK public compaction core actual token estimates for every role",
+    "SDK public compaction core actual JSON callee and returned receiver retirement",
+    "SDK public compaction core actual text helper head survives next and retires before caller",
+    "SDK public compaction core actual system section head survives following expressions",
+    "SDK public compaction core actual cut metadata compaction boundaries and split turns",
+    "SDK public compaction core actual live array methods and callback shapes",
+    "SDK public compaction core actual BigInt decrement and temporary turn entry retirement",
+    "SDK public compaction core actual IteratorClose preserves head and original throw",
+    "SDK public compaction core actual iterator next failure omits guest close",
+    "SDK public compaction core actual same-operation private DATA remains ordinary",
+    "SDK public compaction core actual retirement B preempts returned length getter",
+    "SDK public compaction core actual current B bypasses guest catch",
+    "SDK public compaction core actual cancellation on new head preempts body and close"
+  ],
+  "production_exports": [
+    "calculateContextTokens",
+    "getLastAssistantUsage",
+    "shouldCompact",
+    "findTurnStartIndex",
+    "findCutPoint",
+    "estimateTokens",
+    "DEFAULT_COMPACTION_SETTINGS"
+  ],
+  "production_files": [
+    {
+      "path": "src/extensions/native_sdk_public_compaction_core.zig",
+      "sha256": "E3262F119CA793A6B73402A7CAD1C333FD36DD7431A1544CC49E0E01D482B255",
+      "bytes": 18716
+    },
+    {
+      "path": "src/extensions/native_sdk_compaction_estimate.zig",
+      "sha256": "0C5824A30A34D365F097F3CD5F6F34213F1A84EADF010A1B333AD1A7AB4B153B",
+      "bytes": 8134
+    }
+  ],
+  "control_files": [
+    {
+      "path": "src/native_sdk_public_compaction_core_test.zig",
+      "sha256": "568783A725EB8E6A27DE769237FD6A37CE8D3670793F6F449E3C59A57E60CC28",
+      "bytes": 8244
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-compaction-core-c268-source.mjs",
+      "sha256": "CAD821164A99F9F0AD37C40BB595F3E8976D756D2705E08FFE508FAD62742708",
+      "bytes": 6596
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-compaction-core-observer.mjs",
+      "sha256": "7CAF078491C0A00C604B47A14554A979685B94957BCE53174B720AD7C3113143",
+      "bytes": 14887
+    }
+  ],
+  "source_authority": "c268154c",
+  "source_authority_copy": {
+    "path": "verification/sdk-owners-resume-20261018/compaction-authority/compaction.ts.txt",
+    "sha256": "F5BBC427E337BE708BD15297806C0ACAF7CB0EE65CC4AF77E6E48C3E3937894F",
+    "bytes": 35245
+  },
+  "source_fixture_kind": "Manually erased TypeScript annotations in exact selected bodies inside a strict ordinary factory. Its projection dependency is the actual prior Source sessionEntryToContextMessages body from the retained Session fixture.",
+  "source_projection_fixture": {
+    "path": "src/extensions/fixtures/sdk-public-session-helpers-c268-source.mjs",
+    "sha256": "5D2D164A02F8B65F37E849ED67393C0857FE75E93889B3C2EDCC912444088956",
+    "bytes": 8068
+  },
+  "actual_native_projection_owner": {
+    "path": "src/extensions/native_sdk_session_projection_live.zig",
+    "sha256": "C1EAEF224ED8DB85926CFB80A6DA0AB99CD81CBF8D794FC2ABE126D6FEE1A4CD",
+    "bytes": 26884
+  },
+  "imported_control_roots": [
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41",
+      "declared_test_names": []
+    }
+  ],
+  "integration": {
+    "shared_public_values_commit": "425f8aaa",
+    "shared_public_values_sha256": "31178ADB24033B123C8DE22CFD7EE3981F8B993E8C2F4CA6563510A5E66FA1AD",
+    "guest_sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+    "owned_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "build_delta": "Only the thirteen-line install-only target is added. Preserve newer Main build blocks when intaking.",
+    "existing_estimator": "The original private native_sdk_compaction_estimate.zig body is migrated and reused; no alternate estimator is substituted."
+  },
+  "source_peer": {
+    "production": "VM finite peer closed E3262F11 and 0C5824A3 against F5BBC427 for selected seven exported values, live fields/coercion, nested expression cleanup, actual array callbacks and BCDF loop slots; source-only.",
+    "controls": "VM finite peer closed 568783A7, 7CAF0784 and CAD82116 for all 17 declarations and actual Source/projection dependencies, JSON holders, loop heads, coercion, real callbacks/BigInt, DATA/B/IteratorClose/cancellation; source-only."
+  },
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "remaining_public_compaction": [
+    "collectEntriesForBranchSummary",
+    "compact",
+    "generateBranchSummary",
+    "generateSummary",
+    "generateSummaryWithUsage",
+    "prepareBranchEntries",
+    "serializeConversation"
+  ],
+  "whole_public_namespace_qualification": false
+}

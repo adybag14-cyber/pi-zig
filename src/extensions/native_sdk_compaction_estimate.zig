@@ -1,119 +1,159 @@
-//! Original compaction token heuristic over live VM values and iterators.
-//! Numeric coercions remain guest operators; mutable Math/JSON/Object methods
-//! are resolved in the same evaluation order as the upstream function.
-const em = @import("engine.zig");
-const js = @import("native_js_values.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const arithmetic = @import("native_image_arithmetic.zig");
-const c = em.c;
+//! Actual c268 token heuristic with AF33/C435 expression retirement.
+//! Source chars and iteration heads are lexical slots, distinct from temporary
+//! receivers; the last head survives final done until function completion.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const em = v.em;
+const c = v.c;
+const Scope = v.Scope;
+const TextFrame = h.Frame(enum { chars, block });
+const MessageFrame = h.Frame(enum { chars, system, section, assistant, block });
 
 pub fn create(engine: *em.Engine) !c.JSValue {
-    return @import("native_node_function.zig").create(engine, "estimateTokens", 1, call, &.{});
+    return h.expression(engine, createBody, .{});
+}
+fn createBody(s: *Scope) !c.JSValue {
+    return v.duplicate(s, try v.ordinary(s, "estimateTokens", 1, call, &.{}));
 }
 fn call(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return estimateTokens(engine, if (args.len > 0) args[0] else c.pi_js_undefined());
+    return estimateTokens(engine, v.arg(args, 0));
 }
-
-fn equalText(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
-    return scope.equal(value, try scope.text(text));
+fn roleCode(s: *Scope, message: c.JSValue) !c.JSValue {
+    const role = try v.get(s, message, "role");
+    inline for (.{ "system", "user", "assistant", "custom", "toolResult", "bashExecution", "branchSummary", "compactionSummary" }, 1..) |name, index| {
+        if (try v.eq(s, role, name)) return c.JS_NewInt32(s.engine.context, @intCast(index));
+    }
+    return c.JS_NewInt32(s.engine.context, 0);
 }
-fn iterator(scope: *Scope, value: c.JSValue) !js.Iterator {
-    const symbol = try scope.own(try scope.engine.checked(c.JS_GetIteratorSymbol(scope.engine.context)));
-    return js.Iterator.init(scope.engine, value, symbol);
+fn addIncoming(s: *Scope, left: c.JSValue, incoming: anyerror!c.JSValue) !c.JSValue {
+    const right = try v.own(s, try incoming);
+    return v.duplicate(s, try h.binary(s, .add, left, right));
 }
 fn textImageChars(engine: *em.Engine, content: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    if (c.JS_IsString(content)) return js.get(engine, content, "length");
-    var chars = c.JS_NewInt32(engine.context, 0);
-    var blocks = try iterator(&scope, content);
-    defer blocks.deinit();
-    errdefer blocks.closePreserving();
-    while (try blocks.next()) |block| {
-        defer engine.freeValue(block);
-        var step: Scope = .{ .engine = engine };
-        defer step.deinit();
-        if (try equalText(&step, try step.get(block, "type"), "text") and step.truthy(try step.get(block, "text"))) {
-            chars = try scope.concat(chars, try step.get(try step.get(block, "text"), "length"));
-        } else if (try equalText(&step, try step.get(block, "type"), "image")) {
-            chars = try scope.concat(chars, c.JS_NewInt32(engine.context, 4800));
+    var f = TextFrame.init(engine);
+    return f.finish(textImageSource(&f, content));
+}
+fn textImageSource(f: *TextFrame, content: c.JSValue) !c.JSValue {
+    if (c.JS_IsString(content)) return h.get(f.engine, content, "length");
+    try f.set(.chars, h.number(f.engine, 0));
+    var iterator = try v.Iterator.init(f.engine, content);
+    try iterator.finish(textImageLoop(f, &iterator));
+    return h.duplicate(f.engine, f.get(.chars));
+}
+fn textImageLoop(f: *TextFrame, iterator: *v.Iterator) !void {
+    const engine = f.engine;
+    while (try iterator.next()) |block| {
+        try f.set(.block, block);
+        if (try h.fieldEqual(engine, f.get(.block), "type", "text") and
+            try h.fieldTest(engine, f.get(.block), "text", .truthy))
+        {
+            try f.set(.chars, h.expression(engine, addIncoming, .{
+                f.get(.chars), h.nested(engine, f.get(.block), "text", "length"),
+            }));
+        } else if (try h.fieldEqual(engine, f.get(.block), "type", "image")) {
+            try f.set(.chars, h.expression(engine, addIncoming, .{ f.get(.chars), @as(anyerror!c.JSValue, h.number(engine, 4800)) }));
         }
     }
-    return c.JS_DupValue(engine.context, chars);
 }
-fn jsonChars(scope: *Scope, owner: c.JSValue, field: [*:0]const u8) !c.JSValue {
-    const json = try scope.global("JSON");
-    const stringify = try scope.get(json, "stringify");
-    const encoded = try scope.call(stringify, json, &.{try scope.get(owner, field)});
-    return scope.get(encoded, "length");
+fn textImageIncoming(s: *Scope, incoming: anyerror!c.JSValue) !c.JSValue {
+    const content = try v.own(s, try incoming);
+    return textImageChars(s.engine, content);
 }
-fn ceilChars(scope: *Scope, chars: c.JSValue) !c.JSValue {
-    const math = try scope.global("Math");
-    const ceil = try scope.get(math, "ceil");
-    const divided = try scope.own(try arithmetic.binary(scope.engine, .divide, chars, c.JS_NewInt32(scope.engine.context, 4)));
-    return js.call(scope.engine, ceil, math, &.{divided});
+fn jsonEncoded(s: *Scope, owner: c.JSValue, field: [*:0]const u8) !c.JSValue {
+    const json = try v.global(s, "JSON");
+    const stringify = try v.get(s, json, "stringify");
+    return v.duplicate(s, try v.call(s, stringify, json, &.{try v.get(s, owner, field)}));
+}
+fn incomingLength(s: *Scope, incoming: anyerror!c.JSValue) !c.JSValue {
+    const receiver = try v.own(s, try incoming);
+    return v.duplicate(s, try v.get(s, receiver, "length"));
+}
+fn jsonChars(engine: *em.Engine, owner: c.JSValue, field: [*:0]const u8) !c.JSValue {
+    return h.expression(engine, incomingLength, .{h.expression(engine, jsonEncoded, .{owner, field})});
+}
+fn ceilChars(s: *Scope, chars: c.JSValue) !c.JSValue {
+    const math = try v.global(s, "Math");
+    const ceil = try v.get(s, math, "ceil");
+    const divided = try h.binary(s, .divide, chars, h.number(s.engine, 4));
+    return v.duplicate(s, try v.call(s, ceil, math, &.{divided}));
+}
+fn sectionValues(s: *Scope, system: c.JSValue) !c.JSValue {
+    const object = try v.global(s, "Object");
+    const values = try v.get(s, object, "values");
+    return v.duplicate(s, try v.call(s, values, object, &.{try v.get(s, system, "sections")}));
+}
+fn sectionsLoop(f: *MessageFrame, iterator: *v.Iterator) !void {
+    while (try iterator.next()) |section| {
+        try f.set(.section, section);
+        if (h.truthy(f.engine, f.get(.section))) try f.set(.chars, h.expression(f.engine, addIncoming, .{
+            f.get(.chars), h.get(f.engine, f.get(.section), "length"),
+        }));
+    }
+}
+fn toolChars(s: *Scope, block: c.JSValue) !c.JSValue {
+    const name_length = try v.own(s, try h.nested(s.engine, block, "name", "length"));
+    const argument_length = try v.own(s, try jsonChars(s.engine, block, "arguments"));
+    return v.duplicate(s, try h.binary(s, .add, name_length, argument_length));
+}
+fn assistantLoop(f: *MessageFrame, iterator: *v.Iterator) !void {
+    const engine = f.engine;
+    while (try iterator.next()) |block| {
+        try f.set(.block, block);
+        if (try h.fieldEqual(engine, f.get(.block), "type", "text")) {
+            try f.set(.chars, h.expression(engine, addIncoming, .{ f.get(.chars), h.nested(engine, f.get(.block), "text", "length") }));
+        } else if (try h.fieldEqual(engine, f.get(.block), "type", "thinking")) {
+            try f.set(.chars, h.expression(engine, addIncoming, .{ f.get(.chars), h.nested(engine, f.get(.block), "thinking", "length") }));
+        } else if (try h.fieldEqual(engine, f.get(.block), "type", "toolCall")) {
+            try f.set(.chars, h.expression(engine, addIncoming, .{ f.get(.chars), h.expression(engine, toolChars, .{f.get(.block)}) }));
+        }
+    }
+}
+fn bashChars(s: *Scope, message: c.JSValue) !c.JSValue {
+    const command_length = try v.own(s, try h.nested(s.engine, message, "command", "length"));
+    const output_length = try v.own(s, try h.nested(s.engine, message, "output", "length"));
+    return v.duplicate(s, try h.binary(s, .add, command_length, output_length));
 }
 pub fn estimateTokens(engine: *em.Engine, message: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const role = try scope.get(message, "role");
-    var chars = c.JS_NewInt32(engine.context, 0);
-    if (try equalText(&scope, role, "system")) {
-        chars = try scope.own(try textImageChars(engine, try scope.get(message, "content")));
-        if (scope.truthy(try scope.get(message, "sections"))) {
-            const object = try scope.global("Object");
-            const values = try scope.get(object, "values");
-            const sections = try scope.call(values, object, &.{try scope.get(message, "sections")});
-            var entries = try iterator(&scope, sections);
-            defer entries.deinit();
-            errdefer entries.closePreserving();
-            while (try entries.next()) |section| {
-                defer engine.freeValue(section);
-                if (scope.truthy(section)) {
-                    var step: Scope = .{ .engine = engine };
-                    defer step.deinit();
-                    chars = try scope.concat(chars, try step.get(section, "length"));
-                }
+    var f = MessageFrame.init(engine);
+    return f.finish(messageSource(&f, message));
+}
+fn messageSource(f: *MessageFrame, message: c.JSValue) !c.JSValue {
+    const engine = f.engine;
+    try f.set(.chars, h.number(engine, 0));
+    const code = try h.expression(engine, roleCode, .{message});
+    // roleCode returns an immediate Number after retiring the switch operand.
+    var role: i32 = 0;
+    _ = c.JS_ToInt32(engine.context, &role, code);
+    switch (role) {
+        1 => {
+            try f.set(.system, h.duplicate(engine, message));
+            try f.set(.chars, h.expression(engine, textImageIncoming, .{h.get(engine, f.get(.system), "content")}));
+            if (try h.fieldTest(engine, f.get(.system), "sections", .truthy)) {
+                var iterator = try v.Iterator.initOwned(engine, try h.expression(engine, sectionValues, .{f.get(.system)}));
+                try iterator.finish(sectionsLoop(f, &iterator));
             }
-        }
-        if (scope.truthy(try scope.get(message, "toolsAdded"))) chars = try scope.concat(chars, try jsonChars(&scope, message, "toolsAdded"));
-        return ceilChars(&scope, chars);
+            if (try h.fieldTest(engine, f.get(.system), "toolsAdded", .truthy))
+                try f.set(.chars, h.expression(engine, addIncoming, .{ f.get(.chars), jsonChars(engine, f.get(.system), "toolsAdded") }));
+            return h.expression(engine, ceilChars, .{f.get(.chars)});
+        },
+        2, 4, 5 => {
+            try f.set(.chars, h.expression(engine, textImageIncoming, .{h.get(engine, message, "content")}));
+            return h.expression(engine, ceilChars, .{f.get(.chars)});
+        },
+        3 => {
+            try f.set(.assistant, h.duplicate(engine, message));
+            var iterator = try v.Iterator.initOwned(engine, try h.get(engine, f.get(.assistant), "content"));
+            try iterator.finish(assistantLoop(f, &iterator));
+            return h.expression(engine, ceilChars, .{f.get(.chars)});
+        },
+        6 => {
+            try f.set(.chars, h.expression(engine, bashChars, .{message}));
+            return h.expression(engine, ceilChars, .{f.get(.chars)});
+        },
+        7, 8 => {
+            try f.set(.chars, h.nested(engine, message, "summary", "length"));
+            return h.expression(engine, ceilChars, .{f.get(.chars)});
+        },
+        else => return h.number(engine, 0),
     }
-    if (try equalText(&scope, role, "user") or try equalText(&scope, role, "custom") or try equalText(&scope, role, "toolResult")) {
-        chars = try scope.own(try textImageChars(engine, try scope.get(message, "content")));
-        return ceilChars(&scope, chars);
-    }
-    if (try equalText(&scope, role, "assistant")) {
-        var blocks = try iterator(&scope, try scope.get(message, "content"));
-        defer blocks.deinit();
-        errdefer blocks.closePreserving();
-        while (try blocks.next()) |block| {
-            defer engine.freeValue(block);
-            var step: Scope = .{ .engine = engine };
-            defer step.deinit();
-            if (try equalText(&step, try step.get(block, "type"), "text")) {
-                chars = try scope.concat(chars, try step.get(try step.get(block, "text"), "length"));
-            } else if (try equalText(&step, try step.get(block, "type"), "thinking")) {
-                chars = try scope.concat(chars, try step.get(try step.get(block, "thinking"), "length"));
-            } else if (try equalText(&step, try step.get(block, "type"), "toolCall")) {
-                const name_length = try step.get(try step.get(block, "name"), "length");
-                const argument_length = try jsonChars(&step, block, "arguments");
-                const length = try step.concat(name_length, argument_length);
-                chars = try scope.concat(chars, length);
-            }
-        }
-        return ceilChars(&scope, chars);
-    }
-    if (try equalText(&scope, role, "bashExecution")) {
-        const command_length = try scope.get(try scope.get(message, "command"), "length");
-        const output_length = try scope.get(try scope.get(message, "output"), "length");
-        chars = try scope.concat(command_length, output_length);
-        return ceilChars(&scope, chars);
-    }
-    if (try equalText(&scope, role, "branchSummary") or try equalText(&scope, role, "compactionSummary")) {
-        return ceilChars(&scope, try scope.get(try scope.get(message, "summary"), "length"));
-    }
-    return chars;
 }

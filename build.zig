@@ -4072,6 +4072,20 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_public_models.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_models.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-public-model-resolver", "Install actual public model resolver caller controls without execution").dependOn(&b.addInstallArtifact(sdk_public_models, .{ .dest_sub_path = b.fmt("native-sdk-public-model-resolver{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual public compaction core controls; this target installs without execution.
+    const sdk_public_compaction = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_compaction_core_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public compaction core"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_compaction.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_compaction.root_module, typescript_parser);
+    linkSqlite(sdk_public_compaction.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_compaction.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_compaction.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-compaction-core", "Install actual public compaction core and expression controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction-core{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+
     // only; metadata and runtime require Root's separately bounded controller.
     const node_package_reader = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_package_reader_test.zig"), .target = target, .optimize = optimize }),
