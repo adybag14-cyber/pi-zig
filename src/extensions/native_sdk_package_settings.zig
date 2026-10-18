@@ -120,7 +120,7 @@ fn suggestion(s: *Scope, manager: c.JSValue, source: c.JSValue, configured: c.JS
     }
     return s.get(try s.invoke(try s.invoke(suggestions, "values", &.{}), "next", &.{}), "value");
 }
-fn emit(s: *Scope, manager: c.JSValue, event: c.JSValue) !void { const callback = try s.get(manager, "progressCallback"); if (!v.nullish(callback)) _ = try s.call(callback, manager, &.{event}); }
+fn emit(s: *Scope, manager: c.JSValue, progress: c.JSValue) !void { const callback = try s.get(manager, "progressCallback"); if (!v.nullish(callback)) _ = try s.call(callback, manager, &.{progress}); }
 fn method(engine: *v.em.Engine, manager: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var s: Scope = .{ .engine = engine }; defer s.deinit(); var raw: i32 = 0; if (c.JS_ToInt32(engine.context, &raw, roots[1]) < 0) return v.js.capture(engine);
     const first = arg(args, 0); const second = arg(args, 1);

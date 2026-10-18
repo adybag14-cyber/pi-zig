@@ -102,8 +102,8 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     var invocation: v.em.Engine.NativeInvocation = .{};
     engine.enterNativeInvocation(&invocation);
     const value = createOwned(engine, imports) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        const failure_value = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failure_value));
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, value));
 }
@@ -179,8 +179,8 @@ pub fn createDefault(engine: *v.em.Engine, resolve_config_value: c.JSValue, is_c
     var invocation: v.em.Engine.NativeInvocation = .{};
     engine.enterNativeInvocation(&invocation);
     const value = defaultOwned(engine, resolve_config_value, is_command_config_value) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        const failure_value = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failure_value));
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, value));
 }
@@ -511,7 +511,7 @@ fn clearReload(s: *Scope, self: c.JSValue, reload_state: c.JSValue) !c.JSValue {
             const generation = engine.native_allocation_generation;
             return owned.finishValue(&local, guards.guard(engine, generation, callScoped(&local, engine, c.pi_js_undefined(), &.{}, roots)));
         }
-        fn callScoped(local: *Scope, engine: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+        fn callScoped(local: *Scope, _: *v.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
             if (local.equal(try local.get(try local.get(roots[0], "readState"), "reload"), roots[1])) try set(local.engine, try local.get(roots[0], "readState"), "reload", c.pi_js_undefined());
             return c.pi_js_undefined();
         }

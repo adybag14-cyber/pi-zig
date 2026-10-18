@@ -49,20 +49,20 @@ pub fn create(engine: *em.Engine) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1;
     defer engine.native_exception_diagnostics_suppressed -= 1;
     const result = initialize(engine) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        const failure_value = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failure_value));
     };
     engine.checkNativeEntry() catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
+        const failure_value = @import("native_sdk.zig").fail(engine, err);
         engine.freeValue(result);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failure_value));
     };
     const retained = c.JS_DupValue(engine.context, result);
     engine.native_module_values.put(engine.gpa, key, retained) catch |err| {
-        const failed = @import("native_sdk.zig").fail(engine, err);
+        const failure_value = @import("native_sdk.zig").fail(engine, err);
         engine.freeValue(retained);
         engine.freeValue(result);
-        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failure_value));
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, result));
 }

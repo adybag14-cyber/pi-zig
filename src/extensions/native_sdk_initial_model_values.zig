@@ -27,9 +27,9 @@ pub const Ops = struct {
         const e = o.s.engine; try e.checkNativeEntry(); const generation = e.native_allocation_generation;
         return o.accept(c.JS_GetPropertyStr(e.context, target, name), generation);
     }
-    pub fn at(o: *Ops, target: c.JSValue, index: u32) !c.JSValue {
+    pub fn at(o: *Ops, target: c.JSValue, position: u32) !c.JSValue {
         const e = o.s.engine; try e.checkNativeEntry(); const generation = e.native_allocation_generation;
-        return o.accept(c.JS_GetPropertyUint32(e.context, target, index), generation);
+        return o.accept(c.JS_GetPropertyUint32(e.context, target, position), generation);
     }
     pub fn key(o: *Ops, target: c.JSValue, key_value: c.JSValue) !c.JSValue {
         // ToPropertyKey is observable. Use the VM's ordinary computed-property
@@ -93,9 +93,9 @@ pub const Ops = struct {
         }
         try e.checkNativeEntry();
     }
-    pub fn index(o: *Ops, target: c.JSValue, index: u32, value: c.JSValue) !void {
+    pub fn index(o: *Ops, target: c.JSValue, position: u32, value: c.JSValue) !void {
         const e = o.s.engine; try e.checkNativeEntry();
-        if (c.JS_DefinePropertyValueUint32(e.context, target, index, c.JS_DupValue(e.context, value), c.JS_PROP_C_W_E) < 0) {
+        if (c.JS_DefinePropertyValueUint32(e.context, target, position, c.JS_DupValue(e.context, value), c.JS_PROP_C_W_E) < 0) {
             const reason = c.JS_GetException(e.context); c.JS_SetUncatchableError(e.context, reason);
             _ = try e.checked(c.JS_Throw(e.context, reason)); unreachable;
         }

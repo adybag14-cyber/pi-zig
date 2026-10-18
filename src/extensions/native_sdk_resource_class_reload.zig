@@ -263,8 +263,8 @@ fn enabledResourcesItems(scope: *Scope, resources: c.JSValue, metadata: c.JSValu
 fn enabledResource(scope: *Scope, resource: c.JSValue, metadata: c.JSValue) !void {
     const has = try scope.get(metadata, "has");
     if (!scope.truthy(try scope.call(has, metadata, &.{try scope.get(resource, "path")}))) {
-        const set = try scope.get(metadata, "set");
-        _ = try scope.call(set, metadata, &.{ try scope.get(resource, "path"), try scope.get(resource, "metadata") });
+        const setter = try scope.get(metadata, "set");
+        _ = try scope.call(setter, metadata, &.{ try scope.get(resource, "path"), try scope.get(resource, "metadata") });
     }
 }
 fn enabledPaths(scope: *Scope, resources: c.JSValue, metadata: c.JSValue) !c.JSValue {
@@ -285,13 +285,13 @@ fn cliMetadataItems(scope: *Scope, metadata: c.JSValue, iterator: *js.Iterator) 
 fn cliMetadataItem(scope: *Scope, resource: c.JSValue, metadata: c.JSValue) !void {
     const has = try scope.get(metadata, "has");
     if (!scope.truthy(try scope.call(has, metadata, &.{try scope.get(resource, "path")}))) {
-        const set = try scope.get(metadata, "set");
+        const setter = try scope.get(metadata, "set");
         const path = try scope.get(resource, "path");
         const info = try scope.object();
         try scope.put(info, "source", try scope.text("cli"));
         try scope.put(info, "scope", try scope.text("temporary"));
         try scope.put(info, "origin", try scope.text("top-level"));
-        _ = try scope.call(set, metadata, &.{ path, info });
+        _ = try scope.call(setter, metadata, &.{ path, info });
     }
 }
 fn cliResolved(engine: *em.Engine, owner: c.JSValue, cli: c.JSValue, rejected: bool, _: c_int) !void {

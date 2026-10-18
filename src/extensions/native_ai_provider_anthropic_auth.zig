@@ -30,10 +30,10 @@ pub fn create(engine: *x.em.Engine) !c.JSValue {
     return x.finishInvocation(engine, &invocation, x.owned.finishValue(&s, createBody(&o)));
 }
 fn createBody(o: *x.Ops) !c.JSValue {
-    const result = try o.object(); try o.put(result, "name", try o.text("Anthropic API key"));
-    try o.put(result, "login", try o.own(try af.createResumableArrow(o.s.engine, "login", 1, login, &.{}, c.pi_js_undefined())));
-    try o.put(result, "resolve", try o.own(try af.createResumableArrow(o.s.engine, "resolve", 1, resolve, &.{}, c.pi_js_undefined())));
-    return c.JS_DupValue(o.s.engine.context, result);
+    const namespace = try o.object(); try o.put(namespace, "name", try o.text("Anthropic API key"));
+    try o.put(namespace, "login", try o.own(try af.createResumableArrow(o.s.engine, "login", 1, login, &.{}, c.pi_js_undefined())));
+    try o.put(namespace, "resolve", try o.own(try af.createResumableArrow(o.s.engine, "resolve", 1, resolve, &.{}, c.pi_js_undefined())));
+    return c.JS_DupValue(o.s.engine.context, namespace);
 }
 fn abort(engine: *x.em.Engine, receiver: c.JSValue, interaction: bool) !void {
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
@@ -57,8 +57,8 @@ fn loginBody(o: *x.Ops, args: []const c.JSValue, state: *c.JSValue, completion: 
         return awaited(o, job, .prompt, try o.call(prompt, interaction, &.{options}));
     }
     try abort(o.s.engine, try o.get(state.*, "interaction"), true);
-    const result = try o.object(); try o.put(result, "type", try o.text("api_key")); try o.put(result, "key", input);
-    return returned(o.s.engine, result);
+    const credential = try o.object(); try o.put(credential, "type", try o.text("api_key")); try o.put(credential, "key", input);
+    return returned(o.s.engine, credential);
 }
 fn resolve(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
