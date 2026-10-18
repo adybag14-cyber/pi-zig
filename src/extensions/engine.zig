@@ -58,6 +58,10 @@ pub const Engine = struct {
     progress_probe: ?*ProgressProbe = null,
     interrupts: u64 = 0,
     cancelled: std.atomic.Value(bool) = .init(false),
+    // Private synchronous native admission only. Native registry retains no
+    // Engine pointer; zero is idle, MAX is lifecycle-busy with no publisher.
+    // Owner logically clears publication before detach, then idles after release.
+    native_sync_cancel_token: std.atomic.Value(u64) = .init(0),
     last_error: ?[]u8 = null,
     captured_exception: ?c.JSValue = null,
     native_exception_diagnostics_suppressed: usize = 0,
@@ -313,6 +317,7 @@ pub const Engine = struct {
     }
 
     pub fn deinit(self: *Engine) void {
+        self.requireNoNativeAdmission();
         std.debug.assert(self.native_fatal_invocation == null);
         _ = c.JS_PiSetJSONParseErrorHook(self.context, null);
         self.native_json_diagnostic_depth = 0;
@@ -413,6 +418,7 @@ pub const Engine = struct {
     }
 
     pub fn beginInvocation(self: *Engine) void {
+        self.requireNoNativeAdmission();
         self.finishJob();
         self.interrupts = 0;
         self.cancelled.store(false, .release);
@@ -423,7 +429,18 @@ pub const Engine = struct {
     }
 
     pub fn cancel(self: *Engine) void {
-        self.cancelled.store(true, .release);
+        self.cancelled.store(true, .seq_cst);
+        if (builtin.os.tag == .linux) {
+            const publication = @import("native_child_process_cancel_publication_linux.zig");
+            const token = self.native_sync_cancel_token.load(.seq_cst);
+            if (token != publication.retiring_token) publication.notify(token);
+        }
+    }
+
+    fn requireNoNativeAdmission(self: *Engine) void {
+        // Host lifecycle misuse cannot reset/free a live native owner. This is
+        // an all-build guard; no guest-facing input can satisfy this condition.
+        if (self.native_sync_cancel_token.load(.seq_cst) != 0) @panic("Engine lifecycle entered during active native admission");
     }
 
     /// Register native-loader input; source is extension input, not host code.
