@@ -141,8 +141,8 @@ fn managerTest(s:*Scope,self:c.JSValue,args:[]const c.JSValue,_:[]const c.JSValu
     while(try s.compare(.less,v.num(s,index),length)) : (index+=1) {
         try s.check(index+1); const rule=try v.at(s,rules,index); const negative=try s.get(rule,"negative");
         const skip=(s.equal(unignored,negative) and !s.equal(ignored,unignored)) or (s.truthy(negative) and !s.truthy(ignored) and !s.truthy(unignored) and !s.truthy(check_unignored)); if(skip)continue;
-        const expression=try s.getKey(rule,mode); const test=try s.get(expression,"test"); const input=if(shortcut and s.truthy(try s.get(rule,"_basenameOnly")))name else path;
-        if(s.truthy(try s.call(test,expression,&.{input}))){ignored=c.pi_js_bool(s.engine.context,@intFromBool(!s.truthy(negative))); unignored=negative; matched=if(s.truthy(negative))c.pi_js_undefined() else rule;}
+        const expression=try s.getKey(rule,mode); const test_method=try s.get(expression,"test"); const input=if(shortcut and s.truthy(try s.get(rule,"_basenameOnly")))name else path;
+        if(s.truthy(try s.call(test_method,expression,&.{input}))){ignored=c.pi_js_bool(s.engine.context,@intFromBool(!s.truthy(negative))); unignored=negative; matched=if(s.truthy(negative))c.pi_js_undefined() else rule;}
     }
     const result=try s.object(); try s.put(result,"ignored",ignored); try s.put(result,"unignored",unignored); if(s.truthy(matched))try s.put(result,"rule",matched); return v.dup(s,result);
 }
