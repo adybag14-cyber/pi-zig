@@ -107,7 +107,7 @@ pub const Transport = struct {
                     if (self.accepted == self.length) self.completeWrite(null) else if (count != 0) result.resubmit.stdin = true;
                 },
                 .failure => |failure| { self.completeWrite(failure); self.close_input = true; result.resubmit.stdin = true; },
-            };
+            }
         }
         if (self.finish_requested and !self.finish_delivered and !self.input_closed and !self.close_input and self.token == null and self.write_completion == null) {
             const completion: ?owned.Shutdown = self.process.finishInputAfterWrites() catch |failure| failed: {

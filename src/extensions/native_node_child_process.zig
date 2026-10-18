@@ -18,10 +18,10 @@ const State = struct { engine: *js.Engine, child: c.JSValue, task: ?*Task = null
 // This cache contains only a selector for the two public namespaces. The known
 // handle class ID lives solely in immutable native function captures below.
 const namespace_cache_key = "\x00native-child-process-namespace-selector";
-fn finalizer(runtime: ?*c.JSRuntime, holder: c.JSValue) callconv(.c) void {
+fn finalizer(runtime: ?*c.JSRuntime, holder_value: c.JSValue) callconv(.c) void {
     // This callback is invoked only by the class definition registered below;
     // public values never select the finalizer or its State representation.
-    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(holder, c.JS_GetClassID(holder)) orelse return));
+    const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(holder_value, c.JS_GetClassID(holder_value)) orelse return));
     std.debug.assert(state.task == null);
     c.JS_FreeValueRT(runtime, state.child);
     state.engine.gpa.destroy(state);

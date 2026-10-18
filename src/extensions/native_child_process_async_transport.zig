@@ -305,7 +305,7 @@ pub const AsyncTransport = struct {
                     if (!retired) { pending_cleanup = true; self.process.input.retirement_pending = true; self.close_failure = error.NativeStdinRetirementPending; }
                 }
             }
-        } else if (self.process.input.posix_file) |file| { self.process.input.posix_file = null; file.close(self.process.io); };
+        } else if (self.process.input.posix_file) |file| { self.process.input.posix_file = null; file.close(self.process.io); }
         self.retirement_unconfirmed = unconfirmed;
         if (builtin.os.tag == .windows) if (self.windows_shutdown) |ticket| {
             if (self.retirement_started == null) self.retirement_started = windows.monotonicMilliseconds();

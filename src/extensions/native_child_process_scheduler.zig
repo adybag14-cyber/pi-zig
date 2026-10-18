@@ -215,7 +215,9 @@ pub const OwnerBridge = struct {
     fn append(self: *OwnerBridge, event: Event) void { std.debug.assert(self.frame_count < self.frame.len); self.frame[self.frame_count] = event; self.frame_count += 1; }
     fn publish(self: *OwnerBridge) !void {
         var snapshot = try self.transport.watchSnapshot();
-        if (!self.timeout_sent) if (self.timeout_at) |due| snapshot.deadline_ms = if (snapshot.deadline_ms) |prior| @min(prior, due) else due;
+        if (!self.timeout_sent) {
+            if (self.timeout_at) |due| snapshot.deadline_ms = if (snapshot.deadline_ms) |prior| @min(prior, due) else due;
+        }
         try waits.publish(self.lease, snapshot);
     }
     fn canDispose(self: *OwnerBridge) bool {

@@ -230,7 +230,9 @@ fn run(shard: usize) void {
             }
             if (client.phase != .attached and client.phase != .reaping) continue;
             if (client.phase == .attached) {
-                if (client.deadline_armed) if (client.snapshot.deadline_ms) |due| deadline = if (deadline) |prior| @min(prior, due) else due;
+                if (client.deadline_armed) {
+                    if (client.snapshot.deadline_ms) |due| deadline = if (deadline) |prior| @min(prior, due) else due;
+                }
                 for (client.snapshot.events, 0..) |maybe_event, channel| if (maybe_event) |event| if (client.armed[channel]) {
                     candidates[candidate_count] = .{ .index = index, .generation = client.generation, .revision = client.revision, .channel = channel, .tag = client.tags[channel], .wait_index = uniqueHandle(&handles, &count, event.handle) };
                     candidate_count += 1;

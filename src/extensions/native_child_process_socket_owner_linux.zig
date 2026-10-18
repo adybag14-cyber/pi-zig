@@ -231,8 +231,8 @@ pub const Owner = struct {
             return;
         }
         switch (event) {
-            .stdout => |output| try self.output(engine, 1, output),
-            .stderr => |output| try self.output(engine, 2, output),
+            .stdout => |output_value| try self.output(engine, 1, output_value),
+            .stderr => |output_value| try self.output(engine, 2, output_value),
             .write => |completion| if (self.pipes[0]) |*value| {
                 self.endpoints[0].write_pending = false;
                 errdefer self.updateReferences() catch {};

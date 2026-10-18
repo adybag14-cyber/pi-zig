@@ -4,7 +4,7 @@ const std = @import("std");
 const w = std.os.windows;
 const transport = @import("native_child_process_transport.zig");
 const stdin = @import("native_child_process_stdin_windows.zig");
-const output = @import("native_child_process_output_windows.zig");
+const output_pipe = @import("native_child_process_output_windows.zig");
 const inherited_stdio = @import("native_child_process_stdio_windows.zig");
 const Native = struct {
     extern "kernel32" fn CreatePipe(*w.HANDLE, *w.HANDLE, *w.SECURITY_ATTRIBUTES, u32) callconv(.winapi) i32;
@@ -23,7 +23,7 @@ fn closeChild(item: Endpoint) void {
 /// options.stdio assignment/file/args getters and transfers only at native spawn.
 pub const Prepared = struct {
     endpoints: [3]?Endpoint = .{null} ** 3,
-    output_slots: [2]?*output.Slot,
+    output_slots: [2]?*output_pipe.Slot,
     modes: [3]transport.Stdio,
     source_leases: [3]?inherited_stdio.Lease = .{null} ** 3,
     consumed: bool = false,
@@ -59,14 +59,14 @@ pub fn prepare(stdio: [3]transport.Stdio) !Prepared {
     return prepareWithLeases(stdio, .{null} ** 3);
 }
 pub fn prepareWithLeases(stdio: [3]transport.Stdio, leases: [3]?inherited_stdio.Lease) !Prepared {
-    const outputs = try output.reserveSet(.{ stdio[1] == .pipe, stdio[2] == .pipe });
+    const outputs = try output_pipe.reserveSet(.{ stdio[1] == .pipe, stdio[2] == .pipe });
     var result: Prepared = .{ .output_slots = outputs, .modes = stdio, .source_leases = leases };
     errdefer result.retire();
     var attributes: w.SECURITY_ATTRIBUTES = .{ .nLength = @sizeOf(w.SECURITY_ATTRIBUTES), .lpSecurityDescriptor = null, .bInheritHandle = .TRUE };
     for (stdio, 0..) |mode, index| result.endpoints[index] = try endpoint(mode, index == 0, &attributes, if (index == 0) null else outputs[index - 1], leases[index]);
     return result;
 }
-fn endpoint(mode: transport.Stdio, input: bool, attributes: *w.SECURITY_ATTRIBUTES, output_slot: ?*output.Slot, lease: ?inherited_stdio.Lease) !Endpoint {
+fn endpoint(mode: transport.Stdio, input: bool, attributes: *w.SECURITY_ATTRIBUTES, output_slot: ?*output_pipe.Slot, lease: ?inherited_stdio.Lease) !Endpoint {
     if ((mode == .inherited) != (lease != null)) return error.NativeWindowsStdioLeaseModeMismatch;
     if (mode == .inherited) {
         const actual = try inherited_stdio.duplicateForChild(lease.?);
@@ -82,7 +82,7 @@ fn endpoint(mode: transport.Stdio, input: bool, attributes: *w.SECURITY_ATTRIBUT
         return .{ .child = connected.child, .input_slot = connected.slot, .crt_flags = 0x09 };
     }
     if (output_slot) |slot| {
-        const connected = try output.connect(slot);
+        const connected = try output_pipe.connect(slot);
         return .{ .child = connected.child, .crt_flags = 0x09 };
     }
     var read: w.HANDLE = undefined;
@@ -108,11 +108,11 @@ fn quote(gpa: std.mem.Allocator, output: *std.ArrayList(u8), value: []const u8, 
     for (0..slashes * 2) |_| try output.append(gpa, '\\');
     try output.append(gpa, '"');
 }
-pub const Spawned = struct { child: std.process.Child, input_slot: ?*stdin.Slot, output_slots: [2]?*output.Slot };
+pub const Spawned = struct { child: std.process.Child, input_slot: ?*stdin.Slot, output_slots: [2]?*output_pipe.Slot };
 /// Real failed CreateProcess attempt, with no Process/PID identity. Child-side
 /// handles are already closed before return; actual parent endpoints stay owned
 /// so output EOF/write failure can be observed rather than fabricated.
-pub const Failed = struct { failure: anyerror, input_slot: ?*stdin.Slot, output_slots: [2]?*output.Slot };
+pub const Failed = struct { failure: anyerror, input_slot: ?*stdin.Slot, output_slots: [2]?*output_pipe.Slot };
 pub const Attempt = union(enum) { spawned: Spawned, failed: Failed };
 fn creationFlags(options: transport.Options) w.CreateProcessFlags {
     // libuv 1.51 uv_spawn keeps the inherited console available whenever any
@@ -124,7 +124,7 @@ fn creationFlags(options: transport.Options) w.CreateProcessFlags {
 pub fn spawnAttempt(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8, env: *const @import("native_child_process_environment.zig").Environment, options: transport.Options) !Attempt {
     if (!options.windows_overlapped_output) return error.RequiredOverlappedFailedLaunchEndpoints;
     if (options.prepared_stdio) |prepared| return spawnPreparedAttempt(gpa, argv, cwd, env, options, prepared);
-    const output_slots = try output.reserveSet(.{ options.stdio[1] == .pipe, options.stdio[2] == .pipe });
+    const output_slots = try output_pipe.reserveSet(.{ options.stdio[1] == .pipe, options.stdio[2] == .pipe });
     var failure: ?Failed = null;
     const spawned = spawnOwned(gpa, argv, cwd, env, options, output_slots, &failure, null) catch |err| {
         if (failure) |retained| return .{ .failed = retained };
@@ -152,7 +152,7 @@ fn spawnPreparedAttempt(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?
     return .{ .spawned = spawned };
 }
 pub fn spawn(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8, env: *const @import("native_child_process_environment.zig").Environment, options: transport.Options) !Spawned {
-    const output_slots = try output.reserveSet(.{ options.windows_overlapped_output and options.stdio[1] == .pipe, options.windows_overlapped_output and options.stdio[2] == .pipe });
+    const output_slots = try output_pipe.reserveSet(.{ options.windows_overlapped_output and options.stdio[1] == .pipe, options.windows_overlapped_output and options.stdio[2] == .pipe });
     return spawnOwned(gpa, argv, cwd, env, options, output_slots, null, null) catch |err| {
         var pending_cleanup = false;
         for (output_slots) |maybe_slot| if (maybe_slot) |slot| {
@@ -162,7 +162,7 @@ pub fn spawn(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8,
         return err;
     };
 }
-fn spawnOwned(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8, env: *const @import("native_child_process_environment.zig").Environment, options: transport.Options, output_slots: [2]?*output.Slot, retained_failure: ?*?Failed, prepared: ?*Prepared) !Spawned {
+fn spawnOwned(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8, env: *const @import("native_child_process_environment.zig").Environment, options: transport.Options, output_slots: [2]?*output_pipe.Slot, retained_failure: ?*?Failed, prepared: ?*Prepared) !Spawned {
     var line: std.ArrayList(u8) = .empty;
     defer line.deinit(gpa);
     for (argv, 0..) |value, index| { if (index != 0) try line.append(gpa, ' '); try quote(gpa, &line, value, options.windows_verbatim_arguments); }
@@ -190,7 +190,7 @@ fn spawnOwned(gpa: std.mem.Allocator, argv: []const []const u8, cwd: ?[]const u8
         }
     };
     if (prepared) |source| { endpoints = try source.take(options.stdio, options.windows_stdio); initialized = 3; }
-    else for (&endpoints, options.stdio, 0..) |*slot, mode, index| { slot.* = try endpoint(mode, index == 0, &attributes, if (index == 0) null else output_slots[index - 1], options.windows_stdio[index]); initialized += 1; };
+    else for (&endpoints, options.stdio, 0..) |*slot, mode, index| { slot.* = try endpoint(mode, index == 0, &attributes, if (index == 0) null else output_slots[index - 1], options.windows_stdio[index]); initialized += 1; }
     var required: usize = 0;
     _ = Native.InitializeProcThreadAttributeList(null, 1, 0, &required);
     if (required == 0) return error.NativeChildHandleListFailed;
