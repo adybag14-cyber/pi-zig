@@ -93,7 +93,7 @@ fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, visit: ?*const c.JS_MarkFunc)
     inline for (.{ "socket", "process", "buffer", "native_handle", "write_chunk", "write_callback", "final_callback", "destroy_callback", "destroy_reason" }) |name| c.JS_MarkValue(runtime, @field(state, name), visit);
 }
 fn classId(engine: *js.Engine, value: c.JSValue) !c.JSClassID {
-    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, value) < 0) return js.capture(engine); return id;
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, value) < 0) return @as(anyerror!c.JSClassID, js.capture(engine)); return id;
 }
 fn stateFor(scope: *Scope, socket: c.JSValue, roots: []const c.JSValue) !*State {
     const holder = try scope.invoke(roots[0], "get", &.{socket});
@@ -115,7 +115,7 @@ fn bytes(scope: *Scope, value: c.JSValue) ![]const u8 {
     const generation = scope.engine.native_allocation_generation;
     const backing = try scope.ownSince(c.JS_GetTypedArrayBuffer(scope.engine.context, value, &offset, &length, &element), generation);
     var total: usize = 0; const data = c.JS_GetArrayBuffer(scope.engine.context, &total, backing);
-    if (c.JS_HasException(scope.engine.context)) return js.capture(scope.engine);
+    if (c.JS_HasException(scope.engine.context)) return @as(anyerror![]const u8, js.capture(scope.engine));
     if (offset > total or length > total - offset or (data == null and length != 0)) return error.NativeSocketDetachedBuffer;
     return if (length == 0) &.{} else data[offset .. offset + length];
 }
@@ -208,14 +208,14 @@ fn construct(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, cap
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
     const context = captures[0]; const constructor = try scope.get(context, "constructor");
     const instance = c.JS_IsInstanceOf(engine.context, socket, constructor);
-    if (instance < 0) return js.capture(engine);
+    if (instance < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (instance == 0) return c.JS_DupValue(engine.context, try scope.construct(constructor, args));
     const duplex = try scope.get(context, "Duplex"); const states = try scope.get(context, "states");
     const known_id = try scope.get(context, "classId"); const process = try scope.get(context, "process"); const buffer_ctor = try scope.get(context, "Buffer");
     const supplied = arg(args, 0);
-    if (!nullish(supplied) and !c.JS_IsObject(supplied)) return js.typeError(engine, "Socket options must be an object");
+    if (!nullish(supplied) and !c.JS_IsObject(supplied)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket options must be an object"));
     if (!nullish(supplied)) {
-        inline for (.{ "objectMode", "readableObjectMode", "writableObjectMode" }) |name| if (scope.truthy(try scope.get(supplied, name))) return js.typeError(engine, "Socket does not support object mode");
+        inline for (.{ "objectMode", "readableObjectMode", "writableObjectMode" }) |name| if (scope.truthy(try scope.get(supplied, name))) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket does not support object mode"));
     }
     const options = if (nullish(supplied)) try scope.object() else try scope.own(try js.spread(engine, supplied));
     try scope.put(options, "allowHalfOpen", if (nullish(supplied)) c.pi_js_bool(engine.context, 0) else c.pi_js_bool(engine.context, @intFromBool(scope.truthy(try scope.get(supplied, "allowHalfOpen")))));
@@ -265,7 +265,7 @@ fn write(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: 
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
     if (!nullish(state.write_callback)) return error.NativeSocketWriteAlreadyPending;
     const input = arg(args, 0); const callback = arg(args, 2);
-    if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket write callback must be a function");
+    if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket write callback must be a function"));
     if (state.hooks == null or state.endpoint_closed or state.input_finished) return js.call(engine, callback, c.pi_js_undefined(), &.{try coded(&scope, "ERR_SOCKET_CLOSED", "Socket is closed")});
     const chunk = try writeChunk(&scope, state, input, arg(args, 1));
     state.length = (try bytes(&scope, chunk)).len; state.offset = 0;
@@ -283,7 +283,7 @@ fn write(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: 
 }
 fn final(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
-    const callback = arg(args, 0); if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket final callback must be a function");
+    const callback = arg(args, 0); if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket final callback must be a function"));
     if (!nullish(state.final_callback)) return error.NativeSocketFinalAlreadyPending;
     const hooks = state.hooks orelse return js.call(engine, callback, c.pi_js_undefined(), &.{});
     const token = try state.next(); state.final_token = token; state.set(&state.final_callback, callback);
@@ -308,7 +308,7 @@ fn publishClosed(state: *State, reason: c.JSValue) !void {
 fn destroy(engine: *js.Engine, socket: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
     if (state.destroy_started) return error.NativeSocketDestroyAlreadyPending;
-    const callback = arg(args, 1); if (!c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Socket destroy callback must be a function");
+    const callback = arg(args, 1); if (!c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Socket destroy callback must be a function"));
     state.destroy_started = true;
     state.set(&state.destroy_reason, arg(args, 0)); state.set(&state.destroy_callback, callback);
     var acknowledged = state.hooks == null;
@@ -342,7 +342,7 @@ fn reference(engine: *js.Engine, socket: c.JSValue, _: []const c.JSValue, roots:
 }
 fn property(engine: *js.Engine, socket: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try stateFor(&scope, socket, roots);
-    var which: i32 = 0; if (c.JS_ToInt32(engine.context, &which, roots[2]) < 0) return js.capture(engine);
+    var which: i32 = 0; if (c.JS_ToInt32(engine.context, &which, roots[2]) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     return switch (which) {
         0 => c.JS_NewFloat64(engine.context, @floatFromInt(state.bytes_read)),
         1 => writtenBytes(&scope, state),
@@ -361,13 +361,13 @@ fn writtenBytes(scope: *Scope, state: *State) !c.JSValue {
     var total = @as(f64, @floatFromInt(state.bytes_dispatched)) + @as(f64, @floatFromInt(unsent));
     var index: u32 = 0;
     while (true) : (index += 1) {
-        var length: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &length, try scope.get(queued, "length")) < 0) return js.capture(scope.engine);
+        var length: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &length, try scope.get(queued, "length")) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         if (index >= length) break;
         const item = try scope.getIndex(queued, index);
         const chunk = try scope.get(item, "chunk"); const is_buffer = c.JS_IsInstanceOf(scope.engine.context, chunk, state.buffer);
-        if (is_buffer < 0) return js.capture(scope.engine);
+        if (is_buffer < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         const size = if (is_buffer == 1) try scope.get(chunk, "length") else try scope.invoke(state.buffer, "byteLength", &.{ chunk, try scope.get(item, "encoding") });
-        var count: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &count, size) < 0) return js.capture(scope.engine); total += count;
+        var count: f64 = 0; if (c.JS_ToFloat64(scope.engine.context, &count, size) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine)); total += count;
     }
     return c.JS_NewFloat64(scope.engine.context, total);
 }
