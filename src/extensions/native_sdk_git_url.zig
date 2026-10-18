@@ -211,7 +211,7 @@ fn parseBody(o: *x.Ops, owner: c.JSValue, source: c.JSValue) !c.JSValue {
     const trimmed = try o.call(trim, source, &.{});
     const has_prefix = o.truthy(try o.invoke(trimmed, "startsWith", &.{try o.text("git:")}));
     const url = if (has_prefix) try o.invoke(try o.invoke(trimmed, "slice", &.{o.number(4)}), "trim", &.{}) else trimmed;
-    if (!has_prefix and !try o.test("^(https?|ssh|git)://", "i", url)) return c.pi_js_null();
+    if (!has_prefix and !try o.matches("^(https?|ssh|git)://", "i", url)) return c.pi_js_null();
     const split = try splitRef(o, url);
     const hosted_candidates = try o.array();
     var first = c.pi_js_undefined();

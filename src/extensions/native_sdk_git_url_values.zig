@@ -226,7 +226,7 @@ pub const Ops = struct {
     pub fn regex(o: *Ops, pattern: []const u8, flags: []const u8) !c.JSValue {
         return o.construct(o.s.engine.intrinsic_regexp_constructor, &.{ try o.text(pattern), try o.text(flags) });
     }
-    pub fn test(o: *Ops, pattern: []const u8, flags: []const u8, value: c.JSValue) !bool { return o.truthy(try o.invoke(try o.regex(pattern, flags), "test", &.{value})); }
+    pub fn matches(o: *Ops, pattern: []const u8, flags: []const u8, value: c.JSValue) !bool { return o.truthy(try o.invoke(try o.regex(pattern, flags), "test", &.{value})); }
     pub fn replace(o: *Ops, value: c.JSValue, pattern: []const u8, flags: []const u8, replacement: []const u8) !c.JSValue {
         const function = try o.get(value, "replace");
         return o.call(function, value, &.{ try o.regex(pattern, flags), try o.text(replacement) });
