@@ -1,0 +1,147 @@
+{
+  "schema": 1,
+  "scope": "SOURCE ONLY real native internal builtin require subset owner",
+  "base": "6be88e853ba3b2d43450cd176e585933e42cd637",
+  "members": [
+    {
+      "path": "build.zig",
+      "bytes": 351314,
+      "sha256": "3AE6FE4476D2B376E39542E9DDD02B8A09BD2FAD6A9C077F0EF6FD1411D94C26"
+    },
+    {
+      "path": "src/extensions/native_node_internal_builtin_require.zig",
+      "bytes": 8890,
+      "sha256": "9B778ACF6C1FB17D4EAB916BD8C001B5A2228C3663B12B339D6431F0155CBAE1"
+    },
+    {
+      "path": "src/native_node_internal_builtin_require_test.zig",
+      "bytes": 7446,
+      "sha256": "973F41D4E26D5E9ED083D8439619925BA747279185C898B30E29B9E0F96BB654"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/README.md",
+      "bytes": 5705,
+      "sha256": "6714AB75DEB90ECC6C5BDD0B3261BED0D4F20D521011526812FF2C0003B488C9"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/authority/realm.js",
+      "bytes": 15448,
+      "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/authority/internal-errors.js",
+      "bytes": 69406,
+      "sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/authority/LICENSE.txt",
+      "bytes": 156926,
+      "sha256": "4573185D56580DA2B890BA34A85A409257640F1C5632EADE4300137266194D18"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/prepared.json",
+      "bytes": 5883,
+      "sha256": "B283B945E196508803C943E939F1A3D37394A0B5EF73841853750F5CBEB6F8D1"
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/QUOTA-CONTROL-CORRECTION.md",
+      "bytes": 551,
+      "sha256": "760ACF17534D31CBDC51337E1E36A1CA4DE6565548A7D118C8EB7ED45140ABAD"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_owned_boundary.zig",
+      "bytes": 7943,
+      "sha256": "275D2683C670EF3460C5208FA0390CED76E04AE698416C8244272A73CB50E597",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_create_require.zig",
+      "bytes": 10247,
+      "sha256": "821177ECE22F48DB475A14D6E6C628752475481B9226CAE5A7E12C6A62599C59",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_bootstrap.zig",
+      "bytes": 5899,
+      "sha256": "50D9926DFCD86F748E4AC17D5181C75C4D4FECFA15BDD22495ECBC3F41AE9DDD",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_module_callable.zig",
+      "bytes": 7117,
+      "sha256": "642D474CE62E3EFF67F79B24B169FEDBC1CC19AFF986CF23EA1AADFEA52A459A",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_load.zig",
+      "bytes": 14580,
+      "sha256": "87DAE18EDB347EBCFEE9B36A66B4C567348B1C1F01971B33E55A6B7E4C452AE4",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_commonjs_prototype.zig",
+      "bytes": 12210,
+      "sha256": "56F7D9B276D997A3028D6B7967D4152AE53A29698F50B1395F3C2DAF1C0B1468",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data.zig",
+      "bytes": 2666,
+      "sha256": "154690A5B6FA6CEC5A330FECD69B6FF81AEDDC421847AFAA74D06D8FA20DF20A",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2285394,
+      "sha256": "42B56811B72A224C977AE69EC9F8101C7D979D44A785582352C769CB86F51A1D",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 81319,
+      "sha256": "0DBC21D3205747FB9620CAEFEB1AE3FE8D2F78F1793157C06E2FA4F2F18CB556",
+      "unchanged_from": "6be88e853ba3b2d43450cd176e585933e42cd637"
+    }
+  ],
+  "names": [
+    "native internal require returns actual installed path exports and same owner without public CJS lookup",
+    "native internal require acquisition precedes real backend install and failed first load publishes no fake exports",
+    "native internal require admits genuine fs and path defaults without fabricating module cache records",
+    "native internal require actual pending entry survives armed VM quota before owner allocation"
+  ],
+  "static_named_count": 4,
+  "actual_metadata": null,
+  "compiled": false,
+  "executed": false,
+  "default_selection": false,
+  "source_expected_exists": false,
+  "original_primary": {
+    "node": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+    "realm_sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421",
+    "errors_sha256": "FD278208FAE3A83B51A0B948540629ED4E5FD8C7860CB8E4775C6DBF25779750",
+    "source_execution": false
+  },
+  "boundaries": [
+    "Only explicitly admitted native backend ids; no complete private registry claim",
+    "Actual installed default exports only; acquire can precede real provider installation, invocation cannot",
+    "No publicModule/createRequire/filecontext/loaderhooks/CJScache replacement",
+    "Realutil and newTTYshared internal require injection required before Auth selection",
+    "Frozen6be/C453 runtime negatives remain separate; no privatecompilerAPI invoked"
+  ],
+  "independent_source_review": null,
+  "predecessor": "b2497353cc0f987a751f83327e9d811b026c26b9"
+}

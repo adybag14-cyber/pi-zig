@@ -1573,6 +1573,19 @@ pub fn build(b: *std.Build) void {
     b.step("build-native-node-crypto-sha256", "Compile real SHA256 createHash dependency independently").dependOn(&node_crypto_hash_tests.step);
     b.step("build-native-node-crypto-sha256-artifact", "Install the compiled SHA256 test artifact for metadata-only verification").dependOn(&b.addInstallArtifact(node_crypto_hash_tests, .{}).step);
     b.step("test-native-node-crypto-sha256", "Compare actual Node SHA256 package observations and native state ownership").dependOn(&b.addRunArtifact(node_crypto_hash_tests).step);
+    // Private converted-native internal builtin require. Install only; Root
+    // separately admits metadata/runtime and actual util/TTY provider wiring.
+    const internal_builtin_require_leaf = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_internal_builtin_require_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native internal require"}, .use_llvm = use_llvm });
+    linkQuickJs(b, internal_builtin_require_leaf.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(internal_builtin_require_leaf.root_module, sqlite_lib_dir, sqlite_library);
+    linkTypeScriptParser(b, internal_builtin_require_leaf.root_module, typescript_parser);
+    internal_builtin_require_leaf.root_module.addImport("catalog_tool", catalog_tool);
+    @import("tools/build_native_transform_compression.zig").link(b, internal_builtin_require_leaf.root_module);
+    if (target.result.os.tag == .windows) {
+        internal_builtin_require_leaf.root_module.linkSystemLibrary("advapi32", .{});
+        internal_builtin_require_leaf.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-internal-builtin-require", "Install actual native builtin internal require controls without execution").dependOn(&b.addInstallArtifact(internal_builtin_require_leaf, .{}).step);
     // Current Main compile/link-only body gate. This step has no runner, query
     // or reference dependency. Its installed sentinel artifact MUST NOT RUN.
     const current_jiti_sdk_agent_compile_only = b.addTest(.{
