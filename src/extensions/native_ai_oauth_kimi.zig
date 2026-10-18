@@ -93,10 +93,10 @@ fn createBody(o: *x.Ops) !c.JSValue {
     return duplicate(o, exports);
 }
 fn toAuthCall(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue { return expression(engine, toAuth, .{x.arg(args, 0)}); }
-fn toAuth(o: *x.Ops, credential: c.JSValue) !c.JSValue {
+fn toAuth(o: *x.Ops, input_credential: c.JSValue) !c.JSValue {
     const result = try o.object();
     const headers = try o.object();
-    const access = try o.stringify(try o.get(credential, "access"));
+    const access = try o.stringify(try o.get(input_credential, "access"));
     try o.put(headers, "Authorization", try concat(o, try o.text("Bearer "), access));
     try o.put(result, "headers", headers);
     return duplicate(o, result);
@@ -120,11 +120,11 @@ fn requestSignal(o: *x.Ops, signal: c.JSValue) !c.JSValue {
     return duplicate(o, try o.call(any, abort, &.{signals}));
 }
 fn timeoutSignal(o: *x.Ops) !c.JSValue { return duplicate(o, try o.invoke(try o.global("AbortSignal"), "timeout", &.{integer(o, 30000)})); }
-fn formParameters(o: *x.Ops, fields: c.JSValue) !c.JSValue {
-    return duplicate(o, try x.guest.construct(o.s, try o.global("URLSearchParams"), &.{fields}));
+fn formParameters(o: *x.Ops, field_values: c.JSValue) !c.JSValue {
+    return duplicate(o, try x.guest.construct(o.s, try o.global("URLSearchParams"), &.{field_values}));
 }
-fn form(o: *x.Ops, fields: c.JSValue) !c.JSValue {
-    const encoded = try value(o, formParameters, .{fields});
+fn form(o: *x.Ops, field_values: c.JSValue) !c.JSValue {
+    const encoded = try value(o, formParameters, .{field_values});
     return duplicate(o, try o.invoke(encoded, "toString", &.{}));
 }
 const Request = enum { device, poll, refresh };
