@@ -123,13 +123,25 @@ pub fn Frame(comptime Names: type) type {
             completion.release(previous);
             return completion.finishVoid();
         }
+        /// Opt in with af.createResumable[Arrow]WithClose. The C terminal owner
+        /// calls this after settlement and arguments, while state is borrowed.
+        pub fn closeAtAsyncTerminal(engine: *Engine, owner: c.JSValue) !void {
+            // A failed START can leave undefined; GC can already have finalized
+            // an unreachable state before its coroutine's reaction finalizer.
+            if (!c.JS_IsLiveObject(engine.runtime, owner)) return;
+            const raw = c.JS_GetOpaque(owner, c.JS_GetClassID(owner)) orelse return;
+            const self: *Self = @ptrCast(@alignCast(raw));
+            var completion = v.owned.Completion.initVoid(engine, {});
+            self.close(&completion);
+            return completion.finishVoid();
+        }
         /// No allocation or guest call is permitted while closing an activation.
         /// A cell retains just its binding after return, like a closed JSVarRef.
         pub fn close(self: *Self, completion: *v.owned.Completion) void {
             if (self.closed) return;
             self.closed = true;
             for (self.captures, 0..) |root, position| {
-                if (c.JS_IsUndefined(root)) continue;
+                if (c.JS_IsUndefined(root) or !c.JS_IsLiveObject(self.engine.runtime, root)) continue;
                 const cell = cellFrom(root);
                 cell.value = c.JS_DupValue(self.engine.context, self.values[position]);
                 cell.ready = self.ready[position];

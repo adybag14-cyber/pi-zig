@@ -108,3 +108,38 @@ order; it does not claim that all possible closure capture graphs share one
 order. The generic Source/native controls retain the same five-holder behavior
 and the unused sixth slot remains uncreated. No author-side native execution
 or runtime qualification is claimed by this source successor.
+
+
+## Optional terminal state-close hook
+
+The following separate source unit adds an opt-in borrowed-state close callback.
+Existing native async factories without a callback keep their prior terminal
+behavior. `JS_PiNewNativeAsyncFunctionWithClose` records the callback on the
+actual function bytecode and each genuine invocation. The active terminal owner
+detaches it before any root retirement, invokes it after capability settlement
+and ordered argument retirement, then releases state, function/captures,
+effective this, supplied receiver and resolving functions. Hook-enabled
+abandonment uses the same pending-exception reducer and detachment. A callback
+failure cannot bypass the remaining releases; first actual fatal precedence is
+unchanged.
+
+The Zig `createResumableWithClose` and `createResumableArrowWithClose` factories
+supply a cleanup trampoline which does not reject cleanup merely because an
+actual fatal is already selected. `Frame.closeAtAsyncTerminal` is the concrete
+adapter: it closes binding cells while preserving their captured values, retires
+the original local slots, and skips a GC-zombie state/cell before opaque access.
+The callback consumes no state reference and performs no guest operations.
+
+Five additional declarations in `native_async_frame_retirement_test.zig` use the
+existing install-only `build-native-vm-async-retirement` group. Actual literal
+Source and native cases test final adoption before close, ordinary and arrow
+receivers, escaped callbacks retaining only their closed captured binding, and
+reference-driven abandoned Await with no escaped cells. Native causal controls
+cover argument/local fatal precedence, preexisting fatal cleanup, and an actual
+failed close that must still retire the state and receiver. The prior nine
+declarations are unchanged.
+
+This unit does not claim that an open native binding cell already retains the
+actual suspended coroutine. That distinct owner edge, including real cyclic-GC
+controls, is the authorized dependent implementation. No compiler, metadata or
+runtime acceptance is asserted by this source note.

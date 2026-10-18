@@ -344,3 +344,256 @@ test "VM async retirement abandoned arrow releases captures lexical this then ig
         try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
     }
 }
+
+
+const CloseFrame = @import("extensions/native_public_lexical_frame.zig").Frame(enum { local, captured });
+const CloseMode = enum { returned, abandoned, failed_close };
+const CloseToken = struct { probe: *CloseProbe, slot: usize };
+const CloseProbe = struct {
+    engine: *Engine,
+    mode: CloseMode = .returned,
+    escape: bool = false,
+    arrow: bool = false,
+    holder_class: c.JSClassID = 0,
+    tokens: [4]CloseToken = undefined,
+    made: [4]bool = @splat(false),
+    counts: [4]u32 = @splat(0),
+    order: [8]u8 = @splat(255),
+    length: usize = 0,
+    resumed: usize = 0,
+    hook_calls: usize = 0,
+    hook_counts: [4]u32 = @splat(99),
+    hook_promise_state: c_int = -1,
+    adoption_calls: usize = 0,
+    adoption_counts: [4]u32 = @splat(99),
+    pending: c.JSValue = c.pi_js_undefined(), // Borrowed from the test's real Promise root.
+    first: c.JSValue = c.pi_js_undefined(),
+    second: c.JSValue = c.pi_js_undefined(),
+    prior: c.JSValue = c.pi_js_undefined(),
+    cleanup_events: bool = false,
+    fn token(self: *CloseProbe, slot: usize) !c.JSValue {
+        if (slot >= self.tokens.len or self.made[slot]) return error.InvalidCloseToken;
+        const result = try self.engine.checked(c.JS_NewObjectClass(self.engine.context, self.holder_class));
+        self.made[slot] = true;
+        _ = c.JS_SetOpaque(result, &self.tokens[slot]);
+        return result;
+    }
+    fn deinit(self: *CloseProbe) void {
+        self.cleanup_events = false;
+        self.engine.freeValue(self.first); self.engine.freeValue(self.second); self.engine.freeValue(self.prior);
+        self.pending = c.pi_js_undefined();
+        self.engine.deinit();
+        close_active = null;
+    }
+};
+var close_active: ?*CloseProbe = null;
+fn closeRelease(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
+    const token: *CloseToken = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
+    const p = token.probe;
+    p.counts[token.slot] += 1;
+    if (p.length < p.order.len) p.order[p.length] = @intCast(token.slot);
+    p.length += 1;
+    if (p.cleanup_events and (token.slot == 0 or token.slot == 1))
+        _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, if (token.slot == 0) p.first else p.second));
+}
+fn closeMake(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
+    var slot: u32 = 0;
+    if (argc == 0 or c.JS_ToUint32(context, &slot, argv[0]) < 0) return c.JS_EXCEPTION;
+    return close_active.?.token(slot) catch |err|
+        c.JS_ThrowInternalError(context, "Close token: %s", @as([*:0]const u8, @errorName(err)));
+}
+fn closeAdoption(_: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
+    const p = close_active.?;
+    p.adoption_calls += 1; p.adoption_counts = p.counts;
+    return c.pi_js_undefined();
+}
+fn closeCaptured(engine: *Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishValue(&scope, closeCapturedBody(&scope, roots[0]));
+}
+fn closeCapturedBody(scope: *Scope, binding: c.JSValue) !c.JSValue {
+    return v.duplicate(scope, try CloseFrame.read(scope, binding));
+}
+fn closeState(engine: *Engine, owner: c.JSValue) !void {
+    const p = close_active.?;
+    p.hook_calls += 1; p.hook_counts = p.counts;
+    if (!c.JS_IsUndefined(p.pending)) p.hook_promise_state = c.JS_PromiseState(engine.context, p.pending);
+    if (p.mode == .failed_close) {
+        // An actual pending ordinary failure before close must still leave the
+        // C owner responsible for every state/function/receiver root.
+        _ = c.JS_Throw(engine.context, c.JS_DupValue(engine.context, p.prior));
+        return error.JavaScriptException;
+    }
+    return CloseFrame.closeAtAsyncTerminal(engine, owner);
+}
+fn closeNative(engine: *Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    var scope: Scope = .{ .engine = engine };
+    return v.owned.finishAction(&scope, closeAdvance(&scope, owner, completion, input));
+}
+fn closeAdvance(scope: *Scope, owner: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const p = close_active.?;
+    if (completion == .start) {
+        const frame = try CloseFrame.create(scope);
+        // Install the genuine VM state before any subsequent producer can fail.
+        af.replaceState(scope.engine, owner, v.duplicate(scope, frame.owner));
+        try frame.take(.local, p.token(1));
+        try frame.take(.captured, p.token(2));
+        if (p.escape) {
+            const binding = try frame.capture(scope, .captured, "captured");
+            const callback = try v.arrow(scope, "", 0, closeCaptured, &.{binding});
+            try v.put(scope, try v.global(scope, "globalThis"), "closeEscaped", callback);
+        }
+        return .{ .awaited = if (p.mode == .abandoned)
+            v.duplicate(scope, try v.global(scope, "closeGate")) else c.pi_js_undefined() };
+    }
+    p.resumed += 1;
+    if (completion == .rejected) return .{ .thrown = v.duplicate(scope, input) };
+    return .{ .returned = v.duplicate(scope, try v.global(scope, "closeReturn")) };
+}
+fn closeInstall(scope: *Scope) !void {
+    const global = try v.global(scope, "globalThis");
+    try v.put(scope, global, "closeMake", try v.own(scope, try scope.engine.checked(
+        c.JS_NewCFunction(scope.engine.context, closeMake, "closeMake", 1))));
+    try v.put(scope, global, "closeAdoption", try v.own(scope, try scope.engine.checked(
+        c.JS_NewCFunction(scope.engine.context, closeAdoption, "closeAdoption", 0))));
+    var boundary: v.guest.Boundary = .{ .engine = scope.engine }; try boundary.begin();
+    const function = try boundary.finishValue(scope, if (close_active.?.arrow)
+        af.createResumableArrowWithClose(scope.engine, "", 1, closeNative, &.{}, c.pi_js_undefined(), closeState)
+        else af.createResumableWithClose(scope.engine, "", 1, closeNative, &.{}, closeState));
+    try v.put(scope, global, "closeNative", function);
+}
+fn closeSetup(p: *CloseProbe, native: bool) !void {
+    close_active = p;
+    for (&p.tokens, 0..) |*item, i| item.* = .{ .probe = p, .slot = i };
+    _ = c.JS_NewClassID(p.engine.runtime, &p.holder_class);
+    const definition: c.JSClassDef = .{ .class_name = "Actual terminal close argument and binding holder", .finalizer = closeRelease };
+    if (c.JS_NewClass(p.engine.runtime, p.holder_class, &definition) < 0) return error.OutOfMemory;
+    var scope: Scope = .{ .engine = p.engine };
+    try v.owned.finishVoid(&scope, closeInstall(&scope));
+    try run(p.engine, if (p.escape)
+        if (p.arrow)
+            "globalThis.closeSource=async arg=>{const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;return closeReturn};"
+        else
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);globalThis.closeEscaped=()=>captured;await undefined;return closeReturn};"
+        else if (p.mode == .abandoned)
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);await closeGate;return closeReturn};"
+        else
+            "globalThis.closeSource=async function(arg){const local=closeMake(1);const captured=closeMake(2);await undefined;return closeReturn};");
+    try run(p.engine, if (native) "globalThis.closeSelected=closeNative;globalThis.closeReturn=23;"
+        else "globalThis.closeSelected=closeSource;globalThis.closeReturn=23;");
+    if (p.mode == .abandoned) try run(p.engine, "globalThis.closeGate=new Promise(()=>{});");
+}
+fn closeStart(p: *CloseProbe) !c.JSValue {
+    try run(p.engine, "globalThis.closePending=Reflect.apply(closeSelected,closeMake(3),[closeMake(0)]);void 0;");
+    const pending = try evaluate(p.engine, "closePending");
+    errdefer p.engine.freeValue(pending);
+    p.pending = pending;
+    c.JS_PromiseMarkAsHandled(p.engine.context, pending);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+    try std.testing.expectEqual(@as(usize, 0), p.length);
+    for (p.made) |made| try std.testing.expect(made);
+    return pending;
+}
+fn closeOne(p: *CloseProbe) !void {
+    var context: ?*c.JSContext = null;
+    try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) > 0);
+    try std.testing.expect(!c.JS_HasException(p.engine.context));
+    try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
+    p.engine.finishJob();
+}
+fn closeOrder(p: *CloseProbe, expected: []const u8) !void {
+    try std.testing.expectEqual(expected.len, p.length);
+    try std.testing.expectEqualSlices(u8, expected, p.order[0..p.length]);
+    for (p.counts) |count| try std.testing.expectEqual(@as(u32, 1), count);
+}
+fn closeFatalValues(p: *CloseProbe) !void {
+    p.first = try p.engine.checked(c.JS_NewError(p.engine.context));
+    p.second = try p.engine.checked(c.JS_NewError(p.engine.context));
+    p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
+    c.JS_SetUncatchableError(p.engine.context, p.first);
+    c.JS_SetUncatchableError(p.engine.context, p.second);
+    c.JS_SetUncatchableError(p.engine.context, p.prior);
+    p.cleanup_events = true;
+}
+fn closeJobFailure(p: *CloseProbe, expected: c.JSValue, fatal: bool) !void {
+    var context: ?*c.JSContext = null;
+    try std.testing.expect(c.JS_ExecutePendingJob(p.engine.runtime, &context) < 0);
+    try std.testing.expect(c.JS_HasException(p.engine.context));
+    const reason = c.JS_GetException(p.engine.context); defer p.engine.freeValue(reason);
+    try std.testing.expectEqual(fatal, c.JS_IsUncatchableError(reason));
+    try std.testing.expect(c.JS_IsStrictEqual(p.engine.context, reason, expected));
+    try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+    try std.testing.expectEqualSlices(u32, &.{ 1, 0, 0, 0 }, &p.hook_counts);
+    try closeOrder(p, &.{ 0, 1, 2, 3 });
+}
+
+test "VM async retirement terminal Frame close follows adoption and leaves escaped cells holding only captures" {
+    inline for (.{ false, true }) |native| {
+      inline for (.{ false, true }) |arrow| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .escape = true, .arrow = arrow };
+        defer p.deinit(); try closeSetup(&p, native);
+        try run(p.engine, "globalThis.closeReturn={get then(){closeAdoption();return undefined}};");
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try closeOne(&p);
+        try std.testing.expectEqual(@as(usize, 1), p.adoption_calls);
+        try std.testing.expectEqualSlices(u32, &.{ 0, 0, 0, 0 }, &p.adoption_counts);
+        try std.testing.expectEqualSlices(u32, &.{ 1, 1, 0, 1 }, &p.counts);
+        try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, c.JS_PromiseState(p.engine.context, pending));
+        if (native) {
+            try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+            try std.testing.expectEqualSlices(u32, &.{ 1, 0, 0, 0 }, &p.hook_counts);
+            try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+        }
+        const captured = try evaluate(p.engine, "closeEscaped()");
+        const token: *CloseToken = @ptrCast(@alignCast(c.JS_GetOpaque(captured, p.holder_class) orelse return error.MissingClosedCapture));
+        try std.testing.expectEqual(@as(usize, 2), token.slot);
+        p.engine.freeValue(captured);
+        try std.testing.expectEqual(@as(u32, 0), p.counts[2]);
+        try run(p.engine, "delete globalThis.closeEscaped;");
+        try closeOrder(&p, &.{ 0, 1, 3, 2 });
+      }
+    }
+}
+test "VM async retirement terminal Frame close runs once for abandoned actual Await without escaped cells" {
+    inline for (.{ false, true }) |native| {
+        var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .abandoned };
+        defer p.deinit(); try closeSetup(&p, native);
+        const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+        try std.testing.expect(!c.JS_IsJobPending(p.engine.runtime));
+        try run(p.engine, "delete globalThis.closeGate;");
+        try closeOrder(&p, &.{ 0, 1, 2, 3 });
+        try std.testing.expectEqual(@as(usize, 0), p.resumed);
+        try std.testing.expectEqual(c.JS_PROMISE_PENDING, c.JS_PromiseState(p.engine.context, pending));
+        if (native) {
+            try std.testing.expectEqual(@as(usize, 1), p.hook_calls);
+            try std.testing.expectEqualSlices(u32, &.{ 1, 0, 0, 0 }, &p.hook_counts);
+            try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
+        }
+    }
+}
+test "VM async retirement terminal close preserves first argument fatal and still retires every local" {
+    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    defer p.deinit(); try closeSetup(&p, true);
+    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+    try closeFatalValues(&p); try closeJobFailure(&p, p.first, true);
+    try std.testing.expectEqual(@as(usize, 1), p.resumed);
+    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+}
+test "VM async retirement terminal close runs under preexisting fatal without resuming a body" {
+    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}) };
+    defer p.deinit(); try closeSetup(&p, true);
+    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+    try closeFatalValues(&p);
+    _ = c.JS_Throw(p.engine.context, c.JS_DupValue(p.engine.context, p.prior));
+    try closeJobFailure(&p, p.prior, true);
+    try std.testing.expectEqual(@as(usize, 0), p.resumed);
+    try std.testing.expectEqual(c.JS_PROMISE_PENDING, p.hook_promise_state);
+}
+test "VM async retirement failed terminal hook cannot bypass state and receiver root retirement" {
+    var p: CloseProbe = .{ .engine = try Engine.init(std.testing.allocator, .{}), .mode = .failed_close };
+    defer p.deinit(); try closeSetup(&p, true);
+    p.prior = try p.engine.checked(c.JS_NewError(p.engine.context));
+    const pending = try closeStart(&p); defer p.engine.freeValue(pending);
+    try closeJobFailure(&p, p.prior, false);
+    try std.testing.expectEqual(c.JS_PROMISE_FULFILLED, p.hook_promise_state);
+}

@@ -942,6 +942,7 @@ typedef struct JSFunctionBytecode {
        metadata is zero-initialized, leaving this pointer NULL. cpool[0..1]
        retains captures/lexical-this with the existing GC and finalizer. */
     JSPiAsyncFunctionBody *native_async_body;
+    JSPiAsyncFunctionStateClose *native_async_close;
     uint8_t native_async_flags;
 } JSFunctionBytecode;
 
@@ -1030,6 +1031,7 @@ typedef struct JSAsyncFunctionData {
     JSAsyncFunctionState func_state;
     /* Native-body invocation roots; NULL body keeps the bytecode path intact. */
     JSPiAsyncFunctionBody *native_body;
+    JSPiAsyncFunctionStateClose *native_close;
     JSContext *native_ctx;
     JSValue native_function, native_this, native_receiver, native_state;
     int native_argc;
@@ -22529,6 +22531,8 @@ static JSValue js_call_generator_function(JSContext *ctx, JSValueConst func_obj,
 
 /* AsyncFunction */
 
+static void js_native_async_terminate_with_close(JSAsyncFunctionData *s);
+
 static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
 {
     /* The active bytecode function/realm dominates this borrowed identity.
@@ -22537,6 +22541,10 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
     if (s->is_active) {
         if (s->native_body) {
             int i;
+            if (s->native_close) {
+                js_native_async_terminate_with_close(s);
+                return;
+            }
             /* Match async_func_free: arguments, local state, function
                (including its captures), then lexical this and the call-site
                receiver retained even by a lexical-this async arrow. */
@@ -22686,6 +22694,7 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
                                    JSNativeAsyncPending *owned)
 {
     JSValue state, effective_this, receiver, function, resolves[2], *args;
+    JSPiAsyncFunctionStateClose *close;
     int count, i;
     js_native_async_take_pending(ctx, owned);
     s->module = NULL;
@@ -22695,6 +22704,7 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
     s->is_active = false;
     state = s->native_state; effective_this = s->native_this;
     receiver = s->native_receiver;
+    close = s->native_close; s->native_close = NULL;
     function = s->native_function; args = s->native_argv;
     count = s->native_argc;
     resolves[0] = s->resolving_funcs[0]; resolves[1] = s->resolving_funcs[1];
@@ -22707,12 +22717,30 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
     for (i = 0; i < count; i++)
         js_native_async_release(ctx, args[i], owned);
     js_free(ctx, args);
+    if (close) {
+        /* The hook borrows state. Its pointer was detached before any free;
+           close failure must not bypass the remaining owned root releases. */
+        js_native_async_take_pending(ctx, owned);
+        close(ctx, state);
+        js_native_async_take_pending(ctx, owned);
+    }
     js_native_async_release(ctx, state, owned);
     js_native_async_release(ctx, function, owned);
     js_native_async_release(ctx, effective_this, owned);
     js_native_async_release(ctx, receiver, owned);
     for (i = 0; i < 2; i++)
         js_native_async_release(ctx, resolves[i], owned);
+}
+
+/* Hook-enabled abandonment uses the same once-only close and pending owner.
+   Ordinary functions without a hook keep their existing RT-only finalizer. */
+static void js_native_async_terminate_with_close(JSAsyncFunctionData *s)
+{
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    JSContext *ctx = s->native_ctx;
+    js_native_async_retire(ctx, s, &owned);
+    if (owned.present)
+        JS_Throw(ctx, owned.reason);
 }
 
 static bool js_native_async_function_resume(JSAsyncFunctionData *s,
@@ -23039,6 +23067,18 @@ JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
     return function;
 }
 
+JSValue JS_PiNewNativeAsyncFunctionWithClose(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSPiAsyncFunctionStateClose *close,
+    JSValueConst captures, JSValueConst lexical_this, int flags,
+    const char *name, int length)
+{
+    JSValue function = JS_PiNewNativeAsyncFunction(ctx, body, captures,
+        lexical_this, flags, name, length);
+    if (!JS_IsException(function))
+        JS_VALUE_GET_OBJ(function)->u.func.function_bytecode->native_async_close = close;
+    return function;
+}
+
 static JSValue js_native_async_function_call(JSContext *caller,
     JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv)
 {
@@ -23059,6 +23099,7 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JS_REF_COUNT(s) = 1;
     add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
     s->native_body = b->native_async_body;
+    s->native_close = b->native_async_close;
     s->native_ctx = JS_DupContext(ctx);
     s->native_function = js_dup(func_obj);
     s->native_this = js_dup((b->native_async_flags & JS_PI_AF_LEXICAL_THIS)

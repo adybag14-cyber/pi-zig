@@ -567,9 +567,21 @@ enum { JS_PI_AF_LEXICAL_THIS = 1 };
 typedef JSValue JSPiAsyncFunctionBody(JSContext *ctx, JSValueConst captures,
     JSValueConst this_obj, int argc, JSValueConst *argv, int completion,
     JSValueConst input, JSValue *state, int *action);
+/* Optional terminal close of a borrowed per-invocation state. The hook is
+   detached exactly once, after settlement/argument retirement and before state
+   release, including abandoned suspensions. It must not allocate or run guest
+   code, consume/replace state, or skip remaining cleanup on failure. Pending
+   exceptions are reduced by the native terminal owner around the hook. During
+   cycle collection, objects may be zombies: use JS_IsLiveObject before reading
+   opaque state/cells. Undefined state is possible when START never ran. */
+typedef void JSPiAsyncFunctionStateClose(JSContext *ctx, JSValueConst state);
 JS_EXTERN JSValue JS_PiNewNativeAsyncFunction(JSContext *ctx,
     JSPiAsyncFunctionBody *body, JSValueConst captures,
     JSValueConst lexical_this, int flags, const char *name, int length);
+JS_EXTERN JSValue JS_PiNewNativeAsyncFunctionWithClose(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSPiAsyncFunctionStateClose *close,
+    JSValueConst captures, JSValueConst lexical_this, int flags,
+    const char *name, int length);
 
 typedef enum JSPiAsyncGeneratorCompletion {
     JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,

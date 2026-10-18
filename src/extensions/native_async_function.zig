@@ -12,6 +12,9 @@ pub const Completion = enum(c_int) {
 /// awaited means a real suspension; thrown preserves the raw reason.
 pub const Action = union(enum) { returned: c.JSValue, awaited: c.JSValue, thrown: c.JSValue };
 pub const Body = *const fn (*em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue, *c.JSValue, Completion, c.JSValue) anyerror!Action;
+/// Borrowed terminal state, after argument retirement and before state release.
+/// This hook closes owned lexical bindings; it may not allocate or run guest code.
+pub const StateClose = *const fn (*em.Engine, c.JSValue) anyerror!void;
 const Implementation = union(enum) { callback: Callback, body: Body };
 const Captures = struct { engine: *em.Engine, implementation: Implementation, values: []c.JSValue };
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -68,18 +71,36 @@ pub fn replaceState(engine: *em.Engine, state: *c.JSValue, next: c.JSValue) void
     state.* = next;
 }
 pub fn create(engine: *em.Engine, name: [*:0]const u8, length: c_int, callback: Callback, roots: []const c.JSValue) !c.JSValue {
-    return createKind(engine, name, length, .{ .callback = callback }, roots, c.pi_js_undefined(), false);
+    return createKind(engine, name, length, .{ .callback = callback }, roots, c.pi_js_undefined(), false, null);
 }
 pub fn createArrow(engine: *em.Engine, name: [*:0]const u8, length: c_int, callback: Callback, roots: []const c.JSValue, lexical_this: c.JSValue) !c.JSValue {
-    return createKind(engine, name, length, .{ .callback = callback }, roots, lexical_this, true);
+    return createKind(engine, name, length, .{ .callback = callback }, roots, lexical_this, true, null);
 }
 pub fn createResumable(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue) !c.JSValue {
-    return createKind(engine, name, length, .{ .body = body }, roots, c.pi_js_undefined(), false);
+    return createKind(engine, name, length, .{ .body = body }, roots, c.pi_js_undefined(), false, null);
 }
 pub fn createResumableArrow(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue, lexical_this: c.JSValue) !c.JSValue {
-    return createKind(engine, name, length, .{ .body = body }, roots, lexical_this, true);
+    return createKind(engine, name, length, .{ .body = body }, roots, lexical_this, true, null);
 }
-fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementation: Implementation, roots: []const c.JSValue, lexical_this: c.JSValue, arrow: bool) !c.JSValue {
+pub fn createResumableWithClose(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue, comptime close: StateClose) !c.JSValue {
+    return createKind(engine, name, length, .{ .body = body }, roots, c.pi_js_undefined(), false, CloseTrampoline(close).finish);
+}
+pub fn createResumableArrowWithClose(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue, lexical_this: c.JSValue, comptime close: StateClose) !c.JSValue {
+    return createKind(engine, name, length, .{ .body = body }, roots, lexical_this, true, CloseTrampoline(close).finish);
+}
+fn CloseTrampoline(comptime close: StateClose) type {
+    return struct {
+        fn finish(context: ?*c.JSContext, state: c.JSValue) callconv(.c) void {
+            const engine = em.Engine.fromContext(context.?);
+            // Closing must continue even when the terminal C owner has already
+            // selected a fatal. The close implementation owns all of its frees.
+            engine.native_exception_diagnostics_suppressed += 1;
+            defer engine.native_exception_diagnostics_suppressed -= 1;
+            close(engine, state) catch |err| { _ = fail(engine, err); };
+        }
+    };
+}
+fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementation: Implementation, roots: []const c.JSValue, lexical_this: c.JSValue, arrow: bool, close: ?*const c.JSPiAsyncFunctionStateClose) !c.JSValue {
     var class: c.JSClassID = 0;
     _ = c.JS_NewClassID(engine.runtime, &class);
     const definition: c.JSClassDef = .{ .class_name = "Private native AsyncFunction captures", .finalizer = finalizer, .gc_mark = mark };
@@ -96,5 +117,8 @@ fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementa
     attached = true;
     // From attachment onward the private holder's finalizer owns host storage.
     // A C factory failure releases its partial roots before owner is released.
-    return engine.checked(c.JS_PiNewNativeAsyncFunction(engine.context, invoke, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length));
+    const function = if (close) |hook|
+        c.JS_PiNewNativeAsyncFunctionWithClose(engine.context, invoke, hook, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length)
+    else c.JS_PiNewNativeAsyncFunction(engine.context, invoke, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length);
+    return engine.checked(function);
 }
