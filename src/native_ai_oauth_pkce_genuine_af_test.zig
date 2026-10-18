@@ -151,7 +151,7 @@ test "native OAuth PKCE declared bytes encoder and data survive the actual diges
         const source = try std.mem.concat(engine.gpa, u8, &.{ setup, if (native) "\nglobalThis.pkcePending=pkceNative.generatePKCE();" else "\nglobalThis.pkcePending=pkceSource.generatePKCE();" });
         defer engine.gpa.free(source);
         try run(engine, source);
-        c.JS_ClearKeptObjects(engine.runtime);
+        try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
         c.JS_RunGC(engine.runtime);
         try run(engine,
             \\if(pkceWeak.length!==3||pkceWeak.some(value=>value.deref()===undefined))throw Error("Declared PKCE local retired before Await completion");
@@ -172,7 +172,7 @@ test "native OAuth PKCE constructor temporary retires before next global crypto 
             \\Object.defineProperty(globalThis,"Uint8Array",{configurable:true,get(){if(constructor){const value=constructor;constructor=undefined;return value}return actualArray}});
             \\Object.defineProperty(globalThis,"crypto",{configurable:true,get(){pkceGc();if(pkceConstructorWeak.deref()!==undefined)throw Error("Constructor retained into crypto getter");return actualCrypto}});
         );
-        c.JS_ClearKeptObjects(engine.runtime);
+        try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
         try run(engine, if (native) "await pkceNative.generatePKCE();" else "await pkceSource.generatePKCE();");
     }
 }
@@ -192,7 +192,7 @@ test "native OAuth PKCE iterator method retires before iterator next getter" {
             \\globalThis.Uint8Array=function(value){if(first){first=false;return {get [Symbol.iterator](){const selected=method;method=undefined;return selected}}}return new actualArray(value)};
             \\Object.defineProperty(crypto,"getRandomValues",{value(value){return value}});
         );
-        c.JS_ClearKeptObjects(engine.runtime);
+        try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
         try run(engine, if (native) "await pkceNative.generatePKCE();" else "await pkceSource.generatePKCE();");
     }
 }
@@ -209,7 +209,7 @@ test "native OAuth PKCE String method and receiver retire before addition coerci
             \\Object.defineProperty(globalThis,"String",{configurable:true,get(){if(receiver){const selected=receiver;receiver=undefined;return selected}return actualString}});
             \\Object.defineProperty(crypto,"getRandomValues",{value(value){return value.fill(0)}});
         );
-        c.JS_ClearKeptObjects(engine.runtime);
+        try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
         try run(engine, if (native) "await pkceNative.generatePKCE();" else "await pkceSource.generatePKCE();");
     }
 }
