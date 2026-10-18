@@ -595,6 +595,12 @@ JS_EXTERN JSValue JS_PiGetAsyncGeneratorFunctionPrototype(JSContext *ctx);
 JS_EXTERN JSValue JS_GetIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetAsyncIteratorSymbol(JSContext *ctx);
 JS_EXTERN JSValue JS_GetToPrimitiveSymbol(JSContext *ctx);
+/* Executing acquisition, not a read-only query. Borrowed same-runtime input,
+   owned iterator return. Exceptions pending at entry prevent guest work.
+   Pending results are normalized after protected owned-result cleanup; native
+   callbacks must still obey the ordinary C API exception-return convention.
+   Uses the VM's genuine async/sync-fallback path; caller captures next itself. */
+JS_EXTERN JSValue JS_PiGetAsyncIterator(JSContext *ctx, JSValueConst obj);
 
 /* the following functions are used to select the intrinsic object to
    save memory */
@@ -1040,6 +1046,8 @@ JS_EXTERN JSValue JS_NewDate(JSContext *ctx, double epoch_ms);
 JS_EXTERN bool JS_IsDate(JSValueConst v);
 
 JS_EXTERN JSValue JS_GetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop);
+JS_EXTERN JSValue JS_PiGetPropertyReceiver(JSContext *ctx, JSValueConst base,
+                                         JSAtom prop, JSValueConst receiver);
 JS_EXTERN JSValue JS_GetPropertyUint32(JSContext *ctx, JSValueConst this_obj,
                                        uint32_t idx);
 JS_EXTERN JSValue JS_GetPropertyInt64(JSContext *ctx, JSValueConst this_obj,
@@ -1299,6 +1307,10 @@ JS_EXTERN int JS_ReadCapturedStackFrame(JSContext *ctx, JSValueConst frame,
                                         JSValue *filename, JSValue *function_name,
                                         int *line, int *column, int *is_native,
                                         int *is_constructor);
+/* Actual logical ScriptNameOrSourceURL, without guest property lookup. Success
+   transfers one owned value; failure leaves the output untouched. */
+JS_EXTERN int JS_ReadCapturedStackFrameSourceName(JSContext *ctx,
+    JSValueConst frame, JSValue *source_name);
 /* return != 0 if the JS code needs to be interrupted */
 typedef int JSInterruptHandler(JSRuntime *rt, void *opaque);
 JS_EXTERN void JS_SetInterruptHandler(JSRuntime *rt, JSInterruptHandler *cb, void *opaque);
@@ -1352,6 +1364,16 @@ JS_EXTERN void JS_SetModuleNormalizeFunc2(JSRuntime *rt,
 JS_EXTERN JSValue JS_GetImportMeta(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSAtom JS_GetModuleName(JSContext *ctx, JSModuleDef *m);
 JS_EXTERN JSValue JS_GetModuleNamespace(JSContext *ctx, JSModuleDef *m);
+/* Actual declaration/binding preparation only; no load, resolve, body evaluation
+   or job pumping. Borrowed compiled module must belong to the live owner-thread
+   context and every static dependency must already be resolved. The host MUST
+   attest a capture-only native Error-stack owner and trusted nonreentrant
+   interrupt callback; no graph mutation/context disposal or guest formatting is
+   permitted during this synchronous call. Strict CallSite visibility is required.
+   Zero succeeds; -1 preserves the actual pending reason. Any entry pending reason
+   is refused unchanged. Failed fresh environments are restored; already linked
+   SCCs and healthy dependencies are retained. Not a require(esm) policy API. */
+JS_EXTERN int JS_PiLinkModuleGraph(JSContext *ctx, JSValueConst compiled_module);
 
 /* associate a JSValue to a C module */
 JS_EXTERN int JS_SetModulePrivateValue(JSContext *ctx, JSModuleDef *m, JSValue val);
@@ -1407,9 +1429,63 @@ JS_EXTERN JSValue JS_ReadObject2(JSContext *ctx, const uint8_t *buf, size_t buf_
 /* instantiate and evaluate a bytecode function. Only used when
    reading a script or module with JS_ReadObject() */
 JS_EXTERN JSValue JS_EvalFunction(JSContext *ctx, JSValue fun_obj);
+
+/* Native synchronous compilation only. Primitive strings are borrowed. These
+   APIs require a correct-context capture-only native Error-stack owner and
+   trusted nonreentrant interrupt callback; retain ctx and suppress host error
+   diagnostics, guest formatting/reentry, graph mutation/disposal/concurrency.
+   Categories are trusted syntax-completion policy, NEVER fatal classification.
+   Entry pending failure is retained unchanged; diagnostic outputs reset to NONE.
+   Filename NUL is explicitly refused. No module resolution/evaluation/job pump. */
+typedef enum JSPiCJSParseCategory {
+    JS_PI_CJS_NO_SYNTAX_CATEGORY = 0,
+    JS_PI_CJS_ORDINARY_SYNTAX = 1,
+    JS_PI_CJS_DIRECT_MODULE_SYNTAX = 2,
+    JS_PI_CJS_ESM_PARSE_REQUIRED = 3,
+} JSPiCJSParseCategory;
+JS_EXTERN JSValue JS_PiCompileCJSFunction(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSPiCJSParseCategory *category);
+/* Same actual compiler plus lexer-produced origin metadata. Both output slots
+   are required and distinct; success transfers owned JS values, failure leaves them intact.
+   source_url is the actual magic URL or the primitive physical filename;
+   source_map_url is undefined only when its actual lexer buffer is empty. */
+JS_EXTERN JSValue JS_PiCompileCJSFunctionInfo(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSPiCJSParseCategory *category,
+    JSValue *source_url, JSValue *source_map_url);
+/* Actual GLOBAL|COMPILE_ONLY script for patched Module.wrap, no body execution.
+   Same metadata output ownership and capture-only native owner requirements. */
+JS_EXTERN JSValue JS_PiCompileCommonJSScriptInfo(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, JSValue *source_url, JSValue *source_map_url);
+typedef enum JSPiModuleParseDiagnostic {
+    JS_PI_MODULE_NO_SYNTAX_DIAGNOSTIC = 0,
+    JS_PI_MODULE_ORDINARY_SYNTAX = 1,
+} JSPiModuleParseDiagnostic;
+enum {
+    JS_PI_MODULE_STATIC_IMPORT_EXPORT = 1,
+    JS_PI_MODULE_IMPORT_META = 2,
+    JS_PI_MODULE_TOP_LEVEL_AWAIT = 4,
+};
+/* 0 succeeds and writes flags; +1 is completed ordinary syntax rejection with
+   actual reason pending; -1 is operational failure with actual reason pending.
+   Both failure statuses leave flags unchanged. No reusable module is published. */
+JS_EXTERN int JS_PiParseModuleSyntax(JSContext *ctx, JSValueConst source,
+    JSValueConst physical_filename, unsigned *syntax_flags,
+    JSPiModuleParseDiagnostic *diagnostic);
 /* load the dependencies of the module 'obj'. Useful when JS_ReadObject()
    returns a module. */
 JS_EXTERN int JS_ResolveModule(JSContext *ctx, JSValueConst obj);
+/* Read-only syntactic TLA query over an actual context-owned compiled module's
+   complete resolved static graph. Borrowed module/ctx; no load, binding link,
+   evaluation, jobs or module-state mutation. UNLINKED binding status is allowed
+   only when every reachable dependency is resolved; LINKING/partial graphs fail.
+   On success returns 0 and writes 0/1 to has_tla; on failure returns -1 with the
+   pending reason preserved and leaves *has_tla unchanged. The host must retain
+   ctx and prevent concurrent/reentrant module mutation/disposal. Only its trusted
+   non-reentrant interrupt handler may run; it must not call guest code or mutate
+   modules/context. Binding-link validation and Node require(esm) policy are
+   separate prerequisites; this query alone does not establish their precedence. */
+JS_EXTERN int JS_PiModuleGraphHasTLA(JSContext *ctx, JSValueConst module,
+                                    int *has_tla);
 
 /* only exported for os.Worker() */
 JS_EXTERN JSAtom JS_GetScriptOrModuleName(JSContext *ctx, int n_stack_levels);

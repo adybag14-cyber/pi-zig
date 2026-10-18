@@ -1,0 +1,71 @@
+{
+  "schema": 1,
+  "status": "source_only_intended_union_no_Main_intake_or_actual_union_qualification",
+  "root_base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "root_later_head_reported": "606c5f1297ec059461b0b02d9a2522599404a85e",
+  "later_Root_products_must_be_preserved_during_future_narrow_graft": true,
+  "Core_authority": "42daa15f43cf31a9e42659cd46123c88b644a078",
+  "Core18_old_preparation_tree": "f3630f69c1f51e790f9bb0feb8788ddb789bd681",
+  "Core18_old_count_is_not_18_production_files": true,
+  "Core15_projection": "14 exact code additions plus 1 immutable old Bfb provenance record",
+  "normal_authority": "9cd91d7ed10069c7bd8a16b283322b3340013e9f",
+  "Promise_authority": "611104864ff15d670201a2c61877662f18be6176",
+  "G2_semantic_authority": "76d316d2b90d0e3de606f2ce643ad395089e5f61",
+  "G2_e95_prepared_tree": "44e20d4ed0e5f85bfcd2a69e9893d83886ab581d",
+  "normal_vendor_paths": [
+    "vendor/quickjs/libregexp.c",
+    "vendor/quickjs/libregexp.h",
+    "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+    "vendor/quickjs/quickjs-pi-link-sort.inc",
+    "vendor/quickjs/quickjs-pi-module-link.inc",
+    "vendor/quickjs/quickjs.c",
+    "vendor/quickjs/quickjs.h"
+  ],
+  "C_sha256": "BCDF923F343846EFDA4305EDA2C7C1D8F44908A27296D5C50A97506E06B2A8BC",
+  "H_sha256": "0DBC21D3205747FB9620CAEFEB1AE3FE8D2F78F1793157C06E2FA4F2F18CB556",
+  "Engine_sha256": "7C8E1271D62255C19256DB5971CF705459EAAD97B6FCFA2C69BD18B8A04A5201",
+  "Engine_delta": "exact23 additions/2 deletions per-owned-release actual pending event freshness",
+  "build_additions": {
+    "Core_exact": 85,
+    "Promise_exact": 8,
+    "G2_exact": 8,
+    "total": 101,
+    "deletions": 0,
+    "reverse_removal_restores_all_e95_build_bytes": true,
+    "reversal_receipt_sha256": "867AE93DE0EDE639C2B92F33C92F4FE084CCD3421BD72EDBDB69D5CB799FD08E"
+  },
+  "C_complete_byte_commutation_sha256": "C84891160119F654C9AD4FD98B87F8CF73629438EF04AF018706C8A488E450F0",
+  "retained_original_provenance": "verification/runtime-core42d-intake-20261017/source-provenance.json",
+  "old_provenance_rewritten": false,
+  "preserved_Root_paths": "Every root-base tree entry outside explicit reviewed union paths, including ABI c/h, native Error stack, newer AF adapter, calibrated Await DATA controls, C435 completion helper and Auth/Exec/SDK products",
+  "Core_old_full_snapshot_copied": false,
+  "Core_vendor_C_H_overlaid_after_normal": false,
+  "run_injected_into_qualification_build_targets": false,
+  "actual_metadata": null,
+  "actual_union_results": null,
+  "actual_union_qualified": false,
+  "standalone_prerequisites": {
+    "normal43": "Root exact normal9cd gate pending independent actual acceptance; no old C69943 pass transfer",
+    "Promise4_AF11": "Root exact611 gate pending independent actual acceptance; no declaration-count substitution",
+    "G2_actual_six_receipt_sha256": "9B2A9C8C9370D01EB60E9B386DF47854B7FBC1145A9ABAE3F9AB6A4B5DB4EAC9",
+    "G2_receipt_is_separate_head_component_evidence_only": true
+  },
+  "future_qualification": "New exact composed head must rerun actual full union groups after standalone prerequisites; historical150 and11 are selection labels until actualmetadata",
+  "unit_source_reviews": [
+    {
+      "path": "review-receipts/seven-vendor-C-source-review.json",
+      "sha256": "14CE80371A0645AE23B44A16B3CFCAC94FC6D514F7A74B1623CACEA0EC6085FE"
+    },
+    {
+      "path": "review-receipts/Core15-projection-source-review.json",
+      "sha256": "4494B61DB7728AF59F8FD8D61037021FF6F97CB5989A07AC973E67283FF58618"
+    },
+    {
+      "path": "review-receipts/G2-e95-source-intake-review.json",
+      "sha256": "1F72786B063347521C6990E94215C06998B962E02C7C6EABDD9F23B13A7DFCD4"
+    }
+  ],
+  "Main_written": false,
+  "compiler_native_Node_parser_AST_formatter_jobs": false,
+  "default_activation": false
+}

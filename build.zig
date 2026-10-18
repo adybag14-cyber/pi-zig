@@ -2137,6 +2137,14 @@ pub fn build(b: *std.Build) void {
     async_rejected_allocation_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("build-native-async-rejected-allocation", "Compile explicit rejected native allocation boundary ownership checks").dependOn(&async_rejected_allocation_tests.step);
     b.step("test-native-async-rejected-allocation", "Check original OOM identity historical tags user lookalikes u64 wrap and real resumed job escape").dependOn(&b.addRunArtifact(async_rejected_allocation_tests).step);
+    const promise_forwarding_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_promise_reaction_forwarding_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Promise forwarding"}, .use_llvm = use_llvm });
+    linkQuickJs(b, promise_forwarding_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(promise_forwarding_tests.root_module, sqlite_lib_dir, sqlite_library);
+    promise_forwarding_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-promise-reaction-forwarding", "Compile genuine VM Promise rejection DATA forwarding controls").dependOn(&promise_forwarding_tests.step);
+    const install_promise_forwarding = b.addInstallArtifact(promise_forwarding_tests, .{ .dest_sub_path = b.fmt("native-promise-reaction-forwarding{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) });
+    b.step("build-native-promise-reaction-forwarding-artifact", "Install the same genuine VM Promise forwarding control artifact without execution").dependOn(&install_promise_forwarding.step);
+    b.step("test-native-promise-reaction-forwarding", "Check absent handlers preserve rejection DATA while actual native fatal handlers escape").dependOn(&b.addRunArtifact(promise_forwarding_tests).step);
     const openai_tool_output4dd_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_openai_tool_output4dd_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native OpenAI4dd tool output"}, .use_llvm = use_llvm });
     linkQuickJs(b, openai_tool_output4dd_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(openai_tool_output4dd_tests.root_module, sqlite_lib_dir, sqlite_library);
@@ -3607,6 +3615,99 @@ pub fn build(b: *std.Build) void {
     if(target.result.os.tag==.windows){session_bindings_af.root_module.linkSystemLibrary("advapi32",.{});session_bindings_af.root_module.linkSystemLibrary("userenv",.{});}
     const session_bindings_af_install=b.addInstallArtifact(session_bindings_af,.{});
     b.step("build-native-sdk-session-bindings-af","Compile actual session binding AF causal controls").dependOn(&session_bindings_af_install.step);
+    // Isolated VM composition. These steps install test artifacts only; they
+    // neither select a default module nor attach a test runner to a build step.
+    const vm_controls = b.step("build-native-vm-c4-c5-callsite-controls", "Install individual and combined query link iterator and CallSite controls without execution");
+    b.step("build-native-vm-c4-c5-callsite-link-controls", "Install the reviewed VM composition controls without execution").dependOn(vm_controls);
+    const vm_control_specs = [_]struct { name: []const u8, root: []const u8, filters: []const []const u8 }{
+        .{ .name = "query", .root = "src/native_module_graph_tla_query_test.zig", .filters = &.{"module graph TLA query "} },
+        .{ .name = "iterator", .root = "src/native_async_iterator_api_test.zig", .filters = &.{"native async iterator API "} },
+        .{ .name = "callsite", .root = "src/native_callsite_visibility_test.zig", .filters = &.{"CallSite visibility "} },
+        .{ .name = "link", .root = "src/native_module_link_transaction_test.zig", .filters = &.{"module link transaction"} },
+        .{ .name = "combined", .root = "src/native_c3_c4_c5_callsite_test.zig", .filters = &.{ "module graph TLA query ", "native async iterator API ", "CallSite visibility ", "module link transaction", "VM query link iterator CallSite composition" } },
+    };
+    for (vm_control_specs) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry.root), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        if (std.mem.eql(u8, entry.name, "link") or std.mem.eql(u8, entry.name, "combined"))
+            module.addCSourceFile(.{ .file = b.path("src/native_module_link_allocator_controls.c"), .flags = &.{"-std=gnu11"} });
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = entry.filters });
+        const installed_name = b.fmt("vm-c4-c5-callsite-{s}{s}", .{ entry.name, if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c4-c5-callsite-{s}", .{entry.name}), "Install exact isolated VM controls; metadata and runtime require separate grants").dependOn(&install.step);
+        vm_controls.dependOn(&install.step);
+    }
+
+    // The accepted C3 queued/binding eleven-entry addendum is separate from150.
+    const vm_current11 = b.step("build-native-vm-c3-current11", "Install the unchanged current C3 queued and binding controls without execution");
+    inline for (.{
+        .{ "queued", "src/native_dynamic_import_graph0_test.zig", "queued Graph0 import " },
+        .{ "binding", "src/native_extension_graph0_binding_test.zig", "actual Graph0 binding " },
+    }) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry[1]), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = &.{entry[2]} });
+        const installed_name = b.fmt("vm-c3-current11-{s}{s}", .{ entry[0], if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c3-current11-{s}", .{entry[0]}), "Install one genuine queued or binding C3 selection without execution").dependOn(&install.step);
+        vm_current11.dependOn(&install.step);
+    }
+
+    // Reuse the existing selected Compile objects, filters and original bodies.
+    // Distinct install names preserve every group instead of overwriting test.exe.
+    const vm_retained = b.step("build-native-vm-c3-retained150", "Install the original fifteen C3 regression groups without execution or qualification transfer");
+    const vm_retained_groups = [_]struct { name: []const u8, artifact: *std.Build.Step.Compile }{
+        .{ .name = "focused-start", .artifact = native_tla_fatal_tests },
+        .{ .name = "focused-resumed", .artifact = resumed_tla_tests },
+        .{ .name = "focused-resolving", .artifact = native_af_resolving_tests },
+        .{ .name = "focused-inactive", .artifact = native_await_inactive_tests },
+        .{ .name = "focused-shared", .artifact = shared_thenable_tests },
+        .{ .name = "core-foundation", .artifact = highlight_root55_foundation },
+        .{ .name = "core-async26", .artifact = native_async_qualification_tests },
+        .{ .name = "core-generator", .artifact = native_generator_tests },
+        .{ .name = "core-generator-gpa", .artifact = native_generator_gpa_tests },
+        .{ .name = "core-json", .artifact = ai_json_tests },
+        .{ .name = "core-source51", .artifact = ae7_json_transform_tests },
+        .{ .name = "core-operators", .artifact = native_binary_tests },
+        .{ .name = "core-engine", .artifact = engine_tests },
+        .{ .name = "core-recovery", .artifact = highlight_root463_recovery },
+        .{ .name = "core-sdk-boundary", .artifact = sdk_exception_boundary_tests },
+    };
+    for (vm_retained_groups) |group| {
+        const installed_name = b.fmt("vm-c3-retained-{s}{s}", .{ group.name, if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(group.artifact, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-c3-retained-{s}", .{group.name}), "Install one unchanged C3 regression selection without execution").dependOn(&install.step);
+        vm_retained.dependOn(&install.step);
+    }
+    // Additional DATA/receiver controls remain separate from the unchanged62.
+    const vm_af_receiver = b.step("build-native-vm-af-receiver-controls", "Install actual AF DATA and receiver Get controls without execution");
+    inline for (.{
+        .{ "af-throw", "src/native_await_rejection_data_test.zig", &[_][]const u8{"native Await DATA"} },
+        .{ "receiver-get", "src/native_receiver_get_test.zig", &[_][]const u8{"receiver Get"} },
+        .{ "af-receiver-combined", "src/native_af_receiver_composition_test.zig", &[_][]const u8{ "native Await DATA", "receiver Get", "VM AF receiver composition" } },
+    }) |entry| {
+        const module = b.createModule(.{ .root_source_file = b.path(entry[1]), .target = target, .optimize = optimize });
+        module.addImport("catalog_tool", catalog_tool);
+        linkQuickJs(b, module, quickjs, sqlite_lib_dir);
+        linkSqlite(module, sqlite_lib_dir, sqlite_library);
+        const controls = b.addTest(.{ .root_module = module, .use_llvm = use_llvm, .filters = entry[2] });
+        const installed_name = b.fmt("vm-{s}{s}", .{ entry[0], if (target.result.os.tag == .windows) ".exe" else "" });
+        const install = b.addInstallArtifact(controls, .{ .dest_sub_path = installed_name });
+        b.step(b.fmt("build-native-vm-{s}", .{entry[0]}), "Install one actual additional VM selection without execution").dependOn(&install.step);
+        vm_af_receiver.dependOn(&install.step);
+    }
+    // Actual shared Engine retirement controls, install-only/default-off.
+    const engine_owned_retirement = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_engine_owned_retirement_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"shared Engine retirement"}, .use_llvm = use_llvm });
+    linkQuickJs(b, engine_owned_retirement.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, engine_owned_retirement.root_module, typescript_parser);
+    linkSqlite(engine_owned_retirement.root_module, sqlite_lib_dir, sqlite_library);
+    engine_owned_retirement.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { engine_owned_retirement.root_module.linkSystemLibrary("advapi32", .{}); engine_owned_retirement.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-engine-owned-retirement", "Install actual Engine owned-retirement controls without execution").dependOn(&b.addInstallArtifact(engine_owned_retirement, .{ .dest_sub_path = b.fmt("native-engine-owned-retirement{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

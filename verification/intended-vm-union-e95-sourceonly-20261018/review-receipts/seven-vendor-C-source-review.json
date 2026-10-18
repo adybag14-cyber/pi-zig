@@ -1,0 +1,93 @@
+{
+  "schema": 1,
+  "status": "FINITE_SEVEN_VENDOR_C_SOURCE_AND_BYTE_COMPOSITION_CLOSED",
+  "reviewer": "/root/async_c_review_resume",
+  "source_input_manifest_sha256": "63550763E485ED8823F1B58C443EF5FDFB694BAF94A94055B02B16580545DD84",
+  "normal_donor": "9cd91d7ed10069c7bd8a16b283322b3340013e9f",
+  "Promise_donor": "611104864ff15d670201a2c61877662f18be6176",
+  "C": "BCDF923F343846EFDA4305EDA2C7C1D8F44908A27296D5C50A97506E06B2A8BC",
+  "H": "0DBC21D3205747FB9620CAEFEB1AE3FE8D2F78F1793157C06E2FA4F2F18CB556",
+  "vendor_files": [
+    {
+      "path": "vendor/quickjs/libregexp.c",
+      "sha256": "05F00B2B94BCFDCD2049C5D11FAE7A1090D5BBD87CB08931ECD5906E9C124E1E",
+      "bytes": 127825,
+      "raw_git_blob": "2d99ce03aba574eb5c6167cb00d67b0a32d4c5f8",
+      "normal9cd_blob": "2d99ce03aba574eb5c6167cb00d67b0a32d4c5f8",
+      "expected_delta": "none byte_exact_normal9cd"
+    },
+    {
+      "path": "vendor/quickjs/libregexp.h",
+      "sha256": "AA8DF9CD9B47216801E1AA7C066FC6F720C0CF629C733659AD20B584A78D66E3",
+      "bytes": 4769,
+      "raw_git_blob": "b1ae5c98c75c85c816729c457d0ed09c47c26329",
+      "normal9cd_blob": "b1ae5c98c75c85c816729c457d0ed09c47c26329",
+      "expected_delta": "none byte_exact_normal9cd"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-cjs-compiler.inc",
+      "sha256": "87A771EB6291F195C7DEB63DA8B29F20805AEA0F07B6320985E10C090348B639",
+      "bytes": 17063,
+      "raw_git_blob": "4e2a24e6bddac7bdf47cff3095ac23d85dc4fb42",
+      "normal9cd_blob": "4e2a24e6bddac7bdf47cff3095ac23d85dc4fb42",
+      "expected_delta": "none byte_exact_normal9cd"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14",
+      "bytes": 4297,
+      "raw_git_blob": "94ae933a5592fb7453996daaa88f5560b63e1446",
+      "normal9cd_blob": "94ae933a5592fb7453996daaa88f5560b63e1446",
+      "expected_delta": "none byte_exact_normal9cd"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "bytes": 14986,
+      "raw_git_blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "normal9cd_blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "expected_delta": "none byte_exact_normal9cd"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "BCDF923F343846EFDA4305EDA2C7C1D8F44908A27296D5C50A97506E06B2A8BC",
+      "bytes": 2288521,
+      "raw_git_blob": "1471e7d534f6564d03ab4283d8a03f1ae001d2e9",
+      "normal9cd_blob": "973a8f2842b865e0c0a61a082d843f0c9e7daad9",
+      "expected_delta": "only independently reviewed Promise absent-handler forwarding hunk"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "0DBC21D3205747FB9620CAEFEB1AE3FE8D2F78F1793157C06E2FA4F2F18CB556",
+      "bytes": 81319,
+      "raw_git_blob": "e0e05e28938daa44eae6587cea6c15a8059e7bc5",
+      "normal9cd_blob": "e0e05e28938daa44eae6587cea6c15a8059e7bc5",
+      "expected_delta": "none byte_exact_normal9cd"
+    }
+  ],
+  "all7_physical_SHA256_lengths_raw_git_blob_matches": true,
+  "other6_full_blobs_exact_normal9cd": true,
+  "Core42d_ancestor_of_normal9cd": true,
+  "normalC354_plus_only611_hunk_equals_whole_union_bytes": true,
+  "Promise611_plus_only_atom53_owned_splice_equals_whole_union_bytes": true,
+  "independent_byte_SequenceEqual_length": 2288521,
+  "two_orders_equal_union": true,
+  "checks": [
+    "Inspected both complete diffs: normal9cd→union is only absent-handler forwarding hunk;611→union is only mapped owned atom emission call.",
+    "Owned atom53 path unchanged: private reserve4 beforeDup, free local on opcode/operand failure, one complete bytecode ref on success; NULL diagnostic arm retains legacy transfer.",
+    "Absent rejection handler preserves incoming is_reject and duplicates settled DATA; no JS_Throw/tag/flag inference on that payload.",
+    "Real handler still JS_Call; JS_EXCEPTION detection, actual current uncatchable guard and JS_GetException remain exactly in that branch.",
+    "Unchanged intrinsic capability selection/call and single res release; fulfilled absent-handler forwarding retained.",
+    "Six remaining vendor blobs include full CJS/link/sort/LRE/header contents without stale Core overlay."
+  ],
+  "drift": [],
+  "excluded": [
+    "Other Engine/build/control/provenance union paths are still under composition and not closed here.",
+    "This does not transfer standalone/runtime/Core/G2/retained31/compiler/wholeVM qualification or default activation.",
+    "Any further C/H/vendor mutation requires a new Source seal/review.",
+    "Broader inherited VM pending-event/opaque primitive policies are outside the two-hunk composition scope."
+  ],
+  "Main_written": false,
+  "execution_performed": false,
+  "actual_union_qualification": false
+}

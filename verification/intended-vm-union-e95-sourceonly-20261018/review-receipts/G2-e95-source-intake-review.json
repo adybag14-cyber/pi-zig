@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "FINITE_BYTE_SCOPE_INTAKE_SOURCE_CLOSED",
+  "reviewer": "/root/async_c_review_resume",
+  "base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "prospective_tree": "44e20d4ed0e5f85bfcd2a69e9893d83886ab581d",
+  "prepared_sha256": "0823C427E84A5770A84CFD4E12396932B781B3D1093F4B1BCC1DE4C680FD1BA3",
+  "patch_sha256": "53549CC870F9C2720F48F603A7A81B5D04E614AE04EC10265936EEE6B2A18964",
+  "Engine_sha256": "7C8E1271D62255C19256DB5971CF705459EAAD97B6FCFA2C69BD18B8A04A5201",
+  "Engine_and_five_test_blobs_exact_76d": true,
+  "all_three_raw_blob_sha256_and_lengths_match": true,
+  "exact_three_path_delta": true,
+  "eight_line_install_only_build_graft_reverse_restores_base_blob": true,
+  "other_all_tree_entries_unchanged": true,
+  "prior_semantic_peer": "55E1E3A8D949BFDA26A97ABA8A5C5C480AFB892E55501A22E650A3178CB04A09",
+  "shared_C_ABI_unchanged": true,
+  "Main_modified": false,
+  "execution_performed": false,
+  "runtime_qualification_transferred": false,
+  "limits": [
+    "Byte/scope join only; semantic donor review remains separate and immutable.",
+    "No retained31/CJS/wholeVM pass transfer or intake/activation authorization.",
+    "Actual Root G2 runtime independent audit was pending in the sealed input; this review does not infer completion.",
+    "Opaque C internal overwrite frontier remains excluded."
+  ],
+  "drift": []
+}

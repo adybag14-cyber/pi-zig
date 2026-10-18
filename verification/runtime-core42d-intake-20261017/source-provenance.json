@@ -1,0 +1,297 @@
+{
+  "schema": 1,
+  "status": "SOURCE_PREPARATION_ONLY_NOT_AUTHORIZED_FOR_INTAKE",
+  "Root_base": "bfb33a2312c5dd75173ad0b8eb6f6ad111c4f78c",
+  "Core_source_authority": "42daa15f43cf31a9e42659cd46123c88b644a078",
+  "source_readiness_sha256": "0A36E18DA18CCA7F72D8376C2C074956498C1223EA5307F5CCB9CC1005489A35",
+  "authority_scope": "27 Core pins identify authority/protected surfaces, not a list to overlay. Only exact selected four vendor files, new thin iterator leaf and genuine tests are copied.",
+  "selected_files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "mode": "100644",
+      "base_blob": "c9b544cb3f5616368648a87cf87fb04193883513",
+      "selected_core_blob": "664378935acb8ac0dd0105288d3ac69603e67f5c",
+      "selected_git_payload_sha256": "CCDD4E497B77045C84FE1BC774855B2BB8A22D74C28C3C851EE48384F70D069D",
+      "bytes": 2242821,
+      "Core_physical_sha256": "CCDD4E497B77045C84FE1BC774855B2BB8A22D74C28C3C851EE48384F70D069D",
+      "Core_physical_equals_git_payload": true,
+      "action": "replace exact reviewed vendor Core blob only"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "mode": "100644",
+      "base_blob": "a1b689283c422bd258a6a4c8876e689a3b892805",
+      "selected_core_blob": "9b30dc98ee6b2707665466b29dab8ed0c70612d8",
+      "selected_git_payload_sha256": "DE1C05E99D18FC72A680B7A2476DC5B72DA57BFD15451B984697EF7228B9854A",
+      "bytes": 78584,
+      "Core_physical_sha256": "DE1C05E99D18FC72A680B7A2476DC5B72DA57BFD15451B984697EF7228B9854A",
+      "Core_physical_equals_git_payload": true,
+      "action": "replace exact reviewed vendor Core blob only"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-link-sort.inc",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "94ae933a5592fb7453996daaa88f5560b63e1446",
+      "selected_git_payload_sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14",
+      "bytes": 4297,
+      "Core_physical_sha256": "42EF528B8D8BC18B02FB863558D2EB2D3A6778E3AD78540048C101988F4EDA14",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "vendor/quickjs/quickjs-pi-module-link.inc",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "8b1ab9986e566cf4027500a5b10471b78791671c",
+      "selected_git_payload_sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "bytes": 14986,
+      "Core_physical_sha256": "18103F5A384110A32523EC2B9713EB31F230E33BF12ED28CACBED740E3C8F70A",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/extensions/native_async_iterator_api.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "cd343915935bce1981b3441b88b5f2d6b08222ad",
+      "selected_git_payload_sha256": "E11F6E592B16B989E4717CA7D5639EC0B4DC026371F9CB2A8FD881AE9A684A9C",
+      "bytes": 350,
+      "Core_physical_sha256": "E11F6E592B16B989E4717CA7D5639EC0B4DC026371F9CB2A8FD881AE9A684A9C",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_module_graph_tla_query_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "d9491e2a8e1fa65cc75163a12c1a4619f467b697",
+      "selected_git_payload_sha256": "B76D43488D4AF2421E47D652713ABA5D7F0C49628ED31189134F950B421ED0E2",
+      "bytes": 18408,
+      "Core_physical_sha256": "B76D43488D4AF2421E47D652713ABA5D7F0C49628ED31189134F950B421ED0E2",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_async_iterator_api_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "14883cca0d41e81eaabe74a14b8cf8fb48cc02d1",
+      "selected_git_payload_sha256": "6813528125FC922EFB66C48036D566CD2B3E24D9C5967E6DAB6150CAB65887AB",
+      "bytes": 22037,
+      "Core_physical_sha256": "6813528125FC922EFB66C48036D566CD2B3E24D9C5967E6DAB6150CAB65887AB",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_callsite_visibility_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "b951705e332031bb381ea2d781014c09367a1063",
+      "selected_git_payload_sha256": "C3810C85937F9BF22A620CF474DCC307E0FC9570F0ABF163599D61F008882EC7",
+      "bytes": 13989,
+      "Core_physical_sha256": "C3810C85937F9BF22A620CF474DCC307E0FC9570F0ABF163599D61F008882EC7",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_module_link_transaction_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "2f59de8d7db3e2eb93b973b1709808b1a32fef7d",
+      "selected_git_payload_sha256": "8C4AA2F7FA5C77184401148897CA23B48C6A835153D0A347DCCB0A36AB0AECE9",
+      "bytes": 27350,
+      "Core_physical_sha256": "8C4AA2F7FA5C77184401148897CA23B48C6A835153D0A347DCCB0A36AB0AECE9",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_module_link_allocator_controls.c",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "892aacca259836896da756216c6276039e3b01f2",
+      "selected_git_payload_sha256": "55FB6C802DF7C34524DD13870785F1D8BE807C183A241F7143FA2607AD99AB55",
+      "bytes": 13226,
+      "Core_physical_sha256": "55FB6C802DF7C34524DD13870785F1D8BE807C183A241F7143FA2607AD99AB55",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_c3_c4_c5_callsite_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "0b0a180ebc1b5ea5d42b746a54f9d72c102cd926",
+      "selected_git_payload_sha256": "73B3D8EB045D34A16DCD08AE71E717486A2B72B33AB5E18CB2C932CA0D6688E7",
+      "bytes": 5016,
+      "Core_physical_sha256": "73B3D8EB045D34A16DCD08AE71E717486A2B72B33AB5E18CB2C932CA0D6688E7",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_dynamic_import_graph0_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "fcdf1401c37972542294a0762504062ef9a59de4",
+      "selected_git_payload_sha256": "E70628423F2F5CE9A93996DFD2644521AF1877D38D7CDCC91918B2B7CCBD8155",
+      "bytes": 17791,
+      "Core_physical_sha256": "E70628423F2F5CE9A93996DFD2644521AF1877D38D7CDCC91918B2B7CCBD8155",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_extension_graph0_binding_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "980c1ac009e080b1eaca3ff46b97f336c58fd758",
+      "selected_git_payload_sha256": "E5EB7CCC4C96B917E9412E6C4A723B589A1F0E1CB4AB0C1939A35E0C375C8C39",
+      "bytes": 1088,
+      "Core_physical_sha256": "E5EB7CCC4C96B917E9412E6C4A723B589A1F0E1CB4AB0C1939A35E0C375C8C39",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_extension_graph0_binding_controls.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "53e82573d1169d1f343ce465e44cb46982900575",
+      "selected_git_payload_sha256": "F792178095EE891B9E434692E519D2D7148297174FBBE69F8404E289743698C2",
+      "bytes": 2474,
+      "Core_physical_sha256": "F792178095EE891B9E434692E519D2D7148297174FBBE69F8404E289743698C2",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_receiver_get_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "c03cc88b739daf38bcd7cd5b8a0c6ef29c796ce4",
+      "selected_git_payload_sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7",
+      "bytes": 5405,
+      "Core_physical_sha256": "8638266699E1D46D3C2EC1902E43C3B6629948801513850BEFF7D7331FBF0BB7",
+      "Core_physical_equals_git_payload": true,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "src/native_af_receiver_composition_test.zig",
+      "mode": "100644",
+      "base_blob": null,
+      "selected_core_blob": "a75ff34b87b6e549bd2bd6f50170ba6267e71cf6",
+      "selected_git_payload_sha256": "CAC2A83E0D00CEAF6C67EAB6227F78CC369B6A7F7170EA00902C017BE6220098",
+      "bytes": 3237,
+      "Core_physical_sha256": "F2C4654585865F510E8EFA0B604848BA5997230071F68E1146F9A32C99D0A25A",
+      "Core_physical_equals_git_payload": false,
+      "action": "add exact Core blob"
+    },
+    {
+      "path": "build.zig",
+      "mode": "100644",
+      "base_blob": "a24297d3d068d3639b7f79ce10e808ec3f4bc117",
+      "composed_blob": "032a56551607ce1263da44839c4530d5710b836a",
+      "sha256": "017F92469C62FB3CF9A973AB42343DC7B25F9EC1D1777BA1984F316195AEC80B",
+      "additive_Core_block_bytes": 7299,
+      "retained_existing_compile_objects": [
+        "native_tla_fatal_tests",
+        "resumed_tla_tests",
+        "native_af_resolving_tests",
+        "native_await_inactive_tests",
+        "shared_thenable_tests",
+        "highlight_root55_foundation",
+        "native_async_qualification_tests",
+        "native_generator_tests",
+        "native_generator_gpa_tests",
+        "ai_json_tests",
+        "ae7_json_transform_tests",
+        "native_binary_tests",
+        "engine_tests",
+        "highlight_root463_recovery",
+        "sdk_exception_boundary_tests"
+      ],
+      "action": "Pure additive VM build/install selections; never copy old Core build wholesale"
+    }
+  ],
+  "protected_Main_files": [
+    {
+      "path": "src/extensions/engine.zig",
+      "base_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "base_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "base_blob": "62e70676eadd96d3c0d986bd15ef8c720e24eb6b",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "base_blob": "4c6e07f977515bf8b058bc436cc4a18a076fd2cc",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_sdk.zig",
+      "base_blob": "e7aa62358c84c89feeec479ffe055dea9fbfdce2",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_agent_execution_async.zig",
+      "base_blob": "f29a04182c55a1f790f3b09912fa596be0aff44b",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_typebox_continuation.zig",
+      "base_blob": "514d24b6ac78e54f5696171b3b333ab5435143b3",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_production.zig",
+      "base_blob": "4f6874485e80ea8812c8954109aafe8e51011bbd",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/extensions/native_typebox_operators_runtime.zig",
+      "base_blob": "e51dd260aad404ae6b3398f2a854bd3f14693397",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/native_await_rejection_data_test.zig",
+      "base_blob": "543a2f0242f7d3e487abdd768bf4e8505fc8359b",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/native_await_rejection_routes_test.zig",
+      "base_blob": "51730c8c8f1bea649d50cc970d1e01a836a9bb6e",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/native_callback_producer_test.zig",
+      "base_blob": "be406d4fe6155868b1865eaae8149fa9f3ec4341",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/native_agent_af_correction_test.zig",
+      "base_blob": "db951b0be2368940387dab54958f741010a80568",
+      "kept_Main_bytes": true
+    },
+    {
+      "path": "src/native_chord_sqlite_receiver_get_test.zig",
+      "base_blob": "c03cc88b739daf38bcd7cd5b8a0c6ef29c796ce4",
+      "kept_Main_bytes": true
+    }
+  ],
+  "Engine_or_existing_producer_overlay": false,
+  "older_AF_DATA_root_copied": false,
+  "older_SQLite_receiver_path_removed": false,
+  "build_integration": "Pure additive named install-only gates; retain every Root existing selection and original C3 Compile object, add reviewed test-only allocator C file to link/combined only.",
+  "gates_required_before_Root_intake_authorization": [
+    "Core42d actual63 full metadata/runtime/post/absence",
+    "retained C3 original150",
+    "current C3 queued/binding11",
+    "AF/receiver16"
+  ],
+  "runtime_or_new_Root_qualification_claim": false,
+  "source_jobs_started": 0,
+  "scope": "Do not treat standalone Core qualification as composed Bfb/Main qualification. Root must authorize after all remaining actual gates and peer source review."
+}

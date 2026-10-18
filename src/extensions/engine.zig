@@ -798,23 +798,44 @@ pub const Engine = struct {
     }
     const NativePending = struct { reason: ?c.JSValue = null, fatal: bool = false };
     fn takeNativePending(self: *Engine, owned: *NativePending) void {
+        self.takeNativePendingAfterRelease(owned, null);
+    }
+    fn takeNativePendingAfterRelease(self: *Engine, owned: *NativePending, boundary: ?u64) void {
+        var release_generation = boundary;
         while (c.JS_HasException(self.context)) {
             const next = c.JS_GetException(self.context);
+            // This is an owned ACTUAL pending event, not captured diagnostics,
+            // a returned value or PromiseResult DATA. Qualify a private native
+            // producer only against the generation BEFORE this exact release.
+            if (release_generation) |generation| {
+                const tagged = c.pi_js_native_allocation_error_generation(next);
+                const distance = tagged -% generation;
+                if (tagged != 0 and distance != 0 and distance <= self.native_allocation_generation -% generation)
+                    c.JS_SetUncatchableError(self.context, next);
+            }
             const fatal = c.JS_IsUncatchableError(next);
+            // Publish before retiring a displaced ordinary reason: its own
+            // finalizer may produce another actual fatal. First fatal wins.
             if (fatal) self.recordNativeFatal(next);
             if (owned.reason == null) {
                 owned.* = .{ .reason = next, .fatal = fatal };
+                release_generation = null;
             } else if (!owned.fatal and fatal) {
                 const displaced = owned.reason.?;
                 owned.* = .{ .reason = next, .fatal = true };
+                release_generation = self.native_allocation_generation;
                 self.freeValue(displaced);
-            } else self.freeValue(next);
+            } else {
+                release_generation = self.native_allocation_generation;
+                self.freeValue(next);
+            }
         }
     }
     fn releaseNativeOwned(self: *Engine, value: c.JSValue, owned: *NativePending) void {
         self.takeNativePending(owned);
+        const generation = self.native_allocation_generation;
         self.freeValue(value);
-        self.takeNativePending(owned);
+        self.takeNativePendingAfterRelease(owned, generation);
     }
     fn throwNativeOutOfMemoryMode(self: *Engine, fatal: bool) c.JSValue {
         const first = self.currentNativeFatal();
