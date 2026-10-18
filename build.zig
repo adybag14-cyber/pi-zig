@@ -2106,6 +2106,26 @@ pub fn build(b: *std.Build) void {
     ai_auth_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-auth-helpers", "Validate actual native auth helper async identity and owned inputs").dependOn(&b.addRunArtifact(ai_auth_helpers_tests).step);
     b.step("build-native-ai-auth-helpers", "Compile public native auth helpers independently of OAuth network flows").dependOn(&ai_auth_helpers_tests.step);
+    const sdk_public_truncation = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/native_sdk_public_truncation_test.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+        .filters = &.{"SDK public truncation"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_truncation.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_truncation.root_module, typescript_parser);
+    linkSqlite(sdk_public_truncation.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_truncation.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_public_truncation.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_public_truncation.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-public-truncation", "Compile actual public truncation controls without execution")
+        .dependOn(&b.addInstallArtifact(sdk_public_truncation, .{}).step);
+
     const sdk_remote_catalog_genuine_af = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/native_sdk_remote_catalog_genuine_af_test.zig"),

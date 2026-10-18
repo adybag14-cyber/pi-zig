@@ -1,0 +1,30 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-truncation",
+  "root": "src/native_sdk_public_truncation_test.zig",
+  "filters": [
+    "SDK public truncation"
+  ],
+  "authored_declared_test_names": [
+    "SDK public truncation actual ordinary function shape and cached identities",
+    "SDK public truncation actual frozen Source Unicode newline and independent limits",
+    "SDK public truncation actual live Buffer string array and option coercion order",
+    "SDK public truncation actual tail keeps Source BigInt increment semantics on live buffers",
+    "SDK public truncation actual method temporaries retire before the next guest expression",
+    "SDK public truncation same options getter private DATA remains an ordinary throw",
+    "SDK public truncation actual producer overrides prior private DATA before downstream code",
+    "SDK public truncation actual callee retirement producer stops the next getter",
+    "SDK public truncation actual collection loop cancellation is current fatal"
+  ],
+  "source_authority": "c268154ca1171c2f9eefe75d3d7372a68aada2d5 packages/coding-agent/src/core/tools/truncate.ts",
+  "source_authority_copy": "verification/sdk-owners-resume-20261018/public-truncation.c268.ts.txt",
+  "source_comparator": "src/extensions/fixtures/sdk-public-truncation-c268-source.mjs",
+  "actual_buffer_owner": "src/extensions/node_buffer.zig install",
+  "shared_guest_sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+  "shared_completion_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "whole_public_namespace_qualification": false
+}
