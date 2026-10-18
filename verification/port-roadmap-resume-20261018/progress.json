@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "3622a6552932d39fd16fe1c99ba6641082756fb4",
+  "current_source_head_at_record": "735bfcf2c83c787d0c52b79d3a520c284621a8e2",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,15 +36,16 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T19:48:15.054423+00:00",
-  "record_note": "Active implementation and compiler feedback continue. V3 diagnostic is closed, not runtime authority. The subsequent focused development matrix addresses all six failed groups and two new source units; the final fresh matrix retains the full regression set.",
+  "updated_utc": "2026-10-18T20:04:53.854926+00:00",
+  "record_note": "Active implementation. Focused diagnostic V4 is closed and remains development evidence only. Exact Meta source and real FS primitives are integrated. Next focused compile pass covers all three remaining V4 failures and both new units; the full combined fresh/runtime gate remains outstanding.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
     "Shared ordinary sleep now follows the actual live Promise executor, timer, signal and TDZ behavior with seven authored controls; stdout guard has twelve authored controls. Genuine shell process tracking/kill owner and CLI actual lexical slots/IteratorClose successor (fifteen controls) are integrated. Compile-only diagnostics drove narrow child, Ignore, readonly, revision and catalog error-path corrections.",
     "Actual public Session helpers with eighteen authored controls and shared secure UUID binding are integrated at 2170f7f2. Two-file child syntax successor 9254a410 and one-line Ignore successor c116b8f9 close all four compiler errors observed in the second diagnostic. Imported anonymous Theme/Session test roots were independently inspected and will be pinned explicitly; they do not add behavioral coverage.",
     "Native package JSON reader and genuine SafeMap/private class publication (21 declared controls), real print/JSON lifecycle and lexical frame (17), genuine nested Kimi OAuth and ordinary provider environment lookup (10+7) are integrated. Additional Chalk/Ignore sentinel/noreturn type fixes address the V5 compiler diagnostics.",
-    "RPC JSONL serialization/line reader with real decoder and closed callback cells (10 authored controls), plus ordinary public CLI model resolver and genuine one-Await scope resolver (16 controls), are integrated. Resolver Source recursion stack-overflow equivalence and full minimatch contract remain explicitly open. No new runtime qualification is claimed."
+    "RPC JSONL serialization/line reader with real decoder and closed callback cells (10 authored controls), plus ordinary public CLI model resolver and genuine one-Await scope resolver (16 controls), are integrated. Resolver Source recursion stack-overflow equivalence and full minimatch contract remain explicitly open. No new runtime qualification is claimed.",
+    "Actual shared filesystem stat buffers and private Node context with ten authored controls are integrated at bff9551c. Genuine Meta OAuth nested bodies with ordinary refresh and 13 Source-based controls are integrated at735bfcf2. Normal and abrupt IteratorClose follow the actual Source loop, and original reference bytes remain pinned. Both new units are unexecuted."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -200,6 +201,40 @@
       "source_compiler_control_postseal": true,
       "controller_environment_restored": true,
       "seed_preserved": true
+    },
+    {
+      "status": "closed_diagnostic_compile_negative",
+      "head": "df2b6a2d2cc421c8c115db9dfb06433cafe44ad3",
+      "mode": "DiagnosticBuildQuery",
+      "evidence": "../../evidence/root-combined-diagnostic-batch-v4-buildquery-20261018-194909",
+      "result_sha256": "57D85759D2652209271CCF8B9206784A42E3EDD919CEF16B9D955AF49220F838",
+      "declared_groups": 8,
+      "compiled_and_metadata_groups": 5,
+      "compile_failed_groups": 3,
+      "reported_metadata_counts": {
+        "kimi": 11,
+        "provider_env": 8,
+        "package_reader": 22,
+        "remote_catalog": 12,
+        "rpc_jsonl": 11
+      },
+      "actual_native_owners": 13,
+      "runtime_requested": false,
+      "qualification_authority": false,
+      "failures": [
+        "Three deeper socket error-union returns in child/print",
+        "Reserved Minimatch test function in resolver"
+      ],
+      "corrections": [
+        "26f1821f",
+        "69d45f86"
+      ],
+      "independent_process_closure": "../../evidence/root-combined-diagnostic-batch-v4-independent-closure-20261018/closure.json",
+      "independent_process_closure_sha256": "1AD906C0E7C747BC8D9DAD3CA1597DAD6994A2D3237DA75D1A0E54119BC36B2E",
+      "all_native_and_outer_owners_absent": true,
+      "source_compiler_control_postseal": true,
+      "controller_environment_restored": true,
+      "seed_preserved": true
     }
   ],
   "next_native_batch": {
@@ -207,6 +242,6 @@
     "mode": "DiagnosticBuildQuery",
     "driver_sha256": "B053217669D0A9294FB73F87C1844E15360D14B55AD38B79542693276BDF468E",
     "qualification_requested": false,
-    "scope": "All six V3 failed groups plus RPC JSONL and model resolver. Same complete source/compiler/control bookends and exact original private seed-copy protocol. Runtime remains forbidden; full combined fresh qualification follows successful diagnostic compilation."
+    "scope": "All three remaining V4 failures (print, child, resolver), Meta OAuth and real FS primitives. Full31 regression groups retained for final fresh qualification. No diagnostic runtime authority."
   }
 }
