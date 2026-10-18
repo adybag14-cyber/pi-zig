@@ -1,0 +1,100 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-compaction-file-ops",
+  "executable": "native-sdk-public-compaction-file-ops.exe",
+  "root": "src/native_sdk_public_compaction_file_ops_test.zig",
+  "filters": [
+    "SDK public compaction file operations"
+  ],
+  "authored_declared_test_names": [
+    "SDK public compaction file operations actual ordinary exports and completed cache",
+    "SDK public compaction file operations actual message extraction sorted lists and summary tags",
+    "SDK public compaction file operations actual live Set constructors retire between fields",
+    "SDK public compaction file operations actual optional-chain receiver retires before fallback iteration",
+    "SDK public compaction file operations actual Array predicate completes before repeated content",
+    "SDK public compaction file operations actual nested call head survives next and done",
+    "SDK public compaction file operations actual assistant block head survives next and done",
+    "SDK public compaction file operations actual in getter path and add evaluation order",
+    "SDK public compaction file operations actual primitive in operand error",
+    "SDK public compaction file operations actual array append probe repeated lookup and retained iterable",
+    "SDK public compaction file operations actual array append closes next failure",
+    "SDK public compaction file operations actual filter predicate and sort receiver retirement",
+    "SDK public compaction file operations actual format call and template retirement order",
+    "SDK public compaction file operations actual private DATA remains ordinary through close",
+    "SDK public compaction file operations actual current B preempts catch and close",
+    "SDK public compaction file operations actual head retirement cancellation preempts getters and close"
+  ],
+  "production_exports": [
+    "createFileOps",
+    "extractFileOpsFromMessage",
+    "computeFileLists",
+    "formatFileOperations"
+  ],
+  "production_files": [
+    {
+      "path": "src/extensions/native_sdk_compaction_file_ops.zig",
+      "sha256": "7A2C23F9B1A11809A1B71CCF0E5F98E3C1A951782D7049625E0B4633C36F4AC2",
+      "bytes": 14306
+    }
+  ],
+  "control_files": [
+    {
+      "path": "src/native_sdk_public_compaction_file_ops_test.zig",
+      "sha256": "04F6DC34DB4C93C711D6044B1F632FB908F92892F24466795B36D70F8AC1FB96",
+      "bytes": 6700
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-compaction-file-ops-c268-source.mjs",
+      "sha256": "1575FECBFE7DA7F233D32309BB228A9ACF9A366E3BE75135D4BE379E183F387B",
+      "bytes": 2226
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-compaction-file-ops-observer.mjs",
+      "sha256": "AF35BEFCC4A5DF9212A63DA9161F68E8F48D8C4867D4E7BBCFDF6B5278FD3FCA",
+      "bytes": 15401
+    }
+  ],
+  "source_authority": "c268154c",
+  "source_authority_copy": {
+    "path": "verification/sdk-owners-resume-20261018/compaction-authority/utils.ts.txt",
+    "sha256": "37EAB7698CDBFF8B5987D4529005EA16D7E1AE4A5344D7D0443C3466444AA90E",
+    "bytes": 5951
+  },
+  "source_fixture_kind": "Exact selected utility bodies with manually erased TypeScript annotations inside one strict ordinary factory.",
+  "imported_control_roots": [
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41",
+      "declared_test_names": []
+    }
+  ],
+  "integration": {
+    "shared_public_values_commit": "425f8aaa",
+    "shared_public_values_sha256": "31178ADB24033B123C8DE22CFD7EE3981F8B993E8C2F4CA6563510A5E66FA1AD",
+    "guest_sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+    "owned_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "build_delta": "Only the thirteen-line install-only target is added. Preserve newer Main blocks during intake.",
+    "array_append_dependency": {
+      "required_api": "int JS_PiArrayAppend(JSContext *ctx, JSValueConst target, uint32_t *position, JSValueConst iterable)",
+      "owning_lane": "vm_foundation",
+      "commit": "7233B0A30DA5866326163BBBF7F39CB745C24A9B",
+      "c_sha256": "62C055EEE7D3175A91CD847E3D52279529B85CB1663D52970D7283694A4ACA10",
+      "h_sha256": "959BA37DC001F1671F0C7072BC553AC7124956D3F3850DE071026362D483011B",
+      "wrapper_extract_sha256": "DB259E0B2A1C529AAFDC0CB253A65344508D2D3212536410C7D34045F80E20FE",
+      "control_root_sha256": "6E0C4AFDE4250AF0FF833D4FB7CE5A822C08349115E083B918E33FAD71A52D1A",
+      "requirement": "Intake the separately reviewed VM vendor unit before this control target. The actual unchanged js_append_enumerate body supplies Source array spread, with borrowed expression operands and canonical guest completion.",
+      "c_bytes": 2290281,
+      "h_bytes": 83038
+    },
+    "cache_publication": "The completed utility function record retires expression roots before publication, resolves a reentrant completed cache, then reserves and transfers its sole root."
+  },
+  "source_peer": {
+    "production": "Modules finite peer closed final 7A2C23F9 create/add/extract/list/format, including optional nested receiver completion before nullish fallback allocation. VM separately reviewed the exact borrowed array append wrapper against BCDF.",
+    "controls": "Modules finite peer closed all sixteen controls on 04F6DC34 / AF35BEFC / 1575FECB: real message and loop heads, predicate/callee/receiver retirement, double probe and next-failure IteratorClose, sorted lists, format ToString, DATA/B/cancellation. Source-only."
+  },
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "whole_public_namespace_qualification": false
+}

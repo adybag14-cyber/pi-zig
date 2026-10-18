@@ -4217,6 +4217,19 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-inspect-entry", "Install thirteen declared actual inspector entry controls without running").dependOn(&b.addInstallArtifact(node_inspect_entry, .{ .dest_sub_path = b.fmt("native-node-inspect-entry{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual public file-operation controls; install-only target.
+    const sdk_public_compaction_file_ops = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_compaction_file_ops_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public compaction file operations"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_compaction_file_ops.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_compaction_file_ops.root_module, typescript_parser);
+    linkSqlite(sdk_public_compaction_file_ops.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_compaction_file_ops.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_compaction_file_ops.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction_file_ops.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-compaction-file-ops", "Install actual file operations array append and ownership controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction_file_ops, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction-file-ops{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
