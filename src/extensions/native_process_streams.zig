@@ -63,6 +63,17 @@ pub fn ownsLease(engine: *js.Engine, lease: Lease) bool {
     const bridge = owned.bridge orelse return false;
     return bridge.context == lease.context and owned.generation == lease.generation;
 }
+/// Admission validates the exact existing lease before consulting the real
+/// frontend's live owner/thread guard. A stale generation cannot use a newer
+/// bridge even when both frontends occupy the same native address.
+pub fn assertLease(engine: *js.Engine, lease: Lease) !void {
+    try engine.checkNativeEntry();
+    const owned = try state(engine);
+    const bridge = owned.bridge orelse return error.NativeTerminalStreamsNotBound;
+    if (bridge.context != lease.context or owned.generation != lease.generation) return error.NativeTerminalStreamsLeaseRetired;
+    try bridge.guard_fn(bridge.context);
+    try engine.checkNativeEntry();
+}
 /// Retired frontend generations cannot detach a newer frontend's stream sink.
 pub fn unbind(engine: *js.Engine, lease: Lease) bool {
     const owned = state(engine) catch return false;
