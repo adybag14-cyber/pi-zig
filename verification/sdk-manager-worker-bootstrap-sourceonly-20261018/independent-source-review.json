@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "status": "finite_actual_manager_owner_chain_source_review_closed",
+  "reviewer": "google_runtime_resume",
+  "commit": "ffa812357f693625244aa6f56fb2b2039673552b",
+  "base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "prepared_sha256": "BF0B4BF73C5B359337FFD19C4FC618305ECFB79CBBAB0887C249D9BC057FA1C7",
+  "owned_protected_pins": 25,
+  "physical_hash_length_raw_Git_drift": 0,
+  "original_installer_body_bytes": 6309,
+  "original_installer_body_sha256": "F80C72DD89A0CD7840BBBD03455FF65E9772CCA4438D0066EBB0EADBE93206AB",
+  "original_body_equal_to_base": true,
+  "review": [
+    "Actualworker->Bindings.installSchemas->native_tui.install->native_editor.install->native_sdk.install and latermanagerImports route traced in protectedsource.",
+    "Normalfirstinstaller now captures actual SessionManager/SettingsManager own export values, constructorchecked; no prototype.constructor reflection/newclass/placeholder/Completed selection. Cache holds SAMEconstructor objects in private unregistered record.",
+    "Freshroute solecallsite passes SAMEprivate installBody at comptime, owns fulltemp exportrecord/projection with C435 ownRoot and records outcome before all root/diagnostic retirement.",
+    "Scope roots retired before cachepublication; GPA reserve before allocation-free putAssumeCapacity; cacheownsdup and returnedprojection ownerbalanced. Failed initialclass/registration remains sticky and requires teardown, never reconstructs completion.",
+    "Actualpending-first checks before hosteffects, balanced NativeInvocation/diagnostic boundaries, actualownedfirstreason helper; cachedfastpath guards existing event beforedup.",
+    "Five genuine controls: realTUI/editor identity, mutatedproto.constructor getterneverread, freshprivateidentity/no publicselection, pendingbeforearmedGPA/noClasseffects, actualdiagnosticsoleholder ordinary/rawOOM preventingpublication. UNRUN.",
+    "Install-only13line target uses actualRootparser/catalog/Windows libs, no run/defaultedge."
+  ],
+  "limits": [
+    "No compiler/parser/AST/Node/native/control/GPA sweep/probe job; actualmetadata/runtime unknown.",
+    "Finite new capture/retirement/identity seam only: unchanged inner SDK/TUI liveproducer/registration/expressionGC/atomicVM/frontiers remain UNQUALIFIED.",
+    "CurrentVM/G2/Promise/generator/FS/frontend/Source corpus/actualworker union gates remain separate prerequisites.",
+    "Old public SDK index/factory/session exports are not newly Source-equivalent or completed; no defaultactivation.",
+    "No C/H/Engine/Scope/Main change or priorpass transfer."
+  ],
+  "execution_authorized": false,
+  "runtime_qualified": false,
+  "Main_written": false
+}

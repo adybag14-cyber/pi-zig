@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "status": "FINITE_REACHABLE_FACTORY_RETIREMENT_AND_LOCAL_GUARD_SOURCE_CLOSED",
+  "reviewer": "/root/async_c_review_resume",
+  "candidate": "acdbd6de82ba9dd5ece0d29cd919f0392724f68c",
+  "semantic_parent": "232f946cdb5d23f09250c2ec3faa0c0badf8a8cd",
+  "aggregate_parent": "4514202eff19b8ec48815a3b2775f6e6ad063bee",
+  "prepared_sha256": "86CDE351F2CD0C0771EC5A20EF81D35FF216827A356DA0FDB207B9DB57C915EA",
+  "owned_pins": 10,
+  "protected_pins": 41,
+  "drift": [],
+  "checks": [
+    "Read complete three-product232f delta: actual PackageManager constructor/progress setter, package assembler, loader assembler. No33AFmethod bodies or DATA classifiers changed.",
+    "Constructor records owned result/error before prompt roots and separately owned manager release; successful manager returns its own Dup, preserving actual Source field/getter/install order.",
+    "Local raw getters/calls/status definitions normalize before C435 root admission; provider inline32 and prompt ArrayList remain distinct original shapes.",
+    "Copied method descriptors keep original setter/getter/value cleanup order, now under recorded completion.",
+    "Factories balance direct pending/B1/invocation/diagnostic state through owned Scope retirement and final native leave; child atomicity is not inferred.",
+    "Reported raw pi_js_function_magic progress callback bypass is fixed locally: setProgress and direct installProgress now balance suppression/current invocation around actual writes/definition/status/owned exit.",
+    "Four authored actual constructor/progress/installer controls use real class/process/path/settings, legal sole carrier before provider use, native ordinary/fresh cleanup and throwing live setter/define trap with exact reason/coercion0/frame checks.",
+    "Two genuine Inputs profiles are callable integration seams, not registered tests or fake complete graphs.",
+    "Original c268 package Source1ca63/61BB/license/caller and protected core/helper/Engine/Scope/C objects remain exact; no expected output authored."
+  ],
+  "static_registered_control_declarations": 4,
+  "genuine_input_callable_profiles": 2,
+  "actual_metadata": null,
+  "limits": [
+    "Aggregate4514 peer is independent; this finite successor does not close its owner graph.",
+    "Inherited child private Scope, source paths, registration side effects, Source-local GC reachability, callback/property producer atomicity, shared callback generation policy, G2/current C/Promise/AF union and generator/opaque VM internals remain separately required.",
+    "No recovery of a reason already lost inside a child and no rollback/wholefactory/fullSDK/default activation claim.",
+    "Actual controls are uncompiled/unqueried/unrun; no actual OS/GPA/runtime or original64/SDK27/166/Agent32 comparison transferred.",
+    "Future minimal intake must retain newer Root Auth/File2 and other unselected products; no whole branch overlay authorized."
+  ],
+  "Main_modified": false,
+  "execution_performed": false,
+  "remaining_finite_findings": []
+}

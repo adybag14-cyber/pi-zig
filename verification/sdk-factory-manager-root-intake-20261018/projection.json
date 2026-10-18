@@ -1,0 +1,66 @@
+{
+  "scope": "Source-only actual factory completion and same-worker manager projection",
+  "root_base": "311a8dfe9a72b049cd4ee2a5ef509526101c3e3a",
+  "reviewed_projection_base": "df18a3c9266d6464c47169e6f7739b2a78f64caf",
+  "virtual_tree": "54c5b85ec6e498d065c296023051f2e567a9e0ee",
+  "source_units": [
+    {
+      "unit": "factory-acdb",
+      "source": "acdbd6de82ba9dd5ece0d29cd919f0392724f68c",
+      "base": "df18a3c9266d6464c47169e6f7739b2a78f64caf",
+      "candidate": "38187a19123df4ad818802a7e50c2327f52c7ff3",
+      "tree": "6e8deceb72e56324ac34563060b0c7afc6f901bd",
+      "paths": [
+        "build.zig",
+        "src/extensions/native_sdk_extension_loader_assembly.zig",
+        "src/extensions/native_sdk_package_assembly.zig",
+        "src/extensions/native_sdk_package_manager.zig",
+        "src/native_sdk_factory_retirement_test.zig",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/RAW-CALLBACK-CORRECTION.md",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/README.md",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/authority/Pi-LICENSE",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/authority/package-manager.ts.txt",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/guest-operation-generation-source-limitation.json",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/independent-source-review.json",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/original-constructor-caller.mjs",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/prepared.json",
+        "verification/sdk-owner-factory-retirement-sourceonly-20261018/successor-prepared.json"
+      ],
+      "review_sha256": "4116E7B7A093242EC2F92118025A05F430E40D4A6DADE5585192A9E5446998B4",
+      "patch_sha256": "74D3FC718546710EF59BEED794E1AB523AA587C1DEA382E26C648524817FC762",
+      "patch_length": 174420,
+      "build_only_inserted13lines_adapted_to_Root_line_endings": true,
+      "nonbuild_source_blobs_exact": true
+    },
+    {
+      "unit": "manager-ffa",
+      "source": "ffa812357f693625244aa6f56fb2b2039673552b",
+      "base": "38187a19123df4ad818802a7e50c2327f52c7ff3",
+      "candidate": "2365effd617c5121067d29389dc6c449aa888401",
+      "tree": "54c5b85ec6e498d065c296023051f2e567a9e0ee",
+      "paths": [
+        "build.zig",
+        "src/extensions/native_sdk.zig",
+        "src/extensions/native_sdk_manager_imports.zig",
+        "src/native_sdk_manager_worker_bootstrap_test.zig",
+        "verification/sdk-manager-worker-bootstrap-sourceonly-20261018/README.md",
+        "verification/sdk-manager-worker-bootstrap-sourceonly-20261018/guest-operation-generation-source-limitation.json",
+        "verification/sdk-manager-worker-bootstrap-sourceonly-20261018/independent-source-review.json",
+        "verification/sdk-manager-worker-bootstrap-sourceonly-20261018/prepared.json"
+      ],
+      "review_sha256": "30B3E686BFC8C85EBC46490197331CD22EE485F33A101CAB021D49AFCCFD3106",
+      "patch_sha256": "C1A3A539180D69D53869E4A329B7D4AD10636D94E776C4F0B6ABE52EC0B63E88",
+      "patch_length": 36253,
+      "build_only_inserted13lines_adapted_to_Root_line_endings": true,
+      "nonbuild_source_blobs_exact": true
+    }
+  ],
+  "patch_sha256": "4112AA5312C167275A7EE97967236DA9B74E574272626AA3E34C34954571E90C",
+  "exact_nonbuild_paths": 20,
+  "build_additions": 26,
+  "readonly_and_session_current_blobs_preserved": true,
+  "guest_guard_fixed_here": false,
+  "limitation_sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+  "native_or_Node_executed": false,
+  "runtime_qualified": false
+}

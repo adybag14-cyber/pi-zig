@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "status": "ADDITIVE_SOURCE_LIMITATION_NEW_CAUSAL_CASE_NOT_PREVIOUSLY_QUALIFIED",
+  "reviewer": "/root/async_c_review_resume",
+  "prior_finite_receipts": {
+    "SDK_factory_acdb": "4116E7B7A093242EC2F92118025A05F430E40D4A6DADE5585192A9E5446998B4",
+    "Readonly_e496": "5EB85FC7FFFCF88DD5AA159B2519BBD2775EE1E3D704A3B9171CFCB3F59ACA0D"
+  },
+  "finding": "An exact guest-capable JS_Call/GetProperty/construct/coercion operation can execute native successful private DATA creation A and then ordinary guest throw A within that SAME operation. A generation span over the operation still does not prove fault origin.",
+  "affected_pattern": "native_agent_af_values.guard/current callback-generation classifiers on captured ordinary reasons; operation-local snapshots alone are insufficient for arbitrary guest code.",
+  "contrast": "Guest callback first invokes actual native DATA maker (unmarked private Error, no B1 fatal), then throws the same A without a fresh native failure. It must stay ordinary; compare actual native fatal producer/B1.",
+  "implication": "The prior receipts retain their finite root-retirement/order/entry/pin checks but DO NOT close this newly identified guest-producer provenance case or authorize affected runtime safety/full-owner claims. Root/API/Auth correction and genuine controls are required before broader qualification.",
+  "separate_unaffected_scope": "Canonical C435 ownRoot typed append producer and exact per-free classification remain subject to their explicit trusted/no-guest retirement contract; no broader callback-safety transfer is made.",
+  "old_receipts_rewritten": false,
+  "actual_failure_executed": false,
+  "Main_modified": false,
+  "source_modified": false
+}

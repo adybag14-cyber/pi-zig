@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "status": "FINITE_SEQUENTIAL_BYTE_SCOPE_SOURCE_INTAKE_CLOSED",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T01:08:12.1485496+00:00",
+  "base": "df18a3c9266d6464c47169e6f7739b2a78f64caf",
+  "factory_candidate": "38187a19123df4ad818802a7e50c2327f52c7ff3",
+  "manager_candidate": "2365effd617c5121067d29389dc6c449aa888401",
+  "tree": "54c5b85ec6e498d065c296023051f2e567a9e0ee",
+  "prepared_sha256": "541298A1D20139B8A0803589DC537546F97C59B14134D77D39481348077ABF37",
+  "combined_patch_sha256": "4112AA5312C167275A7EE97967236DA9B74E574272626AA3E34C34954571E90C",
+  "review": [
+    "Sequential14pathfactory then8pathmanager deltas exactallowlists,combined21paths",
+    "SixteenoriginalnonbuilddonorpayloadGitblobs exactacdb/ffa;two copiedindependentSource4116/30B3receipts rawhash exact;twoBE551limitationcopies rawhash exact",
+    "All12239unselecteddf18Rootmodes/OIDs unchanged;filesystemnamespace unselected soReadonlySDKoverlapnotintroduced",
+    "Each13line builddiff pureadd/install-only/defaultcachedtest.exe/QJS+TSParser+SQLite+catalog+Winlibs/noRun",
+    "Removingeach exactLFbuildgraft recovers entirepreviousRootbuild,combined26add0delete",
+    "CombinedandbothunitpatchSHA256/lengths matchmanifest;priorSourcefinitepeercontent not broadened"
+  ],
+  "notes": [
+    "Manifestnonbuild_source_blobs_exact qualified:16originaldonorpayloads plus4NEWproofcopies;ownerconfirmed distinction, frozenmanifest preserved",
+    "BE551guest-capableoperation provenancecase remainsOPEN;theseexactoldbytes do notclaim inheritedguard/currentruntime/fullSDK qualification",
+    "Root mustmergeadditivebuildgrafts intoactualcurrentRoot;thisexactbasebyteclosure doesnotauthorizewholeoldbuildcopy"
+  ],
+  "actual_metadata_known": false,
+  "intake_authorized": false,
+  "agent_jobs": 0
+}
