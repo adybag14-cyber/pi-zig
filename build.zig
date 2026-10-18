@@ -1821,6 +1821,19 @@ pub fn build(b: *std.Build) void {
         public_print_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-print-mode", "Install actual c268 public print and JSON mode controls without execution").dependOn(&b.addInstallArtifact(public_print_tests, .{}).step);
+    const public_rpc_jsonl_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_jsonl_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Public RPC JSONL actual"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, public_rpc_jsonl_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, public_rpc_jsonl_tests.root_module, typescript_parser);
+    linkSqlite(public_rpc_jsonl_tests.root_module, sqlite_lib_dir, sqlite_library);
+    public_rpc_jsonl_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        public_rpc_jsonl_tests.root_module.linkSystemLibrary("advapi32", .{});
+        public_rpc_jsonl_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-public-rpc-jsonl", "Install actual c268 RPC JSONL framing controls without execution").dependOn(&b.addInstallArtifact(public_rpc_jsonl_tests, .{}).step);
     const sdk_actual_paths_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_paths_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual paths owner"}, .use_llvm = use_llvm,
