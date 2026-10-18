@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_D141_ACTUAL_ONE_REMOVED_ENUM_API_CORRECTION_PEER_PENDING",
+  "base": "d1414dfd87c225ee2ba7c8eeb9b75ee7802c1bf0",
+  "actual_diagnostic": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-tty19-d141-buildquery-20261018-000643\\compile.stderr.log",
+    "headers": [
+      "src\\extensions\\native_node_tty_windows_owner.zig:116:38: error: root source file struct 'meta' has no member named 'intToEnum'"
+    ],
+    "sha256": "5095CAE89FF17AD18BD923CC2E12DC6F0D1C575E2365DECA89A464B70ECE113A"
+  },
+  "product": {
+    "path": "src/extensions/native_node_tty_windows_owner.zig",
+    "sha256": "356B8D12562DC0C42954C2290846832B5931312A8A5FB3F35D2A20D278C2D99F"
+  },
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "sha256": "C70B0BD6CD884073B3E448CA0140511994A5D21C1F3980FB11DD36C69F0BAA28"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_errors.zig",
+      "sha256": "EB2A8C559EC1732DF3836C4AE5BBE001456D161C1F4162EE8694BDA9B9CE9DDA"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "sha256": "42CFBC74405616A99F9B1696FA977C2FA82621EF6E0B7DD2DD058B138D1AEBD5"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "sha256": "EC94F939FB99FCCCC6C1AAD2CA5C2F0DC4F54D5BF4470C4DC3CB001C5C826D33"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_output.zig",
+      "sha256": "338447E6432CF43DCC88E65E9DFD51E4EB2B769241039B1FB04C9BBF08C8C2C7"
+    },
+    {
+      "path": "src/native_node_tty_assembly_identity_control.zig",
+      "sha256": "482FEF2A25A990BD2F28331E1EF7F43C86232107F10B4C0666FD79BF0BE1C4D3"
+    },
+    {
+      "path": "src/extensions/fixtures/node-tty-original-alias-identity.mjs",
+      "sha256": "1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    }
+  ],
+  "pinned_016_fromInt": {
+    "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Enums.zig",
+    "sha256": "9CD5147A7775EF2125BA1EA3C9610A6DB4203119444E1C6CBB46488AF2028A83",
+    "api": "pub fn fromInt(comptime E:type,integer:anytype)?E; exhaustiveenum scans declaredvalues and returnsnull forunmatchedinteger"
+  },
+  "entire_src_removed_api_before": [
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix4-sourceonly-20261017\\src\\extensions\\native_node_tty_windows_owner.zig:116:                const code = std.meta.intToEnum(uv.Code, number) catch return error.RequiredUnknownNativeUvErrorFormatting;"
+  ],
+  "entire_src_removed_api_after": 0,
+  "semantic": "Checkedoptional conversion with SAMEunknown-error return; no unchecked enumFromInt, no fallback UNKNOWN fabrication",
+  "source_assertions": 19,
+  "actual_metadata": null,
+  "allowed_anonymous": [],
+  "execution_authorized": false,
+  "agent_jobs": 0,
+  "physical_fix4": "d141HOLD untilactualnegativeaudit andRoot-onlyff",
+  "all_eight_negatives": "50/1/2/4/5/3/5/1 preserved; previous5diagnosticsadvancedbutno compilationpass"
+}
