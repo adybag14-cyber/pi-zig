@@ -155,7 +155,9 @@ test "SDK RemoteCatalog prior job condition and method temporaries retire before
         \\globalThis.takeRemoteParse=()=>{const value=parse;parse=undefined;return value};
         \\globalThis.takeRemoteIsNan=()=>{const value=isNan;isNan=undefined;return value};
     , "actual-remote-prior-job.mjs");
-    c.JS_ClearKeptObjects(engine.runtime);
+    // evalModule already drained this preparation job through Engine.awaitValue.
+    // Keep Engine.finishJob's actual async/job ownership gate authoritative.
+    try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
     try run(engine,
         \\const parseDescriptor=Object.getOwnPropertyDescriptor(Date,'parse'),nanDescriptor=Object.getOwnPropertyDescriptor(Number,'isNaN');let reads=0;
         \\const model={id:'lifetime',get type(){if(reads++===0)return takeRemoteCondition();actualRemoteGc();if(remoteConditionWeak.deref()!==undefined)throw Error('condition value retained');return'chat'}};
