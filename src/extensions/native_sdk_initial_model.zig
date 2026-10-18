@@ -74,8 +74,17 @@ fn scopedString(o: *x.Ops, row: c.JSValue, field: [*:0]const u8) !c.JSValue {
     return o.own(try x.owned.finishValue(&s, scopedStringBody(&local, row, field)));
 }
 fn scopedStringBody(o: *x.Ops, row: c.JSValue, field: [*:0]const u8) !c.JSValue {
-    const value = try o.stringify(try o.get(try o.get(row, "model"), field));
+    const value = try o.stringify(try o.own(try scopedFieldOwned(o, row, field)));
     return c.JS_DupValue(o.s.engine.context, value);
+}
+fn scopedFieldOwned(o: *x.Ops, row: c.JSValue, field: [*:0]const u8) !c.JSValue {
+    var s: x.Scope = .{ .engine = o.s.engine }; var local: x.Ops = .{ .s = &s };
+    // get_field consumes the temporary model receiver BEFORE the template
+    // substitution coerces its provider/id result. The lexical row survives.
+    return x.owned.finishValue(&s, scopedFieldBody(&local, row, field));
+}
+fn scopedFieldBody(o: *x.Ops, row: c.JSValue, field: [*:0]const u8) !c.JSValue {
+    return c.JS_DupValue(o.s.engine.context, try o.get(try o.get(row, "model"), field));
 }
 fn scopedPerModelBody(o: *x.Ops, levels: c.JSValue, row: c.JSValue) !c.JSValue {
     // Each substitution retires its temporary model/field roots before the

@@ -70,6 +70,21 @@ after fatal. These controls are authored/unexecuted. A low-level unmarked native
 failure needs explicit producer participation; this unit does not infer one
 from guest-span freshness. C1116/G2/Engine/owner composition remains external.
 
+Frozen ae535cb27eb877638b6f06c74e52da7234f5bbcc (manifest
+377AF5853BE2D6E49E12D0CBF728C8DA5B29C5D4DD3887FFC674F55348BCEA76) retains
+one additional finite operand-retirement negative: the temporary
+scopedModel.model receiver survived through its provider/id ToString. The new
+scopedFieldOwned C435 escrow owns the field result and retires that temporary
+model receiver before coercing the field, while preserving the lexical row.
+The paired prepared model-receiver witness transfers a real native sole holder
+from a borrowed row getter; its independent provider.toString checks both the
+native retirement count and prior-job WeakRef death before returning the real
+model's provider. The third row read still supplies the original genuine model.
+Its actual-fatal variant requires native model retirement B to exit before any
+provider coercion (native visit and plain data marker both remain zero/false).
+These are explicitly borrowed-row controls over genuine model/settings inputs,
+not replacement Models/auth services, and remain unexecuted.
+
 Prepared controls accept the real application owner's `graph.imports` and
 `factoryExports()` plus real caller inputs. The current source-closed actual
 owner route is donor 4514202eff19b8ec48815a3b2775f6e6ad063bee in

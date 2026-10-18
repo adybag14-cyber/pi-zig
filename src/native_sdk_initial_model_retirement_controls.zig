@@ -54,6 +54,7 @@ fn createHooks(o: *x.Ops) !c.JSValue {
     const record = try e.gpa.create(Record); record.* = .{ .engine = e, .holder_class = holder_class };
     _ = c.JS_SetOpaque(record_value, record);
     try o.put(record_value, "guestReached", c.pi_js_bool(e.context, 0));
+    try o.put(record_value, "coercionReached", c.pi_js_bool(e.context, 0));
     const hooks = try o.object();
     // Real opaque record is exposed only in this control namespace so a host
     // may inspect it after a fatal exit without invoking any guest function.
@@ -179,4 +180,22 @@ pub fn verifyRecordedActualNativeFatal(engine: *x.em.Engine, original_record: c.
     const ordinary_path_ran = c.JS_ToBool(engine.context, guest_reached) == 1;
     engine.freeValue(guest_reached);
     try std.testing.expect(!ordinary_path_ran);
+}
+pub fn prepareActualModelReceiverCaller(engine: *x.em.Engine, actual_imports: c.JSValue, actual_subject: c.JSValue, native_hooks: c.JSValue) !c.JSValue {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishValue(&s, prepareModelReceiver(&o, actual_imports, actual_subject, native_hooks));
+}
+fn prepareModelReceiver(o: *x.Ops, actual_imports: c.JSValue, actual_subject: c.JSValue, native_hooks: c.JSValue) !c.JSValue {
+    const e = o.s.engine;
+    const function = try o.own(try e.eval(@embedFile("extensions/fixtures/sdk-initial-model-model-receiver-caller.mjs"), "prepare-initial-model-model-receiver.js", c.JS_EVAL_TYPE_GLOBAL));
+    return c.JS_DupValue(e.context, try o.call(function, c.pi_js_undefined(), &.{ actual_imports, actual_subject, native_hooks }));
+}
+pub fn verifyActualModelReceiverFatal(engine: *x.em.Engine, original_record: c.JSValue) !void {
+    try verifyActualRetirementFatal(engine, original_record, 2);
+    const record = recordOf(original_record);
+    try std.testing.expectEqual(@as(u32, 0), record.visits[4]);
+    const coercion_reached = c.JS_GetPropertyStr(engine.context, original_record, "coercionReached");
+    const coerced = c.JS_ToBool(engine.context, coercion_reached) == 1;
+    engine.freeValue(coercion_reached);
+    try std.testing.expect(!coerced);
 }

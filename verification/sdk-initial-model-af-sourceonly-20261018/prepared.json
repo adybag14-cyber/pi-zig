@@ -28,7 +28,9 @@
     "verifyActualCancellationNoGuestClose",
     "startSameOperationPrivateDataThrowCaller",
     "startSameOperationActualNativeFatalCaller",
-    "verifyRecordedActualNativeFatal"
+    "verifyRecordedActualNativeFatal",
+    "prepareActualModelReceiverCaller",
+    "verifyActualModelReceiverFatal"
   ],
   "owned": [
     {
@@ -38,8 +40,8 @@
     },
     {
       "path": "src/extensions/native_sdk_initial_model.zig",
-      "length": 16837,
-      "sha256": "3099B4BF0742556A107253805BCF556DF0E2F63AE4AF219D8AEE151DC3CC10F6"
+      "length": 17405,
+      "sha256": "D0840D336473FDBAAE66212919D638F92E8104A889AB5B469EDADF431FB23A27"
     },
     {
       "path": "src/extensions/native_sdk_initial_model_values.zig",
@@ -63,8 +65,8 @@
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/README.md",
-      "length": 8306,
-      "sha256": "A19E3FC3EEEA9AFB7B6A023B930116A6D7D2BD09C21B35CBE8C6CAFE051116B1"
+      "length": 9349,
+      "sha256": "332EDF62A797854B8F14105D8E59853BD8BF88EE15DECA0082D6BFD0808B06AE"
     },
     {
       "path": "verification/sdk-initial-model-af-sourceonly-20261018/install-only-build-snippet.zig.txt",
@@ -93,8 +95,8 @@
     },
     {
       "path": "src/native_sdk_initial_model_retirement_controls.zig",
-      "length": 13476,
-      "sha256": "11427C7CA5E95EEACCB89A5F981A94292F2A742EE5AF2D307B26B6C00264752D"
+      "length": 14890,
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41"
     },
     {
       "path": "src/extensions/fixtures/sdk-initial-model-retirement-caller.mjs",
@@ -105,6 +107,11 @@
       "path": "src/extensions/fixtures/sdk-initial-model-provenance-caller.mjs",
       "length": 1451,
       "sha256": "098E4CC4E589B5B8DB69D15D55CAA5FAD121055057A2EB181371533F12012254"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-initial-model-model-receiver-caller.mjs",
+      "length": 2202,
+      "sha256": "26326DB97AB1B5C434A58E47B8A082B269859906A2484DB6695BF2A88CD35879"
     }
   ],
   "protected": [
@@ -208,5 +215,12 @@
     "root_limitation_path": "evidence/root-auth-readonly-e496-merged-intake-prepared-20261018/guest-operation-generation-source-limitation-addendum.json",
     "root_limitation_sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
     "actual_controls": "SAME getter fresh unmarked private DATA maker A then guest throw SAME A, versus genuine fresh native fatal B identity"
+  },
+  "operand_retirement_correction": {
+    "negative_predecessor": "ae535cb27eb877638b6f06c74e52da7234f5bbcc",
+    "negative_manifest_sha256": "377AF5853BE2D6E49E12D0CBF728C8DA5B29C5D4DD3887FFC674F55348BCEA76",
+    "boundary": "temporary scopedModel.model receiver retires before provider/id ToString",
+    "implementation": "scopedFieldOwned C435 result escrow, lexical row retained",
+    "controls": "actual native solemodelholder, independent provider coercion count/WeakRef, actualfatal before coercion contrast"
   }
 }
