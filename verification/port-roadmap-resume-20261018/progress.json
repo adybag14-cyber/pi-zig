@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "bfd42771241b79f3de6329a8ef048634dd87b849",
+  "current_source_head_at_record": "127fd43fa922e185da95e62058a4ba1fc80037c6",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,11 +36,12 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T17:56:06.980363+00:00",
+  "updated_utc": "2026-10-18T18:44:00Z",
   "record_note": "The source head field identifies the source before this ledger-only commit; runtime evidence applies only to the exact explicitly recorded artifact head.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
-    "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters."
+    "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
+    "Shared ordinary sleep now follows the actual live Promise executor, timer, signal and TDZ behavior with seven authored controls; stdout guard has twelve authored controls. Genuine shell process tracking/kill owner and CLI actual lexical slots/IteratorClose successor (fifteen controls) are integrated. Compile-only diagnostics drove narrow child, Ignore, readonly, revision and catalog error-path corrections."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -106,17 +107,38 @@
       "evidence": "../../evidence/root-combined-batch-v2-buildquery-20261018-170501",
       "source_head": "3ba7cb6ac9dedce34e862e8b6e630f678c084d54",
       "detail": "PKCE compiled and reported11 actual metadata entries; AF compiled and reported31. Node group compile then found an optional-host-error comparison and unrelated AI test fixtures included by unfiltered test selection. No runtime or partial-batch qualification. Whole source/compiler/control seals, environment restoration, five native owner closures and independent outer absence completed."
+    },
+    {
+      "status": "bootstrap_failed_no_compiler_or_test_started",
+      "evidence": "../../evidence/root-combined-batch-v3-control-20261018-175721",
+      "source_head": "6f3e8c4b209ce32294954c93426ae32d28284b09",
+      "detail": "Missing contained classifier helper; original V3 bundle and absent outer-owner receipt retained. Corrected V4 bundle preserved original controller/manifest bytes."
+    },
+    {
+      "status": "fresh_compile_negative",
+      "evidence": "../../evidence/root-combined-batch-v4-buildquery-20261018-180504",
+      "source_head": "6f3e8c4b209ce32294954c93426ae32d28284b09",
+      "detail": "First PKCE compiler reached shared Windows child source and rejected else-for trailing semicolon. Zero metadata/runtime; complete source/compiler/environment/process closure. Subsequent source correction keeps original negative unchanged."
+    },
+    {
+      "status": "closed_diagnostic_compile_negative",
+      "evidence": "../../evidence/root-combined-diagnostic-batch-buildquery-20261018-182233",
+      "source_head": "cc9d2442024cb95686d48d4c38c0ba961bdff3b0",
+      "groups": 22,
+      "native_compile_owners": 22,
+      "metadata_queries": 0,
+      "runtime_started": false,
+      "result_sha256": "5AC3887A9AC0FD0D283104ADB14615C7892D21C750084C02501E3D040913DFD2",
+      "independent_closure": "../../evidence/root-combined-diagnostic-batch-independent-closure-20261018/closure.json",
+      "closure_sha256": "421FB5FB62526FD99BEE36316D8C10F42B10672FECBE91C33912A6AF25618504",
+      "detail": "Verified private copy of complete closed V4 cache; all 22 groups reached actual compilers, common Windows alias shadow blocked all. Remote/child/Ignore groups exposed additional actual Zig syntax/type diagnostics. Complete whole source/compiler postseal, original seed preservation, restored environment and independent native/outer absence closed. No runtime/qualification authority; all original receipts and artifacts retained."
     }
   ],
   "next_native_batch": {
-    "status": "prepared_not_executed",
-    "controller": "../../evidence/combined-native-batch-v3-prepared-20261018/Run-CombinedNativeBatch.ps1",
-    "driver_sha256": "18C501EE53E8BB9A926E1EB23DA1F35314F8D549CCB1B687560D3256A194BAC4",
-    "manifest": "../../evidence/combined-native-batch-v3-prepared-20261018/groups.json",
-    "manifest_sha256": "4599DE819EAC65BB345AEEF83DC086F7D7E42D2E4F6CB02E4BFA08CF764D64A4",
-    "groups": 20,
-    "declared_named_controls": 229,
-    "actual_metadata_count": null,
-    "scope": "Twenty serial actual groups; one initially fresh cache pair, distinct installed prefixes, complete whole-batch source/compiler/control seals, per-child ownership/admission/absence. Independent actual metadata acceptance must precede separate RuntimeOnly. Partial batches cannot qualify."
+    "status": "source_corrections_being_integrated",
+    "mode": "DiagnosticBuildQuery",
+    "driver_sha256": "B053217669D0A9294FB73F87C1844E15360D14B55AD38B79542693276BDF468E",
+    "qualification_requested": false,
+    "scope": "Next bounded development batch will use a new source-bound matrix and new private cache copy after all shared compile corrections are committed. Fresh qualification and independent metadata/runtime remain separate."
   }
 }
