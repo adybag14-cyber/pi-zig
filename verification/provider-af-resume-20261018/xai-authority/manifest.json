@@ -1,0 +1,25 @@
+{
+  "upstream_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "accepted_runtime": "19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+  "git_equals_map_sources_content": true,
+  "source_only": true,
+  "runtime_qualification": false,
+  "authorities": [
+    {
+      "path": "xai.c268.ts.txt",
+      "bytes": 7624,
+      "sha256": "D78BC70B7031326D51BF1348266FCD576E77590CEEFDEA9A4ED962E403444A78"
+    },
+    {
+      "path": "xai.accepted.js.txt",
+      "bytes": 7503,
+      "sha256": "D34783560DC2AC75D6E717B248136EB75A902FBD53B3E56FB9F2EC50C6C793D7"
+    },
+    {
+      "path": "xai.accepted.js.map.json",
+      "bytes": 14841,
+      "sha256": "8F291CF2E40E94D450D8046F8384BD510A1DCAAF064CEC09913CF1A4EE01A573"
+    }
+  ],
+  "fixture_transform": "Replace the sole DeviceCode import with the injected actual Source DeviceCode namespace; every other accepted JavaScript byte is unchanged."
+}

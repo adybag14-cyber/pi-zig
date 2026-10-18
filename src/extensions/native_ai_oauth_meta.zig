@@ -163,7 +163,7 @@ fn trustedUrlTry(o: *x.Ops, input: c.JSValue) !c.JSValue {
     return duplicate(o, try o.get(url, "href"));
 }
 
-fn finite(o: *x.Ops, input: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(try o.global("Number"), "isFinite", &.{input})); }
+fn finite(o: *x.Ops, input: c.JSValue) !c.JSValue { return boolean(o, o.truthy(try o.invoke(try o.global("Number"), "isFinite", &.{input}))); }
 
 fn positive(o: *x.Ops, input: c.JSValue) !bool { return c.JS_IsNumber(input) and o.truthy(try o.binary(6, input, integer(o, 0))); }
 
@@ -240,14 +240,7 @@ fn encodedFields(o: *x.Ops, kind: Request, source: c.JSValue) !c.JSValue {
 fn bearer(o: *x.Ops, identity: c.JSValue) !c.JSValue {
     return duplicate(o, try concat(o, try o.text("Bearer "), try value(o, stringifyValue, .{identity})));
 }
-fn request(o: *x.Ops, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
-    const fetch = try o.global("fetch");
-    const address: []const u8 = switch (kind) {
-        .device => "https://auth.meta.com/oidc/device/authorization/",
-        .poll => "https://auth.meta.com/oidc/device/token/",
-        .mint => "https://api.meta.ai/muse-code/key",
-    };
-    const url = try o.text(address);
+fn requestInit(o: *x.Ops, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
     const options = try o.object();
     try o.put(options, "method", try o.text("POST"));
     const headers = try o.object();
@@ -263,6 +256,17 @@ fn request(o: *x.Ops, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JS
     try o.put(options, "headers", headers);
     try o.put(options, "body", if (kind == .mint) try o.text("{}") else try value(o, encodedFields, .{kind, source}));
     try o.put(options, "signal", try value(o, requestSignal, .{signal}));
+    return duplicate(o, options);
+}
+fn request(o: *x.Ops, signal: c.JSValue, kind: Request, source: c.JSValue) !c.JSValue {
+    const fetch = try o.global("fetch");
+    const address: []const u8 = switch (kind) {
+        .device => "https://auth.meta.com/oidc/device/authorization/",
+        .poll => "https://auth.meta.com/oidc/device/token/",
+        .mint => "https://api.meta.ai/muse-code/key",
+    };
+    const url = try o.text(address);
+    const options = try value(o, requestInit, .{signal, kind, source});
     return duplicate(o, try o.call(fetch, c.pi_js_undefined(), &.{url, options}));
 }
 fn trustedProperty(o: *x.Ops, json: c.JSValue, name: [*:0]const u8) !c.JSValue {

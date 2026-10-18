@@ -236,3 +236,45 @@ test "native OAuth Meta abrupt IteratorClose preserves ordinary private DATA" {
         try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
     }
 }
+
+test "native OAuth Meta completed fetch argument releases nested headers and body roots" {
+    inline for (.{ false, true }) |native| {
+        const engine = try x.em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try support.prepareMeta(engine);
+        try support.selectMeta(engine, native);
+        try support.run(engine, support.requestAmbient);
+        try support.run(engine,
+            \\globalThis.requestChildrenRetired=false;
+            \\globalThis.URLSearchParams=function(){return {toString(){return {holder:oauthHooks.make(1)}}}};
+            \\globalThis.fetch=(url,init)=>{
+            \\ init.headers.holder=oauthHooks.make(0);delete init.headers;delete init.body;
+            \\ requestChildrenRetired=oauthHooks.count(0)===1&&oauthHooks.count(1)===1;
+            \\ throw Error("controlled request stop");
+            \\};
+        );
+        try support.run(engine,
+            \\let caught=false;try{await selectedMeta.login({signal:controlledSignal,notify(){}})}catch(error){caught=error.message==="controlled request stop"}
+            \\if(!caught||!requestChildrenRetired)throw Error("Actual completed request retains no extra child roots");
+        );
+    }
+}
+test "native OAuth Meta finite predicate return retires before following validation call" {
+    inline for (.{ false, true }) |native| {
+        const engine = try x.em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try support.prepareMeta(engine);
+        try support.selectMeta(engine, native);
+        try support.run(engine, support.requestAmbient);
+        try support.run(engine,
+            \\globalThis.firstFiniteRetired=false;let calls=0;
+            \\globalThis.Number={isFinite(){if(++calls===1)return {holder:oauthHooks.make(0)};firstFiniteRetired=oauthHooks.count(0)===1;return true}};
+            \\globalThis.URL=function(input){return {protocol:"https:",href:input}};
+            \\globalThis.fetch=()=>Promise.resolve({ok:true,status:200,json(){return Promise.resolve({device_code:"d",user_code:"u",verification_uri_complete:"https://verify/complete",verification_uri:"https://verify/",interval:1,expires_in:60})}});
+        );
+        try support.run(engine,
+            \\let caught=false;try{await selectedMeta.login({signal:controlledSignal,notify(){throw Error("controlled notify stop")}})}catch(error){caught=error.message==="controlled notify stop"}
+            \\if(!caught||!firstFiniteRetired||oauthHooks.count(0)!==1)throw Error("Actual finite return is consumed at its condition");
+        );
+    }
+}
