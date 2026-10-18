@@ -314,6 +314,12 @@ fn normalIteratorCall(o: *x.Ops, receiver: c.JSValue, called: *bool) !c.JSValue 
 fn normalIteratorClose(engine: *x.em.Engine, iterator: *p.Iterator) !void {
     if (iterator.closed) return;
     iterator.closed = true;
+    // OP_iterator_close drops the cached next method before reading return.
+    const next_method = iterator.next_function;
+    iterator.next_function = c.pi_js_undefined();
+    var retirement = x.owned.Completion.initVoid(engine, {});
+    retirement.release(next_method);
+    try retirement.finishVoid();
     var called = false;
     const result = try expression(engine, normalIteratorCall, .{iterator.receiver, &called});
     // JS_CallFree retires the method before validating the returned value.
