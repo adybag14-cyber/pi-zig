@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "active_incomplete",
+  "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
+  "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
+  "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
+  "current_source_head_at_record": "cec90dbc2f762180c06b048a5178c070a1450cd4",
+  "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
+  "existing_jobs_observed_running_or_queued": 0,
+  "owners": {
+    "main": "Root",
+    "vm-foundation-integration-20261018": "vm_foundation",
+    "sdk-owners-resume-20261018": "sdk_owners",
+    "modules-io-resume-20261018": "modules_io"
+  },
+  "af11_saved_metadata": {
+    "status": "reconciled_accepted",
+    "path": "../../evidence/root-promise611-af11-buildquery-independent-vm-audit-20261018/metadata-acceptance.json",
+    "sha256": "641E92ADCDABB6E98CF4095205D75333A7AA44B3FB65183D76E45A832A5E8E6D"
+  },
+  "af11_resumed_runtime": {
+    "status": "failed",
+    "source": "611104864ff15d670201a2c61877662f18be6176",
+    "completed": 12,
+    "passed_flags_zero": 11,
+    "failed_index": 7,
+    "failure": "Uncalibrated immediate cancellation polling expectation at native_await_rejection_data_test.zig:219",
+    "evidence": "../../evidence/root-resume-af11-runtime-20261018-153019",
+    "postseal": true,
+    "native_owners_absent": true,
+    "next": "Run unchanged current combined source with existing86bc80fa calibrated cancellation control; no old-runtime pass transfer."
+  },
+  "application_qualification": false,
+  "production_bridge_removed": false,
+  "published_release": false
+}
