@@ -244,7 +244,7 @@ pub const Owner = struct {
             if (!waits.releaseRetired(self.admission.lease)) return error.NativeChildRetirementAcknowledgementRequired;
             control.hub.removeResource(self); released(self); return true;
         }
-        if (ready.failure) |failure| return failure;
+        if (ready.failure) |failure| return @as(anyerror!bool, failure);
         if (self.retiring) return false;
         try waits.withdraw(self.admission.lease);
         const result = try self.native_owner.step(self.demand);

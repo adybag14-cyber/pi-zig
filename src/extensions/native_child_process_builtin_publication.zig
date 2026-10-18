@@ -39,7 +39,7 @@ fn defaultRecord(scope: *Scope, carrier: c.JSValue) !c.JSValue {
     const record = try scope.object();
     var properties: [*c]c.JSPropertyEnum = null; var count: u32 = 0;
     const status = c.JS_GetOwnPropertyNames(engine.context, &properties, &count, carrier, c.JS_GPN_STRING_MASK | c.JS_GPN_ENUM_ONLY);
-    if (status < 0) return js.capture(engine);
+    if (status < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     defer c.JS_FreePropertyEnum(engine.context, properties, count);
     try engine.checkNativeEntry();
     for (properties[0..count]) |property| {
@@ -47,7 +47,7 @@ fn defaultRecord(scope: *Scope, carrier: c.JSValue) !c.JSValue {
         const generation = engine.native_allocation_generation;
         const value = try row.ownSince(c.JS_GetProperty(engine.context, carrier, property.atom), generation);
         const defined = c.JS_DefinePropertyValue(engine.context, record, property.atom, c.JS_DupValue(engine.context, value), c.JS_PROP_C_W_E);
-        try engine.checkNativeEntry(); if (defined < 0) return js.capture(engine);
+        try engine.checkNativeEntry(); if (defined < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     }
     try scope.put(record, "default", carrier);
     return record;
@@ -105,7 +105,7 @@ pub fn install(engine: *js.Engine, state: *State, node: c.JSValue, net: c.JSValu
                 if (engine.captured_exception) |reason| state.reason = c.JS_DupValue(engine.context, reason);
             }
         }
-        return err;
+        return @as(anyerror!void, err);
     }
 }
 
@@ -135,7 +135,7 @@ test "actual canonical Socket export getter cannot recursively publish the same 
             const self: *@This() = @ptrCast(@alignCast(c.JS_GetOpaque(roots[0], c.JS_GetClassID(roots[0])).?));
             self.calls += 1;
             install(engine, self.state, roots[2], roots[1]) catch |err| {
-                if (err != error.NativeChildBuiltinPublicationInProgress) return err;
+                if (err != error.NativeChildBuiltinPublicationInProgress) return @as(anyerror!c.JSValue, err);
                 self.rejected += 1; return c.JS_DupValue(engine.context, roots[3]);
             };
             return error.PublicationControlNestedEntryWasAdmitted;

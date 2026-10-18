@@ -28,7 +28,7 @@ pub fn createWithNamespaces(engine: *js.Engine, node: c.JSValue, cross: c.JSValu
     const result = createPublicInner(engine, node, cross, actual_process) catch |err| {
         const failure = @import("native_child_process_function.zig").directFailure(engine, err, generation);
         _ = engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())) catch |actual| return actual;
-        return failure;
+        return @as(anyerror!c.JSValue, failure);
     };
     return engine.checked(engine.leaveNativeInvocation(&invocation, result));
 }
@@ -62,7 +62,7 @@ fn createPublicInner(engine: *js.Engine, node: c.JSValue, cross: c.JSValue, actu
 }
 fn selectPublic(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var index: u32 = 0;
-    if (c.JS_ToUint32(engine.context, &index, if (args.len == 0) c.pi_js_undefined() else args[0]) < 0) return js.capture(engine);
+    if (c.JS_ToUint32(engine.context, &index, if (args.len == 0) c.pi_js_undefined() else args[0]) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (index >= roots.len) return error.NativeChildUtilitiesSelection;
     return c.JS_DupValue(engine.context, roots[index]);
 }

@@ -75,7 +75,7 @@ fn controller(engine: *js.Engine) !*Controller {
     const hub = try env.get(engine);
     try hub.assertOwner();
     if (hub.stopping) return error.NativeEnvClosed;
-    for (hub.resources.items) |resource| if (resource.tag == &controller_tag) {
+    for (hub.resources.items) |resource| if (resource.tag == @as(?*const anyopaque, &controller_tag)) {
         const existing: *Controller = @ptrCast(@alignCast(resource.raw));
         if (existing.hub != hub) return error.NativeChildControllerOwnerMismatch;
         return existing;

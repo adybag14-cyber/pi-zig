@@ -124,7 +124,7 @@ pub const AsyncTransport = struct {
             if (!self.input_closed) { self.close_requested = true; self.close_failure = if (self.token != null) error.BrokenPipe else null; }
         }
         self.inputStep();
-        if (self.windows_shutdown_fault) |failure| return failure;
+        if (self.windows_shutdown_fault) |failure| return @as(anyerror!Step, failure);
         if (builtin.os.tag == .windows) {
             result.stdout = self.readWindowsOutput(.stdout, demand.stdout);
             result.stderr = self.readWindowsOutput(.stderr, demand.stderr);

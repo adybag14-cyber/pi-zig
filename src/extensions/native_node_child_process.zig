@@ -39,7 +39,7 @@ fn registerHandleClass(engine: *js.Engine) !c.JSClassID {
 }
 fn capturedHandleClass(engine: *js.Engine, value: c.JSValue) !c.JSClassID {
     var id: u32 = 0;
-    if (c.JS_ToUint32(engine.context, &id, value) < 0) return js.capture(engine);
+    if (c.JS_ToUint32(engine.context, &id, value) < 0) return @as(anyerror!c.JSClassID, js.capture(engine));
     return id;
 }
 fn holder(scope: *Scope, child: c.JSValue, id: c.JSClassID) !c.JSValue {
@@ -52,10 +52,10 @@ fn holder(scope: *Scope, child: c.JSValue, id: c.JSClassID) !c.JSValue {
 fn getState(engine: *js.Engine, child: c.JSValue, expected: c.JSClassID) !?*State {
     const handle = try js.get(engine, child, "_handle"); defer engine.freeValue(handle);
     if (c.JS_IsNull(handle) or c.JS_IsUndefined(handle)) return null;
-    if (!c.JS_IsObject(handle) or c.JS_GetClassID(handle) != expected) return js.typeError(engine, "ChildProcess _handle must retain its original owned native handle");
-    const raw = c.JS_GetOpaque(handle, expected) orelse return js.typeError(engine, "Invalid owned ChildProcess handle");
+    if (!c.JS_IsObject(handle) or c.JS_GetClassID(handle) != expected) return @as(anyerror!?*State, js.typeError(engine, "ChildProcess _handle must retain its original owned native handle"));
+    const raw = c.JS_GetOpaque(handle, expected) orelse return @as(anyerror!?*State, js.typeError(engine, "Invalid owned ChildProcess handle"));
     const state: *State = @ptrCast(@alignCast(raw));
-    if (state.engine != engine or !c.JS_IsStrictEqual(engine.context, state.child, child)) return js.typeError(engine, "ChildProcess handle belongs to another owner");
+    if (state.engine != engine or !c.JS_IsStrictEqual(engine.context, state.child, child)) return @as(anyerror!?*State, js.typeError(engine, "ChildProcess handle belongs to another owner"));
     return state;
 }
 fn construct(engine: *js.Engine, target: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
@@ -158,7 +158,7 @@ fn spawn(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []con
     const stdio = try scope.array(); inline for (0..3) |index| try scope.index(stdio, index, c.pi_js_null()); try scope.put(child, "stdio", stdio);
     const owner = try hub.get(engine);
     var failure: ?anyerror = null;
-    var process: ?transport.Process = transport.Process.spawn(owner.io, engine.gpa, config.argv.items, config.cwd, &config.environment, config.options) catch |err| failed: { if (err == error.OutOfMemory) return err; failure = err; break :failed null; };
+    var process: ?transport.Process = transport.Process.spawn(owner.io, engine.gpa, config.argv.items, config.cwd, &config.environment, config.options) catch |err| failed: { if (err == error.OutOfMemory) return @as(anyerror!c.JSValue, err); failure = err; break :failed null; };
     var process_owned = true; defer if (process_owned) if (process) |*value| value.deinit(owner.io);
     if (process) |value| try scope.put(child, "pid", c.JS_NewUint32(engine.context, value.identity.pid));
     const resolve = try scope.own(try functions.createArrow(engine, "", 1, noop, &.{}));
@@ -204,7 +204,7 @@ pub fn create(engine: *js.Engine, cross_spawn: bool) !c.JSValue {
     const constructor = constructor: {
         const emitter = try scope.get(engine.native_module_values.get("node:events").?, "EventEmitter");
         const prototype = try scope.object();
-        if (c.JS_SetPrototype(engine.context, prototype, try scope.get(emitter, "prototype")) < 0) return js.capture(engine);
+        if (c.JS_SetPrototype(engine.context, prototype, try scope.get(emitter, "prototype")) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
         const value = try scope.own(try class.constructor(engine, "ChildProcess", 0, prototype, construct, &.{ emitter, known_class }));
         try scope.put(prototype, "kill", try scope.own(try functions.create(engine, "kill", 1, kill, &.{known_class})));
         break :constructor value;
