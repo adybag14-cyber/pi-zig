@@ -1,0 +1,45 @@
+{
+  "schema": "sdk-initial-model-source-authority-v1",
+  "pi_version": "1.3.0",
+  "source_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "source_checkout": "upstream/pi-c268154c-source-candidate-20261017",
+  "source_clean_selected_files": true,
+  "source_files": [
+    {
+      "path": "packages/coding-agent/src/core/model-resolver.ts",
+      "git_blob": "f48f9371760eb1ecc1d18ecfe16f0bacf86648b1",
+      "copy": {
+        "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/model-resolver.ts",
+        "length": 25183,
+        "sha256": "D624526FA0B8D66A5208C868097B8E724308130C9B5137D8ED7156DAE5548A91"
+      }
+    },
+    {
+      "path": "packages/coding-agent/src/core/sdk.ts",
+      "git_blob": "f678ba43ca80a9dfb40dc5f5b05055952590bb1d",
+      "copy": {
+        "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/sdk.ts",
+        "length": 18273,
+        "sha256": "61F398403C7510BEC849583B2C46272DF11AC5AA8D2E24B4DED97A108DD55B28"
+      }
+    },
+    {
+      "path": "LICENSE",
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197",
+      "copy": {
+        "path": "verification/sdk-initial-model-af-sourceonly-20261018/authority/pi-LICENSE",
+        "length": 1069,
+        "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+      }
+    }
+  ],
+  "actual_function": "findInitialModel",
+  "source_await_count": 0,
+  "genuine_caller": "sdk.ts236 conditional await findInitialModel",
+  "runtime_reference_only": {
+    "path": "upstream/runtime/19cb534-full-prebuild-root-full28293-v3-20261017-203626",
+    "acceptance_sha256": "EFEC9629751FA119BE0B311D206A7F8A10A5A9E31213482FBBF647C6B6C11CF0",
+    "files": 31064,
+    "historical_lifecycle": "negative_preserved"
+  }
+}

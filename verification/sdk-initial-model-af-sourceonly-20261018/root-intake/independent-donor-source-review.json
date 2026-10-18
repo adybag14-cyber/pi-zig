@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "FINITE_INITIAL_MODEL_GENUINE_AF_SOURCE_REVIEW_CLOSED",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T01:16:28.3444238+00:00",
+  "head": "d3f29118b1fb863edf8c4d42d26e5d5ae7da9cba",
+  "base": "e95f9da1c71bf04e498ecbad8e68079e37e3e8c2",
+  "manifest_sha256": "C23B288079A145EE8D6C1832CF928B6899E962BE12AC1DC3952DC308017D41AE",
+  "Source_primary_sha256": "D624526FA0B8D66A5208C868097B8E724308130C9B5137D8ED7156DAE5548A91",
+  "review": [
+    "Full Source findInitialModel c268method and native body/operations read;genuine createResumable length1 returns owned Action.returned only,zero native Await actions",
+    "Seven option reads,scoped optional/nullish andthree modelreads,template ToString/callee order,saved truthy precedence,snapshotspread/defaultsforof/find/fallback/return adoption traced",
+    "Actualmedium default independently confirmed in supplied upstream defaults.ts;cached mutable providerdefaults unchanged",
+    "Guest-capable accept no tag/span classification;actual pending/currentB1 remain authority;directno-guest allocators andC435per-freecontract keptseparate",
+    "Expression/statement/iterator scopes retire callee,method,iterable,done/step,periteration operands,exhaustedrecord beforelater Source getter/callback/fallback;lexical options/available/models remainowned",
+    "Interior scopedFieldOwned records provider/id result beforetemporary modelreceiver release andbeforeToString;no extraAwait",
+    "Synchronous IteratorClose preserves original ordinaryThrow overordinaryclose error,validates return object only nonthrow completion;actualfatal currententry preventsguestclose;actualcancel producer now terminalmarked",
+    "Heapownedgc-marked nativeholder/record controls,priorhostjob WeakRef boundaries,DATA-maker→sameguestthrow vsactualnativefatalidentity,actualcancelno-next/no-close,modelreceiver-before-coercion controls read forcausality",
+    "16owned+14protected SHA256/lengths verified at clean exactd3f;no guestspanclassifier inaccept;no awaitedactionconstruction;factoryhelperdiff onlyrealmigration/removesfakebranding+flow"
+  ],
+  "limits": [
+    "Sixteen parameterized callable profiles are unregistered/unrun,not16 discoveredtests;actualmetadata unknown",
+    "Genuine actualownergraph.imports/factoryExports/realModelsruntime/options/acceptedOriginalrows andnormaljobboundary mandatory;borrowed instrumentation explicitlylabelled",
+    "BaseDA14/A79 not matching proposedC354/H0DBC+Promise/G2/currentVMunionqualification;no actualVM/nativeallocator-stage/GC/fullSDK/default claim",
+    "Inherited importnamespace/factoryhelper/unrelatedresolver algorithms not qualified by this finiteleafreview",
+    "All f1e/042ab/ae535 findings andfrozen predecessors preserved;no parser/compiler/native/Node/AST/Main/sharedEngineScopeC edit"
+  ],
+  "execution_authorized": false,
+  "intake_authorized": false,
+  "agent_jobs": 0
+}
