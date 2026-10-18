@@ -199,3 +199,40 @@ test "SDK RemoteCatalog successful flagged Error constructor value rejects as DA
     try std.testing.expect(engine.native_fatal_invocation == null);
     try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
 }
+
+
+const retirement = @import("native_sdk_initial_model_retirement_controls.zig");
+fn publishRetirementHooks(engine: *x.em.Engine, hooks: c.JSValue) !void {
+    var storage: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &storage };
+    return x.owned.finishVoid(&storage, publish(&o, "actualRemoteStatusHooks", hooks));
+}
+test "SDK RemoteCatalog actual status results retire before each next getter" {
+    inline for (.{false, true}) |personal| {
+        var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+        const engine = try x.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit(); try prepare(engine, &environment);
+        const hooks = try retirement.createNativeRetirementHooks(engine); defer engine.freeValue(hooks);
+        try publishRetirementHooks(engine, hooks);
+        try run(engine, if (personal)
+            "export const reads=await observeRemoteStatusRetirement(actualRemoteCatalog,actualRemoteStatusHooks,true);"
+        else
+            "export const reads=await observeRemoteStatusRetirement(actualRemoteCatalog,actualRemoteStatusHooks,false);");
+    }
+}
+test "SDK RemoteCatalog actual status retirement fatal preempts the next getter" {
+    inline for (.{false, true}) |personal| {
+        var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+        const engine = try x.em.Engine.init(std.testing.allocator, .{ .host_await_timeout_ms = 10000 }); defer engine.deinit(); try prepare(engine, &environment);
+        const hooks = try retirement.createNativeRetirementHooks(engine); defer engine.freeValue(hooks);
+        try publishRetirementHooks(engine, hooks);
+        const record = try engine.checked(c.JS_GetPropertyStr(engine.context, hooks, "record")); defer engine.freeValue(record);
+        const prefix = "actualRemoteStatusHooks.armFatal(0);";
+        const source = try std.mem.concat(engine.gpa, u8, &.{prefix, if (personal)
+            "export const reads=await observeRemoteStatusRetirement(actualRemoteCatalog,actualRemoteStatusHooks,true);"
+        else
+            "export const reads=await observeRemoteStatusRetirement(actualRemoteCatalog,actualRemoteStatusHooks,false);"}); defer engine.gpa.free(source);
+        try std.testing.expectError(error.JavaScriptException, run(engine, source));
+        try retirement.verifyActualRetirementFatal(engine, record, 0);
+        const reads = try rawRead(engine, "remoteStatusReads"); defer engine.freeValue(reads);
+        try std.testing.expect(c.JS_IsStrictEqual(engine.context, reads, c.JS_NewInt32(engine.context, 1)));
+    }
+}

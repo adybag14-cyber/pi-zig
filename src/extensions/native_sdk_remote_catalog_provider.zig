@@ -453,6 +453,16 @@ fn persistBase(scope: *Scope, stored: c.JSValue) !c.JSValue {
     try scope.put(result, "models", try scope.array());
     return result;
 }
+/// A strict comparison consumes the getter result before the next Source
+/// expression. Actual fatal production during that retirement wins here.
+fn statusEqual(scope: *Scope, response: c.JSValue, status: i32) !bool {
+    var storage: x.Scope = .{ .engine = scope.s.engine }; var local: Scope = .{ .s = &storage };
+    return scope.truthy(try x.owned.finishValue(&storage, statusEqualBody(&local, response, status)));
+}
+fn statusEqualBody(scope: *Scope, response: c.JSValue, status: i32) !c.JSValue {
+    const value = try scope.get(response, "status");
+    return c.pi_js_bool(scope.s.engine.context, @intFromBool(scope.equal(value, c.JS_NewInt32(scope.s.engine.context, status))));
+}
 fn continueRefresh(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage) !af.Action {
     const engine = scope.s.engine;
     const wrapper = try scope.get(job, "wrapper");
@@ -473,7 +483,7 @@ fn continueRefresh(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage
             if (try abort(scope, context)) return done();
             try scope.put(job, "response", value);
             if (personal) {
-                if (!scope.equal(try scope.get(value, "status"), c.JS_NewInt32(engine.context, 404)) and !scope.equal(try scope.get(value, "status"), c.JS_NewInt32(engine.context, 501))) {
+                if (!try statusEqual(scope, value, 404) and !try statusEqual(scope, value, 501)) {
                     if (!try scope.fieldTest(value, "ok", .truthy_value)) return failedRequest(scope, wrapper, value);
                     return beginRead(scope, job, wrapper, value);
                 }
@@ -482,13 +492,13 @@ fn continueRefresh(scope: *Scope, job: c.JSValue, value: c.JSValue, stage: Stage
             const checked = try scope.own(try scope.globalInvokeOwned("Date", "now", &.{}));
             try scope.put(job, "checked", checked);
             const stored = try scope.get(job, "stored");
-            if (scope.equal(try scope.get(value, "status"), c.JS_NewInt32(engine.context, 304)) and scope.truthy(stored)) {
+            if (try statusEqual(scope, value, 304) and scope.truthy(stored)) {
                 const publisher = try scope.get(context, "publish");
                 const persist = try copy.object(scope, stored);
                 try scope.put(persist, "checkedAt", checked);
                 return publishCaptured(scope, job, context, publisher, persist, null, .finished);
             }
-            if (scope.equal(try scope.get(value, "status"), c.JS_NewInt32(engine.context, 404)) or scope.equal(try scope.get(value, "status"), c.JS_NewInt32(engine.context, 501))) {
+            if (try statusEqual(scope, value, 404) or try statusEqual(scope, value, 501)) {
                 const publisher = try scope.get(context, "publish");
                 const persist = try persistBase(scope, stored);
                 try scope.put(persist, "checkedAt", checked);

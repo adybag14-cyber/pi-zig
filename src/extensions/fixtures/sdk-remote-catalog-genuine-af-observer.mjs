@@ -167,3 +167,41 @@ export async function observeRemoteSpreadAndIteration(api) {
   }finally{Array.prototype[Symbol.iterator]=original}
   return [log,closes];
 }
+
+
+// The fetch retry owner sees the ordinary status before the Source continuation
+// resumes. Its next context.signal getter activates sole status-result carriers,
+// so this observation targets the exact RemoteCatalog comparison expressions.
+export async function observeRemoteStatusRetirement(api, hooks, personal) {
+  let fetched = false, inspect = false, reads = 0;
+  const expected = personal ? 2 : 3;
+  const signal = new AbortController().signal;
+  globalThis.remoteStatusReads = 0;
+  const response = {
+    get status() {
+      if (!inspect) return 200;
+      if (reads && hooks.count(reads - 1) !== 1) throw Error('prior status result retained');
+      globalThis.remoteStatusReads = ++reads;
+      return hooks.make(reads - 1);
+    },
+    get ok() {
+      hooks.visit(2);
+      insist(reads === expected, 'all live Source status comparisons');
+      for (let slot = 0; slot < reads; slot++) insist(hooks.count(slot) === 1, 'status result retained before ok');
+      return true;
+    },
+    headers: { get() { return null; } },
+    json() { return []; }
+  };
+  const provider = {id:'actual-status-retirement',getModels(){return[]}};
+  const wrapped = personal ? api.withPersonalizedCatalog(provider, models => models) : api.withRemoteCatalog(provider);
+  await withFetch(() => { fetched = true; return response; }, async () => {
+    await wrapped.refreshModels({
+      force:true,allowNetwork:true,
+      get signal(){ if (fetched) inspect = true; return signal; },
+      publish(record){ record.update?.(); return true; }
+    });
+  });
+  insist(reads === expected, 'status retirement observer must execute');
+  return reads;
+}
