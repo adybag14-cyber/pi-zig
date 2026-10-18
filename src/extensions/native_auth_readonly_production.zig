@@ -24,13 +24,13 @@ const Ops = struct {
         return owned.ownRoot(self.scope, checked);
     }
     fn own(self: Ops, value: c.JSValue) !c.JSValue { return owned.ownRoot(self.scope, value); }
-    fn get(self: Ops, object: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    fn get(self: Ops, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
         const generation = self.engine().native_allocation_generation;
-        return self.adopt(generation, v.js.get(self.engine(), object, name));
+        return self.adopt(generation, v.js.get(self.engine(), target, name));
     }
-    fn key(self: Ops, object: c.JSValue, key_value: c.JSValue) !c.JSValue {
+    fn key(self: Ops, target: c.JSValue, key_value: c.JSValue) !c.JSValue {
         const generation = self.engine().native_allocation_generation;
-        return self.adopt(generation, v.js.getKey(self.engine(), object, key_value));
+        return self.adopt(generation, v.js.getKey(self.engine(), target, key_value));
     }
     fn global(self: Ops, name: [*:0]const u8) !c.JSValue {
         const generation = self.engine().native_allocation_generation;

@@ -66,7 +66,15 @@ pub const Ops = struct {
     pub fn has(o: *Ops, target: c.JSValue, name: [*:0]const u8) !bool {
         const e = o.s.engine; const generation = try o.beforeAllocation();
         const atom = c.JS_NewAtom(e.context, name);
-        if (atom == c.JS_ATOM_NULL) { _ = try o.allocation(c.JS_EXCEPTION, generation); unreachable; }
+        if (atom == c.JS_ATOM_NULL) {
+            // Obtain the portable exception sentinel from the runtime C ABI.
+            const failure = if (c.JS_HasException(e.context))
+                c.JS_Throw(e.context, c.JS_GetException(e.context))
+            else
+                c.JS_ThrowInternalError(e.context, "Native callback returned exception without a pending reason");
+            _ = try o.allocation(failure, generation);
+            unreachable;
+        }
         defer c.JS_FreeAtom(e.context, atom);
         var boundary: guest.Boundary = .{ .engine = e }; try boundary.begin();
         const result = c.JS_HasProperty(e.context, target, atom); try boundary.finishStatus(result);

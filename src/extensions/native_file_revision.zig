@@ -18,7 +18,7 @@ pub fn revisionAlloc(gpa: std.mem.Allocator, path: []const u8) !?[]u8 {
         if (err == error.OutOfMemory) return err;
         return null;
     };
-    return format(gpa, info);
+    return try format(gpa, info);
 }
 pub fn format(gpa: std.mem.Allocator, info: fs.Stat) ![]u8 {
     return std.fmt.allocPrint(gpa, "{d}:{d}:{d}:{d}:{d}", .{ info.dev, info.ino, info.size, info.mtime_ns, info.ctime_ns });
