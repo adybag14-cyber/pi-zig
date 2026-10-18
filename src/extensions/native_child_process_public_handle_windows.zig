@@ -10,7 +10,7 @@ const Slot = struct {
     handle: ?w.HANDLE = null,
 };
 var gate: w.SRWLOCK = .{};
-var slots: [16]Slot = .{.{}} ** 16;
+var slots: [16]Slot = @splat(Slot{});
 const api = struct {
     extern "kernel32" fn AcquireSRWLockExclusive(*w.SRWLOCK) callconv(.winapi) void;
     extern "kernel32" fn ReleaseSRWLockExclusive(*w.SRWLOCK) callconv(.winapi) void;

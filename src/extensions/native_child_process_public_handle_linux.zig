@@ -14,7 +14,7 @@ const Slot = struct {
     recovery_borrowed: bool = false,
 };
 var gate: Mutex = .{};
-var slots: [16]Slot = .{.{}} ** 16;
+var slots: [16]Slot = @splat(Slot{});
 fn known(ticket: Ticket) !*Slot {
     if (ticket.slot >= slots.len) return error.NativePublicProcessHandleTicket;
     const slot = &slots[ticket.slot];

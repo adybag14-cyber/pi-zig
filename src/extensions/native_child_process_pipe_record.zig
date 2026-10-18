@@ -44,14 +44,14 @@ fn mark(runtime: ?*c.JSRuntime, holder: c.JSValue, visitor: ?*const c.JS_MarkFun
     c.JS_MarkValue(runtime, self.handle, visitor); c.JS_MarkValue(runtime, self.callback, visitor);
 }
 fn known(scope: *Scope, handle: c.JSValue, roots: []const c.JSValue) !*State {
-    var id: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &id, roots[0]) < 0) return js.capture(scope.engine);
+    var id: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &id, roots[0]) < 0) return @as(anyerror!*State, js.capture(scope.engine));
     const self: *State = @ptrCast(@alignCast(c.JS_GetOpaque(handle, id) orelse return error.NativePipeRecordBrand));
     if (self.engine != scope.engine or !scope.equal(self.handle, handle)) return error.NativePipeRecordOwner;
     return self;
 }
 fn construct(engine: *js.Engine, handle: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
-    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[0]) < 0) return js.capture(engine);
+    var id: u32 = 0; if (c.JS_ToUint32(engine.context, &id, roots[0]) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     const prototype = try frontier.prototype(&scope, handle);
     const actual = try scope.objectProtoClass(prototype, id);
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, @sizeOf(State)) == 0) return error.OutOfMemory;
@@ -65,7 +65,7 @@ fn close(engine: *js.Engine, handle: c.JSValue, args: []const c.JSValue, roots: 
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const state = try known(&scope, handle, roots);
     if (state.phase == .closed or state.phase == .closing) return c.pi_js_undefined();
     const callback = if (args.len > 0) args[0] else c.pi_js_undefined();
-    if (!c.JS_IsUndefined(callback) and !c.JS_IsFunction(engine.context, callback)) return js.typeError(engine, "Pipe close callback must be a function");
+    if (!c.JS_IsUndefined(callback) and !c.JS_IsFunction(engine.context, callback)) return @as(anyerror!c.JSValue, js.typeError(engine, "Pipe close callback must be a function"));
     state.engine.freeValue(state.callback); state.callback = c.JS_DupValue(engine.context, callback);
     if (state.binding) |actual| {
         try actual.close(actual.context); state.phase = .closing;

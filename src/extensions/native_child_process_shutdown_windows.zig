@@ -29,8 +29,8 @@ const Slot = struct {
 const Worker = struct { thread: ?H = null, event: ?H = null, current: ?Ticket = null, arm: u64 = 0 };
 const Release = [3]?wake.Ref;
 var gate: w.SRWLOCK = .{};
-var slots: [Limits.tickets]Slot = .{.{}} ** Limits.tickets;
-var workers: [Limits.flush_threads]Worker = .{.{}} ** Limits.flush_threads;
+var slots: [Limits.tickets]Slot = @splat(Slot{});
+var workers: [Limits.flush_threads]Worker = @splat(Worker{});
 var cancel_event: ?H = null;
 var initialized: bool = false;
 var failure: ?u32 = null;

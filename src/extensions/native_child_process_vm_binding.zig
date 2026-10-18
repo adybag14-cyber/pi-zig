@@ -27,7 +27,7 @@ pub const Native = struct {
         self.config.deinit();
     }
 };
-fn length(scope: *Scope, array: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &value, try scope.get(array, "length")) < 0) return js.capture(scope.engine); try frontier.pending(scope.engine); return value; }
+fn length(scope: *Scope, array: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &value, try scope.get(array, "length")) < 0) return @as(anyerror!u32, js.capture(scope.engine)); try frontier.pending(scope.engine); return value; }
 fn element(scope: *Scope, array: c.JSValue, index: u32) !c.JSValue { return scope.getIndex(array, index); }
 fn text(engine: *js.Engine, value: c.JSValue) ![]u8 {
     const result = try engine.toString(value); errdefer engine.gpa.free(result);
@@ -85,7 +85,7 @@ pub fn consume(engine: *js.Engine, options: c.JSValue, inputs: Inputs) !Native {
             const descriptor_number = try row.get(descriptor, "fd");
             if (!c.JS_IsNumber(descriptor_number)) return error.NativeProcessStdioDescriptorNumberRequired;
             var fd: i32 = 0;
-            if (c.JS_ToInt32(engine.context, &fd, descriptor_number) < 0) return js.capture(engine);
+            if (c.JS_ToInt32(engine.context, &fd, descriptor_number) < 0) return @as(anyerror!Native, js.capture(engine));
             try frontier.pending(engine);
             if (inputs.stdio_source) |source| if (!@import("native_process_streams.zig").ownsLease(engine, source)) return error.NativeChildFrontendStdioLeaseRetired;
             switch (@import("builtin").os.tag) {

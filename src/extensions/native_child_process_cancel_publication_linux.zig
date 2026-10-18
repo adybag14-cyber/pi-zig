@@ -14,7 +14,7 @@ const Slot = struct {
 };
 var guard: Mutex = .{};
 var next_token: Token = 0;
-var slots: [16]Slot = .{.{}} ** 16;
+var slots: [16]Slot = @splat(Slot{});
 fn successor(previous: Token) !Token {
     if (previous >= retiring_token - 1) return error.NativeCancelPublicationTokenExhausted;
     return previous + 1;

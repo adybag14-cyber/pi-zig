@@ -12,7 +12,7 @@ const Slot = struct {
     token: u64 = 0, failure: ?anyerror = null,
 };
 const Registry = struct {
-    guard: Mutex = .{}, slots: [16]Slot = .{.{}} ** 16,
+    guard: Mutex = .{}, slots: [16]Slot = @splat(Slot{}),
     phase: enum { cold, ready, failed } = .cold,
     epoll: ?linux.fd_t = null, control: ?linux.fd_t = null,
     next_token: u64 = 0, reaped: u64 = 0,

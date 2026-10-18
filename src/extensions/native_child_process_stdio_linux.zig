@@ -13,7 +13,7 @@ const Slot = struct {
     close_errno: ?linux.E = null,
 };
 var gate: Mutex = .{};
-var slots: [capacity]Slot = .{.{}} ** capacity;
+var slots: [capacity]Slot = @splat(Slot{});
 fn known(lease: Lease) !*Slot {
     if (lease.slot >= slots.len) return error.NativeStdioLeaseStale;
     const slot = &slots[lease.slot];
@@ -113,7 +113,7 @@ const HostMap = struct {
 pub const Map = struct { slot: u8, generation: u64 };
 const MapSlot = struct { generation: u64 = 0, active: bool = false, map: HostMap = .{} };
 var maps_gate: Mutex = .{};
-var maps: [16]MapSlot = .{.{}} ** 16;
+var maps: [16]MapSlot = @splat(MapSlot{});
 fn knownMap(reference: Map) !*HostMap {
     if (reference.slot >= maps.len) return error.NativeStdioMapStale;
     const slot = &maps[reference.slot];

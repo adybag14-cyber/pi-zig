@@ -15,12 +15,12 @@ const Phase = enum { free, reserved, attached, retiring, reaping, retired };
 const Client = struct {
     generation: u64 = 0, revision: u64 = 0, phase: Phase = .free,
     wake_ref: ?wake.Ref = null, process: ?w.HANDLE = null,
-    snapshot: Snapshot = .{}, tags: [4]Tag = .{.{}} ** 4,
+    snapshot: Snapshot = .{}, tags: [4]Tag = @splat(Tag{}),
     armed: [4]bool = .{ false, false, false, false }, deadline_armed: bool = false,
     ready: u16 = 0, failure: ?anyerror = null, detached: bool = false,
 };
 const Registry = struct {
-    gate: w.SRWLOCK = .{}, clients: [16]Client = .{.{}} ** 16,
+    gate: w.SRWLOCK = .{}, clients: [16]Client = @splat(Client{}),
     controls: [2]?w.HANDLE = .{ null, null }, phase: enum { cold, ready, failed } = .cold,
     arm_epoch: u64 = 0,
 };
