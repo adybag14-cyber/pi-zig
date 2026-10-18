@@ -1,0 +1,27 @@
+{
+  "schema": 1,
+  "status": "FINITE_BYTE_SCOPE_SOURCE_INTAKE_CLOSED",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T01:00:21.1689986+00:00",
+  "base": "606c5f1297ec059461b0b02d9a2522599404a85e",
+  "donor": "3b9d01e9c631491f068c3c63b54cdc87b6bded1f",
+  "tree": "6fbc3a1a2852b5da34e6b13ff88554c93e2e9722",
+  "manifest_sha256": "ACD267D336E87E9E5B400F94DA5DD27E50D1A5DEE3E85A4019301D7A983B8965",
+  "patch_sha256": "82DB5BD4DF677D1696265F183B04119122277A6283CC77E4778F3580DE0FDE73",
+  "prior_product_source_review_sha256": "72FF43DB3EC2D55BC7E2C6F5B1A343D336583CDDED774268EC83BD5229A90881",
+  "review": [
+    "Read-onlyGit usingpacketprivateobjectstore+explicitsharedalternates;noindex/apply used",
+    "All16selectedrawGitSHA256/lengths/OIDs checked;14donorproduct/control/provenancepayloadsexact3b9;copied72FFreceipt exact",
+    "All12231unselectedRootmode/OIDtreeentries unchanged",
+    "Build12lines are same donor snippet after ONLY4spacehostfunctionindent+RootLF presentation;removal restoresWHOLEexact606cbuild",
+    "Install-only/defaultcachedtest.exe/QJS+SQLite+TypeScriptParser+catalog+Windowslibs;noRun/defaultedge",
+    "No oldEngine/AF/C435/sharedScope/vendor/5abcontrol overwrite;priorSource72FFfinite scope unchanged"
+  ],
+  "notes": [
+    "Initial literal unindented snippet reversal comparison refused;after inspecting complete build diff,explicit4space/LF presentation check passed;no Source/proof edits",
+    "Two inherited donor whitespace warnings retained,not normalized",
+    "No actualmetadata/intake/runtime/fullgenuineowner qualification or execution inferred"
+  ],
+  "intake_authorized": false,
+  "agent_jobs": 0
+}

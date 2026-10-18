@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "source_revision": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "historical_revision": "8efd314fa3d3232ce197d8d7a6a5660530b9d83e",
+  "four_method_body_text_equal": true,
+  "primary": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "bytes": 162151
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\snapshots\\8efd314f-20261016\\packages\\coding-agent\\src\\core\\agent-session.ts",
+      "sha256": "E0FA206E8C49A98C024708068DF39C0E4944F4251633425FC083B2FBB5EC0AC6",
+      "bytes": 162151
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\packages\\coding-agent\\src\\core\\source-info.ts",
+      "sha256": "52648AF6E9BB29858ECE4EAECCEDD960C5DE8A0AC4EC25C0EE851FF00DE27F5C",
+      "bytes": 1571
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\upstream\\pi-c268154c-source-candidate-20261017\\LICENSE",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    }
+  ],
+  "excerpt_is_inert_review_data": true,
+  "reference_capture_executed": false,
+  "expected_created": false,
+  "Source_runtime_closure": "Root must separately qualify exact Source transpilation/module graph before observer import. Accepted original19cb runtime alone does not establish a c268 build."
+}

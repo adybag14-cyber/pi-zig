@@ -1,0 +1,3 @@
+src/extensions/fixtures/sdk-session-bindings-af.input.txt:70: trailing whitespace.
++}
+verification/sdk-session-bindings-af/original-agent-session-methods.ts.txt:78: new blank line at EOF.

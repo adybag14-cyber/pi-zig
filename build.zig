@@ -3554,6 +3554,18 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_ignore708_tests.root_module.linkSystemLibrary("advapi32", .{}); sdk_ignore708_tests.root_module.linkSystemLibrary("userenv", .{}); }
     const sdk_ignore708_install = b.addInstallArtifact(sdk_ignore708_tests, .{ .dest_sub_path = b.fmt("native-sdk-ignore708{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) });
     b.step("build-native-sdk-ignore708", "Install genuine private ignore708 controls without execution").dependOn(&sdk_ignore708_install.step);
+    // INSTALL ONLY; no run/default activation edge. Actual metadata remains unknown.
+    const session_bindings_af=b.addTest(.{
+        .root_module=b.createModule(.{.root_source_file=b.path("src/native_sdk_session_bindings_af_test.zig"),.target=target,.optimize=optimize}),
+        .use_llvm=use_llvm,
+    });
+    linkQuickJs(b,session_bindings_af.root_module,quickjs,sqlite_lib_dir);
+    linkSqlite(session_bindings_af.root_module,sqlite_lib_dir,sqlite_library);
+    linkTypeScriptParser(b,session_bindings_af.root_module,typescript_parser);
+    session_bindings_af.root_module.addImport("catalog_tool",catalog_tool);
+    if(target.result.os.tag==.windows){session_bindings_af.root_module.linkSystemLibrary("advapi32",.{});session_bindings_af.root_module.linkSystemLibrary("userenv",.{});}
+    const session_bindings_af_install=b.addInstallArtifact(session_bindings_af,.{});
+    b.step("build-native-sdk-session-bindings-af","Compile actual session binding AF causal controls").dependOn(&session_bindings_af_install.step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

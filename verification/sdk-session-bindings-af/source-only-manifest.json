@@ -1,0 +1,162 @@
+{
+  "schema": 2,
+  "status": "source_only_retirement_successor_peer_pending",
+  "base": "d093c62bd03e0a43f5817a3b9feaa7b39b98e69d",
+  "preserved_negative": "4f0ec9e459a13a01c53cf4282d8b06c09a6a2893",
+  "findings_receipt": "C:/Users/adyba/pi-zig/evidence/sdk-session-bindings-4f0-independent-body-findings-20261018.json",
+  "findings_sha256": "AA0AE352AE441399302F72EF20284C6730F0F11C6CB9BEB92F42C5380B098D5A",
+  "members": [
+    {
+      "path": "src/extensions/native_sdk_session_bindings.zig",
+      "sha256": "CE7F331F46814205DF48BB13EBA069959CEB622D6602BDA7C3DDAB07AEF050B5",
+      "bytes": 15340
+    },
+    {
+      "path": "src/extensions/native_sdk_session_bindings_values.zig",
+      "sha256": "4ACBDFA3772E29DE0FB9D42A1BF32C30661BEAFBB5E1E19EFB100E85534E51A0",
+      "bytes": 4617
+    },
+    {
+      "path": "src/native_sdk_session_bindings_af_test.zig",
+      "sha256": "919382E51FA79223DC89890C0AC559744386900DE703580601106FC4DBDBD18B",
+      "bytes": 5175
+    },
+    {
+      "path": "src/native_sdk_session_bindings_actual_controls.zig",
+      "sha256": "61F38A1CD364A839FD05CEDAE2960396612C7C2F05B6132EDC4B25E074ACD653",
+      "bytes": 2053
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-af.input.txt",
+      "sha256": "5331E550B60A4C62CE209FE316876205E5583AEDCEEEB1AF1A77DF148F3511A5",
+      "bytes": 6335
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/original-callers.mjs",
+      "sha256": "5331E550B60A4C62CE209FE316876205E5583AEDCEEEB1AF1A77DF148F3511A5",
+      "bytes": 6335
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/capture-primary.mjs",
+      "sha256": "3BE431886A08EE2FFE3384E4FF400B8F86DC4ECA9D3162DABCAA519ED43E7DD3",
+      "bytes": 963
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/build-snippet.zig.txt",
+      "sha256": "A249B1AED91F5318DA13DFA7F0CB8517CC03B023FCA8B1B1B6273A34FD188248",
+      "bytes": 979
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/README.md",
+      "sha256": "5DC6A7CA21127740602BBC99D71F5E37D3557D725F6FA604834BC359328E5813",
+      "bytes": 5184
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/primary-provenance.json",
+      "sha256": "5CB19CE1596D1B32F8B0DF26E2C86C605CBB9B7847098BB8106DC66F82CE76AF",
+      "bytes": 1536
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/LICENSE.txt",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/original-agent-session-methods.ts.txt",
+      "sha256": "86BE0A9A24A548A4ACB3D4FEFFE53236F20413CB28F9186612E9312622DE1C13",
+      "bytes": 2608
+    },
+    {
+      "path": "src/native_sdk_session_bindings_retirement_test.zig",
+      "sha256": "8E909E1254B2523F487F20E77288DD80A4CE51895CBC01CD4DA88680496A1771",
+      "bytes": 9559
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "git_blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "git_blob": "8f00e796a280f9a0e329f9a2784e1550f5b0c7e5",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "git_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-5ab.input.txt",
+      "sha256": "C74B0219828799E5F2D296A3823F16AEBB5D6A45BEA53AD8669D36F0A38C8251",
+      "git_blob": "ea90803fe750d181cec1ddcd6d708ee864d22df0",
+      "unchanged": true
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-5ab.json",
+      "sha256": "B57B284B9B7FAB6E5E4D04C20EF7898F3D281DC0BFFB1C15D4A654C8FE2EA45A",
+      "git_blob": "ac70598559f1439210dd12423637fb67e1247dda",
+      "unchanged": true
+    },
+    {
+      "path": "src/native_sdk_session_bindings_test.zig",
+      "sha256": "E52AB88C7AC7588E61152095AD0153E4DD180E7AD3FE8BE7B498957F36A83E1E",
+      "git_blob": "615f33f762ef1ba2c885dad115567281aa28eafd",
+      "unchanged": true
+    },
+    {
+      "path": "build.zig",
+      "sha256": "0F617A215DCD240E7A62B4BEDD6FD613533ECEFC505BCCA1CD8022B551CAD539",
+      "git_blob": "dae7188d2b1a04e7350c53e4daf2bb5ee2c5248e",
+      "unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "git_blob": "c9b544cb3f5616368648a87cf87fb04193883513",
+      "unchanged": true
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "git_blob": "a1b689283c422bd258a6a4c8876e689a3b892805",
+      "unchanged": true
+    }
+  ],
+  "planned_native_names": [
+    "native session bindings use two genuine AF and ordinary resource methods",
+    "native session bindings borrowed receivers preserve live order actual Awaits and raw rejections",
+    "native session bindings both Await rejection routes retain flagged private DATA",
+    "native session binding expression sole holder retires before next Source getter without Await",
+    "native actual session binding control entry rejects active event before factory getter"
+  ],
+  "actual_metadata": null,
+  "shared_caller_unchanged": true,
+  "reference_expected_absent": true,
+  "executions": 0,
+  "parser_fmt_AST_jobs": 0,
+  "Main_written": false
+}

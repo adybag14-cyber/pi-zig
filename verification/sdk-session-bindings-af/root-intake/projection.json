@@ -1,0 +1,118 @@
+{
+  "scope": "Source-only genuine session binding AF migration",
+  "root_base": "df18a3c9266d6464c47169e6f7739b2a78f64caf",
+  "reviewed_projection_base": "606c5f1297ec059461b0b02d9a2522599404a85e",
+  "donor": "3b9d01e9c631491f068c3c63b54cdc87b6bded1f",
+  "payload": [
+    {
+      "path": "src/extensions/native_sdk_session_bindings.zig",
+      "sha256": "CE7F331F46814205DF48BB13EBA069959CEB622D6602BDA7C3DDAB07AEF050B5",
+      "bytes": 15340,
+      "git_blob": "a586c614809908c4422cec8fec1ffaebcabd43f4",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_bindings_values.zig",
+      "sha256": "4ACBDFA3772E29DE0FB9D42A1BF32C30661BEAFBB5E1E19EFB100E85534E51A0",
+      "bytes": 4617,
+      "git_blob": "bf2ed0f3db935e78fc63d9ecb662b2f820a7bc7d",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "src/native_sdk_session_bindings_af_test.zig",
+      "sha256": "919382E51FA79223DC89890C0AC559744386900DE703580601106FC4DBDBD18B",
+      "bytes": 5175,
+      "git_blob": "a3cc26bc8474b5b6869e5952e357d85040d384bc",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "src/native_sdk_session_bindings_actual_controls.zig",
+      "sha256": "61F38A1CD364A839FD05CEDAE2960396612C7C2F05B6132EDC4B25E074ACD653",
+      "bytes": 2053,
+      "git_blob": "7259b4d33850664b0be4133e2ecfdaaf40374e24",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-af.input.txt",
+      "sha256": "5331E550B60A4C62CE209FE316876205E5583AEDCEEEB1AF1A77DF148F3511A5",
+      "bytes": 6335,
+      "git_blob": "9b01befa629370e0f3a0c27bd25d041da983c618",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/original-callers.mjs",
+      "sha256": "5331E550B60A4C62CE209FE316876205E5583AEDCEEEB1AF1A77DF148F3511A5",
+      "bytes": 6335,
+      "git_blob": "9b01befa629370e0f3a0c27bd25d041da983c618",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/capture-primary.mjs",
+      "sha256": "3BE431886A08EE2FFE3384E4FF400B8F86DC4ECA9D3162DABCAA519ED43E7DD3",
+      "bytes": 963,
+      "git_blob": "81889061061438024aede7febadcaaf82aa4f4bb",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/build-snippet.zig.txt",
+      "sha256": "A249B1AED91F5318DA13DFA7F0CB8517CC03B023FCA8B1B1B6273A34FD188248",
+      "bytes": 979,
+      "git_blob": "2cbdb8fada91c2fdc8c084d4c4a9adcbe62d89c6",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/README.md",
+      "sha256": "5DC6A7CA21127740602BBC99D71F5E37D3557D725F6FA604834BC359328E5813",
+      "bytes": 5184,
+      "git_blob": "8b94bf771589f028023f120d3628a572ac3d2f7a",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/primary-provenance.json",
+      "sha256": "5CB19CE1596D1B32F8B0DF26E2C86C605CBB9B7847098BB8106DC66F82CE76AF",
+      "bytes": 1536,
+      "git_blob": "d3c54630109e4ad76bc5bf29afd4bd41fce20806",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/LICENSE.txt",
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "bytes": 1069,
+      "git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/original-agent-session-methods.ts.txt",
+      "sha256": "86BE0A9A24A548A4ACB3D4FEFFE53236F20413CB28F9186612E9312622DE1C13",
+      "bytes": 2608,
+      "git_blob": "68a4ea675e24e33851b9599e81a21a44be2db53b",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "src/native_sdk_session_bindings_retirement_test.zig",
+      "sha256": "8E909E1254B2523F487F20E77288DD80A4CE51895CBC01CD4DA88680496A1771",
+      "bytes": 9559,
+      "git_blob": "82a425db87226f9e64d87e2ef64d71ff27b00818",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/source-only-manifest.json",
+      "sha256": "962B6DC4022E1AD065C51E1479B961D1D0667A11EDD81A7B22491B3C74C99CE1",
+      "bytes": 6583,
+      "git_blob": "87730c614333bab5ab8718fb36c8bf3dd2035773",
+      "role": "exact raw donor-owned product/control/provenance"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/independent-body-source-review.json",
+      "sha256": "72FF43DB3EC2D55BC7E2C6F5B1A343D336583CDDED774268EC83BD5229A90881",
+      "bytes": 2496,
+      "git_blob": "5ac9d6b080e3a6f1a7625bdf591b85c04e16964d",
+      "role": "exact independent Source72FF receipt"
+    }
+  ],
+  "build_additions": 12,
+  "all_prior_SDK_owner_changes_preserved": true,
+  "inherited_guest_guard_provenance_qualification": "Pending canonical shared guest-guard correction and actual causal validation",
+  "native_or_Node_executed": false,
+  "runtime_qualified": false
+}
