@@ -96,7 +96,7 @@ fn makeOrderHolderBody(o: *x.Ops, slot_value: c.JSValue, record: c.JSValue) !c.J
     var boundary: x.guest.Boundary = .{ .engine = engine };
     try boundary.begin();
     try boundary.finishStatus(c.JS_ToUint32(engine.context, &slot, slot_value));
-    if (slot > 1) return o.typeError("OpenRouter order holder slot out of range");
+    if (slot > 1) return error.OpenRouterOrderHolderSlotOutOfRange;
     const generation = try o.beforeAllocation();
     const value = try o.allocation(c.JS_NewObjectClass(engine.context, probe.holder_class), generation);
     const holder = try engine.gpa.create(OrderHolder);

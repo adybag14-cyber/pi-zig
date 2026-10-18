@@ -66,3 +66,12 @@ the temporary params/callee lifetime and the single PKCE BindingPattern ToObject
 All earlier 16 controls remain unchanged; the added order probe records the
 actual C retirement sequence. These are authored controls, with no execution
 or public-login acceptance claimed by this document.
+
+The fresh V6 build/query on 39119d74 reached this root after compiling print,
+child and RPC. It stopped at the private order-probe out-of-range guard, which
+called a nonexistent Ops.typeError method. The guard now returns the typed host
+error OpenRouterOrderHolderSlotOutOfRange. Its two supported slots and all 17
+control declarations are unchanged. Corrected support SHA-256:
+197BB4317DF9E8DB9EB134EA148A306D509BD48C4C659054E1B7BB719631B73E.
+The failed attempt and its independent process closure remain preserved; no
+runtime acceptance is transferred from this compiler correction.
