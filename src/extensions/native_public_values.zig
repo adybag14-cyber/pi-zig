@@ -60,6 +60,11 @@ pub fn object(s: *Scope) !c.JSValue {
     const generation = s.engine.native_allocation_generation;
     return allocation(s, &boundary, c.JS_NewObject(s.engine.context), generation);
 }
+pub fn objectClass(s: *Scope, class_id: c.JSClassID) !c.JSValue {
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+    const generation = s.engine.native_allocation_generation;
+    return allocation(s, &boundary, c.JS_NewObjectClass(s.engine.context, class_id), generation);
+}
 pub fn stateObject(s: *Scope) !c.JSValue {
     var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
     const generation = s.engine.native_allocation_generation;
