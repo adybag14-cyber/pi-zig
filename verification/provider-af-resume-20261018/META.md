@@ -6,6 +6,17 @@ The native VM owns the actual nested async functions, Await reactions and return
 
 The error-detail loop uses the live Array iterator and actual property keys, keeps the previous head through next/done/value, and keeps uncaptured loop bindings until function exit. Normal early return performs IteratorClose with result-object validation, while abrupt close preserves ordinary DATA and current native fatal events. Request constructors, temporary arguments, URL constructors, Date receivers and callees retire at the corresponding Source expression boundaries.
 
-The install-only target `build-native-ai-oauth-meta-genuine-af` contains 13 authored controls. It compares 26 login/device routes and 13 mint routes against the actual preserved Source module in the same linked C VM, plus ordinary/async declarations, immediate completion, failure identity and causal C-holder lifetime checks. The only Source fixture transformation replaces the exact DeviceCode import with a test dependency binding; that dependency is itself the real Source DeviceCode module. HTTP responses and timer delivery are explicitly controlled inputs, not live provider authentication evidence.
+The install-only target `build-native-ai-oauth-meta-genuine-af` contains 16 authored controls. It compares 26 login/device routes and 13 mint routes against the actual preserved Source module in the same linked C VM, plus ordinary/async declarations, immediate completion, failure identity and causal C-holder lifetime checks. The only Source fixture transformation replaces the exact DeviceCode import with a test dependency binding; that dependency is itself the real Source DeviceCode module. HTTP responses and timer delivery are explicitly controlled inputs, not live provider authentication evidence.
 
 The production source passed a finite peer review with no concrete blocker. The authored controls still require compilation, actual metadata discovery, independent audit and bounded execution. This source unit does not establish whole-application or release qualification.
+
+The retained first 15 controls include the completed fetch argument and finite
+predicate retirement cases. The sixteenth compares actual Source/native cached
+next retirement during normal IteratorClose: the next method owns a C holder,
+and the return getter must observe its finalizer before close proceeds. The
+normal close helper clears and retires next_function before looking up return,
+matching OP_iterator_close; final iterator cleanup cannot release it twice.
+This narrow successor completed a finite VM source/control peer on production
+41967A3A978A113F361BE41AAA415D1F53F6B9F29A74DF0D1B74C33B5018EF2B
+and root4C6B2629D2D96690D2B65C00340B993932AB7B76532399C4AE348DE169A59EA2.
+The shared abrupt-close owner is a separate pending correction.
