@@ -1834,6 +1834,19 @@ pub fn build(b: *std.Build) void {
         public_rpc_jsonl_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-rpc-jsonl", "Install actual c268 RPC JSONL framing controls without execution").dependOn(&b.addInstallArtifact(public_rpc_jsonl_tests, .{}).step);
+    const vm_async_retirement_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_frame_retirement_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM async retirement"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, vm_async_retirement_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, vm_async_retirement_tests.root_module, typescript_parser);
+    linkSqlite(vm_async_retirement_tests.root_module, sqlite_lib_dir, sqlite_library);
+    vm_async_retirement_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        vm_async_retirement_tests.root_module.linkSystemLibrary("advapi32", .{});
+        vm_async_retirement_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-vm-async-retirement", "Install actual suspended async frame retirement controls without execution").dependOn(&b.addInstallArtifact(vm_async_retirement_tests, .{}).step);
     const vm_array_append_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_array_append_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"VM array append"}, .use_llvm = use_llvm,

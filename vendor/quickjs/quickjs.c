@@ -22536,16 +22536,19 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
     if (s->is_active) {
         if (s->native_body) {
             int i;
-            JS_FreeValueRT(rt, s->native_state);
-            JS_FreeValueRT(rt, s->native_this);
+            /* Match async_func_free: arguments, local state, function
+               (including its captures), then the effective this value. */
             for (i = 0; i < s->native_argc; i++)
                 JS_FreeValueRT(rt, s->native_argv[i]);
             js_free_rt(rt, s->native_argv);
-            s->native_state = s->native_this = JS_UNDEFINED;
             s->native_argv = NULL;
             s->native_argc = 0;
+            JS_FreeValueRT(rt, s->native_state);
+            s->native_state = JS_UNDEFINED;
             JS_FreeValueRT(rt, s->native_function);
             s->native_function = JS_UNDEFINED;
+            JS_FreeValueRT(rt, s->native_this);
+            s->native_this = JS_UNDEFINED;
         } else {
             async_func_free(rt, &s->func_state);
         }
@@ -22693,12 +22696,14 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
     s->native_state = s->native_this = s->native_function = JS_UNDEFINED;
     s->native_argv = NULL; s->native_argc = 0;
     s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
-    js_native_async_release(ctx, state, owned);
-    js_native_async_release(ctx, receiver, owned);
+    /* The suspended bytecode frame retires its argument slots before its
+       local slots, then cur_func/captures, then receiver/this_val. */
     for (i = 0; i < count; i++)
         js_native_async_release(ctx, args[i], owned);
     js_free(ctx, args);
+    js_native_async_release(ctx, state, owned);
     js_native_async_release(ctx, function, owned);
+    js_native_async_release(ctx, receiver, owned);
     for (i = 0; i < 2; i++)
         js_native_async_release(ctx, resolves[i], owned);
 }
