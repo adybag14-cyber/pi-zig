@@ -11,3 +11,33 @@ The resumed helper operations use the canonical SDK guest boundary for each gett
 Install-only targets are build-native-ai-auth-helper-genuine-af and build-native-ai-anthropic-auth-genuine-af. Neither target has a run or metadata-query dependency. No build, metadata query or runtime execution has occurred in this worktree. The shared Root controller must bind any result to its exact integrated source/compiler inputs.
 
 The paused adapter and dispatcher patches in this directory retain their prior source bytes. Their presence is preservation evidence, not a passing behavior receipt.
+
+## Actual RemoteCatalog source and controls
+
+The RemoteCatalog wrapper now creates genuine native async refresh arrows and a
+genuine async readCatalog function. The operation sequence follows the preserved
+c268 source: restore and Await publication, network/freshness gates, actual
+management retry request, status-specific persistence, JSON Await, typed catalog
+filtering, and personalized replacement. Ordinary getter/call failures and
+explicit thrown values use the canonical SDK guest-operation/owned-completion
+contracts; native allocation generations are inspected only around direct
+non-guest VM allocation.
+
+The local catalog helpers preserve Source descriptor/get interleaving, iteration
+and close precedence, and condition/method temporary retirement before later
+guest callbacks. The paused catalog helper bytes remain archived unchanged
+alongside the c268 source copy.
+
+Eight authored executable controls exercise real model helpers, the real
+management HTTP module, actual filesystem/platform namespaces, and the actual
+native package configuration. The configuration reads the real contained
+upstream package metadata, with an explicit native Zig user-agent profile.
+Controlled guest fetch functions are inputs to the genuine retry helper. They
+do not establish network transport qualification.
+
+The install-only target is build-native-sdk-remote-catalog-genuine-af, rooted at
+src/native_sdk_remote_catalog_genuine_af_test.zig and filtered to SDK RemoteCatalog.
+The ordered declared names are recorded in remote-catalog-controls.json.
+There has been no build, metadata query, native test run, or Node Source capture
+for this unit. The controls and Source observer are authored inputs, not observed
+passes. Full public coding-agent namespace selection remains separate work.

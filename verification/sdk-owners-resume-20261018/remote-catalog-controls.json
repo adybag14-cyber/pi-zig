@@ -1,0 +1,28 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-remote-catalog-genuine-af",
+  "root": "src/native_sdk_remote_catalog_genuine_af_test.zig",
+  "filters": [
+    "SDK RemoteCatalog"
+  ],
+  "authored_declared_test_names": [
+    "SDK RemoteCatalog actual AF metadata and genuine imported owners",
+    "SDK RemoteCatalog actual restore publication Await offline and freshness gates",
+    "SDK RemoteCatalog actual request retry parse status and post-publication error order",
+    "SDK RemoteCatalog actual personalized replacement empty fallback and abort gates",
+    "SDK RemoteCatalog actual independent async continuations and thenable rejection identity",
+    "SDK RemoteCatalog actual spread and live iterator close precedence",
+    "SDK RemoteCatalog SAME publish callback DATA A remains ordinary and actual B1 wins",
+    "SDK RemoteCatalog prior job condition and method temporaries retire before downstream getters"
+  ],
+  "source_authority": "c268154c packages/coding-agent/src/core/remote-catalog-provider.ts",
+  "source_authority_copy": "verification/sdk-owners-resume-20261018/remote-catalog-provider.c268.ts.txt",
+  "native_configuration_module_url": "file:///C:/Users/adyba/pi-zig/upstream/pi/packages/coding-agent/src/config.ts",
+  "native_configuration_package_json_sha256": "83C3BB7619F590C213CC96A24216EB29A819A3EF6DC548607CC037ED276E8DC5",
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "transport_qualification": false,
+  "whole_public_namespace_qualification": false
+}

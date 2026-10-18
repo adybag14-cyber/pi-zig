@@ -1,0 +1,42 @@
+//! Source object spread with interleaved own-descriptor/get order. Private
+//! descriptor roots retire before the next Source getter, under C435 escrow.
+const x = @import("native_sdk_catalog_values.zig");
+const c = x.c;
+pub fn into(o: *x.Ops, target: c.JSValue, source: c.JSValue) !void {
+    if (x.nullish(source)) return;
+    var s: x.Scope = .{ .engine = o.s.engine }; var local: x.Ops = .{ .s = &s };
+    return x.owned.finishVoid(&s, body(&local, target, source));
+}
+fn body(o: *x.Ops, target: c.JSValue, source: c.JSValue) !void {
+    const e = o.s.engine;
+    const boxed = try o.allocation(c.JS_ToObject(e.context, source));
+    var names: [*c]c.JSPropertyEnum = null; var count: u32 = 0;
+    const status = c.JS_GetOwnPropertyNames(e.context, &names, &count, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK);
+    defer if (names != null) c.JS_FreePropertyEnum(e.context, names, count);
+    try o.status(status);
+    for (names[0..count]) |entry| {
+        if (!try enumerable(o, boxed, entry.atom)) continue;
+        var s: x.Scope = .{ .engine = e }; var local: x.Ops = .{ .s = &s };
+        try x.owned.finishVoid(&s, property(&local, target, boxed, entry.atom));
+    }
+}
+fn enumerable(o: *x.Ops, source: c.JSValue, atom: c.JSAtom) !bool {
+    const e = o.s.engine; try e.checkNativeEntry();
+    var descriptor: c.JSPropertyDescriptor = undefined;
+    const raw = c.JS_GetOwnProperty(e.context, &descriptor, source, atom);
+    _ = e.nativeCallbackResult(c.pi_js_undefined());
+    const outcome: anyerror!c.JSValue = if (c.JS_HasException(e.context)) error.JavaScriptException else if (raw < 0) error.CatalogDescriptorStatusWithoutReason else c.pi_js_bool(e.context, @intFromBool(raw != 0 and descriptor.flags & c.JS_PROP_ENUMERABLE != 0));
+    var completion = x.owned.Completion.initValue(e, outcome);
+    if (raw > 0) { completion.release(descriptor.value); completion.release(descriptor.getter); completion.release(descriptor.setter); }
+    return o.truthy(try completion.finishValue());
+}
+fn property(o: *x.Ops, target: c.JSValue, source: c.JSValue, atom: c.JSAtom) !void {
+    const e = o.s.engine; try e.checkNativeEntry();
+    const value = try o.accept(c.JS_GetProperty(e.context, source, atom));
+    if (c.JS_DefinePropertyValue(e.context, target, atom, c.JS_DupValue(e.context, value), c.JS_PROP_C_W_E) < 0) {
+        // Newly allocated native literal target: direct CreateDataProperty.
+        _ = try o.allocation(c.JS_Throw(e.context, c.JS_GetException(e.context))); unreachable;
+    }
+    try e.checkNativeEntry();
+}
+pub fn object(o: *x.Ops, source: c.JSValue) !c.JSValue { const value = try o.object(); try into(o, value, source); return value; }
