@@ -1,77 +1,155 @@
-//! Source provider environment lookup, including its private Bun fallback cache.
-const em = @import("engine.zig");
-const js = @import("native_js_values.zig");
-const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const arithmetic = @import("native_image_arithmetic.zig");
-const c = em.c;
-extern fn JS_GetIteratorSymbol(?*c.JSContext) c.JSValue;
-pub fn create(engine: *em.Engine) !c.JSValue {
-    if (engine.native_provider_env_lookup) |function| return c.JS_DupValue(engine.context, function);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const cache = try scope.object();
-    try scope.put(cache, "value", c.pi_js_null());
-    const function = try @import("native_node_function.zig").create(engine, "getProviderEnvValue", 2, lookup, &.{cache});
-    engine.native_provider_env_lookup = c.JS_DupValue(engine.context, function);
-    return function;
+//! c268 provider-env.ts: ordinary lookup, live bindings and actual empty catch.
+const x = @import("native_ai_auth_helper_values.zig");
+const p = @import("native_public_values.zig");
+const c = x.c;
+fn expression(engine: *x.em.Engine, comptime body: anytype, args: anytype) !c.JSValue {
+    var scope: x.Scope = .{ .engine = engine };
+    var o: x.Ops = .{ .s = &scope };
+    return x.owned.finishValue(&scope, @call(.auto, body, .{&o} ++ args));
 }
-fn keyed(scope: *Scope, value: c.JSValue, name: c.JSValue) !c.JSValue {
-    return scope.own(try js.getKey(scope.engine, value, name));
+fn statement(engine: *x.em.Engine, comptime body: anytype, args: anytype) !void {
+    var scope: x.Scope = .{ .engine = engine };
+    var o: x.Ops = .{ .s = &scope };
+    return x.owned.finishVoid(&scope, @call(.auto, body, .{&o} ++ args));
 }
-fn lookup(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const name = if (args.len > 0) args[0] else c.pi_js_undefined();
-    const env = if (args.len > 1) args[1] else c.pi_js_undefined();
-    if (!temp.nullish(env)) {
-        const scoped = try keyed(&scope, env, name);
-        if (scope.truthy(scoped)) return c.JS_DupValue(engine.context, scoped);
+fn value(o: *x.Ops, comptime body: anytype, args: anytype) !c.JSValue { return o.own(try expression(o.s.engine, body, args)); }
+fn truth(o: *x.Ops, comptime body: anytype, args: anytype) !bool { return o.truthy(try value(o, body, args)); }
+fn duplicate(o: *x.Ops, input: c.JSValue) c.JSValue { return c.JS_DupValue(o.s.engine.context, input); }
+fn integer(o: *x.Ops, input: i32) c.JSValue { return c.JS_NewInt32(o.s.engine.context, input); }
+fn boolean(o: *x.Ops, input: bool) c.JSValue { return c.pi_js_bool(o.s.engine.context, @intFromBool(input)); }
+
+pub fn create(engine: *x.em.Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_provider_env_lookup) |cached| return c.JS_DupValue(engine.context, cached);
+    var frame: x.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&frame);
+    const result = try x.finishInvocation(engine, &frame, expression(engine, createBody, .{}));
+    // Publication occurs after all factory temporaries and the invocation
+    // retire. A reentrant completed factory owns the first published value.
+    if (engine.native_provider_env_lookup) |cached| {
+        var completion = x.owned.Completion.initValue(engine, c.JS_DupValue(engine.context, cached));
+        completion.release(result);
+        return completion.finishValue();
     }
-    const process = try scope.global("process");
-    if (!c.JS_IsUndefined(process)) {
-        const value = try keyed(&scope, try scope.get(process, "env"), name);
-        if (scope.truthy(value)) return c.JS_DupValue(engine.context, value);
-    }
-    const value = try fallback(&scope, process, roots[0], name);
-    return if (scope.truthy(value)) c.JS_DupValue(engine.context, value) else c.pi_js_undefined();
+    engine.native_provider_env_lookup = c.JS_DupValue(engine.context, result);
+    return result;
 }
-fn fallback(scope: *Scope, process: c.JSValue, cache: c.JSValue, name: c.JSValue) !c.JSValue {
-    if (c.JS_IsUndefined(process)) return c.pi_js_undefined();
-    const versions = try scope.get(process, "versions");
-    if (temp.nullish(versions) or !scope.truthy(try scope.get(versions, "bun"))) return c.pi_js_undefined();
-    const keys = try scope.invoke(try scope.global("Object"), "keys", &.{try scope.get(process, "env")});
-    if (try arithmetic.compare(scope.engine, .greater, try scope.get(keys, "length"), c.JS_NewInt32(scope.engine.context, 0))) return c.pi_js_undefined();
-    var map = try scope.get(cache, "value");
-    if (c.JS_IsNull(map)) {
-        map = try scope.own(try js.builtin(scope.engine, "Map", &.{}));
-        try scope.set(cache, "value", map);
-        const generation = scope.engine.native_allocation_generation;
-        populate(scope, map) catch |err| {
-            const failure = scope.engine.nativeAllocationError(err, generation);
-            if (failure == error.OutOfMemory) return failure;
-            if (failure != error.JavaScriptException) return failure;
-            if (scope.engine.captured_exception) |exception| scope.engine.freeValue(exception);
-            scope.engine.captured_exception = null;
-        };
-    }
-    return scope.invoke(map, "get", &.{name});
+fn createBody(o: *x.Ops) !c.JSValue {
+    const cache = try o.cell();
+    try o.put(cache, "value", c.pi_js_null());
+    return @import("native_node_function.zig").create(o.s.engine, "getProviderEnvValue", 2, lookup, &.{cache});
 }
-fn populate(scope: *Scope, map: c.JSValue) !void {
-    const fs = try scope.call(try scope.global("require"), c.pi_js_undefined(), &.{try scope.text("node:fs")});
-    const data = try scope.call(try scope.get(fs, "readFileSync"), c.pi_js_undefined(), &.{ try scope.text("/proc/self/environ"), try scope.text("utf-8") });
-    const entries = try scope.invoke(data, "split", &.{try scope.text("\x00")});
-    const symbol = try scope.own(try scope.engine.checked(JS_GetIteratorSymbol(scope.engine.context)));
-    var iterator = try js.Iterator.init(scope.engine, entries, symbol);
-    defer iterator.deinit();
-    errdefer iterator.closePreserving();
-    while (try iterator.next()) |entry| {
-        defer scope.engine.freeValue(entry);
-        const index = try scope.invoke(entry, "indexOf", &.{try scope.text("=")});
-        if (try arithmetic.compare(scope.engine, .greater, index, c.JS_NewInt32(scope.engine.context, 0))) {
-            const key = try scope.invoke(entry, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), index });
-            const start = try scope.own(try arithmetic.binary(scope.engine, .add, index, c.JS_NewInt32(scope.engine.context, 1)));
-            _ = try scope.invoke(map, "set", &.{ key, try scope.invoke(entry, "slice", &.{start}) });
+fn lookup(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return expression(engine, lookupBody, .{x.arg(args, 0), x.arg(args, 1), roots[0]});
+}
+fn scoped(o: *x.Ops, env: c.JSValue, name: c.JSValue) !c.JSValue {
+    return if (x.nullish(env)) c.pi_js_undefined() else duplicate(o, try o.getKey(env, name));
+}
+fn processMissing(o: *x.Ops) !c.JSValue { return boolean(o, c.JS_IsUndefined(try o.global("process"))); }
+fn processValue(o: *x.Ops, name: c.JSValue) !c.JSValue {
+    // The Source's typeof test and its property read resolve process separately.
+    return if (try truth(o, processMissing, .{})) c.pi_js_undefined()
+    else duplicate(o, try o.getKey(try value(o, processEnv, .{}), name));
+}
+fn processEnv(o: *x.Ops) !c.JSValue { return duplicate(o, try o.get(try o.global("process"), "env")); }
+fn processVersions(o: *x.Ops) !c.JSValue { return duplicate(o, try o.get(try o.global("process"), "versions")); }
+fn lookupBody(o: *x.Ops, name: c.JSValue, env: c.JSValue, cache: c.JSValue) !c.JSValue {
+    const override = try value(o, scoped, .{env, name});
+    if (o.truthy(override)) return duplicate(o, override);
+    const normal = try value(o, processValue, .{name});
+    if (o.truthy(normal)) return duplicate(o, normal);
+    const recovered = try value(o, fallback, .{cache, name});
+    return if (o.truthy(recovered)) duplicate(o, recovered) else c.pi_js_undefined();
+}
+fn processBun(o: *x.Ops) !c.JSValue {
+    const versions = try value(o, processVersions, .{});
+    return boolean(o, if (x.nullish(versions)) false else o.truthy(try o.get(versions, "bun")));
+}
+fn normalKeyNames(o: *x.Ops) !c.JSValue {
+    const object = try o.global("Object");
+    const keys = try o.get(object, "keys");
+    const env = try value(o, processEnv, .{});
+    return duplicate(o, try o.call(keys, object, &.{env}));
+}
+fn normalKeyCount(o: *x.Ops) !c.JSValue {
+    const names = try value(o, normalKeyNames, .{});
+    return duplicate(o, try o.get(names, "length"));
+}
+fn normalKeys(o: *x.Ops) !c.JSValue {
+    return duplicate(o, try o.binary(6, try value(o, normalKeyCount, .{}), integer(o, 0)));
+}
+fn newMap(o: *x.Ops, cache: c.JSValue) !void {
+    const map = try x.guest.construct(o.s, try o.global("Map"), &.{});
+    try o.put(cache, "value", map);
+}
+fn fallback(o: *x.Ops, cache: c.JSValue, name: c.JSValue) !c.JSValue {
+    if (try truth(o, processMissing, .{}) or !try truth(o, processBun, .{}) or try truth(o, normalKeys, .{})) return c.pi_js_undefined();
+    if (c.JS_IsNull(try o.get(cache, "value"))) {
+        try statement(o.s.engine, newMap, .{cache});
+        const locals = try o.cell();
+        try o.put(locals, "readFileSync", c.pi_js_undefined());
+        try o.put(locals, "data", c.pi_js_undefined());
+        try o.put(locals, "entry", c.pi_js_undefined());
+        try o.put(locals, "idx", c.pi_js_undefined());
+        var scope: x.Scope = .{ .engine = o.s.engine };
+        var inner: x.Ops = .{ .s = &scope };
+        var completion = x.owned.Completion.initVoid(o.s.engine, populate(&inner, cache, locals));
+        completion.releaseScope(&scope);
+        const outcome = try completion.finishAction();
+        switch (outcome) {
+            .returned => |unused| {
+                var retired = x.owned.Completion.initVoid(o.s.engine, {});
+                retired.release(unused); try retired.finishVoid();
+            },
+            .thrown => |reason| {
+                // Source's empty catch handles ordinary DATA only. Actual
+                // producer failures already escaped finishAction above.
+                var retired = x.owned.Completion.initVoid(o.s.engine, {});
+                retired.release(reason); try retired.finishVoid();
+            },
+            .awaited => unreachable,
         }
+        // The locals remain in this invocation until the final cache.get call.
     }
+    return duplicate(o, try o.invoke(try o.get(cache, "value"), "get", &.{name}));
+}
+fn fsBinding(o: *x.Ops) !c.JSValue {
+    const fs = try o.call(try o.global("require"), c.pi_js_undefined(), &.{try o.text("node:fs")});
+    return duplicate(o, try o.get(fs, "readFileSync"));
+}
+fn readProc(o: *x.Ops, callable: c.JSValue) !c.JSValue { return duplicate(o, try o.call(callable, c.pi_js_undefined(), &.{try o.text("/proc/self/environ"), try o.text("utf-8")})); }
+fn splitEntries(o: *x.Ops, data: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(data, "split", &.{try o.text("\x00")})); }
+fn populate(o: *x.Ops, cache: c.JSValue, locals: c.JSValue) !void {
+    try o.put(locals, "readFileSync", try value(o, fsBinding, .{}));
+    try o.put(locals, "data", try value(o, readProc, .{try o.get(locals, "readFileSync")}));
+    const data = try o.get(locals, "data");
+    var iterator = try p.Iterator.initOwned(o.s.engine, try expression(o.s.engine, splitEntries, .{data}));
+    return iterator.finish(populateLoop(o.s.engine, &iterator, cache, locals));
+}
+fn populateLoop(engine: *x.em.Engine, iterator: *p.Iterator, cache: c.JSValue, locals: c.JSValue) !void {
+    while (try iterator.next()) |incoming| {
+        try statement(engine, populateEntry, .{cache, locals, incoming});
+    }
+}
+fn indexOf(o: *x.Ops, entry: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(entry, "indexOf", &.{try o.text("=")})); }
+fn positiveIndex(o: *x.Ops, input: c.JSValue) !c.JSValue { return duplicate(o, try o.binary(6, input, integer(o, 0))); }
+fn populateEntry(o: *x.Ops, cache: c.JSValue, locals: c.JSValue, incoming: c.JSValue) !void {
+    const entry = try o.own(incoming);
+    try o.put(locals, "entry", entry);
+    try o.put(locals, "idx", c.pi_js_undefined());
+    try o.put(locals, "idx", try value(o, indexOf, .{entry}));
+    const position = try o.get(locals, "idx");
+    if (try truth(o, positiveIndex, .{position})) try statement(o.s.engine, setEntry, .{cache, entry, position});
+}
+fn setEntry(o: *x.Ops, cache: c.JSValue, entry: c.JSValue, position: c.JSValue) !void {
+    const map = try o.get(cache, "value");
+    const set = try o.get(map, "set");
+    const key = try value(o, sliceKey, .{entry, position});
+    const data = try value(o, sliceData, .{entry, position});
+    _ = try o.call(set, map, &.{key, data});
+}
+fn sliceKey(o: *x.Ops, entry: c.JSValue, position: c.JSValue) !c.JSValue { return duplicate(o, try o.invoke(entry, "slice", &.{integer(o, 0), position})); }
+fn sliceData(o: *x.Ops, entry: c.JSValue, position: c.JSValue) !c.JSValue {
+    const callable = try o.get(entry, "slice");
+    return duplicate(o, try o.call(callable, entry, &.{try o.binary(0, position, integer(o, 1))}));
 }

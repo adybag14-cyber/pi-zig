@@ -1,0 +1,28 @@
+{
+  "status": "exact_source_authority_retained",
+  "target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "rows": [
+    {
+      "name": "provider-env",
+      "c268_source_sha256": "3829251AE0674CEF7CA09800CEE9F46D4E305770129B72B822EA2F6F85EFE675",
+      "source_bytes": 1718,
+      "accepted_javascript_sha256": "E1F64C60F0FDE39A3A649E541D8248A85FDEEFE414FF8B4DDDF5F1BE962D47E6",
+      "accepted_javascript_bytes": 1696,
+      "accepted_map_sha256": "1C799FB319C082012562B1353157A066AC51AC49D535FB79D9704669E58C9A25",
+      "accepted_map_bytes": 3119,
+      "exact_git_physical_map_sources_content": true
+    },
+    {
+      "name": "kimi-coding",
+      "c268_source_sha256": "5461CC78E6BF118061B67BA2BB26109217863F332904F0601B6DA85309EA3657",
+      "source_bytes": 9644,
+      "accepted_javascript_sha256": "F1A7EB1053D8A1AA4BDA5695795A471C624E8110554FAB149D1BB6D546FCF836",
+      "accepted_javascript_bytes": 10252,
+      "accepted_map_sha256": "8721CC3FBD7A632271611036EAC6DF8135E56A35D5AFE15A0D5A5BE842DFB7DD",
+      "accepted_map_bytes": 19283,
+      "exact_git_physical_map_sources_content": true
+    }
+  ],
+  "kimi_fixture_change": "Only three exact static import lines replaced by one destructuring of the genuine compiled Source dependencies. All dependency modules are exact preserved Source fixtures executed in the linked C VM.",
+  "runtime_executed": false
+}
