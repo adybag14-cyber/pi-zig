@@ -62,25 +62,10 @@ pub fn conversation(engine: *em.Engine, messages: c.JSValue) !c.JSValue {
     return js.call(engine, filter, messages, &.{predicate});
 }
 pub fn contentText(engine: *em.Engine, content: c.JSValue) !c.JSValue {
-    const separator = try sdk.text(engine, "\n");
-    defer engine.freeValue(separator);
-    return contentTextWithSeparator(engine, content, separator);
+    return @import("native_ai_content_text.zig").contentText(engine, content, c.pi_js_undefined());
 }
 pub fn contentTextWithSeparator(engine: *em.Engine, content: c.JSValue, separator: c.JSValue) !c.JSValue {
-    if (c.JS_IsString(content)) return c.JS_DupValue(engine.context, content);
-    const filter = try sdk.get(engine, content, "filter");
-    defer engine.freeValue(filter);
-    const predicate = try engine.checked(c.pi_js_function_magic(engine.context, callback, "", 1, 0));
-    defer engine.freeValue(predicate);
-    const selected = try js.call(engine, filter, content, &.{predicate});
-    defer engine.freeValue(selected);
-    const map = try sdk.get(engine, selected, "map");
-    defer engine.freeValue(map);
-    const mapper = try engine.checked(c.pi_js_function_magic(engine.context, callback, "", 1, 1));
-    defer engine.freeValue(mapper);
-    const parts = try js.call(engine, map, selected, &.{mapper});
-    defer engine.freeValue(parts);
-    return js.invoke(engine, parts, "join", &.{separator});
+    return @import("native_ai_content_text.zig").contentText(engine, content, separator);
 }
 fn toolsDelta(engine: *em.Engine, message: c.JSValue, name: [*:0]const u8, tools: c.JSValue, remove: bool, symbol: c.JSValue) !void {
     const raw = try sdk.get(engine, message, name);

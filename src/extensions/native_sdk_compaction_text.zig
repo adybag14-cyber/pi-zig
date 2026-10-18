@@ -1,145 +1,297 @@
-//! Original compaction conversation serializer and summary failure messages.
-const em = @import("engine.zig");
-const sdk = @import("native_sdk.zig");
-const js = @import("native_js_values.zig");
-const Scope = @import("native_sdk_prompt_scope.zig").Scope;
-const arithmetic = @import("native_image_arithmetic.zig");
-const replay = @import("native_sdk_transcript_replay.zig");
-const c = em.c;
-const Export = enum { serializeConversation, getSummarizationFailure };
-pub fn exports(engine: *em.Engine) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const result = try scope.object();
-    inline for (@import("std").meta.fields(Export)) |field| {
-        const Adapter = struct {
-            fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-                host.native_exception_diagnostics_suppressed += 1;
-                defer host.native_exception_diagnostics_suppressed -= 1;
-                const first = if (args.len > 0) args[0] else c.pi_js_undefined();
-                return if (field.value == 0) serialize(host, first) else failure(host, first, if (args.len > 1) args[1] else c.pi_js_undefined());
-            }
-        };
-        try scope.put(result, field.name, try scope.own(try @import("native_node_function.zig").create(engine, field.name, if (field.value == 0) 1 else 2, Adapter.call, &.{})));
+//! Actual c268 compaction utils serializer and summarization failure strings.
+//! Source lexical values use Frame; expression temporaries retire through
+//! AF33/C435 before the next observable getter, call or coercion.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const Engine = v.em.Engine;
+const Scope = v.Scope;
+const content_text = @import("native_ai_content_text.zig");
+const cache_key = "\x00sdk-compaction-text";
+const SerialFrame = h.Frame(enum {
+    parts, message, user_content, tool_calls, block, arguments, arguments_text, tool_content,
+});
+const PairFrame = h.Frame(enum { key, value });
+const TruncateFrame = h.Frame(enum { truncated_chars });
+
+pub fn exports(engine: *Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_module_values.get(cache_key)) |cached| return h.duplicate(engine, cached);
+    const candidate = try h.expression(engine, exportsBody, .{});
+    if (engine.native_module_values.get(cache_key)) |cached| {
+        var selected = v.owned.Completion.initValue(engine, h.duplicate(engine, cached));
+        selected.release(candidate);
+        return selected.finishValue();
     }
-    return c.JS_DupValue(engine.context, result);
+    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
+        var failed = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
+        failed.release(candidate);
+        return failed.finishValue();
+    };
+    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
+    return h.duplicate(engine, candidate);
 }
-fn is(scope: *Scope, value: c.JSValue, text: []const u8) !bool {
-    return scope.equal(value, try scope.text(text));
+fn exportsBody(s: *Scope) !c.JSValue {
+    const result = try v.object(s);
+    const text = try v.own(s, try content_text.create(s.engine));
+    try v.put(s, result, "serializeConversation", try v.ordinary(s, "serializeConversation", 1, serializeCall, &.{text}));
+    try v.put(s, result, "getSummarizationFailure", try v.ordinary(s, "getSummarizationFailure", 2, failureCall, &.{}));
+    return v.duplicate(s, result);
 }
-fn iterate(scope: *Scope, value: c.JSValue) !js.Iterator {
-    const symbol = try scope.own(try scope.engine.checked(c.JS_GetIteratorSymbol(scope.engine.context)));
-    return js.Iterator.init(scope.engine, value, symbol);
+fn serializeCall(engine: *Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return serializeWith(engine, v.arg(args, 0), roots[0]);
 }
-pub fn failure(engine: *em.Engine, response: c.JSValue, label: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    if (try is(&scope, try scope.get(response, "stopReason"), "error")) {
-        const prefix = try scope.concat(try scope.stringify(label), try scope.text(" failed: "));
-        const error_message = try scope.get(response, "errorMessage");
-        const message = if (scope.truthy(error_message)) error_message else try scope.text("Unknown error");
-        return c.JS_DupValue(engine.context, try scope.concat(prefix, try scope.stringify(message)));
-    }
-    if (try is(&scope, try scope.get(response, "stopReason"), "length")) return c.JS_DupValue(engine.context, try scope.concat(try scope.stringify(label), try scope.text(" failed: generation hit the token cap and the summary is incomplete")));
+fn failureCall(engine: *Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return failure(engine, v.arg(args, 0), v.arg(args, 1));
+}
+fn stringifyValue(s: *Scope, value: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, value));
+}
+fn stringifyIncoming(s: *Scope, incoming: anyerror!c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, try v.own(s, try incoming)));
+}
+fn stringField(s: *Scope, receiver: c.JSValue, field: [*:0]const u8) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, try v.get(s, receiver, field)));
+}
+fn errorMessage(s: *Scope, response: c.JSValue) !c.JSValue {
+    const value = try v.get(s, response, "errorMessage");
+    return v.duplicate(s, if (v.truthy(s, value)) value else try v.text(s, "Unknown error"));
+}
+fn failureBody(s: *Scope, response: c.JSValue, label: c.JSValue, error_stop: bool) !c.JSValue {
+    const label_text = try v.own(s, try h.expression(s.engine, stringifyValue, .{label}));
+    if (!error_stop) return v.duplicate(s, try h.binary(s, .add, label_text, try v.text(s, " failed: generation hit the token cap and the summary is incomplete")));
+    const prefix = try h.binary(s, .add, label_text, try v.text(s, " failed: "));
+    const reason = try v.own(s, try h.expression(s.engine, stringifyIncoming, .{
+        h.expression(s.engine, errorMessage, .{response}),
+    }));
+    return v.duplicate(s, try h.binary(s, .add, prefix, reason));
+}
+pub fn failure(engine: *Engine, response: c.JSValue, label: c.JSValue) !c.JSValue {
+    if (try h.fieldEqual(engine, response, "stopReason", "error"))
+        return h.expression(engine, failureBody, .{ response, label, true });
+    if (try h.fieldEqual(engine, response, "stopReason", "length"))
+        return h.expression(engine, failureBody, .{ response, label, false });
     return c.pi_js_undefined();
 }
-fn truncate(scope: *Scope, text: c.JSValue) !c.JSValue {
-    const maximum = c.JS_NewInt32(scope.engine.context, 2000);
-    if (try arithmetic.compare(scope.engine, .less_equal, try scope.get(text, "length"), maximum)) return text;
-    const remaining = try scope.own(try arithmetic.binary(scope.engine, .subtract, try scope.get(text, "length"), maximum));
-    const sliced = try scope.invoke(text, "slice", &.{ c.JS_NewInt32(scope.engine.context, 0), maximum });
-    var result = try scope.concat(try scope.stringify(sliced), try scope.text("\n\n[... "));
-    result = try scope.concat(result, try scope.stringify(remaining));
-    return scope.concat(result, try scope.text(" more characters truncated]"));
+fn lengthRelation(s: *Scope, value: c.JSValue, expected: c.JSValue, operation: h.math.Operation) !c.JSValue {
+    return v.duplicate(s, try h.binary(s, operation, try v.get(s, value, "length"), expected));
 }
-fn argumentEntry(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return formatArgument(engine, if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+fn remainingChars(s: *Scope, value: c.JSValue, maximum: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try h.binary(s, .subtract, try v.get(s, value, "length"), maximum));
 }
-fn formatArgument(engine: *em.Engine, pair: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const symbol = try scope.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context)));
-    const values = try js.pair(engine, pair, symbol);
-    defer for (values) |value| engine.freeValue(value);
-    // Template literals stringify the key before evaluating JSON.stringify(v).
-    const prefix = try scope.concat(try scope.stringify(values[0]), try scope.text("="));
-    const json = try scope.global("JSON");
-    const encoded = try scope.invoke(json, "stringify", &.{values[1]});
-    return c.JS_DupValue(engine.context, try scope.concat(prefix, try scope.stringify(encoded)));
+fn sliceText(s: *Scope, value: c.JSValue, maximum: c.JSValue) !c.JSValue {
+    const sliced = try v.invoke(s, value, "slice", &.{v.number(s, 0), maximum});
+    return v.duplicate(s, try v.stringify(s, sliced));
 }
-fn textBlock(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const kind = scope.get(if (argc > 0) argv[0] else c.pi_js_undefined(), "type") catch |err| return sdk.fail(engine, err);
-    const result = is(&scope, kind, "text") catch |err| return sdk.fail(engine, err);
-    return c.pi_js_bool(engine.context, @intFromBool(result));
+fn truncateTemplate(s: *Scope, f: *TruncateFrame, value: c.JSValue, maximum: c.JSValue) !c.JSValue {
+    const sliced = try v.own(s, try h.expression(s.engine, sliceText, .{ value, maximum }));
+    const prefix = try h.binary(s, .add, sliced, try v.text(s, "\n\n[... "));
+    const remaining = try v.own(s, try h.expression(s.engine, stringifyValue, .{f.get(.truncated_chars)}));
+    const joined = try h.binary(s, .add, prefix, remaining);
+    return v.duplicate(s, try h.binary(s, .add, joined, try v.text(s, " more characters truncated]")));
 }
-pub fn serialize(engine: *em.Engine, messages: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const parts = try scope.array();
-    var rows = try iterate(&scope, messages);
-    defer rows.deinit();
-    errdefer rows.closePreserving();
-    while (try rows.next()) |message| {
-        defer engine.freeValue(message);
-        var step: Scope = .{ .engine = engine };
-        defer step.deinit();
-        if (try is(&step, try step.get(message, "role"), "user")) {
-            const content = try step.own(try replay.contentTextWithSeparator(engine, try step.get(message, "content"), try step.text("")));
-            if (step.truthy(content)) {
-                const push = try step.get(parts, "push");
-                _ = try step.call(push, parts, &.{try step.concat(try step.text("[User]: "), try step.stringify(content))});
-            }
-        } else if (try is(&step, try step.get(message, "role"), "assistant")) {
-            const calls = try step.array();
-            var blocks = try iterate(&step, try step.get(message, "content"));
-            defer blocks.deinit();
-            errdefer blocks.closePreserving();
-            while (try blocks.next()) |block| {
-                defer engine.freeValue(block);
-                var item: Scope = .{ .engine = engine };
-                defer item.deinit();
-                if (!try is(&item, try item.get(block, "type"), "toolCall")) continue;
-                const args = try item.get(block, "arguments");
-                const object = try item.global("Object");
-                const entries = try item.invoke(object, "entries", &.{args});
-                const map = try item.get(entries, "map");
-                const mapper = try item.own(try engine.checked(c.JS_NewCFunction(engine.context, argumentEntry, "", 1)));
-                const formatted = try item.call(map, entries, &.{mapper});
-                const args_text = try item.invoke(formatted, "join", &.{try item.text(", ")});
-                const push = try item.get(calls, "push");
-                var text = try item.concat(try item.stringify(try item.get(block, "name")), try item.text("("));
-                text = try item.concat(text, try item.stringify(args_text));
-                text = try item.concat(text, try item.text(")"));
-                _ = try item.call(push, calls, &.{text});
-            }
-            const content = try step.get(message, "content");
-            const some = try step.get(content, "some");
-            const predicate = try step.own(try engine.checked(c.JS_NewCFunction(engine.context, textBlock, "", 1)));
-            if (step.truthy(try step.call(some, content, &.{predicate}))) {
-                const push = try step.get(parts, "push");
-                const text = try step.own(try replay.contentText(engine, try step.get(message, "content")));
-                _ = try step.call(push, parts, &.{try step.concat(try step.text("[Assistant]: "), try step.stringify(text))});
-            }
-            if (try step.positive(try step.get(calls, "length"))) {
-                const push = try step.get(parts, "push");
-                const text = try step.invoke(calls, "join", &.{try step.text("; ")});
-                _ = try step.call(push, parts, &.{try step.concat(try step.text("[Assistant tool calls]: "), try step.stringify(text))});
-            }
-        } else if (try is(&step, try step.get(message, "role"), "toolResult")) {
-            const content = try step.own(try replay.contentTextWithSeparator(engine, try step.get(message, "content"), try step.text("")));
-            if (step.truthy(content)) {
-                const push = try step.get(parts, "push");
-                _ = try step.call(push, parts, &.{try step.concat(try step.text("[Tool result]: "), try step.stringify(try truncate(&step, content)))});
-            }
+fn truncateSource(f: *TruncateFrame, value: c.JSValue, maximum: c.JSValue) !c.JSValue {
+    if (h.truthy(f.engine, try h.expression(f.engine, lengthRelation, .{ value, maximum, @as(h.math.Operation, .less_equal) })))
+        return h.duplicate(f.engine, value);
+    try f.set(.truncated_chars, h.expression(f.engine, remainingChars, .{ value, maximum }));
+    return h.expression(f.engine, truncateTemplate, .{ f, value, maximum });
+}
+fn truncate(engine: *Engine, value: c.JSValue) !c.JSValue {
+    var f = TruncateFrame.init(engine);
+    return f.finish(truncateSource(&f, value, h.number(engine, 2000)));
+}
+fn callPairReturn(s: *Scope, receiver: c.JSValue, called: *bool) !c.JSValue {
+    const method = try v.get(s, receiver, "return");
+    if (v.nullish(method)) return c.pi_js_undefined();
+    called.* = true;
+    return v.duplicate(s, try v.call(s, method, receiver, &.{}));
+}
+fn closePair(s: *Scope, receiver: c.JSValue) !void {
+    var called = false;
+    // BCDF JS_IteratorClose uses JS_CallFree: retire the selected method
+    // before checking whether its normal return value is an object.
+    const result = try v.own(s, try h.expression(s.engine, callPairReturn, .{ receiver, &called }));
+    if (called and !c.JS_IsObject(result)) return v.typeError(s, "not an object");
+}
+fn pairBindings(f: *PairFrame, iterator: *v.Iterator) !void {
+    try f.set(.key, (try iterator.next()) orelse c.pi_js_undefined());
+    try f.set(.value, if (iterator.closed) c.pi_js_undefined() else (try iterator.next()) orelse c.pi_js_undefined());
+    if (!iterator.closed) {
+        iterator.closed = true;
+        try h.statement(f.engine, closePair, .{iterator.receiver});
+    }
+}
+fn jsonValue(s: *Scope, value: c.JSValue) !c.JSValue {
+    const json = try v.global(s, "JSON");
+    const method = try v.get(s, json, "stringify");
+    return v.duplicate(s, try v.call(s, method, json, &.{value}));
+}
+fn pairTemplate(s: *Scope, f: *PairFrame) !c.JSValue {
+    const key = try v.own(s, try h.expression(s.engine, stringifyValue, .{f.get(.key)}));
+    const prefix = try h.binary(s, .add, key, try v.text(s, "="));
+    const value = try v.own(s, try h.expression(s.engine, stringifyIncoming, .{
+        h.expression(s.engine, jsonValue, .{f.get(.value)}),
+    }));
+    return v.duplicate(s, try h.binary(s, .add, prefix, value));
+}
+fn pairSource(f: *PairFrame, pair: c.JSValue) !c.JSValue {
+    var iterator = try v.Iterator.init(f.engine, pair);
+    try iterator.finish(pairBindings(f, &iterator));
+    return h.expression(f.engine, pairTemplate, .{f});
+}
+fn argumentEntry(engine: *Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    var f = PairFrame.init(engine);
+    return f.finish(pairSource(&f, v.arg(args, 0)));
+}
+fn textBlock(engine: *Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
+    return c.JS_NewBool(engine.context, try h.fieldEqual(engine, v.arg(args, 0), "type", "text"));
+}
+fn objectEntries(s: *Scope, arguments: c.JSValue) !c.JSValue {
+    const object = try v.global(s, "Object");
+    const method = try v.get(s, object, "entries");
+    return v.duplicate(s, try v.call(s, method, object, &.{arguments}));
+}
+fn mappedArguments(s: *Scope, incoming: anyerror!c.JSValue) !c.JSValue {
+    const entries = try v.own(s, try incoming);
+    const map = try v.get(s, entries, "map");
+    const callback = try v.arrow(s, "", 1, argumentEntry, &.{});
+    return v.duplicate(s, try v.call(s, map, entries, &.{callback}));
+}
+fn joinIncoming(s: *Scope, incoming: anyerror!c.JSValue, separator: []const u8) !c.JSValue {
+    const values = try v.own(s, try incoming);
+    const method = try v.get(s, values, "join");
+    return v.duplicate(s, try v.call(s, method, values, &.{try v.text(s, separator)}));
+}
+fn argumentsText(engine: *Engine, arguments: c.JSValue) !c.JSValue {
+    return h.expression(engine, joinIncoming, .{
+        h.expression(engine, mappedArguments, .{h.expression(engine, objectEntries, .{arguments})}),
+        @as([]const u8, ", "),
+    });
+}
+fn toolCallText(s: *Scope, f: *SerialFrame) !c.JSValue {
+    const name = try v.own(s, try h.expression(s.engine, stringField, .{ f.get(.block), @as([*:0]const u8, "name") }));
+    const prefix = try h.binary(s, .add, name, try v.text(s, "("));
+    const arguments = try v.own(s, try h.expression(s.engine, stringifyValue, .{f.get(.arguments_text)}));
+    const call_text = try h.binary(s, .add, prefix, arguments);
+    return v.duplicate(s, try h.binary(s, .add, call_text, try v.text(s, ")")));
+}
+fn appendToolCall(s: *Scope, f: *SerialFrame) !void {
+    const calls = f.get(.tool_calls);
+    const push = try v.get(s, calls, "push");
+    const text = try v.own(s, try h.expression(s.engine, toolCallText, .{f}));
+    _ = try v.call(s, push, calls, &.{text});
+}
+fn blocksSource(f: *SerialFrame, iterator: *v.Iterator) !void {
+    while (try iterator.next()) |block| {
+        try f.set(.block, block);
+        if (try h.fieldEqual(f.engine, f.get(.block), "type", "toolCall")) {
+            try f.clear(.arguments_text);
+            try f.clear(.arguments);
+            try f.set(.arguments, h.get(f.engine, f.get(.block), "arguments"));
+            try f.set(.arguments_text, argumentsText(f.engine, f.get(.arguments)));
+            try h.statement(f.engine, appendToolCall, .{f});
         }
     }
-    return js.invoke(engine, parts, "join", &.{try scope.text("\n\n")});
+}
+fn contentCall(s: *Scope, message: c.JSValue, callable: c.JSValue, empty_separator: bool) !c.JSValue {
+    const content = try v.get(s, message, "content");
+    return v.duplicate(s, try v.call(s, callable, c.pi_js_undefined(),
+        if (empty_separator) &.{ content, try v.text(s, "") } else &.{content}));
+}
+fn prefixedText(s: *Scope, prefix: []const u8, value: c.JSValue) !c.JSValue {
+    const text = try v.own(s, try h.expression(s.engine, stringifyValue, .{value}));
+    return v.duplicate(s, try h.binary(s, .add, try v.text(s, prefix), text));
+}
+fn appendKnownContent(s: *Scope, parts: c.JSValue, prefix: []const u8, content: c.JSValue) !void {
+    const push = try v.get(s, parts, "push");
+    const text = try v.own(s, try h.expression(s.engine, prefixedText, .{ prefix, content }));
+    _ = try v.call(s, push, parts, &.{text});
+}
+fn someText(s: *Scope, incoming: anyerror!c.JSValue) !c.JSValue {
+    const content = try v.own(s, try incoming);
+    const some = try v.get(s, content, "some");
+    const predicate = try v.arrow(s, "", 1, textBlock, &.{});
+    return v.boolean(s, v.truthy(s, try v.call(s, some, content, &.{predicate})));
+}
+fn assistantText(s: *Scope, f: *SerialFrame, callable: c.JSValue) !c.JSValue {
+    const text = try v.own(s, try h.expression(s.engine, stringifyIncoming, .{
+        h.expression(s.engine, contentCall, .{ f.get(.message), callable, false }),
+    }));
+    return v.duplicate(s, try h.binary(s, .add, try v.text(s, "[Assistant]: "), text));
+}
+fn appendAssistant(s: *Scope, f: *SerialFrame, callable: c.JSValue) !void {
+    const parts = f.get(.parts);
+    const push = try v.get(s, parts, "push");
+    const text = try v.own(s, try h.expression(s.engine, assistantText, .{ f, callable }));
+    _ = try v.call(s, push, parts, &.{text});
+}
+fn joinedText(s: *Scope, values: c.JSValue, separator: []const u8) !c.JSValue {
+    return v.duplicate(s, try v.stringify(s, try v.invoke(s, values, "join", &.{try v.text(s, separator)})));
+}
+fn toolCallsText(s: *Scope, calls: c.JSValue) !c.JSValue {
+    const joined = try v.own(s, try h.expression(s.engine, joinedText, .{ calls, @as([]const u8, "; ") }));
+    return v.duplicate(s, try h.binary(s, .add, try v.text(s, "[Assistant tool calls]: "), joined));
+}
+fn appendToolCalls(s: *Scope, f: *SerialFrame) !void {
+    const parts = f.get(.parts);
+    const push = try v.get(s, parts, "push");
+    const text = try v.own(s, try h.expression(s.engine, toolCallsText, .{f.get(.tool_calls)}));
+    _ = try v.call(s, push, parts, &.{text});
+}
+fn toolResultText(s: *Scope, content: c.JSValue) !c.JSValue {
+    const text = try v.own(s, try h.expression(s.engine, stringifyIncoming, .{truncate(s.engine, content)}));
+    return v.duplicate(s, try h.binary(s, .add, try v.text(s, "[Tool result]: "), text));
+}
+fn appendToolResult(s: *Scope, f: *SerialFrame) !void {
+    const parts = f.get(.parts);
+    const push = try v.get(s, parts, "push");
+    const text = try v.own(s, try h.expression(s.engine, toolResultText, .{f.get(.tool_content)}));
+    _ = try v.call(s, push, parts, &.{text});
+}
+fn messagesSource(f: *SerialFrame, iterator: *v.Iterator, callable: c.JSValue) !void {
+    const engine = f.engine;
+    while (try iterator.next()) |message| {
+        try f.set(.message, message);
+        if (try h.fieldEqual(engine, f.get(.message), "role", "user")) {
+            try f.clear(.user_content);
+            try f.set(.user_content, h.expression(engine, contentCall, .{ f.get(.message), callable, true }));
+            if (h.truthy(engine, f.get(.user_content)))
+                try h.statement(engine, appendKnownContent, .{ f.get(.parts), @as([]const u8, "[User]: "), f.get(.user_content) });
+        } else if (try h.fieldEqual(engine, f.get(.message), "role", "assistant")) {
+            try f.clear(.tool_calls);
+            try f.set(.tool_calls, h.array(engine));
+            // BCDF enters the nested enumeration scope before evaluating RHS.
+            try f.clear(.block);
+            var blocks = try v.Iterator.initOwned(engine, try h.get(engine, f.get(.message), "content"));
+            try blocks.finish(blocksSource(f, &blocks));
+            if (h.truthy(engine, try h.expression(engine, someText, .{h.get(engine, f.get(.message), "content")})))
+                try h.statement(engine, appendAssistant, .{ f, callable });
+            if (h.truthy(engine, try h.expression(engine, lengthRelation, .{ f.get(.tool_calls), h.number(engine, 0), @as(h.math.Operation, .greater) })))
+                try h.statement(engine, appendToolCalls, .{f});
+        } else if (try h.fieldEqual(engine, f.get(.message), "role", "toolResult")) {
+            try f.clear(.tool_content);
+            try f.set(.tool_content, h.expression(engine, contentCall, .{ f.get(.message), callable, true }));
+            if (h.truthy(engine, f.get(.tool_content))) try h.statement(engine, appendToolResult, .{f});
+        }
+    }
+}
+fn serializeSource(f: *SerialFrame, messages: c.JSValue, callable: c.JSValue) !c.JSValue {
+    try f.set(.parts, h.array(f.engine));
+    var iterator = try v.Iterator.init(f.engine, messages);
+    try iterator.finish(messagesSource(f, &iterator, callable));
+    return h.expression(f.engine, partsJoin, .{f.get(.parts)});
+}
+fn partsJoin(s: *Scope, parts: c.JSValue) !c.JSValue {
+    return v.duplicate(s, try v.invoke(s, parts, "join", &.{try v.text(s, "\n\n")}));
+}
+fn serializeWith(engine: *Engine, messages: c.JSValue, callable: c.JSValue) !c.JSValue {
+    var f = SerialFrame.init(engine);
+    return f.finish(serializeSource(&f, messages, callable));
+}
+fn serializeEntry(s: *Scope, messages: c.JSValue) !c.JSValue {
+    const callable = try v.own(s, try content_text.create(s.engine));
+    return serializeWith(s.engine, messages, callable);
+}
+pub fn serialize(engine: *Engine, messages: c.JSValue) !c.JSValue {
+    return h.expression(engine, serializeEntry, .{messages});
 }

@@ -1,0 +1,116 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-compaction-text",
+  "executable": "native-sdk-public-compaction-text.exe",
+  "root": "src/native_sdk_public_compaction_text_test.zig",
+  "filters": [
+    "SDK public compaction text"
+  ],
+  "authored_declared_test_names": [
+    "SDK public compaction text actual ordinary exports and retained content owner",
+    "SDK public compaction text actual text extraction serialization and truncation",
+    "SDK public compaction text actual filter map join receiver and callee retirement",
+    "SDK public compaction text actual destructured parameters close before template coercion",
+    "SDK public compaction text actual normal IteratorClose rejects a primitive result",
+    "SDK public compaction text actual entries map join completes before name getter",
+    "SDK public compaction text actual nested head and branch slot reentry order",
+    "SDK public compaction text actual failure label and reason evaluation",
+    "SDK public compaction text actual assistant role and content getters remain repeated",
+    "SDK public compaction text actual private DATA crosses two iterator scopes",
+    "SDK public compaction text actual nested IteratorClose keeps original throw",
+    "SDK public compaction text actual next failure closes only the outer iterator",
+    "SDK public compaction text actual branch reset B preempts following argument getter",
+    "SDK public compaction text actual current B bypasses guest catch"
+  ],
+  "production_exports": [
+    "serializeConversation",
+    "getSummarizationFailure"
+  ],
+  "actual_dependency_export": "contentText",
+  "production_files": [
+    {
+      "path": "src/extensions/native_sdk_compaction_text.zig",
+      "sha256": "A37FA011464A5CEFA5755EA958B4CEA348A9C36AA0E2DE1040316F02614F77F7",
+      "bytes": 16385
+    },
+    {
+      "path": "src/extensions/native_ai_content_text.zig",
+      "sha256": "B33883A0E88D5F1220CD427D2A2A722C5A58A0D1D2765EFE2CA7EA2678FBA972",
+      "bytes": 3175
+    },
+    {
+      "path": "src/extensions/native_sdk_transcript_replay.zig",
+      "sha256": "57F7BAADDAA7DEFAA4A837D90A1C48FFF72522F1922BFD052F40077F56BB833E",
+      "bytes": 9301
+    }
+  ],
+  "control_files": [
+    {
+      "path": "src/native_sdk_public_compaction_text_test.zig",
+      "sha256": "634AD65AE18BEB2E06573916CCCE427BA79B3899F5D906E0D261DF7B8B0B581F",
+      "bytes": 6869
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-compaction-text-c268-source.mjs",
+      "sha256": "A8393C9218A93C681F523F62D85114D1ADBF39E96E21074C93D13586D356E4AA",
+      "bytes": 2360
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-compaction-text-observer.mjs",
+      "sha256": "98C63D6B01B39913488DB9431F8D5E1D442345743213AD952F61A0CD6B380696",
+      "bytes": 11546
+    }
+  ],
+  "source_authority": "c268154c",
+  "source_authority_copies": [
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/ai-text.ts.txt",
+      "sha256": "D37C1825855C7FC71669A545B5B266810242C1C7E58D57228C0C143F29C1C544",
+      "bytes": 1560
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/utils.ts.txt",
+      "sha256": "37EAB7698CDBFF8B5987D4529005EA16D7E1AE4A5344D7D0443C3466444AA90E",
+      "bytes": 5951
+    }
+  ],
+  "existing_failure_source_authority": {
+    "path": "verification/sdk-owners-resume-20261018/compaction-authority/compaction.ts.txt",
+    "sha256": "F5BBC427E337BE708BD15297806C0ACAF7CB0EE65CC4AF77E6E48C3E3937894F",
+    "bytes": 35245
+  },
+  "source_fixture_kind": "Exact selected contentText, serializer, truncate and failure bodies with manually erased TypeScript annotations inside one strict ordinary factory. The source serializer captures the actual source contentText body.",
+  "imported_control_roots": [
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41",
+      "declared_test_names": []
+    }
+  ],
+  "integration": {
+    "shared_public_values_commit": "425f8aaa",
+    "shared_public_values_sha256": "31178ADB24033B123C8DE22CFD7EE3981F8B993E8C2F4CA6563510A5E66FA1AD",
+    "guest_sha256": "AF33D462D6B1573DB869E5F583A289EA105B6C1CF910948E418FBE85834DBD8C",
+    "owned_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+    "build_delta": "Only the thirteen-line install-only target is added. Preserve newer Main blocks during intake.",
+    "existing_private_replay": "Only the two existing contentText entry bodies delegate to the same new actual contentText owner. Other transcript replay algorithms are unchanged.",
+    "cache_publication": "Each completed value graph retires expression roots before publication and resolves any reentrant completed cache before reserving/transferring the candidate."
+  },
+  "source_peer": {
+    "production": "VM finite peer closed final serializer A37FA011 and contentText B33883A0, including all four receiver-before-callee helper corrections, separate normal IteratorClose method retirement and exact TypeError text. No remaining concrete blocker in the requested selected bodies and fourteen controls; source-only.",
+    "controls": "VM finite peer closed all fourteen controls, strict selected Source bodies, actual contentText chains, destructuring, nested scope/head/arguments lifetimes, IteratorClose and DATA/B provenance; source-only."
+  },
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "remaining_public_compaction": [
+    "collectEntriesForBranchSummary",
+    "compact",
+    "generateBranchSummary",
+    "generateSummary",
+    "generateSummaryWithUsage",
+    "prepareBranchEntries"
+  ],
+  "whole_public_namespace_qualification": false
+}
