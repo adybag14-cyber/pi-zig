@@ -1,0 +1,70 @@
+{
+  "scope": "Selected genuine Agent AsyncFunction Source unit only",
+  "root_base": "bcdec9053c0b363c04115b26db39ed6a93bdff96",
+  "source_base": "c3888788a1af513f3e8ba9f4659221a22b2888e9",
+  "source_candidate": "8cf467fb808239910dad9d650fd600be97f75682",
+  "patch_sha256": "BF4AC63EC855F790DBE15E3A954852DABBBEE1E8DCE1FB201F625DC14132588C",
+  "payload": [
+    {
+      "git_blob": "39dfe90b28cdb261285943237cf76d954b07abd0",
+      "path": "src/extensions/native_agent_core.zig"
+    },
+    {
+      "git_blob": "e1db5d8b4537a64f4c2455564fbd6d213d3de0ab",
+      "path": "src/extensions/native_agent_execution_async.zig"
+    },
+    {
+      "git_blob": "243affcbaee6e34e9cb5b10be31855efab23b20f",
+      "path": "src/extensions/native_agent_loop.zig"
+    },
+    {
+      "git_blob": "e628c19a78daf93088f59cd5c7ae485e3d75e4d4",
+      "path": "src/extensions/native_agent_run.zig"
+    },
+    {
+      "git_blob": "5e35f37471cb857a13a223c58d47e4835ffc12bf",
+      "path": "src/extensions/native_agent_single_tool.zig"
+    },
+    {
+      "git_blob": "ce5e13cbd2388bea87c9a5fb186838e85ff62ea1",
+      "path": "src/extensions/native_agent_stream.zig"
+    },
+    {
+      "git_blob": "ee7cad9ab4809c0994f4427cd6d8d86935601c1f",
+      "path": "src/extensions/native_agent_tools.zig"
+    },
+    {
+      "git_blob": "09c7529c8f0b67d0a9cf3f2d6237c908f8898bc8",
+      "path": "src/extensions/native_agent_af_completion.zig"
+    },
+    {
+      "git_blob": "ec360373ab175f4456942fc4f2ed0ca19a5045ec",
+      "path": "src/extensions/native_agent_loop_async.zig"
+    },
+    {
+      "git_blob": "63c05060982e9ecb7ce7c2cb9f75f27dbe9723a7",
+      "path": "src/extensions/native_agent_parallel_async.zig"
+    },
+    {
+      "git_blob": "2442b3345f8697b826b9470d6795c6df025366bf",
+      "path": "src/extensions/native_async_return.zig"
+    },
+    {
+      "git_blob": "d37ba35f0dc7dc4a1ce6fa71f20b93ea5e9a4ed8",
+      "path": "src/native_agent_loop_async_test.zig"
+    },
+    {
+      "git_blob": "3e7dc62d746a17ae9a61d961068589cbb3c3509f",
+      "path": "src/native_agent_parallel_async_test.zig"
+    },
+    {
+      "git_blob": "499f9eb630b8e40052e1fb9d175e3f11b9c23a43",
+      "path": "src/native_agent_return_adapter_test.zig"
+    }
+  ],
+  "build_additions": 18,
+  "prepared_controls": 26,
+  "native_or_Node_executed": false,
+  "runtime_qualified": false,
+  "shared_Engine_C_ABI_Scope_unchanged": true
+}

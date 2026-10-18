@@ -24,7 +24,7 @@ fn outer(engine: *em.Engine, comptime continuing: bool, agent: c.JSValue, args: 
     const actual_executor = try s.own(try createExecutor(engine, continuing, agent, messages, options, loop));
     return p.wait(&s, owner, lifecycle, agent, &.{actual_executor}, 0);
 }
-fn createExecutor(engine: *em.Engine, comptime continuing: bool, agent: c.JSValue, messages: c.JSValue, options: c.JSValue, loop: c.JSValue) !c.JSValue {
+pub fn createExecutor(engine: *em.Engine, comptime continuing: bool, agent: c.JSValue, messages: c.JSValue, options: c.JSValue, loop: c.JSValue) !c.JSValue {
     const Adapter = struct {
         fn run(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) anyerror!af.Action {
             return executor(host, continuing, args, roots, state, completion, input) catch |err| p.failure(host, err);

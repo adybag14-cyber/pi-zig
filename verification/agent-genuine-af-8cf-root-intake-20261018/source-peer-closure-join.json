@@ -1,0 +1,51 @@
+{
+  "source_head": "8cf467fb808239910dad9d650fd600be97f75682",
+  "source_patch": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\agent-genuine-af-8cf-source-intake-prepared-20261018\\source-only-c388-8cf.patch",
+    "bytes": 111709,
+    "sha256": "BF4AC63EC855F790DBE15E3A954852DABBBEE1E8DCE1FB201F625DC14132588C"
+  },
+  "production_agent_branding_matches": 0,
+  "original_d351_branch_preserved": true,
+  "native_or_Node_or_compiler_or_AST_or_formatter_or_generator_executed": false,
+  "C_Engine_ABI_sharedScope_Source_fixtures_or_limits_changed": false,
+  "status": "finite_source_peer_closed_no_runtime_qualification",
+  "readiness": {
+    "rows": 31,
+    "hash_errors": 0,
+    "sha256": "C4E4F75DEC2AE328B6D9EAAB77D3C8EED23BB8162CDABDEAD57EC219C2C1F426",
+    "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\agent-genuine-af-c388-20261018\\verification\\agent-loop-scoped-phases-d1dd-sourceonly-20261018\\readiness.json"
+  },
+  "historical_pending_manifest": {
+    "note": "Preserved historical preparation status; this additive join records later Source closure only",
+    "sha256": "ABFE6BEBCF1179FD33E785D1F0FC8B93B84107BF96B268E39F12152EBEA7C14D",
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\agent-genuine-af-8cf-source-intake-prepared-20261018\\manifest.json"
+  },
+  "intake_authorized": false,
+  "reviews": [
+    {
+      "sha256": "2A4A6DA50C1687B584F4D13C4133DDA4AC03940370A857A6AB35F128A7ECB3ED",
+      "role": "parallel_structural_Source",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\agent-parallel-af-a030-independent-body-source-review-20261018.json"
+    },
+    {
+      "sha256": "8E9F30B0AD067592E23C130CF1934973EDF00B791336B78C91172392C47F6B89",
+      "role": "completion_helper_first_producer_Source",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\agent-af-completion-a3cb-independent-body-source-review-20261018.json"
+    },
+    {
+      "sha256": "D214D8C561A7995D61FEBB1DBE6E9B956D9BCC7B2D5345D54D742F4C5ABD4E94",
+      "role": "final_loop_scoped_phases_Source",
+      "path": "C:\\Users\\adyba\\pi-zig\\evidence\\agent-loop-scoped-phases-8cf-independent-body-source-review-20261018.json"
+    }
+  ],
+  "qualification": false,
+  "base": "c3888788a1af513f3e8ba9f4659221a22b2888e9",
+  "prepared_counts": {
+    "loop": 10,
+    "return_adapter": 12,
+    "parallel": 4
+  },
+  "scope": "Source closure of actual Agent factory/AF bodies plus local completion helper only. Reused algorithms/public namespace activation/current VM dependency and full application/runtime gates remain distinct.",
+  "actual_metadata": null
+}

@@ -275,33 +275,6 @@ fn shouldTerminate(scope: *Scope, finalized: c.JSValue) !bool {
     const callback = try scope.own(try scope.engine.checked(c.JS_NewCFunction(scope.engine.context, everyTerminated, "", 1)));
     return scope.truthy(try scope.call(every, finalized, &.{callback}));
 }
-fn parallelEntry(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return parallelRun(engine, roots[0], roots[1], roots[2]) catch |err| sdk.fail(engine, err);
-}
-fn parallelRun(engine: *em.Engine, batch_owner: c.JSValue, prepared: c.JSValue, tool_call: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    beginParallel(engine, pending.owner, batch_owner, prepared, tool_call) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-fn beginParallel(engine: *em.Engine, owner: c.JSValue, batch_owner: c.JSValue, prepared: c.JSValue, tool_call: c.JSValue) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    inline for (.{ "context", "assistant", "config", "signal", "emit" }) |field| try scope.put(owner, field, try scope.get(batch_owner, field));
-    try scope.put(owner, "call", tool_call);
-    try scope.put(owner, "prepared", prepared);
-    try scope.put(owner, "entry", c.pi_js_bool(engine.context, 1));
-    try scope.put(owner, "body", c.pi_js_bool(engine.context, 0));
-    if (try signalAborted(&scope, owner)) {
-        const error_result = try scope.own(try call.errorResult(engine, try scope.text("Operation aborted")));
-        const finalized = try immediateFinalized(&scope, tool_call, error_result, c.pi_js_bool(engine.context, 1));
-        try scope.put(owner, "finalized", finalized);
-        return emitEnd(engine, owner, finalized);
-    }
-    try startExecution(engine, owner);
-}
 fn closeReject(engine: *em.Engine, owner: c.JSValue, value: c.JSValue) !void {
     const body = try sdk.get(engine, owner, "body");
     defer engine.freeValue(body);
@@ -340,10 +313,7 @@ fn resumeCore(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Sta
             if (try modeOf(&scope, owner) == .parallel) {
                 const finalized = try scope.get(owner, "finalizedCalls");
                 const push = try scope.get(finalized, "push");
-                var roots = [_]c.JSValue{ owner, value, try scope.get(owner, "call") };
-                const entry = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, parallelEntry, "", 0, 0, roots.len, &roots)));
-                const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-                if (c.JS_SetPrototype(engine.context, entry, parent) < 0) return js.capture(engine);
+                const entry = try scope.own(try @import("native_agent_parallel_async.zig").create(engine, try scope.get(owner, "context"), try scope.get(owner, "assistant"), value, try scope.get(owner, "config"), try scope.get(owner, "signal"), try scope.get(owner, "emit"), try scope.get(owner, "call")));
                 _ = try scope.call(push, finalized, &.{entry});
                 return nextOrStop(engine, owner);
             }
@@ -356,7 +326,6 @@ fn resumeCore(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, stage: Sta
         },
         .ended => {
             const finalized = try scope.get(owner, "finalized");
-            if (scope.truthy(try scope.get(owner, "entry"))) return flow.settle(engine, owner, false, finalized);
             if (try modeOf(&scope, owner) == .parallel) {
                 _ = try scope.invoke(try scope.get(owner, "finalizedCalls"), "push", &.{finalized});
                 return nextOrStop(engine, owner);

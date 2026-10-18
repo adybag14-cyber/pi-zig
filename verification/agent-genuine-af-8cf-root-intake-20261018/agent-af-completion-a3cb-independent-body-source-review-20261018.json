@@ -1,0 +1,53 @@
+{
+  "schema": 1,
+  "status": "FINITE_LOCAL_HELPER_FIRST_PRODUCER_CORRECTION_SOURCE_CLOSED_LOOP_LIFETIME_REMAINS_OPEN",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T00:27:50.8348645+00:00",
+  "candidate_head": "a3cbfc2adad44b48ae53eaec67e24bb7ceec8d6e",
+  "read_surface": "Exact immutable Git source, not moving worktree",
+  "readiness_sha256": "F344F13024439D372E8E0397BA3353DA445B002775CFEBF09F5DCAF1704F3287",
+  "helper_scope": "native_agent_af_completion.zig a3cb changes plus retained prior reducer/finishPreserving",
+  "closed_finding": "Actual pending fatal is published through SAME owned duplicate+existing checkNativeEntry BEFORE displacement/free; older active producer wins; later recordedproducer cannot displace localfirst or cause transport mismatch loop",
+  "verified_semantics": [
+    "failure+observe publish selected actualpendingfatal before anyretirement; initialfatal outcome aligned before first Scope root",
+    "Captured-only fallback fatal=false; no oldflag/tag-only producer authority; Action.thrown DATA untouched",
+    "Firstordinary retained, trustedGPAOOM not downgraded by ordinaryconsumed-result finalizer, firstactualfatal remainsstable acrosslaterraw/recorded events",
+    "Per-release unsignedgeneration classifies only actualpending newborn private errors, no whole-body DATA heuristic",
+    "Owned outcome stays outsidebothslots, originalScope order, bounded displacedrootqueue and transport ownership read",
+    "finishPreserving keeps original ordinarythrow DATA over ordinary synchronousIteratorClose cleanup failure; genuinecurrent/nativefatal cleanup promotes"
+  ],
+  "causal_controls": [
+    "Two sole native roots rawB then actualrecordedproducerC require exactfirstB/twofinalizers/no loop",
+    "Actualoldmarkedcaptured reason with no pending/currentproducer staysDATA and unchangedflags/generation"
+  ],
+  "pins": {
+    "rawGit_SHA_length_rows": 31,
+    "zero_drift": true,
+    "prepared_control_sets": [
+      {
+        "root": "src/native_agent_return_adapter_test.zig",
+        "names": 12
+      },
+      {
+        "root": "src/native_agent_parallel_async_test.zig",
+        "names": 4
+      },
+      {
+        "root": "src/native_agent_loop_async_test.zig",
+        "names": 7
+      }
+    ],
+    "all_unrun": true
+  },
+  "supersedes": "Closes helper-specific reopened first-producer frontier from6BE370AB... only; historical3DEC/2A4A bytes preserved",
+  "explicit_open_loop_finding": "989a/a3cb native_agent_loop_async retains done iterator/next/message and stepScope while invoking later runTurns/config hook. Must retire owner record AND operator temporaryscope before laterguestcallee; no loop source closure or intake inferred.",
+  "limits": [
+    "No runtime/metadata/compiler/Node/GPA pass",
+    "Underlying pipelines/shared factory/VMProducer and DA14/A79→intendedC699/H0DBC+G2 composition remain separate prerequisites",
+    "Structural prior AF/parallel mapping remains scope-reviewed but fullAgent loop awaits lifetime correction"
+  ],
+  "execution_authorized": false,
+  "intake_authorized": false,
+  "parser_compiler_native_Node_jobs": 0,
+  "Main_edits": false
+}

@@ -4,7 +4,8 @@ const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const returned = @import("native_async_return.zig");
+const af_values = @import("native_agent_af_values.zig");
 const c = em.c;
 
 pub fn function(engine: *em.Engine, continuing: bool) !c.JSValue {
@@ -43,9 +44,7 @@ pub fn run(engine: *em.Engine, prompts: c.JSValue, context: c.JSValue, config: c
     }
     const stream = try createStream(&scope);
     var roots = [_]c.JSValue{stream};
-    const emit = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, emitCall, "", 1, 0, roots.len, &roots)));
-    const async_parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, emit, async_parent) < 0) return js.capture(engine);
+    const emit = try scope.own(try createEmitter(engine, stream));
     const pending = try scope.own(try @import("native_agent_loop.zig").run(engine, prompts, context, config, emit, signal, stream_function, continuing));
     const then = try scope.get(pending, "then");
     const fulfilled = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, finishCall, "", 1, 0, roots.len, &roots)));
@@ -77,22 +76,17 @@ fn completeValue(engine: *em.Engine, event: c.JSValue, extracting: bool) !c.JSVa
     if (!extracting) return c.pi_js_bool(engine.context, @intFromBool(complete));
     return if (complete) sdk.get(engine, event, "messages") else sdk.array(engine);
 }
-fn emitCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return emitEvent(engine, roots[0], if (argc > 0) argv[0] else c.pi_js_undefined()) catch |err| sdk.fail(engine, err);
+pub fn createEmitter(engine: *em.Engine, stream: c.JSValue) !c.JSValue {
+    return returned.createArrow(engine, "", 1, emitEvent, &.{stream}, c.pi_js_undefined());
 }
-fn emitEvent(engine: *em.Engine, stream: c.JSValue, event: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const ignored = js.invoke(engine, stream, "push", &.{event}) catch |err| {
-        try flow.rejectError(engine, pending.owner, err);
-        return pending.promise;
-    };
-    engine.freeValue(ignored);
+fn emitEvent(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return @import("native_agent_af_completion.zig").finishValue(&scope, pushEvent(&scope, args, roots[0]));
+}
+fn pushEvent(scope: *Scope, args: []const c.JSValue, stream: c.JSValue) !c.JSValue {
+    _ = try af_values.invoke(scope, stream, "push", &.{if (args.len > 0) args[0] else c.pi_js_undefined()});
     // The Source async emitter does not await or return stream.push's value.
-    try flow.settle(engine, pending.owner, false, c.pi_js_undefined());
-    return pending.promise;
+    return c.pi_js_undefined();
 }
 fn finishCall(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);

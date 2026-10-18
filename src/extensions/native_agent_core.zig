@@ -32,11 +32,14 @@ pub fn installFoundations(engine: *em.Engine, exports: c.JSValue, runtime: c.JSV
     if (c.JS_SetConstructor(engine.context, constructor, prototype) < 0) return js.capture(engine);
     try scope.put(cache, "constructor", constructor);
     inline for (methods) |entry| {
-        const callback = try scope.own(try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
-        if (entry.async_body) {
-            const parent = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-            if (c.JS_SetPrototype(engine.context, callback, parent) < 0) return js.capture(engine);
-        }
+        const callback = try scope.own(if (comptime entry.async_body) try switch (entry.body) {
+            .prompt => @import("native_agent_prompt_async.zig").create(engine, .prompt),
+            .continueRun => @import("native_agent_prompt_async.zig").create(engine, .continue_run),
+            .runWithLifecycle => @import("native_agent_lifecycle_async.zig").create(engine),
+            .handleRunFailure => @import("native_agent_failure_async.zig").create(engine, usage),
+            .processEvents => @import("native_agent_events_async.zig").create(engine),
+            else => @compileError("Agent async method requires its Source resumable body"),
+        } else try engine.checked(c.pi_js_function_magic(engine.context, method, entry.name, entry.length, @intFromEnum(entry.body))));
         if (c.JS_DefinePropertyValueStr(engine.context, prototype, entry.name, c.JS_DupValue(engine.context, callback), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE) < 0) return js.capture(engine);
     }
     try accessor(engine, prototype, "state", .state, null);

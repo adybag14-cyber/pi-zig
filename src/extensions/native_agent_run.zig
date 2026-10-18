@@ -90,43 +90,12 @@ fn startRun(engine: *em.Engine, owner: c.JSValue, messages: c.JSValue, options: 
     const input = if (c.JS_IsUndefined(options)) try scope.object() else options;
     const agent = try scope.get(owner, "agent");
     const lifecycle = try scope.get(agent, "runWithLifecycle");
-    var roots = [_]c.JSValue{ agent, messages, input, actual_loop };
-    const executor = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, execute, "", 1, @intFromBool(continuing), roots.len, &roots)));
-    const prototype = try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)));
-    if (c.JS_SetPrototype(engine.context, executor, prototype) < 0) return js.capture(engine);
+    const executor = try scope.own(if (continuing)
+        try @import("native_agent_execution_async.zig").createExecutor(engine, true, agent, messages, input, actual_loop)
+    else
+        try @import("native_agent_execution_async.zig").createExecutor(engine, false, agent, messages, input, actual_loop));
     const result = try scope.call(lifecycle, agent, &.{executor});
     try flow.wait(finishVoid, engine, owner, result, 0);
-}
-
-fn execute(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, continuing: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return executeLoop(engine, roots, if (argc > 0) argv[0] else c.pi_js_undefined(), continuing != 0) catch |err| sdk.fail(engine, err);
-}
-
-fn executeLoop(engine: *em.Engine, roots: [*c]c.JSValue, signal: c.JSValue, continuing: bool) !c.JSValue {
-    const pending = try flow.create(engine, roots[0]);
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    callLoop(engine, pending.owner, roots, signal, continuing) catch |err| try flow.rejectError(engine, pending.owner, err);
-    return pending.promise;
-}
-
-fn callLoop(engine: *em.Engine, owner: c.JSValue, roots: [*c]c.JSValue, signal: c.JSValue, continuing: bool) !void {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const agent = roots[0];
-    const snapshot = try scope.invoke(agent, "createContextSnapshot", &.{});
-    const config = try scope.invoke(agent, "createLoopConfig", if (continuing) &.{} else &.{roots[2]});
-    var captures = [_]c.JSValue{agent};
-    const emitter = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, emit, "", 1, 0, captures.len, &captures)));
-    const stream = try scope.get(agent, "streamFunction");
-    const result = if (continuing) try scope.call(roots[3], c.pi_js_undefined(), &.{ snapshot, config, emitter, signal, stream }) else try scope.call(roots[3], c.pi_js_undefined(), &.{ roots[1], snapshot, config, emitter, signal, stream });
-    try flow.wait(finishVoid, engine, owner, result, 0);
-}
-
-fn emit(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return js.invoke(engine, roots[0], "processEvents", &.{if (argc > 0) argv[0] else c.pi_js_undefined()}) catch |err| sdk.fail(engine, err);
 }
 
 fn finishVoid(engine: *em.Engine, owner: c.JSValue, value: c.JSValue, rejected: bool, _: c_int) !void {
