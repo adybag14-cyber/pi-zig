@@ -1,12 +1,12 @@
 //! Full Source factory selection/import helpers. Provider defaults are derived
-//! from latest4dd2 model-resolver.ts; no available-model subset or
+//! from c268154c model-resolver.ts; no available-model subset or
 //! empty Models substitute is used. Config paths remain actual imports.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
-const flow = @import("native_agent_async.zig");
+const initial_model = @import("native_sdk_initial_model.zig");
 const arithmetic = @import("native_image_arithmetic.zig");
 const functions = @import("native_node_function.zig");
 const c = em.c;
@@ -22,8 +22,7 @@ pub fn create(engine: *em.Engine, get_docs_path: c.JSValue, join: c.JSValue) !c.
     inline for (@typeInfo(Body).@"enum".fields) |field| {
         const roots = [_]c.JSValue{ defaults, get_docs_path, join, modifier_function, c.JS_NewInt32(engine.context, field.value) };
         const length = if (field.value == @intFromEnum(Body.getBranchSelection)) 2 else if (field.value == @intFromEnum(Body.formatNoModelsAvailableMessage)) 0 else 1;
-        const function = if (field.value == @intFromEnum(Body.isToolModifier)) modifier_function else try scope.own(try (if (field.value == @intFromEnum(Body.findInitialModel)) functions.createMethod(engine, field.name, length, exported, &roots) else functions.create(engine, field.name, length, exported, &roots)));
-        if (field.value == @intFromEnum(Body.findInitialModel)) if (c.JS_SetPrototype(engine.context, function, try scope.own(try engine.checked(c.JS_GetAsyncFunctionPrototype(engine.context)))) < 0) return js.capture(engine);
+        const function = if (field.value == @intFromEnum(Body.isToolModifier)) modifier_function else try scope.own(try (if (field.value == @intFromEnum(Body.findInitialModel)) initial_model.create(engine, defaults) else functions.create(engine, field.name, length, exported, &roots)));
         try scope.put(exports, field.name, function);
     }
     try scope.put(exports, "applyToolModifiers", try scope.own(try functions.create(engine, "applyToolModifiers", 2, applyModifiers, &.{})));
@@ -44,7 +43,7 @@ fn exported(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []
     const first = if (args.len > 0) args[0] else c.pi_js_undefined();
     const second = if (args.len > 1) args[1] else c.pi_js_undefined();
     const body: Body = @enumFromInt(mode);
-    return if (body == .findInitialModel) initialPromise(engine, first, roots[0]) else run(engine, body, first, second, roots);
+    return run(engine, body, first, second, roots);
 }
 fn applyModifiers(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     return @import("native_sdk_tool_modifiers.zig").apply(engine, if (args.len > 0) args[0] else c.pi_js_undefined(), if (args.len > 1) args[1] else c.pi_js_undefined());
@@ -89,91 +88,6 @@ fn patternCallback(context: ?*c.JSContext, _: c.JSValue, argc: c_int, args: [*c]
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
     return c.JS_DupValue(context, scope.invoke(arg(argc, args, 0), "includes", &.{scope.text("*") catch |err| return sdk.fail(engine, err)}) catch |err| return sdk.fail(engine, err));
-}
-fn initialPromise(engine: *em.Engine, options: c.JSValue, defaults: c.JSValue) !c.JSValue {
-    const pending = try flow.create(engine, c.pi_js_undefined());
-    defer engine.freeValue(pending.owner);
-    errdefer engine.freeValue(pending.promise);
-    const value = findInitial(engine, options, defaults) catch |err| {
-        try flow.rejectError(engine, pending.owner, err);
-        return pending.promise;
-    };
-    defer engine.freeValue(value);
-    try flow.settle(engine, pending.owner, false, value);
-    return pending.promise;
-}
-fn result(scope: *Scope, model: c.JSValue, thinking: c.JSValue) !c.JSValue {
-    const value = try scope.object();
-    try scope.put(value, "model", model);
-    try scope.put(value, "thinkingLevel", thinking);
-    try scope.put(value, "fallbackMessage", c.pi_js_undefined());
-    return value;
-}
-fn findInitial(engine: *em.Engine, options: c.JSValue, defaults: c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const scoped = try scope.get(options, "scopedModels");
-    const continuing = try scope.get(options, "isContinuing");
-    const provider = try scope.get(options, "defaultProvider");
-    const model_id = try scope.get(options, "defaultModelId");
-    const thinking = try scope.get(options, "defaultThinkingLevel");
-    const levels = try scope.get(options, "modelThinkingLevels");
-    const runtime = try scope.get(options, "modelRuntime");
-    const medium = try scope.text("medium");
-    if (try scope.positive(try scope.get(scoped, "length")) and !scope.truthy(continuing)) {
-        const row = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, scoped, 0)));
-        const per_model = if (temp.nullish(levels)) c.pi_js_undefined() else try scope.own(try js.getKey(engine, levels, try scope.concat(try scope.concat(try scope.stringify(try scope.get(try scope.get(row, "model"), "provider")), try scope.text("/")), try scope.stringify(try scope.get(try scope.get(row, "model"), "id")))));
-        const model = try scope.get(row, "model");
-        var chosen = try scope.get(row, "thinkingLevel");
-        if (temp.nullish(chosen)) chosen = per_model;
-        if (temp.nullish(chosen)) chosen = thinking;
-        if (temp.nullish(chosen)) chosen = medium;
-        return c.JS_DupValue(engine.context, try result(&scope, model, chosen));
-    }
-    if (scope.truthy(provider) and scope.truthy(model_id)) {
-        const found = try scope.invoke(runtime, "getModel", &.{ provider, model_id });
-        const configured = if (scope.truthy(found)) configured: {
-            const check = try scope.get(runtime, "hasConfiguredAuth");
-            break :configured scope.truthy(try scope.call(check, runtime, &.{try scope.get(found, "provider")}));
-        } else false;
-        if (configured) {
-            const per_model = if (temp.nullish(levels)) c.pi_js_undefined() else try scope.own(try js.getKey(engine, levels, try scope.concat(try scope.concat(try scope.stringify(provider), try scope.text("/")), try scope.stringify(model_id))));
-            return c.JS_DupValue(engine.context, try result(&scope, found, if (scope.truthy(per_model)) per_model else if (scope.truthy(thinking)) thinking else medium));
-        }
-    }
-    const available = try scope.own(try @import("native_sdk_transcript_replay.zig").arraySpread(engine, try scope.invoke(runtime, "getAvailableSnapshot", &.{}), null));
-    if (try scope.positive(try scope.get(available, "length"))) {
-        const keys = try scope.invoke(try scope.global("Object"), "keys", &.{defaults});
-        var iterator = try js.Iterator.init(engine, keys, try scope.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context))));
-        defer iterator.deinit();
-        errdefer iterator.closePreserving();
-        while (try iterator.next()) |key| {
-            defer engine.freeValue(key);
-            var frame: Scope = .{ .engine = engine };
-            defer frame.deinit();
-            const id = try frame.own(try js.getKey(engine, defaults, key));
-            const find = try frame.get(available, "find");
-            var roots = [_]c.JSValue{ key, id };
-            const predicate = try frame.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, matchesDefault, "", 1, 0, roots.len, &roots)));
-            const match = try frame.call(find, available, &.{predicate});
-            if (frame.truthy(match)) {
-                try iterator.close();
-                return c.JS_DupValue(engine.context, try result(&scope, match, medium));
-            }
-        }
-        return c.JS_DupValue(engine.context, try result(&scope, try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, available, 0))), medium));
-    }
-    return c.JS_DupValue(engine.context, try result(&scope, c.pi_js_undefined(), medium));
-}
-fn matchesDefault(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const row = arg(argc, argv, 0);
-    const provider = scope.get(row, "provider") catch |err| return sdk.fail(engine, err);
-    if (!scope.equal(provider, roots[0])) return c.pi_js_bool(context, 0);
-    const id = scope.get(row, "id") catch |err| return sdk.fail(engine, err);
-    return c.pi_js_bool(context, @intFromBool(scope.equal(id, roots[1])));
 }
 fn selection(scope: *Scope, entry: c.JSValue) !c.JSValue {
     const value = try scope.object();
