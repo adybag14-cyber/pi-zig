@@ -3808,6 +3808,23 @@ pub fn build(b: *std.Build) void {
         chalk_ignore_guest.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-chalk-ignore-guest", "Install actual Chalk and Ignore guest operation controls").dependOn(&b.addInstallArtifact(chalk_ignore_guest, .{ .dest_sub_path = b.fmt("native-sdk-chalk-ignore-guest{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    const cjs_compiler_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_cjs_body_compiler_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS compiler"}, .use_llvm = use_llvm });
+    linkQuickJs(b, cjs_compiler_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(cjs_compiler_tests.root_module, sqlite_lib_dir, sqlite_library);
+    cjs_compiler_tests.root_module.addImport("catalog_tool", catalog_tool);
+    cjs_compiler_tests.root_module.addCSourceFile(.{ .file = b.path("src/native_cjs_allocator_controls.c"), .flags = &.{"-std=gnu11"} });
+    b.step("build-native-cjs-body-compiler", "Compile direct CJS body and detached module syntax controls").dependOn(&b.addInstallArtifact(cjs_compiler_tests, .{}).step);
+    const cjs_metadata_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_cjs_source_metadata_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS metadata"}, .use_llvm = use_llvm });
+    linkQuickJs(b, cjs_metadata_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(cjs_metadata_tests.root_module, sqlite_lib_dir, sqlite_library);
+    cjs_metadata_tests.root_module.addImport("catalog_tool", catalog_tool);
+    cjs_metadata_tests.root_module.addCSourceFile(.{ .file = b.path("src/native_cjs_allocator_controls.c"), .flags = &.{"-std=gnu11"} });
+    b.step("build-native-cjs-source-metadata", "Compile actual lexer metadata and dual-origin ownership controls").dependOn(&b.addInstallArtifact(cjs_metadata_tests, .{}).step);
+    const cjs_raw_provider_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_commonjs_body_compiler_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native CJS raw provider"}, .use_llvm = use_llvm });
+    linkQuickJs(b, cjs_raw_provider_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(cjs_raw_provider_tests.root_module, sqlite_lib_dir, sqlite_library);
+    cjs_raw_provider_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-node-commonjs-raw-body-provider", "Compile actual raw CJS compiler adapter controls").dependOn(&b.addInstallArtifact(cjs_raw_provider_tests, .{}).step);
 
 }
 
