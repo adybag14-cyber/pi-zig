@@ -3655,6 +3655,23 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-package-reader", "Install twenty-one declared actual package reader and native path controls without running").dependOn(&b.addInstallArtifact(node_package_reader, .{ .dest_sub_path = b.fmt("native-node-package-reader{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Real FS binding-owned stat arrays, SafeSet and internal realm. Install
+    // only; no metadata, guest script or native runtime is launched here.
+    const node_fs_primitives = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_primitives_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native fs primitives"},
+    });
+    linkQuickJs(b, node_fs_primitives.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_fs_primitives.root_module, typescript_parser);
+    linkSqlite(node_fs_primitives.root_module, sqlite_lib_dir, sqlite_library);
+    node_fs_primitives.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_fs_primitives.root_module.linkSystemLibrary("advapi32", .{});
+        node_fs_primitives.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-fs-primitives", "Install ten declared actual filesystem binding primitive controls without running").dependOn(&b.addInstallArtifact(node_fs_primitives, .{ .dest_sub_path = b.fmt("native-node-fs-primitives{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

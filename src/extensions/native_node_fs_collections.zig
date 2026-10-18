@@ -1,5 +1,5 @@
 // Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
-//! The actual primordials makeSafe(Map,class SafeMap extends Map {}) subset.
+//! The actual primordials makeSafe Map and Set subclasses.
 //! Iterator probes retain Source call order and one shared captured next method.
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
@@ -7,12 +7,15 @@ const Scope = @import("native_node_operation_scope.zig").Scope;
 const functions = @import("native_node_module_callable.zig");
 const classes = @import("native_node_fs_class.zig");
 const publication = @import("native_node_fs_private_publication.zig");
-const cache_key = "\x00native.fs.SafeMap";
-fn constructMap(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var s = Scope.init(engine);
-    return s.finish(constructMapBody(&s, target, args, roots[0]));
+const Collection = enum { map, set };
+fn cacheKey(comptime collection: Collection) []const u8 {
+    return if (collection == .map) "\x00native.fs.SafeMap" else "\x00native.fs.SafeSet";
 }
-fn constructMapBody(s: *Scope, target: c.JSValue, args: []const c.JSValue, map: c.JSValue) !c.JSValue {
+fn constructCollection(engine: *v.em.Engine, target: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s = Scope.init(engine);
+    return s.finish(constructCollectionBody(&s, target, args, roots[0]));
+}
+fn constructCollectionBody(s: *Scope, target: c.JSValue, args: []const c.JSValue, map: c.JSValue) !c.JSValue {
     try s.pending();
     return c.JS_DupValue(s.engine.context, try s.checked(c.JS_CallConstructor2(s.engine.context, map, target, @intCast(args.len), @constCast(args.ptr))));
 }
@@ -195,18 +198,19 @@ fn copy(s: *Scope, from: c.JSValue, to: c.JSValue, prototype_copy: bool, state: 
     }
     for (keys.values[0..keys.count]) |key| try copyProperty(s.engine, from, to, key.atom, prototype_copy, state, symbol);
 }
-fn acquireBody(s: *Scope) !c.JSValue {
+fn acquireBody(s: *Scope, comptime collection: Collection) !c.JSValue {
+    const cache_key = cacheKey(collection);
     try s.pending();
     if (s.engine.native_module_values.get(cache_key)) |known| return c.JS_DupValue(s.engine.context, known);
     const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
-    const map = try s.get(global, "Map");
+    const map = try s.get(global, if (collection == .map) "Map" else "Set");
     const unsafe_prototype = try s.get(map, "prototype");
     const symbol_value = try s.get(try s.get(global, "Symbol"), "iterator");
     const symbol = try v.js.atom(s.engine, symbol_value);
     defer c.JS_FreeAtom(s.engine.context, symbol);
     try s.pending();
     const prototype_value = try s.objectProto(unsafe_prototype);
-    const constructor_value = try s.own(try classes.constructor(s.engine, "SafeMap", 0, prototype_value, constructMap, &.{map}));
+    const constructor_value = try s.own(try classes.constructor(s.engine, if (collection == .map) "SafeMap" else "SafeSet", 0, prototype_value, constructCollection, &.{map}));
     try setPrototype(s, constructor_value, map);
     if (try condition(s.engine, prototypeHas, .{ map, symbol })) {
         var state: IteratorState = .{ .parent = s, .dummy = try s.construct(map, &.{}) };
@@ -218,9 +222,10 @@ fn acquireBody(s: *Scope) !c.JSValue {
     try freeze(s, constructor_value);
     return c.JS_DupValue(s.engine.context, constructor_value);
 }
-pub fn acquireSafeMap(engine: *v.em.Engine) !c.JSValue {
+fn acquire(engine: *v.em.Engine, comptime collection: Collection) !c.JSValue {
+    const cache_key = cacheKey(collection);
     var s = Scope.init(engine);
-    const result = try s.finish(acquireBody(&s));
+    const result = try s.finish(acquireBody(&s, collection));
     if (engine.native_module_values.get(cache_key)) |known| {
         // Construction may have reentered and completed the actual owner.
         // Select its identity before the losing candidate can retire.
@@ -230,3 +235,6 @@ pub fn acquireSafeMap(engine: *v.em.Engine) !c.JSValue {
     }
     return publication.publish(engine, cache_key, result);
 }
+
+pub fn acquireSafeMap(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .map); }
+pub fn acquireSafeSet(engine: *v.em.Engine) !c.JSValue { return acquire(engine, .set); }

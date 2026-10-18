@@ -1,0 +1,10 @@
+{
+  "source_url": "https://raw.githubusercontent.com/nodejs/node/v24.13.0/lib/internal/util.js",
+  "source_body_sha256": "ebd5e67c4b31e484b157239f7a7e38cbe29f175afb53d2b95e19acc2520d43b5",
+  "retrieved_at": "2026-10-18T19:26:54.051Z",
+  "excerpt_file": "internal-util-side-effect-free-regexp.excerpt.js.txt",
+  "excerpt_start_byte": 19874,
+  "excerpt_end_byte": 24374,
+  "authority": "Node.js v24.13.0 internal/util.js getInternalGlobal and SideEffectFreeRegExpPrototypeExec; Node LICENSE retained",
+  "scope": "Source-only. No runtime observation or execution was performed for this unit."
+}
