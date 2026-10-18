@@ -104,9 +104,9 @@ pub const Boundary = struct {
     /// Args owner rollback uses this SAME stable frame before finishRetired.
     pub fn retire(self:*Boundary,host_error:?anyerror,scope:*v.Scope,values:[]c.JSValue)void{
         self.start();self.observe(null);
-        if(host_error==error.JavaScriptException and self.reason==null)self.escaping();
+        if(host_error) |err| { if(err==error.JavaScriptException and self.reason==null)self.escaping(); }
         // A trusted direct host allocation failure precedes root retirement.
-        if(host_error==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);}
+        if(host_error) |err| { if(err==error.OutOfMemory and !self.fatal){_=self.engine.throwNativeOutOfMemoryFatal();self.observe(null);} }
         const count=scope.inline_count;scope.inline_count=0;for(scope.inline_values[0..count])|*value|self.release(value);
         const dynamic=scope.values.items;scope.values.items=dynamic[0..0];for(dynamic)|*value|self.release(value);
         const generation=self.engine.native_allocation_generation;scope.values.deinit(self.engine.gpa);self.observe(generation);

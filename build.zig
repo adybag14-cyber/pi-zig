@@ -2119,6 +2119,7 @@ pub fn build(b: *std.Build) void {
             .target = target,
             .optimize = optimize,
         }),
+        .filters = &.{ "AI auth helper genuine AF", "AI auth successor" },
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, ai_auth_helper_genuine_af.root_module, quickjs, sqlite_lib_dir);
@@ -2138,6 +2139,7 @@ pub fn build(b: *std.Build) void {
             .target = target,
             .optimize = optimize,
         }),
+        .filters = &.{ "Anthropic actual auth" },
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, ai_anthropic_auth_genuine_af.root_module, quickjs, sqlite_lib_dir);
@@ -3803,6 +3805,7 @@ pub fn build(b: *std.Build) void {
     // Actual Node guest-operation controls; installed only until runtime grant.
     const node_operation_boundary = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_operation_boundary_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "native Node operation", "native Node callable", "native Node constructor", "native Node Scope" },
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, node_operation_boundary.root_module, quickjs, sqlite_lib_dir);
@@ -3817,6 +3820,7 @@ pub fn build(b: *std.Build) void {
 
     const chalk_ignore_guest = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_chalk_ignore_guest_guard_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{ "native private Chalk Ignore", "native genuine private Chalk Ignore" },
         .use_llvm = use_llvm,
     });
     linkQuickJs(b, chalk_ignore_guest.root_module, quickjs, sqlite_lib_dir);
