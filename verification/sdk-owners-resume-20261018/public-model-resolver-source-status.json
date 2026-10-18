@@ -1,0 +1,198 @@
+{
+  "schema": "pi-zig.source-unit-status.v1",
+  "unit": "actual-public-model-resolver",
+  "date": "2026-10-18",
+  "owner": "sdk_owners",
+  "worktree": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018",
+  "base_head": "86ed092101bfed39d8b5106002f018ad54ceb75b",
+  "status": "source-ready after bounded peers; not compiled or run",
+  "public_exports": [
+    "resolveCliModel",
+    "resolveModelScopeWithDiagnostics"
+  ],
+  "constructor": "native_sdk_public_model_resolver.create(engine, Inputs{thinking: actual retained CLI isValidThinkingLevel binding})",
+  "actual_owners": [
+    "The application retains native_public_cli_args.create(engine) once and supplies its exact isValidThinkingLevel binding.",
+    "The factory retains the real native_sdk_factory_model.defaultModelPerProvider object, native_ai_model_values.modelsAreEqual, and native_minimatch_namespace.minimatch.",
+    "resolveCliModel is an ordinary function with its actual body and arity 1.",
+    "resolveModelScopeWithDiagnostics is a genuine native_async_body function with arity 3 and one Source Await around runtime.getAvailable(undefined, options).",
+    "The private completed export record is published only after staged ownership has finished, with reentrant cache selection and a single cache transfer."
+  ],
+  "authority": {
+    "upstream_commit": "c268154c",
+    "resolver": {
+      "path": "verification/sdk-owners-resume-20261018/model-resolver.c268.ts.txt",
+      "sha256": "d624526fa0b8d66a5208c868097b8e724308130c9b5137d8ed7156dae5548a91"
+    },
+    "models": {
+      "path": "verification/sdk-owners-resume-20261018/ai-models.c268.ts.txt",
+      "sha256": "c10385291e4e79dc3ea5301629288a35cac354f8a3635c07f9312608c269f573"
+    },
+    "fixture_policy": "The strict Source factory copies the selected c268 bodies with TypeScript annotations erased. It receives the real shared imported owners. This isolates resolver caller semantics and does not qualify the full matcher dependency."
+  },
+  "files": [
+    {
+      "path": "src/extensions/native_sdk_model_reference_live.zig",
+      "bytes": 35335,
+      "sha256": "bc9842e89de7def31db2d2ac77359f811144482be70e007aa163edb221845e43"
+    },
+    {
+      "path": "src/extensions/native_sdk_public_model_cli.zig",
+      "bytes": 10382,
+      "sha256": "880f1b66707eb7a37152edda55dc96802baaa6e51cf7b3faf3172a588c8e98f3"
+    },
+    {
+      "path": "src/extensions/native_sdk_public_model_scope.zig",
+      "bytes": 14514,
+      "sha256": "699b2d643a0dc2a81f15740bf944ced083d67bced55ede3c0c5eca67df171402"
+    },
+    {
+      "path": "src/extensions/native_sdk_public_model_resolver.zig",
+      "bytes": 3686,
+      "sha256": "cab9bef1fa3faf51e125c606d9dcdda6954ff5cc7b6bb6b852bdac03e1aa94fd"
+    },
+    {
+      "path": "src/extensions/native_ai_model_values.zig",
+      "bytes": 8633,
+      "sha256": "572bdbd9b5f555774110ef02239f99c5e87a0d11f76f059aa05a4bb52e21ddf7"
+    },
+    {
+      "path": "src/extensions/native_sdk_factory_model.zig",
+      "bytes": 6718,
+      "sha256": "c5318978b99c8b0a008a719ed18d77dd756832cb9b794d136b39d1997851e803"
+    },
+    {
+      "path": "src/native_sdk_public_model_resolver_test.zig",
+      "bytes": 8200,
+      "sha256": "d22b86d939c4a5464d592a770442beb1edf22373aa1d5b54a5a7ef5f24ea550b"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-model-resolver-c268-source.mjs",
+      "bytes": 12327,
+      "sha256": "7ebcf86acf57112104e4986ef2c3b9b03d6e55dbf243b156e37101e0af90b1ca"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-public-model-resolver-observer.mjs",
+      "bytes": 15768,
+      "sha256": "58d95e3a948b83349c46f189c1cc156ace3e79016fea3f0879b8250317a6169e"
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/model-resolver.c268.ts.txt",
+      "bytes": 25183,
+      "sha256": "d624526fa0b8d66a5208c868097b8e724308130c9b5137d8ed7156dae5548a91"
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/ai-models.c268.ts.txt",
+      "bytes": 46697,
+      "sha256": "c10385291e4e79dc3ea5301629288a35cac354f8a3635c07f9312608c269f573"
+    }
+  ],
+  "build": {
+    "path": "build.zig",
+    "bytes": 384290,
+    "sha256": "e70f25eaf2950a5f7a73825bc0141c70cd6ce2f0c894260d1d4022db4c3a7cfd",
+    "delta_lines": 13,
+    "step": "build-native-sdk-public-model-resolver",
+    "executable_basename": "native-sdk-public-model-resolver.exe",
+    "kind": "install-only; no runtime build step",
+    "root": "src/native_sdk_public_model_resolver_test.zig",
+    "filter": "SDK public model resolver",
+    "declared_test_count": 16,
+    "declared_test_names": [
+      "SDK public model resolver actual ordinary async shapes and cached owner identity",
+      "SDK public model resolver actual provider ties inline keys and alias preference",
+      "SDK public model resolver actual colon ids and recursive thinking suffixes",
+      "SDK public model resolver actual custom fallback and shared mutable defaults",
+      "SDK public model resolver actual option getter order and optional name chain",
+      "SDK public model resolver actual BindingPattern receiver identity and retirement",
+      "SDK public model resolver actual one Await and live runtime call arguments",
+      "SDK public model resolver actual scoped caller matching warnings and deduplication",
+      "SDK public model resolver actual ordinary private DATA from call and Await rejection",
+      "SDK public model resolver actual outer IteratorClose and next failure",
+      "SDK public model resolver actual pattern head survives next done and retires on return",
+      "SDK public model resolver actual nested id receiver retires before provider getter",
+      "SDK public model resolver actual Set receiver retires before size coercion",
+      "SDK public model resolver actual retirement B blocks the next provider getter",
+      "SDK public model resolver actual current B bypasses Await handlers",
+      "SDK public model resolver actual cancellation after head assignment blocks guest progress"
+    ],
+    "metadata": "Not queried. Imported anonymous metadata roots and storage must be read from the actual compiled executable before a Root runtime grant.",
+    "intake": "Append only this target (12 statements/comment lines plus one blank line) to the current Root build.zig, preserving all newer group registrations."
+  },
+  "prerequisites": [
+    {
+      "path": "src/extensions/native_public_values.zig",
+      "sha256": "31178adb24033b123c8de22cfd7ee3981f8b993e8c2f4ca6563510a5e66fa1ad",
+      "ownership": "Root/VM; untracked exact dependency copy in this worktree; exclude from this commit"
+    },
+    {
+      "path": "src/extensions/native_public_cli_args.zig",
+      "sha256": "4c30acad411fe7ddbd5f36d6b06c197aed6c30470b795e67ba9a0788530a6acf",
+      "ownership": "Root/VM; untracked exact dependency copy in this worktree; exclude from this commit"
+    },
+    {
+      "path": "src/extensions/native_sdk_guest_operation.zig",
+      "sha256": "af33d462d6b1573db869e5f583a289ea105b6c1cf910948e418fbe85834dbd8c",
+      "ownership": "Canonical shared AF33"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "c4354fae45db2c30e64ec8161c3f9e5ee7c27d73c3db53f8ed4e79515368e04f",
+      "ownership": "Canonical shared C435"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_locals.zig",
+      "sha256": "2e530fc843e99654a3f72f05207e04a5f77e3713d7d9d19b26117a46d7ec9064",
+      "ownership": "Existing actual Session unit"
+    },
+    {
+      "path": "src/native_sdk_initial_model_retirement_controls.zig",
+      "ownership": "Existing actual C-retirement controls; imported by the new test root"
+    }
+  ],
+  "bounded_peers": [
+    {
+      "reviewer": "vm_foundation",
+      "scope": "reference selection, provider decisions, fuzzy selection and explicit recursion return ownership",
+      "status": "closed with one concrete correction",
+      "reviewed_sha256": "bc9842e89de7def31db2d2ac77359f811144482be70e007aa163edb221845e43",
+      "correction": "providerSize finishes the new-Set receiver before size comparison/coercion; exact successor BC9842E8 read and accepted"
+    },
+    {
+      "reviewer": "vm_foundation",
+      "scope": "CLI/scoped entry bodies, one Await, loop-slot ordering and authored controls",
+      "status": "closed with one concrete correction",
+      "correction": "BindingPattern ToObject is performed once around all five ordered assignments and the boxed receiver retires before the following statement. An actual primitive-options receiver/holder control was added and independently source-reviewed.",
+      "reviewed_cli_sha256": "880f1b66707eb7a37152edda55dc96802baaa6e51cf7b3faf3172a588c8e98f3",
+      "reviewed_scope_sha256": "699b2d643a0dc2a81f15740bf944ced083d67bced55ede3c0c5eca67df171402",
+      "reviewed_factory_sha256": "cab9bef1fa3faf51e125c606d9dcdda6954ff5cc7b6bb6b852bdac03e1aa94fd",
+      "reviewed_test_sha256": "d22b86d939c4a5464d592a770442beb1edf22373aa1d5b54a5a7ef5f24ea550b",
+      "reviewed_observer_sha256": "58d95e3a948b83349c46f189c1cc156ace3e79016fea3f0879b8250317a6169e"
+    }
+  ],
+  "qualification": {
+    "source_diff_check": "Tracked git diff --check passed; staged acceptance is recorded with the commit intake.",
+    "compilation": "not executed",
+    "metadata": "not queried",
+    "runtime": "not executed",
+    "full_roadmap_complete": false
+  },
+  "open_requirements": [
+    {
+      "id": "source-stack-overflow-equivalence",
+      "detail": "The native explicit activation stack implements recursive return/unwind without native C recursion. Linked custom-class calls do not enter JS_CallBytecode's Source stack reservation, and no approved Source stack-budget owner is available. No arbitrary cutoff is introduced. Source stack-overflow equivalence remains required before full resolver equivalence is claimed."
+    },
+    {
+      "id": "minimatch-full-contract",
+      "detail": "The real existing matcher owner is used. Its full package/resource/prototype contract is not certified by this caller unit; selected simple glob and bracket-exact controls do not close the known dependency gaps."
+    },
+    {
+      "id": "combined-owner-qualification",
+      "detail": "The source unit still requires Root integration, actual compile metadata audit and independently granted runtime qualification."
+    },
+    {
+      "id": "full-public-index",
+      "detail": "These two entries are ready for genuine application composition after qualification; the remaining public index and application owners remain separate unfinished work."
+    }
+  ]
+}

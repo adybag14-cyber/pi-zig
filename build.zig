@@ -4059,6 +4059,19 @@ pub fn build(b: *std.Build) void {
     sdk_public_session.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { sdk_public_session.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_session.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-public-session-helpers", "Install actual public Session helper and real owner controls without execution").dependOn(&b.addInstallArtifact(sdk_public_session, .{ .dest_sub_path = b.fmt("native-sdk-public-session-helpers{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);    // Actual Node package reader and native filesystem controls. Installation
+    // Actual public model resolver caller controls; no runtime step is added.
+    const sdk_public_models = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_public_model_resolver_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK public model resolver"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_models.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_models.root_module, typescript_parser);
+    linkSqlite(sdk_public_models.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_models.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_public_models.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_models.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-public-model-resolver", "Install actual public model resolver caller controls without execution").dependOn(&b.addInstallArtifact(sdk_public_models, .{ .dest_sub_path = b.fmt("native-sdk-public-model-resolver{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
     // only; metadata and runtime require Root's separately bounded controller.
     const node_package_reader = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_package_reader_test.zig"), .target = target, .optimize = optimize }),

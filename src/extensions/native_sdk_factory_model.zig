@@ -1,9 +1,11 @@
 //! Factory initial-model subset of the original findInitialModel algorithm.
-//! Provider defaults follow actual model-resolver.ts at upstream8efd314f.
+//! Provider defaults follow actual model-resolver.ts at c268154c.
 const em = @import("engine.zig");
 const sdk = @import("native_sdk.zig");
 const js = @import("native_js_values.zig");
 const c = em.c;
+const live = @import("native_sdk_session_locals.zig");
+const pv = live.v;
 const default_map_key = "\x00actual-sdk-default-model-per-provider";
 extern "c" fn JS_GetIteratorSymbol(context: ?*c.JSContext) c.JSValue;
 const defaults = .{
@@ -52,20 +54,26 @@ const defaults = .{
 /// The exported mutable module binding is shared by every factory namespace.
 pub fn defaultModelPerProvider(engine: *em.Engine) !c.JSValue {
     if (engine.native_module_values.get(default_map_key)) |cached| return c.JS_DupValue(engine.context, cached);
-    const result = try js.object(engine);
-    errdefer engine.freeValue(result);
-    inline for (defaults) |entry| {
-        const value = try sdk.text(engine, entry[1]);
-        defer engine.freeValue(value);
-        try js.define(engine, result, entry[0], c.JS_DupValue(engine.context, value));
+    const candidate = try live.expression(engine, defaultMapBody, .{});
+    if (engine.native_module_values.get(default_map_key)) |cached| {
+        var completed = pv.owned.Completion.initValue(engine, c.JS_DupValue(engine.context, cached));
+        completed.release(candidate);
+        return completed.finishValue();
     }
-    const retained = c.JS_DupValue(engine.context, result);
-    engine.native_module_values.put(engine.gpa, default_map_key, retained) catch |err| {
-        engine.freeValue(retained);
-        return err;
+    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
+        var failed = pv.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
+        failed.release(candidate);
+        return failed.finishValue();
     };
-    return result;
+    engine.native_module_values.putAssumeCapacity(default_map_key, candidate);
+    return c.JS_DupValue(engine.context, candidate);
 }
+fn defaultMapBody(scope: *pv.Scope) !c.JSValue {
+    const result = try pv.object(scope);
+    inline for (defaults) |entry| try pv.put(scope, result, entry[0], try pv.text(scope, entry[1]));
+    return pv.duplicate(scope, result);
+}
+
 pub fn select(engine: *em.Engine, runtime: c.JSValue, settings: c.JSValue) !c.JSValue {
     const provider = try js.invoke(engine, settings, "getDefaultProvider", &.{});
     defer engine.freeValue(provider);

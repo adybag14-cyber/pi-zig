@@ -7,6 +7,8 @@ const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const arithmetic = @import("native_image_arithmetic.zig");
 const c = em.c;
+const live = @import("native_sdk_session_locals.zig");
+const pv = live.v;
 pub fn extended(scope: *Scope) !c.JSValue {
     const values = try scope.array();
     inline for (.{ "off", "minimal", "low", "medium", "high", "xhigh", "max" }, 0..) |name, index| try scope.index(values, index, try scope.text(name));
@@ -14,39 +16,63 @@ pub fn extended(scope: *Scope) !c.JSValue {
 }
 pub fn bindings(engine: *em.Engine) !c.JSValue {
     if (engine.native_ai_model_values) |cached| return c.JS_DupValue(engine.context, cached);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const levels = try extended(&scope);
-    const exports = try scope.object();
+    const candidate = try live.expression(engine, bindingsBody, .{});
+    // Guest-visible function creation may reenter this real module owner.
+    if (engine.native_ai_model_values) |cached| {
+        var completion = pv.owned.Completion.initValue(engine, c.JS_DupValue(engine.context, cached));
+        completion.release(candidate);
+        return completion.finishValue();
+    }
+    engine.native_ai_model_values = candidate;
+    return c.JS_DupValue(engine.context, candidate);
+}
+fn bindingsBody(scope: *pv.Scope) !c.JSValue {
+    const levels = try pv.array(scope);
+    inline for (.{ "off", "minimal", "low", "medium", "high", "xhigh", "max" }, 0..) |name, index|
+        try pv.index(scope, levels, index, try pv.text(scope, name));
+    const exports = try pv.object(scope);
     inline for (.{ "getSupportedThinkingLevels", "clampThinkingLevel", "modelsAreEqual" }, 0..) |name, index| {
         const Adapter = struct {
-            fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, values: []const c.JSValue) !c.JSValue {
+            fn call(host: *em.Engine, _: c.JSValue, args: []const c.JSValue, captures: []const c.JSValue) !c.JSValue {
                 host.native_exception_diagnostics_suppressed += 1;
                 defer host.native_exception_diagnostics_suppressed -= 1;
-                const first = if (args.len > 0) args[0] else c.pi_js_undefined();
-                const second = if (args.len > 1) args[1] else c.pi_js_undefined();
+                const first = pv.arg(args, 0);
+                const second = pv.arg(args, 1);
                 return switch (index) {
-                    0 => supported(host, values[0], first),
-                    1 => clamp(host, values[0], first, second),
+                    0 => supported(host, captures[0], first),
+                    1 => clamp(host, captures[0], first, second),
                     else => c.pi_js_bool(host.context, @intFromBool(try equal(host, first, second))),
                 };
             }
         };
-        try scope.put(exports, name, try scope.own(try @import("native_node_function.zig").create(engine, name, if (index == 0) 1 else 2, Adapter.call, &.{levels})));
+        try pv.put(scope, exports, name, try pv.ordinary(scope, name, if (index == 0) 1 else 2, Adapter.call, &.{levels}));
     }
-    engine.native_ai_model_values = c.JS_DupValue(engine.context, exports);
-    return c.JS_DupValue(engine.context, exports);
+    return pv.duplicate(scope, exports);
 }
+
 pub fn modelType(scope: *Scope, model: c.JSValue) !c.JSValue {
     const value = try scope.get(model, "type");
     return if (temp.nullish(value)) scope.text("chat") else value;
 }
 pub fn equal(engine: *em.Engine, left: c.JSValue, right: c.JSValue) !bool {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    if (!scope.truthy(left) or !scope.truthy(right)) return false;
-    return scope.equal(try modelType(&scope, left), try modelType(&scope, right)) and scope.equal(try scope.get(left, "id"), try scope.get(right, "id")) and scope.equal(try scope.get(left, "provider"), try scope.get(right, "provider"));
+    if (!live.truthy(engine, left) or !live.truthy(engine, right)) return false;
+    if (!live.truthy(engine, try live.expression(engine, typeEqual, .{ left, right }))) return false;
+    if (!live.truthy(engine, try live.expression(engine, fieldEqual, .{ left, right, @as([*:0]const u8, "id") }))) return false;
+    return live.truthy(engine, try live.expression(engine, fieldEqual, .{ left, right, @as([*:0]const u8, "provider") }));
 }
+fn typeValue(scope: *pv.Scope, model: c.JSValue) !c.JSValue {
+    const value = try pv.get(scope, model, "type");
+    return pv.duplicate(scope, if (pv.nullish(value)) try pv.text(scope, "chat") else value);
+}
+fn typeEqual(scope: *pv.Scope, left: c.JSValue, right: c.JSValue) !c.JSValue {
+    const left_type = try pv.own(scope, try live.expression(scope.engine, typeValue, .{left}));
+    const right_type = try pv.own(scope, try live.expression(scope.engine, typeValue, .{right}));
+    return pv.boolean(scope, pv.equal(scope, left_type, right_type));
+}
+fn fieldEqual(scope: *pv.Scope, left: c.JSValue, right: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return pv.boolean(scope, pv.equal(scope, try pv.get(scope, left, name), try pv.get(scope, right, name)));
+}
+
 fn supported(engine: *em.Engine, levels: c.JSValue, model: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
     defer scope.deinit();
