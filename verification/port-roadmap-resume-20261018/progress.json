@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "0353607f8b5727e8022b93a478de3128f8f6bdd8",
+  "current_source_head_at_record": "e38b12dfaa107698347dd7f71af08bd159e7633f",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T22:14:55.797955+00:00",
-  "record_note": "Active implementation. Fresh V6 independently closed after print18, child12 and RPC35 metadata, with a single OpenRouter test-support compile error. The one-line typed-host-error guard correction is committed without changing any declared control. No partial batch/runtime acceptance. Confirmed native AF terminal arguments/locals ordering and cached iterator-next cleanup corrections are being authored and reviewed before the next fresh qualification; remaining application and release work stays open.",
+  "updated_utc": "2026-10-18T22:46:50Z",
+  "record_note": "Active implementation. Branch preparation18, Node argument21, shared iterator/Meta17, four owned text returns, and C terminal-order/actual arrow receiver9 are integrated. Fresh V6 remains a preserved compiler negative with no partial runtime acceptance. An optional terminal state-close hook plus the active escaped-frame coroutine edge is under implementation. Exact linked-C untagged templates use live concat before raw substitutions; affected provider, SDK and Node template paths are reopened for a canonical correction and actual Source controls. Whole application, default bridge, platforms and release remain open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -58,7 +58,11 @@
     "Actual Node inspector entry, primitive implementation and canonical operation owner integrateda26e6ca0 fromd6e3605a, with13 controls, both finite peers and preserved Node24.13.0 authority. Full util/exotic/layout and independent Source observer capture remain open.",
     "Public compaction create/extract/list/format FileOps integrated7fc1bc69d61a1f04d39000c6fa6ba92097376cba fromd0aa1d84, with16 Source-based controls, actual C ArrayAppend dependency and finite production/control peer closure.",
     "V10 exact two-site socket owner pointer comparison successor3d63cce3 integrated399b500e; only explicit casts of the same owner address changed. No target/count/runtime change.",
-    "Fresh V6 compiler-only OpenRouter order-probe guard correction integrated 0353607f8b5727e8022b93a478de3128f8f6bdd8; support197BB431. Both supported holder slots and all17 existing controls unchanged."
+    "Fresh V6 compiler-only OpenRouter order-probe guard correction integrated 0353607f8b5727e8022b93a478de3128f8f6bdd8; support197BB431. Both supported holder slots and all17 existing controls unchanged.",
+    "Root iterator cached-next correction ecc4b68d, four owned text-return corrections cda4f948, and actual abrupt iterator retirement 0870cb7e are integrated. Meta retains all15 prior declarations and adds normal/abrupt cached-next actual retirement controls for17. Shared PublicValues0B1BB422 uses original-Throw Completion retirement before IteratorClose; both finite peers closed.",
+    "Actual Node argument errors e74d7915 integrated9e253323 with21 controls and actual Node24.13.0 internal authority; source observer capture remains unexecuted. Its template paths are reopened after exact linked-C concat behavior was found.",
+    "Actual C terminal argument-before-local retirement3892188 integratedd7cf0a13, then actual async arrow call receiver retentione48d29e1 integratede38b12df with9 retained/appended controls. C73887516 and header959BA37D remain unexecuted at this combined head. Optional terminal captured-frame closure and active coroutine retention follow separately.",
+    "Actual public branch collection/preparation22011894 integratedb82df238 with18 Source-based controls and finite peers. Build-only conflict was resolved using exact current Main plus13 additive registration lines; all earlier targets were retained. Genuine summary producer and full SDK composition remain open."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -449,12 +453,12 @@
     }
   ],
   "next_native_batch": {
-    "status": "awaiting_terminal_runtime_and_iterator_source_successors",
+    "status": "awaiting_optional_terminal_frame_hook_and_template_corrections",
     "mode": "BuildQuery",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "independent_auditor_sha256": "E2077AABA34ED94A94085AE9B773BF38003F984EDC9E7813AECC284567926CFB",
+    "independent_auditor_sha256": null,
     "qualification_requested": true,
     "runtime_requested": false,
-    "scope": "Retain all39 groups and513 named controls, add source-reviewed terminal ownership and iterator controls plus other completed units; fresh changed-vendor build/query, independent raw metadata audit, then separate exact-artifact runtime."
+    "scope": "Retain all39 prior groups/513 named controls. Current integrated successors would produce42 groups/563 named controls (Meta+2, native async retirement9, Node argument21, SDK branch18). Exact final matrix also includes any reviewed hook/template/FS successors. Fresh changed-vendor build/query, independent complete raw metadata/artifact audit, then separate exact-artifact runtime; no runtime implied by source declarations."
   }
 }
