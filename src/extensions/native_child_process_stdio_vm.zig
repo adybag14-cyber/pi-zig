@@ -12,7 +12,7 @@ pub const Inputs = struct {
 };
 fn arg(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn equal(scope: *Scope, value: c.JSValue, text: []const u8) !bool { return scope.equal(value, try scope.text(text)); }
-fn length(scope: *Scope, array: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &value, try scope.get(array, "length")) < 0) return js.capture(scope.engine); try frontier.pending(scope.engine); return value; }
+fn length(scope: *Scope, array: c.JSValue) !u32 { var value: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &value, try scope.get(array, "length")) < 0) return @as(anyerror!u32, js.capture(scope.engine)); try frontier.pending(scope.engine); return value; }
 fn element(scope: *Scope, array: c.JSValue, index: u32) !c.JSValue { return scope.getIndex(array, index); }
 fn cleanup(scope: *Scope, array: c.JSValue) !void {
     var index: u32 = 0;
@@ -25,7 +25,7 @@ fn cleanup(scope: *Scope, array: c.JSValue) !void {
     }
 }
 fn wrap(scope: *Scope, value: c.JSValue, brand: c.JSValue) !bool {
-    var id: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &id, brand) < 0) return js.capture(scope.engine);
+    var id: u32 = 0; if (c.JS_ToUint32(scope.engine.context, &id, brand) < 0) return @as(anyerror!bool, js.capture(scope.engine));
     const state: *pipe.State = @ptrCast(@alignCast(c.JS_GetOpaque(value, id) orelse return false));
     return state.engine == scope.engine and scope.equal(state.handle, value);
 }
@@ -33,7 +33,7 @@ fn invalid(engine: *js.Engine, code: []const u8, message: []const u8) anyerror {
 fn reduce(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err);
     const accumulator = arg(args, 0); var value = arg(args, 1); const index_value = arg(args, 2);
-    var index: u32 = 0; if (c.JS_ToUint32(engine.context, &index, index_value) < 0) return js.capture(engine);
+    var index: u32 = 0; if (c.JS_ToUint32(engine.context, &index, index_value) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
     if (c.JS_IsNull(value) or c.JS_IsUndefined(value)) value = try scope.text(if (index < 3) "pipe" else "ignore");
     var descriptor: c.JSValue = undefined;
     if (try equal(&scope, value, "ignore")) {
@@ -68,8 +68,8 @@ fn reduce(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, roots: []co
         } else {
             const view = scope.truthy(try scope.call(roots[3], c.pi_js_undefined(), &.{value}));
             try cleanup(&scope, accumulator);
-            if (view or c.JS_IsString(value)) return invalid(engine, "ERR_INVALID_SYNC_FORK_INPUT", "Asynchronous child stdio cannot contain input data");
-            return invalid(engine, "ERR_INVALID_ARG_VALUE", "Invalid child stdio value");
+            if (view or c.JS_IsString(value)) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_SYNC_FORK_INPUT", "Asynchronous child stdio cannot contain input data"));
+            return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_VALUE", "Invalid child stdio value"));
         }
     }
     _ = try scope.call(roots[2], accumulator, &.{descriptor});
@@ -82,11 +82,11 @@ pub fn normalize(engine: *js.Engine, supplied: c.JSValue, inputs: Inputs) !c.JSV
     if (inputs.pipes.engine != engine) return error.NativePipeRecordOwner;
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); var stdio = supplied;
     if (c.JS_IsString(stdio)) {
-        if (!(try equal(&scope, stdio, "pipe")) and !(try equal(&scope, stdio, "ignore")) and !(try equal(&scope, stdio, "inherit")) and !(try equal(&scope, stdio, "overlapped"))) return invalid(engine, "ERR_INVALID_ARG_VALUE", "Invalid child stdio shortcut");
+        if (!(try equal(&scope, stdio, "pipe")) and !(try equal(&scope, stdio, "ignore")) and !(try equal(&scope, stdio, "inherit")) and !(try equal(&scope, stdio, "overlapped"))) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_VALUE", "Invalid child stdio shortcut"));
         const shortcut = stdio; stdio = try scope.array();
         if (try equal(&scope, shortcut, "inherit")) _ = try scope.call(inputs.array_push, stdio, &.{ c.JS_NewInt32(engine.context, 0), c.JS_NewInt32(engine.context, 1), c.JS_NewInt32(engine.context, 2) })
         else _ = try scope.call(inputs.array_push, stdio, &.{ shortcut, shortcut, shortcut });
-    } else if (!c.JS_IsArray(stdio)) return invalid(engine, "ERR_INVALID_ARG_VALUE", "Child stdio must be an Array or supported shortcut");
+    } else if (!c.JS_IsArray(stdio)) return @as(anyerror!c.JSValue, invalid(engine, "ERR_INVALID_ARG_VALUE", "Child stdio must be an Array or supported shortcut"));
     while (scope.truthy(try frontier.binary(&scope, 4, try scope.get(stdio, "length"), c.JS_NewInt32(engine.context, 3)))) {
         _ = try scope.call(inputs.array_push, stdio, &.{c.pi_js_undefined()});
     }

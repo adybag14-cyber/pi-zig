@@ -320,7 +320,7 @@ fn signalNumber(scope: *Scope, module: *Module, value: c.JSValue) !i32 {
         const name = try scope.call(module.signal_upper, value, &.{}); const selected = try frontier.getKey(scope, module.signals, name);
         if (!c.JS_IsUndefined(selected)) { var result: i32 = 0; if (c.JS_ToInt32(scope.engine.context, &result, selected) < 0) return @as(anyerror!i32, js.capture(scope.engine)); return result; }
     }
-    return @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal");
+    return @as(anyerror!i32, @import("node_events.zig").codedError(scope.engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal"));
 }
 fn signalName(scope: *Scope, module: *Module, number: i32) !c.JSValue {
     const keys = try scope.own(try js.objectMethod(scope.engine, "keys", module.signals));
@@ -334,7 +334,7 @@ fn signalName(scope: *Scope, module: *Module, number: i32) !c.JSValue {
 fn kill(engine: *js.Engine, child: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine }; defer scope.deinit(); errdefer |err| scope.captureUnwind(err); const module = try capturedModule(engine, roots);
     const requested = options.arg(args, 0);
-    if (c.JS_IsNull(requested)) return @import("node_events.zig").codedError(engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal");
+    if (c.JS_IsNull(requested)) return @as(anyerror!c.JSValue, @import("node_events.zig").codedError(engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal"));
     const number = try signalNumber(&scope, module, requested);
     if (scope.truthy(try scope.get(child, "_handle"))) {
         const result = try scope.invoke(try scope.get(child, "_handle"), "kill", &.{c.JS_NewInt32(engine.context, number)});
@@ -649,9 +649,9 @@ fn spawnCrossLegacy(engine: *js.Engine, _: c.JSValue, args: []const c.JSValue, r
 fn validateTimeout(engine: *js.Engine, value: c.JSValue) !void {
     if (c.JS_IsNull(value) or c.JS_IsUndefined(value)) return;
     var number: f64 = 0;
-    if (!c.JS_IsNumber(value)) return @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer");
+    if (!c.JS_IsNumber(value)) return @as(anyerror!void, @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer"));
     if (c.JS_ToFloat64(engine.context, &number, value) < 0) return @as(anyerror!void, js.capture(engine));
-    if (!std.math.isFinite(number) or number < 0 or @trunc(number) != number) return @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer");
+    if (!std.math.isFinite(number) or number < 0 or @trunc(number) != number) return @as(anyerror!void, @import("node_events.zig").codedError(engine, "RangeError", "ERR_OUT_OF_RANGE", "The timeout must be an unsigned integer"));
 }
 fn spawn(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     // The historical cross parser remains a separate unqualified boundary. The
@@ -663,10 +663,10 @@ fn spawn(engine: *js.Engine, receiver: c.JSValue, args: []const c.JSValue, roots
     try validateTimeout(engine, try scope.get(actual, "timeout"));
     try async_events.validateSignal(engine, try scope.get(actual, "signal"), "options.signal");
     const requested_signal = try scope.get(actual, "killSignal");
-    if (!c.JS_IsNull(requested_signal) and !c.JS_IsUndefined(requested_signal) and !c.JS_IsString(requested_signal) and !c.JS_IsNumber(requested_signal)) return @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_TYPE", "The options.killSignal must be a string or number");
+    if (!c.JS_IsNull(requested_signal) and !c.JS_IsUndefined(requested_signal) and !c.JS_IsString(requested_signal) and !c.JS_IsNumber(requested_signal)) return @as(anyerror!c.JSValue, @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_TYPE", "The options.killSignal must be a string or number"));
     // sanitizeKillSignal uses convertToValidSignal; only prototype.kill has the
     // separate successful-probe special case for numeric zero.
-    if (c.JS_IsNumber(requested_signal) and scope.equal(requested_signal, c.JS_NewInt32(engine.context, 0))) return @import("node_events.zig").codedError(engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal");
+    if (c.JS_IsNumber(requested_signal) and scope.equal(requested_signal, c.JS_NewInt32(engine.context, 0))) return @as(anyerror!c.JSValue, @import("node_events.zig").codedError(engine, "TypeError", "ERR_UNKNOWN_SIGNAL", "Unknown signal"));
     const kill_number = try signalNumber(&scope, module, requested_signal);
     const kill_argument = if (c.JS_IsNull(requested_signal) or c.JS_IsUndefined(requested_signal)) c.pi_js_undefined() else c.JS_NewInt32(engine.context, kill_number);
     const child = try scope.construct(module.constructor, &.{});
@@ -710,7 +710,7 @@ fn spawnInstance(engine: *js.Engine, child: c.JSValue, args: []const c.JSValue, 
     const descriptors = try scope.get(normalized, "stdio");
     try scope.set(supplied, "stdio", descriptors);
     const serialization = try scope.get(supplied, "serialization");
-    if (!c.JS_IsUndefined(serialization) and !scope.equal(serialization, try scope.text("json")) and !scope.equal(serialization, try scope.text("advanced"))) return @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_VALUE", "The options.serialization must be json or advanced");
+    if (!c.JS_IsUndefined(serialization) and !scope.equal(serialization, try scope.text("json")) and !scope.equal(serialization, try scope.text("advanced"))) return @as(anyerror!c.JSValue, @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_VALUE", "The options.serialization must be json or advanced"));
     // Source initializes its local serialization even without an IPC channel.
     _ = try scope.get(supplied, "serialization");
     if (!c.JS_IsUndefined(ipc)) return error.RequiredGenuineNativeIpcPipeProvider;

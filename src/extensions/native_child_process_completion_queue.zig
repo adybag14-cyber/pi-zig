@@ -47,7 +47,7 @@ pub fn enqueue(engine: *js.Engine, callback: c.JSValue, receiver: c.JSValue, arg
     const hub = try env.get(engine); try hub.assertOwner();
     if (hub.stopping) return error.NativeEnvClosed;
     var pending: usize = 0;
-    for (hub.resources.items) |resource| if (resource.tag == &completion_tag) { pending += 1; };
+    for (hub.resources.items) |resource| if (resource.tag == @as(?*const anyopaque, &completion_tag)) { pending += 1; };
     if (pending >= 64) return error.NativeChildCompletionCapacity;
     const charged = std.math.add(usize, @sizeOf(Completion), std.math.mul(usize, args.len, @sizeOf(c.JSValue)) catch return error.OutOfMemory) catch return error.OutOfMemory;
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, charged) == 0) return error.OutOfMemory;

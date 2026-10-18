@@ -73,7 +73,12 @@ pub fn nullCheck(scope: *Scope, value: c.JSValue, label: []const u8) !void {
     _ = try @import("node_fs_metadata.zig").throwTyped(scope.engine, "ERR_INVALID_ARG_VALUE", message);
 }
 fn snapshot(scope: *Scope, object: c.JSValue) !c.JSValue {
-    const copy = try scope.objectProto(c.pi_js_null());
+    var allocation = @import("native_node_operation_scope.zig").Scope.init(scope.engine);
+    const produced: anyerror!c.JSValue = created: {
+        const value = allocation.objectProto(c.pi_js_null()) catch |err| break :created err;
+        break :created c.JS_DupValue(scope.engine.context, value);
+    };
+    const copy = try @import("native_sdk_owned_completion.zig").ownRoot(scope, try allocation.finish(produced));
     if (!nullish(object)) try js.spreadInto(scope.engine, copy, object);
     return copy;
 }
@@ -85,7 +90,7 @@ pub fn enumerableKeys(scope: *Scope, object: c.JSValue) !c.JSValue {
     var current = object;
     while (!c.JS_IsNull(current)) {
         var names: [*c]c.JSPropertyEnum = null; var count: u32 = 0;
-        if (c.JS_GetOwnPropertyNames(scope.engine.context, &names, &count, current, c.JS_GPN_STRING_MASK) < 0) return js.capture(scope.engine);
+        if (c.JS_GetOwnPropertyNames(scope.engine.context, &names, &count, current, c.JS_GPN_STRING_MASK) < 0) return @as(anyerror!c.JSValue, js.capture(scope.engine));
         defer c.JS_FreePropertyEnum(scope.engine.context, names, count);
         for (0..count) |index| {
             const key = try scope.own(try scope.engine.checked(c.JS_AtomToValue(scope.engine.context, names[index].atom)));
@@ -93,7 +98,7 @@ pub fn enumerableKeys(scope: *Scope, object: c.JSValue) !c.JSValue {
             if (seen.contains(text)) { scope.engine.gpa.free(text); continue; }
             var descriptor: c.JSPropertyDescriptor = undefined;
             const present = c.JS_GetOwnProperty(scope.engine.context, &descriptor, current, names[index].atom);
-            if (present < 0) { scope.engine.gpa.free(text); return js.capture(scope.engine); }
+            if (present < 0) { scope.engine.gpa.free(text); return @as(anyerror!c.JSValue, js.capture(scope.engine)); }
             if (present == 0) { scope.engine.gpa.free(text); continue; }
             defer { scope.engine.freeValue(descriptor.value); scope.engine.freeValue(descriptor.getter); scope.engine.freeValue(descriptor.setter); }
             seen.put(text, {}) catch |err| { scope.engine.gpa.free(text); return err; };
@@ -104,13 +109,13 @@ pub fn enumerableKeys(scope: *Scope, object: c.JSValue) !c.JSValue {
     return result;
 }
 fn validatedText(engine: *js.Engine, value: c.JSValue, name: []const u8, stringify: bool) ![]u8 {
-    if (!stringify and !c.JS_IsString(value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process file must be a string");
+    if (!stringify and !c.JS_IsString(value)) return @as(anyerror![]u8, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process file must be a string"));
     const text = try engine.toString(value);
     errdefer engine.gpa.free(text);
     if (std.mem.indexOfScalar(u8, text, 0) != null) {
         const message = try std.fmt.allocPrint(engine.gpa, "The argument '{s}' must be a string without null bytes", .{name});
         defer engine.gpa.free(message);
-        return invalid(engine, "ERR_INVALID_ARG_VALUE", message);
+        return @as(anyerror![]u8, invalid(engine, "ERR_INVALID_ARG_VALUE", message));
     }
     return text;
 }
@@ -122,7 +127,7 @@ fn envMap(scope: *Scope, object: c.JSValue) !Environment {
     var folded_names: std.ArrayList([]u8) = .empty;
     defer { for (folded_names.items) |name| scope.engine.gpa.free(name); folded_names.deinit(scope.engine.gpa); }
     var count: u32 = 0;
-    if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(keys, "length")) < 0) return js.capture(scope.engine);
+    if (c.JS_ToUint32(scope.engine.context, &count, try scope.get(keys, "length")) < 0) return @as(anyerror!Environment, js.capture(scope.engine));
     for (0..count) |index| {
         const key = try scope.own(try scope.engine.checked(c.JS_GetPropertyUint32(scope.engine.context, keys, @intCast(index))));
         const name = try scope.engine.toString(key);
@@ -170,7 +175,7 @@ pub fn findExecutableFound(config: *Config, command: []const u8, cwd: []const u8
         defer gpa.free(base);
         const candidate = try resolved(gpa, base, command);
         defer gpa.free(candidate);
-        if (try existing(gpa, candidate)) return gpa.dupe(u8, candidate);
+        if (try existing(gpa, candidate)) return try gpa.dupe(u8, candidate);
         if (builtin.os.tag == .windows and std.fs.path.extension(command).len == 0) {
             var extensions = std.mem.splitScalar(u8, if (cross_spawn) envValue(&config.environment, "PATHEXT") orelse ".COM;.EXE;.BAT;.CMD" else ".com;.exe", ';');
             while (extensions.next()) |extension| {
@@ -249,22 +254,22 @@ fn normalizeInto(engine: *js.Engine, args: []const c.JSValue, exec: bool, cross_
     // parse() leaves parsed.file undefined on the explicit shell path.
     config.cross_missing = config.cross_hook;
     errdefer config.deinit();
-    if (file.len == 0) return invalid(engine, "ERR_INVALID_ARG_VALUE", "The argument 'file' cannot be empty. Received ''");
+    if (file.len == 0) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_VALUE", "The argument 'file' cannot be empty. Received ''"));
     try config.append(file);
     var options = arg(args, if (exec) 1 else 2);
     var supplied_args = if (exec) c.pi_js_undefined() else arg(args, 1);
     if (!exec and !nullish(supplied_args) and !c.JS_IsArray(supplied_args)) {
-        if (public_values != null and (!c.JS_IsObject(supplied_args) or c.JS_IsFunction(engine.context, supplied_args))) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process args must be an object");
+        if (public_values != null and (!c.JS_IsObject(supplied_args) or c.JS_IsFunction(engine.context, supplied_args))) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process args must be an object"));
         options = supplied_args; supplied_args = c.pi_js_undefined();
     }
     if (public_values != null and c.JS_IsArray(supplied_args)) supplied_args = try scope.call(array_slice.?, supplied_args, &.{});
     if (public_values == null) {
-        if (!c.JS_IsUndefined(options) and (!c.JS_IsObject(options) and !exec)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process options must be an object");
+        if (!c.JS_IsUndefined(options) and (!c.JS_IsObject(options) and !exec)) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process options must be an object"));
         options = try snapshot(&scope, options);
     }
     if (!nullish(supplied_args)) {
         var length: u32 = 0;
-        if (c.JS_ToUint32(engine.context, &length, try scope.get(supplied_args, "length")) < 0) return js.capture(engine);
+        if (c.JS_ToUint32(engine.context, &length, try scope.get(supplied_args, "length")) < 0) return @as(anyerror!Config, js.capture(engine));
         for (0..length) |index| {
             const value = try scope.own(try engine.checked(c.JS_GetPropertyUint32(engine.context, supplied_args, @intCast(index))));
             const text = try validatedText(engine, value, "args", true);
@@ -273,7 +278,7 @@ fn normalizeInto(engine: *js.Engine, args: []const c.JSValue, exec: bool, cross_
         }
     }
     if (public_values) |values| {
-        if (!c.JS_IsUndefined(options) and (!c.JS_IsObject(options) or c.JS_IsNull(options) or c.JS_IsFunction(engine.context, options))) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process options must be an object");
+        if (!c.JS_IsUndefined(options) and (!c.JS_IsObject(options) or c.JS_IsNull(options) or c.JS_IsFunction(engine.context, options))) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process options must be an object"));
         options = try snapshot(&scope, options);
         values[0] = c.JS_DupValue(engine.context, try scope.get(options, "signal"));
         values[1] = c.JS_DupValue(engine.context, try scope.get(options, "killSignal"));
@@ -289,25 +294,25 @@ fn normalizeInto(engine: *js.Engine, args: []const c.JSValue, exec: bool, cross_
     }
     if (public_values != null) {
         const detached = try option(&scope, options, "detached");
-        if (!nullish(detached) and !c.JS_IsBool(detached)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.detached property must be a boolean");
+        if (!nullish(detached) and !c.JS_IsBool(detached)) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.detached property must be a boolean"));
         inline for (.{ "uid", "gid" }) |name| {
             const credential = try option(&scope, options, name);
             if (!nullish(credential)) {
                 var number: f64 = 0;
-                if (!c.JS_IsNumber(credential) or c.JS_ToFloat64(engine.context, &number, credential) < 0 or !std.math.isFinite(number) or @trunc(number) != number or number < std.math.minInt(i32) or number > std.math.maxInt(i32)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process uid/gid must be int32");
+                if (!c.JS_IsNumber(credential) or c.JS_ToFloat64(engine.context, &number, credential) < 0 or !std.math.isFinite(number) or @trunc(number) != number or number < std.math.minInt(i32) or number > std.math.maxInt(i32)) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process uid/gid must be int32"));
             }
         }
     }
     // Node snapshots the options first, validates shell before enumerating the
     // environment, and performs the NUL check only on a string shell value.
     const shell_value = try option(&scope, options, "shell");
-    if (!nullish(shell_value) and !c.JS_IsBool(shell_value) and !c.JS_IsString(shell_value)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.shell property must be a boolean or string");
+    if (!nullish(shell_value) and !c.JS_IsBool(shell_value) and !c.JS_IsString(shell_value)) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "The options.shell property must be a boolean or string"));
     if (public_values != null) {
         const argv0 = try option(&scope, options, "argv0");
         if (!nullish(argv0)) { const checked = try validatedText(engine, argv0, "options.argv0", false); engine.gpa.free(checked); }
         inline for (.{ "windowsHide", "windowsVerbatimArguments" }) |name| {
             const flag = try option(&scope, options, name);
-            if (!nullish(flag) and !c.JS_IsBool(flag)) return invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process Windows flags must be boolean");
+            if (!nullish(flag) and !c.JS_IsBool(flag)) return @as(anyerror!Config, invalid(engine, "ERR_INVALID_ARG_TYPE", "Child process Windows flags must be boolean"));
         }
     }
     if (exec or scope.truthy(shell_value)) try nullCheck(&scope, shell_value, "options.shell");
@@ -325,7 +330,7 @@ fn normalizeInto(engine: *js.Engine, args: []const c.JSValue, exec: bool, cross_
     const timeout = try option(&scope, options, "timeout");
     if (!nullish(timeout)) {
         var numeric: f64 = 0;
-        if (!c.JS_IsNumber(timeout) or c.JS_ToFloat64(engine.context, &numeric, timeout) < 0 or !std.math.isFinite(numeric) or numeric < 0 or numeric > 9007199254740991 or @trunc(numeric) != numeric) return invalid(engine, "ERR_OUT_OF_RANGE", "Child process timeout must be a nonnegative safe integer");
+        if (!c.JS_IsNumber(timeout) or c.JS_ToFloat64(engine.context, &numeric, timeout) < 0 or !std.math.isFinite(numeric) or numeric < 0 or numeric > 9007199254740991 or @trunc(numeric) != numeric) return @as(anyerror!Config, invalid(engine, "ERR_OUT_OF_RANGE", "Child process timeout must be a nonnegative safe integer"));
         if (numeric > 0) config.timeout_ms = @intFromFloat(numeric);
     }
     const maximum = try option(&scope, options, "maxBuffer");
