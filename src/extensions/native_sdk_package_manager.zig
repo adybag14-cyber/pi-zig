@@ -26,7 +26,18 @@ pub fn constructor(engine: *em.Engine, prototype: c.JSValue) !c.JSValue {
     return @import("native_class.zig").constructor(engine, "DefaultPackageManager", 1, prototype, construct, &.{});
 }
 pub fn installProgress(engine: *em.Engine, prototype: c.JSValue) !void {
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    installProgressBody(engine, prototype) catch |err| {
+        _ = try engine.checked(engine.leaveNativeInvocation(&invocation, sdk.fail(engine, err)));
+        unreachable;
+    };
+    engine.freeValue(try engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined())));
+}
+fn installProgressBody(engine: *em.Engine, prototype: c.JSValue) !void {
     const function = try engine.checked(c.pi_js_function_magic(engine.context, setProgress, "setProgressCallback", 1, 0));
     const generation = engine.native_allocation_generation;
     const status = c.JS_DefinePropertyValueStr(engine.context, prototype, "setProgressCallback", function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE);
@@ -54,8 +65,13 @@ fn constructBody(scope: *Scope, manager: c.JSValue, args: []const c.JSValue) !c.
 }
 fn setProgress(context: ?*c.JSContext, manager: c.JSValue, argc: c_int, argv: [*c]c.JSValue, _: c_int) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
     engine.checkNativeEntry() catch |err| return sdk.fail(engine, err);
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
     var scope: Scope = .{ .engine = engine };
-    owned.finishVoid(&scope, write(&scope, manager, "progressCallback", if (argc > 0) argv[0] else c.pi_js_undefined(), false)) catch |err| return sdk.fail(engine, err);
-    return c.pi_js_undefined();
+    owned.finishVoid(&scope, write(&scope, manager, "progressCallback", if (argc > 0) argv[0] else c.pi_js_undefined(), false)) catch |err|
+        return engine.leaveNativeInvocation(&invocation, sdk.fail(engine, err));
+    return engine.leaveNativeInvocation(&invocation, c.pi_js_undefined());
 }

@@ -82,6 +82,56 @@ fn constructorCase(fatal: bool) !void {
 test "SDK factory retirement actual PackageManager error beats ordinary sole option cleanup" { try constructorCase(false); }
 test "SDK factory retirement actual PackageManager fresh cleanup native OOM promotes" { try constructorCase(true); }
 
+test "SDK factory retirement actual progress setter suppresses ordinary catch diagnostics" {
+    var environment: std.process.Environ.Map = .init(std.testing.allocator); defer environment.deinit();
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    try @import("extensions/timers.zig").install(engine, std.testing.io);
+    try @import("extensions/native_process.zig").install(engine, std.testing.io, &environment, &.{"actual-package-progress-control"});
+    try @import("extensions/node_path.zig").install(engine, std.testing.io);
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const prototype = try s.object();
+    try manager.installProgress(engine, prototype);
+    const constructor = try s.own(try manager.constructor(engine, prototype));
+    const actual_managers = try s.own(try @import("extensions/native_sdk.zig").managerImports(engine));
+    const global = try s.own(c.JS_GetGlobalObject(engine.context));
+    try s.put(global, "ActualPackageConstructor", constructor);
+    try s.put(global, "ActualSettingsConstructor", try s.get(actual_managers, "SettingsManager"));
+    const observed = try engine.evalModule(
+        \\const options={cwd:process.cwd(),agentDir:process.cwd(),settingsManager:ActualSettingsConstructor.inMemory()};
+        \\const manager=new ActualPackageConstructor(options),reason=new Error('actual setter');let calls=0,coercions=0,caught;
+        \\reason.toString=()=>{coercions++;throw Error('unexpected catch diagnostic')};
+        \\Object.defineProperty(manager,'progressCallback',{configurable:true,set(){calls++;throw reason}});
+        \\try{manager.setProgressCallback(undefined)}catch(error){caught=error}
+        \\if(caught!==reason||calls!==1||coercions!==0)throw Error('progress raw reason/diagnostic suppression');
+        \\export const passed=true;
+    , "actual-package-progress-diagnostic-control.mjs");
+    engine.freeValue(observed);
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+}
+
+test "SDK factory retirement direct progress installation suppresses definition diagnostics" {
+    const engine = try em.Engine.init(std.testing.allocator, .{}); defer engine.deinit();
+    var s: Scope = .{ .engine = engine }; defer s.deinit();
+    const global = try s.own(c.JS_GetGlobalObject(engine.context));
+    const initialized = try engine.evalModule(
+        \\globalThis.installReason=new Error('actual install');globalThis.installCoercions=0;globalThis.installDefinitions=0;
+        \\installReason.toString=()=>{installCoercions++;throw Error('unexpected direct-host diagnostic')};
+        \\globalThis.actualInstallTarget=new Proxy({}, {defineProperty(){installDefinitions++;throw installReason}});
+        \\export const prepared=true;
+    , "actual-package-install-diagnostic-input.mjs");
+    engine.freeValue(initialized);
+    const target = try s.get(global, "actualInstallTarget");
+    const original = try s.get(global, "installReason");
+    try std.testing.expectError(error.JavaScriptException, manager.installProgress(engine, target));
+    const actual = engine.captured_exception orelse return error.RequiredActualInstallReason;
+    try std.testing.expect(s.equal(actual, original));
+    try std.testing.expect(s.equal(try s.get(global, "installCoercions"), c.JS_NewInt32(engine.context, 0)));
+    try std.testing.expect(s.equal(try s.get(global, "installDefinitions"), c.JS_NewInt32(engine.context, 1)));
+    try std.testing.expect(engine.native_fatal_invocation == null);
+    try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+}
+
 /// Genuine complete supplier profile; caller supplies its actual package Inputs
 /// from the canonical owner. This is not counted as a registered native test.
 pub fn createActualPackage(engine: *em.Engine, inputs: @import("extensions/native_sdk_package_assembly.zig").Inputs) !c.JSValue {
