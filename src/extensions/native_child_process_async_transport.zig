@@ -481,9 +481,16 @@ pub const AsyncTransport = struct {
             if (slot.pending) { slot.quarantine(); self.process.output_retirement_pending = true; }
             else { const retired = slot.retire(); std.debug.assert(retired); }
         };
-        if (self.process.child.thread_handle) |handle| { std.os.windows.CloseHandle(handle); self.process.child.thread_handle = null; }
+        // Pinned Child uses id as the ownership discriminator; thread_handle
+        // is a required HANDLE and is undefined after wait/kill retirement.
+        // Publish the transfer before closing the sole owned thread handle.
         const process_handle = self.process.child.id;
         self.process.child.id = null;
+        if (process_handle != null) {
+            const thread_handle = self.process.child.thread_handle;
+            self.process.child.thread_handle = undefined;
+            std.os.windows.CloseHandle(thread_handle);
+        }
         self.input_closed = true;
         self.output_closed = .{ true, true };
         self.disposed = true;
