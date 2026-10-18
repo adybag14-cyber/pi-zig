@@ -22,13 +22,21 @@ fn initialize(o: *x.Ops, state: *c.JSValue) !c.JSValue {
     try o.s.engine.checkNativeEntry();
     return next;
 }
-fn abort(o: *x.Ops, signal: c.JSValue) !void { _ = try o.invoke(signal, "throwIfAborted", &.{}); }
+fn abort(engine: *x.em.Engine, value: c.JSValue, interaction: bool) !void {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishVoid(&s, abortBody(&o, value, interaction));
+}
+fn abortBody(o: *x.Ops, value: c.JSValue, interaction: bool) !void {
+    const signal = if (interaction) try o.get(value, "signal") else value;
+    _ = try o.invoke(signal, "throwIfAborted", &.{});
+}
 
 pub fn envFactory(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
-    return x.owned.finishValue(&s, envFactoryBody(&o, x.arg(args, 0), x.arg(args, 1)));
+    return x.finishInvocation(engine, &invocation, x.owned.finishValue(&s, envFactoryBody(&o, x.arg(args, 0), x.arg(args, 1))));
 }
 fn envFactoryBody(o: *x.Ops, name: c.JSValue, env_vars: c.JSValue) !c.JSValue {
     const result = try o.object(); try o.put(result, "name", name);
@@ -45,13 +53,13 @@ fn loginBody(o: *x.Ops, args: []const c.JSValue, name: c.JSValue, state: *c.JSVa
     if (completion == .start) {
         const job = try initialize(o, state); const interaction = x.arg(args, 0);
         try o.put(job, "interaction", interaction);
-        try abort(o, try o.get(interaction, "signal"));
+        try abort(o.s.engine, interaction, true);
         const prompt = try o.get(interaction, "prompt"); // Source callee first.
         const options = try o.object(); try o.put(options, "type", try o.text("secret"));
         try o.put(options, "message", try o.binary(0, try o.text("Enter "), try o.stringify(name)));
         return awaited(o, job, .login, try o.call(prompt, interaction, &.{options}));
     }
-    try abort(o, try o.get(try o.get(state.*, "interaction"), "signal"));
+    try abort(o.s.engine, try o.get(state.*, "interaction"), true);
     const credential = try o.object(); try o.put(credential, "type", try o.text("api_key")); try o.put(credential, "key", input);
     return returned(o, credential);
 }
@@ -71,37 +79,62 @@ fn resolveBody(o: *x.Ops, args: []const c.JSValue, env_vars: c.JSValue, state: *
         const argument = x.arg(args, 0); const ctx = try o.get(argument, "ctx");
         const credential = try o.get(argument, "credential"); const signal = try o.get(argument, "signal");
         const job = try initialize(o, state); try o.put(job, "ctx", ctx); try o.put(job, "signal", signal);
-        try abort(o, signal);
+        try abort(o.s.engine, signal, false);
         if (!x.nullish(credential) and o.truthy(try o.get(credential, "key"))) {
             const result = try o.object(); const auth = try o.object();
             try o.put(auth, "apiKey", try o.get(credential, "key")); try o.put(result, "auth", auth);
             try o.put(result, "env", try o.get(credential, "env")); try o.put(result, "source", try o.text("stored credential"));
             return returned(o, result); // Source zero-Await path.
         }
-        const generation = o.s.engine.native_allocation_generation;
-        const symbol = try o.accept(c.JS_GetIteratorSymbol(o.s.engine.context), generation);
-        const method = try o.getKey(env_vars, symbol); const iterator = try o.call(method, env_vars, &.{});
-        if (!c.JS_IsObject(iterator)) return @import("native_js_values.zig").typeError(o.s.engine, "Iterator is not an object");
-        const next = try o.get(iterator, "next");
-        try o.put(job, "iterator", iterator); try o.put(job, "next", next); try o.put(job, "closed", c.pi_js_bool(o.s.engine.context, 1));
+        try initializeIterator(o.s.engine, job, env_vars);
         return nextEnv(o, job);
     }
-    try abort(o, try o.get(state.*, "signal"));
+    try abort(o.s.engine, try o.get(state.*, "signal"), false);
     if (!o.truthy(input)) return nextEnv(o, state.*);
     const result = try o.object(); const auth = try o.object(); try o.put(auth, "apiKey", input); try o.put(result, "auth", auth);
-    try o.put(result, "source", try o.get(state.*, "envName"));
+    try setResultSource(o.s.engine, result, state.*);
+    try o.put(state.*, "envName", c.pi_js_undefined());
     try closeIterator(o, state.*);
     return returned(o, result);
 }
 fn nextEnv(o: *x.Ops, state: c.JSValue) !af.Action {
+    // The completed iteration's lexical envVar ends before IteratorStep.
+    try o.put(state, "envName", c.pi_js_undefined());
     // Abrupt IteratorStep/IteratorValue does not invoke IteratorClose.
     try o.put(state, "closed", c.pi_js_bool(o.s.engine.context, 1));
+    if (!try nextValue(o.s.engine, state)) return returned(o, c.pi_js_undefined());
+    const name = try o.get(state, "envName");
+    return awaited(o, state, .env, try o.invoke(try o.get(state, "ctx"), "env", &.{name}));
+}
+fn initializeIterator(engine: *x.em.Engine, state: c.JSValue, iterable: c.JSValue) !void {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishVoid(&s, initializeIteratorBody(&o, state, iterable));
+}
+fn initializeIteratorBody(o: *x.Ops, state: c.JSValue, iterable: c.JSValue) !void {
+    const symbol = try o.accept(c.JS_GetIteratorSymbol(o.s.engine.context));
+    const method = try o.getKey(iterable, symbol); const iterator = try o.call(method, iterable, &.{});
+    if (!c.JS_IsObject(iterator)) return @import("native_js_values.zig").typeError(o.s.engine, "Iterator is not an object");
+    const next = try o.get(iterator, "next");
+    try o.put(state, "iterator", iterator); try o.put(state, "next", next); try o.put(state, "closed", c.pi_js_bool(o.s.engine.context, 1));
+}
+fn propertyTruth(engine: *x.em.Engine, receiver: c.JSValue, name: [*:0]const u8) !bool {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    const result: anyerror!c.JSValue = if (o.get(receiver, name)) |value| c.pi_js_bool(engine.context, @intFromBool(o.truthy(value))) else |err| err;
+    const boolean = try x.owned.finishValue(&s, result);
+    return c.JS_ToBool(engine.context, boolean) == 1;
+}
+fn nextValue(engine: *x.em.Engine, state: c.JSValue) !bool {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    const value = try x.owned.finishValue(&s, nextValueBody(&o, state));
+    return c.JS_ToBool(engine.context, value) == 1;
+}
+fn nextValueBody(o: *x.Ops, state: c.JSValue) !c.JSValue {
     const entry = try o.call(try o.get(state, "next"), try o.get(state, "iterator"), &.{});
     if (!c.JS_IsObject(entry)) return @import("native_js_values.zig").typeError(o.s.engine, "Iterator result is not an object");
-    if (o.truthy(try o.get(entry, "done"))) return returned(o, c.pi_js_undefined());
+    if (try propertyTruth(o.s.engine, entry, "done")) return c.pi_js_bool(o.s.engine.context, 0);
     const name = try o.get(entry, "value");
     try o.put(state, "closed", c.pi_js_bool(o.s.engine.context, 0)); try o.put(state, "envName", name);
-    return awaited(o, state, .env, try o.invoke(try o.get(state, "ctx"), "env", &.{name}));
+    return c.pi_js_bool(o.s.engine.context, 1);
 }
 fn closeIterator(o: *x.Ops, state: c.JSValue) !void {
     if (x.nullish(state)) return;
@@ -111,10 +144,19 @@ fn closeIterator(o: *x.Ops, state: c.JSValue) !void {
     const result = try o.call(close, iterator, &.{});
     if (!c.JS_IsObject(result)) return @import("native_js_values.zig").typeError(o.s.engine, "Iterator return is not an object");
 }
+fn setResultSource(engine: *x.em.Engine, result: c.JSValue, state: c.JSValue) !void {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishVoid(&s, setResultSourceBody(&o, result, state));
+}
+fn setResultSourceBody(o: *x.Ops, result: c.JSValue, state: c.JSValue) !void { return o.put(result, "source", try o.get(state, "envName")); }
+fn endIterationAndClose(o: *x.Ops, state: c.JSValue) !void {
+    if (!x.nullish(state)) try o.put(state, "envName", c.pi_js_undefined());
+    return closeIterator(o, state);
+}
 fn preserveThrowClose(o: *x.Ops, state: c.JSValue, reason: c.JSValue) !af.Action {
     // Original Source throw wins over ordinary close errors. Fresh actual
     // native fatal events remain authoritative through the completion helper.
-    var closing = x.owned.Completion.initVoid(o.s.engine, closeIterator(o, state));
+    var closing = x.owned.Completion.initVoid(o.s.engine, endIterationAndClose(o, state));
     const action = closing.finishAction() catch |err| {
         var failed = x.owned.Completion.initAction(o.s.engine, @as(anyerror!af.Action, err));
         failed.release(reason);
@@ -128,8 +170,9 @@ fn preserveThrowClose(o: *x.Ops, state: c.JSValue, reason: c.JSValue) !af.Action
 pub fn lazyFactory(engine: *x.em.Engine, _: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
-    return x.owned.finishValue(&s, lazyFactoryBody(&o, x.arg(args, 0)));
+    return x.finishInvocation(engine, &invocation, x.owned.finishValue(&s, lazyFactoryBody(&o, x.arg(args, 0))));
 }
 fn lazyFactoryBody(o: *x.Ops, input: c.JSValue) !c.JSValue {
     const shared = try o.cell(); try o.put(shared, "input", input); try o.put(shared, "promise", c.pi_js_undefined());
@@ -183,21 +226,20 @@ fn importNodeModule(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c
 pub fn contextAt(engine: *x.em.Engine, physical_auth_context_url: c.JSValue) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: x.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
-    return x.owned.finishValue(&s, contextAtBody(&o, physical_auth_context_url));
+    return x.finishInvocation(engine, &invocation, x.owned.finishValue(&s, contextAtBody(&o, physical_auth_context_url)));
 }
 fn contextAtBody(o: *x.Ops, physical_auth_context_url: c.JSValue) !c.JSValue {
     if (!c.JS_IsString(physical_auth_context_url)) return error.RequiredPhysicalAuthContextUrl;
     var length: usize = 0;
-    const string_generation = o.s.engine.native_allocation_generation;
     const bytes = c.JS_ToCStringLen(o.s.engine.context, &length, physical_auth_context_url);
-    if (bytes == null) return o.failed(string_generation);
+    if (bytes == null) return o.failed();
     defer c.JS_FreeCString(o.s.engine.context, bytes);
     const std = @import("std");
     if (!std.mem.startsWith(u8, bytes[0..length], "file://") or std.mem.indexOfScalar(u8, bytes[0..length], 0) != null) return error.RequiredPhysicalAuthContextUrl;
     var roots = [_]c.JSValue{physical_auth_context_url};
-    const function_generation = o.s.engine.native_allocation_generation;
-    const importing = try o.accept(c.JS_NewCFunctionData2(o.s.engine.context, importNodeModule, "importNodeModule", 1, 0, roots.len, &roots), function_generation);
+    const importing = try o.accept(c.JS_NewCFunctionData2(o.s.engine.context, importNodeModule, "importNodeModule", 1, 0, roots.len, &roots));
     return contextBody(o, importing);
 }
 fn contextBody(o: *x.Ops, import_node_module: c.JSValue) !c.JSValue {
