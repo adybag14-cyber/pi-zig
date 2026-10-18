@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "7fc1bc69d61a1f04d39000c6fa6ba92097376cba",
+  "current_source_head_at_record": "0353607f8b5727e8022b93a478de3128f8f6bdd8",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T21:53:47.479113+00:00",
-  "record_note": "Active implementation. V10 independently closed with one shared socket-owner pointer comparison error and no metadata/runtime. Its exact Windows/Linux identity-type correction, genuine OpenRouter17, actual VM spread/apply/rest14, inspector13 and public compaction FileOps16 are integrated. Next step is a fresh39-group build/query on the changed C vendor, independent raw-metadata audit and separate exact-artifact runtime. Public callback/HTTP, remaining providers, SDK/module/application, bridge removal and release gates remain open.",
+  "updated_utc": "2026-10-18T22:14:55.797955+00:00",
+  "record_note": "Active implementation. Fresh V6 independently closed after print18, child12 and RPC35 metadata, with a single OpenRouter test-support compile error. The one-line typed-host-error guard correction is committed without changing any declared control. No partial batch/runtime acceptance. Confirmed native AF terminal arguments/locals ordering and cached iterator-next cleanup corrections are being authored and reviewed before the next fresh qualification; remaining application and release work stays open.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -57,7 +57,8 @@
     "Exact VM OP_append, OP_apply constructor and OP_rest borrowed-operand wrappers integrated84b20bc0 from7233B0A3. C62C055EE/H959BA37D have only three additive definitions/declarations versus exact BCDF/0DBC baseline;14 controls and complete finite peers. Old diagnostic cache lineage cannot qualify the changed vendor.",
     "Actual Node inspector entry, primitive implementation and canonical operation owner integrateda26e6ca0 fromd6e3605a, with13 controls, both finite peers and preserved Node24.13.0 authority. Full util/exotic/layout and independent Source observer capture remain open.",
     "Public compaction create/extract/list/format FileOps integrated7fc1bc69d61a1f04d39000c6fa6ba92097376cba fromd0aa1d84, with16 Source-based controls, actual C ArrayAppend dependency and finite production/control peer closure.",
-    "V10 exact two-site socket owner pointer comparison successor3d63cce3 integrated399b500e; only explicit casts of the same owner address changed. No target/count/runtime change."
+    "V10 exact two-site socket owner pointer comparison successor3d63cce3 integrated399b500e; only explicit casts of the same owner address changed. No target/count/runtime change.",
+    "Fresh V6 compiler-only OpenRouter order-probe guard correction integrated 0353607f8b5727e8022b93a478de3128f8f6bdd8; support197BB431. Both supported holder slots and all17 existing controls unchanged."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -411,15 +412,49 @@
       "source_compiler_control_postseal": true,
       "controller_environment_restored": true,
       "seed_preserved": true
+    },
+    {
+      "status": "closed_fresh_compile_negative",
+      "head": "39119d7493b5de3574ece6afc495215b8954fc5c",
+      "mode": "BuildQuery",
+      "evidence": "../../evidence/root-combined-batch-v6-buildquery-20261018-215455",
+      "result_sha256": "60D40415B8AF8F960B2BBACDE8EC3C6EC20F65F32B9344BE78EFFABD204ED45B",
+      "declared_groups": 39,
+      "declared_controls": 513,
+      "attempted_groups": 4,
+      "compiled_and_metadata_groups": 3,
+      "compile_failed_groups": 1,
+      "unattempted_groups": 35,
+      "actual_metadata": {
+        "native-public-print-mode": 18,
+        "native-child-frontend-genuine": 12,
+        "native-public-rpc-mode": 35
+      },
+      "actual_native_owners": 7,
+      "runtime_requested": false,
+      "qualification_authority": false,
+      "failures": [
+        "OpenRouter private order-probe guard references nonexistent Auth Ops.typeError at test_support.zig:99"
+      ],
+      "corrections": [
+        "0353607f8b5727e8022b93a478de3128f8f6bdd8"
+      ],
+      "independent_process_closure": "../../evidence/root-combined-batch-v6-independent-closure-20261018/closure.json",
+      "independent_process_closure_sha256": "6012346DFAE29A1BD8998423B695C36B5279EFE98514B0279D117CF3B49DE395",
+      "outer_absence_sha256": "1901B75EAAA9CC666480ED7E8175A2A2F88CE3EB317399A08C829D1E7B6B7444",
+      "all_native_and_outer_owners_absent": true,
+      "source_compiler_control_postseal": true,
+      "controller_environment_restored": true,
+      "initial_cache_absence": true
     }
   ],
   "next_native_batch": {
-    "status": "preparing_fresh_combined_batch",
+    "status": "awaiting_terminal_runtime_and_iterator_source_successors",
     "mode": "BuildQuery",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
     "independent_auditor_sha256": "E2077AABA34ED94A94085AE9B773BF38003F984EDC9E7813AECC284567926CFB",
     "qualification_requested": true,
     "runtime_requested": false,
-    "scope": "All39 retained groups including OpenRouter17, exact C wrappers14, inspector13 and FileOps16. Bounded controller/auditor capacity64 successors preserve every existing gate. Fresh caches required after C vendor change; no old-runtime pass transfer."
+    "scope": "Retain all39 groups and513 named controls, add source-reviewed terminal ownership and iterator controls plus other completed units; fresh changed-vendor build/query, independent raw metadata audit, then separate exact-artifact runtime."
   }
 }
