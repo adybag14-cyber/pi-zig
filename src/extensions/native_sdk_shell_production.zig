@@ -4,8 +4,11 @@
 const em = @import("engine.zig");
 const js = @import("native_js_values.zig");
 const temp = @import("native_sdk_prompt_scope.zig");
-const Scope = temp.Scope;
-const functions = @import("native_node_function.zig");
+const Scope = @import("native_node_socket_scope.zig").Scope;
+const functions = @import("native_child_process_function.zig");
+const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
+const process_body = @import("native_sdk_shell_process.zig");
 const c = em.c;
 pub const Inputs = struct { process: c.JSValue, paths: c.JSValue, filesystem: c.JSValue, child_process: c.JSValue, configuration: c.JSValue };
 const Method = enum(c_int) { getShellConfig, getPowerShellConfig, getShellEnv, sanitizeBinaryOutput, trackDetachedChildPid, untrackDetachedChildPid, killTrackedDetachedChildren, killProcessTree };
@@ -22,22 +25,48 @@ fn capture(scope: *Scope, bindings: c.JSValue, namespace: c.JSValue, comptime na
         try scope.put(bindings, name, value);
     }
 }
+const module_name = "pi-native:sdk-shell";
 pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
-    const module_name = "pi-native:sdk-shell";
+    try engine.checkNativeEntry();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var invocation: em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const result = createInner(engine, inputs) catch |err| @import("native_sdk.zig").fail(engine, err);
+    return engine.checked(engine.leaveNativeInvocation(&invocation, result));
+}
+fn createInner(engine: *em.Engine, inputs: Inputs) !c.JSValue {
     if (engine.native_module_values.get(module_name)) |cached| return c.JS_DupValue(engine.context, cached);
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+    const namespace = try owned.finishValue(&scope, createBody(&scope, inputs));
+    var publication: guest.Boundary = .{ .engine = engine };
+    publication.begin() catch |err| {
+        var completion = owned.Completion.initVoid(engine, err);
+        completion.release(namespace);
+        try completion.finishVoid();
+        unreachable;
+    };
+    publication.finishVoid(engine.registerValueModule(module_name, namespace)) catch |err| {
+        var completion = owned.Completion.initVoid(engine, err);
+        completion.release(namespace);
+        try completion.finishVoid();
+        unreachable;
+    };
+    return namespace;
+}
+fn createBody(scope: *Scope, inputs: Inputs) !c.JSValue {
+    const engine = scope.engine;
     const bindings = try scope.object();
-    try capture(&scope, bindings, inputs.paths, .{"join"});
+    try capture(scope, bindings, inputs.paths, .{"join"});
     try scope.put(bindings, "delimiter", try scope.get(inputs.paths, "delimiter"));
-    try capture(&scope, bindings, inputs.filesystem, .{"existsSync"});
-    try capture(&scope, bindings, inputs.child_process, .{ "spawn", "spawnSync", "execSync" });
-    try capture(&scope, bindings, inputs.configuration, .{"getBinDir"});
+    try capture(scope, bindings, inputs.filesystem, .{"existsSync"});
+    try capture(scope, bindings, inputs.child_process, .{ "spawn", "spawnSync", "execSync" });
+    try capture(scope, bindings, inputs.configuration, .{"getBinDir"});
     try scope.put(bindings, "process", inputs.process);
     const powershell_args = try scope.array();
     inline for (.{ "-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command" }, 0..) |name, index| try scope.index(powershell_args, index, try scope.text(name));
     try scope.put(bindings, "POWERSHELL_ARGS", powershell_args);
-    try scope.put(bindings, "trackedDetachedChildPids", try scope.own(try js.builtin(engine, "Set", &.{})));
+    try scope.put(bindings, "trackedDetachedChildPids", try guest.construct(scope, try guest.global(scope, "Set"), &.{}));
     const namespace = try scope.object();
     try scope.put(namespace, "POWERSHELL_ARGS", powershell_args);
     // These are the same genuine imported functions required by config-value.
@@ -51,7 +80,6 @@ pub fn create(engine: *em.Engine, inputs: Inputs) !c.JSValue {
         };
         try scope.put(namespace, field.name, try scope.own(try functions.create(engine, field.name, length, callback, &.{ bindings, c.JS_NewInt32(engine.context, field.value) })));
     }
-    try engine.registerValueModule(module_name, namespace);
     return c.JS_DupValue(engine.context, namespace);
 }
 fn regexp(scope: *Scope, pattern: []const u8, flags: []const u8) !c.JSValue {
@@ -181,10 +209,12 @@ fn shellEnv(scope: *Scope, bindings: c.JSValue) !c.JSValue {
 }
 fn callback(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
+    return owned.finishValue(&scope, callbackBody(&scope, args, roots));
+}
+fn callbackBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
     var operation: i32 = undefined;
-    if (c.JS_ToInt32(engine.context, &operation, roots[1]) < 0) return js.capture(engine);
-    return c.JS_DupValue(engine.context, try execute(&scope, roots[0], @enumFromInt(operation), args));
+    if (c.JS_ToInt32(scope.engine.context, &operation, roots[1]) < 0) return js.capture(scope.engine);
+    return c.JS_DupValue(scope.engine.context, try execute(scope, roots[0], @enumFromInt(operation), args));
 }
 fn execute(scope: *Scope, bindings: c.JSValue, method: Method, args: []const c.JSValue) !c.JSValue {
     switch (method) {
@@ -201,55 +231,10 @@ fn execute(scope: *Scope, bindings: c.JSValue, method: Method, args: []const c.J
         },
         .getShellEnv => return shellEnv(scope, bindings),
         .sanitizeBinaryOutput => return scope.invoke(arg(args, 0), "replace", &.{ try regexp(scope, "[\\x00-\\x08\\x0B\\x0C\\x0E-\\x1F\\uFFF9-\\uFFFB]", "g"), try scope.text("") }),
-        .trackDetachedChildPid, .untrackDetachedChildPid => {
-            _ = try scope.invoke(try scope.get(bindings, "trackedDetachedChildPids"), if (method == .trackDetachedChildPid) "add" else "delete", &.{arg(args, 0)});
-        },
-        .killTrackedDetachedChildren => {
-            const tracked = try scope.get(bindings, "trackedDetachedChildPids");
-            var iterator = try js.Iterator.init(scope.engine, tracked, try scope.own(try scope.engine.checked(c.JS_GetIteratorSymbol(scope.engine.context))));
-            defer iterator.deinit();
-            errdefer iterator.closePreserving();
-            while (try iterator.next()) |pid| {
-                defer scope.engine.freeValue(pid);
-                try killTree(scope, bindings, pid);
-            }
-            _ = try scope.invoke(tracked, "clear", &.{});
-        },
-        .killProcessTree => try killTree(scope, bindings, arg(args, 0)),
+        .trackDetachedChildPid => try process_body.track(scope.engine, try scope.get(bindings, "trackedDetachedChildPids"), arg(args, 0)),
+        .untrackDetachedChildPid => try process_body.untrack(scope.engine, try scope.get(bindings, "trackedDetachedChildPids"), arg(args, 0)),
+        .killTrackedDetachedChildren => try process_body.killTracked(scope.engine, bindings, try scope.get(bindings, "trackedDetachedChildPids")),
+        .killProcessTree => try process_body.kill(scope.engine, bindings, arg(args, 0)),
     }
     return c.pi_js_undefined();
-}
-fn swallow(_: *em.Engine, _: c.JSValue, _: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
-    return c.pi_js_undefined();
-}
-fn killTree(scope: *Scope, bindings: c.JSValue, pid: c.JSValue) !void {
-    const generation = scope.engine.native_allocation_generation;
-    if (try windows(scope, bindings)) {
-        killWindows(scope, bindings, pid) catch |err| try ignore(scope, err, generation);
-        return;
-    }
-    const process = try scope.get(bindings, "process");
-    const negative = try scope.own(try scope.engine.checked(c.JS_PiBinaryOperator(scope.engine.context, 1, c.JS_NewInt32(scope.engine.context, 0), pid)));
-    _ = scope.invoke(process, "kill", &.{ negative, try scope.text("SIGKILL") }) catch |err| {
-        try ignore(scope, err, generation);
-        const next_generation = scope.engine.native_allocation_generation;
-        _ = scope.invoke(process, "kill", &.{ pid, try scope.text("SIGKILL") }) catch |next| {
-            try ignore(scope, next, next_generation);
-            return;
-        };
-        return;
-    };
-}
-fn killWindows(scope: *Scope, bindings: c.JSValue, pid: c.JSValue) !void {
-    const root = try scope.get(try scope.get(try scope.get(bindings, "process"), "env"), "SystemRoot");
-    const executable = try imported(scope, bindings, "join", &.{ if (temp.nullish(root)) try scope.text("C:\\Windows") else root, try scope.text("System32"), try scope.text("taskkill.exe") });
-    const args = try scope.array();
-    inline for (.{ "/F", "/T", "/PID" }, 0..) |value, index| try scope.index(args, index, try scope.text(value));
-    try scope.index(args, 3, try scope.call(try scope.global("String"), c.pi_js_undefined(), &.{pid}));
-    const options = try scope.object();
-    try scope.put(options, "stdio", try scope.text("ignore"));
-    try scope.put(options, "detached", c.pi_js_bool(scope.engine.context, 1));
-    try scope.put(options, "windowsHide", c.pi_js_bool(scope.engine.context, 1));
-    const child = try imported(scope, bindings, "spawn", &.{ executable, args, options });
-    _ = try scope.invoke(child, "once", &.{ try scope.text("error"), try scope.own(try functions.createArrow(scope.engine, "", 0, swallow, &.{})) });
 }
