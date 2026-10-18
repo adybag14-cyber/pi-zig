@@ -1456,6 +1456,12 @@ pub fn build(b: *std.Build) void {
     const agent_foundation_run = b.addRunArtifact(agent_foundation_tests);
     b.step("test-native-agent-foundations", "Compare private native Agent constructor and real method bodies with current Source observations").dependOn(&agent_foundation_run.step);
     const agent_return_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_return_adapter_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Agent return adapter"}, .use_llvm = use_llvm });
+    const agent_guest_tests = b.addTest(.{ .root_module = b.createModule(.{ .root_source_file = b.path("src/native_agent_af_guest_provenance_test.zig"), .target = target, .optimize = optimize }), .filters = &.{"native Agent guest provenance"}, .use_llvm = use_llvm });
+    linkQuickJs(b, agent_guest_tests.root_module, quickjs, sqlite_lib_dir);
+    linkSqlite(agent_guest_tests.root_module, sqlite_lib_dir, sqlite_library);
+    agent_guest_tests.root_module.addImport("catalog_tool", catalog_tool);
+    b.step("build-native-agent-af-guest-provenance", "Compile actual Agent guest DATA and native producer controls").dependOn(&b.addInstallArtifact(agent_guest_tests, .{ .dest_sub_path = b.fmt("native-agent-af-guest-provenance{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    b.step("test-native-agent-af-guest-provenance", "Run actual Agent guest DATA and native producer controls").dependOn(&b.addRunArtifact(agent_guest_tests).step);
     linkQuickJs(b, agent_return_tests.root_module, quickjs, sqlite_lib_dir);
     linkSqlite(agent_return_tests.root_module, sqlite_lib_dir, sqlite_library);
     agent_return_tests.root_module.addImport("catalog_tool", catalog_tool);

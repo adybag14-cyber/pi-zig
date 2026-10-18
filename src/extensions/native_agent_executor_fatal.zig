@@ -31,56 +31,14 @@ pub fn create(engine: *em.Engine) !c.JSValue {
 }
 /// Only called on this executor's actual failed operation. No value supplied
 /// as DATA is classified, and historical private tags remain ordinary.
-pub fn callbackFailure(engine: *em.Engine, owner: c.JSValue, err: anyerror, generation: u64) anyerror {
-    var failure_error = err;
-    if (err == error.OutOfMemory) {
-        failure_error = p.callbackFailure(engine, err);
-    } else if (err == error.JavaScriptException) {
-        if (engine.captured_exception) |reason| p.body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| { failure_error = fatal; };
-    }
-    if (failure_error == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        const tagged = c.pi_js_native_allocation_error_generation(reason);
-        const distance = tagged -% generation;
-        const fresh = tagged != 0 and distance != 0 and distance <= engine.native_allocation_generation -% generation;
-        if (c.JS_IsUncatchableError(reason) and (err == error.OutOfMemory or fresh)) {
-            const holder = data(owner);
-            if (holder.first == null) holder.first = c.JS_DupValue(engine.context, reason);
-        }
-    };
-    return failure_error;
+pub fn callbackFailure(engine: *em.Engine, _: c.JSValue, err: anyerror, _: u64) anyerror {
+    // The enclosing real constructor operation owns the stable invocation.
+    // A captured flag or a generation change across the executor is DATA,
+    // not proof of a producer. Only current actual pending/B1 may override.
+    if (err == error.OutOfMemory) return p.callbackFailure(engine, err);
+    engine.checkNativeEntry() catch |actual| return actual;
+    return err;
 }
-fn drain(engine: *em.Engine) void {
-    while (c.JS_HasException(engine.context)) {
-        const displaced = c.JS_GetException(engine.context);
-        engine.freeValue(displaced);
-    }
-}
-/// Check the retained callback event BEFORE checking the constructor result.
-/// This includes a custom constructor throwing after super(executor). Keep the
-/// selected reason owned outside pending/captured slots while freeing results
-/// and displaced reasons; cleanup cannot replace the first executor fatal.
-pub fn construct(s: *p.Scope, constructor: c.JSValue, args: []const c.JSValue, owner: c.JSValue) !c.JSValue {
-    const engine = s.engine;
-    const generation = engine.native_allocation_generation;
-    const result = c.JS_CallConstructor(engine.context, constructor, @intCast(args.len), @constCast(args.ptr));
-    if (data(owner).first) |first| {
-        const reason = c.JS_DupValue(engine.context, first);
-        const pending: ?c.JSValue = if (c.JS_HasException(engine.context)) c.JS_GetException(engine.context) else null;
-        const captured = engine.captured_exception;
-        engine.captured_exception = null;
-        engine.freeValue(result);
-        drain(engine);
-        if (pending) |old| { engine.freeValue(old); drain(engine); }
-        if (captured) |old| { engine.freeValue(old); drain(engine); }
-        c.JS_SetUncatchableError(engine.context, reason);
-        return engine.checked(c.JS_Throw(engine.context, reason));
-    }
-    const checked = try p.guard(engine, generation, engine.checked(result));
-    var owned = true;
-    errdefer if (owned) engine.freeValue(checked);
-    // Retain the ordinary constructor's existing pending/fresh-exit policy.
-    if (c.JS_HasException(engine.context)) return p.guard(engine, generation, engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))));
-    if (engine.captured_exception) |reason| if (c.JS_IsUncatchableError(reason)) try p.body.rethrowRecognizedAllocation(engine, reason, generation);
-    owned = false;
-    return s.own(checked);
+pub fn construct(s: *p.Scope, constructor: c.JSValue, args: []const c.JSValue, _: c.JSValue) !c.JSValue {
+    return p.construct(s, constructor, args);
 }

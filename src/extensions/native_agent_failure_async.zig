@@ -27,10 +27,8 @@ fn run(engine: *em.Engine, agent: c.JSValue, args: []const c.JSValue, usage: c.J
     try s.put(message, "usage", usage);
     try s.put(message, "stopReason", try s.text(if (s.truthy(aborted)) "aborted" else "error"));
     const error_constructor = try p.global(&s, "Error");
-    const generation = engine.native_allocation_generation;
-    const instance = c.JS_IsInstanceOf(engine.context, error_value, error_constructor);
-    if (instance < 0) { _ = try p.guard(engine, generation, @import("native_js_values.zig").capture(engine)); unreachable; }
-    const error_message = if (instance != 0) try p.get(&s, error_value, "message") else try p.call(&s, try p.global(&s, "String"), c.pi_js_undefined(), &.{error_value});
+    const instance = try p.instanceOf(&s, error_value, error_constructor);
+    const error_message = if (instance) try p.get(&s, error_value, "message") else try p.call(&s, try p.global(&s, "String"), c.pi_js_undefined(), &.{error_value});
     try s.put(message, "errorMessage", error_message);
     try s.put(message, "timestamp", try p.invoke(&s, try p.global(&s, "Date"), "now", &.{}));
     try s.put(owner, "failureMessage", message);

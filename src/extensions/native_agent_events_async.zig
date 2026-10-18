@@ -22,8 +22,7 @@ fn run(engine: *em.Engine, agent: c.JSValue, args: []const c.JSValue, state: *c.
     try s.put(owner, "signal", signal);
     const listeners = try p.get(&s, agent, "listeners");
     const symbol = try s.own(try engine.checked(c.JS_GetIteratorSymbol(engine.context)));
-    const generation = engine.native_allocation_generation;
-    const method = try s.own(try p.guard(engine, generation, js.getKey(engine, listeners, symbol)));
+    const method = try p.getKey(&s, listeners, symbol);
     const iterator = try p.call(&s, method, listeners, &.{});
     if (!c.JS_IsObject(iterator)) return js.typeError(engine, "Iterator is not an object");
     try s.put(owner, "iterator", iterator);

@@ -87,8 +87,7 @@ fn step(s: *p.Scope, comptime continuing: bool, args: []const c.JSValue, state: 
             const list = try p.get(s, context, "messages");
             const length = try p.get(s, try p.get(s, context, "messages"), "length");
             const index = try s.own(try engine.checked(c.JS_PiBinaryOperator(engine.context, 1, length, c.JS_NewInt32(engine.context, 1))));
-            const boundary = engine.native_allocation_generation;
-            const last = try s.own(try p.guard(engine, boundary, js.getKey(engine, list, index)));
+            const last = try p.getKey(s, list, index);
             if (s.equal(try p.get(s, last, "role"), try s.text("assistant"))) _ = try p.raise(s, "Cannot continue from message role: assistant");
             messages = try s.array();
         } else {
@@ -129,8 +128,7 @@ fn emitEvent(s: *p.Scope, owner: c.JSValue, value: c.JSValue, next: Stage) !Step
 fn initIterator(s: *p.Scope, owner: c.JSValue) !Step {
     const iterable = try s.get(owner, "initial");
     const symbol = try s.own(try s.engine.checked(c.JS_GetIteratorSymbol(s.engine.context)));
-    const boundary = s.engine.native_allocation_generation;
-    const method = try s.own(try p.guard(s.engine, boundary, js.getKey(s.engine, iterable, symbol)));
+    const method = try p.getKey(s, iterable, symbol);
     const iterator = try p.call(s, method, iterable, &.{});
     if (!c.JS_IsObject(iterator)) return js.typeError(s.engine, "Iterator is not an object");
     try s.put(owner, "iterator", iterator);
