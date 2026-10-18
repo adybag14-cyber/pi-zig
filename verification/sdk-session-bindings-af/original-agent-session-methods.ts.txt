@@ -1,0 +1,78 @@
+	async bindExtensions(bindings: ExtensionBindings): Promise<void> {
+		if (bindings.uiContext !== undefined) {
+			this._extensionUIContext = bindings.uiContext;
+		}
+		if (bindings.mode !== undefined) {
+			this._extensionMode = bindings.mode;
+		}
+		if (bindings.commandContextActions !== undefined) {
+			this._extensionCommandContextActions = bindings.commandContextActions;
+		}
+		if (bindings.abortHandler !== undefined) {
+			this._extensionAbortHandler = bindings.abortHandler;
+		}
+		if (bindings.shutdownHandler !== undefined) {
+			this._extensionShutdownHandler = bindings.shutdownHandler;
+		}
+		if (bindings.onError !== undefined) {
+			this._extensionErrorListener = bindings.onError;
+		}
+
+		this._applyExtensionBindings(this._extensionRunner);
+		await this._extensionRunner.emit(this._sessionStartEvent);
+		this._extensionRunner.reportUnhandledMcpServers();
+		await this.extendResourcesFromExtensions(this._sessionStartEvent.reason === "reload" ? "reload" : "startup");
+	}
+
+	private async extendResourcesFromExtensions(reason: "startup" | "reload"): Promise<void> {
+		if (!this._extensionRunner.hasHandlers("resources_discover")) {
+			return;
+		}
+
+		const { skillPaths, promptPaths, themePaths } = await this._extensionRunner.emitResourcesDiscover(
+			this._cwd,
+			reason,
+		);
+
+		if (skillPaths.length === 0 && promptPaths.length === 0 && themePaths.length === 0) {
+			return;
+		}
+
+		const extensionPaths: ResourceExtensionPaths = {
+			skillPaths: this.buildExtensionResourcePaths(skillPaths),
+			promptPaths: this.buildExtensionResourcePaths(promptPaths),
+			themePaths: this.buildExtensionResourcePaths(themePaths),
+		};
+
+		this._resourceLoader.extendResources(extensionPaths);
+		this._rebuildSystemPrompt(this.getActiveToolNames());
+	}
+
+	private buildExtensionResourcePaths(entries: Array<{ path: string; extensionPath: string }>): Array<{
+		path: string;
+		metadata: { source: string; scope: "temporary"; origin: "top-level"; baseDir?: string };
+	}> {
+		return entries.map((entry) => {
+			const source = this.getExtensionSourceLabel(entry.extensionPath);
+			const baseDir = isSyntheticPath(entry.extensionPath) ? undefined : dirname(entry.extensionPath);
+			return {
+				path: entry.path,
+				metadata: {
+					source,
+					scope: "temporary",
+					origin: "top-level",
+					baseDir,
+				},
+			};
+		});
+	}
+
+	private getExtensionSourceLabel(extensionPath: string): string {
+		if (isSyntheticPath(extensionPath)) {
+			return `extension:${extensionPath.replace(/[<>]/g, "")}`;
+		}
+		const base = basename(extensionPath);
+		const name = base.replace(/\.(ts|js)$/, "");
+		return `extension:${name}`;
+	}
+
