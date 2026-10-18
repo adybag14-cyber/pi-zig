@@ -3947,6 +3947,23 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-ai-oauth-device-code-genuine-af", "Install actual device code Source and genuine native controls").dependOn(&b.addInstallArtifact(device_code_genuine_af_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-device-code-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual child graph and physical spawn/wait controls. Install only: no Run
+    // edge, metadata execution or descendant operation is started by this step.
+    const child_frontend_genuine = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_child_frontend_genuine_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual child"},
+    });
+    linkQuickJs(b, child_frontend_genuine.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, child_frontend_genuine.root_module, typescript_parser);
+    linkSqlite(child_frontend_genuine.root_module, sqlite_lib_dir, sqlite_library);
+    child_frontend_genuine.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        child_frontend_genuine.root_module.linkSystemLibrary("advapi32", .{});
+        child_frontend_genuine.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-child-frontend-genuine", "Install eleven declared actual child frontend and live OS waiter controls without running").dependOn(&b.addInstallArtifact(child_frontend_genuine, .{ .dest_sub_path = b.fmt("native-child-frontend-genuine{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

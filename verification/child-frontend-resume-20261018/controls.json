@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "status": "authored-unrun",
+  "target": "build-native-child-frontend-genuine",
+  "executable": "native-child-frontend-genuine",
+  "filter": "native actual child",
+  "declared_tests": 11,
+  "root": "src/native_child_frontend_genuine_test.zig",
+  "runtime_claim": false,
+  "prerequisites": [
+    "Main canonical Node internal builtin require and corrected Node Scope/Boundary",
+    "native_node_error_class + shared system-error registry + local TTY guest operations",
+    "a4f81576 genuine child frontend/OS drivers and d13 + 7dc + dfc waiter successors"
+  ],
+  "limits": [
+    "Successful native spawn/pipe/close and causal waiter controls only.",
+    "No util error-name readiness claim; lazy util admission remains uninstantiated by these controls.",
+    "Root owns separate build, metadata, runtime lease and OS-descendant absence evidence."
+  ]
+}
