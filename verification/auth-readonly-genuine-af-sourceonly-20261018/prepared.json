@@ -1,0 +1,228 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_REQUIRED_READONLY_AND_ORDINARY_READ_EXPORT_PENDING_INDEPENDENT_REVIEW",
+  "base": "6be4a789c69bee98da06ea57190e519c06b1a551",
+  "source": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "canonical_ownRoot_source": "62ded415ce3ebdeb99fb17b6a1ccf1b48b9dd54b",
+  "canonical_ownRoot_sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+  "canonical_core_review_sha256": "CD583672D0E0942DC5417EDBCEB7E3E38223352559C1E682A862B86DBF56FC7A",
+  "payload": [
+    {
+      "path": "build.zig",
+      "bytes": 363011,
+      "sha256": "2BD31E23AAFC0E5E945613E0E90573696AD6E3C2C3BD74C15EC7FA685C414D8C"
+    },
+    {
+      "path": "src/extensions/fixtures/auth-readonly-genuine-af-observer.mjs",
+      "bytes": 6250,
+      "sha256": "0AD2ACEE4622B6A4E8B3498A8CCF26FED2739A6C63332A729438BF00183BEA76"
+    },
+    {
+      "path": "src/extensions/native_auth_readonly_production.zig",
+      "bytes": 31577,
+      "sha256": "BD41B66752B62CE9DB72521E856C9DBD2AB9E4A5DD39C1CEAC3CBF96039670F8"
+    },
+    {
+      "path": "src/extensions/native_auth_storage_production.zig",
+      "bytes": 46974,
+      "sha256": "F5F91D2C85C674B4A60C2FA7D8B5EE0AF7C45F7DC8CF3A1EBB8C49509E651058"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "bytes": 5636,
+      "sha256": "59E510BA9BCBD9CDA1BCA0B55D9D51B4893CD83D103C1EEB362BDD67742CBEA5"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "bytes": 13354,
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F"
+    },
+    {
+      "path": "src/extensions/native_sdk_runtime_imports.zig",
+      "bytes": 4593,
+      "sha256": "B9E44DAF0B32BF49E0C7CD454D377005197245B83970F0D256A6C504DDDDB0E4"
+    },
+    {
+      "path": "src/native_auth_readonly_genuine_af_compile_root.zig",
+      "bytes": 1799,
+      "sha256": "EC96EB38872EE561D0E21FA7DDEB722CE197663A102519B17CF773B26F2F5ED8"
+    },
+    {
+      "path": "src/native_auth_readonly_genuine_af_controls.zig",
+      "bytes": 6069,
+      "sha256": "D7E1D56593101C4FCA2A9371DEF8B4BBF3BA569FB695EF38C67972D750115071"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/auth-storage.ts.txt",
+      "bytes": 16670,
+      "sha256": "163626F5ABC34099A9AFB2803D0CC49B9C66D0FEACD605165E88063C328CEF68"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/coding-agent-package.json.txt",
+      "bytes": 3873,
+      "sha256": "A253F61695FCF170FB9A5B57A4D59ADB4EB27518852FB0D285E608CE19C91CAA"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/config.ts.txt",
+      "bytes": 23328,
+      "sha256": "B3B77644910D3FAC28A06625E90F993A8C1BC6C9458F148C723E64E0C99EB23E"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/index.ts.txt",
+      "bytes": 12845,
+      "sha256": "FF0C6959CF2952A575DD5B988B5E8C6A18D4E556993B05DFFB768797F3A98B1A"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/paths.ts.txt",
+      "bytes": 4950,
+      "sha256": "64C3EBEF724FA21ED0042E127908B4323A5D2F1B8AAA91EEE550442332FE8502"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/resolve-config-value.ts.txt",
+      "bytes": 9339,
+      "sha256": "0F53DAD47FE5D5D8837C022B7951CCD3BD5A9B577BD662F0986272110E83BCC7"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/authority/text.ts.txt",
+      "bytes": 404,
+      "sha256": "BB323F9607C499115B532021F4F0163C6DF04D834AEE9C32C3C77B273BD2D7C6"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/canonical-ownroot-independent-async-source-review.json",
+      "bytes": 6038,
+      "sha256": "CD583672D0E0942DC5417EDBCEB7E3E38223352559C1E682A862B86DBF56FC7A"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/original-caller.mjs",
+      "bytes": 1045,
+      "sha256": "DB137C73D73ADC3E20A37392017FBE1A3FD6A6CC1A093DBCD1E7FC36D33B8CBE"
+    },
+    {
+      "path": "verification/auth-readonly-genuine-af-sourceonly-20261018/SCOPE.md",
+      "bytes": 5906,
+      "sha256": "ECE041FCE96B4577C3D3BCD9DCAF0D7C95BAC747450CB5EAB0B8ED8D39645207"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 93573,
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "bytes": 3878,
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "bytes": 3430,
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "bytes": 5615,
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "bytes": 6692,
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "bytes": 5566,
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "bytes": 7826,
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485"
+    },
+    {
+      "path": "src/extensions/native_class.zig",
+      "bytes": 4809,
+      "sha256": "F6AD787D513A099F45A79BF4FB9B313630AA0371C31C403FCF36CE6A3896BC8D"
+    },
+    {
+      "path": "src/extensions/native_auth_readonly.zig",
+      "bytes": 12194,
+      "sha256": "1986CC70A6D6B72171D5512AFC34B88573D5E8BC9FE05701FCAABEE0E6BB8662"
+    },
+    {
+      "path": "src/extensions/native_auth_storage.zig",
+      "bytes": 18153,
+      "sha256": "0E22A7BB41C05D1FC2074A2A5DD986ABB2C4263C766A842903D3440AC6EEB32F"
+    },
+    {
+      "path": "src/extensions/native_auth_file_storage_backend.zig",
+      "bytes": 22399,
+      "sha256": "264E0FC4CB63F83C252EEC94EB7AC7B8BD7AF0B438A419E9E91D63474061DBD6"
+    },
+    {
+      "path": "src/extensions/native_auth_directory_lock.zig",
+      "bytes": 16416,
+      "sha256": "0802985BA774879706C9E6BC7DD01BDF17B6B1F040B639E28E49AE7C128DADA8"
+    },
+    {
+      "path": "src/extensions/native_sdk_source_paths.zig",
+      "bytes": 8111,
+      "sha256": "A751774E4C04038254532D1E0605CE052E93593C03F0FC0987D42EACDA4D3D67"
+    },
+    {
+      "path": "src/extensions/native_js_values.zig",
+      "bytes": 9122,
+      "sha256": "2F07D08ECEBC70E4ADC73EE4110FF2DE2A60BAE7C985B62065A4F5B93074D4A6"
+    },
+    {
+      "path": "src/extensions/native_resolve_config_value_production.zig",
+      "bytes": 13594,
+      "sha256": "85674AE345C763A5BB15EF7C32E1D419C526100803F5968561887DC06CFB84CE"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2219518,
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 76220,
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-readonly-native.input.txt",
+      "bytes": 3164,
+      "sha256": "61A3E06D7F133DCA5A3745BD98B582DC12B0295750EA8CB3AAB80CF1EFF717CE"
+    },
+    {
+      "path": "src/durable/fixtures/durable-19cb534-auth-readonly-source.json",
+      "bytes": 6995,
+      "sha256": "1140E69938BD2ED324F50040F625F42E00E02F69B07904C59F21A92E7F0FBDB5"
+    }
+  ],
+  "genuine_AF_methods": [
+    "read",
+    "list",
+    "modify",
+    "delete"
+  ],
+  "Source_Await_count": 0,
+  "ordinary_functions": [
+    "constructor",
+    "load",
+    "readStoredCredential"
+  ],
+  "owner_required_typed_control_bodies": 3,
+  "compile_sentinel_must_never_run": true,
+  "actual_metadata": false,
+  "actual_execution": false,
+  "original_output_absent": true,
+  "expected_authored": false,
+  "requires_actual_SDK_providers_and_FS_namespace_owner_corrective": true,
+  "requires_actual_Engine_G2_AF1116_Bfb": true
+}

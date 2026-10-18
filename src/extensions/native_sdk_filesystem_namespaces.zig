@@ -19,7 +19,7 @@ fn enterCreation(entry: *Creation) !void {
     entry.previous = creating;
     creating = entry;
 }
-pub const AuthDependencies = struct { get_agent_dir: c.JSValue, resolve_config_value: c.JSValue };
+pub const AuthDependencies = struct { get_agent_dir: c.JSValue, resolve_config_value: c.JSValue, is_command_config_value: c.JSValue = c.pi_js_undefined() };
 fn root(scope: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(scope, value); }
 fn get(scope: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
     const generation = scope.engine.native_allocation_generation;
@@ -124,14 +124,15 @@ fn authBody(scope: *Scope, platform: c.JSValue, dependencies: AuthDependencies) 
     const engine = scope.engine;
     const actual_platform = engine.native_module_values.get(platform_module) orelse return error.ActualSdkPlatformMustBeCreatedFirst;
     if (!c.JS_IsStrictEqual(engine.context, platform, actual_platform)) return error.ActualSdkPlatformIdentity;
-    if (!c.JS_IsFunction(engine.context, dependencies.get_agent_dir) or !c.JS_IsFunction(engine.context, dependencies.resolve_config_value)) return error.RequiredActualSdkAuthDependency;
+    if (!c.JS_IsFunction(engine.context, dependencies.get_agent_dir) or !c.JS_IsFunction(engine.context, dependencies.resolve_config_value) or !c.JS_IsFunction(engine.context, dependencies.is_command_config_value)) return error.RequiredActualSdkAuthDependency;
     if (engine.native_module_values.get(auth_module)) |owner| {
-        if (!c.JS_IsStrictEqual(engine.context, try get(scope, owner, "getAgentDir"), dependencies.get_agent_dir) or !c.JS_IsStrictEqual(engine.context, try get(scope, owner, "resolveConfigValue"), dependencies.resolve_config_value)) return error.ActualSdkAuthModuleImportsChanged;
+        if (!c.JS_IsStrictEqual(engine.context, try get(scope, owner, "getAgentDir"), dependencies.get_agent_dir) or !c.JS_IsStrictEqual(engine.context, try get(scope, owner, "resolveConfigValue"), dependencies.resolve_config_value) or !c.JS_IsStrictEqual(engine.context, try get(scope, owner, "isCommandConfigValue"), dependencies.is_command_config_value)) return error.ActualSdkAuthModuleImportsChanged;
         return c.JS_DupValue(engine.context, try get(scope, owner, "exports"));
     }
     const imports = try object(scope);
     try put(scope, imports, "getAgentDir", dependencies.get_agent_dir);
     try put(scope, imports, "resolveConfigValue", dependencies.resolve_config_value);
+    try put(scope, imports, "isCommandConfigValue", dependencies.is_command_config_value);
     const utilities = try get(scope, platform, "pathUtilities");
     try put(scope, imports, "getFileRevision", try get(scope, utilities, "getFileRevision"));
     const backend = try root(scope, try @import("native_auth_file_storage_backend.zig").create(engine, .{ .get_agent_dir = dependencies.get_agent_dir }));
@@ -141,6 +142,7 @@ fn authBody(scope: *Scope, platform: c.JSValue, dependencies: AuthDependencies) 
     const owner = try object(scope);
     try put(scope, owner, "getAgentDir", dependencies.get_agent_dir);
     try put(scope, owner, "resolveConfigValue", dependencies.resolve_config_value);
+    try put(scope, owner, "isCommandConfigValue", dependencies.is_command_config_value);
     try put(scope, owner, "exports", exports);
     return c.JS_DupValue(engine.context, owner);
 }

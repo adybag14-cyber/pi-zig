@@ -1664,6 +1664,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-auth-file-genuine-af-controls-artifact", "Build actual file/lock AF controls; runtime requires Root grant and accepted current VM producer").dependOn(&b.addInstallArtifact(auth_file_af_controls, .{}).step);
 
+    const auth_readonly_af_controls = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_auth_readonly_genuine_af_compile_root.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Auth readonly actual-owner"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, auth_readonly_af_controls.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, auth_readonly_af_controls.root_module, typescript_parser);
+    linkSqlite(auth_readonly_af_controls.root_module, sqlite_lib_dir, sqlite_library);
+    auth_readonly_af_controls.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        auth_readonly_af_controls.root_module.linkSystemLibrary("advapi32", .{});
+        auth_readonly_af_controls.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-auth-readonly-genuine-af-controls-artifact", "Compile/link six genuine owner-required Readonly bodies; NEVER RUN sentinel").dependOn(&b.addInstallArtifact(auth_readonly_af_controls, .{}).step);
+
     const sdk_application_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_application_native_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual application"},

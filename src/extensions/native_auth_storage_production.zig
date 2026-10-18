@@ -93,10 +93,25 @@ fn parseStorageData(s: *Scope, content: c.JSValue) !c.JSValue {
 /// and resolveConfigValue. NormalizePath reuses the actual native Source body.
 /// A module namespace must be created once and retained by the SDK assembler.
 pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = engine };
-    defer s.deinit();
+    try engine.checkNativeEntry();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const value = createOwned(engine, imports) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn createOwned(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return owned.finishValue(&scope, createBody(&scope, imports));
+}
+fn createBody(s: *Scope, imports: c.JSValue) !c.JSValue {
+    const engine = s.engine;
     const owner = try s.object();
-    inline for (.{ "FileAuthStorageBackend", "getAgentDir", "getFileRevision", "resolveConfigValue" }) |name| {
+    inline for (.{ "FileAuthStorageBackend", "getAgentDir", "getFileRevision", "resolveConfigValue", "isCommandConfigValue" }) |name| {
         const binding = try s.get(imports, name);
         if (!c.JS_IsFunction(engine.context, binding)) return error.RequiredActualAuthStorageDependency;
         if (comptime std.mem.eql(u8, name, "FileAuthStorageBackend")) if (!c.JS_IsConstructor(engine.context, binding)) return error.RequiredOrdinaryFileAuthStorageBackend;
@@ -106,6 +121,11 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
     if (!engine.native_module_values.contains("node:path")) try @import("node_path.zig").install(engine, io);
     try s.put(owner, "join", try s.get(engine.native_module_values.get("node:path").?, "join"));
     try s.put(owner, "sharedAuthFileReadState", c.pi_js_undefined());
+    const readonly_exports = try s.own(try @import("native_auth_readonly_production.zig").create(engine, .{
+        .get_agent_dir = try s.get(owner, "getAgentDir"),
+        .resolve_config_value = try s.get(owner, "resolveConfigValue"),
+        .is_command_config_value = try s.get(owner, "isCommandConfigValue"),
+    }));
     const memory_constructor = try s.own(try memoryConstructor(engine, owner));
     try s.put(owner, "InMemoryAuthStorageBackend", memory_constructor);
     const prototype = try s.object();
@@ -117,7 +137,7 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
                 return staticCall(host, roots[0], args, index);
             }
         };
-        try defineMethod(&s, auth_constructor, entry[0], try methodValue(&s, entry[0], entry[1], Adapter.call, &.{owner}));
+        try defineMethod(s, auth_constructor, entry[0], try methodValue(s, entry[0], entry[1], Adapter.call, &.{owner}));
     }
     inline for (@typeInfo(Method).@"enum".fields) |entry| {
         const method: Method = @enumFromInt(entry.value);
@@ -136,27 +156,45 @@ pub fn create(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {
             else => 1,
         };
         const asynchronous = method != .parseStorageData and method != .updateReadState and method != .reload;
-        const function = if (asynchronous) try s.own(try af.createResumable(engine, entry.name, length, Adapter.run, &.{owner})) else try methodValue(&s, entry.name, length, Adapter.call, &.{owner});
-        try defineMethod(&s, prototype, entry.name, function);
+        const function = if (asynchronous) try s.own(try af.createResumable(engine, entry.name, length, Adapter.run, &.{owner})) else try methodValue(s, entry.name, length, Adapter.call, &.{owner});
+        try defineMethod(s, prototype, entry.name, function);
     }
     const exports = try s.object();
     try s.put(exports, "AuthStorage", auth_constructor);
     try s.put(exports, "InMemoryAuthStorageBackend", memory_constructor);
     try s.put(exports, "FileAuthStorageBackend", try s.get(owner, "FileAuthStorageBackend"));
+    try s.put(exports, "ReadOnlyAuthStorage", try s.get(readonly_exports, "ReadOnlyAuthStorage"));
+    try s.put(exports, "readStoredCredential", try s.get(readonly_exports, "readStoredCredential"));
     return c.JS_DupValue(engine.context, exports);
 }
 /// Genuine standalone composition. The actual config-value resolver remains
 /// mandatory; no literal-only or command-skipping substitute is manufactured.
-pub fn createDefault(engine: *v.em.Engine, resolve_config_value: c.JSValue) !c.JSValue {
-    if (!c.JS_IsFunction(engine.context, resolve_config_value)) return error.RequiredActualConfigValueResolver;
-    var s: Scope = .{ .engine = engine };
-    defer s.deinit();
+pub fn createDefault(engine: *v.em.Engine, resolve_config_value: c.JSValue, is_command_config_value: c.JSValue) !c.JSValue {
+    try engine.checkNativeEntry();
+    engine.native_exception_diagnostics_suppressed += 1;
+    defer engine.native_exception_diagnostics_suppressed -= 1;
+    var invocation: v.em.Engine.NativeInvocation = .{};
+    engine.enterNativeInvocation(&invocation);
+    const value = defaultOwned(engine, resolve_config_value, is_command_config_value) catch |err| {
+        const failed = @import("native_sdk.zig").fail(engine, err);
+        return engine.checked(engine.leaveNativeInvocation(&invocation, failed));
+    };
+    return engine.checked(engine.leaveNativeInvocation(&invocation, value));
+}
+fn defaultOwned(engine: *v.em.Engine, resolver: c.JSValue, command: c.JSValue) !c.JSValue {
+    var scope: Scope = .{ .engine = engine };
+    return owned.finishValue(&scope, defaultBody(&scope, resolver, command));
+}
+fn defaultBody(s: *Scope, resolve_config_value: c.JSValue, is_command_config_value: c.JSValue) !c.JSValue {
+    const engine = s.engine;
+    if (!c.JS_IsFunction(engine.context, resolve_config_value) or !c.JS_IsFunction(engine.context, is_command_config_value)) return error.RequiredActualConfigValueResolver;
     const imports = try s.object();
     const get_agent_dir = try s.own(try @import("native_sdk_agent_directory.zig").create(engine, .{}));
     try s.put(imports, "getAgentDir", get_agent_dir);
     try s.put(imports, "FileAuthStorageBackend", try s.own(try @import("native_auth_file_storage_backend.zig").create(engine, .{ .get_agent_dir = get_agent_dir })));
     try @import("native_file_revision.zig").install(engine, imports);
     try s.put(imports, "resolveConfigValue", resolve_config_value);
+    try s.put(imports, "isCommandConfigValue", is_command_config_value);
     return create(engine, imports);
 }
 pub fn constructor(engine: *v.em.Engine, imports: c.JSValue) !c.JSValue {

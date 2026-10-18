@@ -61,6 +61,7 @@ fn createBody(scope: *Scope, inputs: Inputs) !c.JSValue {
     const auth = try scope.own(try @import("native_sdk_filesystem_namespaces.zig").createAuth(engine, platform, .{
         .get_agent_dir = try scope.get(configuration, "getAgentDir"),
         .resolve_config_value = try scope.get(config_values, "resolveConfigValue"),
+        .is_command_config_value = try scope.get(config_values, "isCommandConfigValue"),
     }));
     const timing = try scope.own(try @import("native_sdk_timings.zig").create(engine));
     const management_http = try scope.own(try @import("native_sdk_management_http.zig").create(engine));

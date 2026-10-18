@@ -1,0 +1,15 @@
+{
+  "scope": "Source-only Readonly Auth dependency with current SDK filesystem namespace preserved",
+  "root_base": "f49a5047581bb1346a866fc187085be9f097b79d",
+  "reviewed_projection_base": "df18a3c9266d6464c47169e6f7739b2a78f64caf",
+  "reviewed_virtual_tree": "4bf22fe07495cc233957b64b4465923650ccde97",
+  "donor": "e496bba8e89d330630f64dd350e948a4eb808b69",
+  "patch_sha256": "A6EAA41D6ABA20ECF4BB64B1E0213FF4B9A3F0C5EBA3FEF6CDE86963E8713C7E",
+  "exact_nonbuild_payloads": 24,
+  "build_additions": 15,
+  "session_AF_f49_preserved": true,
+  "guest_operation_generation_limitation_sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+  "compile_only_sentinel_must_never_run_or_query": true,
+  "native_or_Node_executed": false,
+  "runtime_qualified": false
+}
