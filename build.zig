@@ -2119,6 +2119,26 @@ pub fn build(b: *std.Build) void {
     ai_auth_helpers_tests.root_module.addImport("catalog_tool", catalog_tool);
     b.step("test-native-ai-auth-helpers", "Validate actual native auth helper async identity and owned inputs").dependOn(&b.addRunArtifact(ai_auth_helpers_tests).step);
     b.step("build-native-ai-auth-helpers", "Compile public native auth helpers independently of OAuth network flows").dependOn(&ai_auth_helpers_tests.step);
+    const sdk_public_extension_helpers = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/native_sdk_public_extension_helpers_test.zig"),
+            .target = target,
+            .optimize = optimize,
+        }),
+        .filters = &.{"SDK public extension helpers"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_public_extension_helpers.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_public_extension_helpers.root_module, typescript_parser);
+    linkSqlite(sdk_public_extension_helpers.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_public_extension_helpers.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        sdk_public_extension_helpers.root_module.linkSystemLibrary("advapi32", .{});
+        sdk_public_extension_helpers.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-public-extension-helpers", "Compile actual public extension helper controls without execution")
+        .dependOn(&b.addInstallArtifact(sdk_public_extension_helpers, .{}).step);
+
     const sdk_public_truncation = b.addTest(.{
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/native_sdk_public_truncation_test.zig"),

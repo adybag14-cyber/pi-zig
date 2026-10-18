@@ -1,0 +1,44 @@
+{
+  "status": "authored_source_only",
+  "target": "build-native-sdk-public-extension-helpers",
+  "root": "src/native_sdk_public_extension_helpers_test.zig",
+  "filters": [
+    "SDK public extension helpers"
+  ],
+  "authored_declared_test_names": [
+    "SDK public extension helpers actual namespace and ordinary function identities",
+    "SDK public extension helpers actual strict guards preserve live getters and identity",
+    "SDK public extension helpers actual definition snapshots and live execution order",
+    "SDK public extension helpers actual map receiver sparse arrays and callback contract",
+    "SDK public extension helpers actual guard result retirement precedes caller continuation",
+    "SDK public extension helpers actual context callee retires before definition execution",
+    "SDK public extension helpers SAME getter DATA stays ordinary and actual B1 wins",
+    "SDK public extension helpers actual context callee retirement fatal preempts execute"
+  ],
+  "source_authority": "c268154c",
+  "source_authority_copies": [
+    "verification/sdk-owners-resume-20261018/extension-types.c268.ts.txt",
+    "verification/sdk-owners-resume-20261018/extension-wrapper.c268.ts.txt",
+    "verification/sdk-owners-resume-20261018/tool-definition-wrapper.c268.ts.txt"
+  ],
+  "source_fixture": "src/extensions/fixtures/sdk-public-extension-helpers-c268-source.mjs",
+  "production_exports": [
+    "defineTool",
+    "isBashToolResult",
+    "isPowerShellToolResult",
+    "isReadToolResult",
+    "isEditToolResult",
+    "isWriteToolResult",
+    "isGrepToolResult",
+    "isFindToolResult",
+    "isLsToolResult",
+    "isToolCallEventType",
+    "wrapRegisteredTool",
+    "wrapRegisteredTools"
+  ],
+  "actual_metadata": null,
+  "native_build": false,
+  "native_runtime": false,
+  "source_node_capture": false,
+  "whole_public_namespace_qualification": false
+}
