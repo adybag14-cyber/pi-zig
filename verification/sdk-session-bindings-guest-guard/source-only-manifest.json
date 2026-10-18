@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "status": "source_only_guest_operation_correction_peer_pending",
+  "Root_base": "f49a5047581bb1346a866fc187085be9f097b79d",
+  "historical_source": "3b9d01e9c631491f068c3c63b54cdc87b6bded1f",
+  "historical_Source_review": "72FF43DB3EC2D55BC7E2C6F5B1A343D336583CDDED774268EC83BD5229A90881",
+  "additive_limitation": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+  "members": [
+    {
+      "path": "src/extensions/native_sdk_session_bindings_values.zig",
+      "sha256": "FE9B3F0A09182163842F63748C9537F796083668F1A260EA925AFFDBB3BC5994",
+      "bytes": 7373
+    },
+    {
+      "path": "src/extensions/native_sdk_session_bindings.zig",
+      "sha256": "A936E77A869C47B4C461E681B72821A43766A8A51675A8D30DABF82F0B52A6C0",
+      "bytes": 15057
+    },
+    {
+      "path": "src/native_sdk_session_bindings_af_test.zig",
+      "sha256": "9129CF71AC0094D9346F56623C034FE64FAD6092D56E6CCE48C52B8AFF34CD4D",
+      "bytes": 5209
+    },
+    {
+      "path": "src/native_sdk_session_bindings_guest_guard_test.zig",
+      "sha256": "7FD9CE076CACD263FE31B591706CBF13621406FB9B278396143EC9CA1D8CE5F9",
+      "bytes": 8135
+    },
+    {
+      "path": "verification/sdk-session-bindings-guest-guard/README.md",
+      "sha256": "69D1ADE5B26112AC71AD59257B333FA639D8E4105C4486610420772D2E1E7A2F",
+      "bytes": 3574
+    },
+    {
+      "path": "verification/sdk-session-bindings-guest-guard/guest-operation-generation-limitation.json",
+      "sha256": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+      "bytes": 1746
+    },
+    {
+      "path": "src/native_sdk_session_bindings_actual_controls.zig",
+      "sha256": "7A11E19CFB24BBF73CD8BABC73ADE2461F7BF890CAEB9F8C0C182FEADACEB00D",
+      "bytes": 2037
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "bytes": 93573,
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "bytes": 13354,
+      "git_blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "bytes": 6692,
+      "git_blob": "8f00e796a280f9a0e329f9a2784e1550f5b0c7e5"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "bytes": 5615,
+      "git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe"
+    },
+    {
+      "path": "src/extensions/native_agent_af_values.zig",
+      "sha256": "F01E575EF7D0FC43EB9F0AD63C4CFFD0A8D65D3794BC5DC9B0B159BBEFCCFB9A",
+      "bytes": 5566,
+      "git_blob": "131ef6fa0cbb047fa9f4aa38d07aa5f14ccb3c3a"
+    },
+    {
+      "path": "src/extensions/native_node_function.zig",
+      "sha256": "C94BE97977E551190FB6AF715B306544EF58C836DDA56BC4560FCFDF89C89485",
+      "bytes": 7826,
+      "git_blob": "4712b2530f87476d9abfdc81d0f38b7289baac3a"
+    },
+    {
+      "path": "src/extensions/native_sdk_prompt_scope.zig",
+      "sha256": "769C676B062DF4EF2C273AB9CEDD755642CC6F5110920327DC7CB379AAE8013E",
+      "bytes": 3430,
+      "git_blob": "1fe49fc93e26c6c5919f29b3bbd9c8acedd86b70"
+    },
+    {
+      "path": "src/native_sdk_session_bindings_retirement_test.zig",
+      "sha256": "8E909E1254B2523F487F20E77288DD80A4CE51895CBC01CD4DA88680496A1771",
+      "bytes": 9559,
+      "git_blob": "82a425db87226f9e64d87e2ef64d71ff27b00818"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-af.input.txt",
+      "sha256": "5331E550B60A4C62CE209FE316876205E5583AEDCEEEB1AF1A77DF148F3511A5",
+      "bytes": 6335,
+      "git_blob": "9b01befa629370e0f3a0c27bd25d041da983c618"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-5ab.input.txt",
+      "sha256": "C74B0219828799E5F2D296A3823F16AEBB5D6A45BEA53AD8669D36F0A38C8251",
+      "bytes": 8583,
+      "git_blob": "ea90803fe750d181cec1ddcd6d708ee864d22df0"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-session-bindings-5ab.json",
+      "sha256": "B57B284B9B7FAB6E5E4D04C20EF7898F3D281DC0BFFB1C15D4A654C8FE2EA45A",
+      "bytes": 12088,
+      "git_blob": "ac70598559f1439210dd12423637fb67e1247dda"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/source-only-manifest.json",
+      "sha256": "962B6DC4022E1AD065C51E1479B961D1D0667A11EDD81A7B22491B3C74C99CE1",
+      "bytes": 6583,
+      "git_blob": "87730c614333bab5ab8718fb36c8bf3dd2035773"
+    },
+    {
+      "path": "verification/sdk-session-bindings-af/independent-body-source-review.json",
+      "sha256": "72FF43DB3EC2D55BC7E2C6F5B1A343D336583CDDED774268EC83BD5229A90881",
+      "bytes": 2496,
+      "git_blob": "5ac9d6b080e3a6f1a7625bdf591b85c04e16964d"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "68A3EF9BC0DC11D38083BCF47759558B3C77DE801076E3F5AAC287ADF1DEBF0A",
+      "bytes": 371191,
+      "git_blob": "ec7502ae92a4d79ec4212aa3024b64dd1c9ea199"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "bytes": 2219518,
+      "git_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "bytes": 76220,
+      "git_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    }
+  ],
+  "new_native_names": [
+    "native session guest operations keep same-operation private DATA throws ordinary",
+    "native session same-get and same-call actual fatal producers retain current event",
+    "native actual session binding get and call reject same-operation private DATA unchanged"
+  ],
+  "actual_metadata": null,
+  "new_declarations": 3,
+  "static_target_total": 8,
+  "actual_observations": null,
+  "Root_Main_written": false,
+  "parser_fmt_AST_native_Node_compiler_jobs": 0,
+  "runtime_qualification": false,
+  "control_ABI_fix": "Pinned JS_IsAsyncFunction takes one JSValue argument; three inherited calls corrected without changing assertions or product1091"
+}

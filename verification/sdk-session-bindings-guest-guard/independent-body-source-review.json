@@ -1,0 +1,31 @@
+{
+  "schema": 1,
+  "status": "FINITE_SESSION_GUEST_PROVENANCE_CORRECTION_SOURCE_CLOSED",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T01:17:39.2797395+00:00",
+  "head": "c82a1a67347f461ed0019f8e39bd3bd518385cb3",
+  "base": "f49a5047581bb1346a866fc187085be9f097b79d",
+  "manifest_sha256": "34AC2EC9BE7123019E7DB305EBA4571D502763963788213725C47F64000070C1",
+  "previous_finite_source_review": "72FF43DB3EC2D55BC7E2C6F5B1A343D336583CDDED774268EC83BD5229A90881",
+  "new_counterexample_authority": "BE5514BE5895A012885DB8C081983AD8E4210737F414819C122B1B6423603E32",
+  "review": [
+    "Whole1091localScope raw/guestbracketing andproductcallsitediff read;no guest tag/generation promotion remains",
+    "get/call/construct/define/set/concat/stringify guardentry andenter caller-localstableNativeInvocation BEFOREVMoperation;heldthroughrawnormalization andownRoot storagefailurecleanup",
+    "finishGuest pops withconsumedundefined/erroronly,doesnotconsume borrowedScope result;C435 finalnormalization observes currentproducer without historyflagauthority",
+    "RawAllocation restricted directNewStringLen/NewObject/privateNullstage;canonicalC435 trustedper-freecontractunchanged",
+    "Sevenreal same-operation nativeprivateDATA-maker→guestthrow routes assert exactA/unmarked/private tag andemptyVM;actualfatal andcapturedcurrentemptyVM contrasts for get/call retainexactnativecause",
+    "Actualgenuinebindget/callroutes exercise installedAF andexactordinaryrejection;previousSourceorder/expressionretirement unchanged",
+    "Control-onlyc82removesctxfromTHREEJS_IsAsyncFunctioncalls across2files tomatch actualheader1011onearg;productblobsunchanged1091",
+    "Sevenmember+16protectedrawGitSHA256/lengths verified;exactcleanhead/eightstaticnames;protectedEngineC435C/AF/sharedScopeunchanged"
+  ],
+  "limits": [
+    "Eightstaticdeclarations authored/unrun;actualmetadata unknown;no parser/compiler/runtime result",
+    "Parameterizedactualsessionprofile needsrealowner/suppliers andcurrentC/G2/AF pendingbeforebodyqualification",
+    "This closes localBE551 counterexample andreportedmechanicalcontrolABIonly;no inheritedcanonicalAgent/otherSDKguestguard policy transferred",
+    "Inheritedordinarylabel/pathoptimizedGC andfullSDK/public/default/nativeIO parityremainoutsidefiniteclosedboundaries",
+    "No Main/sharedEngine/Scope/C edits,sourceintake orjob authorization"
+  ],
+  "execution_authorized": false,
+  "intake_authorized": false,
+  "agent_jobs": 0
+}

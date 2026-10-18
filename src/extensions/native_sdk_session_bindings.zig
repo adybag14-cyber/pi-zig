@@ -37,8 +37,7 @@ fn installBody(scope: *Scope, prototype: c.JSValue) !void {
             .buildExtensionResourcePaths => try functions.createMethod(engine, field.name, 1, pathsCallback, &roots),
             .getExtensionSourceLabel => try functions.createMethod(engine, field.name, 1, labelCallback, &roots),
         });
-        const generation = engine.native_allocation_generation;
-        try scope.status(c.JS_DefinePropertyValueStr(engine.context, prototype, field.name, c.JS_DupValue(engine.context, function), c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE), generation);
+        try scope.define(prototype, field.name, function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE);
     }
 }
 fn arg(args: []const c.JSValue) c.JSValue { return if (args.len > 0) args[0] else c.pi_js_undefined(); }
@@ -55,8 +54,7 @@ fn synthetic(scope: *Scope, path: c.JSValue) !bool {
 }
 fn regex(scope: *Scope, pattern: []const u8, flags: []const u8) !c.JSValue {
     var args = [_]c.JSValue{ try scope.text(pattern), try scope.text(flags) };
-    const generation = scope.engine.native_allocation_generation;
-    return scope.own(try scope.raw(c.JS_CallConstructor(scope.engine.context, scope.engine.intrinsic_regexp_constructor, args.len, &args), generation));
+    return scope.construct(scope.engine.intrinsic_regexp_constructor, &args);
 }
 fn label(scope: *Scope, path: c.JSValue, basename: c.JSValue) !c.JSValue {
     const engine = scope.engine;
@@ -103,7 +101,7 @@ fn wait(scope: *Scope, state: *c.JSValue, value: c.JSValue, next: Stage) !af.Act
     var job = state.*;
     if (c.JS_IsUndefined(job)) {
         const generation = engine.native_allocation_generation;
-        job = try scope.own(try scope.raw(c.JS_NewObjectProto(engine.context, c.pi_js_null()), generation));
+        job = try scope.own(try scope.rawAllocation(c.JS_NewObjectProto(engine.context, c.pi_js_null()), generation));
         af.replaceState(engine, state, c.JS_DupValue(engine.context, job));
     }
     try scope.put(job, "stage", c.JS_NewInt32(engine.context, @intFromEnum(next)));

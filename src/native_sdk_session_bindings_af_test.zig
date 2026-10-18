@@ -6,6 +6,7 @@ const owned = @import("extensions/native_sdk_owned_completion.zig");
 const bindings = @import("extensions/native_sdk_session_bindings.zig");
 const c = em.c;
 comptime { _ = @import("native_sdk_session_bindings_retirement_test.zig"); }
+comptime { _ = @import("native_sdk_session_bindings_guest_guard_test.zig"); }
 fn expose(scope: *Scope) !c.JSValue {
     const prototype = try scope.object();
     try bindings.install(scope.engine, prototype);
@@ -25,11 +26,11 @@ fn brands(scope: *Scope) !void {
     const api = try expose(scope);
     inline for (.{ "bindExtensions", "extendResourcesFromExtensions" }) |name| {
         const function = try scope.get(api, name);
-        try std.testing.expect(c.JS_IsAsyncFunction(scope.engine.context, function));
+        try std.testing.expect(c.JS_IsAsyncFunction(function));
     }
     inline for (.{ "buildExtensionResourcePaths", "getExtensionSourceLabel" }) |name| {
         const function = try scope.get(api, name);
-        try std.testing.expect(!c.JS_IsAsyncFunction(scope.engine.context, function));
+        try std.testing.expect(!c.JS_IsAsyncFunction(function));
     }
 }
 test "native session bindings borrowed receivers preserve live order actual Awaits and raw rejections" {
