@@ -1808,6 +1808,19 @@ pub fn build(b: *std.Build) void {
         sdk_output_guard_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-sdk-output-guard", "Install actual c268 output guard controls without execution").dependOn(&b.addInstallArtifact(sdk_output_guard_tests, .{}).step);
+    const public_print_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_print_mode_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Public print actual"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, public_print_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, public_print_tests.root_module, typescript_parser);
+    linkSqlite(public_print_tests.root_module, sqlite_lib_dir, sqlite_library);
+    public_print_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        public_print_tests.root_module.linkSystemLibrary("advapi32", .{});
+        public_print_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-public-print-mode", "Install actual c268 public print and JSON mode controls without execution").dependOn(&b.addInstallArtifact(public_print_tests, .{}).step);
     const sdk_actual_paths_owner_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_paths_owner_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"SDK actual paths owner"}, .use_llvm = use_llvm,
