@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "status": "FINITE_SOURCE_OWNER_BOUNDARIES_CLOSED_DEPENDENCY_UNION_PENDING",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T00:46:03.9224298+00:00",
+  "source_head": "4514202eff19b8ec48815a3b2775f6e6ad063bee",
+  "base": "7edd833dc8d61311814f153fddbb1205abb008c1",
+  "manifest_sha256": "2BB7D647668810B2ED39288EBDBE9C627236B090C74251E19F52CDD5E901E0EA",
+  "review": [
+    "New actual aggregate owner and paths/filesystem factory changes read in full;real field/signature joins checked against seven immutable supplier API leaves",
+    "Actual captured Inputs/Auth runtime/frontend graph is retained by move-only owner;borrowed native capability contexts expressly outlive Engine caches",
+    "Per-entry actualNativeInvocation and suppression balanced;C435 completion records result/error before scope/graph retirement;firstordinary and currentfatal policy delegated to unchanged independently reviewed helper",
+    "Paths basic namespace identity retained in values-only private cache;filesystem identity and synchronous reentry fail closed;construction and diagnostic retirement precede basic publication",
+    "Cloud identity imports reserved before export definition;owned rollback on failure;no general VM allocation atomicity or sticky registration retry claim",
+    "Filesystem platform/Auth producers retire construction scopes before publication;cached Auth still performs live dependency checks",
+    "Factory subset explicitly does not satisfy whole coding-agent public namespace;actual Module/_load/Jiti/lazy runtime remains required",
+    "13 additive build lines install only canonical cached test.exe;five declared controls and three genuine-input callable profiles read for actual subject,sole carrier,GPA and ownership causality",
+    "10 owned and20 protected checkout hashes/lengths and immutable Git OIDs verified;seven external immutable Git payload hashes/lengths/OIDs verified;exact4514 clean"
+  ],
+  "limits": [
+    "Aggregate not standalone buildable until exact external seven-file dependency intake and outstanding supplier peers are complete",
+    "G2/currentEngine and current C/Promise/AF production union require independent actual qualification;DA14/A79 baseline not a VM pass",
+    "Inherited path/text/package/extension/configuration algorithm scopes outside these changed producer boundaries remain unaudited",
+    "Five authored controls unrun;three genuine-owner profiles unregistered/unrun;actual metadata unknown",
+    "No public/default SDK/backend selection,no fullSDK27/166/Agent/runtime/reference or native I/O parity claim"
+  ],
+  "execution_authorized": false,
+  "intake_authorized": false,
+  "agent_jobs": 0
+}

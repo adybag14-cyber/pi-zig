@@ -1,0 +1,78 @@
+{
+  "schema": "sdk-unified-owner-root606c-intake-v2",
+  "base": "606c5f1297ec059461b0b02d9a2522599404a85e",
+  "source": "4514202eff19b8ec48815a3b2775f6e6ad063bee",
+  "candidate": "adece8f640590df5e23d23c06ade949013c6786d",
+  "tree": "5ea0ddbd09400413321836d12770a934224db649",
+  "source_review_sha256": "A2BBC49A8A011AC69EC03F7294A75B044026909AC85B16E9A172DF903480E5AB",
+  "patch_sha256": "F90AEE7C75E18AFD0FD9AD1D54444620943783384C744701006E645DE8A813B6",
+  "patch_length": 89195,
+  "paths": [
+    {
+      "path": "build.zig",
+      "blob": "ae4db989e842b0799cac3f1d0762e92158c3354d"
+    },
+    {
+      "path": "src/extensions/native_sdk_application_owner.zig",
+      "blob": "cf2057cff3b609517169b69d91fe7ff765ebec6b"
+    },
+    {
+      "path": "src/extensions/native_sdk_filesystem_namespaces.zig",
+      "blob": "0b3ba1c3930ffa9e6a08cd258d5b6d0ab1d6c9b1"
+    },
+    {
+      "path": "src/extensions/native_sdk_path_utilities_namespace.zig",
+      "blob": "f1b5d915721323ede0e5b4ecf7d4b809b729e00e"
+    },
+    {
+      "path": "src/native_sdk_application_owner_controls.zig",
+      "blob": "b113077de10fd6a274f26bf71deec2ea78d5adb8"
+    },
+    {
+      "path": "src/native_sdk_paths_owner_test.zig",
+      "blob": "4c28459fd57962b1cccf8ff3ad10b2d42db088e2"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/README.md",
+      "blob": "565ae9313c669111881a49af768e47273eccab76"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/authority/Pi-LICENSE",
+      "blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/authority/paths.ts.txt",
+      "blob": "6a5a0cfb8cac2347978ec04d45b85702285c9532"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/independent-body-source-review.json",
+      "blob": "3c1137d04a8aaeab7956ce2e4ccd204a033c5714"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/original-paths-caller.mjs",
+      "blob": "7e9319c60ec5d259717ef1b0186b0c5c26eaffa3"
+    },
+    {
+      "path": "verification/sdk-unified-native-owner-sourceonly-20261018/prepared.json",
+      "blob": "a17ffb10bce0b98a058fa93a672e92cae73d397a"
+    }
+  ],
+  "ten_nonbuild_source_payloads_exact": true,
+  "copied_source_review_exact": true,
+  "build_additive_lines": 13,
+  "inserted_block_matches_source_except_Root_LF_line_endings": true,
+  "all_other_build_bytes_preserved": true,
+  "all_other_Root_modes_and_blobs_preserved_by_private_index": true,
+  "source_only": true,
+  "Main_writes": false,
+  "compiler_node_native_or_parser_jobs": false,
+  "actual_metadata_known": false,
+  "full_dependency_union": false,
+  "default_activation": false,
+  "Root_intakes_preserved": "File2/AgentAF/Git/Exec/Ignore/Chalk/semver/internalRequire and all otherRoot source",
+  "remaining_actual_joins": "FS/frontend/Inputs/AuthOwner full Source intake/peer, NodeModule/Jiti, managerworker capture, currentVM/G2 qualification; see original4514receipt",
+  "earlier_preparation_attempts_preserved": [
+    "root-sdk-unified-owner-bcdec-intake-prepared-20261018",
+    "root-sdk-unified-owner-606c-intake-prepared-20261018"
+  ]
+}

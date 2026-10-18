@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "status": "FINITE_BYTE_SCOPE_INTAKE_SOURCE_CLOSED",
+  "reviewer": "/root/body_validation_resume",
+  "reviewed_utc": "2026-10-18T00:55:09.5703163+00:00",
+  "base": "606c5f1297ec059461b0b02d9a2522599404a85e",
+  "candidate": "adece8f640590df5e23d23c06ade949013c6786d",
+  "tree": "5ea0ddbd09400413321836d12770a934224db649",
+  "prepared_sha256": "9D2F152AF27C725A3FB6950EEE1B2EFFD9B8BFC43AF40C5FB7A610B401FE69C1",
+  "patch_sha256": "F90AEE7C75E18AFD0FD9AD1D54444620943783384C744701006E645DE8A813B6",
+  "prior_source_review_sha256": "A2BBC49A8A011AC69EC03F7294A75B044026909AC85B16E9A172DF903480E5AB",
+  "selected_paths": 12,
+  "exact_nonbuild_donor_payloads": 10,
+  "copied_review_exact": true,
+  "unselected_Root_modes_and_blobs_preserved": 12230,
+  "build_added_lines": 13,
+  "build_deleted_lines": 0,
+  "whole_Root_build_restored_by_graft_removal": true,
+  "review": [
+    "Exact12-path Git delta/selectedOIDs and full unselected Root ls-tree modes/OIDs compared",
+    "Ten nonbuild payloads exact4514 source;copiedA2BB receipt raw bytes verified",
+    "13line builddiff read:defaultcachedtest.exe/install-only/noRun/no old build overwrite",
+    "Only donor inserted block adapted toRoot LF;removing exactblock recovers entire Root606c build",
+    "Root currentAgentAF/File2/GitExecIgnore/EngineCABI/C435/newSDK retained outside allowlist"
+  ],
+  "limits": [
+    "Byte/scope join only;prior finite Source closure limits remain",
+    "Actual FS/Inputs/AuthOwner/Module/Jiti/worker/runtime/currentVM supplier union and qualification remain pending",
+    "No apply/privateindex/Main/product/parser/native/Node jobs or intake authorization"
+  ],
+  "intake_authorized": false,
+  "agent_jobs": 0
+}
