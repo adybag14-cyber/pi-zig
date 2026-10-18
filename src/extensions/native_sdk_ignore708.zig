@@ -184,5 +184,5 @@ fn ignoreT(s:*Scope,self:c.JSValue,args:[]const c.JSValue,_:[]const c.JSValue)!c
     try s.setKey(cache,path,result); return v.dup(s,result);
 }
 fn ignores(s:*Scope,self:c.JSValue,args:[]const c.JSValue,_:[]const c.JSValue)!c.JSValue {
-    const test=try s.get(self,"_test"); const result=try s.call(test,self,&.{arg(args,0),try s.get(self,"_ignoreCache"),c.pi_js_bool(s.engine.context,0)}); return v.dup(s,try s.get(result,"ignored"));
+    const test_method=try s.get(self,"_test"); const result=try s.call(test_method,self,&.{arg(args,0),try s.get(self,"_ignoreCache"),c.pi_js_bool(s.engine.context,0)}); return v.dup(s,try s.get(result,"ignored"));
 }
