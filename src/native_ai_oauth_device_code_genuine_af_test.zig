@@ -181,7 +181,7 @@ fn gc(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv
     c.JS_RunGC(x.em.Engine.fromContext(context.?).runtime);
     return c.pi_js_undefined();
 }
-test "native OAuth device code options and loop result survive their actual Await and retire before next Date" {
+test "native OAuth device code loop result survives its Await and condition then retires on body entry" {
     inline for (.{ false, true }) |native| {
         const engine = try x.em.Engine.init(std.testing.allocator, .{ .interrupt_budget = 1_000_000 });
         defer engine.deinit();
@@ -190,14 +190,15 @@ test "native OAuth device code options and loop result survive their actual Awai
         try engine.bindFunction("deviceGc", gc, 0);
         try run(engine,
             \\globalThis.deviceWeak=[];globalThis.deviceAfterTimer=false;
-            \\globalThis.Date={now(){if(deviceAfterTimer){deviceGc();if(deviceWeak[1].deref()!==undefined)throw Error("Loop result retained into next Date.now")}return 0}};
+            \\globalThis.Date={now(){if(deviceAfterTimer&&deviceHooks.count(1)!==0)throw Error("Loop result retired before next condition");return 0}};
             \\globalThis.setTimeout=(callback)=>{globalThis.deviceTimer=callback;return 1};
             \\globalThis.clearTimeout=()=>{};
             \\globalThis.devicePending=(()=>{
             \\ let first=true;
-            \\ const options={signal:{aborted:false,addEventListener(){},removeEventListener(){}},poll(){
+            \\ const signal={aborted:false,addEventListener(){},removeEventListener(){}};
+            \\ const options={get signal(){if(deviceAfterTimer){deviceGc();if(deviceHooks.count(1)!==1)throw Error("Prior result retained into new body")}return signal},poll(){
             \\  if(!first)return {status:"complete",value:42};first=false;
-            \\  return new Promise(resolve=>{globalThis.deviceRelease=()=>{const result={status:"pending"};deviceWeak.push(new WeakRef(result));resolve(result)}});
+            \\  return new Promise(resolve=>{globalThis.deviceRelease=()=>{const result={status:"pending",holder:deviceHooks.make(1)};deviceWeak.push(new WeakRef(result));resolve(result)}});
             \\ }};
             \\ deviceWeak.push(new WeakRef(options));
             \\ return selectedDevice.pollOAuthDeviceCodeFlow(options);
@@ -291,4 +292,28 @@ test "native OAuth device code actual status retirement fatal stops the next get
     try retirement.verifyActualRetirementFatal(engine, record, 0);
     try std.testing.expect(engine.native_fatal_invocation == null);
     try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+}
+
+test "native OAuth device code false loop condition retains prior result through timeout construction" {
+    inline for (.{ false, true }) |native| {
+        const engine = try x.em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try prepare(engine);
+        try select(engine, native);
+        try run(engine,
+            \\const ActualError=Error;globalThis.deviceAfterTimer=false;globalThis.deviceTimeoutObserved=false;
+            \\globalThis.Date={now(){if(deviceAfterTimer&&deviceHooks.count(0)!==0)throw new ActualError("Prior result retired before false condition");return deviceAfterTimer?1000:0}};
+            \\globalThis.Error=function(message){if(deviceHooks.count(0)!==0)throw new ActualError("Prior result retired before timeout Error");deviceTimeoutObserved=true;return new ActualError(message)};
+            \\globalThis.setTimeout=callback=>{globalThis.deviceTimer=callback;return 1};globalThis.clearTimeout=()=>{};
+            \\globalThis.devicePending=selectedDevice.pollOAuthDeviceCodeFlow({expiresInSeconds:1,signal:{aborted:false,addEventListener(){},removeEventListener(){}},
+            \\ poll(){return {status:"pending",holder:deviceHooks.make(0)}}
+            \\});
+        );
+        try std.testing.expect(!c.JS_IsJobPending(engine.runtime));
+        try run(engine,
+            \\deviceAfterTimer=true;deviceTimer();delete globalThis.deviceTimer;
+            \\let caught=false;try{await devicePending}catch(error){if(error.message!=="Device flow timed out")throw error;caught=true}
+            \\if(!caught||!deviceTimeoutObserved||deviceHooks.count(0)!==1)throw Error("Actual timeout retirement required");
+        );
+    }
 }

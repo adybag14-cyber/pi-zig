@@ -10,4 +10,6 @@ Declared controls compare 16 real poll routes and seven sleep routes against the
 
 The first finite production review identified an old interval root spanning its reassignment. The corrected helper reads that binding inside its local expression and retires it before the following Date.now. Controls explicitly cover that point.
 
-The install-only target is build-native-ai-oauth-device-code-genuine-af. It declares 11 named tests; the real compiler metadata must determine the complete execution list. Full application/provider acceptance remains incomplete.
+The install-only target is build-native-ai-oauth-device-code-genuine-af. It declares 12 named tests; the real compiler metadata must determine the complete execution list. Full application/provider acceptance remains incomplete.
+
+A later finite inspection of the linked BCDF VM corrected the noncaptured loop-slot lifetime: the previous result survives the next condition and timeout construction and retires on entry to the next body. The original finite review is retained; scope-retirement-correction.json records the actual compiler sections and the reviewed correction. Actual native holder controls cover both true and false conditions.
