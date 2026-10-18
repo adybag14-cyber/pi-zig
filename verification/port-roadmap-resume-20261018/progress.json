@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "c7d14a6ae96596db62eb4cd4188db16f4d16a8b8",
+  "current_source_head_at_record": "a4ba5a279451b0dcf29fd370b9e218e04a967d38",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T20:56:34.232651+00:00",
-  "record_note": "Active implementation. V7 independently closed with two compile failures and six shared child dependency diagnostics. Narrow corrections, compaction text, xAI, Kimi/Meta lifetime successors and full RPC mode are integrated. Next focused diagnostic covers seven changed/new groups; full35-group fresh/runtime qualification remains required.",
+  "updated_utc": "2026-10-18T21:08:19.711110+00:00",
+  "record_note": "Active implementation. V8 independently closed: xAI, compaction text, updated Kimi and Meta compiled and returned17/15/13/16 actual metadata entries. Print/child/RPC share four further child type errors. Their narrow source successor is integrated; next focused check covers these three failures. Full35-group fresh/runtime qualification remains required.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -50,7 +50,8 @@
     "V7 shared child completion/option/stdio/public type and actual scope-boundary successor17ca0b73 integrated9caa7b0f. Original V7 six compiler errors and independent closure are retained.",
     "Actual serializeConversation/getSummarizationFailure and shared contentText owner integratedfd7fc734 with14 Source-based controls; finite production/control peer closure completed. No runtime acceptance.",
     "Genuine xAI OAuth with16 declared controls and41 login/18 refresh Source/native trace routes integrated2304b244. Exact TypeScript/accepted JS/map authority retained. Kimi12 and Meta15 retain all old controls and add request-root retirement regressions plus finite-value controls. Kimi finite control distinguishes the old helper; Meta finite control asserts the contract already satisfied by the old nested positiveProperty scope. Both providers require new-source qualification.",
-    "Actual runRpcMode with33 command cases, shared UI/dialog state, activation/input/rebind/backpressure/shutdown lifecycle and27 controls integratedc7d14a6ae96596db62eb4cd4188db16f4d16a8b8. Finite production/control peers completed; default installed artifact test.exe remains subject to actual metadata query."
+    "Actual runRpcMode with33 command cases, shared UI/dialog state, activation/input/rebind/backpressure/shutdown lifecycle and27 controls integratedc7d14a6ae96596db62eb4cd4188db16f4d16a8b8. Finite production/control peers completed; default installed artifact test.exe remains subject to actual metadata query.",
+    "V8 concrete shared child type correction23e0922c integrateda4ba5a279451b0dcf29fd370b9e218e04a967d38. Exact four errors and bounded same-shape child ownership/transport siblings use declared error union and optional pointer types; Source operations/error helpers/retirement order unchanged. No new controls or runtime acceptance."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -323,6 +324,37 @@
       "source_compiler_control_postseal": true,
       "controller_environment_restored": true,
       "seed_preserved": true
+    },
+    {
+      "status": "closed_diagnostic_compile_negative",
+      "head": "dfc0bbd85bc1214bea44f6d8b8f82e791d618892",
+      "mode": "DiagnosticBuildQuery",
+      "evidence": "../../evidence/root-combined-diagnostic-batch-v8-buildquery-20261018-205805",
+      "result_sha256": "2B404F5A88BE0463E82701DC8D3C707AB1FACE88EE361304115CEE2A5CC896B3",
+      "declared_groups": 7,
+      "compiled_and_metadata_groups": 4,
+      "compile_failed_groups": 3,
+      "reported_metadata_counts": {
+        "xai": 17,
+        "compaction_text": 15,
+        "kimi": 13,
+        "meta": 16
+      },
+      "actual_native_owners": 11,
+      "runtime_requested": false,
+      "qualification_authority": false,
+      "failures": [
+        "Four shared child scheduler/owner optional pointer and options/public error-union types, affecting print/child/RPC"
+      ],
+      "corrections": [
+        "a4ba5a279451b0dcf29fd370b9e218e04a967d38"
+      ],
+      "independent_process_closure": "../../evidence/root-combined-diagnostic-batch-v8-independent-closure-20261018/closure.json",
+      "independent_process_closure_sha256": "D716146C3ECCCF46D397054C05A7D531F44750F937E9421C483FD61281BC371F",
+      "all_native_and_outer_owners_absent": true,
+      "source_compiler_control_postseal": true,
+      "controller_environment_restored": true,
+      "seed_preserved": true
     }
   ],
   "next_native_batch": {
@@ -330,6 +362,6 @@
     "mode": "DiagnosticBuildQuery",
     "driver_sha256": "B053217669D0A9294FB73F87C1844E15360D14B55AD38B79542693276BDF468E",
     "qualification_requested": false,
-    "scope": "Print17, child11, xAI16, compaction text14, Kimi12, Meta15 and RPC27. Full35 groups retained for final fresh qualification; no diagnostic runtime authority."
+    "scope": "Print17, child11, RPC27 after V8 child successor; full35-group matrix preserved for final fresh/independent/runtime gates."
   }
 }
