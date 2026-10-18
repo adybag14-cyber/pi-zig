@@ -614,7 +614,7 @@ pub fn walk(context: anytype, pattern: Pattern, path: []const []const u8, patter
     var fi = file_start;
     while (pi < pattern.len) {
         if (pattern[pi] != .globstar) {
-            if (fi == path.len or !try context.test(pi, path[fi])) return false;
+            if (fi == path.len or !try context.@"test"(pi, path[fi])) return false;
             pi += 1;
             fi += 1;
             continue;

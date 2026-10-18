@@ -79,7 +79,7 @@ const Tests = struct {
     scope: *Scope,
     pattern: glob.Pattern,
     regexes: []const c.JSValue,
-    pub fn test(self: @This(), index: usize, bytes: []const u8) !bool {
+    pub fn @"test"(self: @This(), index: usize, bytes: []const u8) !bool {
         const specification = self.pattern[index].regex;
         if (specification.fast != .none) {
             const dot = bytes.len > 0 and bytes[0] == '.';
