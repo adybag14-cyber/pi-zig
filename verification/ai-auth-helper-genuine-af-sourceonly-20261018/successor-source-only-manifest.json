@@ -1,0 +1,210 @@
+{
+  "schema": 1,
+  "status": "source_prepared_unrun_successor",
+  "negative_predecessor_head": "5d25cf89acddf3c4484961d4228711dc7572753f",
+  "negative_manifest_sha256": "5897505DD4B02E161DE96E76D75E7CCB740E80B33D289C4A1C23913D8F030357",
+  "negative_predecessor_rehabilitated": false,
+  "policy": "No guest-operation generation promotion; actual pending/current NativeInvocation only",
+  "authored_tests_prepared": 11,
+  "metadata": "unknown",
+  "jobs_run": [],
+  "latest_source_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+  "original_source_and_maps_unchanged": true,
+  "physical_url_queued_import_and_source_await_structure": "unchanged; actual owner + admitted Graph0 remain required",
+  "members": [
+    {
+      "path": "src/extensions/fixtures/ai-auth-helper-genuine-af-observer.mjs",
+      "bytes": 5877,
+      "sha256": "C6BC902083C5623D24D4F3647306BCF9700385B4D6BBEC6E08B677E9FBE4BFF8",
+      "raw_git_blob": "2af6a5a8ea1025fc5d766818032daf61576b158a"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helper_bodies.zig",
+      "bytes": 19727,
+      "sha256": "C76D47C4688AE06679C2BF5AFF6545A444EB4A9F74447FBD4421D9BDA70D3073",
+      "raw_git_blob": "8da5a4ec42b124da824ff5a00ecc95e57ccd5c66"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helper_values.zig",
+      "bytes": 4983,
+      "sha256": "765BE6ABD2752F577C1E4BB395B187E1729B08D09D1A5534CA1CE4571163898F",
+      "raw_git_blob": "890027f9ab6d7c492a37869b583723629de8afac"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helpers.zig",
+      "bytes": 7134,
+      "sha256": "90ECBF213F35D0926435EEB097840B99D654DA2DC1298BD0A506A8D618C89E00",
+      "raw_git_blob": "f4608385c7ffdf83421beba31455c418dfcf2fd1"
+    },
+    {
+      "path": "src/native_ai_auth_helper_genuine_af_test.zig",
+      "bytes": 10345,
+      "sha256": "D9E2764C1BD9B6332905B51310FCA1AF8B553D70960038470857DA5ADA861D00",
+      "raw_git_blob": "9b54d3e753f229aa0f17da48a4a00eb3c7689a7b"
+    },
+    {
+      "path": "src/native_ai_auth_helper_successor_test.zig",
+      "bytes": 14728,
+      "sha256": "5D7270A092ECF77C094187D952C3062059B9922C51DE6C19C1FEBEE68C2C1E43",
+      "raw_git_blob": "ebde113ec7d0d4f0a8391f80422eabee695c5c0d"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/ai-package.json.txt",
+      "bytes": 2720,
+      "sha256": "4E9ED07B06A91D844485874C251F312B610D015A4A4FD32C78CDE58A7862A3F1",
+      "raw_git_blob": "07f546f9708a8d58dfb97b8b16a6fe769129afc6"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/context.js.map.txt",
+      "bytes": 2565,
+      "sha256": "16295717C47225AD2BF6F1C2F0A865AB6B9B089050B8D5DDF143D074735C81BD",
+      "raw_git_blob": "bd396f7e4feb2a99ca8906fcb54c95c25f7a6e03"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/context.js.txt",
+      "bytes": 1666,
+      "sha256": "5D0EA91A2FD2ACF84E3B9717CE59E75006933C68D8EFA91873894A9D963D41A0",
+      "raw_git_blob": "4898f1e314aff822211fb7ea655b2971dc2685ce"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/context.ts.txt",
+      "bytes": 1345,
+      "sha256": "03101BFA711FAD214AF111E25328B6F607D6B0A7EBFE289AF58A89CD55BAF639",
+      "raw_git_blob": "30e088bfac82a5aca05a8a6a564c2ae26ab3358f"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/helpers.js.map.txt",
+      "bytes": 3910,
+      "sha256": "ACA22E0EBA864EC5418C57599AF15613DB2AE7228D4E83C8C73CCD5E937B9833",
+      "raw_git_blob": "3569621b333cd7647a9aac4d6cb7c12daa5673cb"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/helpers.js.txt",
+      "bytes": 2110,
+      "sha256": "AFA67F03895ACE888D574C0C86C226CAB35521CECC51FE4C0320BA710FB32A97",
+      "raw_git_blob": "67a787f77253168cf96fa509b015e0c97a4cda1c"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/helpers.ts.txt",
+      "bytes": 2061,
+      "sha256": "37B4C7F8048F09A54363607FA91BB1C265DDFE0790067DE3C3220C1F06485B90",
+      "raw_git_blob": "980963e79061a448812214642189cf45b0a757f1"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/authority/LICENSE.txt",
+      "bytes": 1069,
+      "sha256": "0457F5BCEC3B3B211605DFB5D1A49042FD638F3686A410FE099C24A25AF13C48",
+      "raw_git_blob": "b0a8e9b81083294360c69b4ec45d3d39a2b28197"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/install-only-build.zig.inc",
+      "bytes": 1062,
+      "sha256": "54F2425796A0EE6E43285F981235B991F46F8DF5A33ED540A8FAE5E183954912",
+      "raw_git_blob": "528c9888c6258d361ac84e596cdd2529af8ce8e7"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/SCOPE.md",
+      "bytes": 4085,
+      "sha256": "E194D454781E2B0987A77735D6E22D366055ACEBAE75AFB82ED00E1207DD446A",
+      "raw_git_blob": "abb767b5ad0e1e2ad1e980e2aa4ffb86adaa70a0"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/source-only-manifest.json",
+      "bytes": 7596,
+      "sha256": "5897505DD4B02E161DE96E76D75E7CCB740E80B33D289C4A1C23913D8F030357",
+      "raw_git_blob": "8d88eb42ccfb10d57f9cbbfcce3d744bbffc018a"
+    },
+    {
+      "path": "verification/ai-auth-helper-genuine-af-sourceonly-20261018/SUCCESSOR-SCOPE.md",
+      "bytes": 4278,
+      "sha256": "AC1C2147A117EB11FAC4D5C3B4EF8A5C759A2D962683F8FD7BE1159756AEE71B",
+      "raw_git_blob": "9b4d4d764963ce71eb0f8e01a116b5887c44ce10"
+    }
+  ],
+  "protected": [
+    {
+      "path": "build.zig",
+      "sha256": "F16CD76274CD58C0639DACF10B3D52ED8D43774EF1F245B8988B90DBD9710AC1",
+      "git_blob": "ffcbd7821c7c3005f8d641959d850e7b41c72787"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "80BC71798070DF9855D87AD123F8543BF311B56837B355D902E1778F545BA422",
+      "git_blob": "e0724e9d6bce414173f1421eb100ea2b827df95a"
+    },
+    {
+      "path": "src/extensions/native_async_function.zig",
+      "sha256": "DCDB19790BAFC09D92B8A4B5AC51C964BB08AC2AEC999D571173FE9184BFC22C",
+      "git_blob": "8f00e796a280f9a0e329f9a2784e1550f5b0c7e5"
+    },
+    {
+      "path": "src/extensions/native_sdk_owned_completion.zig",
+      "sha256": "C4354FAE45DB2C30E64EC8161C3F9E5EE7C27D73C3DB53F8ED4E79515368E04F",
+      "git_blob": "b18c53cc17e8c8187ca3cf302f33a999f46c42a4"
+    },
+    {
+      "path": "src/extensions/native_models_stream_scope.zig",
+      "sha256": "A8C35DEAF1402F196F9B773E7274F9A64FC2F0E511E6B2922644FC0DCB24C96F",
+      "git_blob": "9b9fd92cd2fd07e8c77a2ec05f0532e184674d66"
+    },
+    {
+      "path": "src/extensions/native_async_body.zig",
+      "sha256": "FCAA17186C8F1E602C2D3AD75FE66A6ABB344145BED4DF9D5A7666CB28B7374D",
+      "git_blob": "6a57bd6c66bfd938959033c2d24bbcca899826fe"
+    },
+    {
+      "path": "src/extensions/native_jiti_native_import.zig",
+      "sha256": "48F5FEEEF3C45A15ACD759B7C0C7AA2E7D8AB390EA6142EB7E3B070486CC1A48",
+      "git_blob": "0c0accf190bed29632916c0be173ec44d7c17ee8"
+    },
+    {
+      "path": "src/extensions/native_extension_dynamic_import_graph0.zig",
+      "sha256": "141989E929F321946A952BDEF2229577556FC0D853C2ED3BD3CF85F33CDBF406",
+      "git_blob": "40351fa873d3df6782222a66f896a30dc476dfbd"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "DA14DFBB7E73DED032E9FCD742FD2E49FDAF45273F48D24D6089018539601614",
+      "git_blob": "c9b544cb3f5616368648a87cf87fb04193883513"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "sha256": "A79E75A40D34C9E7CAFB9AB31359B7EE925FE205636603F2022CF764CFC18346",
+      "git_blob": "a1b689283c422bd258a6a4c8876e689a3b892805"
+    },
+    {
+      "path": "src/native_ai_auth_helpers_test.zig",
+      "sha256": "3A058DEF42A251679077E158F0AE07CF5253B44DD31EA6C693D380CB2B14A0EC",
+      "git_blob": "ff785c9fe3f067a05ab721d3407373090debebad"
+    },
+    {
+      "path": "src/extensions/fixtures/ai-auth-helpers-ae7-source16.json",
+      "sha256": "F875997C4477DB71DFD2B49B59CF4871DB7656E1B609F24915D9A4F9FBF33C9B",
+      "git_blob": "e8db32ac1dab8410553a3467bce75488f7c71852"
+    }
+  ],
+  "changed_from_negative": [
+    {
+      "path": "src/extensions/native_ai_auth_helper_bodies.zig",
+      "predecessor_blob": "a83be969510973139866d47f6029ddc6add31d50",
+      "successor_raw_blob": "8da5a4ec42b124da824ff5a00ecc95e57ccd5c66"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helper_values.zig",
+      "predecessor_blob": "982ccee2a683570504e33416b37267093dcfe321",
+      "successor_raw_blob": "890027f9ab6d7c492a37869b583723629de8afac"
+    },
+    {
+      "path": "src/extensions/native_ai_auth_helpers.zig",
+      "predecessor_blob": "3278f9b75456d87ed93679848f2940461c17276b",
+      "successor_raw_blob": "f4608385c7ffdf83421beba31455c418dfcf2fd1"
+    },
+    {
+      "path": "src/native_ai_auth_helper_genuine_af_test.zig",
+      "predecessor_blob": "5d4936dc3cf82ee5bc150421e205abf34d867ee3",
+      "successor_raw_blob": "9b54d3e753f229aa0f17da48a4a00eb3c7689a7b"
+    }
+  ],
+  "historical_auth_proof_git_tree": "7631e9836963fc21451b0d278330e23ef9a02b5c",
+  "external_dependencies": "C354/H0DBC, Promise forwarding, G2 and runtime/application gates remain unqualified"
+}

@@ -3,6 +3,7 @@ const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
 const subject = @import("extensions/native_ai_auth_helpers.zig");
 const c = v.c;
+comptime { _ = @import("native_ai_auth_helper_successor_test.zig"); }
 fn publish(engine: *v.em.Engine, name: [*:0]const u8, value: c.JSValue) !void {
     const global = try engine.checked(c.JS_GetGlobalObject(engine.context)); defer engine.freeValue(global);
     try v.js.define(engine, global, name, c.JS_DupValue(engine.context, value));
@@ -23,7 +24,7 @@ fn markedData(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) 
     c.JS_SetUncatchableError(context, value); return value; // Successful DATA.
 }
 fn rawFailure(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
-    return v.em.Engine.fromContext(context.?).throwNativeOutOfMemory(); // Real pending producer.
+    return v.em.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal(); // Actual current producer authority.
 }
 test "AI auth helper genuine AF real factories preserve held Await getters and tail adoption" {
     const engine = try v.em.Engine.init(std.testing.allocator, .{}); defer engine.deinit(); try prepare(engine);

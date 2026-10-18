@@ -23,8 +23,9 @@ pub fn asyncArrow(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, call
 pub fn create(engine: *v.em.Engine) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: v.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var scope: Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &scope };
-    return x.owned.finishValue(&scope, createBody(&o));
+    return x.finishInvocation(engine, &invocation, x.owned.finishValue(&scope, createBody(&o)));
 }
 fn createBody(o: *x.Ops) !c.JSValue {
     const exports = try o.object();
@@ -48,8 +49,9 @@ pub fn defaultProviderAuthContextAt(engine: *v.em.Engine, physical_auth_context_
 pub fn defaultProviderAuthContext(engine: *v.em.Engine) !c.JSValue {
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try engine.checkNativeEntry();
+    var invocation: v.em.Engine.NativeInvocation = .{}; engine.enterNativeInvocation(&invocation);
     var scope: Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &scope };
-    return x.owned.finishValue(&scope, defaultContextBody(&o));
+    return x.finishInvocation(engine, &invocation, x.owned.finishValue(&scope, defaultContextBody(&o)));
 }
 fn defaultContextBody(o: *x.Ops) !c.JSValue {
     const result = try o.object();
