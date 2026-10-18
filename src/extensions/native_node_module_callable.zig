@@ -3,7 +3,7 @@
 const std = @import("std");
 const v = @import("native_ai_provider_values.zig");
 const c = v.c;
-const body = @import("native_async_body.zig");
+const Scope = @import("native_node_operation_scope.zig").Scope;
 pub const Callback = *const fn (*v.em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
 const State = struct { engine: *v.em.Engine, callback: Callback, roots: []c.JSValue, constructible: bool, reserved: usize };
 fn finalizer(_: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
@@ -19,54 +19,65 @@ fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, marker: ?*const c.JS_MarkFunc)
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
     for (state.roots) |root| c.JS_MarkValue(runtime, root, marker);
 }
-fn currentFailure(engine: *v.em.Engine, err: anyerror, generation: u64) anyerror {
-    if (err != error.JavaScriptException) return err;
-    if (engine.captured_exception) |reason| {
-        if (c.JS_IsUncatchableError(reason)) return err;
-        body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
-    }
-    if (c.JS_HasException(engine.context)) {
-        _ = engine.checked(c.JS_Throw(engine.context, c.JS_GetException(engine.context))) catch |actual| return actual;
-        unreachable;
-    }
-    return err;
-}
-pub fn failure(engine: *v.em.Engine, err: anyerror, generation: u64) c.JSValue {
-    const current = currentFailure(engine, err, generation);
-    if (current == error.OutOfMemory) {
-        _ = engine.throwNativeOutOfMemory();
-        const reason = c.JS_GetException(engine.context);
-        c.JS_SetUncatchableError(engine.context, reason);
-        return c.JS_Throw(engine.context, reason);
-    }
-    if (current == error.JavaScriptException) {
+pub fn failure(engine: *v.em.Engine, err: anyerror, _: u64) c.JSValue {
+    // Keep the caller API, but a callback-wide generation or captured DATA bit
+    // is not producer evidence. Trusted host OOM is an actual new event.
+    if (err == error.OutOfMemory) return engine.throwNativeOutOfMemoryFatal();
+    _ = engine.nativeCallbackResult(c.pi_js_undefined());
+    if (c.JS_HasException(engine.context)) return c.JS_Throw(engine.context, c.JS_GetException(engine.context));
+    if (err == error.JavaScriptException) {
         if (engine.captured_exception) |reason| {
             engine.captured_exception = null;
             return c.JS_Throw(engine.context, reason);
         }
         return engine.throwCaptured();
     }
-    return c.JS_ThrowTypeError(engine.context, "Native Module operation: %s", @as([*:0]const u8, @errorName(current)));
+    return c.JS_ThrowTypeError(engine.context, "Native Module operation: %s", @as([*:0]const u8, @errorName(err)));
 }
 fn call(_: ?*c.JSContext, function: c.JSValue, receiver_or_target: c.JSValue, argc: c_int, argv: [*c]c.JSValue, flags: c_int) callconv(.c) c.JSValue {
     const state: *State = @ptrCast(@alignCast(c.JS_GetOpaque(function, c.JS_GetClassID(function)).?));
     const engine = state.engine;
-    const generation = engine.native_allocation_generation;
-    engine.native_exception_diagnostics_suppressed += 1;
-    defer engine.native_exception_diagnostics_suppressed -= 1;
-    return invoke(state, receiver_or_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0) catch |err| failure(engine, err, generation);
+    // Caller-stable owned frame before any receiver allocation or callback.
+    // A nested callback/finalizer can publish first fatal independently of the
+    // diagnostic slot; all receiver roots retire before this frame is popped.
+    var scope = Scope.init(engine);
+    return scope.finish(invoke(&scope, state, receiver_or_target, if (argc > 0) argv[0..@intCast(argc)] else &.{}, flags & c.JS_CALL_FLAG_CONSTRUCTOR != 0)) catch |err| failure(engine, err, 0);
 }
-fn invoke(state: *State, receiver_or_target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
-    if (!constructing) return state.callback(state.engine, receiver_or_target, args, state.roots);
+fn invoke(scope: *Scope, state: *State, receiver_or_target: c.JSValue, args: []const c.JSValue, constructing: bool) !c.JSValue {
+    try scope.pending(); try state.engine.checkNativeEntry();
+    if (!constructing) return invokeCallback(scope, state, receiver_or_target, args);
     if (!state.constructible) return v.js.typeError(state.engine, "Module method is not a constructor");
-    const receiver = try @import("native_class.zig").object(state.engine, receiver_or_target);
-    defer state.engine.freeValue(receiver);
-    const returned = try state.callback(state.engine, receiver, args, state.roots);
+    // Retire object-expression temporaries at native_class.object's original
+    // return boundary, then retain the receiver through callback completion.
+    const receiver = try scope.own(try createReceiver(state.engine, receiver_or_target));
+    try scope.pending(); try state.engine.checkNativeEntry();
+    var returned = try invokeCallback(scope, state, receiver, args);
     if (c.JS_IsObject(returned)) return returned;
-    state.engine.freeValue(returned);
+    scope.boundary.release(&returned);
+    try scope.pending();
     return c.JS_DupValue(state.engine.context, receiver);
 }
+fn createReceiver(engine: *v.em.Engine, target: c.JSValue) !c.JSValue {
+    var stage = Scope.init(engine); return stage.finish(receiverBody(&stage, target));
+}
+fn receiverBody(stage: *Scope, target: c.JSValue) !c.JSValue {
+    // Same existing native_class.object algorithm, with separate guest-get and
+    // proven non-guest object-allocation boundaries. Never classify getter DATA.
+    const prototype = try stage.get(target, "prototype");
+    const generation = try stage.beforeAllocation();
+    const receiver = try stage.checkedAllocation(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(stage.engine.context, prototype) else c.JS_NewObject(stage.engine.context), generation);
+    return c.JS_DupValue(stage.engine.context, receiver);
+}
+fn invokeCallback(scope: *Scope, state: *State, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
+    var output = try state.callback(state.engine, receiver, args, state.roots);
+    // Successful native return + actual pending/B1 is still failure. There is
+    // no callback-wide private-generation qualification at this boundary.
+    scope.pending() catch |err| { scope.boundary.release(&output); return err; };
+    if (c.JS_IsException(output)) return error.MissingActualNativeModuleCallbackReason;
+    return output;
+}
 pub fn create(engine: *v.em.Engine, name: [*:0]const u8, length: c_int, constructible: bool, callback: Callback, roots: []const c.JSValue) !c.JSValue {
+    try engine.checkNativeEntry();
     const root_bytes = std.math.mul(usize, roots.len, @sizeOf(c.JSValue)) catch return error.OutOfMemory;
     const reserved = std.math.add(usize, @sizeOf(State), root_bytes) catch return error.OutOfMemory;
     if (c.pi_js_native_memory_reserve(engine.native_memory_owner, reserved) == 0) return error.OutOfMemory;

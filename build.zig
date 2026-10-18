@@ -3727,6 +3727,20 @@ pub fn build(b: *std.Build) void {
     engine_owned_retirement.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { engine_owned_retirement.root_module.linkSystemLibrary("advapi32", .{}); engine_owned_retirement.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-engine-owned-retirement", "Install actual Engine owned-retirement controls without execution").dependOn(&b.addInstallArtifact(engine_owned_retirement, .{ .dest_sub_path = b.fmt("native-engine-owned-retirement{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    // Actual Node guest-operation controls; installed only until runtime grant.
+    const node_operation_boundary = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_operation_boundary_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, node_operation_boundary.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_operation_boundary.root_module, typescript_parser);
+    linkSqlite(node_operation_boundary.root_module, sqlite_lib_dir, sqlite_library);
+    node_operation_boundary.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_operation_boundary.root_module.linkSystemLibrary("advapi32", .{});
+        node_operation_boundary.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-operation-boundary", "Install Node pending/data/allocator ownership controls without running").dependOn(&b.addInstallArtifact(node_operation_boundary, .{ .dest_sub_path = b.fmt("native-node-operation-boundary{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {
