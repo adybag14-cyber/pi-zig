@@ -198,8 +198,18 @@ pub const Iterator = struct {
         if (self.closed) return err;
         self.closed = true;
         const original = try agent.caught(self.engine, err);
+        // Bytecode exception unwinding drops cached next before IteratorClose.
+        // Preserve the original Throw while retiring it; an actual fatal wins.
+        const next_method = self.next_function;
+        self.next_function = c.pi_js_undefined();
+        var retirement = owned.Completion.initAction(self.engine, .{ .thrown = original });
+        retirement.release(next_method);
+        const reason = switch (try retirement.finishAction()) {
+            .thrown => |value| value,
+            .returned, .awaited => unreachable,
+        };
         var s: Scope = .{ .engine = self.engine };
-        return owned.finishVoid(&s, closePreservingBody(&s, self.receiver, original));
+        return owned.finishVoid(&s, closePreservingBody(&s, self.receiver, reason));
     }
     fn closePreservingBody(s: *Scope, receiver: c.JSValue, original: c.JSValue) !void {
         _ = try own(s, original);

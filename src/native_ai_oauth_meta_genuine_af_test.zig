@@ -302,3 +302,30 @@ test "native OAuth Meta normal iterator close retires cached next before return 
         );
     }
 }
+
+test "native OAuth Meta abrupt iterator close retires cached next before preserving body throw" {
+    inline for (.{ false, true }) |native| {
+        const engine = try x.em.Engine.init(std.testing.allocator, .{});
+        defer engine.deinit();
+        try support.prepareMeta(engine);
+        try support.selectMeta(engine, native);
+        try support.run(engine, support.requestAmbient);
+        try support.run(engine,
+            \\globalThis.abruptCachedNextRetired=false;globalThis.metaBodyReason={ordinary:"body failure"};
+            \\const original=Array.prototype[Symbol.iterator];
+            \\Array.prototype[Symbol.iterator]=function(){
+            \\ if(this.length!==4||this[0]!=="error_description")return original.call(this);
+            \\ return {get next(){const method=()=>({done:false,value:"error_description"});method.holder=oauthHooks.make(0);return method},
+            \\ get return(){abruptCachedNextRetired=oauthHooks.count(0)===1;return ()=>({})}};
+            \\};
+            \\globalThis.restoreMetaIterator=()=>{Array.prototype[Symbol.iterator]=original};
+            \\globalThis.fetch=()=>Promise.resolve({ok:false,status:418,json(){return Promise.resolve({get error_description(){throw metaBodyReason}})}});
+        );
+        try support.run(engine,
+            \\let caught;try{await selectedMeta.refresh({refresh:"identity"},controlledSignal)}catch(error){caught=error}finally{restoreMetaIterator()}
+            \\if(caught!==metaBodyReason||!abruptCachedNextRetired||oauthHooks.count(0)!==1)throw Error("Actual cached next retirement preserves the original body throw");
+        );
+        try std.testing.expect(engine.native_fatal_invocation == null);
+        try std.testing.expectEqual(@as(usize, 0), engine.native_exception_diagnostics_suppressed);
+    }
+}
