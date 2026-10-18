@@ -158,7 +158,7 @@ fn submitWrite(state: *State, metadata: ?SyncWriteMetadata) !Submission {
         state.offset += result.acceptedBytes;
         state.bytes_written +|= result.acceptedBytes;
         state.bytes_dispatched +|= result.dispatchedBytes;
-        if (result.failure) |failure| return failure;
+        if (result.failure) |failure| return @as(anyerror!Submission, failure);
         if (result.acceptedBytes != remaining.len) return error.NativeSocketIncompleteSynchronousAcknowledgement;
         return .complete;
     }
@@ -397,7 +397,7 @@ pub const Provider = struct {
     }
     pub fn deinit(self: *Provider) void { self.engine.freeValue(self.constructor); self.engine.freeValue(self.states); }
     pub fn createFromHandle(self: *Provider, options: c.JSValue) !Owned {
-        const arguments = [_]c.JSValue{options};
+        var arguments = [_]c.JSValue{options};
         const actual = try self.engine.checked(c.JS_Call(self.engine.context, self.constructor, c.pi_js_undefined(), 1, &arguments));
         defer self.engine.freeValue(actual); return self.own(actual);
     }
