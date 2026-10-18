@@ -3624,7 +3624,6 @@ pub fn build(b: *std.Build) void {
     // Actual child graph and physical spawn/wait controls. Install only: no Run
     // edge, metadata execution or descendant operation is started by this step.
     const child_frontend_genuine = b.addTest(.{
-        .name = "native-child-frontend-genuine",
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_child_frontend_genuine_test.zig"), .target = target, .optimize = optimize }),
         .use_llvm = use_llvm,
         .filters = &.{"native actual child"},
@@ -3638,6 +3637,23 @@ pub fn build(b: *std.Build) void {
         child_frontend_genuine.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-child-frontend-genuine", "Install eleven declared actual child frontend and live OS waiter controls without running").dependOn(&b.addInstallArtifact(child_frontend_genuine, .{ .dest_sub_path = b.fmt("native-child-frontend-genuine{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    // Actual Node package reader and native filesystem controls. Installation
+    // only; metadata and runtime require Root's separately bounded controller.
+    const node_package_reader = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_package_reader_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native package"},
+    });
+    linkQuickJs(b, node_package_reader.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_package_reader.root_module, typescript_parser);
+    linkSqlite(node_package_reader.root_module, sqlite_lib_dir, sqlite_library);
+    node_package_reader.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_package_reader.root_module.linkSystemLibrary("advapi32", .{});
+        node_package_reader.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-package-reader", "Install twenty-one declared actual package reader and native path controls without running").dependOn(&b.addInstallArtifact(node_package_reader, .{ .dest_sub_path = b.fmt("native-node-package-reader{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
 }
 

@@ -1,0 +1,133 @@
+_relative_path(const wchar_t* const _First, const wchar_t* const _Last) {
+        // attempt to parse [_First, _Last) as a path and return the start of relative-path
+        return _STD find_if_not(_Find_root_name_end(_First, _Last), _Last, _Is_slash);
+    }
+
+    _NODISCARD inline wstring_view _Parse_root_directory(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the root-directory if it exists; otherwise, an empty view
+        const auto _First         = _Str.data();
+        const auto _Last          = _First + _Str.size();
+        const auto _Root_name_end = _Find_root_name_end(_First, _Last);
+        const auto _Relative_path = _STD find_if_not(_Root_name_end, _Last, _Is_slash);
+        return wstring_view(_Root_name_end, static_cast<size_t>(_Relative_path - _Root_name_end));
+    }
+
+    _NODISCARD inline wstring_view _Parse_root_path(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the root-path if it exists; otherwise, an empty view
+        const auto _First = _Str.data();
+        const auto _Last  = _First + _Str.size();
+        return wstring_view(_First, static_cast<size_t>(_Find_relative_path(_First, _Last) - _First));
+    }
+
+    _NODISCARD inline wstring_view _Parse_relative_path(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the relative-path if it exists; otherwise, an empty view
+        const auto _First         = _Str.data();
+        const auto _Last          = _First + _Str.size();
+        const auto _Relative_path = _Find_relative_path(_First, _Last);
+        return wstring_view(_Relative_path, static_cast<size_t>(_Last - _Relative_path));
+    }
+
+    _NODISCARD inline wstring_view _Parse_parent_path(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the parent_path if it exists; otherwise, an empty view
+        const auto _First         = _Str.data();
+        auto _Last                = _First + _Str.size();
+        const auto _Relative_path = _Find_relative_path(_First, _Last);
+        // case 1: relative-path ends in a directory-separator, remove the separator to remove "magic empty path"
+        //  for example: R"(/cat/dog/\//\)"
+        // case 2: relative-path doesn't end in a directory-separator, remove the filename and last directory-separator
+        //  to prevent creation of a "magic empty path"
+        //  for example: "/cat/dog"
+        while (_Relative_path != _Last && !_Is_slash(_Last[-1])) {
+            // handle case 2 by removing trailing filename, puts us into case 1
+            --_Last;
+        }
+
+        while (_Relative_path != _Last && _Is_slash(_Last[-1])) { // handle case 1 by removing trailing slashes
+            --_Last;
+        }
+
+        return wstring_view(_First, static_cast<size_t>(_Last - _First));
+    }
+
+    _NODISCARD inline const wchar_t* _Find_filename(const wchar_t* const _First, const wchar_t* _Last) {
+        // attempt to parse [_First, _Last) as a path and return the start of filename if it exists; otherwise, _Last
+        const auto _Relative_path = _Find_relative_path(_First, _Last);
+        while (_Relative_path != _Last && !_Is_slash(_Last[-1])) {
+            --_Last;
+        }
+
+        return _Last;
+    }
+
+    _NODISCARD inline wstring_view _Parse_filename(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the filename if it exists; otherwise, an empty view
+        const auto _First    = _Str.data();
+        const auto _Last     = _First + _Str.size();
+        const auto _Filename = _Find_filename(_First, _Last);
+        return wstring_view(_Filename, static_cast<size_t>(_Last - _Filename));
+    }
+
+    _NODISCARD constexpr const wchar_t* _Find_extension(const wchar_t* const _Filename, const wchar_t* const _Ads) {
+        // find dividing point between stem and extension in a generic format filename consisting of [_Filename, _Ads)
+        auto _Extension = _Ads;
+        if (_Filename == _Extension) { // empty path
+            return _Ads;
+        }
+
+        --_Extension;
+        if (_Filename == _Extension) {
+            // path is length 1 and either dot, or has no dots; either way, extension() is empty
+            return _Ads;
+        }
+
+        if (*_Extension == L'.') { // we might have found the end of stem
+            if (_Filename == _Extension - 1 && _Extension[-1] == L'.') { // dotdot special case
+                return _Ads;
+            } else { // x.
+                return _Extension;
+            }
+        }
+
+        while (_Filename != --_Extension) {
+            if (*_Extension == L'.') { // found a dot which is not in first position, so it starts extension()
+                return _Extension;
+            }
+        }
+
+        // if we got here, either there are no dots, in which case extension is empty, or the first element
+        // is a dot, in which case we have the leading single dot special case, which also makes extension empty
+        return _Ads;
+    }
+
+    _NODISCARD inline wstring_view _Parse_stem(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the stem if it exists; otherwise, an empty view
+        const auto _First    = _Str.data();
+        const auto _Last     = _First + _Str.size();
+        const auto _Filename = _Find_filename(_First, _Last);
+        const auto _Ads =
+            _STD find(_Filename, _Last, L':'); // strip alternate data streams in intra-filename decomposition
+        const auto _Extension = _Find_extension(_Filename, _Ads);
+        return wstring_view(_Filename, static_cast<size_t>(_Extension - _Filename));
+    }
+
+    _NODISCARD inline wstring_view _Parse_extension(const wstring_view _Str) {
+        // attempt to parse _Str as a path and return the extension if it exists; otherwise, an empty view
+        const auto _First    = _Str.data();
+        const auto _Last     = _First + _Str.size();
+        const auto _Filename = _Find_filename(_First, _Last);
+        const auto _Ads =
+            _STD find(_Filename, _Last, L':'); // strip alternate data streams in intra-filename decomposition
+        const auto _Extension = _Find_extension(_Filename, _Ads);
+        return wstring_view(_Extension, static_cast<size_t>(_Ads - _Extension));
+    }
+
+    _NODISCARD inline int _Range_compare(const wchar_t* const _Lfirst, const wchar_t* const _Llast,
+        const wchar_t* const _Rfirst, const wchar_t* const _Rlast) {
+        // 3 way compare [_Lfirst, _Llast) with [_Rfirst, _Rlast)
+        return _Traits_compare<char_traits<wchar_t>>(
+            _Lfirst, static_cast<size_t>(_Llast - _Lfirst), _Rfirst, static_cast<size_t>(_Rlast - _Rfirst));
+    }
+
+    _NODISCARD inline bool _Is_drive_prefix_with_slash_slash_question(const wstring_view _Text) {
+        // test if _Text starts with a \\?\X: prefix
+        return _Text.size() >= 6 && _Text._Starts_with(LR"(\\?\

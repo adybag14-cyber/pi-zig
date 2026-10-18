@@ -1,0 +1,118 @@
+extEmbedderTag::TagNodeContext(context);
+
+#if HAVE_INSPECTOR
+  inspector_agent()->ContextCreated(context, info);
+#endif  // HAVE_INSPECTOR
+
+  this->async_hooks()->InstallPromiseHooks(context);
+  TrackContext(context);
+}
+
+void Environment::UnassignFromContext(Local<v8::Context> context) {
+  if (!context.IsEmpty()) {
+    context->SetAlignedPointerInEmbedderData(ContextEmbedderIndex::kEnvironment,
+                                             nullptr);
+    context->SetAlignedPointerInEmbedderData(ContextEmbedderIndex::kRealm,
+                                             nullptr);
+    context->SetAlignedPointerInEmbedderData(
+        ContextEmbedderIndex::kContextifyContext, nullptr);
+  }
+  UntrackContext(context);
+}
+
+void Environment::TryLoadAddon(
+    const char* filename,
+    int flags,
+    const std::function<bool(binding::DLib*)>& was_loaded) {
+  loaded_addons_.emplace_back(filename, flags);
+  if (!was_loaded(&loaded_addons_.back())) {
+    loaded_addons_.pop_back();
+  }
+}
+
+std::string Environment::GetCwd(const std::string& exec_path) {
+  char cwd[PATH_MAX_BYTES];
+  size_t size = PATH_MAX_BYTES;
+
+  if (uv_cwd(cwd, &size) == 0) {
+    CHECK_GT(size, 0);
+    return cwd;
+  }
+
+  // This can fail if the cwd is deleted. In that case, fall back to
+  // exec_path.
+  return exec_path.substr(0, exec_path.find_last_of(kPathSeparator));
+}
+
+void Environment::add_refs(int64_t diff) {
+  task_queues_async_refs_ += diff;
+  CHECK_GE(task_queues_async_refs_, 0);
+  if (task_queues_async_refs_ == 0)
+    uv_unref(reinterpret_cast<uv_handle_t*>(&task_queues_async_));
+  else
+    uv_ref(reinterpret_cast<uv_handle_t*>(&task_queues_async_));
+}
+
+uv_buf_t Environment::allocate_managed_buffer(const size_t suggested_size) {
+  std::unique_ptr<BackingStore> bs = ArrayBuffer::NewBackingStore(
+      isolate(),
+      suggested_size,
+      BackingStoreInitializationMode::kUninitialized);
+  uv_buf_t buf = uv_buf_init(static_cast<char*>(bs->Data()), bs->ByteLength());
+  released_allocated_buffers_.emplace(buf.base, std::move(bs));
+  return buf;
+}
+
+std::unique_ptr<BackingStore> Environment::release_managed_buffer(
+    const uv_buf_t& buf) {
+  std::unique_ptr<BackingStore> bs;
+  if (buf.base != nullptr) {
+    auto it = released_allocated_buffers_.find(buf.base);
+    CHECK_NE(it, released_allocated_buffers_.end());
+    bs = std::move(it->second);
+    released_allocated_buffers_.erase(it);
+  }
+  return bs;
+}
+
+std::string Environment::GetExecPath(const std::vector<std::string>& argv) {
+  char exec_path_buf[2 * PATH_MAX];
+  size_t exec_path_len = sizeof(exec_path_buf);
+  std::string exec_path;
+  if (uv_exepath(exec_path_buf, &exec_path_len) == 0) {
+    exec_path = std::string(exec_path_buf, exec_path_len);
+  } else if (!argv.empty()) {
+    exec_path = argv[0];
+  }
+
+  // On OpenBSD process.execPath will be relative unless we
+  // get the full path before process.execPath is used.
+#if defined(__OpenBSD__)
+  uv_fs_t req;
+  req.ptr = nullptr;
+  if (0 ==
+      uv_fs_realpath(nullptr, &req, exec_path.c_str(), nullptr)) {
+    CHECK_NOT_NULL(req.ptr);
+    exec_path = std::string(static_cast<char*>(req.ptr));
+  }
+  uv_fs_req_cleanup(&req);
+#endif
+
+  return exec_path;
+}
+
+Environment::Environment(IsolateData* isolate_data,
+                         Isolate* isolate,
+                         const std::vector<std::string>& args,
+                         const std::vector<std::string>& exec_args,
+                         const EnvSerializeInfo* env_info,
+                         EnvironmentFlags::Flags flags,
+                         ThreadId thread_id,
+                         std::string_view thread_name)
+    : isolate_(isolate),
+      external_memory_accounter_(new ExternalMemoryAccounter()),
+      isolate_data_(isolate_data),
+      async_hooks_(isolate, MAYBE_FIELD_PTR(env_info, async_hooks)),
+      immediate_info_(isolate, MAYBE_FIELD_PTR(env_info, immediate_info)),
+      timeout_info_(isolate_, 1, MAYBE_FIELD_PTR(env_info, timeout_info)),
+      tick_info_(isolate, MAYBE_FIELD_PTR(
