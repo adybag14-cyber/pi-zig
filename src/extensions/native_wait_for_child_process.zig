@@ -70,6 +70,13 @@ fn truthyCell(parent: *x.Ops, owner: c.JSValue, name: [*:0]const u8) !bool {
     return c.JS_ToBool(parent.s.engine.context, value) != 0;
 }
 fn truthyCellBody(o: *x.Ops, owner: c.JSValue, name: [*:0]const u8) !c.JSValue { return c.pi_js_bool(o.s.engine.context, @intFromBool(o.truthy(try o.get(owner, name)))); }
+fn nullField(parent: *x.Ops, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    var s: x.Scope = .{ .engine = parent.s.engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishValue(&s, nullFieldBody(&o, receiver, name));
+}
+fn nullFieldBody(o: *x.Ops, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
+    return c.pi_js_bool(o.s.engine.context, @intFromBool(c.JS_IsNull(try o.get(receiver, name))));
+}
 fn clearTimer(parent: *x.Ops, owner: c.JSValue) !void {
     var s: x.Scope = .{ .engine = parent.s.engine }; var o: x.Ops = .{ .s = &s };
     return x.owned.finishVoid(&s, clearTimerBody(&o, owner));
@@ -82,8 +89,8 @@ fn executorBody(o: *x.Ops, child: c.JSValue, resolve: c.JSValue, reject: c.JSVal
     const owner = try o.cell(); try o.put(owner, "child", child); try o.put(owner, "resolve", resolve); try o.put(owner, "reject", reject);
     try o.put(owner, "settled", c.pi_js_bool(o.s.engine.context, 0)); try o.put(owner, "exited", c.pi_js_bool(o.s.engine.context, 0));
     try o.put(owner, "exitCode", c.pi_js_null()); try o.put(owner, "postExitTimer", c.pi_js_undefined());
-    try o.put(owner, "stdoutEnded", c.pi_js_bool(o.s.engine.context, @intFromBool(c.JS_IsNull(try o.get(child, "stdout")))));
-    try o.put(owner, "stderrEnded", c.pi_js_bool(o.s.engine.context, @intFromBool(c.JS_IsNull(try o.get(child, "stderr")))));
+    try o.put(owner, "stdoutEnded", try nullField(o, child, "stdout"));
+    try o.put(owner, "stderrEnded", try nullField(o, child, "stderr"));
     // All Source const closures exist before any listener registration.
     inline for (.{ Kind.cleanup, Kind.finalize, Kind.maybeFinalizeAfterExit, Kind.armIdleTimer, Kind.onData, Kind.onStdoutEnd, Kind.onStderrEnd, Kind.onError, Kind.onExit, Kind.onClose }) |kind| try o.put(owner, @tagName(kind).ptr, try closure(o, owner, kind));
     try streamCall(o, child, "stdout", "once", "end", owner, "onStdoutEnd");
