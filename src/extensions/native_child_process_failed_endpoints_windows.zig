@@ -136,7 +136,7 @@ pub const Owner = struct {
     fn outputFailure(self: *Owner, index: usize, failure: anyerror) Output {
         if (failure != error.EndOfStream) self.output_failure[index] = failure;
         self.retiring[index + 1] = true;
-        if (self.outputs[index]) |slot| { if (!slot.pending) self.retireOutput(index); };
+        if (self.outputs[index]) |slot| { if (!slot.pending) self.retireOutput(index); }
         // EndOfStream comes exclusively from the actual completed broken-pipe
         // read. Closing child sides/failed launch alone never manufactures EOF.
         return if (failure == error.EndOfStream) .eof else .{ .failure = failure };
