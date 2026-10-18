@@ -131,7 +131,9 @@ pub const AsyncTransport = struct {
             result.resubmit.stdout = self.needsOutputResubmit(0, demand.stdout);
             result.resubmit.stderr = self.needsOutputResubmit(1, demand.stderr);
             if (self.process.input.windows_slot) |slot| result.resubmit.stdin = !self.close_requested and self.token != null and !slot.pending;
-            if (!self.input_closed and !self.retirement_deadline_seen) if (self.retirement_started) |started| result.retirement_deadline_ms = started +| 250;
+            if (!self.input_closed and !self.retirement_deadline_seen) {
+                if (self.retirement_started) |started| result.retirement_deadline_ms = started +| 250;
+            }
             for (self.output_retirement_started, self.output_closed, self.output_deadline_seen) |maybe_started, closed, deadline_seen| if (!closed and !deadline_seen) if (maybe_started) |started| {
                 const deadline = started +| 250;
                 result.retirement_deadline_ms = if (result.retirement_deadline_ms) |prior| @min(prior, deadline) else deadline;
@@ -174,7 +176,9 @@ pub const AsyncTransport = struct {
         if (self.process.input.windows_slot) |slot| if (slot.pending) { result.events[0] = .{ .handle = slot.event.?, .endpoint_generation = slot.generation, .operation_sequence = self.operation_sequences[0] }; };
         if (result.events[0] == null) if (self.windows_shutdown) |ticket| if (try shutdown.pending(ticket)) |pending| { result.events[0] = .{ .handle = pending.event, .endpoint_generation = pending.generation, .operation_sequence = self.operation_sequences[0] }; };
         for (self.process.windows_outputs, 0..) |maybe_slot, index| if (maybe_slot) |slot| if (slot.pending) { result.events[index + 1] = .{ .handle = slot.event.?, .endpoint_generation = slot.generation, .operation_sequence = self.operation_sequences[index + 1] }; };
-        if (!self.input_closed and !self.retirement_deadline_seen) if (self.retirement_started) |started| result.deadline_ms = started +| 250;
+        if (!self.input_closed and !self.retirement_deadline_seen) {
+            if (self.retirement_started) |started| result.deadline_ms = started +| 250;
+        }
         for (self.output_retirement_started, self.output_closed, self.output_deadline_seen) |maybe_started, closed, deadline_seen| if (!closed and !deadline_seen) if (maybe_started) |started| {
             const due = started +| 250;
             result.deadline_ms = if (result.deadline_ms) |prior| @min(prior, due) else due;
