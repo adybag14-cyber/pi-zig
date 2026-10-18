@@ -184,7 +184,7 @@ pub const Iterator = struct {
     fn nextBody(s: *Scope, self: *Iterator, done: *bool) !c.JSValue {
         const result = try call(s, self.next_function, self.receiver, &.{});
         if (!c.JS_IsObject(result)) return typeError(s, "iterator must return an object");
-        done.* = truthy(s, try get(s, result, "done"));
+        done.* = try iteratorDone(s.engine, result);
         return if (done.*) c.pi_js_undefined() else duplicate(s, try get(s, result, "value"));
     }
     pub fn finish(self: *Iterator, result: anyerror!void) !void {
@@ -227,4 +227,14 @@ fn acquireIteratorBody(s: *Scope, iterable: c.JSValue) !c.JSValue {
     const receiver = try call(s, callable, iterable, &.{});
     if (!c.JS_IsObject(receiver)) return typeError(s, "not an object");
     return duplicate(s, receiver);
+}
+
+fn iteratorDone(engine: *em.Engine, result: c.JSValue) !bool {
+    var s: Scope = .{ .engine = engine };
+    const outcome: anyerror!c.JSValue = body: {
+        const value = get(&s, result, "done") catch |err| break :body err;
+        break :body boolean(&s, truthy(&s, value));
+    };
+    // IteratorNext retires its ToBoolean input before the value getter runs.
+    return c.JS_ToBool(engine.context, try owned.finishValue(&s, outcome)) == 1;
 }
