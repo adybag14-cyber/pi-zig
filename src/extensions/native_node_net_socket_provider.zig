@@ -42,7 +42,7 @@ pub fn acquire(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c.
         if (err == error.OutOfMemory) _ = engine.throwNativeOutOfMemoryFatal()
         else if (err == error.JavaScriptException) _ = engine.throwCaptured();
         _ = try engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined()));
-        return err;
+        return @as(anyerror!*Bundle, err);
     };
     _ = try engine.checked(engine.leaveNativeInvocation(&invocation, c.pi_js_undefined()));
     return result;
@@ -72,7 +72,7 @@ fn acquireInner(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c
     // Server, connect and createConnection are outside this admitted surface.
     inline for (.{ "Socket", "Stream" }) |name| {
         const status = c.JS_DefinePropertyValueStr(engine.context, net, name, c.JS_DupValue(engine.context, provider.constructor), c.JS_PROP_C_W_E);
-        try engine.checkNativeEntry(); if (status < 0) return js.capture(engine);
+        try engine.checkNativeEntry(); if (status < 0) return @as(anyerror!*Bundle, js.capture(engine));
     }
     var id: c.JSClassID = 0; _ = c.JS_NewClassID(engine.runtime, &id);
     const definition: c.JSClassDef = .{ .class_name = "Canonical native Socket provider", .finalizer = finalize, .gc_mark = mark };
@@ -85,7 +85,7 @@ fn acquireInner(engine: *js.Engine, actual_streams: c.JSValue, actual_process: c
     _ = c.JS_SetOpaque(holder, self);
     attached = true; provider_owned = false;
     const retained = c.JS_DupValue(engine.context, holder);
-    engine.native_module_values.put(engine.gpa, key, retained) catch |err| { engine.freeValue(retained); return err; };
+    engine.native_module_values.put(engine.gpa, key, retained) catch |err| { engine.freeValue(retained); return @as(anyerror!*Bundle, err); };
     return self;
 }
 
