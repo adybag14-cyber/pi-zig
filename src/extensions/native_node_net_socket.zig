@@ -497,7 +497,7 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
     const adopters = try engine.gpa.create(Adopters); adopters.* = .{ .engine = engine };
     _ = c.JS_SetOpaque(adopter_holder, adopters); adopters_attached = true;
     const duplex = try scope.get(actual_streams, "Duplex"); const prototype = try scope.object();
-    if (c.JS_SetPrototype(engine.context, prototype, try scope.get(duplex, "prototype")) < 0) return js.capture(engine);
+    if (c.JS_SetPrototype(engine.context, prototype, try scope.get(duplex, "prototype")) < 0) return @as(anyerror!Provider, js.capture(engine));
     const context = try scope.object();
     try scope.put(context, "nativeAdopters", adopter_holder);
     try scope.put(context, "Duplex", duplex); try scope.put(context, "states", states); try scope.put(context, "classId", known_id); try scope.put(context, "process", actual_process);
@@ -505,8 +505,8 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
     const constructor = try scope.own(try fnc.create(engine, "Socket", 1, construct, &.{ context, c.JS_NewUint32(engine.context, adopter_id) }));
     try scope.put(context, "constructor", constructor);
     try scope.set(constructor, "prototype", prototype);
-    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return js.capture(engine);
-    if (c.JS_SetPrototype(engine.context, constructor, duplex) < 0) return js.capture(engine);
+    if (c.JS_DefinePropertyValueStr(engine.context, prototype, "constructor", c.JS_DupValue(engine.context, constructor), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE) < 0) return @as(anyerror!Provider, js.capture(engine));
+    if (c.JS_SetPrototype(engine.context, constructor, duplex) < 0) return @as(anyerror!Provider, js.capture(engine));
     // Source assigns anonymous ordinary function expressions to these members;
     // property assignment does not infer a function name from its member key.
     inline for (.{ "_read", "_write", "_final", "_destroy" }, .{ read, write, final, destroy }, .{ 1, 3, 1, 2 }) |name, callback, length| try scope.put(prototype, name, try scope.own(try fnc.create(engine, "", length, callback, &.{ states, known_id })));
@@ -516,7 +516,7 @@ pub fn createProvider(engine: *js.Engine, actual_streams: c.JSValue, actual_proc
         const getter = try scope.own(if (index == 3) try fnc.createMethod(engine, getter_name, 0, property, &.{ states, known_id, c.JS_NewInt32(engine.context, index) }) else try fnc.create(engine, getter_name, 0, property, &.{ states, known_id, c.JS_NewInt32(engine.context, index) }));
         const atom = c.JS_NewAtom(engine.context, name); defer c.JS_FreeAtom(engine.context, atom);
         const flags = if (index == 3) c.JS_PROP_CONFIGURABLE else if (index == 0 or index == 1 or index == 5) c.JS_PROP_ENUMERABLE else 0;
-        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), flags) < 0) return js.capture(engine);
+        if (c.JS_DefinePropertyGetSet(engine.context, prototype, atom, c.JS_DupValue(engine.context, getter), c.pi_js_undefined(), flags) < 0) return @as(anyerror!Provider, js.capture(engine));
     }
     return .{ .engine = engine, .constructor = c.JS_DupValue(engine.context, constructor), .states = c.JS_DupValue(engine.context, states), .id = id, .adopters = adopters };
 }
