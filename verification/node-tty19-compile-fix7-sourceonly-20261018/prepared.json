@@ -1,0 +1,121 @@
+{
+  "schema": 1,
+  "status": "SOURCE_ONLY_3A00_ACTUAL_FIVE_DIAGNOSTIC_CORRECTION_PEER_PENDING",
+  "base": "3a00d019b329a6ebbd71a453dccea2c2f4d3182f",
+  "actual_diagnostic": {
+    "path": "C:\\Users\\adyba\\pi-zig\\evidence\\root-tty19-3a00-buildquery-20261017-235459\\compile.stderr.log",
+    "sha256": "6D2FE9634E2824A0E9045EFDD3AE3786DD6AEE33A84A68A8F210B98EA43B030E",
+    "headers": [
+      "C:\\Users\\adyba\\pi-zig\\evidence\\root-tty19-buildquery-20261017-213245\\cache\\o\\0247925bddd65cebd7ce57200478a773\\cimport.zig:1358:42: error: unable to translate macro: undefined identifier `__MSABI_LONG`",
+      "src\\extensions\\native_node_tty_windows_console.zig:179:79: error: missing struct field: flags",
+      "src\\extensions\\native_node_tty_windows_leases.zig:169:22: error: unreachable else prong; all cases already handled",
+      "src\\extensions\\native_node_tty_windows_output.zig:90:48: error: LHS of shift must be a fixed-width integer type, or RHS must be comptime-known",
+      "src\\native_node_tty_assembly_identity_control.zig:40:92: error: embed of file outside package path: '../verification/node-tty-composition-sourceonly-20261017/original-alias-identity.mjs'"
+    ]
+  },
+  "products": [
+    {
+      "path": "src/extensions/native_node_tty_windows_errors.zig",
+      "sha256": "EB2A8C559EC1732DF3836C4AE5BBE001456D161C1F4162EE8694BDA9B9CE9DDA"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_console.zig",
+      "sha256": "42CFBC74405616A99F9B1696FA977C2FA82621EF6E0B7DD2DD058B138D1AEBD5"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_leases.zig",
+      "sha256": "EC94F939FB99FCCCC6C1AAD2CA5C2F0DC4F54D5BF4470C4DC3CB001C5C826D33"
+    },
+    {
+      "path": "src/extensions/native_node_tty_windows_output.zig",
+      "sha256": "338447E6432CF43DCC88E65E9DFD51E4EB2B769241039B1FB04C9BBF08C8C2C7"
+    },
+    {
+      "path": "src/native_node_tty_assembly_identity_control.zig",
+      "sha256": "482FEF2A25A990BD2F28331E1EF7F43C86232107F10B4C0666FD79BF0BE1C4D3"
+    },
+    {
+      "path": "src/extensions/fixtures/node-tty-original-alias-identity.mjs",
+      "sha256": "1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181"
+    }
+  ],
+  "protected": [
+    {
+      "path": "src/extensions/engine.zig",
+      "sha256": "CCCC31A0BCED424A46BF948B307BB31404DB1273A675A1E5DD2DEB1367B540AC"
+    },
+    {
+      "path": "src/extensions/engine_abi.c",
+      "sha256": "31A110282BDA00332436312B18A544A95D319B000AAAFA3B61AE3B52D8D02D37"
+    },
+    {
+      "path": "src/extensions/engine_abi.h",
+      "sha256": "5A9101C613BC61052F1F20D1E9ED71D390532A1BF29B647976DA0996B1F75B50"
+    },
+    {
+      "path": "src/extensions/native_node_socket_scope.zig",
+      "sha256": "C70B0BD6CD884073B3E448CA0140511994A5D21C1F3980FB11DD36C69F0BAA28"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket.zig",
+      "sha256": "7AFE96C109C3391665E33B4FB64B8FF71D02889389E6B6842A1099D7B2EE7C23"
+    },
+    {
+      "path": "src/extensions/native_node_net_socket_provider.zig",
+      "sha256": "6F3AE3AF715887CDB6E42E25107236323EC690BE1A05FA16DC1256E8BB10DFF7"
+    },
+    {
+      "path": "src/extensions/native_node_socket_function.zig",
+      "sha256": "1FDA28DCE467A2E43E019E52F73D80B51BFD7D4A19183CEDEB8C0E453BB4A8A4"
+    },
+    {
+      "path": "src/native_node_tty_assembly_qualification_test.zig",
+      "sha256": "41A9F3C1C377918EB3A81EC5390883FBE6FB2A0568EFDDA7E5854CC6A413F25E"
+    },
+    {
+      "path": "build.zig",
+      "sha256": "32492161095371523F594584E3D3C3FF0F0CD1B56428B4A4C7BF7ADCD8F91660"
+    },
+    {
+      "path": "verification/node-tty-composition-sourceonly-20261017/original-alias-identity.mjs",
+      "sha256": "1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181"
+    }
+  ],
+  "pinned_016_authorities": [
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\std\\Io\\File.zig",
+      "sha256": "EF1600AF9CFCB35E4F2AD626A28CE3A45BDB04C84FCF9309D027767DA0E00330"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw.h",
+      "sha256": "9DAA9C8670CB7E5D73E2290A020D8CBEBF55BC19FD4C5E2F27E661C98827C3B6"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\_mingw_mac.h",
+      "sha256": "125F71CFA3ABA72E86C882B2CC4D0D9F595E9A71370E4A4AD9FBC67352181D6C"
+    },
+    {
+      "path": "C:\\Users\\adyba\\pi-zig\\toolchain\\zig-x86_64-windows-0.16.0\\lib\\libc\\include\\any-windows-any\\winerror.h",
+      "sha256": "8D9557EA7C589FF0E52005D3CE08C0BBF8D189A6C37A1B31B977A5AC07D3E431"
+    }
+  ],
+  "sameform_inventory": [
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_fs_windows_crt_proposal.zig:21:pub const FailureRecord = struct { fd: c_int, original_handle: std.Io.File.Handle, generation: u64, errno: c_int };",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_fs_windows_crt_proposal.zig:55:pub const NativeOwned = struct { file: ?std.Io.File, reservation: Reservation, last_association_errno: ?c_int = null };",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_fs_windows_crt_proposal.zig:90:    pub fn retireDetached(self: *const ClosePacket, original_handle: std.Io.File.Handle) !void {",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_fs_windows_crt_proposal.zig:101:    borrowed_view: std.Io.File,",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_fs_windows_crt_proposal.zig:169:    return .{ .fd = descriptor, .borrowed_view = file, .generation = native.reservation.generation, .reservation = native.reservation, .qualification_admission = qualification };",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_tty_frontend_mode.zig:28:    const snapshot: Snapshot = .{ .lease = lease, .original_mode = original.mode, .source_handle = std.Io.File.stdin().handle };",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_console.zig:181:                target = .{ .crt = .{ .lease = .{ .fd = fd, .borrowed_view = .{ .handle = handle, .flags = .{ .nonblocking = false } }, .generation = native.generation, .reservation = native,",
+    "C:\\Users\\adyba\\pi-zig\\worktrees\\node-tty19-compile-fix7-sourceonly-20261018\\src\\extensions\\native_node_tty_windows_errors.zig:4:const win = if (builtin.os.tag == .windows) @cImport({ @cInclude(\"_mingw.h\"); @cInclude(\"winerror.h\"); }) else struct {};"
+  ],
+  "fixture_copy": "Byteexact1F861C958E709D86CBA1EBA226EE10E24679A6170A962AE104A0EDAE101F6181; originalkeptunchanged; onlylegalembedpathchanges",
+  "borrowed_flags_basis": "Actualprobe already proves consoleinput or screenbuffer. std.Io.File.Flagsfalse explicitly includes non-filehandle. No NTmodeclaim/no setBlocking-derivedflags. Borrowedview remains nonowning, usednativehandleidentity/CRTclose; actualReadConsole/WriteConsoleAPIunchanged.",
+  "source_assertions": 19,
+  "actual_metadata": null,
+  "allowed_anonymous": [],
+  "execution_authorized": false,
+  "agent_jobs": 0,
+  "physical_fix4": "3a00HOLD; Root-onlyfutureff afternegativeaudit",
+  "semantic_units": "Scope/internalRequire/formatter separate"
+}

@@ -166,7 +166,6 @@ pub fn Registry(comptime ClosePool: type, comptime Wake: type) type {
             if (result) |value| switch (value) {
                 .closed => slot.phase = .closed,
                 .failed => { slot.phase = .failed; slot.retirement_failure = error.NativeTtyCrtCloseRetained; },
-                else => {},
             };
             return result;
         }

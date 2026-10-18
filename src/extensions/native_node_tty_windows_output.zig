@@ -87,7 +87,7 @@ pub const Decoder = struct {
                     } else if (first_zero <= 5) {
                         // first_zero0 needs a shift8, whose mask is zero. C's
                         // integer promotion defines that case before u8 cast.
-                        const mask: u32 = 0xff >> @as(u5, @intCast(8 - first_zero));
+                        const mask: u32 = @as(u32, 0xff) >> @as(u5, @intCast(8 - first_zero));
                         self.codepoint = mask & byte;
                         self.bytes_left = 6 - first_zero;
                     } else self.codepoint = 0xfffd;

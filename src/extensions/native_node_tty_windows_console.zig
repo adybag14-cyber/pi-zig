@@ -176,7 +176,9 @@ pub fn Console(comptime ClosePool: type, comptime Wake: type) type {
                 const close_ticket = if (qualification) try ClosePool.reserveForQualification(wake) else try ClosePool.reserve(wake);
                 var close_owned = true;
                 defer if (close_owned) ClosePool.releaseUnassociated(close_ticket) catch {};
-                target = .{ .crt = .{ .lease = .{ .fd = fd, .borrowed_view = .{ .handle = handle }, .generation = native.generation, .reservation = native,
+                // probe proved a real console buffer. File.Flags uses false
+                // for non-file handles; this is not the public blocking policy.
+                target = .{ .crt = .{ .lease = .{ .fd = fd, .borrowed_view = .{ .handle = handle, .flags = .{ .nonblocking = false } }, .generation = native.generation, .reservation = native,
                     .qualification_admission = qualification }, .ticket = close_ticket } };
                 native_owned = false; close_owned = false;
             }

@@ -1,7 +1,7 @@
 //! Exact native libuv Windows error mapping, Node24.14 retained error.c,
 //! errno.h and UV_ERRNO_MAP. Header-linked Win32/WSA constants, no guessed code.
 const builtin = @import("builtin");
-const win = if (builtin.os.tag == .windows) @cImport({ @cInclude("winerror.h"); }) else struct {};
+const win = if (builtin.os.tag == .windows) @cImport({ @cInclude("_mingw.h"); @cInclude("winerror.h"); }) else struct {};
 pub const Code = enum(i32) {
     EOF = -4095, UNKNOWN = -4094, E2BIG = -4093, EACCES = -4092,
     EADDRINUSE = -4091, EADDRNOTAVAIL = -4090, EAFNOSUPPORT = -4089,

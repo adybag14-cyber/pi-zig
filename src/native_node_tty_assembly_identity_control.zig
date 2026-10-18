@@ -37,7 +37,7 @@ pub fn run(comptime ActualAssembly: type, engine: *v.em.Engine, actual: ActualAs
         }
         const filename = try engine.toString(actual.physical_filename); defer engine.gpa.free(filename);
         const terminated = try engine.gpa.dupeZ(u8, filename); defer engine.gpa.free(terminated);
-        const namespace = try s.own(try h.success(engine, try engine.evalModule(@embedFile("../verification/node-tty-composition-sourceonly-20261017/original-alias-identity.mjs"), terminated)));
+        const namespace = try s.own(try h.success(engine, try engine.evalModule(@embedFile("extensions/fixtures/node-tty-original-alias-identity.mjs"), terminated)));
         inline for (.{ "namespaces", "defaults", "requires", "constructors" }) |name| try std.testing.expect(c.JS_ToBool(engine.context, try h.get(&s, namespace, name)) == 1);
     }
 }
