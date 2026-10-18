@@ -8,18 +8,15 @@ const c = v.c;
 const order = @import("native_sdk_package_declaration_order.zig");
 const manager = @import("native_sdk_package_manager.zig");
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 fn root(s: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(s, value); }
 fn get(s: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try guards.guard(s.engine, generation, v.js.get(s.engine, target, name)));
+    return guest.get(s, target, name);
 }
 fn object(s: *Scope) !c.JSValue { return root(s, try @import("native_sdk.zig").object(s.engine)); }
 fn put(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    const generation = s.engine.native_allocation_generation;
-    const status = c.JS_DefinePropertyValueStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E);
-    const outcome: anyerror!c.JSValue = if (status < 0) v.js.capture(s.engine) else s.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(s.engine, generation, outcome);
+    return guest.put(s, target, name, value);
 }
 pub const Inputs = struct {
     paths: c.JSValue,
@@ -53,10 +50,9 @@ fn copyDescriptor(s: *Scope, prototype: c.JSValue, atom: c.JSAtom, descriptor: c
     if (descriptor.flags & c.JS_PROP_GETSET != 0 or !c.JS_IsFunction(s.engine.context, descriptor.value)) return error.RequiredActualPackageClassMethod;
     if (c.JS_IsAsyncFunction(descriptor.value) != expectedAsync(name)) return error.RequiredGenuinePackageAsyncBrand;
     const flags = descriptor.flags | c.JS_PROP_HAS_CONFIGURABLE | c.JS_PROP_HAS_ENUMERABLE | c.JS_PROP_HAS_WRITABLE | c.JS_PROP_HAS_VALUE;
-    const generation = s.engine.native_allocation_generation;
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
     const status = c.JS_DefineProperty(s.engine.context, prototype, atom, descriptor.value, descriptor.getter, descriptor.setter, flags);
-    const outcome: anyerror!c.JSValue = if (status < 0) v.js.capture(s.engine) else s.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(s.engine, generation, outcome);
+    return boundary.finishStatus(status);
 }
 pub fn create(engine: *v.em.Engine, inputs: Inputs) !c.JSValue {
     try engine.checkNativeEntry();

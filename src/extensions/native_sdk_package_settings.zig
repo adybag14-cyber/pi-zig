@@ -139,31 +139,27 @@ fn event(s: *Scope, kind: []const u8, action: c.JSValue, source: c.JSValue, mess
     const value = try s.object(); try s.put(value, "type", try s.text(kind)); try s.put(value, "action", action); try s.put(value, "source", source); if (message) |text| try s.put(value, "message", text); return value;
 }
 fn checkedGet(s: *Scope, owner: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return p.guard(s.engine, generation, s.get(owner, name));
+    return @import("native_sdk_guest_operation.zig").get(s, owner, name);
 }
 fn checkedCall(s: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return p.guard(s.engine, generation, s.call(function, receiver, args));
+    return @import("native_sdk_guest_operation.zig").call(s, function, receiver, args);
 }
 fn reference(s: *Scope, name: [:0]const u8) !c.JSValue {
     const global = try s.own(c.JS_GetGlobalObject(s.engine.context));
     const atom = c.JS_NewAtom(s.engine.context, name.ptr);
     if (atom == c.JS_ATOM_NULL) return v.js.capture(s.engine);
     defer c.JS_FreeAtom(s.engine.context, atom);
-    const generation = s.engine.native_allocation_generation;
+    var boundary: @import("native_sdk_guest_operation.zig").Boundary = .{ .engine = s.engine }; try boundary.begin();
     const present = c.JS_HasProperty(s.engine.context, global, atom);
-    if (present < 0) return p.guard(s.engine, generation, v.js.capture(s.engine));
-    try s.engine.checkNativeEntry();
+    try boundary.finishStatus(present);
     if (present == 0) return s.engine.checked(c.JS_ThrowReferenceError(s.engine.context, "%s is not defined", name.ptr));
     return checkedGet(s, global, name.ptr);
 }
 fn progressError(s: *Scope, manager: c.JSValue, args: []const c.JSValue, reason: c.JSValue) anyerror!af.Action {
     const error_constructor = try reference(s, "Error");
-    const generation = s.engine.native_allocation_generation;
+    var boundary: @import("native_sdk_guest_operation.zig").Boundary = .{ .engine = s.engine }; try boundary.begin();
     const instance = c.JS_IsInstanceOf(s.engine.context, reason, error_constructor);
-    if (instance < 0) { _ = try p.guard(s.engine, generation, v.js.capture(s.engine)); unreachable; }
-    try s.engine.checkNativeEntry();
+    try boundary.finishStatus(instance);
     const message = if (instance != 0) try checkedGet(s, reason, "message") else try checkedCall(s, try reference(s, "String"), c.pi_js_undefined(), &.{reason});
     try emitEvent(s, manager, "error", arg(args, 0), arg(args, 1), message);
     return .{ .thrown = c.JS_DupValue(s.engine.context, reason) };

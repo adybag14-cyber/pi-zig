@@ -8,6 +8,7 @@ const p = @import("native_agent_af_values.zig");
 const js = @import("native_js_values.zig");
 const sdk = @import("native_sdk.zig");
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const captured_inputs = @import("native_child_process_frontend_inputs.zig");
 const auth = @import("native_sdk_auth_runtime_owner.zig");
 const bootstrap = @import("native_sdk_application_bootstrap.zig");
@@ -18,12 +19,10 @@ const lazy = @import("native_sdk_extension_lazy_imports.zig");
 // result; ownRoot then records real storage OOM before retiring the input.
 fn root(s: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(s, value); }
 fn get(s: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try p.guard(s.engine, generation, sdk.get(s.engine, target, name)));
+    return guest.get(s, target, name);
 }
 fn call(s: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try p.guard(s.engine, generation, js.call(s.engine, function, receiver, args)));
+    return guest.call(s, function, receiver, args);
 }
 
 pub const Inputs = struct {

@@ -25,23 +25,12 @@ fn resolve(engine: *em.Engine, owner: c.JSValue, value: c.JSValue) !void {
     try put(engine, owner, "factoryValue", value);
     try put(engine, owner, "factoryAction", c.JS_NewInt32(engine.context, @intFromEnum(ActionKind.returned)));
 }
-fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
+fn trustedBoundary(engine: *em.Engine, err: anyerror, _: u64) !void {
+    try engine.checkNativeEntry();
     if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        if (c.JS_IsUncatchableError(reason)) return err;
-        try body.rethrowRecognizedAllocation(engine, reason, generation);
-    };
 }
-fn currentFailure(engine: *em.Engine, err: anyerror, generation: u64) anyerror {
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| {
-        if (c.JS_IsUncatchableError(reason)) return err;
-        body.rethrowRecognizedAllocation(engine, reason, generation) catch |fatal| return fatal;
-    };
-    if (err == error.JavaScriptException and c.JS_HasException(engine.context)) {
-        const reason = c.JS_GetException(engine.context);
-        _ = engine.checked(c.JS_Throw(engine.context, reason)) catch |current| return current;
-        unreachable;
-    }
+fn currentFailure(engine: *em.Engine, err: anyerror, _: u64) anyerror {
+    engine.checkNativeEntry() catch |current| return current;
     return err;
 }
 fn takeReason(engine: *em.Engine, err: anyerror, generation: u64) !c.JSValue {
@@ -103,7 +92,7 @@ fn factoryBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots:
             engine.captured_exception = null;
             return .{ .thrown = reason };
         }
-        return body.failureSince(engine, current, generation);
+        return body.failure(engine, current);
     };
 }
 fn factoryInner(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {

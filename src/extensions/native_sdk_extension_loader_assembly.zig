@@ -5,21 +5,17 @@ const v = @import("native_ai_provider_values.zig");
 const c = v.c;
 const Scope = v.Scope;
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 fn root(s: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(s, value); }
 fn get(s: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try guards.guard(s.engine, generation, v.js.get(s.engine, target, name)));
+    return guest.get(s, target, name);
 }
 fn call(s: *Scope, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try guards.guard(s.engine, generation, v.js.call(s.engine, function, receiver, args)));
+    return guest.call(s, function, receiver, args);
 }
 fn define(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    const generation = s.engine.native_allocation_generation;
-    const status = c.JS_DefinePropertyValueStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E);
-    const outcome: anyerror!c.JSValue = if (status < 0) v.js.capture(s.engine) else s.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(s.engine, generation, outcome);
+    return guest.put(s, target, name, value);
 }
 pub const Inputs = struct {
     api: @import("native_sdk_extension_api.zig").Inputs,

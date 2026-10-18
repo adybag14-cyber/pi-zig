@@ -21,12 +21,13 @@ pub fn enter(engine: *v.em.Engine, completion: body.native.Completion) !void {
 /// Returns the owned ordinary captured reason, if this is a JS exception.
 /// Fatal errors retain their original Engine slot and exact reason. Non-JS
 /// failures cannot consume an unrelated captured exception.
-pub fn take(engine: *v.em.Engine, err: anyerror, generation: u64) !?c.JSValue {
+pub fn take(engine: *v.em.Engine, err: anyerror, _: u64) !?c.JSValue {
+    try engine.checkNativeEntry();
     if (err == error.OutOfMemory) return err;
     if (err != error.JavaScriptException) return null;
     const reason = engine.captured_exception orelse return err;
-    if (c.JS_IsUncatchableError(reason)) return err;
-    try body.rethrowRecognizedAllocation(engine, reason, generation);
+    // Diagnostic Error flags/tags, including ones born in the SAME guest
+    // operation, are not proof of a native producer. B1 was checked above.
     engine.captured_exception = null;
     return reason;
 }

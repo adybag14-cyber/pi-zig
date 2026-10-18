@@ -5,7 +5,7 @@
 const std = @import("std");
 const em = @import("engine.zig");
 const c = em.c;
-const guards = @import("native_agent_af_values.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const completion = @import("native_sdk_owned_completion.zig");
 const child = @import("native_child_process_sdk_transport.zig");
@@ -13,34 +13,27 @@ const streams = @import("native_process_streams.zig");
 const runtime = @import("native_sdk_runtime_imports.zig");
 const js = @import("native_js_values.zig");
 
-// Normalize each actual operation BEFORE appending its owned result. The
-// generic Scope get/call helpers append via raw Scope.own and can retire an
-// incoming sole root before an allocator failure becomes a trusted event.
+// A pre-operation invocation keeps actual native producer events separate
+// from guest-owned DATA. Retain the owned result only after that boundary
+// normalizes it, before any caller temporary can be retired.
 const Ops = struct {
     scope: *Scope,
-    fn adopt(self: Ops, generation: u64, result: anyerror!c.JSValue) !c.JSValue {
-        const engine = self.scope.engine;
-        const value = try guards.guard(engine, generation, result);
-        const checked = try guards.guard(engine, generation, engine.checked(value));
-        return completion.ownRoot(self.scope, checked);
-    }
     fn own(self: Ops, value: c.JSValue) !c.JSValue {
         return completion.ownRoot(self.scope, value);
     }
     fn get(self: Ops, receiver: c.JSValue, name: [*:0]const u8) !c.JSValue {
-        const generation = self.scope.engine.native_allocation_generation;
-        return self.adopt(generation, js.get(self.scope.engine, receiver, name));
+        return guest.get(self.scope, receiver, name);
     }
     fn globalObject(self: Ops) !c.JSValue {
-        const generation = self.scope.engine.native_allocation_generation;
-        return self.adopt(generation, self.scope.engine.checked(c.JS_GetGlobalObject(self.scope.engine.context)));
+        var boundary: guest.Boundary = .{ .engine = self.scope.engine };
+        try boundary.begin();
+        return boundary.finishValue(self.scope, c.JS_GetGlobalObject(self.scope.engine.context));
     }
     fn call(self: Ops, function: c.JSValue, receiver: c.JSValue, args: []const c.JSValue) !c.JSValue {
-        const generation = self.scope.engine.native_allocation_generation;
-        return self.adopt(generation, js.call(self.scope.engine, function, receiver, args));
+        return guest.call(self.scope, function, receiver, args);
     }
     fn invoke(self: Ops, receiver: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !c.JSValue {
-        return self.call(try self.get(receiver, name), receiver, args);
+        return guest.invoke(self.scope, receiver, name, args);
     }
 };
 

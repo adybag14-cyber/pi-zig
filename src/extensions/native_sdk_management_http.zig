@@ -6,6 +6,7 @@ const js = @import("native_js_values.zig");
 const math = @import("native_image_arithmetic.zig");
 const functions = @import("native_node_function.zig");
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const Scope = p.Scope;
 const c = em.c;
 const Stage = enum(i32) { attempt, fetch, cancel };
@@ -13,15 +14,7 @@ const Decision = union(enum) { again, action: p.af.Action };
 const key = "pi-private:sdk-management-http";
 
 fn put(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    try s.engine.checkNativeEntry();
-    const generation = s.engine.native_allocation_generation;
-    if (c.JS_DefinePropertyValueStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E) < 0) return captureSince(s.engine, generation);
-    // Successful consuming status can still publish a native finalizer event.
-    // Preserve it before the next field retirement/callback/allocation.
-    s.engine.checkNativeEntry() catch |err| {
-        _ = p.guard(s.engine, generation, @as(anyerror!c.JSValue, err)) catch |current| return current;
-        unreachable;
-    };
+    return guest.put(s, target, name, value);
 }
 fn argument(args: []const c.JSValue, index: usize) c.JSValue { return if (index < args.len) args[index] else c.pi_js_undefined(); }
 fn isUndefined(value: c.JSValue) bool { return c.JS_IsUndefined(value); }
@@ -31,20 +24,17 @@ fn binding(s: *Scope, name: [:0]const u8) !c.JSValue {
     const atom = c.JS_NewAtom(s.engine.context, name.ptr);
     if (atom == c.JS_ATOM_NULL) return js.capture(s.engine);
     defer c.JS_FreeAtom(s.engine.context, atom);
-    const generation = s.engine.native_allocation_generation;
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
     const present = c.JS_HasProperty(s.engine.context, global, atom);
-    if (present < 0) return p.guard(s.engine, generation, js.capture(s.engine));
-    try s.engine.checkNativeEntry();
+    try boundary.finishStatus(present);
     if (present == 0) return s.engine.checked(c.JS_ThrowReferenceError(s.engine.context, "%s is not defined", name.ptr));
     return p.get(s, global, name.ptr);
 }
 fn compare(s: *Scope, operation: math.Operation, left: c.JSValue, right: c.JSValue) !bool {
-    const generation = s.engine.native_allocation_generation;
-    return s.truthy(try s.own(try p.guard(s.engine, generation, math.binary(s.engine, operation, left, right))));
+    return s.truthy(try guest.binary(s, @intFromEnum(operation), left, right));
 }
 fn at(s: *Scope, value: c.JSValue, index: u32) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_GetPropertyUint32(s.engine.context, value, index))));
+    return guest.at(s, value, index);
 }
 fn optional(s: *Scope, value: c.JSValue, name: [*:0]const u8) !c.JSValue { return if (nullish(value)) c.pi_js_undefined() else p.get(s, value, name); }
 fn stage(s: *Scope, job: c.JSValue, value: Stage) !void { try put(s, job, "stage", c.JS_NewInt32(s.engine.context, @intFromEnum(value))); }
@@ -85,9 +75,7 @@ fn initializeBody(s: *Scope) !c.JSValue {
     const constructor = try binding(s, "Set");
     const statuses = try s.array();
     inline for (.{ 408, 425, 429, 500, 502, 503, 504 }, 0..) |code, index| try s.index(statuses, index, c.JS_NewInt32(engine.context, code));
-    var args = [_]c.JSValue{statuses};
-    const generation = engine.native_allocation_generation;
-    const retryable = try s.own(try p.guard(engine, generation, engine.checked(c.JS_CallConstructor(engine.context, constructor, args.len, &args))));
+    const retryable = try guest.construct(s, constructor, &.{statuses});
     const result = try s.object();
     const function = try s.own(try p.af.createResumable(engine, "fetchWithRetry", 1, run, &.{retryable}));
     try put(s, result, "fetchWithRetry", function);
@@ -217,31 +205,23 @@ fn fetchValue(s: *Scope, job: c.JSValue, signal: c.JSValue) !c.JSValue {
     }
     return p.call(s, fetch, c.pi_js_undefined(), &.{ input, init });
 }
-fn captureSince(engine: *em.Engine, generation: u64) anyerror {
-    _ = p.guard(engine, generation, js.capture(engine)) catch |err| return err;
-    unreachable;
-}
 fn copyDescriptorBody(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom, descriptor: *const c.JSPropertyDescriptor) !void {
     try s.engine.checkNativeEntry();
     if (descriptor.flags & c.JS_PROP_ENUMERABLE == 0) return;
-    var generation = s.engine.native_allocation_generation;
-    const value = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_GetProperty(s.engine.context, boxed, atom))));
-    generation = s.engine.native_allocation_generation;
-    if (c.JS_DefinePropertyValue(s.engine.context, result, atom, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E) < 0) return captureSince(s.engine, generation);
-    s.engine.checkNativeEntry() catch |err| {
-        _ = p.guard(s.engine, generation, @as(anyerror!c.JSValue, err)) catch |current| return current;
-        unreachable;
-    };
+    const value = try guest.getAtom(s, boxed, atom);
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+    return boundary.finishStatus(c.JS_DefinePropertyValue(s.engine.context, result, atom, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E));
 }
 fn copyDescriptor(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom) !void {
     var descriptor: c.JSPropertyDescriptor = undefined;
-    const generation = s.engine.native_allocation_generation;
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
     const found = c.JS_GetOwnProperty(s.engine.context, &descriptor, boxed, atom);
-    if (found < 0) return captureSince(s.engine, generation);
-    if (found == 0) return s.engine.checkNativeEntry();
+    const inspected = boundary.finishStatus(found);
+    if (found <= 0) return inspected;
     // Capture the actual Get/copy outcome BEFORE descriptor field releases.
     // Neither caught DATA nor a new ordinary finalizer overwrites Source A.
-    var completion = owned.Completion.initVoid(s.engine, copyDescriptorBody(s, result, boxed, atom, &descriptor));
+    const outcome: anyerror!void = if (inspected) |_| copyDescriptorBody(s, result, boxed, atom, &descriptor) else |err| err;
+    var completion = owned.Completion.initVoid(s.engine, outcome);
     // Preserve the previous three defers' actual LIFO native release order.
     completion.release(descriptor.setter);
     completion.release(descriptor.getter);
@@ -251,14 +231,15 @@ fn copyDescriptor(s: *Scope, result: c.JSValue, boxed: c.JSValue, atom: c.JSAtom
 fn spreadInit(s: *Scope, initial: c.JSValue) !c.JSValue {
     const result = try s.object();
     if (nullish(initial)) return result;
-    var generation = s.engine.native_allocation_generation;
-    const boxed = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_ToObject(s.engine.context, initial))));
+    const boxed = try guest.toObject(s, initial);
     var names: [*c]c.JSPropertyEnum = null;
     var count: u32 = 0;
-    generation = s.engine.native_allocation_generation;
-    if (c.JS_GetOwnPropertyNames(s.engine.context, &names, &count, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK) < 0) return captureSince(s.engine, generation);
+    var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
+    const status = c.JS_GetOwnPropertyNames(s.engine.context, &names, &count, boxed, c.JS_GPN_STRING_MASK | c.JS_GPN_SYMBOL_MASK);
+    const inspected = boundary.finishStatus(status);
+    if (status < 0) { try inspected; unreachable; }
     defer c.JS_FreePropertyEnum(s.engine.context, names, count);
-    try s.engine.checkNativeEntry();
+    try inspected;
     for (names[0..count]) |entry| {
         try copyDescriptor(s, result, boxed, entry.atom);
     }
@@ -266,8 +247,7 @@ fn spreadInit(s: *Scope, initial: c.JSValue) !c.JSValue {
 }
 fn advance(s: *Scope, job: c.JSValue) !Decision {
     const previous = try s.get(job, "attempt");
-    const generation = s.engine.native_allocation_generation;
-    const next = try s.own(try p.guard(s.engine, generation, s.engine.checked(c.JS_PiIncrement(s.engine.context, previous))));
+    const next = try guest.increment(s, previous);
     try put(s, job, "attempt", next);
     inline for (.{ "response", "signal", "signals", "attemptTimeoutSignal" }) |name| try put(s, job, name, c.pi_js_undefined());
     try stage(s, job, .attempt);
@@ -281,10 +261,9 @@ fn failed(s: *Scope, job: c.JSValue, reason: c.JSValue) !Decision {
     var terminal = s.truthy(try optional(s, parent, "aborted")) or s.truthy(try optional(s, timeout, "aborted"));
     if (!terminal) {
         const error_constructor = try binding(s, "Error");
-        const generation = s.engine.native_allocation_generation;
+        var boundary: guest.Boundary = .{ .engine = s.engine }; try boundary.begin();
         const instance = c.JS_IsInstanceOf(s.engine.context, reason, error_constructor);
-        if (instance < 0) { _ = try p.guard(s.engine, generation, js.capture(s.engine)); unreachable; }
-        try s.engine.checkNativeEntry();
+        try boundary.finishStatus(instance);
         terminal = instance != 0 and s.equal(try p.get(s, reason, "name"), try s.text("AbortError")) and !timed_out and isUndefined(timeout);
     }
     if (!terminal) terminal = try compare(s, .greater_equal, try s.get(job, "attempt"), try s.get(job, "maxRetries"));

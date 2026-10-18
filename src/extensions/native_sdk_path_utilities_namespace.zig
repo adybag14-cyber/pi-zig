@@ -7,6 +7,7 @@ const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const source = @import("native_sdk_source_paths.zig");
 const functions = @import("native_node_function.zig");
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 const sdk = @import("native_sdk.zig");
 const namespace_key = "pi-private:actual-sdk-path-utilities";
@@ -23,14 +24,10 @@ fn alreadyCreating(engine: *em.Engine, cloud: bool) bool {
 const Method = enum { canonicalizePath, getFileRevision, isLocalPath, normalizeWindowsShellPath, normalizePath, resolvePath, getCwdRelativePath, formatPathRelativeToCwdOrAbsolute };
 fn root(scope: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(scope, value); }
 fn get(scope: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = scope.engine.native_allocation_generation;
-    return root(scope, try guards.guard(scope.engine, generation, sdk.get(scope.engine, target, name)));
+    return guest.get(scope, target, name);
 }
 fn put(scope: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    const generation = scope.engine.native_allocation_generation;
-    const status = c.JS_DefinePropertyValueStr(scope.engine.context, target, name, c.JS_DupValue(scope.engine.context, value), c.JS_PROP_C_W_E);
-    const outcome: anyerror!c.JSValue = if (status < 0) js.capture(scope.engine) else scope.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(scope.engine, generation, outcome);
+    return guest.put(scope, target, name, value);
 }
 fn arg(args: []const c.JSValue, index: usize) c.JSValue {
     return if (index < args.len) args[index] else c.pi_js_undefined();
@@ -141,10 +138,7 @@ fn completeOwned(engine: *em.Engine, filesystem: c.JSValue, process: c.JSValue, 
     // no later GPA reservation or unchecked put can follow export definition.
     engine.native_module_values.putAssumeCapacity(cloud_process_key, c.JS_DupValue(engine.context, process));
     engine.native_module_values.putAssumeCapacity(cloud_spawn_key, c.JS_DupValue(engine.context, spawn));
-    const generation = engine.native_allocation_generation;
-    const status = c.JS_DefinePropertyValueStr(engine.context, namespace, "markPathIgnoredByCloudSync", c.JS_DupValue(engine.context, mark), c.JS_PROP_C_W_E);
-    const outcome: anyerror!c.JSValue = if (status < 0) js.capture(engine) else engine.checked(c.pi_js_undefined());
-    _ = guards.guard(engine, generation, outcome) catch |err| {
+    guest.put(&scope, namespace, "markPathIgnoredByCloudSync", mark) catch |err| {
         var failed = owned.Completion.initValue(engine, err);
         const old_spawn = engine.native_module_values.fetchRemove(cloud_spawn_key).?;
         const old_process = engine.native_module_values.fetchRemove(cloud_process_key).?;
@@ -165,16 +159,20 @@ fn releaseFailure(engine: *em.Engine, err: anyerror, namespace: c.JSValue, mark:
     return failed.finishValue();
 }
 fn canonicalize(engine: *em.Engine, function: c.JSValue, input: c.JSValue) !c.JSValue {
-    const generation = engine.native_allocation_generation;
-    const previous = if (engine.captured_exception) |value| c.JS_DupValue(engine.context, value) else null;
-    defer if (previous) |value| engine.freeValue(value);
-    return js.call(engine, function, c.pi_js_undefined(), &.{input}) catch |err| {
-        if (engine.nativeAllocationError(err, generation) == error.OutOfMemory) return error.OutOfMemory;
-        if (c.JS_HasException(engine.context)) engine.freeValue(c.JS_GetException(engine.context));
-        if (engine.captured_exception) |value| engine.freeValue(value);
-        engine.captured_exception = if (previous) |value| c.JS_DupValue(engine.context, value) else null;
-        return c.JS_DupValue(engine.context, input);
+    var scope: Scope = .{ .engine = engine };
+    const result = guest.call(&scope, function, c.pi_js_undefined(), &.{input}) catch |err| {
+        // Source catches ordinary realpath failures. A retained current native
+        // event must bypass that catch; diagnostic tags/newness are DATA.
+        engine.checkNativeEntry() catch |current| return owned.finishValue(&scope, @as(anyerror!c.JSValue, current));
+        if (err != error.JavaScriptException) return owned.finishValue(&scope, @as(anyerror!c.JSValue, err));
+        const reason = engine.captured_exception orelse return owned.finishValue(&scope, @as(anyerror!c.JSValue, err));
+        engine.captured_exception = null;
+        var selected = owned.Completion.initValue(engine, c.JS_DupValue(engine.context, input));
+        selected.release(reason);
+        selected.releaseScope(&scope);
+        return selected.finishValue();
     };
+    return owned.finishValue(&scope, c.JS_DupValue(engine.context, result));
 }
 fn localPath(engine: *em.Engine, input: c.JSValue) !c.JSValue {
     var scope: Scope = .{ .engine = engine };

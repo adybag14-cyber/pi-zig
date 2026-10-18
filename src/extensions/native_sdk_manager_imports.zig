@@ -4,6 +4,7 @@ const em = @import("engine.zig");
 const c = em.c;
 const js = @import("native_js_values.zig");
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const key = "\x00sdk-actual-manager-imports";
@@ -60,13 +61,9 @@ fn project(scope: *Scope, exports: c.JSValue) !c.JSValue {
     const engine = scope.engine;
     const projection = try owned.ownRoot(scope, try js.object(engine));
     inline for (.{ "SessionManager", "SettingsManager" }) |name| {
-        const generation = engine.native_allocation_generation;
-        const constructor = try owned.ownRoot(scope, try guards.guard(engine, generation, js.get(engine, exports, name)));
+        const constructor = try guest.get(scope, exports, name);
         if (!c.JS_IsConstructor(engine.context, constructor)) return error.RequiredActualSdkManagerConstructor;
-        const define_generation = engine.native_allocation_generation;
-        const status = c.JS_DefinePropertyValueStr(engine.context, projection, name, c.JS_DupValue(engine.context, constructor), c.JS_PROP_C_W_E);
-        const result: anyerror!c.JSValue = if (status < 0) js.capture(engine) else engine.checked(c.pi_js_undefined());
-        _ = try guards.guard(engine, define_generation, result);
+        try guest.put(scope, projection, name, constructor);
     }
     return c.JS_DupValue(engine.context, projection);
 }

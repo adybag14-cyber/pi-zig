@@ -8,19 +8,14 @@ const temp = @import("native_sdk_prompt_scope.zig");
 const Scope = temp.Scope;
 const c = em.c;
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 fn root(s: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(s, value); }
 fn get(s: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = s.engine.native_allocation_generation;
-    return root(s, try guards.guard(s.engine, generation, sdk.get(s.engine, target, name)));
+    return guest.get(s, target, name);
 }
 fn write(s: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue, define: bool) !void {
-    const generation = s.engine.native_allocation_generation;
-    const status = if (define)
-        c.JS_DefinePropertyValueStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E)
-    else c.JS_SetPropertyStr(s.engine.context, target, name, c.JS_DupValue(s.engine.context, value));
-    const outcome: anyerror!c.JSValue = if (status < 0) js.capture(s.engine) else s.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(s.engine, generation, outcome);
+    return if (define) guest.put(s, target, name, value) else guest.set(s, target, name, value);
 }
 pub fn constructor(engine: *em.Engine, prototype: c.JSValue) !c.JSValue {
     return @import("native_class.zig").constructor(engine, "DefaultPackageManager", 1, prototype, construct, &.{});
@@ -39,10 +34,9 @@ pub fn installProgress(engine: *em.Engine, prototype: c.JSValue) !void {
 }
 fn installProgressBody(engine: *em.Engine, prototype: c.JSValue) !void {
     const function = try engine.checked(c.pi_js_function_magic(engine.context, setProgress, "setProgressCallback", 1, 0));
-    const generation = engine.native_allocation_generation;
+    var boundary: guest.Boundary = .{ .engine = engine }; try boundary.begin();
     const status = c.JS_DefinePropertyValueStr(engine.context, prototype, "setProgressCallback", function, c.JS_PROP_WRITABLE | c.JS_PROP_CONFIGURABLE);
-    const outcome: anyerror!c.JSValue = if (status < 0) js.capture(engine) else engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(engine, generation, outcome);
+    try boundary.finishStatus(status);
 }
 fn construct(engine: *em.Engine, target: c.JSValue, args: []const c.JSValue, _: []const c.JSValue) !c.JSValue {
     const manager = try @import("native_class.zig").object(engine, target);

@@ -6,6 +6,7 @@ const js = @import("native_js_values.zig");
 const c = js.c;
 const Scope = @import("native_sdk_prompt_scope.zig").Scope;
 const owned = @import("native_sdk_owned_completion.zig");
+const guest = @import("native_sdk_guest_operation.zig");
 const guards = @import("native_agent_af_values.zig");
 const sdk = @import("native_sdk.zig");
 const platform_module = "pi-native:actual-sdk-filesystem-platform";
@@ -22,15 +23,11 @@ fn enterCreation(entry: *Creation) !void {
 pub const AuthDependencies = struct { get_agent_dir: c.JSValue, resolve_config_value: c.JSValue, is_command_config_value: c.JSValue = c.pi_js_undefined() };
 fn root(scope: *Scope, value: c.JSValue) !c.JSValue { return owned.ownRoot(scope, value); }
 fn get(scope: *Scope, target: c.JSValue, name: [*:0]const u8) !c.JSValue {
-    const generation = scope.engine.native_allocation_generation;
-    return root(scope, try guards.guard(scope.engine, generation, sdk.get(scope.engine, target, name)));
+    return guest.get(scope, target, name);
 }
 fn object(scope: *Scope) !c.JSValue { return root(scope, try sdk.object(scope.engine)); }
 fn put(scope: *Scope, target: c.JSValue, name: [*:0]const u8, value: c.JSValue) !void {
-    const generation = scope.engine.native_allocation_generation;
-    const status = c.JS_DefinePropertyValueStr(scope.engine.context, target, name, c.JS_DupValue(scope.engine.context, value), c.JS_PROP_C_W_E);
-    const outcome: anyerror!c.JSValue = if (status < 0) js.capture(scope.engine) else scope.engine.checked(c.pi_js_undefined());
-    _ = try guards.guard(scope.engine, generation, outcome);
+    return guest.put(scope, target, name, value);
 }
 fn publish(engine: *em.Engine, name: []const u8, graph: c.JSValue) !c.JSValue {
     const result: anyerror!c.JSValue = if (engine.registerValueModule(name, graph)) |_|
