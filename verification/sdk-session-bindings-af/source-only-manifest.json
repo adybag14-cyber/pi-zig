@@ -8,8 +8,8 @@
   "members": [
     {
       "path": "src/extensions/native_sdk_session_bindings.zig",
-      "sha256": "C2EAE3553F0A446F910838257E37FDD0A28B897FEEEE5EF31CF1B48B00574723",
-      "bytes": 15341
+      "sha256": "CE7F331F46814205DF48BB13EBA069959CEB622D6602BDA7C3DDAB07AEF050B5",
+      "bytes": 15340
     },
     {
       "path": "src/extensions/native_sdk_session_bindings_values.zig",
