@@ -26138,7 +26138,7 @@ static __exception int emit_push_const(JSParseState *s, JSValue val,
         atom = JS_NewAtomStr(s->ctx, JS_VALUE_GET_STRING(val));
         if (atom != JS_ATOM_NULL && !__JS_AtomIsTaggedInt(atom)) {
             emit_op(s, OP_push_atom_value);
-            emit_u32(s, atom);
+            emit_owned_atom(s, atom);
             return 0;
         }
     }
