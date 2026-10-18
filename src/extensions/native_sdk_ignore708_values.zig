@@ -17,11 +17,10 @@ pub fn num(s: *Scope, value: usize) c.JSValue { return c.JS_NewFloat64(s.engine.
 pub fn at(s: *Scope, value: c.JSValue, index: usize) anyerror!c.JSValue { return s.getKey(value, num(s, index)); }
 pub fn eq(s: *Scope, value: c.JSValue, text: []const u8) anyerror!bool { return s.equal(value, try s.text(text)); }
 pub fn len(s: *Scope, value: c.JSValue) anyerror!c.JSValue { return s.get(value, "length"); }
-pub fn string(s: *Scope, value: c.JSValue) anyerror!c.JSValue { const generation = s.engine.native_allocation_generation; return s.own(try s.raw(c.JS_ToString(s.engine.context, value), generation)); }
+pub fn string(s: *Scope, value: c.JSValue) anyerror!c.JSValue { return s.stringify(value); }
 pub fn increment(s: *Scope, value: c.JSValue) anyerror!c.JSValue {
-    const generation=s.engine.native_allocation_generation;
-    const numeric=try s.own(try s.raw(c.JS_PiToNumeric(s.engine.context,value),generation));
-    const one=if(c.JS_IsBigInt(numeric)) big: {const born=s.engine.native_allocation_generation;break :big try s.own(try s.raw(c.JS_NewBigInt64(s.engine.context,1),born));} else num(s,1);
+    const numeric=try s.toNumeric(value);
+    const one=if(c.JS_IsBigInt(numeric)) big: {const born=s.engine.native_allocation_generation;break :big try s.own(try s.rawAllocation(c.JS_NewBigInt64(s.engine.context,1),born));} else num(s,1);
     return s.binary(.add,numeric,one);
 }
 pub fn literal(s: *Scope, source: []const u8, flags: []const u8) anyerror!c.JSValue { return s.construct(s.engine.intrinsic_regexp_constructor, &.{try s.text(source), try s.text(flags)}); }
@@ -35,20 +34,15 @@ pub fn define(s: *Scope, target: c.JSValue, key: c.JSValue, value: c.JSValue) an
 pub fn namedDefine(s: *Scope, target: c.JSValue, name: []const u8, value: c.JSValue) anyerror!c.JSValue { return define(s, target, try s.text(name), value); }
 pub fn method(s: *Scope, prototype: c.JSValue, comptime name: [*:0]const u8, length: c_int, comptime body: Body, roots: []const c.JSValue) anyerror!void {
     const value = try s.own(try f.createMethod(s.engine, name, length, adapt(body), roots));
-    const generation = s.engine.native_allocation_generation;
-    try s.status(c.JS_DefinePropertyValueStr(s.engine.context, prototype, name, dup(s, value), c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE), generation);
+    try s.define(prototype, name, value, c.JS_PROP_CONFIGURABLE | c.JS_PROP_WRITABLE);
 }
 pub fn getter(s: *Scope, prototype: c.JSValue, name: [*:0]const u8, function_name: [*:0]const u8, comptime body: Body, roots: []const c.JSValue) anyerror!void {
     const function = try s.own(try f.createMethod(s.engine, function_name, 0, adapt(body), roots));
-    const atom_generation=s.engine.native_allocation_generation; const key=c.JS_NewAtom(s.engine.context,name);
-    defer if(key!=c.JS_ATOM_NULL)c.JS_FreeAtom(s.engine.context,key);
-    try s.status(if(key==c.JS_ATOM_NULL)-1 else 0,atom_generation);
-    const generation=s.engine.native_allocation_generation;
-    try s.status(c.JS_DefinePropertyGetSet(s.engine.context,prototype,key,dup(s,function),c.pi_js_undefined(),c.JS_PROP_CONFIGURABLE),generation);
+    try s.defineGetter(prototype, name, function, c.JS_PROP_CONFIGURABLE);
 }
 pub fn objectFromTarget(s: *Scope, target: c.JSValue) anyerror!c.JSValue {
     const prototype = try s.get(target, "prototype"); const generation = s.engine.native_allocation_generation;
-    return s.own(try s.raw(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(s.engine.context, prototype) else c.JS_NewObject(s.engine.context), generation));
+    return s.own(try s.rawAllocation(if (c.JS_IsObject(prototype)) c.JS_NewObjectProto(s.engine.context, prototype) else c.JS_NewObject(s.engine.context), generation));
 }
 pub fn throwType(s: *Scope, name: [*:0]const u8, message: c.JSValue) anyerror!noreturn { return s.raise(try s.construct(try s.global(name), &.{message})); }
 /// Actual three-element BindingPattern iteration, including normal early

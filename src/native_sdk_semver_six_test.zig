@@ -83,7 +83,7 @@ test "private SDK semver actual per-root retirement retains first fatal across t
 
 fn rawAllocation(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {
     const engine = em.Engine.fromContext(context.?);
-    _ = engine.throwNativeOutOfMemory();
+    _ = engine.throwNativeOutOfMemoryFatal();
     const reason = c.JS_GetException(context);
     const global = c.JS_GetGlobalObject(context); defer engine.freeValue(global);
     if (c.JS_DefinePropertyValueStr(context, global, "rawSemverAllocation", c.JS_DupValue(context, reason), c.JS_PROP_C_W_E) < 0) {
@@ -135,7 +135,7 @@ const RawCleanupProbe = struct {
         const result = c.JS_NewObjectClass(context, self.class);
         if (c.JS_IsException(result)) return result;
         _ = c.JS_SetOpaque(result, self);
-        _ = if (self.mode) self.engine.throwNativeOutOfMemory() else c.JS_Throw(context, c.JS_DupValue(context, self.ordinary));
+        _ = if (self.mode) self.engine.throwNativeOutOfMemoryFatal() else c.JS_Throw(context, c.JS_DupValue(context, self.ordinary));
         const reason = c.JS_GetException(context);
         self.initial = c.JS_DupValue(context, reason);
         _ = c.JS_Throw(context, reason);
@@ -222,5 +222,32 @@ test "private SDK semver allocation DATA born in earlier successful operation st
         const data = try js.get(engine, global, "oldSemverAllocation"); defer engine.freeValue(data);
         try std.testing.expect(c.pi_js_native_allocation_error_generation(data) != 0);
         try std.testing.expect(!c.JS_IsUncatchableError(data));
+    }
+}
+
+test "private SDK semver same-operation private DATA survives actual forgiving catches" {
+    inline for (.{ "valid", "validRange" }) |method| {
+        inline for ([_]bool{ false, true }) |getter| {
+            const engine = try em.Engine.init(std.testing.allocator, .{});
+            defer engine.deinit();
+            try install(engine);
+            const global = c.JS_GetGlobalObject(engine.context);
+            defer engine.freeValue(global);
+            try js.define(engine, global, "createSemverAllocationData", try engine.checked(c.JS_NewCFunction(engine.context, createAllocationData, "createSemverAllocationData", 0)));
+            try js.define(engine, global, "sameSemverMethod", try engine.checked(c.JS_NewString(engine.context, method)));
+            try js.define(engine, global, "sameSemverGetter", c.pi_js_bool(engine.context, @intFromBool(getter)));
+            const result = try engine.evalModule(
+                \\const original=Object.getOwnPropertyDescriptor(String.prototype,'trim');
+                \\const fail=function(){createSemverAllocationData.call(this);throw oldSemverAllocation};
+                \\Object.defineProperty(String.prototype,'trim',sameSemverGetter?{configurable:true,get:fail}:{configurable:true,writable:true,value:fail});
+                \\try{if(privateSdkSemver[sameSemverMethod]('1.2.3')!==null)throw Error('same-operation DATA escaped forgiving catch')}finally{Object.defineProperty(String.prototype,'trim',original)}
+            , "private-sdk-semver-same-operation-data.mjs");
+            engine.freeValue(result);
+            const data = try js.get(engine, global, "oldSemverAllocation");
+            defer engine.freeValue(data);
+            try std.testing.expect(c.pi_js_native_allocation_error_generation(data) != 0);
+            try std.testing.expect(!c.JS_IsUncatchableError(data));
+            try std.testing.expect(engine.native_fatal_invocation == null);
+        }
     }
 }

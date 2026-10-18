@@ -3741,6 +3741,21 @@ pub fn build(b: *std.Build) void {
         node_operation_boundary.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-operation-boundary", "Install Node pending/data/allocator ownership controls without running").dependOn(&b.addInstallArtifact(node_operation_boundary, .{ .dest_sub_path = b.fmt("native-node-operation-boundary{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    const chalk_ignore_guest = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_chalk_ignore_guest_guard_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, chalk_ignore_guest.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, chalk_ignore_guest.root_module, typescript_parser);
+    linkSqlite(chalk_ignore_guest.root_module, sqlite_lib_dir, sqlite_library);
+    chalk_ignore_guest.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        chalk_ignore_guest.root_module.linkSystemLibrary("advapi32", .{});
+        chalk_ignore_guest.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-sdk-chalk-ignore-guest", "Install actual Chalk and Ignore guest operation controls").dependOn(&b.addInstallArtifact(chalk_ignore_guest, .{ .dest_sub_path = b.fmt("native-sdk-chalk-ignore-guest{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

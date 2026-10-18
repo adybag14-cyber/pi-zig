@@ -46,7 +46,7 @@ fn take(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callco
 }
 fn rawOOM(context: ?*c.JSContext, receiver: c.JSValue, argc: c_int, argv: [*c]c.JSValue) callconv(.c) c.JSValue {
     const value = take(context, receiver, argc, argv);
-    _ = em.Engine.fromContext(context.?).throwNativeOutOfMemory();
+    _ = em.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();
     return value; // Deliberately live result PLUS actual fresh pending OOM.
 }
 fn reenter(context: ?*c.JSContext, _: c.JSValue, _: c_int, _: [*c]c.JSValue) callconv(.c) c.JSValue {

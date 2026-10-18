@@ -25,7 +25,7 @@ fn eval(engine:*em.Engine,source:[]const u8)!void{const value=try engine.eval(so
 fn take(context:?*c.JSContext,_:c.JSValue,_:c_int,_:[*c]c.JSValue)callconv(.c)c.JSValue{
     const root=c.JS_GetGlobalObject(context);defer c.JS_FreeValue(context,root);const value=c.JS_GetPropertyStr(context,root,"ignoreCleanupSeed"); const atom=c.JS_NewAtom(context,"ignoreCleanupSeed");defer c.JS_FreeAtom(context,atom);_=c.JS_DeleteProperty(context,root,atom,0);return value;
 }
-fn pending(context:?*c.JSContext,receiver:c.JSValue,argc:c_int,argv:[*c]c.JSValue)callconv(.c)c.JSValue{const value=take(context,receiver,argc,argv);_=em.Engine.fromContext(context.?).throwNativeOutOfMemory();return value;}
+fn pending(context:?*c.JSContext,receiver:c.JSValue,argc:c_int,argv:[*c]c.JSValue)callconv(.c)c.JSValue{const value=take(context,receiver,argc,argv);_=em.Engine.fromContext(context.?).throwNativeOutOfMemoryFatal();return value;}
 fn reenter(context:?*c.JSContext,_:c.JSValue,_:c_int,_:[*c]c.JSValue)callconv(.c)c.JSValue{const engine=em.Engine.fromContext(context.?);return supplier.createDefault(engine) catch |err| @import("native_sdk.zig").fail(engine,err);}
 fn platform(engine:*em.Engine)!void{var env:std.process.Environ.Map=.init(std.testing.allocator);defer env.deinit();try @import("native_process.zig").install(engine,std.testing.io,&env,&.{"ignore708-native-owned-controls"});}
 test "private consumed ignore708 first raw reason cleanup OOM and historical DATA" {
