@@ -113,3 +113,49 @@ pub fn verifyPrivateDataCreatedThenThrownInActualGetter(engine: *x.em.Engine, re
     try std.testing.expect(!c.JS_HasException(engine.context));
     try x.guest.put(&s, real_child, "stdout", stdout); // Replace the configurable accessor on success.
 }
+
+fn initialStdoutGetter(engine: *x.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishValue(&s, initialStdoutBody(&o, roots));
+}
+fn initialStdoutBody(o: *x.Ops, roots: []const c.JSValue) !c.JSValue {
+    if (!o.truthy(try o.get(roots[1], "firstRead"))) {
+        try o.put(roots[1], "firstRead", c.pi_js_bool(o.s.engine.context, 1));
+        // This value is consumed only by Source's strict-null comparison.
+        // Subsequent stream operations receive the actual OS pipe stream.
+        return c.JS_DupValue(o.s.engine.context, try carrier(o, roots[1]));
+    }
+    return c.JS_DupValue(o.s.engine.context, roots[0]);
+}
+fn initialStderrGetter(engine: *x.em.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
+    return x.owned.finishValue(&s, initialStderrBody(&o, roots));
+}
+fn initialStderrBody(o: *x.Ops, roots: []const c.JSValue) !c.JSValue {
+    if (!o.truthy(try o.get(roots[1], "checked"))) {
+        try o.put(roots[1], "observed", try o.get(roots[1], "retired"));
+        try o.put(roots[1], "checked", c.pi_js_bool(o.s.engine.context, 1));
+    }
+    return c.JS_DupValue(o.s.engine.context, roots[0]);
+}
+/// Real child and real listener/stream graph. Only the first stdout null-test
+/// result is a sole native observer; it must retire before the stderr getter.
+/// The original broad executor Scope observes zero, the corrected owner one.
+pub fn verifyInitialNullProbeBeforeNextActualGetter(engine: *x.em.Engine, real_child: c.JSValue) !c.JSValue {
+    var s: x.Scope = .{ .engine = engine }; defer s.deinit();
+    const stdout = try s.get(real_child, "stdout"); const stderr = try s.get(real_child, "stderr");
+    const box = try s.object();
+    try s.put(box, "retired", c.JS_NewInt32(engine.context, 0));
+    try s.put(box, "observed", c.JS_NewInt32(engine.context, -1));
+    try s.put(box, "firstRead", c.pi_js_bool(engine.context, 0));
+    try s.put(box, "checked", c.pi_js_bool(engine.context, 0));
+    const get_stdout = try s.own(try f.createMethod(engine, "get stdout", 0, initialStdoutGetter, &.{ stdout, box }));
+    const get_stderr = try s.own(try f.createMethod(engine, "get stderr", 0, initialStderrGetter, &.{ stderr, box }));
+    try accessor(engine, real_child, "stdout", get_stdout); try accessor(engine, real_child, "stderr", get_stderr);
+    const function = try s.own(try waiter.create(engine));
+    const pending = try s.call(function, c.pi_js_undefined(), &.{real_child});
+    c.JS_PromiseMarkAsHandled(engine.context, pending);
+    try std.testing.expect(s.equal(try s.get(box, "observed"), c.JS_NewInt32(engine.context, 1)));
+    try x.guest.put(&s, real_child, "stdout", stdout); try x.guest.put(&s, real_child, "stderr", stderr);
+    return c.JS_DupValue(engine.context, pending);
+}
