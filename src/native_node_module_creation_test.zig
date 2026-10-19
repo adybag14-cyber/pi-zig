@@ -101,8 +101,8 @@ const Fixture = struct {
     fn installView(s: *a.Scope, owner: c.JSValue) !c.JSValue {
         const view = try s.object();
         try s.put(view, "Module", owner);
-        try s.put(view, "path", try s.own(try s.engine.requireBuiltin("node:path")));
-        try s.put(view, "process", try s.own(try s.engine.requireBuiltin("node:process")));
+        try s.put(view, "path", try s.own((try s.engine.requireBuiltin("node:path")) orelse return error.ActualModulePathsRequired));
+        try s.put(view, "process", try s.own((try s.engine.requireBuiltin("node:process")) orelse return error.ActualModuleProcessRequired));
         const global = try s.checked(c.JS_GetGlobalObject(s.engine.context));
         try s.put(global, "actualModuleCreation", view);
         return c.pi_js_undefined();
