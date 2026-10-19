@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "unit": "native-node-fs-write-v13-correction",
+  "status": "source-only; not compiled or executed by this lane",
+  "owned_tree": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018",
+  "parent_commit": "67c00f4617026c22c6c57c3ce1aef219640e2617",
+  "source_authority": {
+    "filesystem": "Node 24.13.0 / admitted libuv source",
+    "zig": "Pinned zig-x86_64-windows-0.16.0; compiler files read only"
+  },
+  "negative_evidence": {
+    "compiler_log": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-diagnostic-v13-buildquery-20261019-192252/groups/native-node-fs-write-uv/compile.stderr.log",
+    "compiler_log_sha256": "5EBAEABE97E82533BD03E6F078907CDE0F99FBD87F9D5DDBDA105293A689000C",
+    "independent_closure_sha256": "D8F374FBABA5271D49D473904D8A2AAECC557BB11401C2532DEED4EEB2917244",
+    "original_evidence_preserved": true
+  },
+  "changed_files": [
+    {
+      "path": "src/extensions/native_node_fs_write_ops.zig",
+      "before_sha256": "B846C3C4A77EA3013F4036652B9F0C9C318845F9959C56BC7FF5B29E6AA1F6AB",
+      "after_sha256": "A5D4607B7117F63FC0319D6A623706C0C234540464F1ED573D3DCE6C3D1E2FFC",
+      "after_bytes": 19890
+    },
+    {
+      "path": "src/native_node_fs_write_uv_test.zig",
+      "before_sha256": "2DB50112F3B60C9D64A639EDB19657CD6C477909A21BE063BE7952F62B536211",
+      "after_sha256": "FE7E239C7A6D45C5EB9AC77E671BE67738DD2EEDBD4EF39FD6A6B6E53256B5EF",
+      "after_bytes": 24144
+    },
+    {
+      "path": "build.zig",
+      "before_sha256": "02E61FC83A0904CDCF8CE16DC16671944349A996FB557C6CC1E61148757DF75D",
+      "after_sha256": "646600BF22584D0DCCE5858E11C914A1581A56418329515576ABEA41DCC443FA",
+      "after_bytes": 390771
+    }
+  ],
+  "corrections": [
+    "Unwrap the actual optional Packet.failure before comparing its anyerror payload; preserve retirement_error precedence and OutOfMemory propagation.",
+    "Ascribe the original submit catch error as anyerror!JSValue without changing rollback.",
+    "Use the pinned Windows packed FILE.ATTRIBUTE.READONLY bit and typed DWORD conversion at the consuming call site. The actual packet.mode and libuv open inputs are unchanged.",
+    "Retain the canceled control's physical no-run/no-handle/no-file checks while explicitly asserting its optional error exists.",
+    "Link the existing real native-zlib-1.3.1 eight-source compression helper once for the filesystem writer target."
+  ],
+  "unchanged_dependencies": [
+    {
+      "path": "src/extensions/native_node_fs_write_io.zig",
+      "sha256": "EBC384E2E6D52B183FF0DB11B9D3F35EA807E8DFC8BE872C0B476DC457A594F6"
+    },
+    {
+      "path": "tools/build_native_transform_compression.zig",
+      "sha256": "ED03E0536E3374482B898D46332C499A96C99F81EAF1091297976533377E6BF7"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/std/Io/File.zig",
+      "sha256": "EF1600AF9CFCB35E4F2AD626A28CE3A45BDB04C84FCF9309D027767DA0E00330"
+    },
+    {
+      "path": "C:/Users/adyba/pi-zig/toolchain/zig-x86_64-windows-0.16.0/lib/std/os/windows.zig",
+      "sha256": "B7BE3BED28F4AF037AB0C6EA6AF1B288E01E2286B1F6D3DDFD22CEE31CF06E27"
+    }
+  ],
+  "finite_source_peers": [
+    {
+      "reviewer": "sdk_owners",
+      "status": "closed",
+      "scope": "Optional failure/typed return correction and canceled control against unchanged Packet."
+    },
+    {
+      "reviewer": "root",
+      "status": "closed",
+      "scope": "Packed Windows consuming ABI and exact existing compression helper/link graph; complete three-file diff read."
+    }
+  ],
+  "target": {
+    "name": "build-native-node-fs-write-uv",
+    "root": "src/native_node_fs_write_uv_test.zig",
+    "filter": "native actual filesystem writer",
+    "installed_artifact": "native-node-fs-write-uv.exe",
+    "declared_tests": 12,
+    "metadata_or_runtime_count_asserted": false,
+    "install_only": true,
+    "canonical_cached_artifact": "test.exe",
+    "unchanged": true
+  },
+  "validation": {
+    "fresh_complete_readback": true,
+    "staging_was_empty": true,
+    "source_diff_check": "passed before receipt; repeated before commit",
+    "native_or_node_execution": false,
+    "compiler_or_vendor_mutation": false
+  },
+  "exact_git_diff": "diff --git a/build.zig b/build.zig\nindex 95e1c305..338787f5 100644\n--- a/build.zig\n+++ b/build.zig\n@@ -3796,6 +3796,7 @@ pub fn build(b: *std.Build) void {\n             .filters = &.{\"native actual filesystem writer\"}, .use_llvm = use_llvm,\n         });\n         linkQuickJs(b, node_fs_write_uv.root_module, quickjs, sqlite_lib_dir);\n+        @import(\"tools/build_native_transform_compression.zig\").link(b, node_fs_write_uv.root_module);\n         node_fs_write_uv.root_module.addIncludePath(b.path(\"vendor/node-v24.13.0/uv/include\"));\n         linkTypeScriptParser(b, node_fs_write_uv.root_module, typescript_parser);\n         linkSqlite(node_fs_write_uv.root_module, sqlite_lib_dir, sqlite_library);\ndiff --git a/src/extensions/native_node_fs_write_ops.zig b/src/extensions/native_node_fs_write_ops.zig\nindex f9f7398e..eb6d9455 100644\n--- a/src/extensions/native_node_fs_write_ops.zig\n+++ b/src/extensions/native_node_fs_write_ops.zig\n@@ -106,7 +106,9 @@ const Task = struct {\n     fn destroy(base: *hub_mod.Task) void {\n         const self: *Task = @fieldParentPtr(\"task\", base); const engine = base.hub.engine;\n         const incoming: anyerror!void = if (self.retirement_error) |err| err\n-            else if (self.packet.failure == error.OutOfMemory) error.OutOfMemory else {};\n+            else if (self.packet.failure) |err|\n+                if (err == error.OutOfMemory) error.OutOfMemory else {}\n+            else {};\n         var retiring = completion.Completion.initVoid(engine, incoming);\n         // Hub joins real workers before abandoned packet destruction.\n         self.packet.retireUnadopted(); if (self.file) |file| file.release();\n@@ -133,7 +135,9 @@ const Task = struct {\n         const base = &self.task; const engine = base.hub.engine;\n         try base.hub.assertOwner();\n         try engine.checkNativeEntry();\n-        if (self.packet.failure == error.OutOfMemory) return error.OutOfMemory;\n+        if (self.packet.failure) |err| {\n+            if (err == error.OutOfMemory) return error.OutOfMemory;\n+        }\n         self.packet.publishClose();\n         var fd: u64 = 0;\n         if (self.packet.opened) |file| {\n@@ -209,7 +213,13 @@ fn dispatchBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue\n         else return @as(anyerror!c.JSValue, @import(\"node_events.zig\").codedError(engine, \"TypeError\", \"ERR_INVALID_ARG_VALUE\", \"Unsupported native WriteStream file flag\"));\n         var mode: u32 = 0; if (c.JS_ToUint32(engine.context, &mode, core.arg(args, 2)) < 0) return @as(anyerror!c.JSValue, js.capture(engine));\n         task.packet.mode = mode;\n-        task.packet.create_options.permissions = if (@import(\"builtin\").os.tag == .windows) std.Io.File.Permissions.default_file.setReadOnly(mode & 0o222 == 0) else .fromMode(@intCast(mode));\n+        task.packet.create_options.permissions = if (@import(\"builtin\").os.tag == .windows) permissions: {\n+            // Use the pinned packed attribute ABI directly; its old generic\n+            // setReadOnly helper still refers to a removed integer constant.\n+            var attributes = std.Io.File.Permissions.default_file.toAttributes();\n+            attributes.READONLY = mode & 0o222 == 0;\n+            break :permissions @enumFromInt(@as(std.os.windows.DWORD, @bitCast(attributes)));\n+        } else .fromMode(@intCast(mode));\n     } else {\n         const fd = try descriptor(scope, core.arg(args, 0)); const owned = find(task.registry, fd);\n         if (@import(\"builtin\").os.tag == .windows and fd <= std.math.maxInt(c_int)) task.packet.descriptor_value = @intCast(fd);\n@@ -240,7 +250,7 @@ fn dispatchBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue\n     // Packet.run must preserve the already-classified failure without touching IO.\n     task.task.hub.submit(&task.task) catch |err| {\n         if (method == .close) if (task.file) |file| { file.closing = false; file.file = task.packet.file; task.packet.file = null; };\n-        return err;\n+        return @as(anyerror!c.JSValue, err);\n     };\n     submitted = true; return c.pi_js_undefined();\n }\ndiff --git a/src/native_node_fs_write_uv_test.zig b/src/native_node_fs_write_uv_test.zig\nindex 757ece05..691ee725 100644\n--- a/src/native_node_fs_write_uv_test.zig\n+++ b/src/native_node_fs_write_uv_test.zig\n@@ -280,7 +280,8 @@ test \"native actual filesystem writer canceled packet never enters physical open\n     packet.cancel();\n     packet.run();\n     try std.testing.expect(packet.completed and !packet.ran);\n-    try std.testing.expect(packet.failure == error.Canceled);\n+    try std.testing.expect(packet.failure != null);\n+    try std.testing.expect(packet.failure.? == error.Canceled);\n     try std.testing.expect(packet.opened == null);\n     try std.testing.expectEqual(count, uv.pi_uv_file_live_handles());\n     if (temporary.dir.openFile(io, \"never-opened.bin\", .{})) |file| {\n"
+}
