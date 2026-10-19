@@ -80,8 +80,8 @@ fn metadata(info: Information, follow: bool) raw.Stat {
         .size = if (link or !directory) @bitCast(info.end) else 0,
         .mtime_ns = nanoseconds(info.modification), .ctime_ns = nanoseconds(info.change),
         .atime_ns = nanoseconds(info.access), .birthtime_ns = nanoseconds(info.creation),
-        .mode = (if (link) @as(u32, 0o120000) else if (directory) 0o040000 else 0o100000) |
-            (if (info.attributes & 1 != 0) @as(u32, 0o444) else 0o666),
+        .mode = @as(u32, if (link) 0o120000 else if (directory) 0o040000 else 0o100000) |
+            @as(u32, if (info.attributes & 1 != 0) 0o444 else 0o666),
         .nlink = info.links, .blksize = 4096,
         .blocks = @as(u64, @bitCast(info.allocation)) >> 9,
     };
