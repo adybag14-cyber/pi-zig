@@ -182,8 +182,15 @@ const Fixture = struct {
         defer gpa.free(body);
         return self.engine.eval(body, "actual-node-classic-realpath-control.js", c.JS_EVAL_TYPE_GLOBAL);
     }
+    fn runExpected(self: *Fixture, comptime name: []const u8, tail: []const u8) !c.JSValue {
+        return self.run(tail) catch |err| {
+            std.debug.print("Actual classic realpath {s}: {s}; captured={s}\n",
+                .{ name, @errorName(err), self.engine.last_error orelse "no captured diagnostic" });
+            return err;
+        };
+    }
     fn observe(self: *Fixture, comptime name: []const u8) !void {
-        const result = try self.run(name ++ "(actualClassic);");
+        const result = try self.runExpected(name, name ++ "(actualClassic);");
         self.engine.freeValue(result);
         try self.clean();
     }
@@ -250,7 +257,7 @@ test "native actual classic realpath final cache failure precedes encoding" {
 }
 test "native actual classic realpath cache equality retires its sole holder before next read" {
     var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
-    const result = try fixture.run("observeClassicCacheRetirement(actualClassic);");
+    const result = try fixture.runExpected("cache equality holder retirement", "observeClassicCacheRetirement(actualClassic);");
     fixture.engine.freeValue(result);
     try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed);
     try std.testing.expectEqual([3]u32{ 1, 1, 0 }, fixture.probe.visits);
@@ -277,7 +284,7 @@ test "native actual classic realpath same-operation private DATA remains ordinar
 }
 test "native actual classic realpath successful flagged cache DATA stays a returned value" {
     var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
-    const value = try fixture.run("observeClassicFlaggedCache(actualClassic);");
+    const value = try fixture.runExpected("flagged cache DATA", "observeClassicFlaggedCache(actualClassic);");
     defer fixture.engine.freeValue(value);
     try std.testing.expect(c.JS_IsUncatchableError(value));
     try std.testing.expect(c.pi_js_native_allocation_error_generation(value) != 0);
@@ -285,14 +292,14 @@ test "native actual classic realpath successful flagged cache DATA stays a retur
 }
 test "native actual classic realpath and public metadata share the actual stat buffers" {
     var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
-    const value = try fixture.run("observeClassicSharedStatBuffers(actualClassic,actualClassicNumericStats,actualClassicBigintStats);");
+    const value = try fixture.runExpected("shared stat buffers", "observeClassicSharedStatBuffers(actualClassic,actualClassicNumericStats,actualClassicBigintStats);");
     fixture.engine.freeValue(value);
     try fixture.clean();
 }
 
 test "native actual classic realpath original p argument retires before live resolve getter" {
     var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
-    const result = try fixture.run(
+    const result = try fixture.runExpected("original p retirement",
         \\const paths = actualClassic.paths, file = paths.join(actualClassic.root,"dir","file.txt");
         \\const original = Object.getOwnPropertyDescriptor(paths,"resolve");
         \\let converted = 0, resolved = 0;
