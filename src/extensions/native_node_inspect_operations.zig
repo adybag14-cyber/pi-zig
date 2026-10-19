@@ -18,8 +18,8 @@ fn objectBody(s: *Scope) !c.JSValue { return duplicate(s.engine, try s.object())
 pub fn object(s: *v.Scope) !c.JSValue { return own(s, try expression(s.engine, objectBody, .{})); }
 pub fn same(s: *v.Scope, value: c.JSValue, expected: []const u8) !bool { return s.equal(value, try bytes(s, expected)); }
 fn duplicate(engine: *v.em.Engine, value: c.JSValue) c.JSValue { return c.JS_DupValue(engine.context, value); }
-fn keyBody(s: *Scope, receiver: c.JSValue, key: c.JSValue) !c.JSValue {
-    return duplicate(s.engine, try s.getKey(receiver, key));
+fn keyBody(s: *Scope, receiver: c.JSValue, property: c.JSValue) !c.JSValue {
+    return duplicate(s.engine, try s.getKey(receiver, property));
 }
 pub fn key(s: *v.Scope, receiver: c.JSValue, property: c.JSValue) !c.JSValue {
     return owned.ownRoot(s, try expression(s.engine, keyBody, .{receiver, property}));
