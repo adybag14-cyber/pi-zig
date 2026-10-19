@@ -4351,6 +4351,19 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_public_compaction.root_module.linkSystemLibrary("advapi32", .{}); sdk_public_compaction.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-public-compaction", "Install actual shared compaction namespace controls without execution").dependOn(&b.addInstallArtifact(sdk_public_compaction, .{ .dest_sub_path = b.fmt("native-sdk-public-compaction{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Actual c268 EventBus over the genuine shared EventEmitter import.
+    const sdk_event_bus_public = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_event_bus_public_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK EventBus"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_event_bus_public.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_event_bus_public.root_module, typescript_parser);
+    linkSqlite(sdk_event_bus_public.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_event_bus_public.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_event_bus_public.root_module.linkSystemLibrary("advapi32", .{}); sdk_event_bus_public.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-event-bus-public", "Install actual EventBus factory and async controls without execution").dependOn(&b.addInstallArtifact(sdk_event_bus_public, .{ .dest_sub_path = b.fmt("native-sdk-event-bus-public{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

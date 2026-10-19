@@ -1,84 +1,129 @@
-//! Actual Source createEventBus over the qualified native EventEmitter.
-const em = @import("engine.zig");
-const sdk = @import("native_sdk.zig");
-const js = @import("native_js_values.zig");
-const Scope = @import("native_models_stream_scope.zig").Scope;
-const flow = @import("native_agent_async.zig");
-const body = @import("native_async_body.zig");
-const c = em.c;
-const Method = enum(c_int) { emit, on, clear, unsubscribe };
-pub fn create(engine: *em.Engine) !c.JSValue {
-    if (!engine.native_module_values.contains("node:events")) try @import("node_events.zig").install(engine);
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const constructor = try scope.get(engine.native_module_values.get("node:events").?, "EventEmitter");
-    const emitter = try scope.own(try engine.checked(c.JS_CallConstructor(engine.context, constructor, 0, null)));
-    const result = try scope.object();
-    inline for ([_]Method{ .emit, .on, .clear }) |kind| {
-        var roots = [_]c.JSValue{emitter};
-        const function = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, @tagName(kind), if (kind == .clear) 0 else 2, @intFromEnum(kind), roots.len, &roots)));
-        try scope.put(result, @tagName(kind), function);
+//! Actual c268 createEventBus over the genuine Node EventEmitter import.
+//! The public factory and internal session factory share one implementation;
+//! safeHandler uses a real intrinsic Await and ordinary catch completion.
+const h = @import("native_sdk_session_locals.zig");
+const v = h.v;
+const c = v.c;
+const af = v.af;
+const frames = @import("native_public_lexical_frame.zig");
+const cache_key = "\x00sdk-event-bus-module-c268";
+const HandlerFrame = frames.Frame(enum { caught });
+
+pub fn exports(engine: *h.Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    if (engine.native_module_values.get(cache_key)) |cached| return h.duplicate(engine, cached);
+    const candidate = try h.expression(engine, exportsBody, .{});
+    if (engine.native_module_values.get(cache_key)) |cached| {
+        var selected = v.owned.Completion.initValue(engine, h.duplicate(engine, cached));
+        selected.release(candidate);
+        return selected.finishValue();
     }
-    return c.JS_DupValue(engine.context, result);
+    engine.native_module_values.ensureUnusedCapacity(engine.gpa, 1) catch |err| {
+        var failed = v.owned.Completion.initValue(engine, @as(anyerror!c.JSValue, err));
+        failed.release(candidate);
+        return failed.finishValue();
+    };
+    engine.native_module_values.putAssumeCapacity(cache_key, candidate);
+    return h.duplicate(engine, candidate);
 }
-fn dispatch(context: ?*c.JSContext, _: c.JSValue, argc: c_int, argv: [*c]c.JSValue, magic: c_int, roots: [*c]c.JSValue) callconv(.c) c.JSValue {
-    const engine = em.Engine.fromContext(context.?);
-    return method(engine, @enumFromInt(magic), roots, if (argc > 0) argv[0..@intCast(argc)] else &.{}) catch |err| sdk.fail(engine, err);
+fn exportsBody(s: *h.Scope) !c.JSValue {
+    if (!s.engine.native_module_values.contains("node:events"))
+        try @import("node_events.zig").install(s.engine);
+    const module = s.engine.native_module_values.get("node:events") orelse return error.NativeEventEmitterMissing;
+    const constructor = try v.get(s, module, "EventEmitter");
+    const result = try v.object(s);
+    try v.put(s, result, "createEventBus", try v.ordinary(s, "createEventBus", 0, createCall, &.{constructor}));
+    return v.duplicate(s, result);
 }
-fn method(engine: *em.Engine, kind: Method, roots: [*c]c.JSValue, args: []const c.JSValue) !c.JSValue {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const first = if (args.len > 0) args[0] else c.pi_js_undefined();
-    const second = if (args.len > 1) args[1] else c.pi_js_undefined();
-    switch (kind) {
-        .emit => _ = try scope.invoke(roots[0], "emit", &.{ first, second }),
-        .clear => _ = try scope.invoke(roots[0], "removeAllListeners", &.{}),
-        .unsubscribe => return c.JS_DupValue(engine.context, try scope.invoke(roots[0], "off", &.{ roots[1], roots[2] })),
-        .on => {
-            const handler = try scope.own(try body.native.createResumableArrow(engine, "safeHandler", 1, safeHandler, &.{ first, second }, c.pi_js_undefined()));
-            _ = try scope.invoke(roots[0], "on", &.{ first, handler });
-            var unsubscribe_roots = [_]c.JSValue{ roots[0], first, handler };
-            const unsubscribe = try scope.own(try engine.checked(c.JS_NewCFunctionData2(engine.context, dispatch, "", 0, @intFromEnum(Method.unsubscribe), unsubscribe_roots.len, &unsubscribe_roots)));
-            return c.JS_DupValue(engine.context, unsubscribe);
-        },
-    }
+/// Existing native session callers use this same actual ordinary factory.
+pub fn create(engine: *h.Engine) !c.JSValue {
+    try engine.checkNativeEntry();
+    return h.expression(engine, createEntry, .{});
+}
+fn createEntry(s: *h.Scope) !c.JSValue {
+    const module = try v.own(s, try exports(s.engine));
+    const function = try v.get(s, module, "createEventBus");
+    return v.duplicate(s, try v.call(s, function, c.pi_js_undefined(), &.{}));
+}
+fn createCall(engine: *h.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return h.expression(engine, createBody, .{roots[0]});
+}
+fn createBody(s: *h.Scope, constructor: c.JSValue) !c.JSValue {
+    const emitter = try v.construct(s, constructor, &.{});
+    const result = try v.object(s);
+    try v.put(s, result, "emit", try v.arrow(s, "emit", 2, emitCall, &.{emitter}));
+    try v.put(s, result, "on", try v.arrow(s, "on", 2, onCall, &.{emitter}));
+    try v.put(s, result, "clear", try v.arrow(s, "clear", 0, clearCall, &.{emitter}));
+    return v.duplicate(s, result);
+}
+fn discardMethod(s: *h.Scope, emitter: c.JSValue, name: [*:0]const u8, args: []const c.JSValue) !void {
+    _ = try v.invoke(s, emitter, name, args);
+}
+fn emitCall(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try h.statement(engine, discardMethod, .{
+        roots[0], @as([*:0]const u8, "emit"), @as([]const c.JSValue, &.{v.arg(args, 0), v.arg(args, 1)}),
+    });
     return c.pi_js_undefined();
 }
-fn trustedBoundary(engine: *em.Engine, err: anyerror, generation: u64) !void {
-    if (err == error.OutOfMemory) return err;
-    if (err == error.JavaScriptException) if (engine.captured_exception) |reason| try body.rethrowRecognizedAllocation(engine, reason, generation);
+fn clearCall(engine: *h.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    try h.statement(engine, discardMethod, .{roots[0], @as([*:0]const u8, "removeAllListeners"), @as([]const c.JSValue, &.{})});
+    return c.pi_js_undefined();
 }
-fn safeHandler(engine: *em.Engine, receiver: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: body.native.Completion, input: c.JSValue) !body.native.Action {
-    const generation = engine.native_allocation_generation;
-    return safeHandlerBody(engine, receiver, args, roots, state, completion, input) catch |err| {
-        try trustedBoundary(engine, err, generation);
-        return body.failureSince(engine, err, generation);
-    };
+fn onCall(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return h.expression(engine, onBody, .{roots[0], v.arg(args, 0), v.arg(args, 1)});
 }
-fn safeHandlerBody(engine: *em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: body.native.Completion, input: c.JSValue) !body.native.Action {
-    var scope: Scope = .{ .engine = engine };
-    defer scope.deinit();
-    const generation = engine.native_allocation_generation;
-    if (completion == .start) {
-        const job = try body.init(&scope, state);
-        try scope.put(job, "generation", try scope.own(try engine.checked(c.JS_NewBigUint64(engine.context, generation))));
-        const value = scope.call(roots[1], c.pi_js_undefined(), &.{if (args.len > 0) args[0] else c.pi_js_undefined()}) catch |err| {
-            try trustedBoundary(engine, err, generation);
-            const reason = try scope.own(flow.reason(engine, err));
-            try caught(&scope, roots[0], reason);
-            return .{ .returned = c.pi_js_undefined() };
-        };
-        return .{ .awaited = c.JS_DupValue(engine.context, value) };
+fn onBody(s: *h.Scope, emitter: c.JSValue, channel: c.JSValue, handler: c.JSValue) !c.JSValue {
+    const captures = [_]c.JSValue{channel, handler};
+    var boundary: v.guest.Boundary = .{ .engine = s.engine };
+    try boundary.begin();
+    const safe_handler = try boundary.finishValue(s,
+        af.createResumableArrow(s.engine, "safeHandler", 1, safeHandler, &captures, c.pi_js_undefined()));
+    try h.statement(s.engine, discardMethod, .{
+        emitter, @as([*:0]const u8, "on"), @as([]const c.JSValue, &.{channel, safe_handler}),
+    });
+    return v.duplicate(s, try v.arrow(s, "", 0, unsubscribeCall, &.{emitter, channel, safe_handler}));
+}
+fn unsubscribeCall(engine: *h.Engine, _: c.JSValue, _: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+    return v.invokeOwned(engine, roots[0], "off", &.{roots[1], roots[2]});
+}
+fn attempt(engine: *h.Engine, handler: c.JSValue, data: c.JSValue) !af.Action {
+    var s: h.Scope = .{ .engine = engine };
+    const result: anyerror!af.Action = if (v.call(&s, handler, c.pi_js_undefined(), &.{data})) |value|
+        .{ .returned = v.duplicate(&s, value) } else |err| err;
+    return v.owned.finishAction(&s, result);
+}
+fn errorText(s: *h.Scope, channel: c.JSValue) !c.JSValue {
+    const prefix = try v.text(s, "Event handler error (");
+    const rendered = try v.stringify(s, channel);
+    const joined = try h.binary(s, .add, prefix, rendered);
+    return v.duplicate(s, try h.binary(s, .add, joined, try v.text(s, "):")));
+}
+fn report(s: *h.Scope, channel: c.JSValue, reason: c.JSValue) !void {
+    const console = try v.global(s, "console");
+    const error_method = try v.get(s, console, "error");
+    const message = try v.own(s, try h.expression(s.engine, errorText, .{channel}));
+    _ = try v.call(s, error_method, console, &.{message, reason});
+}
+fn safeHandler(engine: *h.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    if (completion == .rejected) try @import("native_async_body.zig").enterRejectedContinuation(engine);
+    var s: h.Scope = .{ .engine = engine };
+    return v.owned.finishAction(&s, safeHandlerBody(&s, args, roots, state, completion, input));
+}
+fn safeHandlerBody(s: *h.Scope, args: []const c.JSValue, roots: []const c.JSValue, state: *c.JSValue, completion: af.Completion, input: c.JSValue) !af.Action {
+    const frame = if (completion == .start) first: {
+        const value = try HandlerFrame.create(s);
+        af.replaceState(s.engine, state, v.duplicate(s, value.owner));
+        break :first value;
+    } else HandlerFrame.from(state.*);
+    switch (completion) {
+        .start => switch (try attempt(s.engine, roots[1], v.arg(args, 0))) {
+            .returned => |value| return .{ .awaited = value },
+            .thrown => |reason| try frame.take(.caught, reason),
+            .awaited => unreachable,
+        },
+        .fulfilled => return .{ .returned = c.pi_js_undefined() },
+        .rejected => try frame.copy(.caught, input),
     }
-    if (completion == .rejected) {
-        try body.enterRejectedContinuation(engine);
-        try caught(&scope, roots[0], input);
-    }
+    try h.statement(s.engine, report, .{roots[0], frame.get(.caught)});
     return .{ .returned = c.pi_js_undefined() };
-}
-fn caught(scope: *Scope, channel: c.JSValue, reason: c.JSValue) !void {
-    const console = try scope.global("console");
-    const error_method = try scope.get(console, "error");
-    const message = try scope.concat(try scope.concat(try scope.text("Event handler error ("), try scope.stringify(channel)), try scope.text("):"));
-    _ = try scope.call(error_method, console, &.{ message, reason });
 }

@@ -1,0 +1,93 @@
+{
+  "unit": "actual public EventBus factory and genuine intrinsic safeHandler Await",
+  "status": "source and fourteen authored controls complete; no execution",
+  "owned_base": "b9ce810a33001500e71ae165a193408b4a86612a",
+  "authority": {
+    "upstream_commit": "c268154c",
+    "path": "packages/coding-agent/src/core/event-bus.ts",
+    "typescript_sha256": "FE5C39A57081FB9674C5BDC8C4BC6779BB8524C8895AFC337AF5EA517BDC71A2",
+    "accepted_javascript_sha256": "F96A9A13071B2832955608387BF2482BCAF5310CE667F32F85A0D5BCA44F08E3",
+    "accepted_map_sha256": "FE7B43E82E8D081C773CEDEFD50AD5A50C57CC28697D6FB1DA54F12ABDC0B3FF",
+    "sources_content_equals_typescript": true,
+    "retained_directory": "event-bus-authority",
+    "reference_fixture": "The complete accepted body is unchanged. Only its EventEmitter import, export keyword and source-map comment are replaced with a strict factory taking the same actual EventEmitter import."
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_event_bus.zig",
+      "bytes": 7015,
+      "sha256": "AF7DFFE13D7AA560647D94D48045D63B5A4C46E31CB58A75AE8F216999D4F67A"
+    },
+    {
+      "path": "src/native_sdk_event_bus_public_test.zig",
+      "bytes": 7327,
+      "sha256": "19ee9269cbcff076c4ce2ac60d380d9a42810dcdc91a43120d5567f636af10df"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-event-bus-observer.mjs",
+      "bytes": 14738,
+      "sha256": "5c28fc96f35e2f6d76e956f9f5da27da1338fd0180315566fbe81078d2fc7770"
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-event-bus-c268-source.mjs",
+      "bytes": 745,
+      "sha256": "e0c957d10fe8f93674de5d7417a0770be678f30f3fd71bc0713f4ea4ac6addff"
+    }
+  ],
+  "real_owner": {
+    "public_entry": "native_sdk_event_bus.exports(engine) returns cached {createEventBus}.",
+    "internal_entry": "Existing create(engine) calls that same ordinary factory.",
+    "dependency": "The original actual installed node:events EventEmitter is captured once. Each bus constructs its real EventEmitter; controls observe safeHandler by forwarding through the original on method.",
+    "operations": "Actual emit/on/clear/unsubscribe order and return ownership; safeHandler is a real VM async arrow with one Await and ordinary catch logging.",
+    "retirement": "Canonical AF33/C435 operations retain the actual caught local until native terminal retirement, and retire expression results before subsequent Source operations.",
+    "publication": "Completed cache winner is selected only after the candidate's C435 cleanup; no partial coding-agent namespace is published."
+  },
+  "build": {
+    "target": "build-native-sdk-event-bus-public",
+    "artifact": "native-sdk-event-bus-public.exe",
+    "root": "src/native_sdk_event_bus_public_test.zig",
+    "filter": "SDK EventBus",
+    "declared_tests": [
+      "SDK EventBus actual ordinary factory arrow shapes and retained emitter import",
+      "SDK EventBus genuine EventEmitter dispatch unsubscribe and clear",
+      "SDK EventBus live emitter methods discard or transfer their actual results",
+      "SDK EventBus intrinsic async Await retains the actual unused argument until terminal",
+      "SDK EventBus synchronous handler failure enters ordinary catch before returning",
+      "SDK EventBus genuine awaited rejection enters the same live ordinary catch",
+      "SDK EventBus logger failure is the real rejection before and after Await",
+      "SDK EventBus error template uses intrinsic eager string conversion after logger lookup",
+      "SDK EventBus same-operation private DATA stays ordinary before Await",
+      "SDK EventBus private DATA stays an ordinary rejected Await reason",
+      "SDK EventBus actual current B prevents catch logging and guest rejection handling",
+      "SDK EventBus actual post-Await B stops template conversion and logger call",
+      "SDK EventBus actual console receiver retirement B prevents ordinary completion",
+      "SDK EventBus actual console receiver retirement cancellation prevents guest continuation"
+    ],
+    "imported_test_metadata": "Not queried; Root must use actual imported metadata in executable qualification."
+  },
+  "finite_source_peers": [
+    {
+      "reviewer": "/root/modules_io",
+      "closed": true,
+      "scope": "AF7D production plus controls 1–3 and 9–14, actual fixture, private DATA/current B and retirement fatal/cancel; no concrete blocker"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "closed": true,
+      "scope": "Controls 4–8, actual Await/argument lifetime, sync and async catch/logger failure, intrinsic template and Symbol abrupt; no concrete blocker"
+    }
+  ],
+  "dependencies": {
+    "actual_event_emitter": "Existing node_events.zig; this unit does not independently qualify the full EventEmitter implementation.",
+    "retirement_controls": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615 in Summary commit 814ac9bb767763b39dd9e47891c26af7256146ac.",
+    "template_compiler": "353970d4204b5961058e86d3b435778a4a1e96f8, original Node/c268 eager ToString and intrinsic concatenation.",
+    "native_async_terminal": "Current Root-coordinated argument/state/capture/receiver terminal retirement dependencies. No earlier runtime evidence is inherited."
+  },
+  "no_execution": {
+    "native_build": false,
+    "metadata_query": false,
+    "node": false,
+    "runtime": false,
+    "source_generator": false
+  }
+}
