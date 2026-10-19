@@ -4325,6 +4325,19 @@ pub fn build(b: *std.Build) void {
     if (target.result.os.tag == .windows) { sdk_summary_genuine_af.root_module.linkSystemLibrary("advapi32", .{}); sdk_summary_genuine_af.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-sdk-summary-genuine-af", "Install actual summary and compaction async controls without execution").dependOn(&b.addInstallArtifact(sdk_summary_genuine_af, .{ .dest_sub_path = b.fmt("native-sdk-summary-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    // Genuine branch-summary AF over the actual summary and entry owners.
+    const sdk_branch_summary_genuine_af = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_branch_summary_genuine_af_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"SDK branch summary genuine AF"},
+        .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, sdk_branch_summary_genuine_af.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, sdk_branch_summary_genuine_af.root_module, typescript_parser);
+    linkSqlite(sdk_branch_summary_genuine_af.root_module, sqlite_lib_dir, sqlite_library);
+    sdk_branch_summary_genuine_af.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) { sdk_branch_summary_genuine_af.root_module.linkSystemLibrary("advapi32", .{}); sdk_branch_summary_genuine_af.root_module.linkSystemLibrary("userenv", .{}); }
+    b.step("build-native-sdk-branch-summary-genuine-af", "Install actual branch summary async controls without execution").dependOn(&b.addInstallArtifact(sdk_branch_summary_genuine_af, .{ .dest_sub_path = b.fmt("native-sdk-branch-summary-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

@@ -1,0 +1,111 @@
+{
+  "status": "source-and-controls-peer-closed-unexecuted",
+  "source_head_before_unit": "814ac9bb767763b39dd9e47891c26af7256146ac",
+  "target": "build-native-sdk-branch-summary-genuine-af",
+  "executable": "native-sdk-branch-summary-genuine-af.exe",
+  "root": "src/native_sdk_branch_summary_genuine_af_test.zig",
+  "filter": "SDK branch summary genuine AF",
+  "declared_count": 20,
+  "declared_names": [
+    "SDK branch summary genuine AF declarations and actual reused entry owners",
+    "SDK branch summary genuine AF empty route runs synchronously without a source Await",
+    "SDK branch summary genuine AF options destructure one boxed receiver before budget",
+    "SDK branch summary genuine AF actual budget defaults fallback and arithmetic",
+    "SDK branch summary genuine AF actual preparation conversion and file tracking",
+    "SDK branch summary genuine AF session stream uses actual awaited result and retry arguments",
+    "SDK branch summary genuine AF intrinsic prompts and generic preamble addition keep their hints",
+    "SDK branch summary genuine AF instruction branches and early abrupt conversion",
+    "SDK branch summary genuine AF aborted failure and tool paths skip later response fields",
+    "SDK branch summary genuine AF live response content methods callbacks and usage",
+    "SDK branch summary genuine AF Date expression retires before completion call",
+    "SDK branch summary genuine AF status and content temporaries retire before next getters",
+    "SDK branch summary genuine AF arguments and local capture survive real Await",
+    "SDK branch summary genuine AF returned record adoption precedes input retirement",
+    "SDK branch summary genuine AF ordinary private DATA remains exact across both boundaries",
+    "SDK branch summary genuine AF failure record keeps actual error interpolation hint",
+    "SDK branch summary genuine AF current B preempts later option fields and guest rejection",
+    "SDK branch summary genuine AF post Await status retirement B blocks the next operation",
+    "SDK branch summary genuine AF post Await cancellation skips later getters and catch",
+    "SDK branch summary genuine AF real preparation IteratorClose preserves body rejection"
+  ],
+  "source_files": [
+    {
+      "path": "src/extensions/native_sdk_branch_summary.zig",
+      "sha256": "80c787e032436486b6bd7189b1facdd090ec18c1d5106ac16cc6db8d60b2dec6",
+      "bytes": 14262
+    },
+    {
+      "path": "src/native_sdk_branch_summary_genuine_af_test.zig",
+      "sha256": "6ded51ce02f4e1ce8d6b6cede8ba9056d7af159665ea84a1060789e6cfd192f0",
+      "bytes": 10311
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-branch-summary-observer.mjs",
+      "sha256": "da07b3603a080ec89a006965871d6cdadc2e832b41d2cd27b6f073f09e85c02d",
+      "bytes": 22831
+    },
+    {
+      "path": "src/extensions/fixtures/sdk-branch-summary-c268-source.mjs",
+      "sha256": "1a9cc6367ba4d26c2388323a50e54980c8cf17a66811d90432ae62560ae41c58",
+      "bytes": 4404
+    }
+  ],
+  "authority": {
+    "commit": "c268154c",
+    "path": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/sdk-owners-resume-20261018/compaction-authority/branch-summarization.ts.txt",
+    "sha256": "cdffdcb3ca37f5121383d0f5ba98295eb07ce0e2085c8d57d8cb2fb5dc5e9243",
+    "bytes": 12601,
+    "selected_fixture_derivation": {
+      "source_sha256": "CDFFDCB3CA37F5121383D0F5BA98295EB07CE0E2085C8D57D8CB2FB5DC5E9243",
+      "constant_start": 8666,
+      "constant_end": 9530,
+      "function_start": 9702,
+      "body_start": 9845,
+      "body_end": 12601,
+      "erasures": [
+        [
+          " as const",
+          ""
+        ],
+        [
+          "const requestOptions: SimpleStreamOptions",
+          "const requestOptions"
+        ],
+        [
+          "let instructions: string;",
+          "let instructions;"
+        ]
+      ]
+    },
+    "semantics": "Original c268 eager intrinsic template conversion and genuine ordinary '+' where the Source uses addition. The 101-byte preamble asset requires the actual Source's two following newlines."
+  },
+  "actual_dependencies": {
+    "summary_commit": "814ac9bb767763b39dd9e47891c26af7256146ac",
+    "entry_owner_sha256": "c12bd3ba11520af04525e7baa11e56c93c9b060a7f9a328708020dc013ad52e4",
+    "entry_source_fixture_sha256": "22a65898db4e2f1dbf6a10d32a13c60bfc4ac2a8bcf59d6c5e7aef96c4b01e27",
+    "note": "The actual completion, converter, transcript, serializer, contentText, FileOps and entry-preparation owners are invoked directly; the test only controls UUID/retry/AI completion inputs.",
+    "shared": [
+      "AF33 guest-operation core and C435 owned completion",
+      "Genuine native AF terminal argument/state/receiver order",
+      "Exact JS_PiArrayAppend operation bridge",
+      "Intrinsic/eager template compiler 353970d4204b5961058e86d3b435778a4a1e96f8"
+    ]
+  },
+  "peers": {
+    "vm_foundation": "Closed production 80C787E0 and controls 1–10 on 6DED51CE/DA07B360/1A9CC636 against CDFFDCB3; source only.",
+    "modules_io": "Closed controls 11–20 on the same exact root/observer/fixture and actual entry/text dependencies; source only."
+  },
+  "validation": {
+    "source_readback": true,
+    "compile": false,
+    "metadata": false,
+    "runtime": false,
+    "source_reference_execution": false
+  },
+  "open": [
+    "Root review/intake of the Summary24 dependency",
+    "Actual compile and complete imported metadata query",
+    "Fresh Source/native runtime qualification",
+    "Remaining prepareCompaction and full public SDK/application composition"
+  ]
+}

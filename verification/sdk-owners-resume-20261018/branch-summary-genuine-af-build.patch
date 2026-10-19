@@ -1,0 +1,17 @@
+diff --git a/build.zig b/build.zig
+--- a/build.zig
++++ b/build.zig
+@@ -3825,0 +3826,13 @@
++    // Genuine branch-summary AF over the actual summary and entry owners.
++    const sdk_branch_summary_genuine_af = b.addTest(.{
++        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_sdk_branch_summary_genuine_af_test.zig"), .target = target, .optimize = optimize }),
++        .filters = &.{"SDK branch summary genuine AF"},
++        .use_llvm = use_llvm,
++    });
++    linkQuickJs(b, sdk_branch_summary_genuine_af.root_module, quickjs, sqlite_lib_dir);
++    linkTypeScriptParser(b, sdk_branch_summary_genuine_af.root_module, typescript_parser);
++    linkSqlite(sdk_branch_summary_genuine_af.root_module, sqlite_lib_dir, sqlite_library);
++    sdk_branch_summary_genuine_af.root_module.addImport("catalog_tool", catalog_tool);
++    if (target.result.os.tag == .windows) { sdk_branch_summary_genuine_af.root_module.linkSystemLibrary("advapi32", .{}); sdk_branch_summary_genuine_af.root_module.linkSystemLibrary("userenv", .{}); }
++    b.step("build-native-sdk-branch-summary-genuine-af", "Install actual branch summary async controls without execution").dependOn(&b.addInstallArtifact(sdk_branch_summary_genuine_af, .{ .dest_sub_path = b.fmt("native-sdk-branch-summary-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
++
