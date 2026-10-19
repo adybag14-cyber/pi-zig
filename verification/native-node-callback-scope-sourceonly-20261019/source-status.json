@@ -1,0 +1,193 @@
+{
+  "schema": 1,
+  "status": "source_only_all_finite_production_control_build_peers_closed",
+  "source_files": [
+    {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "bytes": 37546,
+      "sha256": "B8F56BF5C61FDB879BB778AD19920C0C43B96449232BC028BF8353AAB4DB0C07"
+    },
+    {
+      "path": "src/extensions/native_node_async_providers.zig",
+      "bytes": 1780,
+      "sha256": "5C66F18156086D2C00A4AEE22C62F46E1C6DED84624A410F5900C49D2FECA4CA"
+    },
+    {
+      "path": "src/extensions/native_node_make_callback.zig",
+      "bytes": 5576,
+      "sha256": "7D5433BBE7F47BD07B7454440C8DA702178E4EBAC8BBA531B70145F22896E972"
+    },
+    {
+      "path": "src/native_node_callback_scope_test.zig",
+      "bytes": 42689,
+      "sha256": "A1C0DE0F1B8DF17C4B86E9FD48EDEC0D24D5E9DDF41A0E07A5CC73D82B9A7895"
+    }
+  ],
+  "dependencies": {
+    "native_request_state": {
+      "donor": "9bef0d251d7194ab5fd5f6dd8e6e038d631c0dc9",
+      "files": {
+        "src/extensions/native_node_request_state.zig": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+        "src/extensions/native_node_async_wrap_state.zig": "DE34706EF1C09C584BB1878AA6CB68C69B517DEB9FEEA1FE4CF24CE0338138D5"
+      },
+      "scope": "Only real Registry/AsyncWrap/ReqWrap dependency. Derived templates, BindingData, physical request and handle completion are separate."
+    },
+    "vm": {
+      "main_head": "a9e3d206555c4a9e04ce85d3ed75c8d25748036d",
+      "continuation_primitive": "JS_PiGetContinuationPreservedEmbedderData / JS_PiSetContinuationPreservedEmbedderData",
+      "low_memory_collection": "JS_RunGC actual full collector for selected native argument-buffer allocation retry, not V8 multipass GC policy equivalence."
+    }
+  },
+  "declarations": {
+    "count": 28,
+    "names": [
+      "native Node callback scope exposes intrinsic aliases with actual shared native bytes",
+      "native Node callback scope uses live default trigger and shared async ID counter",
+      "native Node callback scope caches the selected provider table and actual shared symbol",
+      "native Node callback scope invokes actual init receiver arguments and frame",
+      "native Node callback scope nests actual IDs resources hooks and continuation frames",
+      "native Node callback scope closes once before releasing the callback-depth owner",
+      "native Node callback scope marked failure restores context while suppressing after and queues",
+      "native Node callback scope skip hooks and task queues preserves actual push and pop",
+      "native Node callback scope zero async ID skips hooks without skipping context ownership",
+      "native Node callback scope native call prohibition registers depth without pushing IDs",
+      "native Node callback scope stopping clears IDs before frame restoration or idle reset",
+      "native Node callback scope disabled context-frame option leaves the distinct slot unchanged",
+      "native Node callback scope growth replaces intrinsic storage and preserves retained old view",
+      "native Node callback scope disabled hooks and destroy gate do not dispatch native queues",
+      "native Node callback scope tick calls actual process receiver and retains replaced function",
+      "native Node callback scope tick retains the bootstrap process after guest global replacement",
+      "native Node callback scope realm cleanup unlinks real slots before native owner retirement",
+      "native Node callback scope native entitlement safely outlives the retired VM",
+      "native Node callback scope MakeCallback preserves actual receiver argument identities hook order and return",
+      "native Node callback scope MakeCallback selects the actual trampoline receiver and native argument prefix",
+      "native Node callback scope MakeCallback resource field alone selects trampoline with heap sized native arguments",
+      "native Node callback scope MakeCallback zero and wrapped unsigned sums keep direct invocation with trampoline installed",
+      "native Node callback scope MakeCallback nonfunction trampoline clearing restores actual native hooks",
+      "native Node callback scope MakeCallback retains the selected trampoline through actual replacement during call",
+      "native Node callback scope MakeCallback preserves actual thrown identity while unwinding child scope",
+      "native Node callback scope MakeCallback returns an actual Error object as a successful value",
+      "native Node callback scope MakeCallback prohibited call returns empty without inventing a pending exception",
+      "native Node callback scope MakeCallback stopping after actual call returns empty and preserves stopping cleanup order"
+    ],
+    "original18_prefix_bytes": 25030,
+    "original18_prefix_sha256": "F1B5B1AC11C95BA1E98A1EEB27AA771CC024C3A3B66AD681A252155A212DBDD6",
+    "metadata_discovered": false
+  },
+  "build": {
+    "target": "build-native-node-callback-scope",
+    "filter": "native Node callback scope",
+    "added_lines": 16,
+    "install_only": true,
+    "has_execution_edge": false,
+    "before_sha256": "D83583A1DD11A3148358BD0E17DF67259E4A5B4559CD249477A2D34278A1EBFC",
+    "composed_sha256": "F30A6EE67C5E93C92BC283F2CD98A9430258D10BFBEE1D9D4E25CFE7735EE807",
+    "patch_sha256": "B98A82F481FCAB3F8289C06137B6388AC612AD632E944E88D351E15ED51C1CE2",
+    "insertion_before": "}\n\nfn addCompileOnlyGroup(",
+    "addition": "    if (native_node_network != null) {\n        const node_callbacks = b.addTest(.{\n            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_callback_scope_test.zig\"), .target = target, .optimize = optimize }),\n            .filters = &.{\"native Node callback scope\"}, .use_llvm = use_llvm,\n        });\n        linkQuickJs(b, node_callbacks.root_module, quickjs, sqlite_lib_dir);\n        linkTypeScriptParser(b, node_callbacks.root_module, typescript_parser);\n        linkSqlite(node_callbacks.root_module, sqlite_lib_dir, sqlite_library);\n        node_callbacks.root_module.addImport(\"catalog_tool\", catalog_tool);\n        if (target.result.os.tag == .windows) {\n            node_callbacks.root_module.linkSystemLibrary(\"advapi32\", .{});\n            node_callbacks.root_module.linkSystemLibrary(\"userenv\", .{});\n        }\n        b.step(\"build-native-node-callback-scope\", \"Install actual Node callback state and MakeCallback controls without execution\").dependOn(&b.addInstallArtifact(node_callbacks, .{ .dest_sub_path = b.fmt(\"native-node-callback-scope{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n    }\n\n",
+    "peer_reviewed_preparation_sha256": "3C16A7BFE3EC1EE596E8946DACF98CB4F9D6C77A2F03498EAC94579E709B54A3",
+    "reviewed_context_patch_sha256": "D8ED5AEAD437436A2A070275DEA7E9CAA1BF40B666427062FB8BEFFB8AE319CF",
+    "reviewed_context_patch": "--- a/build.zig\n+++ b/build.zig\n@@ -4715,6 +4715,22 @@\n         b.step(\"build-native-node-options\", \"Install twenty actual Node options ownership and Source controls without execution\").dependOn(&b.addInstallArtifact(node_options, .{ .dest_sub_path = b.fmt(\"native-node-options{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n     }\n \n+    if (native_node_network != null) {\n+        const node_callbacks = b.addTest(.{\n+            .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_node_callback_scope_test.zig\"), .target = target, .optimize = optimize }),\n+            .filters = &.{\"native Node callback scope\"}, .use_llvm = use_llvm,\n+        });\n+        linkQuickJs(b, node_callbacks.root_module, quickjs, sqlite_lib_dir);\n+        linkTypeScriptParser(b, node_callbacks.root_module, typescript_parser);\n+        linkSqlite(node_callbacks.root_module, sqlite_lib_dir, sqlite_library);\n+        node_callbacks.root_module.addImport(\"catalog_tool\", catalog_tool);\n+        if (target.result.os.tag == .windows) {\n+            node_callbacks.root_module.linkSystemLibrary(\"advapi32\", .{});\n+            node_callbacks.root_module.linkSystemLibrary(\"userenv\", .{});\n+        }\n+        b.step(\"build-native-node-callback-scope\", \"Install actual Node callback state and MakeCallback controls without execution\").dependOn(&b.addInstallArtifact(node_callbacks, .{ .dest_sub_path = b.fmt(\"native-node-callback-scope{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n+    }\n+\n }\n \n fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {\n",
+    "patch_serialization_note": "Root reserialized the identical sixteen added lines as zero-context unified diff after git diff --check flagged required blank-context markers in the patch artifact. Original reviewed D8ED5AEA context patch is retained verbatim here. Exact addition identity, complete before/after hashes, and git apply --check --unidiff-zero all verified. No source/build semantics or native gate changed."
+  },
+  "peers": {
+    "environment": "Finite state, Alias/shared storage, IDs/providers, hook selectors, depth/frame/resource retention, cleanup/disarm and tick lifetimes closed by SDK/Modules on recorded source successors; RequestState seven-edit delta and callback-trampoline setter separately closed.",
+    "original18": "Modules Fixture/declarations1\u20139, SDK10\u201318, closed on F1B5B1AC; prefix remains exact.",
+    "make_callback": "Both Modules selector/native-buffer and SDK completion/lifetime slices closed on7D5433BB. VM confirms actual JS_RunGC selected native allocation retry mapping.",
+    "new19_23": "Modules closed on A1C0DE0F: direct/trampoline selectors, wrapping arithmetic, native heap argument boundary, clearing.",
+    "new24_28": "SDK closed on A1C0DE0F: selected trampoline replacement retention, actual throw, flagged returned DATA, cannot-call empty, stopping during body.",
+    "build": "Modules CLOSED D8ED5AEA: exact16 additive install-only Main lines, all28 declared names match filter, real existing Engine/parser/SQLite/catalog/Windows imports, no run edge or extra native library."
+  },
+  "authority": {
+    "revision": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "files": [
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/lib_internal_process_task_queues.js.txt",
+        "bytes": 4567,
+        "sha256": "BCACD88D13BDA207276F20AFB47B696E9512C6E54AF74C04EF5096EFEA17C9A0"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/make-callback-native-allocation-retry.json",
+        "bytes": 16407,
+        "sha256": "0EB73A825FC3011F4C5F1F06E2F99469C54CF83C25A885D32F49F458CC9EE2F4"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/make-callback-native-buffer-source.json",
+        "bytes": 20642,
+        "sha256": "409E7F98967778AA56105313C3997F4AC4A8EC25EF659759589F73FB6FFD3C06"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/native-callback-and-exception-source.json",
+        "bytes": 20217,
+        "sha256": "008EEC523290C9547E6F4D2BA2AA108E62FCC57BCB8E5ECB730F1548E7F1977C"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/native-check-symbol-context-source.json",
+        "bytes": 25504,
+        "sha256": "F03A61D3BC3EA70651EEEF7C83F93DC8348EAA1C87FB1D22CC67FE8547DFAF0D"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/NODE-MIT-LICENSE.txt",
+        "bytes": 2437,
+        "sha256": "86D2D599E5ACA4CE609F66171863A5EB405C3A520B27EF869C5740EA12CC9887"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/source-acquisition.json",
+        "bytes": 29724,
+        "sha256": "13C7F3CE496CEE849DFE0841D7FD8D6249B62451F75C7A354FEE3EA2C3F7799C"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_async_context_frame.cc.txt",
+        "bytes": 2547,
+        "sha256": "962A30DE672FC9C644D6A3EC6DD0E8FE1E2F49AB370FFBA862768691294C07A9"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_async_context_frame.h.txt",
+        "bytes": 770,
+        "sha256": "E27795727B87B1B551A3682C7902AD41033D62B4393E0323397E7E23B7419DB4"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_async_wrap.cc.txt",
+        "bytes": 27043,
+        "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_env-inl.h.txt",
+        "bytes": 28109,
+        "sha256": "41949D4DFA01B04174B0E881B1DB3DD12BF51B9428B89946504603700FCF3E5E"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_env.cc.txt",
+        "bytes": 84987,
+        "sha256": "081F46DB425F5FEA9095F68E25D6C9BC89CF16BB800872A65A3D04C62FEDB4A9"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_env.h.txt",
+        "bytes": 45315,
+        "sha256": "BD043EBFAD229742BA4E73DAE99FB582C5FFCFBAC06469973E826209B93329A0"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_node_errors.cc.txt",
+        "bytes": 43095,
+        "sha256": "EED18C160145DAE84C4ADE25AFC90CB799D4AD18275D3EAE42AA66331371A2C9"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/src_node_task_queue.cc.txt",
+        "bytes": 6915,
+        "sha256": "842979575188903B07B0171E3EFFE5F51646AAA16C7391B0B5E854BAE99625C5"
+      },
+      {
+        "path": "verification/native-node-callback-scope-sourceonly-20261019/authority/task-queue-source-acquisition.json",
+        "bytes": 9120,
+        "sha256": "A98B4556958BC17CE5D3FC742350D25E659FEBA70C3139CA089980AAC0C7F3B4"
+      }
+    ]
+  },
+  "limits": [
+    "No actual Operations installation is claimed: checkpoint, native CHECK/corrupt diagnostics, fatal hook policy, destroy scheduling/interrupt and full process lifecycle remain required.",
+    "Tests guard unselected task-queue/fatal/scheduling operations; they do not substitute implementations of those owners.",
+    "No partial node:async_hooks export or stand-in task queue is published by this unit.",
+    "Actual FileHandle/FSReq/SDK/application/platform/release qualification remains separate.",
+    "No compile, raw metadata query, runtime execution or acceptance is claimed."
+  ]
+}
