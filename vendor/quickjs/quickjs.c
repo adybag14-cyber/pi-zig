@@ -18725,7 +18725,7 @@ static __exception int JS_CopyDataProperties(JSContext *ctx,
     uint32_t i, tab_atom_count;
     JSObject *p;
     JSObject *pexcl = NULL;
-    int ret, gpn_flags;
+    int ret;
     int desc_flags;
     bool is_enumerable;
 
@@ -18737,17 +18737,10 @@ static __exception int JS_CopyDataProperties(JSContext *ctx,
 
     p = JS_VALUE_GET_OBJ(source);
 
-    gpn_flags = JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK | JS_GPN_ENUM_ONLY;
-    if (p->is_exotic) {
-        const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;
-        /* cannot use JS_GPN_ENUM_ONLY with e.g. proxies because it
-           introduces a visible change */
-        if (em && em->get_own_property_names) {
-            gpn_flags &= ~JS_GPN_ENUM_ONLY;
-        }
-    }
+    /* Snapshot all own keys once. Earlier getters can change whether a
+       later property exists or is enumerable before its value is copied. */
     if (JS_GetOwnPropertyNamesInternal(ctx, &tab_atom, &tab_atom_count, p,
-                                       gpn_flags))
+                                       JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK))
         return -1;
 
     for (i = 0; i < tab_atom_count; i++) {
@@ -18759,17 +18752,15 @@ static __exception int JS_CopyDataProperties(JSContext *ctx,
                 continue;
             }
         }
-        if (!(gpn_flags & JS_GPN_ENUM_ONLY)) {
-            /* test if the property is enumerable */
-            ret = JS_GetOwnPropertyFlagsInternal(ctx, &desc_flags, p, tab_atom[i].atom);
-            if (ret < 0)
-                goto exception;
-            if (!ret)
-                continue;
-            is_enumerable = (desc_flags & JS_PROP_ENUMERABLE) != 0;
-            if (!is_enumerable)
-                continue;
-        }
+        /* Read the current own descriptor after exclusion, before Get. */
+        ret = JS_GetOwnPropertyFlagsInternal(ctx, &desc_flags, p, tab_atom[i].atom);
+        if (ret < 0)
+            goto exception;
+        if (!ret)
+            continue;
+        is_enumerable = (desc_flags & JS_PROP_ENUMERABLE) != 0;
+        if (!is_enumerable)
+            continue;
         val = JS_GetProperty(ctx, source, tab_atom[i].atom);
         if (JS_IsException(val))
             goto exception;

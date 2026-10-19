@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "status": "source_only_peer_closed",
+  "parent_commit": "810684eb56c2aa4e2dccb56c197a90f008351aa4",
+  "production": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "sha256": "FD8FFA2B5A52147E1A2AD04F5AD5830C6CBA09B9EFD2F336CCDB4FBED405CBD3",
+      "bytes": 2339616
+    },
+    {
+      "path": "build.zig",
+      "sha256": "FAD53E6796A9CB1B4031BF6B64EE4E50D4C88D0A0E2C3E2309CA7CAF13069084",
+      "bytes": 415176
+    }
+  ],
+  "unchanged_header": {
+    "path": "vendor/quickjs/quickjs.h",
+    "sha256": "E1AF68AEFA8A8D8DD565F1ABCAA23C7F82C04DD78E693074533D272CE4C95299"
+  },
+  "change": "Only shared CopyDataProperties own-key snapshot and per-key current descriptor selection change.",
+  "production_packet": {
+    "path": "production-delta.json",
+    "sha256": "BD6D453DA1FB1487457D5B92ED9511C9C004E591856B6F179C619AB71AE31C96",
+    "bytes": 11655
+  },
+  "original_consumer": {
+    "path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
+    "sha256": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0",
+    "modified": false
+  },
+  "test_root": {
+    "path": "src/native_vm_copy_data_properties_test.zig",
+    "sha256": "4B274AAFFDD11B9143DC0E660F740348917732E74D07A05DC69C772B8F1893A9",
+    "bytes": 21610,
+    "declared_count": 13,
+    "names": [
+      "VM copy properties assign skips a deleted own key and preserves the existing target",
+      "VM copy properties includes an initially hidden key made enumerable by a prior getter",
+      "VM copy properties skips a key made nonenumerable before its value read",
+      "VM copy properties spread and rest skip deleted slots without inherited fallback",
+      "VM copy properties reads replacement values but never adds keys created after the snapshot",
+      "VM copy properties keeps numeric string and symbol key order with live symbol descriptors",
+      "VM copy properties preserves actual proxy descriptor Get and target Set order",
+      "VM copy properties rest excludes string and symbol keys before descriptor lookup",
+      "VM copy properties target setters can change later source descriptors",
+      "VM copy properties spread and rest create own data slots without prototype setters",
+      "VM copy properties ordinary descriptor and getter failures keep identity and stop later copies",
+      "VM copy properties returned flagged DATA remains a copied value",
+      "VM copy properties actual fatal getter skips later value catch and finally"
+    ]
+  },
+  "build": {
+    "target": "build-native-vm-copy-data-properties",
+    "filter": "VM copy properties",
+    "added_lines": 6,
+    "existing_library_only": true,
+    "execution_edge": false,
+    "patch": "build-intake.patch",
+    "sha256": "97FB9D497B61DB14D1D079BFF5AF8C56C1A98571BC604A4268BDFB9A44FDF76E"
+  },
+  "peers": {
+    "sdk_production": "Complete corrected actual C definition FD8FFA2B and packetBD6D453D closed; key snapshot, exclusion, current descriptors, value/target/error ownership.",
+    "sdk_controls": "Exact root4B274AAF declarations1-6/9-10 closed.",
+    "modules_controls": "Exact root 4B274AAF Fixture and declarations 7-8/11-13 closed; proxy descriptor/Get/Set order, exclusions, ordinary identity/partial target, DATA versus actual fatal, native held progress and teardown.",
+    "modules_build": "Exact six-line install-only patch 97FB9D49 closed; actual root/filter and one existing shared QuickJS linkage."
+  },
+  "validation": {
+    "compiled": false,
+    "executed": false,
+    "actual_metadata": null,
+    "source_readback_equal": true,
+    "exact_definition_reversal": true,
+    "source_c_diff_check": true,
+    "source_build_diff_check": true,
+    "note": "Readback and exact source reversal are static source checks. No compiler, metadata query, Node, or runtime execution is authorized or claimed in this donor."
+  },
+  "limits": [
+    "Shared C correction is source-reviewed; Root must separately qualify the exact compiled artifact.",
+    "The preexisting inspector original source/owner/control are preserved and still participate in Root's runtime matrix.",
+    "No descriptor, proxy, assignment, GC or exception algorithm outside this selected function is changed."
+  ],
+  "original_node_authority": {
+    "path": "verification/node-inspect-entry-sourceonly-20261018/authority/inspect.js",
+    "owner": "modules-io-resume-20261018",
+    "sha256": "380AA09FAE68E3279D0FB2469A24D75931A8098C84354347BF7130A38852B597",
+    "bytes": 92944,
+    "full_pin_independently_verified_by": "sdk_owners",
+    "selected_default_options_setter_read_by": "vm_foundation"
+  }
+}

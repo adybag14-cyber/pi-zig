@@ -2009,6 +2009,12 @@ pub fn build(b: *std.Build) void {
     });
     linkQuickJs(b, native_global_tests.root_module, quickjs, sqlite_lib_dir);
     b.step("build-native-vm-native-global", "Install actual native Global ownership controls without execution").dependOn(&b.addInstallArtifact(native_global_tests, .{}).step);
+    const copy_data_properties_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_copy_data_properties_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM copy properties"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, copy_data_properties_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-copy-data-properties", "Install actual copy property descriptor controls without execution").dependOn(&b.addInstallArtifact(copy_data_properties_tests, .{}).step);
     if (native_node_network) |network| {
         const native_node_tcp_transport_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

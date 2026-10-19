@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "status": "source_only_correction_for_actual_v17_failure",
+  "parent_commit": "810684eb56c2aa4e2dccb56c197a90f008351aa4",
+  "old_c_sha256": "6DC7D6C54636F996F66925F14C681F87A34F0A763C6775A368DB72AB0406C78F",
+  "new_c_sha256": "FD8FFA2B5A52147E1A2AD04F5AD5830C6CBA09B9EFD2F336CCDB4FBED405CBD3",
+  "source": "vendor/quickjs/quickjs.c",
+  "offset_chars": 613597,
+  "original_definition": "static __exception int JS_CopyDataProperties(JSContext *ctx,\n                                             JSValue target,\n                                             JSValue source,\n                                             JSValue excluded,\n                                             bool setprop)\n{\n    JSPropertyEnum *tab_atom;\n    JSValue val;\n    uint32_t i, tab_atom_count;\n    JSObject *p;\n    JSObject *pexcl = NULL;\n    int ret, gpn_flags;\n    int desc_flags;\n    bool is_enumerable;\n\n    if (JS_VALUE_GET_TAG(source) != JS_TAG_OBJECT)\n        return 0;\n\n    if (JS_VALUE_GET_TAG(excluded) == JS_TAG_OBJECT)\n        pexcl = JS_VALUE_GET_OBJ(excluded);\n\n    p = JS_VALUE_GET_OBJ(source);\n\n    gpn_flags = JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK | JS_GPN_ENUM_ONLY;\n    if (p->is_exotic) {\n        const JSClassExoticMethods *em = ctx->rt->class_array[p->class_id].exotic;\n        /* cannot use JS_GPN_ENUM_ONLY with e.g. proxies because it\n           introduces a visible change */\n        if (em && em->get_own_property_names) {\n            gpn_flags &= ~JS_GPN_ENUM_ONLY;\n        }\n    }\n    if (JS_GetOwnPropertyNamesInternal(ctx, &tab_atom, &tab_atom_count, p,\n                                       gpn_flags))\n        return -1;\n\n    for (i = 0; i < tab_atom_count; i++) {\n        if (pexcl) {\n            ret = JS_GetOwnPropertyInternal(ctx, NULL, pexcl, tab_atom[i].atom);\n            if (ret) {\n                if (ret < 0)\n                    goto exception;\n                continue;\n            }\n        }\n        if (!(gpn_flags & JS_GPN_ENUM_ONLY)) {\n            /* test if the property is enumerable */\n            ret = JS_GetOwnPropertyFlagsInternal(ctx, &desc_flags, p, tab_atom[i].atom);\n            if (ret < 0)\n                goto exception;\n            if (!ret)\n                continue;\n            is_enumerable = (desc_flags & JS_PROP_ENUMERABLE) != 0;\n            if (!is_enumerable)\n                continue;\n        }\n        val = JS_GetProperty(ctx, source, tab_atom[i].atom);\n        if (JS_IsException(val))\n            goto exception;\n        if (setprop)\n            ret = JS_SetProperty(ctx, target, tab_atom[i].atom, val);\n        else\n            ret = JS_DefinePropertyValue(ctx, target, tab_atom[i].atom, val,\n                                         JS_PROP_C_W_E);\n        if (ret < 0)\n            goto exception;\n    }\n    js_free_prop_enum(ctx, tab_atom, tab_atom_count);\n    return 0;\n exception:\n    js_free_prop_enum(ctx, tab_atom, tab_atom_count);\n    return -1;\n}\n",
+  "corrected_definition": "static __exception int JS_CopyDataProperties(JSContext *ctx,\n                                             JSValue target,\n                                             JSValue source,\n                                             JSValue excluded,\n                                             bool setprop)\n{\n    JSPropertyEnum *tab_atom;\n    JSValue val;\n    uint32_t i, tab_atom_count;\n    JSObject *p;\n    JSObject *pexcl = NULL;\n    int ret;\n    int desc_flags;\n    bool is_enumerable;\n\n    if (JS_VALUE_GET_TAG(source) != JS_TAG_OBJECT)\n        return 0;\n\n    if (JS_VALUE_GET_TAG(excluded) == JS_TAG_OBJECT)\n        pexcl = JS_VALUE_GET_OBJ(excluded);\n\n    p = JS_VALUE_GET_OBJ(source);\n\n    /* Snapshot all own keys once. Earlier getters can change whether a\n       later property exists or is enumerable before its value is copied. */\n    if (JS_GetOwnPropertyNamesInternal(ctx, &tab_atom, &tab_atom_count, p,\n                                       JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK))\n        return -1;\n\n    for (i = 0; i < tab_atom_count; i++) {\n        if (pexcl) {\n            ret = JS_GetOwnPropertyInternal(ctx, NULL, pexcl, tab_atom[i].atom);\n            if (ret) {\n                if (ret < 0)\n                    goto exception;\n                continue;\n            }\n        }\n        /* Read the current own descriptor after exclusion, before Get. */\n        ret = JS_GetOwnPropertyFlagsInternal(ctx, &desc_flags, p, tab_atom[i].atom);\n        if (ret < 0)\n            goto exception;\n        if (!ret)\n            continue;\n        is_enumerable = (desc_flags & JS_PROP_ENUMERABLE) != 0;\n        if (!is_enumerable)\n            continue;\n        val = JS_GetProperty(ctx, source, tab_atom[i].atom);\n        if (JS_IsException(val))\n            goto exception;\n        if (setprop)\n            ret = JS_SetProperty(ctx, target, tab_atom[i].atom, val);\n        else\n            ret = JS_DefinePropertyValue(ctx, target, tab_atom[i].atom, val,\n                                         JS_PROP_C_W_E);\n        if (ret < 0)\n            goto exception;\n    }\n    js_free_prop_enum(ctx, tab_atom, tab_atom_count);\n    return 0;\n exception:\n    js_free_prop_enum(ctx, tab_atom, tab_atom_count);\n    return -1;\n}\n",
+  "exact_reversal": true,
+  "frozen_main": {
+    "sha256": "B46F017D2F7CC64BF1F7F6D4B84929920F5FE711C8575F49E9324E39960CE902",
+    "bytes": 2327593,
+    "range_offset_bytes": 608300,
+    "range_bytes": 8500,
+    "range_sha256": "D4318F8F91BE0D036D1D326279F5173E3D7F27EC3B929D3428A27B3D53F90C16",
+    "definition_equal": true
+  },
+  "unchanged_callers": [
+    {
+      "index": 712930,
+      "text": "{\n                /* stack offsets (-1 based):\n                   2 bits for target,\n                   3 bits for source,\n                   2 bits for exclusionList */\n                int mask;\n\n                mask = *pc++;\n                sf->cur_pc = pc;\n                if (JS_CopyDataProperties(ctx, sp[-1 - (mask & 3)],\n                                          sp[-1 - ((mask >> 2) & 7)],\n                                          sp[-1 - ((mask >> 5) & 7)], 0))\n                    goto exception;\n            }\n            BREAK;\n\n        CASE(OP_add):\n            {\n                JSValue op1, op2;\n                op1 = sp[-2];\n                op2 = sp[-1];\n                if (likely(JS_VALUE_IS_BOTH_INT(op1, op2))) {\n                    int64_t r;\n                    r = (int64_t)JS_VALUE_GET_INT(op1) + JS_VALUE_GET_INT(op2);\n                    if (unlikely(r "
+    },
+    {
+      "index": 1544894,
+      "text": "0]);\n    if (JS_IsException(obj))\n        goto exception;\n    for (i = 1; i < argc; i++) {\n        if (!JS_IsNull(argv[i]) && !JS_IsUndefined(argv[i])) {\n            s = JS_ToObject(ctx, argv[i]);\n            if (JS_IsException(s))\n                goto exception;\n            if (JS_CopyDataProperties(ctx, obj, s, JS_UNDEFINED, true))\n                goto exception;\n            JS_FreeValue(ctx, s);\n        }\n    }\n    return obj;\nexception:\n    JS_FreeValue(ctx, obj);\n    JS_FreeValue(ctx, s);\n    return JS_EXCEPTION;\n}\n\nstatic JSValue js_object_seal(JSContext *ctx, JSValueConst this_val,\n                              int argc, JSValueConst *argv, int freeze_flag)\n{\n    JSValueConst obj = argv[0];\n    JSObject *p;\n    JSTypedArray *ta;\n    JSArrayBuffer *abuf;\n    JSPropertyEnum *props;\n    uint32_t len, i;\n    int flags, desc_flags, res;\n\n    if (!JS_IsObject(obj))\n "
+    }
+  ],
+  "unchanged_descriptor": {
+    "offset_chars": 370575,
+    "text": "static int JS_GetOwnPropertyFlagsInternal(JSContext *ctx, int *pflags,\n                                          JSObject *p, JSAtom prop)\n{\n    return JS_GetOwnPropertyInternal2(ctx, NULL, p, prop, pflags);\n}\n"
+  },
+  "source_finding": {
+    "original_inspect_authority": "modules-io-resume-20261018/verification/node-inspect-entry-sourceonly-20261018/authority/inspect.js",
+    "full_sha256_reported_by_owner": "380AA09F",
+    "actually_read_range": {
+      "offset_bytes": 0,
+      "bytes": 65536,
+      "sha256": "533818711557052571096677271588B83957ABAFAA473C985DA3347E0C1D810C"
+    },
+    "original_setter": "ObjectDefineProperty(inspect, 'defaultOptions', {\n  __proto__: null,\n  get() {\n    return inspectDefaultOptions;\n  },\n  set(options) {\n    validateObject(options, 'options');\n    return ObjectAssign(inspectDefaultOptions, options);\n  },\n});",
+    "unchanged_observer_path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
+    "unchanged_observer_sha256": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0",
+    "unchanged_observer": "function observeInspectDefaultAssignment(inspect) {\n    const previous = {...inspect.defaultOptions}, trace = [];\n    const input = {};\n    Object.defineProperty(input, \"depth\", {enumerable:true, get() { trace.push(\"depth\"); delete input.colors; return 0; }});\n    Object.defineProperty(input, \"colors\", {enumerable:true, configurable:true, get() { trace.push(\"colors\"); return true; }});\n    try {\n        inspect.defaultOptions = input;\n        inspectAssert(trace.join() === \"depth\" && inspect.defaultOptions.depth === 0 && inspect.defaultOptions.colors === previous.colors, \"descriptor then live Get per assign key\");\n        const proxy = new Proxy({depth:1}, {\n            ownKeys(target) { trace.push(\"keys\"); return Reflect.ownKeys(target); },\n            getOwnPropertyDescriptor(target, name) { trace.push(\"descriptor:\" + name); return Reflect.getOwnPropertyDescriptor(target, name); },\n            get(target, name, receiver) { trace.push(\"get:\" + name); return Reflect.get(target, name, receiver); },\n        });\n        inspect.defaultOptions = proxy;\n        inspectAssert(trace.slice(1).join() === \"keys,descriptor:depth,get:depth\" && inspect.defaultOptions.depth === 1, \"actual proxy assign operations\");\n    } finally { inspect.defaultOptions = previous; }\n}\n",
+    "diagnosis": "The ordinary-source enumerable-only key snapshot includes colors. depth's live getter deletes that slot. The old ordinary path does not recheck its descriptor, so it reads undefined and overwrites the existing target default. A previous getter can also make an initially nonenumerable key enumerable; retaining only initial enumerable keys cannot implement that case."
+  },
+  "standards": [
+    {
+      "edition": 2025,
+      "clause": "20.1.2.1",
+      "url": "https://tc39.es/ecma262/2025/multipage/fundamental-objects.html#sec-object.assign",
+      "finding": "Snapshot every own key for each source. For each key, read its current own descriptor; only a present enumerable property is read and assigned through the target's actual Set operation."
+    },
+    {
+      "edition": 2025,
+      "clause": "7.3.25",
+      "url": "https://tc39.es/ecma262/2025/multipage/abstract-operations.html#sec-copydataproperties",
+      "finding": "Snapshot every own key, apply the exclusion list before observing its current descriptor, then read and create the result's own data property only when that descriptor is present and enumerable."
+    }
+  ],
+  "limits": [
+    "Only the names/descriptor selection in this shared operation changes.",
+    "Source/target/exclusion ownership, proxy operations, value Get, target Set versus own definition and atom-table success/error cleanup remain the original code.",
+    "The original inspector source/observer and assertions remain unchanged.",
+    "No build, execution or runtime acceptance is claimed."
+  ]
+}
