@@ -243,7 +243,7 @@ test "VM private property allocation failure consumes the new value and publishe
     const object = try f.checked(c.JS_NewObject(f.context)); defer c.JS_FreeValue(f.context, object);
     var probe: Probe = .{};
     const value = try f.sentinel(&probe);
-    c.JS_SetMemoryLimit(f.runtime, 0);
+    c.JS_SetMemoryLimit(f.runtime, 1);
     const result = c.JS_PiSetPrivateProperty(f.context, object, f.key, value);
     c.JS_SetMemoryLimit(f.runtime, std.math.maxInt(usize));
     try std.testing.expectEqual(@as(c_int, -1), result);
