@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "status": "source_only_reviewed_owner_correction",
+  "subject": "Shared actual native retirement test hook",
+  "basis_main_sha256": "D0784BF759FD6B8A6E37765124F9F5026DEC5843075156BDFC42EA22D14EE615",
+  "prior_clean_donor_sha256": "0C1D5D51226FE1055FC49D79897C4FC80822C72ABD05DA88945ADC9E0B74AB41",
+  "source": {
+    "path": "src/native_sdk_initial_model_retirement_controls.zig",
+    "bytes": 16159,
+    "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+  },
+  "problem": "The record wrapper can finalize before a Holder during cyclic runtime teardown, clearing its opaque while Holder still needs the native counter record.",
+  "correction": "One native entitlement belongs to the record wrapper and one to each Holder. Holder stores the native pointer independently of its unchanged marked JS edge. Closing the wrapper publishes disarmed/cleared fields before releasing reason roots. Holders always update the same counters; producers run only while the record is open. Native record allocation is freed by its final actual entitlement.",
+  "peer": {
+    "agent": "vm_foundation",
+    "scope": "Complete exact Main D0784BF7 to successor5628029C delta",
+    "status": "closed",
+    "notes": "Both finalizer orders and reentrant record finalization during a holder's JS edge release inspected. All marking edges, counts and causal verifiers unchanged."
+  },
+  "negative_evidence": {
+    "runtime": "evidence/root-v10-runtime-diagnostic-v3-retry-20261019-165655",
+    "stderr_sha256": "501CEB768CBA943F210A84FC3A36B2E643822C29642A262DA12CEB6F181B7512",
+    "partial_wire_sha256": "F98C09742C571B35393F3C1F41232A98DCCE7FA7252180F21C7AA52FEB5B0673",
+    "independent_closure_sha256": "FE25C94A65215267396FEB9EF4990EA8EAB81E943FCDA002F2C27BBC7B3D9289",
+    "radius_completed": 21,
+    "radius_started": 22,
+    "radius_expected": 28,
+    "panicked_control_index": 21,
+    "exit_code": 3
+  },
+  "assertions_changed": false,
+  "production_behavior_changed": false,
+  "native_run": false,
+  "runtime_qualification": false,
+  "application_qualification": false,
+  "release_qualification": false
+}

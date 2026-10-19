@@ -3,14 +3,41 @@
 const std = @import("std");
 const x = @import("extensions/native_sdk_initial_model_values.zig");
 const c = x.c;
-const Record = struct { engine: *x.em.Engine, holder_class: c.JSClassID, counts: [8]u32 = @splat(0), visits: [8]u32 = @splat(0), fatal_slot: ?usize = null, cancel_slot: ?usize = null, fatal_reason: ?c.JSValue = null, data_reason: ?c.JSValue = null };
-const Holder = struct { record: c.JSValue, slot: usize };
+// Native entitlements outlive GC's arbitrary wrapper-finalization order.
+// Keep every original JS marking edge; the host pointer is not a guest root.
+const Record = struct {
+    engine: *x.em.Engine,
+    holder_class: c.JSClassID,
+    references: usize = 1, // the record wrapper's entitlement
+    closed: bool = false,
+    counts: [8]u32 = @splat(0),
+    visits: [8]u32 = @splat(0),
+    fatal_slot: ?usize = null,
+    cancel_slot: ?usize = null,
+    fatal_reason: ?c.JSValue = null,
+    data_reason: ?c.JSValue = null,
+};
+const Holder = struct { record: c.JSValue, native_record: *Record, slot: usize };
+fn releaseRecord(record: *Record) void {
+    std.debug.assert(record.references != 0);
+    record.references -= 1;
+    if (record.references == 0) record.engine.gpa.destroy(record);
+}
 fn recordOf(value: c.JSValue) *Record { return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?)); }
 fn recordFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const record: *Record = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    if (record.fatal_reason) |reason| c.JS_FreeValueRT(runtime, reason);
-    if (record.data_reason) |reason| c.JS_FreeValueRT(runtime, reason);
-    record.engine.gpa.destroy(record);
+    _ = c.JS_SetOpaque(value, null);
+    record.closed = true;
+    record.fatal_slot = null;
+    record.cancel_slot = null;
+    const fatal_reason = record.fatal_reason;
+    const data_reason = record.data_reason;
+    record.fatal_reason = null;
+    record.data_reason = null;
+    // Publish the closed state before releasing roots that can retire holders.
+    if (fatal_reason) |reason| c.JS_FreeValueRT(runtime, reason);
+    if (data_reason) |reason| c.JS_FreeValueRT(runtime, reason);
+    releaseRecord(record);
 }
 fn recordMark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
     const record: *Record = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
@@ -23,9 +50,10 @@ fn holderMark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_Mark
 }
 fn holderFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const holder: *Holder = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
-    const record = recordOf(holder.record); const engine = record.engine;
+    _ = c.JS_SetOpaque(value, null);
+    const record = holder.native_record; const engine = record.engine;
     record.counts[holder.slot] +|= 1;
-    if (record.fatal_slot == holder.slot and engine.native_fatal_invocation != null) {
+    if (!record.closed and record.fatal_slot == holder.slot and engine.native_fatal_invocation != null) {
         record.fatal_slot = null;
         _ = engine.throwNativeOutOfMemoryFatal(); // ACTUAL producer in this free.
         if (c.JS_HasException(engine.context)) {
@@ -34,9 +62,10 @@ fn holderFinalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             _ = c.JS_Throw(engine.context, reason);
         }
     }
-    if (record.cancel_slot == holder.slot and engine.native_fatal_invocation != null) { record.cancel_slot = null; engine.cancelled.store(true, .release); }
+    if (!record.closed and record.cancel_slot == holder.slot and engine.native_fatal_invocation != null) { record.cancel_slot = null; engine.cancelled.store(true, .release); }
     c.JS_FreeValueRT(runtime, holder.record);
     engine.gpa.destroy(holder);
+    releaseRecord(record);
 }
 pub fn createNativeRetirementHooks(engine: *x.em.Engine) !c.JSValue {
     var s: x.Scope = .{ .engine = engine }; var o: x.Ops = .{ .s = &s };
@@ -104,7 +133,9 @@ fn callbackBody(o: *x.Ops, argument: c.JSValue, magic: c_int, record_value: c.JS
     if (magic == 3) { record.visits[slot] +|= 1; return c.pi_js_undefined(); }
     if (magic == 4) { record.cancel_slot = slot; return c.pi_js_undefined(); }
     const value = try o.allocation(c.JS_NewObjectClass(e.context, record.holder_class), e.native_allocation_generation);
-    const holder = try e.gpa.create(Holder); holder.* = .{ .record = c.JS_DupValue(e.context, record_value), .slot = slot };
+    const holder = try e.gpa.create(Holder);
+    record.references += 1;
+    holder.* = .{ .record = c.JS_DupValue(e.context, record_value), .native_record = record, .slot = slot };
     _ = c.JS_SetOpaque(value, holder);
     return c.JS_DupValue(e.context, value);
 }
@@ -125,6 +156,11 @@ pub fn startPreparedRetirementCaller(engine: *x.em.Engine, prepared_runner: c.JS
     return x.owned.finishValue(&s, xDuplicate(&o, prepared_runner));
 }
 fn xDuplicate(o: *x.Ops, runner: c.JSValue) !c.JSValue { return c.JS_DupValue(o.s.engine.context, try o.call(runner, c.pi_js_undefined(), &.{})); }
+/// Inspect only the retained native record; no guest lookup or evaluation.
+pub fn verifyNoVisits(original_record: c.JSValue, comptime slots: anytype) !void {
+    const record = recordOf(original_record);
+    inline for (slots) |slot| try std.testing.expectEqual(@as(u32, 0), record.visits[slot]);
+}
 pub fn verifyActualRetirementFatal(engine: *x.em.Engine, original_record: c.JSValue, slot: usize) !void {
     const record = recordOf(original_record);
     try std.testing.expectEqual(@as(u32, 1), record.counts[slot]);
