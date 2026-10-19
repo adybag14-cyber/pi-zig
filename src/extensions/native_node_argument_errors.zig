@@ -156,3 +156,16 @@ pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expressio
 /// Original primordial functions retained by the completed internal/errors owner.
 pub fn reflectApply(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "reflect_apply")}); }
 pub fn arrayUnshift(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "array_unshift")}); }
+
+/// The exact StringPrototypeEndsWith already owned by the completed message
+/// declaration. Consumers never resnapshot a mutable public prototype here.
+pub fn stringEndsWith(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, stringEndsWithBody, .{}); }
+fn stringEndsWithBody(s: *Scope) !c.JSValue {
+    try s.pending();
+    const record = s.engine.native_module_values.get(key) orelse return error.ActualInternalErrorsNotInitialized;
+    try ready(s, record);
+    const message = try s.get(record, "invalid_arg_type_message");
+    const roots = try @import("native_node_module_callable.zig").capturedRoots(s.engine, message);
+    if (roots.len != 1) return error.ActualArgumentMessageOwnerRequired;
+    return a.duplicate(s.engine, try s.get(roots[0], "endsWith"));
+}

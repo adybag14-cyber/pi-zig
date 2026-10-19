@@ -1,0 +1,77 @@
+{
+  "status": "authored source-only component; no observer execution or candidate acceptance",
+  "node_version": "v24.14.0",
+  "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "original_executable": "C:/Program Files/nodejs/node.exe",
+  "original_executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "primary_authority": "verification/node-module-constructor-sourceonly-20261016/authority/primary-authority.json",
+  "primary_authority_sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4",
+  "accepted_original_summary": "verification/node-jiti-commonjs-core-sourceonly-20261017/node24-original-authority.json",
+  "accepted_original_summary_sha256": "FAB15C3C1A949DF938EEEF92EFAB83CA9759455E7DC205FED906335B75A92AA1",
+  "accepted_original_bytes": 22201,
+  "accepted_original_sha256": "F982B6E1D49128FFE78478DCD6F2FA04D298F7CBDE79BC9EE8288E40864AE967",
+  "selected": [
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__cjs__loader.js.txt",
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB",
+      "ranges": [
+        [
+          302,
+          307
+        ],
+        [
+          338,
+          348
+        ],
+        [
+          415,
+          456
+        ],
+        [
+          817,
+          917
+        ],
+        [
+          1978,
+          2030
+        ],
+        [
+          2121,
+          2131
+        ]
+      ]
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__helpers.js.txt",
+      "sha256": "A6DC622FC53AC9D7D99EE95B54E7EC146384F3B35A6DFFFE22D828FA98C1565D",
+      "ranges": [
+        [
+          144,
+          188
+        ]
+      ]
+    },
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__util.js.txt",
+      "sha256": "A6A3FED1D2DE1050CB8B119A2D792246E37ABDEA4099D90D6994D894F506C429",
+      "ranges": [
+        [
+          114,
+          173
+        ]
+      ]
+    }
+  ],
+  "declared_native_controls": 24,
+  "declared_independent_node_observers": 17,
+  "source_execution": false,
+  "native_build": false,
+  "native_runtime": false,
+  "explicit_open": [
+    "Shared mutable synchronous parameter/borrowed-argv retirement, including _nodeModulePaths from reassignment",
+    "Actual constructor-realm Object prototype fallback bridge",
+    "Complete same-Module loader handlers, public node:module publication, Jiti, TS/ESM/TLA",
+    "Cross-version parity of shared v24.13 internal/errors and file-URL dependencies outside these selected v24.14 bodies",
+    "Broader Node private property/proxy behavior beyond the existing private parent owner"
+  ]
+}

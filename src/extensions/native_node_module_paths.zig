@@ -1,74 +1,118 @@
-//! Node24.14 loader.js _nodeModulePaths. Source UTF16 operations use captured
-//! primordials; no UTF8/CESU8 filesystem round trip or split-path approximation.
-const v = @import("native_ai_provider_values.zig");
-const c = v.c;
-const Scope = v.Scope;
-const nm = [_]i32{ 115, 101, 108, 117, 100, 111, 109, 95, 101, 100, 111, 110 };
-const nm_len: i32 = nm.len;
-fn binary(engine: *v.em.Engine, operation: c_int, left: c.JSValue, right: c.JSValue) !c.JSValue { return engine.checked(c.JS_PiBinaryOperator(engine.context, operation, left, right)); }
-fn code(s: *Scope, owner: c.JSValue, from: c.JSValue, index: c.JSValue) !c.JSValue { return s.call(try s.get(owner, "charCodeAt"), from, &.{index}); }
-fn equalNumber(engine: *v.em.Engine, value: c.JSValue, number: i32) bool { return c.JS_IsStrictEqual(engine.context, value, c.JS_NewInt32(engine.context, number)); }
-fn push(s: *Scope, owner: c.JSValue, paths: c.JSValue, value: c.JSValue) !void { _ = try s.call(try s.get(owner, "arrayPush"), paths, &.{value}); }
-fn singleton(s: *Scope, value: c.JSValue) !c.JSValue {
-    const result = try s.array();
-    if (c.JS_DefinePropertyValueUint32(s.engine.context, result, 0, c.JS_DupValue(s.engine.context, value), c.JS_PROP_C_W_E | c.JS_PROP_THROW) < 0) return v.js.capture(s.engine);
-    return c.JS_DupValue(s.engine.context, result);
+// Copyright Joyent, Inc. and other Node contributors. MIT; retained Node LICENSE.
+//! Actual Node v24.14 loader.js _nodeModulePaths. The live path.resolve call
+//! precedes the retained UTF-16 primordials and the actual reverse scan.
+const a = @import("native_node_argument_values.zig");
+const v = a.v;
+const c = a.c;
+const Scope = a.Scope;
+const Frame = a.frames.Frame(enum { from, paths, index, last, code });
+const nm_len: i32 = 12;
+fn number(s: *Scope, value: i32) c.JSValue { return c.JS_NewInt32(s.engine.context, value); }
+fn equalNumber(s: *Scope, value: c.JSValue, expected: i32) bool { return s.equal(value, number(s, expected)); }
+fn resolve(s: *Scope, owner: c.JSValue, from: c.JSValue) !c.JSValue {
+    const paths = try s.get(owner, "paths");
+    const function = try s.get(paths, "resolve");
+    return a.duplicate(s.engine, try s.call(function, paths, &.{from}));
 }
+fn code(s: *Scope, owner: c.JSValue, from: c.JSValue, index: c.JSValue) !c.JSValue {
+    return a.duplicate(s.engine, try s.call(try s.get(owner, "charCodeAt"), from, &.{index}));
+}
+fn indexFromLength(s: *Scope, from: c.JSValue, subtract: i32) !c.JSValue {
+    return a.duplicate(s.engine, try s.binary(1, try s.get(from, "length"), number(s, subtract)));
+}
+fn drivePart(s: *Scope, owner: c.JSValue, from: c.JSValue, subtract: i32, expected: i32) !c.JSValue {
+    const function = try s.get(owner, "charCodeAt");
+    const index = try s.own(try a.expression(s.engine, indexFromLength, .{ from, subtract }));
+    return a.boolean(s, equalNumber(s, try s.call(function, from, &.{index}), expected));
+}
+fn singleton(s: *Scope, value: c.JSValue) !c.JSValue {
+    const result = try a.array(s);
+    try a.index(s, result, 0, value);
+    return a.duplicate(s.engine, result);
+}
+fn rootWindows(s: *Scope, owner: c.JSValue, from: c.JSValue) !c.JSValue {
+    const value = try s.binary(0, from, try s.get(owner, "bareNodeModules"));
+    return singleton(s, value);
+}
+fn rootPosix(s: *Scope, owner: c.JSValue) !c.JSValue {
+    return singleton(s, try s.get(owner, "rootNodeModules"));
+}
+fn within(s: *Scope, index: c.JSValue) !c.JSValue {
+    return a.boolean(s, s.truthy(try s.binary(7, index, number(s, 0))));
+}
+fn suffixBody(s: *Scope, owner: c.JSValue, from: c.JSValue, last: c.JSValue, windows: bool) !c.JSValue {
+    const function = try s.get(owner, "stringSlice");
+    const prefix = try s.own(try a.call(s.engine, function, from, &.{ number(s, 0), last }));
+    return a.duplicate(s.engine, try s.binary(0, prefix,
+        try s.get(owner, if (windows) "windowsNodeModules" else "posixNodeModules")));
+}
+fn pushPath(s: *Scope, owner: c.JSValue, frame: *Frame, windows: bool) !c.JSValue {
+    // The captured push callee is selected before the sliced suffix argument.
+    const function = try s.get(owner, "arrayPush");
+    const value = try s.own(try a.expression(s.engine, suffixBody,
+        .{ owner, frame.get(.from), frame.get(.last), windows }));
+    _ = try s.call(function, frame.get(.paths), &.{value});
+    return c.pi_js_undefined();
+}
+fn pushRoot(s: *Scope, owner: c.JSValue, paths: c.JSValue) !c.JSValue {
+    _ = try s.call(try s.get(owner, "arrayPush"), paths, &.{try s.get(owner, "rootNodeModules")});
+    return c.pi_js_undefined();
+}
+fn decrement(s: *Scope, value: c.JSValue) !c.JSValue {
+    try s.pending();
+    return a.duplicate(s.engine, try s.checked(c.JS_PiDecrement(s.engine.context, value)));
+}
+fn matches(s: *Scope, owner: c.JSValue, matched: i32, current: c.JSValue) !c.JSValue {
+    const chars = try s.get(owner, "nmChars");
+    const expected = try s.getKey(chars, number(s, matched));
+    return a.boolean(s, s.equal(expected, current));
+}
+fn newPaths(s: *Scope) !c.JSValue { return a.duplicate(s.engine, try a.array(s)); }
 pub fn invoke(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var s: Scope = .{ .engine = engine }; defer s.deinit();
-    const owner = roots[0];
-    const paths_object = try s.get(owner, "paths");
-    const from = try s.invoke(paths_object, "resolve", &.{if (args.len > 0) args[0] else c.pi_js_undefined()});
+    var s = Scope.init(engine);
+    const frame = Frame.create(&s.values) catch |err| return s.finish(err);
+    return a.finishFrame(&s, frame, body(&s, frame, roots[0], a.arg(args, 0)));
+}
+fn body(s: *Scope, frame: *Frame, owner: c.JSValue, original: c.JSValue) !c.JSValue {
+    try frame.take(.from, a.expression(s.engine, resolve, .{ owner, original }));
     const windows = s.truthy(try s.get(owner, "windows"));
     if (windows) {
-        const first = try s.own(try binary(engine, 1, try s.get(from, "length"), c.JS_NewInt32(engine.context, 1)));
-        if (equalNumber(engine, try code(&s, owner, from, first), 92)) {
-            const second = try s.own(try binary(engine, 1, try s.get(from, "length"), c.JS_NewInt32(engine.context, 2)));
-            if (equalNumber(engine, try code(&s, owner, from, second), 58)) {
-                return singleton(&s, try s.own(try binary(engine, 0, from, try s.get(owner, "bareNodeModules"))));
-            }
-        }
-    } else if (s.equal(from, try s.get(owner, "rootSlash"))) {
-        return singleton(&s, try s.get(owner, "rootNodeModules"));
+        if (try a.condition(s.engine, drivePart, .{ owner, frame.get(.from), @as(i32, 1), @as(i32, 92) }) and
+            try a.condition(s.engine, drivePart, .{ owner, frame.get(.from), @as(i32, 2), @as(i32, 58) }))
+            return a.expression(s.engine, rootWindows, .{ owner, frame.get(.from) });
+    } else if (s.equal(frame.get(.from), try s.get(owner, "rootSlash"))) {
+        return a.expression(s.engine, rootPosix, .{owner});
     }
-    const paths = try s.array();
-    var index = try binary(engine, 1, try s.get(from, "length"), c.JS_NewInt32(engine.context, 1));
-    defer engine.freeValue(index);
-    var last = try v.js.get(engine, from, "length");
-    defer engine.freeValue(last);
+    try frame.take(.paths, a.expression(s.engine, newPaths, .{}));
+    try frame.take(.index, a.expression(s.engine, indexFromLength, .{ frame.get(.from), @as(i32, 1) }));
     var matched: i32 = 0;
+    try frame.take(.last, a.field(s.engine, frame.get(.from), "length"));
     var steps: usize = 0;
-    while (true) {
-        var frame: Scope = .{ .engine = engine }; defer frame.deinit();
-        const condition = try frame.own(try binary(engine, 7, index, c.JS_NewInt32(engine.context, 0)));
-        if (!frame.truthy(condition)) break;
-        steps +|= 1;
-        if (engine.cancelled.load(.acquire) or (steps % 256 == 0 and budget: {
-            engine.interrupts +|= 1;
-            break :budget engine.interrupts > engine.options.interrupt_budget;
-        })) {
-            _ = try engine.checked(c.JS_ThrowInternalError(engine.context, "interrupted"));
-            unreachable;
-        }
-        const current = try code(&frame, owner, from, index);
-        const separator = equalNumber(engine, current, 47) or (windows and (equalNumber(engine, current, 92) or equalNumber(engine, current, 58)));
+    while (try a.condition(s.engine, within, .{frame.get(.index)})) {
+        try @import("native_node_commonjs_interrupt.zig").step(s.engine, &steps);
+        // This const belongs to the for body. Its previous original slot
+        // survives the update/condition; true body entry resets it first.
+        try frame.clear(.code);
+        try frame.take(.code, a.expression(s.engine, code,
+            .{ owner, frame.get(.from), frame.get(.index) }));
+        const current = frame.get(.code);
+        const separator = if (windows)
+            equalNumber(s, current, 92) or equalNumber(s, current, 47) or equalNumber(s, current, 58)
+        else
+            equalNumber(s, current, 47);
         if (separator) {
-            if (matched != nm_len) {
-                const prefix = try frame.call(try frame.get(owner, "stringSlice"), from, &.{ c.JS_NewInt32(engine.context, 0), last });
-                const value = try frame.own(try binary(engine, 0, prefix, try frame.get(owner, if (windows) "windowsNodeModules" else "posixNodeModules")));
-                try push(&frame, owner, paths, value);
-            }
-            const retained = c.JS_DupValue(engine.context, index);
-            engine.freeValue(last);
-            last = retained;
+            if (matched != nm_len) _ = try a.expression(s.engine, pushPath, .{ owner, frame, windows });
+            // Source last = i stores the new value before retiring the old.
+            try frame.copy(.last, frame.get(.index));
             matched = 0;
         } else if (matched != -1) {
-            if (matched >= 0 and matched < nm_len and equalNumber(engine, current, nm[@intCast(matched)])) matched += 1 else matched = -1;
+            if (try a.condition(s.engine, matches, .{ owner, matched, current }))
+                matched += 1
+            else
+                matched = -1;
         }
-        const next = try engine.checked(c.JS_PiDecrement(engine.context, index));
-        engine.freeValue(index);
-        index = next;
+        try frame.take(.index, a.expression(s.engine, decrement, .{frame.get(.index)}));
     }
-    if (!windows) try push(&s, owner, paths, try s.get(owner, "rootNodeModules"));
-    return c.JS_DupValue(engine.context, paths);
+    if (!windows) _ = try a.expression(s.engine, pushRoot, .{ owner, frame.get(.paths) });
+    return a.duplicate(s.engine, frame.get(.paths));
 }
