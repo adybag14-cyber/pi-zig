@@ -1,0 +1,43 @@
+{
+  "schema": "native-node-options-v14b-compiler-correction-v1",
+  "status": "source-only; no native, Node, AST, metadata, or generator execution by owner",
+  "owned_tree": "C:/Users/adyba/pi-zig/worktrees/modules-io-resume-20261018",
+  "parent_commit": "b5341657f6179ffe1017e2a5a44e1bd22afcb54f",
+  "main_batch_revision": "cfb628435f5f8b7f8fc3ce728a0cb883592c088e",
+  "source": {
+    "path": "src/extensions/native_node_options_config.zig",
+    "before_sha256": "31D231FB61A8C61AAA911A69F0D9C4889F211B9DF9DD4DA27D4C3DFB0B43B75B",
+    "before_bytes": 17515,
+    "after_sha256": "c6bad1e2c2eed4d0679eb2e0c81aef0a57e2de7216e2f7bbe07a913430c07835",
+    "after_bytes": 17547
+  },
+  "delta": {
+    "before": "        if (name_bytes.len > 2) for (name_bytes[2..]) |*byte| {\n            if (byte.* == '_') byte.* = '-';\n        }",
+    "after": "        if (name_bytes.len > 2) {\n            for (name_bytes[2..]) |*byte| {\n                if (byte.* == '_') byte.* = '-';\n            }\n        }",
+    "reverse_readback_identical": true
+  },
+  "cause": {
+    "path": "C:/Users/adyba/pi-zig/evidence/root-vm-io-oauth-options-fresh-v14b-buildquery-20261019-200135/groups/native-vm-async-arguments/compile.stderr.log",
+    "sha256": "A95ADCD5AA40ED86C1A09B393E90B8A6234008799FE7184D88F8BA1EF8BE0928",
+    "bytes": 19416,
+    "diagnostic": "native_node_options_config.zig:277:10: expected ';' or 'else' after statement"
+  },
+  "semantics": "The existing name_bytes length guard now has an explicit outer block enclosing the same loop and underscore-to-hyphen mutation. No parser/default/ownership/control behavior changes.",
+  "peer": {
+    "reviewer": "/root",
+    "status": "closed",
+    "scope": "Complete one-hunk compiler-only source delta; exact reverse bytes equal frozen Main source."
+  },
+  "original_batch": {
+    "status": "independently closed negative by Root",
+    "closure_sha256_prefix": "CDC16824",
+    "sealed_current_files": 32727,
+    "native_instances_absent": 7,
+    "raw_metadata_retained": 45
+  },
+  "exclusions": [
+    "Pending serializer-tail production and four appended controls are not part of this compiler correction.",
+    "No test declaration, target, filter, artifact name, build wiring, compiler, VM, or original negative evidence changes."
+  ],
+  "target_metadata_changed": false
+}
