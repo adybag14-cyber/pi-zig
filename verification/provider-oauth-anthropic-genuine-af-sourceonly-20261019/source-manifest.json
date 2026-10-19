@@ -1,0 +1,135 @@
+{
+  "schema": 1,
+  "status": "finite_source_reviews_closed_unexecuted",
+  "recorded_utc": "2026-10-19T13:46:50.644371+00:00",
+  "base_head": "58aabfebf7f92f0abc45f6d730c389f6660bb0f3",
+  "authority": {
+    "source_commit": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
+    "source_path": "packages/ai/src/auth/oauth/anthropic.ts",
+    "accepted_runtime_path": "C:\\Users\\adyba\\pi-zig\\upstream\\runtime\\19cb534-full-prebuild-root-full28293-v3-20261017-203626\\packages\\ai\\dist\\auth\\oauth\\anthropic.js",
+    "files": [
+      {
+        "path": "verification/provider-oauth-anthropic-genuine-af-sourceonly-20261019/authority/anthropic.c268.ts",
+        "bytes": 9698,
+        "sha256": "F72CD3BDB5D4FC8CC647487A69ED38464548C397062FBC2ACFCEF6431C9C0B0C"
+      },
+      {
+        "path": "verification/provider-oauth-anthropic-genuine-af-sourceonly-20261019/authority/anthropic.accepted.js",
+        "bytes": 9936,
+        "sha256": "835268CAED5DAB6A0C7F157C551ED59A00635C76305E6E0C41B579C41AA07BC5"
+      },
+      {
+        "path": "verification/provider-oauth-anthropic-genuine-af-sourceonly-20261019/authority/anthropic.accepted.js.map",
+        "bytes": 18817,
+        "sha256": "118657ED670F3455D080A52F66B839B3EECDEC7A4E11F5629A079DC738F58636"
+      }
+    ],
+    "accepted_map_sources_content_equals_exact_source": true,
+    "fixture_derivation": "Complete accepted OAuth module body, retaining statement order, with only its three import declarations, export marker and sourceMappingURL comment removed; wrapped by a controlled lexical-import factory and a test-only private-body projection. Source fixture is not production."
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_ai_oauth_anthropic.zig",
+      "bytes": 59535,
+      "sha256": "6360A162F356E988DEAA60EAACF74851E92E853EE28B7E6B09C850C09A733F98"
+    },
+    {
+      "path": "src/native_ai_oauth_anthropic_genuine_af_test.zig",
+      "bytes": 16920,
+      "sha256": "5F407E4DFFBC1C56CB07DFA938B5E3C3DB82B5C0C1E7FBD6E3E5E5D244228BE2"
+    },
+    {
+      "path": "src/extensions/fixtures/oauth-anthropic-observer.mjs",
+      "bytes": 20562,
+      "sha256": "B8C4A5C08257F57FC9A0424FD22DB7A55BD7037B3C3EFE5DAE799605FD03E3E8"
+    },
+    {
+      "path": "src/extensions/fixtures/oauth-anthropic-c268-source.mjs",
+      "bytes": 10010,
+      "sha256": "6795E92AB867AB8EA89832A5A8898C8F2C7D286D3EB31C6A703D90C7C5FB039E"
+    }
+  ],
+  "build": {
+    "target": "build-native-ai-oauth-anthropic-genuine-af",
+    "source_root": "src/native_ai_oauth_anthropic_genuine_af_test.zig",
+    "filter": "native OAuth Anthropic",
+    "artifact": "native-ai-oauth-anthropic-genuine-af",
+    "install_only": true,
+    "declared_controls": 25,
+    "names": [
+      "native OAuth Anthropic actual ordinary and genuine async function shapes",
+      "native OAuth Anthropic postJson exact request construction Await and response order",
+      "native OAuth Anthropic postJson preserves request and response abrupt completions",
+      "native OAuth Anthropic actual exchange payload fields expiry and failures",
+      "native OAuth Anthropic actual token refresh payload fields expiry and failures",
+      "native OAuth Anthropic parser actual empty raw hash URL and query paths",
+      "native OAuth Anthropic parser catches only the URL path and uses real iterator close",
+      "native OAuth Anthropic error details repeated fields and explicit String remain actual",
+      "native OAuth Anthropic error templates eagerly coerce before later getters",
+      "native OAuth Anthropic browser login actual callback options and manual path",
+      "native OAuth Anthropic browser callback fallback uses preferred then ephemeral ports",
+      "native OAuth Anthropic browser startup failure precedes try and final callback close",
+      "native OAuth Anthropic browser finally runs for notify input state and exchange failures",
+      "native OAuth Anthropic copy code login uses actual prompt and has no callback owner",
+      "native OAuth Anthropic public login selects actual browser and copy code bodies",
+      "native OAuth Anthropic refresh stays ordinary and throws a credential getter synchronously",
+      "native OAuth Anthropic zero Await toAuth uses intrinsic promise and raw access identity",
+      "native OAuth Anthropic template raw value retires before next substitution without concat",
+      "native OAuth Anthropic same-operation private DATA remains an ordinary rejection",
+      "native OAuth Anthropic current native fatal preempts exchange catch and guest continuation",
+      "native OAuth Anthropic request expression retires JSON and body owners before later work",
+      "native OAuth Anthropic response text callee retires before its result is adopted",
+      "native OAuth Anthropic escaped retry retains the actual suspended activation through GC",
+      "native OAuth Anthropic terminal retry cells retain only their closed captured bindings",
+      "native OAuth Anthropic explicit throws turn retained flagged Error constructor DATA into a pending event"
+    ],
+    "actual_ordered_metadata": null,
+    "execution": "not_run"
+  },
+  "implementation": [
+    "Actual ordinary parser/detail helpers, post/exchange/refresh async bodies, browser/copy-code login async bodies and public provider methods.",
+    "Intrinsic template coercion completes and retires each raw expression before the next substitution; explicit Source global String(errno) remains live.",
+    "Parser retains the actual catch boundary and two-binding iterator destructuring with IteratorClose.",
+    "Browser captures use the shared asynchronous Frame lease and real captured argument/local cells; terminal close detaches captures while escaped retry closures retain only closed bindings.",
+    "Production uses genuine callback-server, PKCE and provider-environment imports in Source order; the separate builtin.is_test factory reaches the same bodies with controlled lexical inputs without changing production cache publication.",
+    "Every explicit Error-constructor throw calls actual JS_Throw on its owned result before enclosing cleanup. Forwarded caught and Await rejections remain completion DATA. Control25 covers ten explicit-throw routes with a retained flagged successful Error-constructor result and native reads of held first-statement progress fields."
+  ],
+  "finite_peers": [
+    {
+      "peer": "/root/sdk_owners",
+      "status": "closed",
+      "scope": "Intrinsic template substitutions; copy-code/public login and controls10\u201317; successor BrowserFrame capture correction and actual-GC controls23\u201324. Production F3CD910F, root DE931704, observer B0580C8D. Final five browser/copy/public explicit-throw site deltas also closed at6360A162."
+    },
+    {
+      "peer": "/root/modules_io",
+      "status": "closed",
+      "scope": "Parser/details and controls1,6\u20139,18\u201319; accepted body versus derived fixture. Successor browser edit does not alter this assigned slice."
+    },
+    {
+      "peer": "/root/vm_foundation",
+      "status": "closed",
+      "scope": "Complete postJson/exchange/refresh and controls2\u20135,20\u201322; seven explicit-throw deltas; causal control20 first-statement progress correction and control25 ten-route flagged constructor regression. Final production6360A162, root5F407E4D, observerB8C4A5C0."
+    }
+  ],
+  "qualification": {
+    "source_review_only": true,
+    "native_compile_run": false,
+    "node_reference_run": false,
+    "native_runtime_run": false,
+    "physical_http_run": false,
+    "account_login_run": false,
+    "whole_application_run": false,
+    "release_acceptance": false
+  },
+  "remaining_gates": [
+    "Intake with the newer shared C/header/Frame and optional sync-argument ABI; compile and execute only after the full candidate and control set is frozen.",
+    "Build on a clean pinned Main revision, decode actual complete ordered test metadata, independently verify exact artifact and native-process closure, and separately execute those exact artifacts.",
+    "Compose and exercise real node:http/net/Socket/C transport, genuine PKCE and environment with the provider through the actual application graph.",
+    "Qualify whole-application behavior and native recursion-budget equivalence separately; these controlled bodies do not establish those properties.",
+    "Complete Windows/Linux/macOS platform, portable SQLite and release installation gates from the roadmap."
+  ],
+  "withdrawn_draft": {
+    "path": "verification/native-anthropic-template-authority-20261019/withdrawn-live-concat-draft/native_ai_oauth_anthropic.zig",
+    "reason": "The former live String.prototype.concat assumption was withdrawn. Intrinsic template conversion is used. Original draft/negative evidence remains preserved outside this intake."
+  }
+}
