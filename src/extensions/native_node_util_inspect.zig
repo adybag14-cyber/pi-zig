@@ -12,6 +12,7 @@ const Scope = ops.Scope;
 const owned = @import("native_sdk_owned_completion.zig");
 const typed = @import("native_node_inspect_typed_array.zig");
 const colors = @import("native_node_inspect_colors.zig");
+const formatter = @import("native_node_inspect_format.zig");
 const option_names = .{ "showHidden", "depth", "colors", "customInspect", "showProxy", "maxArrayLength", "maxStringLength", "breakLength", "compact", "sorted", "getters", "numericSeparator" };
 pub const Inputs = struct {
     string: c.JSValue, object: c.JSValue, object_prototype: c.JSValue,
@@ -29,6 +30,8 @@ pub const Inputs = struct {
     object_define_property: c.JSValue,
     /// Original typed-array getters, constructors and numeric/layout imports.
     typed_arrays: c.JSValue,
+    /// Original format conversion/string/JSON callables captured before guest code.
+    formatting: c.JSValue,
     pub fn deinit(self: Inputs, engine: *v.em.Engine) void {
         var completion = owned.Completion.initVoid(engine, {});
         inline for (std.meta.fields(Inputs)) |field| completion.release(@field(self, field.name));
@@ -82,9 +85,10 @@ fn captureBody(s: *v.Scope) !Inputs {
         try ops.index(s, known, @intCast(i), entry);
     }
     const typed_arrays = try ops.own(s, try typed.capture(engine, global));
+    const formatting = try ops.own(s, try formatter.capture(engine, global));
     return .{ .string = c.JS_DupValue(engine.context, string), .object = c.JS_DupValue(engine.context, object), .object_prototype = c.JS_DupValue(engine.context, object_prototype), .function_to_string = c.JS_DupValue(engine.context, function_to_string),
         .custom_symbol = c.JS_DupValue(engine.context, custom), .to_primitive = c.JS_DupValue(engine.context, to_primitive), .to_string_tag = c.JS_DupValue(engine.context, to_string_tag), .has_instance = c.JS_DupValue(engine.context, has_instance),
-        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays) };
+        .well_known = c.JS_DupValue(engine.context, known), .built_in_names = c.JS_DupValue(engine.context, names), .object_assign = c.JS_DupValue(engine.context, object_assign), .object_define_property = c.JS_DupValue(engine.context, object_define_property), .typed_arrays = c.JS_DupValue(engine.context, typed_arrays), .formatting = c.JS_DupValue(engine.context, formatting) };
 }
 pub const Exports = struct {
     inspect: c.JSValue, format: c.JSValue,
@@ -150,13 +154,15 @@ fn createBody(s: *v.Scope, inputs: Inputs) !Exports {
     const engine = s.engine;
     engine.native_exception_diagnostics_suppressed += 1; defer engine.native_exception_diagnostics_suppressed -= 1;
     try h.pending(engine);
-    if (!c.JS_IsFunction(engine.context, inputs.object_define_property) or !c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names) or !c.JS_IsObject(inputs.typed_arrays)) return error.RequiredActualInspectPrimordials;
+    if (!c.JS_IsFunction(engine.context, inputs.object_define_property) or !c.JS_IsFunction(engine.context, inputs.object_assign) or !c.JS_IsFunction(engine.context, inputs.string) or !c.JS_IsFunction(engine.context, inputs.object) or !c.JS_IsFunction(engine.context, inputs.function_to_string) or !c.JS_IsFunction(engine.context, inputs.has_instance) or !c.JS_IsSymbol(inputs.custom_symbol) or !c.JS_IsSymbol(inputs.to_primitive) or !c.JS_IsSymbol(inputs.to_string_tag) or !c.JS_IsArray(inputs.well_known) or !c.JS_IsObject(inputs.built_in_names) or !c.JS_IsObject(inputs.typed_arrays) or !c.JS_IsObject(inputs.formatting)) return error.RequiredActualInspectPrimordials;
     const lexical = try ops.nullObject(s);
     try h.put(engine, lexical, "typedArrays", try ops.own(s, try typed.create(engine, inputs.typed_arrays)));
     const defaults = try defaultOptions(s);
     const no_color = try ops.own(s, try f.create(engine, "stylizeNoColor", 1, true, noColor, &.{}));
     const roots = [_]c.JSValue{ lexical, defaults, inputs.string, inputs.object, inputs.object_prototype, inputs.custom_symbol, inputs.to_primitive, inputs.to_string_tag, inputs.has_instance, inputs.well_known, inputs.built_in_names, inputs.function_to_string, no_color };
     const inspect = try ops.own(s, try f.create(engine, "inspect", 2, true, inspectCall, &roots));
+    const classifier = try ops.own(s, try createStringClassifier(engine, inspect));
+    try h.put(engine, lexical, "formatter", try ops.own(s, try formatter.create(engine, inputs.formatting, inspect, classifier, defaults, no_color)));
     const format = try ops.own(s, try f.create(engine, "format", 0, true, formatCall, &roots));
     try h.put(engine, lexical, "inspect", inspect);
     try h.put(engine, inspect, "custom", inputs.custom_symbol);
@@ -552,32 +558,7 @@ fn inspectCallBody(s: *v.Scope, args: []const c.JSValue, roots: []const c.JSValu
     return c.JS_DupValue(engine.context, try context.formatValue(h.arg(args, 0), 0));
 }
 fn formatCall(engine: *v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    var stage = Scope.init(engine);
-    return stage.finish(formatCallBody(&stage.values, args, roots));
-}
-fn formatCallBody(s: *v.Scope, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
-    const engine = s.engine;
-    try h.pending(engine);
-    if (args.len == 0) return c.JS_DupValue(engine.context, try ops.bytes(s, ""));
-    const first = args[0];
-    if (c.JS_IsString(first) and args.len == 1) return c.JS_DupValue(engine.context, first);
-    if (args.len == 1) {
-        var context = try Context.init(s, roots, &.{first}); defer context.seen.deinit(engine.gpa);
-        return c.JS_DupValue(engine.context, try context.formatValue(first, 0));
-    }
-    // The actual static ERR_INVALID_FD registration has exactly one %s and
-    // one argument. Other public format profiles are not claimed by this leaf.
-    if (args.len != 2 or !try ops.same(s, first, "\"fd\" must be a positive integer: %s")) return error.RequiredAdditionalInspectFormatProfile;
-    const value = args[1]; var body: c.JSValue = undefined;
-    const separated = s.truthy(try h.get(s, roots[1], "numericSeparator"));
-    if (c.JS_IsNumber(value)) body = try primitive.number(s, value, separated) else if (c.JS_IsBigInt(value)) body = try primitive.bigint(s, value, separated) else if (!c.JS_IsObject(value) or c.JS_IsFunction(engine.context,value) or c.JS_IsNull(value) or !try hasBuiltInToString(s, roots, value)) {
-        body = try h.call(s, roots[2], c.pi_js_undefined(), &.{value});
-    } else {
-        const options = try ops.object(s); try h.put(engine, options, "compact", c.JS_NewInt32(engine.context, 3)); try h.put(engine, options, "colors", c.pi_js_bool(engine.context, 0)); try h.put(engine, options, "depth", c.JS_NewInt32(engine.context, 0));
-        var context = try Context.init(s, roots, &.{ value, options }); defer context.seen.deinit(engine.gpa);
-        body = try context.formatValue(value, 0);
-    }
-    return c.JS_DupValue(engine.context, try h.binary(s, .add, try ops.bytes(s, "\"fd\" must be a positive integer: "), body));
+    return formatter.call(engine, args, roots[0]);
 }
 fn hasBuiltInToString(s: *v.Scope, roots: []const c.JSValue, input: c.JSValue) !bool {
     var value = input;

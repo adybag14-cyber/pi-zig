@@ -1,5 +1,5 @@
-//! Twenty-four declared actual Node inspector entry/ownership controls.
-//! Sixteen ordinary observers also accept the pinned Source node:util inspector.
+//! Thirty-seven declared actual Node inspector/formatter entry/ownership controls.
+//! Ordinary observers also accept the pinned Source node:util inspect/format pair.
 //! Build installation, metadata, Source capture and runtime are separate steps.
 const std = @import("std");
 const v = @import("extensions/native_ai_provider_values.zig");
@@ -45,6 +45,7 @@ const Fixture = struct {
         const result = try created;
         errdefer result.deinit(engine);
         try publish(engine, "actualInspect", result.inspect);
+        try publish(engine, "actualFormat", result.format);
         try engine.bindFunction("actualInspectPrivateData", privateData, 0);
         try engine.bindFunction("actualInspectFlaggedData", flaggedData, 0);
         try engine.bindFunction("actualInspectFatalCleared", fatalCleared, 0);
@@ -365,5 +366,120 @@ test "native actual inspect typed output receiver retires before its length valu
         \\inspectAssert(reads===2&&conversions===1&&result==="Uint8Array(1) [ 9 ]","actual typed layout length and join reads");
     );
     try std.testing.expectEqual(@as(u32, 1), probe.releases);
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+}
+
+
+fn observeFormat(comptime name: []const u8) !void {
+    const fixture = try Fixture.init(); defer fixture.deinit();
+    try fixture.run(name ++ "(actualFormat,actualInspect);");
+}
+test "native actual inspect format ordinary shape and empty or single arguments" { try observeFormat("observeInspectFormatShape"); }
+test "native actual inspect format Host template percent scan and trailing arguments" { try observeFormat("observeInspectFormatPlaceholders"); }
+test "native actual inspect format conversion hints numeric defaults Symbol and BigInt" { try observeFormat("observeInspectFormatConversions"); }
+test "native actual inspect format shared inspector and actual placeholder option literals" { try observeFormat("observeInspectFormatInspection"); }
+test "native actual inspect format real rest Array inherited first index and skipped style value" { try observeFormat("observeInspectFormatRest"); }
+test "native actual inspect format retains genuine string numeric and JSON primordials" { try observeFormat("observeInspectFormatCaptured"); }
+test "native actual inspect format JSON lazy circular and ordinary catch identity" { try observeFormat("observeInspectFormatJson"); }
+test "native actual inspect format circular calibration uses actual assignment and first error line" { try observeFormat("observeInspectFormatCalibration"); }
+test "native actual inspect format JSON ordinary private DATA throw retains exact identity" {
+    const fixture = try Fixture.init(); defer fixture.deinit();
+    const generation = fixture.engine.native_allocation_generation;
+    try fixture.run(
+        \\globalThis.savedInspectData=actualInspectPrivateData();let observed;
+        \\try{actualFormat("%j",{toJSON(){throw savedInspectData;}});}catch(reason){observed=reason;}
+        \\inspectAssert(observed===savedInspectData,"ordinary private JSON throw identity");
+    );
+    const reason = try fixture.data(); defer fixture.engine.freeValue(reason);
+    try std.testing.expect(!c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(generation +% 1, fixture.engine.native_allocation_generation);
+    try std.testing.expect(!c.JS_HasException(fixture.engine.context));
+    try fixture.engine.checkNativeEntry();
+}
+test "native actual inspect format JSON successful flagged return remains DATA" {
+    const fixture = try Fixture.init(); defer fixture.deinit();
+    const generation = fixture.engine.native_allocation_generation;
+    try fixture.run(
+        \\globalThis.savedInspectData=actualInspectFlaggedData();
+        \\const expected=JSON.stringify(savedInspectData);
+        \\inspectAssert(actualFormat("%j",{toJSON(){return savedInspectData;}})===expected,"successful flagged JSON return remains ordinary DATA");
+    );
+    const reason = try fixture.data(); defer fixture.engine.freeValue(reason);
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(generation +% 1, fixture.engine.native_allocation_generation);
+    try std.testing.expect(!c.JS_HasException(fixture.engine.context));
+    try fixture.engine.checkNativeEntry();
+}
+test "native actual inspect format JSON actual fatal bypasses calibration and guest catch" {
+    const fixture = try Fixture.init(); defer fixture.deinit();
+    const progress = try typedProgress(fixture.engine); defer fixture.engine.freeValue(progress);
+    const generation = fixture.engine.native_allocation_generation;
+    const result = fixture.run(
+        \\Object.defineProperty(Object.prototype,"a",{configurable:true,set(){typedInspectProgress.later=true;}});
+        \\const value={toJSON(){typedInspectProgress.reads++;actualInspectFatalCleared();typedInspectProgress.later=true;return 0;}};
+        \\try{actualFormat("%j",value);}catch(reason){typedInspectProgress.caught=true;throw reason;}
+    );
+    try std.testing.expectError(error.JavaScriptException, result);
+    const first = fixture.engine.native_allocation_exception orelse return error.MissingActualFormatJsonFatal;
+    const reason = fixture.engine.captured_exception orelse return error.MissingActualFormatJsonCaptured;
+    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, first, reason));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(generation +% 1, c.pi_js_native_allocation_error_generation(reason));
+    try std.testing.expectEqual(@as(u32, 1), try typedReadCount(fixture.engine, progress));
+    try typedOwnFalse(fixture.engine, progress, "later");
+    try typedOwnFalse(fixture.engine, progress, "caught");
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+}
+const formatCaseRetirement =
+    \\const old=Object.getOwnPropertyDescriptor(Array.prototype,"0"),define=Object.defineProperty;
+    \\let result;
+    \\try{
+    \\ define(Array.prototype,"0",{configurable:true,get(){
+    \\  define(this,"0",{value:"%s %s",writable:true,enumerable:true,configurable:true});
+    \\  define(this,"1",{configurable:true,get(){
+    \\   typedInspectProgress.reads++;
+    \\   return {owner:actualInspectLengthHolder(),[Symbol.toPrimitive](){return "first";}};
+    \\  }});
+    \\  define(this,"2",{configurable:true,get(){
+    \\   typedInspectProgress.later=true;
+    \\   inspectAssert(actualInspectLengthCount()===1,"prior matching case local retired before second argument getter");
+    \\   return "second";
+    \\  }});
+    \\  return "%s %s";
+    \\ }});
+    \\ try{result=actualFormat();}catch(reason){typedInspectProgress.caught=true;throw reason;}
+    \\}finally{if(old)define(Array.prototype,"0",old);else delete Array.prototype[0];}
+    \\inspectAssert(result==="first second","actual matching case scan after local retirement");
+;
+test "native actual inspect format matching case local retires before its next index getter" {
+    const fixture = try Fixture.init();
+    var probe: TypedProbe = .{ .engine = fixture.engine };
+    defer { probe.disable(); fixture.deinit(); typed_probe = null; }
+    try typedSetup(&probe);
+    const progress = try typedProgress(fixture.engine); defer fixture.engine.freeValue(progress);
+    const generation = fixture.engine.native_allocation_generation;
+    try fixture.run(formatCaseRetirement);
+    try std.testing.expectEqual(@as(u32, 1), probe.releases);
+    try std.testing.expectEqual(@as(u32, 1), try typedReadCount(fixture.engine, progress));
+    try std.testing.expectEqual(generation, fixture.engine.native_allocation_generation);
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+}
+test "native actual inspect format matching case retirement fatal stops next getter and catch" {
+    const fixture = try Fixture.init();
+    var probe: TypedProbe = .{ .engine = fixture.engine, .fatal = true };
+    defer { probe.disable(); fixture.deinit(); typed_probe = null; }
+    try typedSetup(&probe);
+    const progress = try typedProgress(fixture.engine); defer fixture.engine.freeValue(progress);
+    const generation = fixture.engine.native_allocation_generation;
+    try std.testing.expectError(error.JavaScriptException, fixture.run(formatCaseRetirement));
+    const first = probe.first orelse return error.MissingActualFormatCaseFatal;
+    const reason = fixture.engine.captured_exception orelse return error.MissingActualFormatCaseCaptured;
+    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, first, reason));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expectEqual(generation +% 1, c.pi_js_native_allocation_error_generation(reason));
+    try std.testing.expectEqual(@as(u32, 1), probe.releases);
+    try std.testing.expectEqual(@as(u32, 1), try typedReadCount(fixture.engine, progress));
+    try typedOwnFalse(fixture.engine, progress, "later");
+    try typedOwnFalse(fixture.engine, progress, "caught");
     try std.testing.expect(fixture.engine.native_fatal_invocation == null);
 }
