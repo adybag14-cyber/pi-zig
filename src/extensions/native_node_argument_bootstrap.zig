@@ -74,6 +74,7 @@ fn prepareBody(s: *a.Scope) ![7]c.JSValue {
             .marker = try s.get(system_errors, "marker"), .assert_function = assert_function,
             .capture_stack_trace = try s.get(error_constructor, "captureStackTrace"),
             .reflect_apply = try s.get(try s.get(global, "Reflect"), "apply"),
+            .array_unshift = try s.get(try s.get(try s.get(global, "Array"), "prototype"), "unshift"),
             .invalid_arg_type_message = actual_messages.invalid_arg_type,
             .invalid_arg_value_message = actual_messages.invalid_arg_value,
             .internal_assertion_message = actual_messages.internal_assertion,

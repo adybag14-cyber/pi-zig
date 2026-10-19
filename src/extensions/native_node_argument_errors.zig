@@ -15,6 +15,7 @@ pub const Inputs = struct {
     assert_function: c.JSValue,
     capture_stack_trace: c.JSValue,
     reflect_apply: c.JSValue,
+    array_unshift: c.JSValue,
     invalid_arg_type_message: c.JSValue,
     invalid_arg_value_message: c.JSValue,
     internal_assertion_message: c.JSValue,
@@ -151,3 +152,7 @@ pub fn hiddenValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine
 pub fn rangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "rangeValue")}); }
 pub fn hiddenRangeValue(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "hiddenRangeValue")}); }
 pub fn validateAbortSignal(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "validateAbortSignal")}); }
+
+/// Original primordial functions retained by the completed internal/errors owner.
+pub fn reflectApply(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "reflect_apply")}); }
+pub fn arrayUnshift(engine: *v.em.Engine) !c.JSValue { return a.expression(engine, memberBody, .{@as([*:0]const u8, "array_unshift")}); }
