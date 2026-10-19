@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "326421426481c938c0893084e2654551f205b8a4",
+  "current_source_head_at_record": "713cca3bc2768173f6f46554c593d9756219e69a",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-19T16:36:09.312772+00:00",
-  "record_note": "Active port; approved storage cleanup is complete. Fresh V9 BuildQuery accepted all13 groups/306 actual metadata tests. Original strict RuntimeOnly completed48 tests in2 groups, with9 retirement failures, and stopped; the separately reviewed diagnostic then completed the other258 tests with72 failures. Both whole-input/current-owner closures are independently sealed, and none of those diagnostic observations qualify. Source-reviewed fixes for actual async lexical receiver retirement, individual block capture detachment, Node process.execPath, the real Windows physical symlink fixture request, exact argument-error spelling and tool-search cancellation are integrated. Captured host diagnostics were added only on unexpected failing Anthropic/URL controls. The genuine Radius provider now uses actual ordinary formals, exact shared lexical cells and real refresh AsyncFunction/Awaits, with27 declared Source/causal controls. Fresh V10 will compile14 groups/326 declared names, independently discover complete metadata, run the entire cohort as unqualified bounded diagnosis, then require the unchanged strict RuntimeOnly controller for any qualifying runtime. Full application, OAuth/network/loader/physical-IO completion, platforms, bridge removal and publication remain open.",
+  "updated_utc": "2026-10-19T17:47:26.642338+00:00",
+  "record_note": "Active port; approved cleanup is complete. V10 BuildQuery accepted all 14 groups and 340 actual metadata entries, with 32,487 current files independently rehashed. Its retried complete-cohort diagnostic started 334 entries, completed 333, reported 50 result failures, then panicked in one Radius retirement control; six later controls did not start. The failed run is independently closed, including 32,519 current sealed inputs and all 14 actual native process instances. Original failures, partial raw wire and failed audits remain unchanged. Main now includes the reviewed mutable async formal slots, observer corrections, native retirement-record entitlement, real libuv TCP owners, typed-array inspection and shared filesystem prerequisites. These changed-head source units have not executed. Genuine Radius OAuth and physical writer/backing/FileHandle work continues in isolated worktrees. Fresh build/metadata acceptance and a separate unchanged strict RuntimeOnly run remain necessary; application, bridge removal, supported platforms and publication remain incomplete.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -78,7 +78,15 @@
     "Failure-only captured host diagnostics for six Anthropic Source negative controls; Maind0082462 donor86592412.",
     "Actual process.execPath, exact Node filename-error spelling, captured URL compile diagnostic and genuine contained Windows symlink fixture request; Main03b4bd8d donordd49bab5.",
     "Actual existing cancellation poll after completed tool-search predicate retirement; Main235a8d05 donor19522001; original26 declarations unchanged.",
-    "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db."
+    "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db.",
+    "cb73aa54538b5aa58cc678d5d13d569799abebeb: Mutable native async formal slots with 17 declared controls.",
+    "8492697f7b7185d34821cfe66da7bcd5126053e8: Actual Anthropic observer Error.stack data-property fixture correction.",
+    "7a9d522c7953ca64858bddfbf60b389bf17b7a7f: One-byte actual file-URL observer quote correction; original 19 declarations unchanged.",
+    "f4028065c69370391e6de28aa71bd79304586525: Independent retirement-record native entitlement across cyclic wrapper teardown.",
+    "c795e8ae260492093a6647599d269a1a2407f273: Actual libuv TCP owners, 12 raw declared controls and 134 exact upstream files.",
+    "1c2cebf872a9929108db345f102c167570c6a4d0: Actual selected Node typed-array inspector; 24 declared Source/causal controls.",
+    "44edbe20e38479f6570d40a94b4e2a9f7cfed3ae: Shared genuine SafePromise and uncurried SafeIterator entry points.",
+    "713cca3bc2768173f6f46554c593d9756219e69a: Native libuv FileHandle and intrinsic UVException prerequisites; class/backing/async composition remains separate."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -592,42 +600,34 @@
         "sha256": "0C7EACB6CAA0FA1AF8825C75A7457DA35FB0CE4ED2DE93B91483CEC93C0AC2D1"
       },
       "qualification": false
+    },
+    {
+      "status": "independently_closed_failed_runtime_diagnostic",
+      "head": "a51d4076d9f4519922e45cc1597aeba14ccbd5ca",
+      "evidence": "../../evidence/root-v10-runtime-diagnostic-v3-retry-20261019-165655",
+      "result_sha256": "A25E8BD2FF2AAA31365FF8A5E826C7857BC0CD5DC0ABACCB05D47427517657A0",
+      "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v10-runtime-diagnostic-v3-retry-control-20261019-165655\\independent-diagnostic-runtime-closure.json",
+      "sha256": "FE25C94A65215267396FEB9EF4990EA8EAB81E943FCDA002F2C27BBC7B3D9289",
+      "distinct_current_files_rehashed": 32519,
+      "runtime_expected": 340,
+      "runtime_started": 334,
+      "runtime_completed": 333,
+      "runtime_failed": 50,
+      "runtime_panicked_controls": 1,
+      "runtime_not_started": 6,
+      "native_owners": 14,
+      "current_actual_absence": true,
+      "source_mutation_hold_released": true,
+      "qualification": false
     }
   ],
   "next_native_batch": {
-    "status": "preparing_frozen_root_fresh_buildquery_grant",
-    "mode": "BuildQuery",
-    "prepared_directory": "../../evidence/combined-native-batch-v10-prepared-20261019",
-    "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "qualification_requested": true,
-    "runtime_requested": false,
-    "whole_matrix_source_groups": 65,
-    "whole_matrix_declared_named": 1045,
-    "first_cohort": [
-      "native-vm-sync-arguments",
-      "native-vm-async-retirement",
-      "native-vm-template-literal",
-      "native-vm-borrowed-bridges",
-      "vm-af-throw",
-      "native-ai-oauth-anthropic-genuine-af",
-      "native-node-module-creation",
-      "native-node-module-search-paths",
-      "native-node-fs-realpath-classic",
-      "native-node-fs-path-helpers",
-      "native-node-file-url-paths",
-      "native-sdk-tool-search-public",
-      "native-ai-radius-config",
-      "native-ai-radius-provider-genuine-af"
-    ],
-    "first_cohort_declared_named": 326,
-    "runtime_diagnostic": {
-      "driver_sha256": "9815352426F75D1523325549FA060F78A561A03937723F3CB177FA8E89323395",
-      "scope": "complete_accepted_build_cohort",
-      "qualification_requested": false,
-      "source_peer": "Modules finite V2-to-V3 selection/scope diff6EED62B5 closed"
-    },
-    "scope": "Fresh private caches,14 serial groups, whole-input bookends, complete raw metadata/owner acceptance, then complete cohort diagnosis with every negative retained. Strict unchanged4F RuntimeOnly remains required separately for any qualifying runtime.",
-    "independent_auditor_sha256": "BD3A50B1B979434EFD8756E5F6CD1CB4F4191032005D9BB4A112C6C8EAA96012"
+    "status": "source_implementation_and_finite_peer_review_in_progress",
+    "mode": "BuildQuery_then_separate_runtime",
+    "native_execution_grant": null,
+    "runtime_qualification": false,
+    "strict_runtime_driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
+    "scope": "Recompute exact reviewed matrix and changed-head pins after ready OAuth/physical-owner intake; discover actual metadata before separately granted runtime. Source counts are not pass counts."
   },
   "storage_cleanup": {
     "status": "completed_and_independently_verified",
@@ -712,7 +712,7 @@
     ],
     "terminal_hook_source": "9ca2acdf6115579a418fde52d3a523824df3e8a3",
     "terminal_hook_main": "7d33baa187e52e2238601c9a086588830e45a1ee",
-    "current_head": "326421426481c938c0893084e2654551f205b8a4",
+    "current_head": "713cca3bc2768173f6f46554c593d9756219e69a",
     "latest_reviewed_units": [
       "Module constructor24 and optional-builtin fixture correction",
       "Frontmatter19",
@@ -731,7 +731,15 @@
       "Failure-only captured host diagnostics for six Anthropic Source negative controls; Maind0082462 donor86592412.",
       "Actual process.execPath, exact Node filename-error spelling, captured URL compile diagnostic and genuine contained Windows symlink fixture request; Main03b4bd8d donordd49bab5.",
       "Actual existing cancellation poll after completed tool-search predicate retirement; Main235a8d05 donor19522001; original26 declarations unchanged.",
-      "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db."
+      "Genuine Radius ordinary factory and refresh AsyncFunction with exact imported config/auth/catalog/API/OAuth owners, actual closure lifetime and27 controls; Main32642142 donor1c0435db.",
+      "cb73aa54538b5aa58cc678d5d13d569799abebeb: Mutable native async formal slots with 17 declared controls.",
+      "8492697f7b7185d34821cfe66da7bcd5126053e8: Actual Anthropic observer Error.stack data-property fixture correction.",
+      "7a9d522c7953ca64858bddfbf60b389bf17b7a7f: One-byte actual file-URL observer quote correction; original 19 declarations unchanged.",
+      "f4028065c69370391e6de28aa71bd79304586525: Independent retirement-record native entitlement across cyclic wrapper teardown.",
+      "c795e8ae260492093a6647599d269a1a2407f273: Actual libuv TCP owners, 12 raw declared controls and 134 exact upstream files.",
+      "1c2cebf872a9929108db345f102c167570c6a4d0: Actual selected Node typed-array inspector; 24 declared Source/causal controls.",
+      "44edbe20e38479f6570d40a94b4e2a9f7cfed3ae: Shared genuine SafePromise and uncurried SafeIterator entry points.",
+      "713cca3bc2768173f6f46554c593d9756219e69a: Native libuv FileHandle and intrinsic UVException prerequisites; class/backing/async composition remains separate."
     ]
   },
   "fresh_v8_validation": {
@@ -1438,5 +1446,104 @@
     },
     "all_original_groups_observed_once": true,
     "runtime_qualification": false
+  },
+  "fresh_v10_validation": {
+    "source_head": "a51d4076d9f4519922e45cc1597aeba14ccbd5ca",
+    "metadata": {
+      "status": "independently_accepted_combined_native_batch_metadata",
+      "groups": [
+        {
+          "group": "native-vm-sync-arguments",
+          "actual_count": 23
+        },
+        {
+          "group": "native-vm-async-retirement",
+          "actual_count": 31
+        },
+        {
+          "group": "native-vm-template-literal",
+          "actual_count": 19
+        },
+        {
+          "group": "native-vm-borrowed-bridges",
+          "actual_count": 18
+        },
+        {
+          "group": "vm-af-throw",
+          "actual_count": 31
+        },
+        {
+          "group": "native-ai-oauth-anthropic-genuine-af",
+          "actual_count": 26
+        },
+        {
+          "group": "native-node-module-creation",
+          "actual_count": 27
+        },
+        {
+          "group": "native-node-module-search-paths",
+          "actual_count": 21
+        },
+        {
+          "group": "native-node-fs-realpath-classic",
+          "actual_count": 24
+        },
+        {
+          "group": "native-node-fs-path-helpers",
+          "actual_count": 19
+        },
+        {
+          "group": "native-node-file-url-paths",
+          "actual_count": 20
+        },
+        {
+          "group": "native-sdk-tool-search-public",
+          "actual_count": 27
+        },
+        {
+          "group": "native-ai-radius-config",
+          "actual_count": 26
+        },
+        {
+          "group": "native-ai-radius-provider-genuine-af",
+          "actual_count": 28
+        }
+      ],
+      "head": "a51d4076d9f4519922e45cc1597aeba14ccbd5ca",
+      "acceptance": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-sdk-radius-fresh-v10-control-20261019-164134\\independent-metadata-acceptance.json",
+      "sha256": "1B87AB971C7B34AC89ECEC81D7789312DA86537F47296452D7A9E9081C068C05",
+      "runtime_started": false
+    },
+    "whole_input_build_closure": {
+      "status": "independently_closed_complete_fresh_build_query",
+      "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-sdk-radius-fresh-v10-control-20261019-164134\\independent-current-seals-and-owners.json",
+      "sha256": "34B2183A45B78B7C4513125F11C7AD659E92C0E12AB28D93007B89AEF8BC0094",
+      "distinct_current_files_rehashed": 32487,
+      "actual_metadata_count": 340,
+      "native_owners": 28,
+      "current_absence": true
+    },
+    "retry_diagnostic": {
+      "status": "independently_closed_failed_runtime_diagnostic",
+      "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v10-runtime-diagnostic-v3-retry-control-20261019-165655\\independent-diagnostic-runtime-closure.json",
+      "sha256": "FE25C94A65215267396FEB9EF4990EA8EAB81E943FCDA002F2C27BBC7B3D9289",
+      "distinct_current_files_rehashed": 32519,
+      "runtime_expected": 340,
+      "runtime_started": 334,
+      "runtime_completed": 333,
+      "runtime_failed": 50,
+      "runtime_panicked_controls": 1,
+      "runtime_not_started": 6,
+      "native_owners": 14,
+      "current_actual_absence": true,
+      "source_mutation_hold_released": true,
+      "qualification": false
+    },
+    "runtime_qualification": false,
+    "source_hold_released": true,
+    "continuation_record": {
+      "path": "../port-roadmap-resume-20261019-v10/continuation.json",
+      "sha256": "9E94567BA56B24B2BB2C840C3E658789265F07902EF76FA66DE8D8DB7D681F0E"
+    }
   }
 }

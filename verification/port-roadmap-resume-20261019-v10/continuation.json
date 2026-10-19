@@ -1,0 +1,1073 @@
+{
+  "schema": 1,
+  "updated_utc": "2026-10-19T17:47:26.642338+00:00",
+  "head_before_record": "713cca3bc2768173f6f46554c593d9756219e69a",
+  "root_review": "Complete bounded production/test/build deltas were read; split source peers are retained in each unit receipt. New source has not executed.",
+  "v10_build_metadata": {
+    "status": "independently_accepted_combined_native_batch_metadata",
+    "groups": [
+      {
+        "group": "native-vm-sync-arguments",
+        "actual_count": 23
+      },
+      {
+        "group": "native-vm-async-retirement",
+        "actual_count": 31
+      },
+      {
+        "group": "native-vm-template-literal",
+        "actual_count": 19
+      },
+      {
+        "group": "native-vm-borrowed-bridges",
+        "actual_count": 18
+      },
+      {
+        "group": "vm-af-throw",
+        "actual_count": 31
+      },
+      {
+        "group": "native-ai-oauth-anthropic-genuine-af",
+        "actual_count": 26
+      },
+      {
+        "group": "native-node-module-creation",
+        "actual_count": 27
+      },
+      {
+        "group": "native-node-module-search-paths",
+        "actual_count": 21
+      },
+      {
+        "group": "native-node-fs-realpath-classic",
+        "actual_count": 24
+      },
+      {
+        "group": "native-node-fs-path-helpers",
+        "actual_count": 19
+      },
+      {
+        "group": "native-node-file-url-paths",
+        "actual_count": 20
+      },
+      {
+        "group": "native-sdk-tool-search-public",
+        "actual_count": 27
+      },
+      {
+        "group": "native-ai-radius-config",
+        "actual_count": 26
+      },
+      {
+        "group": "native-ai-radius-provider-genuine-af",
+        "actual_count": 28
+      }
+    ],
+    "head": "a51d4076d9f4519922e45cc1597aeba14ccbd5ca",
+    "acceptance": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-sdk-radius-fresh-v10-control-20261019-164134\\independent-metadata-acceptance.json",
+    "sha256": "1B87AB971C7B34AC89ECEC81D7789312DA86537F47296452D7A9E9081C068C05",
+    "runtime_started": false
+  },
+  "v10_build_whole_input_closure": {
+    "status": "independently_closed_complete_fresh_build_query",
+    "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-vm-sdk-radius-fresh-v10-control-20261019-164134\\independent-current-seals-and-owners.json",
+    "sha256": "34B2183A45B78B7C4513125F11C7AD659E92C0E12AB28D93007B89AEF8BC0094",
+    "distinct_current_files_rehashed": 32487,
+    "actual_metadata_count": 340,
+    "native_owners": 28,
+    "current_absence": true
+  },
+  "v10_retry_negative_closure": {
+    "status": "independently_closed_failed_runtime_diagnostic",
+    "closure": "C:\\Users\\adyba\\pi-zig\\evidence\\root-v10-runtime-diagnostic-v3-retry-control-20261019-165655\\independent-diagnostic-runtime-closure.json",
+    "sha256": "FE25C94A65215267396FEB9EF4990EA8EAB81E943FCDA002F2C27BBC7B3D9289",
+    "distinct_current_files_rehashed": 32519,
+    "runtime_expected": 340,
+    "runtime_started": 334,
+    "runtime_completed": 333,
+    "runtime_failed": 50,
+    "runtime_panicked_controls": 1,
+    "runtime_not_started": 6,
+    "native_owners": 14,
+    "current_actual_absence": true,
+    "source_mutation_hold_released": true,
+    "qualification": false
+  },
+  "preserved_interrupted_diagnostic": {
+    "path": "../../evidence/root-v10-runtime-diagnostic-v3-control-20261019-165135",
+    "closure_sha256": "7AA59EAF5A3FF274CD132C5A906DA8ED863A324DA8514731DA1BBF4072D5BAE6",
+    "note": "PID-only descendant observation was stale by more than seven hours; independently closed by actual process creation intervals. Original failure remains."
+  },
+  "actual_process_instance_note": "Two failed independent closure attempts are preserved; the final audit reconciles reused numeric PIDs by exact process creation and completion intervals. No unrelated Windows or audit process was terminated.",
+  "intakes": [
+    {
+      "main_commit": "cb73aa54538b5aa58cc678d5d13d569799abebeb",
+      "note": "Mutable native async formal slots with 17 declared controls.",
+      "paths_at_commit": [
+        {
+          "path": "build.zig",
+          "bytes": 455495,
+          "sha256": "FE7449F3303A3D57A103108B50412BCB5E6E5E3BD9D0D8B38A69EC06BB07A0E3"
+        },
+        {
+          "path": "src/extensions/native_async_arguments.zig",
+          "bytes": 2239,
+          "sha256": "EF4A4FC32DDF0564ADE5C45B65110ED4D93AE7F9F7558482F8E4238D4F2D482A"
+        },
+        {
+          "path": "src/extensions/native_async_function.zig",
+          "bytes": 10463,
+          "sha256": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+        },
+        {
+          "path": "src/native_async_arguments_test.zig",
+          "bytes": 42082,
+          "sha256": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+        },
+        {
+          "path": "vendor/quickjs/quickjs.c",
+          "bytes": 2312127,
+          "sha256": "30E688B9C5FC91928CD3F42B255762676FC9DE8C2BDEF1DD78D5BDF71F318799"
+        },
+        {
+          "path": "vendor/quickjs/quickjs.h",
+          "bytes": 91700,
+          "sha256": "211FFA072B28A9C13FD8B0B9F195FF5D3921B8A11E13FEC5200CE02E1A08A80A"
+        },
+        {
+          "path": "verification/native-mutable-async-arguments-sourceonly-20261019/README.md",
+          "bytes": 3324,
+          "sha256": "870A0E7BAD19D11565B7F7DFA3FAC4EA8185555147D27CBE4F0B48293A907EBC"
+        },
+        {
+          "path": "verification/native-mutable-async-arguments-sourceonly-20261019/c-owner-delta.json",
+          "bytes": 10160,
+          "sha256": "CB154E8FA89692478157E010A253990AC886EC93E252A62F37FCA21AFA9DE5C3"
+        },
+        {
+          "path": "verification/native-mutable-async-arguments-sourceonly-20261019/rebased-c-owner-delta.json",
+          "bytes": 10340,
+          "sha256": "BBAAE9EB7638F9DB03C4C625448252730E6B0D7986E651644DDEDB4E39A4A5F9"
+        },
+        {
+          "path": "verification/native-mutable-async-arguments-sourceonly-20261019/source-status.json",
+          "bytes": 5799,
+          "sha256": "765ACA34EB04C176D95630407EBEC42F776F00194997B6EC42C31497B6B90F42"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "8492697f7b7185d34821cfe66da7bcd5126053e8",
+      "note": "Actual Anthropic observer Error.stack data-property fixture correction.",
+      "paths_at_commit": [
+        {
+          "path": "src/extensions/fixtures/oauth-anthropic-observer.mjs",
+          "bytes": 20634,
+          "sha256": "A4A361713272C9B3C7497412B774E0D8258349CB779469A4224E809113C3483D"
+        },
+        {
+          "path": "verification/provider-anthropic-runtime-stack-fixture-20261019/manifest.json",
+          "bytes": 1566,
+          "sha256": "5A033469A13E3A3EE5F0B23AD5720939C7E5DE9AE07458C494A3583F4AF1F4D7"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "7a9d522c7953ca64858bddfbf60b389bf17b7a7f",
+      "note": "One-byte actual file-URL observer quote correction; original 19 declarations unchanged.",
+      "paths_at_commit": [
+        {
+          "path": "src/extensions/fixtures/native-node-file-url-observer.mjs",
+          "bytes": 15913,
+          "sha256": "CFE13BF8A42378B702CC9DA977AF297653DA007CDE8A867755CB138284775558"
+        },
+        {
+          "path": "verification/node-file-url-observer-syntax-correction-20261019/README.md",
+          "bytes": 1411,
+          "sha256": "75E58586C603CE091F871513DDA2D1906D4DDF5605531197191BDB053B4437D6"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "f4028065c69370391e6de28aa71bd79304586525",
+      "note": "Independent retirement-record native entitlement across cyclic wrapper teardown.",
+      "paths_at_commit": [
+        {
+          "path": "src/native_sdk_initial_model_retirement_controls.zig",
+          "bytes": 16159,
+          "sha256": "5628029C7353F5DC3AE5870220859DE30C8DBDA8AEB5BD7D99F0BEDBFCB60144"
+        },
+        {
+          "path": "verification/native-retirement-record-owner-correction-20261019/manifest.json",
+          "bytes": 2135,
+          "sha256": "9A74ECAE57679D3B6E50427FA3961F67EAF8E963F85A360CA40D96B651EFC24A"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "c795e8ae260492093a6647599d269a1a2407f273",
+      "note": "Actual libuv TCP owners, 12 raw declared controls and 134 exact upstream files.",
+      "paths_at_commit": [
+        {
+          "path": "build.zig",
+          "bytes": 456707,
+          "sha256": "6D5AD0F34455D4867355DECD30EDA71B389AE9932E42A39509BE6E43DFDF8EE0"
+        },
+        {
+          "path": "src/extensions/native_node_net_tcp_transport.zig",
+          "bytes": 30447,
+          "sha256": "1DF60228E9CBEDE8FB0CDE3BDCED9E3F196291D5E6AD5035B38CC224DB47B4AA"
+        },
+        {
+          "path": "src/extensions/native_uv_tcp.c",
+          "bytes": 32726,
+          "sha256": "E1204E4B4B30F46534940D5F9089B8D00B0E2DD845FDA0A798BB0D2F252B71F7"
+        },
+        {
+          "path": "src/extensions/native_uv_tcp.h",
+          "bytes": 5319,
+          "sha256": "F0FA0E66F2823BF458A7B7FAFF7482A0AEC00053E0AB3CFDD60F61BC1B18A17E"
+        },
+        {
+          "path": "src/native_node_tcp_transport_test.zig",
+          "bytes": 19529,
+          "sha256": "3C475C5FA0C43BBEE875E58E54E705282E2319C75EE1E0216D775E84E56C58D5"
+        },
+        {
+          "path": "tools/build_native_node_network.zig",
+          "bytes": 4209,
+          "sha256": "8B2FAD905DC0D32D6E67180874E8E433E1AEFD740AE1861289C3FB891B371B02"
+        },
+        {
+          "path": "vendor/node-v24.13.0/SOURCE-MANIFEST.json",
+          "bytes": 25537,
+          "sha256": "68528E74686A7BAAF80F4DBE7DBDF57AC0462E1064C1AA13E92A2570352CF206"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/CMakeLists.txt",
+          "bytes": 3348,
+          "sha256": "165D3BA3C751070462696151133764A9CA4201C6B555BC90D4DD3BDAC8D75A13"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/LICENSE",
+          "bytes": 1105,
+          "sha256": "EBCA854E0134CD256D673627C20499F42577EB74BACF08B9F25B626A73C91277"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/LICENSE-MIT",
+          "bytes": 1105,
+          "sha256": "EBCA854E0134CD256D673627C20499F42577EB74BACF08B9F25B626A73C91277"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/common.gypi",
+          "bytes": 1157,
+          "sha256": "1919F4E07942B292AEEF3517027EBB3BFA622DA23B4C0A9D43E64503D0197731"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/include/llhttp.h",
+          "bytes": 30650,
+          "sha256": "C15C1952DBC6F83476AA51A7D4ED07D6C1908A754812EF27A52F726773144E27"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/llhttp.gyp",
+          "bytes": 397,
+          "sha256": "B7FF2F4064BC761D1AD0E7FB28964AB4CC5DD4FF817288162F785F9D42F4454E"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/src/api.c",
+          "bytes": 13152,
+          "sha256": "2C8E26DF05AF120323130B388D9AFD102F793FBA84F59F3765F018D24144EB78"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/src/http.c",
+          "bytes": 5209,
+          "sha256": "A1F2B23168F8E9B5BFA464C89027D3CA259FC649AE3D7E72BFFF997D1AEB5D72"
+        },
+        {
+          "path": "vendor/node-v24.13.0/llhttp/src/llhttp.c",
+          "bytes": 315697,
+          "sha256": "33A53046B3BC81CA7D5EAFFE61EB87E7BF0C9BF3BA48DF6D93279A7EE03AFCD3"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/AUTHORS",
+          "bytes": 22977,
+          "sha256": "93DE6853EE49C271282569AACA1E7875DBB4F0B72FD26324CDE0EDB448C661AE"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/CMakeLists.txt",
+          "bytes": 28127,
+          "sha256": "DCDB12FFCB8BD44FB4CB5DB08FFDEB573CAAEAF2AE00005EF72941192A9C1DCA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/LICENSE",
+          "bytes": 1079,
+          "sha256": "16DE0C32B265CB7D46A6D3BD614F259DD4D693A5E26B3407B04AAE8D73041F0C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/LICENSE-extra",
+          "bytes": 1603,
+          "sha256": "262C44BD2CDBA037E6D2A82FBA15F5800D292BC993A6F5D6B6EA487744D02836"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/common.gypi",
+          "bytes": 7143,
+          "sha256": "D8A40B9EBA05F4C544ED010C9F68EBC1F1F3039CEF804D88A9F7BB7EBEA5FBC1"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv.h",
+          "bytes": 72810,
+          "sha256": "FDDEC8C096616675B4578D85222663C8624DCE3EE67F5BE1C33BA83EB02A827C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/aix.h",
+          "bytes": 1615,
+          "sha256": "BED77E4CF6C06F1224E681CBE607EFF04713CA0C1E1F4A102E6A6565EE3F02AA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/bsd.h",
+          "bytes": 1641,
+          "sha256": "963533FF4B16F72A204A8C760896A857C54D0AC50570F1793E3BEF1F2AE8B35F"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/darwin.h",
+          "bytes": 3213,
+          "sha256": "222B6DD3CE67CFBB735B14B1662F065FC23570D6969ACF463B39D946B7590D8C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/errno.h",
+          "bytes": 11216,
+          "sha256": "4242EDF790E4569EF349026AB4C6E31093334EE5FC02B16ED7A0D9FBACDFFD16"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/linux.h",
+          "bytes": 1781,
+          "sha256": "ADCE0ED0821C8466A87A0A4C9E0DF9EA7E4A4B24D099C7D7ED196F72A13F669D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/os390.h",
+          "bytes": 1553,
+          "sha256": "98388AE32CE2C4390B82C3529539D2A476C44F590E960ED30A79F72B807ECD02"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/posix.h",
+          "bytes": 1606,
+          "sha256": "E9D7218B34E6E89B7B412891B7E2AA8B3A561C5CE9714C1F4DEF6C8A8593A6A6"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/sunos.h",
+          "bytes": 1985,
+          "sha256": "29D4B4EF48DC3C3AB32D75E0A85BCB80E084D42B32AAE40D67FC1D882B93298A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/threadpool.h",
+          "bytes": 1505,
+          "sha256": "09AE41099AF710289155BE012DF45C2FCE04DA6A02E813278B4558935E645938"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/tree.h",
+          "bytes": 36117,
+          "sha256": "34393C74082C71DDD5BD9EC4AFE30EF03DF7FA7BB64BE5A50AE070CDFEBB5C43"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/unix.h",
+          "bytes": 20057,
+          "sha256": "A246095A1476D76631F5EC85BE171AEE8107EB0423007546EC91C58887C28F02"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/version.h",
+          "bytes": 1831,
+          "sha256": "AEF7FB55FFCECE76DB9CB7F87D0632E432369747F329679779616CD0721981DA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/include/uv/win.h",
+          "bytes": 33836,
+          "sha256": "51B6BF729C4C3E66CD89E0B0B0D734998776E675FE0A5EDA9DB77B634EB83EF0"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/fs-poll.c",
+          "bytes": 7681,
+          "sha256": "E4869036BC54BC5A881794CA6AAC044C9C567361FFF48DD7F02F3A4640E6D271"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/heap-inl.h",
+          "bytes": 7053,
+          "sha256": "E8DBAFBE40150143A740E9B1AFF03C4E623EBFE5D6B5E1834A09626A303DDBC2"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/idna.c",
+          "bytes": 12836,
+          "sha256": "8DDA206C0A115D54BA0C447D44CD734DAE7811A91B8527D110E82957B7BFBC9E"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/idna.h",
+          "bytes": 1449,
+          "sha256": "D72FC711DB6309E6C6EC0FC777CB0BCBCFA3942262BE25D315AC469DB2787559"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/inet.c",
+          "bytes": 8068,
+          "sha256": "FF244DB2646274941AF96691E085826FA041ADFF56326FE28C26AB5610A96E48"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/queue.h",
+          "bytes": 2671,
+          "sha256": "ABDEDDEEFB025FCDEFF7737D4D465D89081AB2C3CC08A423C042EE2093B8695A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/random.c",
+          "bytes": 3418,
+          "sha256": "4CDC8899CB6AAE59896F0D949D2EFA8C5B128E9B3671C567A72497E2023A1679"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/strscpy.c",
+          "bytes": 1449,
+          "sha256": "0058568B1A47D2A35CE3DD32D52463AF5E066C1065FBB6DC28DD68107A978C1C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/strscpy.h",
+          "bytes": 1748,
+          "sha256": "E3E5F81613B169CCD76EEE4972D37E7CD5D875AC20D578467B2E42EE5C7F4051"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/strtok.c",
+          "bytes": 1656,
+          "sha256": "FDCD8971CEF7AFF15ED950C8D71521888EB57AB48B62196E1F4170B4CF522D2C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/strtok.h",
+          "bytes": 1271,
+          "sha256": "2BB2ED731C7AFB0EFB14670854BC47FE435D72E93CB7B5A1BA99FC5D0548467F"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/thread-common.c",
+          "bytes": 3941,
+          "sha256": "0CE1CE99B53C1E453439FAE0BE62C417FCA8A1850CD97BE65ACE5B36B306A7B9"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/threadpool.c",
+          "bytes": 11121,
+          "sha256": "E0DB34C1BF86F020CC49285A5C3FCC383E9BD2ED7B0B959B5462624705D5322E"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/timer.c",
+          "bytes": 5214,
+          "sha256": "6C23B86920E312253888C0126611C9499E79E73C65E8D75975D5C3DBF87ABEC2"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/aix-common.c",
+          "bytes": 3012,
+          "sha256": "61A1CBB342C5E334622BA194927EC9CFF8642E5DEA7C5972C17F531123C3EBCF"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/aix.c",
+          "bytes": 33863,
+          "sha256": "26ABD4962B5C14A1BF3A7B3E5243575617D843D135A442AF89F06CD9A0CDE3CA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/async.c",
+          "bytes": 11551,
+          "sha256": "445E8582D88068D63BDE2DD52DC48EF6C215FA90F7DDEB2E40DCAE971DF499EA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/bsd-ifaddrs.c",
+          "bytes": 5067,
+          "sha256": "D3A0267988F2BDF889DBA097C00949BC5AF80153FC00B4356DC657FDD47B5DC2"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/bsd-proctitle.c",
+          "bytes": 2691,
+          "sha256": "DE7A812D80445C3DC10D4A25F5436C73630E2B0DA2F8CFB642BACB8E068CDFAD"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/core.c",
+          "bytes": 48102,
+          "sha256": "BEBF5062EEFB617A1D03E5E78F864B6384E14FB7055D534C3A092FC2132F4AC4"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/cygwin.c",
+          "bytes": 2382,
+          "sha256": "37ADEB8E987535F9585883CDEE0403CAD0AF4A9D7CF384401AE968F72B80A8B1"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/darwin-proctitle.c",
+          "bytes": 6760,
+          "sha256": "F68470F2A5EE9361D49083F0EC4C42E2A01A082907F9BE983F31AB405E77B49D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/darwin-stub.h",
+          "bytes": 3810,
+          "sha256": "D397FE8920A057DBF335B5EB91C82122E0F0B61281CD0DCB9FD45420BD9DE7D8"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/darwin-syscalls.h",
+          "bytes": 437,
+          "sha256": "9EDC5B8872C8C718CFFD43B02FF9730276F7F55D7585F9C080E0065C08AAA872"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/darwin.c",
+          "bytes": 6557,
+          "sha256": "F6A172CE185E547E141945D36AB1E172685D37B763895B31136CFC02D6377BC0"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/dl.c",
+          "bytes": 2272,
+          "sha256": "FE5D987911461B7F680474EE3886884A6F3325DFF0A4BC038734A088EE227FF1"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/freebsd.c",
+          "bytes": 7172,
+          "sha256": "39A81BBE51F4007AF20C75C4385A2B235B40CCDAF1EDDA6BB56D556102A71AF6"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/fs.c",
+          "bytes": 59847,
+          "sha256": "FFE2CD709C894083D4E470BCE5248EEE71C5E5594418BE3D7A6D80E44D723A61"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/fsevents.c",
+          "bytes": 28183,
+          "sha256": "6D6B9E50AC30CE6C4D0AC046352FC308229F36774B092C3E4E99F434F50D5CA3"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/getaddrinfo.c",
+          "bytes": 6576,
+          "sha256": "C069C71FE9044BD95D4748990382432EF04D72284BD5DFB5181E347A5AAD7DAE"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/getnameinfo.c",
+          "bytes": 3651,
+          "sha256": "558B560C07B47DB60CD04B182CBE10CED589753A904197A9120440FC23BE61E5"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/haiku.c",
+          "bytes": 4417,
+          "sha256": "9B14BA20E072D2D4B36200C3C91E476AB28D34C0EE9FE6F9EF65F2F0E88F901B"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/hurd.c",
+          "bytes": 4335,
+          "sha256": "16B53FDDE1AE273690BCCFA8B7C3C4C22A72C4F4BC8773622DCC2344D7EB5987"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/ibmi.c",
+          "bytes": 16507,
+          "sha256": "450CF7178F4D3B7C3C157ED1BD4C8130941323BD799BC7696FE91D56243ED18C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/internal.h",
+          "bytes": 16658,
+          "sha256": "6139BB4E3E0FA3668A2D0742A10E9AEDCBA6045C4F85EF35C8A8946DEF062977"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/kqueue.c",
+          "bytes": 18628,
+          "sha256": "499E0DE21FF7EF39978186EF10AF6070AD3E1E8E2DC71532CF6F398F38D7827A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/linux.c",
+          "bytes": 73847,
+          "sha256": "D527B1B7330C474F60B363B0EC8CCEA50BC2F1B7AE7E185FC97B6943BF993D99"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/loop-watcher.c",
+          "bytes": 4433,
+          "sha256": "352E6272F340F424FBA5FF6E28705B0B22C3A8903913D0EA6BBB6BA7C2293FB5"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/loop.c",
+          "bytes": 6050,
+          "sha256": "F0EDD21E3445BA0531C99C7E370D0201F23E966ACCD90EDACE04384EB9904B2A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/netbsd.c",
+          "bytes": 6697,
+          "sha256": "1F9479148B091DFC89C23E1C59E33C9571618F64484D5FBFCB98B2A0266D7762"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/no-fsevents.c",
+          "bytes": 1577,
+          "sha256": "9D91A46C8477FD7145EAC8B668DA1041A69F5B12812B18888AD3EAE85397D987"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/no-proctitle.c",
+          "bytes": 1534,
+          "sha256": "65A37C263A39F59943856E3D6BF2119692CFAACDDE13F05112411CD3EDD15EC5"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/openbsd.c",
+          "bytes": 6347,
+          "sha256": "9509F6B8DB29CB18EC8A591B30CC72E57C1196B2FEAA1AB1E20C1250A4B0B6A6"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/os390-proctitle.c",
+          "bytes": 3570,
+          "sha256": "627CD81BF8925CED5E39EDEDCE1FA50C9B77DBA581A35383113A1520E015478D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/os390-syscalls.c",
+          "bytes": 12268,
+          "sha256": "76C5779FA2BE1665B8D82C1E010EB37A9B216F8BDBDBD1A48F8C4F8985EDC3D6"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/os390-syscalls.h",
+          "bytes": 2666,
+          "sha256": "A0F585C827DF219B526B9786CAEBC8C21FD4DB9EA8D568C07264F24A266CD4F9"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/os390.c",
+          "bytes": 27948,
+          "sha256": "594A6D34D4529FD1B9AEDBECF0B6284E4A11F1D631FF06A273EF67A7ADC5CE46"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/pipe.c",
+          "bytes": 13749,
+          "sha256": "48F5743581A1CAF62369A3DB6B36C0C86860308D4086ED9CBC670FFF105AA5A1"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/poll.c",
+          "bytes": 4353,
+          "sha256": "E04CBF1CBEB67DA8CEAB2D86E47ECA5FB35524725C316D859B0772DEBF409C35"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/posix-hrtime.c",
+          "bytes": 1411,
+          "sha256": "E0B6901588B417222C48C6B321D642F53F6B3CCD2512D86F3F5898DCD95B3671"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/posix-poll.c",
+          "bytes": 10590,
+          "sha256": "79668ED80622686315B3BE017C2DA60FF8C7CBCC711D25177BE312CF7C12BE59"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/process.c",
+          "bytes": 31333,
+          "sha256": "CEDC79CB473C0DDE5C270FF2EE7B7956CBDFE0B3ACEBA19597B9A75A21E119F0"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/procfs-exepath.c",
+          "bytes": 1525,
+          "sha256": "56136E384F79F6691F8CC2976CD01D0A02019802D4BE619D7C91CB21D413ADA6"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/proctitle.c",
+          "bytes": 4060,
+          "sha256": "16FF3C208DCCE3798DC80BF596828A93F6AC42B1732E1BA75C331DFA3E90FFFE"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/qnx.c",
+          "bytes": 3695,
+          "sha256": "10108DDCA17400C7F684745EE6CA2A58CE4728804068373C8D34462AB21C2E16"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/random-devurandom.c",
+          "bytes": 2551,
+          "sha256": "E774597CE4DA739AD57317041AA0AAF00AE48B04F2359940188AB04475613420"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/random-getentropy.c",
+          "bytes": 1968,
+          "sha256": "9BF7967967B6609810F42C72229EDD086890864D4B78ED8C3269064A72769FE3"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/random-getrandom.c",
+          "bytes": 2508,
+          "sha256": "149B6B2B9B9213F1355651C618E17B4DD2599CCAFA1619AC3A8D7916A471F2A5"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/random-sysctl-linux.c",
+          "bytes": 2847,
+          "sha256": "C5A344DFDD20029700C0686C3CA685E8E67931FA2A35D84B01B10B5A8AD812A0"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/signal.c",
+          "bytes": 15410,
+          "sha256": "010AAFEE4B3CB7D70626CEE3C5DDBF564251B521231F26DDDF9D3E7C8204D71F"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/stream.c",
+          "bytes": 41252,
+          "sha256": "DAC76E73CAEF1D01C7122F5D42F5E2D0A06B6A60BF4D83D26849D03AEC805733"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/sunos.c",
+          "bytes": 22634,
+          "sha256": "0892B9BA39055AC10EAA785BF348D6AECAFE10F3DA2124F5E1C72C23A8277B1B"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/sysinfo-loadavg.c",
+          "bytes": 1456,
+          "sha256": "CD11DE556CFA6371860A694E2D302037349D94B7B446506E721D412E97EA0334"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/sysinfo-memory.c",
+          "bytes": 1536,
+          "sha256": "D0FC16262A6406A9DD547044895475D9A3B1F1E11BB3B23E4880CF5945121272"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/tcp.c",
+          "bytes": 17999,
+          "sha256": "1F7AEA48A4C4B8AE005AF27188A9F08C63122493C812C54582C9B4A9E1771DA7"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/thread.c",
+          "bytes": 21718,
+          "sha256": "69F6814B5CF8E3BF9709DBFA84FF58358E3AC6C7F9193819860017C2D7EA0A46"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/tty.c",
+          "bytes": 14299,
+          "sha256": "65B98DF1215C32DDD87E7B89E2D8D78C7E79A02E2BF4A53E1860F61D00BF431A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/unix/udp.c",
+          "bytes": 40586,
+          "sha256": "779F1B3CD1550772D753F112C68056BC4DE3A36CA1A78F886F5667E9AF733955"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/uv-common.c",
+          "bytes": 23928,
+          "sha256": "C311E17AE0F891C9EBA52626ADF9EA33A91B7459654EB1C20E56C24D30D6B446"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/uv-common.h",
+          "bytes": 18411,
+          "sha256": "7524F791D5648F3E135340AC61BCB242028947A81A5B8B32042F8561848A5397"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/uv-data-getter-setters.c",
+          "bytes": 3126,
+          "sha256": "CE7FAB84519ADC0F9B63C268FCB5A73E643A4D9A22DB125CF58DB88A6ACD38EE"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/version.c",
+          "bytes": 1751,
+          "sha256": "53296D9934D952545064673758E3ED46C10AB52E34CE540FBAB4C595A0B44BFA"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/async.c",
+          "bytes": 2869,
+          "sha256": "1E5ADA382B401DE43AA64E31212BBDB2C6C33D576AE6F19959C7E216A99B3243"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/atomicops-inl.h",
+          "bytes": 2293,
+          "sha256": "6E49FFC21C8D8D67D2BA754A64D53EE6129DE0C71EBD8CC6A272EEE0E0C9B79B"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/core.c",
+          "bytes": 18494,
+          "sha256": "3026F2888B3360E65A2E2662508EEF6BA9B1AF17735391CA6F79DC06887B8B23"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/detect-wakeup.c",
+          "bytes": 2264,
+          "sha256": "914143627A1A97FAFBF64A71564DCE389A877B2E5AA9797F12DBC2811BD71D7A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/dl.c",
+          "bytes": 4396,
+          "sha256": "2B5C586518C6E3B02108E5A47C0AE481A5059DBD2AF4031BCC5402B16B013048"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/error.c",
+          "bytes": 8817,
+          "sha256": "C804F3DA1436393D1170688CB9D0210638174C0F1AF03013360A7D0A7EB945A8"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/fs-event.c",
+          "bytes": 18447,
+          "sha256": "166E80FD373B44796658F7BD1CDC91F87A623E63BBD9D662F6A47137F0CDC96D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/fs-fd-hash-inl.h",
+          "bytes": 6886,
+          "sha256": "1365F18D01C4117B0F42CFB2E0065F37AD62E4F5214B150CBF660F986955BB2D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/fs.c",
+          "bytes": 105366,
+          "sha256": "60C76976514F427FA0BE21C1C7986C2AB1D9E2E77B9D5BCF8C7AB99ED36B0693"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/getaddrinfo.c",
+          "bytes": 12223,
+          "sha256": "DCEF491FBB292B2FDA6D7256C0F1222D79DD2507FD7875BD84AEE95E558AB5DB"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/getnameinfo.c",
+          "bytes": 4069,
+          "sha256": "C002F8D434EA01952671117DCC4F36BCB74CEBCAF4F16B60DE997AFECFDAC39B"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/handle-inl.h",
+          "bytes": 6723,
+          "sha256": "0B8763A63A0C000820E92FBB52FAF6D4DF46569F839E3D4471EAC12DD7537B5C"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/handle.c",
+          "bytes": 3987,
+          "sha256": "36778077A3AD0FB0EE55CCDBA904E7393F74601BE72BE989110BE4EE26FF753D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/internal.h",
+          "bytes": 10455,
+          "sha256": "DACD1827AAB6D1CD63325FAE179F377041E758157469939D81A5804526406E45"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/loop-watcher.c",
+          "bytes": 7998,
+          "sha256": "B349A8EBF8F330418F7D15739441FDBD648B96AE7C4161A3D1145494A0C46C3A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/pipe.c",
+          "bytes": 80675,
+          "sha256": "4D370CE0BC10F8AE429F8ACB2C7688D74B753E0177F347F5F3D337647E77CA38"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/poll.c",
+          "bytes": 17211,
+          "sha256": "B58FCD1B028358F9FF9D2406DE6B987AADCA7A3C414E9A3B5AFF9B12E0975235"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/process-stdio.c",
+          "bytes": 12646,
+          "sha256": "7367280DA2315B8CF16D42870A972164763B1967F8E39BD141B27726237872D8"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/process.c",
+          "bytes": 42052,
+          "sha256": "39516FC8C2316EC53B853A67301958796372676FB1B27D4EC76EC51217AE6F26"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/req-inl.h",
+          "bytes": 8161,
+          "sha256": "CF0669D86FE4706CA683CBA2A05D01B6130081375EF34FB308276950AB66E4AE"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/signal.c",
+          "bytes": 8203,
+          "sha256": "7CBE1EC895C1FA5C974E6D59E55E6A6D7180E9C83FFBFFA12691C24C44FDF1F0"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/snprintf.c",
+          "bytes": 1546,
+          "sha256": "2596B168AD64F54E94B95779F654326C107F43E0645EFA11185F8E9B04EC2F6F"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/stream-inl.h",
+          "bytes": 2005,
+          "sha256": "071341E25DE533DC19EEB3EE3FF3985CAAE7578C8DA9109FFCF08B6574584712"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/stream.c",
+          "bytes": 6579,
+          "sha256": "C6BBFD9AE2948BFD4409D547F5F07B6C8495E4F0AE8E3F5D5C0117918E35B822"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/tcp.c",
+          "bytes": 50168,
+          "sha256": "858D50BE27EABABDB8C17388B3B25D05DA0BC8D0C390B8BE76F1E8814705EA1D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/thread.c",
+          "bytes": 13356,
+          "sha256": "D674E3A3484034D2B97F892BF6ACF6F7AC734DF0F340B3AAA63C7EDD53358129"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/tty.c",
+          "bytes": 79053,
+          "sha256": "5DF3F88899BC4C6D85F80B54D4F4F14453359996A2C42693DE38EF90C5B9941D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/udp.c",
+          "bytes": 35208,
+          "sha256": "6750811851045125553B3828F8149291D9B14F51F22F0D7CCC86DFCBC82FD57D"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/util.c",
+          "bytes": 44633,
+          "sha256": "216ADF1D26666EA84277ADDBC597B0BCB5F079B66FAC6567F80D793B977B152A"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/winapi.c",
+          "bytes": 5212,
+          "sha256": "4F0421148D21D1A91561D105458D5AB3D283AAFB13D8DB5A8CB30317D4AF30A4"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/winapi.h",
+          "bytes": 130048,
+          "sha256": "5E8414CC8F3EEFCB8389FD61BEA6B9BFE74C057D899A6C9C2B3CDB43F6A3EF16"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/winsock.c",
+          "bytes": 15726,
+          "sha256": "F9621966B332D29926AC6471B0AA08EF4F46BE0B58CDE852155592DC4DE88590"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/src/win/winsock.h",
+          "bytes": 5497,
+          "sha256": "9F95386162246A166DCB2557E3E6B0BF663053975AC19ABDF470DB6D50ADEE61"
+        },
+        {
+          "path": "vendor/node-v24.13.0/uv/uv.gyp",
+          "bytes": 10943,
+          "sha256": "5DC464A84A8FB3DC3798325869DB22AB3CD0D8815BB463580D182323929A7DEC"
+        },
+        {
+          "path": "verification/native-libuv-tcp-sourceonly-20261019/README.md",
+          "bytes": 2303,
+          "sha256": "28DE8F6A10A758377D94F872568E06B3F85FD8DFFA975ABD39F5B42E18E44245"
+        },
+        {
+          "path": "verification/native-libuv-tcp-sourceonly-20261019/build-delta.json",
+          "bytes": 1456,
+          "sha256": "BDA12EF812D93D7CFB05FA6F7901DF8DFEA782C1E3D2A13C4C57C4C472603D6E"
+        },
+        {
+          "path": "verification/native-libuv-tcp-sourceonly-20261019/source-status.json",
+          "bytes": 6708,
+          "sha256": "4DC1A1140CDEE1DE431D8155918870DC26EA593FC1C7CE217DBE06F8FE7F683E"
+        },
+        {
+          "path": "verification/native-libuv-tcp-sourceonly-20261019/vendor-source-readback.json",
+          "bytes": 21088,
+          "sha256": "229622B407C3EE974F7BE87D7F69D82197410A35FED4144AB3CD66C27650B3E2"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "1c2cebf872a9929108db345f102c167570c6a4d0",
+      "note": "Actual selected Node typed-array inspector; 24 declared Source/causal controls.",
+      "paths_at_commit": [
+        {
+          "path": "src/extensions/fixtures/native-node-inspect-observer.mjs",
+          "bytes": 10986,
+          "sha256": "011F1E693CA297EE63AEDFE72538E90F29A53C154AFC11A698F18D9B74B687E0"
+        },
+        {
+          "path": "src/extensions/native_node_inspect_typed_array.zig",
+          "bytes": 24541,
+          "sha256": "F2C1CE247D70772B75B60A411B8C987954FD459A7EBA219D9C351871866BB69C"
+        },
+        {
+          "path": "src/extensions/native_node_util_inspect.zig",
+          "bytes": 44416,
+          "sha256": "5300C18A3557706224577BF51F2FBF5ECB0C84D9C44CD9D181F1A5ED99976614"
+        },
+        {
+          "path": "src/native_node_inspect_entry_test.zig",
+          "bytes": 21798,
+          "sha256": "9A78028E3A3F2016ED6C26E7A794D05466F74ED43ED2C70CB3B7607C8642DEE2"
+        },
+        {
+          "path": "verification/node-inspect-entry-sourceonly-20261018/node-source-observer.mjs",
+          "bytes": 1735,
+          "sha256": "55933E24DE6D825E46EEE592D0B63C4E5DEFCF1F8FDF734E2C96D1FC83E25028"
+        },
+        {
+          "path": "verification/node-inspect-typed-array-sourceonly-20261019/README.md",
+          "bytes": 3708,
+          "sha256": "D4B128D8268F29727DEF9D11A914D1E4BCF842330823CB6FF90046E715CAB784"
+        },
+        {
+          "path": "verification/node-inspect-typed-array-sourceonly-20261019/authority/internal-util-colors.v24.13.js.txt",
+          "bytes": 166,
+          "sha256": "E0F3F77D12627021C4E52D5F64BDB5DE46530188E1D13CB2695954EC2FC4D144"
+        },
+        {
+          "path": "verification/node-inspect-typed-array-sourceonly-20261019/authority/internal-util-join.v24.13.js.txt",
+          "bytes": 323,
+          "sha256": "6CE631E0CB788DF0F7220C98A56326E7D6A0239D5BFC839BCC93953001E307B7"
+        },
+        {
+          "path": "verification/node-inspect-typed-array-sourceonly-20261019/authority/provenance.json",
+          "bytes": 15912,
+          "sha256": "A2185C40D8FEACC5DAFFCF2EDACFD735382DE6EFE3C80DB31595C50AFDE7C338"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "44edbe20e38479f6570d40a94b4e2a9f7cfed3ae",
+      "note": "Shared genuine SafePromise and uncurried SafeIterator entry points.",
+      "paths_at_commit": [
+        {
+          "path": "src/extensions/native_node_fs_collections.zig",
+          "bytes": 16225,
+          "sha256": "EBC0FE29F1EFE23C34F7EB2A3181597197C07E31A6BB9C5681B3EB53213C007F"
+        },
+        {
+          "path": "verification/node-safe-promise-iterator-entry-sourceonly-20261019/README.md",
+          "bytes": 1251,
+          "sha256": "94FE3B5A8B82CEFF0D73A8C91DA7462E3975933983ACFBE23D676C5049FCE27A"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    },
+    {
+      "main_commit": "713cca3bc2768173f6f46554c593d9756219e69a",
+      "note": "Native libuv FileHandle and intrinsic UVException prerequisites; class/backing/async composition remains separate.",
+      "paths_at_commit": [
+        {
+          "path": "src/extensions/native_node_uv_exception.zig",
+          "bytes": 4439,
+          "sha256": "51D61C9725774D27D4E664216162A26F998378470B4EF648D6CE3229C8806E40"
+        },
+        {
+          "path": "src/extensions/native_uv_file_handle.c",
+          "bytes": 5088,
+          "sha256": "56590C33A17FBD7D1A69B8D7E07E6311031B576290858B832B1DFDF7F5AE05B0"
+        },
+        {
+          "path": "src/extensions/native_uv_file_handle.h",
+          "bytes": 2514,
+          "sha256": "10E429D64FE65DCC46DAE73B07E5AE2F0672D3B0E40333C99095E32986021D0D"
+        },
+        {
+          "path": "verification/native-node-file-handle-physical-sourceonly-20261019/manifest.json",
+          "bytes": 4847,
+          "sha256": "905FEAF46DA3D144AB0ED93C1F5009A8CC077A62D36B93634A4BAD091CCC75C2"
+        },
+        {
+          "path": "verification/native-node-file-handle-sourceonly-20261019/authority/node_file.v24.13.cc",
+          "bytes": 139386,
+          "sha256": "19C497BF90FAD9E04645FCA423BC727F18F0B4B9E3C898C35AE2678D12047C0F"
+        },
+        {
+          "path": "verification/native-node-file-handle-sourceonly-20261019/authority/uv-exception.v24.13.excerpt.cc.txt",
+          "bytes": 4000,
+          "sha256": "D9CA5473F673AD0B3B3D89E53D5AE998B8D2774798B1928B136AC92700448BF8"
+        }
+      ],
+      "source_only": true,
+      "qualification": false
+    }
+  ],
+  "vendor_reverified": {
+    "manifest_sha256": "68528E74686A7BAAF80F4DBE7DBDF57AC0462E1064C1AA13E92A2570352CF206",
+    "files": 134,
+    "bytes": 2221411,
+    "each_git_blob_exact": true
+  },
+  "implementation_in_progress": [
+    "Genuine Radius OAuth declarations and 34 controls are in Root source review, not yet intaked.",
+    "Actual Windows libuv writer and physical controls.",
+    "Independent native backing lease and fixed/resizable/shared-buffer semantics.",
+    "Actual FileHandle/SDK/Photon/loader/application owners."
+  ],
+  "qualification": false,
+  "application_qualification": false,
+  "publication": false
+}
