@@ -1,0 +1,90 @@
+{
+  "unit": "actual SDK public compaction index composition",
+  "status": "source and three authored controls complete; no build or runtime execution",
+  "owned_base": "1bcfb6992804c8b9047a49cd1292cc8f9379166f",
+  "authority": {
+    "upstream_commit": "c268154c",
+    "compaction_index_path": "compaction-authority/index.ts.txt",
+    "compaction_index_sha256": "f82bde781410ae1a638989ff91bde9cc7045341a76bb9757de2ea6beea4c077d",
+    "scope": "The fourteen public compaction bindings are selected from the already authored genuine branch, core, summary and text owners. This unit does not publish or claim the complete coding-agent namespace.",
+    "source_mismatch": "The summary unit's retained c268 compaction TypeScript differs from the accepted runtime's sourcesContent; its exact authority and selected-body fixture remain recorded in the separate summary unit. This composition does not replace that evidence with an execution claim.",
+    "coding_agent_index_sha256_prefix": "FF0C6959"
+  },
+  "source_pins": [
+    {
+      "path": "src/extensions/native_sdk_public_compaction.zig",
+      "bytes": 3034,
+      "sha256": "d2e4cb6ffd5dd05627e42e09ee2b361fb0165e4dbe8cdea04de654c05fb06b2e"
+    },
+    {
+      "path": "src/extensions/native_sdk_session_ai_assembly.zig",
+      "bytes": 3369,
+      "sha256": "f18ff097b42d06c3b3c6e64a6109a7fdb9bc88ea94feb331320ec124c1e8e314"
+    },
+    {
+      "path": "src/native_sdk_public_compaction_test.zig",
+      "bytes": 6065,
+      "sha256": "f37346645f5f6ab0bbe9d3321e900d61f1f02e4c41bead9977a11715aa4a5148"
+    },
+    {
+      "path": "verification/sdk-owners-resume-20261018/compaction-authority/index.ts.txt",
+      "bytes": 156,
+      "sha256": "f82bde781410ae1a638989ff91bde9cc7045341a76bb9757de2ea6beea4c077d"
+    }
+  ],
+  "public_bindings": [
+    "calculateContextTokens",
+    "collectEntriesForBranchSummary",
+    "compact",
+    "DEFAULT_COMPACTION_SETTINGS",
+    "estimateTokens",
+    "findCutPoint",
+    "findTurnStartIndex",
+    "generateBranchSummary",
+    "generateSummary",
+    "generateSummaryWithUsage",
+    "getLastAssistantUsage",
+    "prepareBranchEntries",
+    "serializeConversation",
+    "shouldCompact"
+  ],
+  "actual_graph": {
+    "inputs": "The existing session assembler receives the genuine pi-ai compat record and constructs actual UUID/retry/completeSummarization imports.",
+    "shared_identity": "The public compaction record and AgentSession use the same completeSummarization, compact, generateSummary, generateSummaryWithUsage and branch function objects.",
+    "publication": "Each candidate completes C435 retirement before cache selection/publication; reentrant completed winners are retained while losing candidates retire.",
+    "fixture": "The controls construct native_sdk_ai_imports and actual compat; no replacement completion callback or caller-completed public namespace is supplied."
+  },
+  "build": {
+    "target": "build-native-sdk-public-compaction",
+    "artifact": "native-sdk-public-compaction.exe",
+    "root": "src/native_sdk_public_compaction_test.zig",
+    "filter": "SDK public compaction",
+    "declared_tests": [
+      "SDK public compaction index contains all fourteen actual owner bindings",
+      "SDK public compaction shares session branch functions and mutable default object",
+      "SDK public compaction executes its real pure bodies and intrinsic branch async body"
+    ],
+    "imported_test_metadata": "Not queried in this source-only unit; Root must retain actual imported metadata when preparing executable qualification."
+  },
+  "dependencies": {
+    "summary_commit": "814ac9bb767763b39dd9e47891c26af7256146ac",
+    "branch_commit": "1bcfb6992804c8b9047a49cd1292cc8f9379166f",
+    "canonical_owners": "Existing AF33 guest-operation/C435 completion, real AI imports, UUID/retry, branch/core/text and summary owners.",
+    "template_semantics": "Original c268/Node eager ToString and intrinsic concatenation; corrected compiler dependency 353970d4204b5961058e86d3b435778a4a1e96f8 remains required for Source comparison.",
+    "native_async_retirement": "The current Root-coordinated native AF terminal and captured-state owner dependencies remain required; no earlier runtime evidence is inherited."
+  },
+  "finite_source_peer": {
+    "reviewer": "/root/vm_foundation",
+    "closed": true,
+    "scope": "D2E4CB6F namespace, F18FF097 session assembly, all three F3734664 controls and exact c268 export mapping",
+    "result": "No concrete blocker in the requested identity, genuine-dependency, cache-publication and pure/zero-message intrinsic async control slice.",
+    "execution": false
+  },
+  "no_execution": {
+    "native_build": false,
+    "metadata_query": false,
+    "node": false,
+    "runtime": false,
+    "source_generator": false
+  }
+}
