@@ -1,0 +1,56 @@
+{
+  "status": "authored source-only component; no observer execution or candidate acceptance",
+  "node_version": "v24.14.0",
+  "source_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+  "original_executable": "C:/Program Files/nodejs/node.exe",
+  "original_executable_sha256": "63C259C81E5D472B5F11C8D506070130CB04A1ECF84B80377A34ED6EC9048088",
+  "primary_authority": "verification/node-module-constructor-sourceonly-20261016/authority/primary-authority.json",
+  "primary_authority_sha256": "1C852A94D054E0705D4D098E66749A83FB7AFD01B462F9933A2EC11FFEEC2CC4",
+  "selected": [
+    {
+      "path": "verification/node-module-constructor-sourceonly-20261016/authority/lib__internal__modules__cjs__loader.js.txt",
+      "sha256": "2AB4659A8EED5728545CF4393994CB58387AC0693F20F8DFCD095C8D006D21EB",
+      "ranges": [
+        [
+          926,
+          967
+        ],
+        [
+          2037,
+          2045
+        ],
+        [
+          2052,
+          2080
+        ]
+      ]
+    },
+    {
+      "path": "verification/node-commonjs-internal-builtin-require-sourceonly-20261018/authority/realm.js",
+      "sha256": "6B19B7E820C099E28748019277B1CFDCDF2F1167C4F937F2645072764D2AC421",
+      "function": "BuiltinModule.normalizeRequirableId"
+    },
+    {
+      "path": "src/extensions/native_node_builtin_node24_data.zig",
+      "authority": "unchanged admitted Node24.14 default public builtin policy data; not the implemented native registry"
+    }
+  ],
+  "declared_native_controls": 20,
+  "declared_independent_node_observers": 12,
+  "source_execution": false,
+  "native_build": false,
+  "native_runtime": false,
+  "selected_startup": {
+    "platform": "win32",
+    "module_debug_enabled": false,
+    "expose_internals": false
+  },
+  "explicit_open": [
+    "Actual POSIX credentials.safeGetenv input; no substitute provider is installed",
+    "Enabled module debug logger invocation; disabled call argument parent.id still executes",
+    "Legacy options.paths resolveSearchPaths and complete _resolveFilename activation",
+    "Shared mutable original argv migration for _nodeModulePaths from and classic realpath p",
+    "Complete same-Module loader/extensions/public node:module/Jiti/TS/ESM/TLA",
+    "Default builtin policy does not imply complete native builtin implementation"
+  ]
+}
