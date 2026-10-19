@@ -4,7 +4,7 @@
   "resumed_utc": "2026-10-18T15:40:41.903939+00:00",
   "authorization": "User requested finish the port roadmap work on Devbox Hermes; this supersedes the historical pause.",
   "initial_integration_head": "33e1f374068de8525951247739719f2ae8ff429b",
-  "current_source_head_at_record": "e38b12dfaa107698347dd7f71af08bd159e7633f",
+  "current_source_head_at_record": "3316c7cff470d5e6a9be15a6506e6a7d554d1dc6",
   "upstream_target": "c268154ca1171c2f9eefe75d3d7372a68aada2d5",
   "official_latest_observed": "482c1381a00d8d00bc81697e4a980c593db6803e",
   "existing_jobs_observed_running_or_queued": 0,
@@ -36,8 +36,8 @@
   "application_qualification": false,
   "production_bridge_removed": false,
   "published_release": false,
-  "updated_utc": "2026-10-18T22:46:50Z",
-  "record_note": "Active implementation. Branch preparation18, Node argument21, shared iterator/Meta17, four owned text returns, and C terminal-order/actual arrow receiver9 are integrated. Fresh V6 remains a preserved compiler negative with no partial runtime acceptance. An optional terminal state-close hook plus the active escaped-frame coroutine edge is under implementation. Exact linked-C untagged templates use live concat before raw substitutions; affected provider, SDK and Node template paths are reopened for a canonical correction and actual Source controls. Whole application, default bridge, platforms and release remain open.",
+  "updated_utc": "2026-10-19T12:50:26.813590+00:00",
+  "record_note": "Approved exact445 permanent cleanup completed and independently verified; implementation resumed. Current source integrates captured-frame terminal closure, activation and immutable async argument controls, actual intrinsic template bytecode correction, genuine OAuth page/callback, SDK summary/branch/compaction/EventBus/context, IncomingMessage/header owners and real filesystem/URL/classic realpath units. Actual synchronous parameter ownership, constructor/for-in/apply bridges, full SDK/application namespace, module loader and physical HTTP remain active. All new units are source-only and unexecuted; no whole-application/default-bridge/platform/release acceptance.",
   "integrated_source_units": [
     "Reviewed VM union, Agent/Node/SDK guest operation guards, CJS compiler and source metadata bodies, Engine ownership, genuine Agent/session/auth owners, real Exec live waiter, Git/Chalk/Ignore/Semver consumers, actual InitialModel guest boundaries, genuine Anthropic auth, genuine PKCE body and ten declared controls, genuine RemoteCatalog bodies and nine declared controls.",
     "Actual public CLI parser10 controls, truncation9, Theme10 and extension helpers8; child dependency and11 real frontend/spawn/waiter controls; shared stdio lease assertion; genuine six-export output guard dependency; genuine DeviceCode12 controls including linked-VM loop-slot lifetime; RemoteCatalog now11 controls; PKCE actual host job checkpoints; optional CommonJS host-error correction and explicit component filters.",
@@ -62,7 +62,12 @@
     "Root iterator cached-next correction ecc4b68d, four owned text-return corrections cda4f948, and actual abrupt iterator retirement 0870cb7e are integrated. Meta retains all15 prior declarations and adds normal/abrupt cached-next actual retirement controls for17. Shared PublicValues0B1BB422 uses original-Throw Completion retirement before IteratorClose; both finite peers closed.",
     "Actual Node argument errors e74d7915 integrated9e253323 with21 controls and actual Node24.13.0 internal authority; source observer capture remains unexecuted. Its template paths are reopened after exact linked-C concat behavior was found.",
     "Actual C terminal argument-before-local retirement3892188 integratedd7cf0a13, then actual async arrow call receiver retentione48d29e1 integratede38b12df with9 retained/appended controls. C73887516 and header959BA37D remain unexecuted at this combined head. Optional terminal captured-frame closure and active coroutine retention follow separately.",
-    "Actual public branch collection/preparation22011894 integratedb82df238 with18 Source-based controls and finite peers. Build-only conflict was resolved using exact current Main plus13 additive registration lines; all earlier targets were retained. Genuine summary producer and full SDK composition remain open."
+    "Actual public branch collection/preparation22011894 integratedb82df238 with18 Source-based controls and finite peers. Build-only conflict was resolved using exact current Main plus13 additive registration lines; all earlier targets were retained. Genuine summary producer and full SDK composition remain open.",
+    "Actual optional captured-frame terminal close hook integrated7d33baa1. Activation lease a123f0ce and immutable async argument eb55637d produce24 authored retirement controls. Original9 are retained; no new execution.",
+    "Authority correction: original JavaScript untagged templates intrinsically ToString each substitution before evaluating the next. No live String.prototype.concat lookup is allowed. Actual compiler correction353970d4 integrated3d5ebe78, including18 declared controls and BC_VERSION29. The previously proposed native live-concat drafts were withdrawn and preserved; existing original Node argument bodies retained. Historical22:46 record is superseded only on this semantic interpretation.",
+    "Genuine OAuth page10 and callback24, actual IncomingMessage21 and header checks13 integrated. Callback default now consumes genuine installed node:http; controlled HTTP inputs do not qualify physical HTTP/provider login. Physical net.Server/HTTP remains under implementation.",
+    "Genuine SDK summary24, branch AF20,14-export public compaction3, EventBus14 and public context helpers20 integrated with actual shared owners. Summary Root peer closed at6EEE5077/83FECFDC/FACE0A50/07EA1127; exact c268 source mismatches versus accepted runtime are retained. Full157-export public namespace/application remains open.",
+    "Actual FS path helpers18, URL helpers19, physical stat/readlink provider and classic realpath21 integrated through3316c7cf. Root URL and classic algorithm/public CJS peer closed with explicit actual synchronous-argument reassignment dependency; physical Windows/Unix IO controls have not executed."
   ],
   "combined_native_execution": {
     "scope": "Exact Windows component artifact and complete actual ordered metadata only; no whole-application or other-head acceptance.",
@@ -453,12 +458,40 @@
     }
   ],
   "next_native_batch": {
-    "status": "awaiting_optional_terminal_frame_hook_and_template_corrections",
+    "status": "preparing_coherent_constructor_and_sync_argument_foundation",
     "mode": "BuildQuery",
     "driver_sha256": "4F816750747F32A4EA6D0E832D90C962955C03217B3BF341A3F104068BBFC2D4",
-    "independent_auditor_sha256": null,
+    "independent_auditor_sha256": "83D3716AA0E6A43F4481794BC29A464C85A67A1620576ABFEBA714D73CCACF77",
     "qualification_requested": true,
     "runtime_requested": false,
-    "scope": "Retain all39 prior groups/513 named controls. Current integrated successors would produce42 groups/563 named controls (Meta+2, native async retirement9, Node argument21, SDK branch18). Exact final matrix also includes any reviewed hook/template/FS successors. Fresh changed-vendor build/query, independent complete raw metadata/artifact audit, then separate exact-artifact runtime; no runtime implied by source declarations."
+    "scope": "Retain39 prior groups and current reviewed successors, append all newly integrated groups. Exact matrix is being assembled and counts are provisional until actual metadata. Fresh changed-vendor build/query, independent complete raw metadata/artifact audit, then separate exact-artifact runtime. No compiler or runtime currently granted."
+  },
+  "storage_cleanup": {
+    "status": "completed_and_independently_verified",
+    "authorization": "User explicitly confirmed exact445 permanent-disposal proposal then continued the port",
+    "completion": "../../evidence/storage-cleanup-20261019/cleanup-completion.json",
+    "logical_bytes_deleted": 501785072530,
+    "measured_free_space_gain_bytes": 488904359936,
+    "workspace_logical_bytes_after": 322356326502,
+    "failures": 0,
+    "scope": "Only approved445 targets; prior Bin entries, all dirty source and held evidence retained"
+  },
+  "source_intake_20261019": {
+    "status": "source_only",
+    "journals": [
+      {
+        "path": "../../evidence/source-intake-20261019/vm-sdk-integration-journal.jsonl",
+        "sha256": "5E6392CA3B50C59F6B8DCF9B2DF111193008BB28F4E1114FDC1FE07ACBD38F43",
+        "intakes": 13
+      },
+      {
+        "path": "../../evidence/source-intake-20261019/filesystem-integration-journal.jsonl",
+        "sha256": "9CC29E31A74D6D5C93A5FBACCE3F33D6699ECB7F440FCC4A8E6194807E964C19",
+        "intakes": 4
+      }
+    ],
+    "terminal_hook_source": "9ca2acdf6115579a418fde52d3a523824df3e8a3",
+    "terminal_hook_main": "7d33baa187e52e2238601c9a086588830e45a1ee",
+    "current_head": "3316c7cff470d5e6a9be15a6506e6a7d554d1dc6"
   }
 }
