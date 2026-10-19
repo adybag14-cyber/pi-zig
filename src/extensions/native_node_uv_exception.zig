@@ -52,6 +52,18 @@ fn appendLiteral(s: *Scope, left: c.JSValue, text: []const u8) !c.JSValue {
     return s.binary(0, left, try s.text(text));
 }
 
+// V8 Object::Set passes kDontThrow. A normal readonly/missing-setter failure
+// stays nonthrowing; a genuine getter/setter/proxy exception remains pending.
+// The public QuickJS value-key API consumes exactly the duplicated key/value.
+fn set(s: *Scope, receiver: c.JSValue, name: []const u8, value: c.JSValue) !void {
+    const key = try s.text(name);
+    try s.pending();
+    const status = c.JS_SetPropertyValue(s.engine.context, receiver,
+        c.JS_DupValue(s.engine.context, key), c.JS_DupValue(s.engine.context, value), 0);
+    try s.pending();
+    if (status < 0) return error.MissingActualUvErrorPropertySetReason;
+}
+
 fn createBody(s: *Scope, input: Input) !c.JSValue {
     try s.pending();
     const description = if (input.message) |given|
@@ -91,10 +103,10 @@ fn createBody(s: *Scope, input: Input) !c.JSValue {
     if (status < 0) return error.MissingActualUvErrorMessageDefinition;
 
     // Actual Object::Set, including inherited setters, in the original order.
-    try s.put(reason, "errno", c.JS_NewInt32(s.engine.context, input.code));
-    try s.put(reason, "code", code_value);
-    try s.put(reason, "syscall", syscall_value);
-    if (input.path != null) try s.put(reason, "path", path_value);
-    if (input.dest != null) try s.put(reason, "dest", dest_value);
+    try set(s, reason, "errno", c.JS_NewInt32(s.engine.context, input.code));
+    try set(s, reason, "code", code_value);
+    try set(s, reason, "syscall", syscall_value);
+    if (input.path != null) try set(s, reason, "path", path_value);
+    if (input.dest != null) try set(s, reason, "dest", dest_value);
     return c.JS_DupValue(s.engine.context, reason);
 }

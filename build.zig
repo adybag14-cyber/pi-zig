@@ -1995,6 +1995,14 @@ pub fn build(b: *std.Build) void {
         native_node_tcp_transport_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/llhttp/include"));
         native_node_tcp_transport_tests.root_module.linkLibrary(network);
         b.step("build-native-node-tcp-transport", "Install actual libuv TCP ownership controls without execution").dependOn(&b.addInstallArtifact(native_node_tcp_transport_tests, .{}).step);
+        const native_node_uv_exception_tests = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_uv_exception_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native UVException"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, native_node_uv_exception_tests.root_module, quickjs, sqlite_lib_dir);
+        native_node_uv_exception_tests.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        native_node_uv_exception_tests.root_module.linkLibrary(network);
+        b.step("build-native-node-uv-exception", "Install actual native UVException controls without execution").dependOn(&b.addInstallArtifact(native_node_uv_exception_tests, .{}).step);
     }
     const public_rpc_mode_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_mode_test.zig"), .target = target, .optimize = optimize }),
