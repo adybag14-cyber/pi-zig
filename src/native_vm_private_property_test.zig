@@ -51,14 +51,14 @@ const Fixture = struct {
         try std.testing.expect(!c.JS_HasException(self.context));
     }
     fn global(self: *Fixture, name: [:0]const u8) !c.JSValue {
-        const global = try self.checked(c.JS_GetGlobalObject(self.context));
-        defer c.JS_FreeValue(self.context, global);
-        return self.checked(c.JS_GetPropertyStr(self.context, global, name));
+        const global_object = try self.checked(c.JS_GetGlobalObject(self.context));
+        defer c.JS_FreeValue(self.context, global_object);
+        return self.checked(c.JS_GetPropertyStr(self.context, global_object, name));
     }
     fn publish(self: *Fixture, name: [:0]const u8, value: c.JSValue) !void {
-        const global = try self.checked(c.JS_GetGlobalObject(self.context));
-        defer c.JS_FreeValue(self.context, global);
-        if (c.JS_SetPropertyStr(self.context, global, name, c.JS_DupValue(self.context, value)) < 0)
+        const global_object = try self.checked(c.JS_GetGlobalObject(self.context));
+        defer c.JS_FreeValue(self.context, global_object);
+        if (c.JS_SetPropertyStr(self.context, global_object, name, c.JS_DupValue(self.context, value)) < 0)
             return error.PrivateSlotPublishFailed;
     }
     fn sentinel(self: *Fixture, probe: *Probe) !c.JSValue {
