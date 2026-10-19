@@ -98,6 +98,13 @@ pub fn build(b: *std.Build) void {
         .file = b.path("src/extensions/engine_abi.c"),
         .flags = &.{"-std=gnu11"},
     });
+    // One unchanged libuv/llhttp graph is shared by native TCP and file I/O owners.
+    const native_node_network = switch (target.result.os.tag) {
+        .windows, .linux => @import("tools/build_native_node_network.zig").add(b, target, optimize),
+        else => null,
+    };
+    // The real filesystem is reachable from every VM; share one static owner.
+    if (native_node_network) |network| quickjs.root_module.linkLibrary(network);
     const typescript_parser = b.addLibrary(.{
         .name = "pi-typescript-parser",
         .linkage = .static,
@@ -3782,6 +3789,23 @@ pub fn build(b: *std.Build) void {
         node_module_search_paths.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-node-module-search-paths", "Install twenty declared genuine Module search-path controls without running").dependOn(&b.addInstallArtifact(node_module_search_paths, .{ .dest_sub_path = b.fmt("native-node-module-search-paths{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
+    if (native_node_network != null) {
+        const node_fs_write_uv = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_write_uv_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual filesystem writer"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_fs_write_uv.root_module, quickjs, sqlite_lib_dir);
+        node_fs_write_uv.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
+        linkTypeScriptParser(b, node_fs_write_uv.root_module, typescript_parser);
+        linkSqlite(node_fs_write_uv.root_module, sqlite_lib_dir, sqlite_library);
+        node_fs_write_uv.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            node_fs_write_uv.root_module.linkSystemLibrary("advapi32", .{});
+            node_fs_write_uv.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-fs-write-uv", "Install twelve actual filesystem writer ownership controls without execution").dependOn(&b.addInstallArtifact(node_fs_write_uv, .{ .dest_sub_path = b.fmt("native-node-fs-write-uv{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
 
 }
 
