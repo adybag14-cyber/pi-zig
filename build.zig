@@ -1834,6 +1834,19 @@ pub fn build(b: *std.Build) void {
         public_rpc_jsonl_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-public-rpc-jsonl", "Install actual c268 RPC JSONL framing controls without execution").dependOn(&b.addInstallArtifact(public_rpc_jsonl_tests, .{}).step);
+    const node_http_incoming_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_http_incoming_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"Node HTTP incoming"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, node_http_incoming_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_http_incoming_tests.root_module, typescript_parser);
+    linkSqlite(node_http_incoming_tests.root_module, sqlite_lib_dir, sqlite_library);
+    node_http_incoming_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_http_incoming_tests.root_module.linkSystemLibrary("advapi32", .{});
+        node_http_incoming_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-http-incoming", "Install actual Node IncomingMessage and genuine Stream controls without execution").dependOn(&b.addInstallArtifact(node_http_incoming_tests, .{}).step);
     const ai_oauth_callback_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_ai_oauth_callback_server_genuine_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"AI OAuth callback"}, .use_llvm = use_llvm,
