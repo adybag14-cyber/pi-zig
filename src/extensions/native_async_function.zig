@@ -2,6 +2,7 @@
 //! JavaScript wrapper is used. QuickJS owns each outer Promise and real Await.
 const em = @import("engine.zig");
 const c = em.c;
+pub const Arguments = @import("native_async_arguments.zig").Arguments;
 pub const Callback = *const fn (*em.Engine, c.JSValue, []const c.JSValue, []const c.JSValue) anyerror!c.JSValue;
 pub const Completion = enum(c_int) {
     start = c.JS_PI_AF_START,
@@ -15,7 +16,14 @@ pub const Body = *const fn (*em.Engine, c.JSValue, []const c.JSValue, []const c.
 /// Borrowed terminal state, after argument retirement and before state release.
 /// This hook closes owned lexical bindings; it may not allocate or run guest code.
 pub const StateClose = *const fn (*em.Engine, c.JSValue) anyerror!void;
-const Implementation = union(enum) { callback: Callback, body: Body };
+pub const ArgumentBody = *const fn (*em.Engine, c.JSValue, *Arguments, []const c.JSValue, *c.JSValue, Completion, c.JSValue) anyerror!Action;
+pub const ArgumentDefinition = struct {
+    /// Actual declared slots, independent of observable Function.length.
+    formal_count: u16,
+    body: ArgumentBody,
+    close: ?StateClose = null,
+};
+const Implementation = union(enum) { callback: Callback, body: Body, arguments: ArgumentDefinition };
 const Captures = struct { engine: *em.Engine, implementation: Implementation, values: []c.JSValue };
 fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
     const captures: *Captures = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
@@ -53,6 +61,10 @@ fn invokeImplementation(captures: *Captures, receiver: c.JSValue, args: []const 
             break :blk .{ .returned = callback(engine, receiver, args, captures.values) catch |err| return fail(engine, err) };
         },
         .body => |body| body(engine, receiver, args, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err),
+        .arguments => |definition| blk: {
+            var arguments = Arguments.current(engine, args) catch |err| return fail(engine, err);
+            break :blk definition.body(engine, receiver, &arguments, captures.values, @ptrCast(state), completion, input) catch |err| return fail(engine, err);
+        },
     };
     return switch (result) {
         .returned => |value| resultValue(action, c.JS_PI_AF_RETURN, value),
@@ -88,6 +100,18 @@ pub fn createResumableWithClose(engine: *em.Engine, name: [*:0]const u8, length:
 pub fn createResumableArrowWithClose(engine: *em.Engine, name: [*:0]const u8, length: c_int, body: Body, roots: []const c.JSValue, lexical_this: c.JSValue, comptime close: StateClose) !c.JSValue {
     return createKind(engine, name, length, .{ .body = body }, roots, lexical_this, true, CloseTrampoline(close).finish);
 }
+/// An actual native AF with mutable formal slots owned by its invocation.
+/// The borrowed Arguments adapter is valid only for this callback activation;
+/// do not retain it in state, closures or workers. Defaults and destructuring
+/// remain explicit Source body/prologue operations.
+pub fn createResumableWithArguments(engine: *em.Engine, name: [*:0]const u8, length: c_int, comptime definition: ArgumentDefinition, roots: []const c.JSValue) !c.JSValue {
+    return createKind(engine, name, length, .{ .arguments = definition }, roots, c.pi_js_undefined(), false,
+        if (definition.close) |close| CloseTrampoline(close).finish else null);
+}
+pub fn createResumableArrowWithArguments(engine: *em.Engine, name: [*:0]const u8, length: c_int, comptime definition: ArgumentDefinition, roots: []const c.JSValue, lexical_this: c.JSValue) !c.JSValue {
+    return createKind(engine, name, length, .{ .arguments = definition }, roots, lexical_this, true,
+        if (definition.close) |close| CloseTrampoline(close).finish else null);
+}
 fn CloseTrampoline(comptime close: StateClose) type {
     return struct {
         fn finish(context: ?*c.JSContext, state: c.JSValue) callconv(.c) void {
@@ -117,8 +141,13 @@ fn createKind(engine: *em.Engine, name: [*:0]const u8, length: c_int, implementa
     attached = true;
     // From attachment onward the private holder's finalizer owns host storage.
     // A C factory failure releases its partial roots before owner is released.
-    const function = if (close) |hook|
-        c.JS_PiNewNativeAsyncFunctionWithClose(engine.context, invoke, hook, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length)
-    else c.JS_PiNewNativeAsyncFunction(engine.context, invoke, owner, lexical_this, if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0, name, length);
+    const flags: c_int = if (arrow) c.JS_PI_AF_LEXICAL_THIS else 0;
+    const function = switch (implementation) {
+        .arguments => |definition| c.JS_PiNewNativeAsyncFunctionWithArguments(
+            engine.context, invoke, close, owner, lexical_this, flags, name, length, definition.formal_count),
+        else => if (close) |hook|
+            c.JS_PiNewNativeAsyncFunctionWithClose(engine.context, invoke, hook, owner, lexical_this, flags, name, length)
+        else c.JS_PiNewNativeAsyncFunction(engine.context, invoke, owner, lexical_this, flags, name, length),
+    };
     return engine.checked(function);
 }

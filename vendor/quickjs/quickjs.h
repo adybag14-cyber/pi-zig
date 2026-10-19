@@ -588,6 +588,33 @@ JS_EXTERN JSValue JS_PiNewNativeAsyncFunctionWithClose(JSContext *ctx,
     JSValueConst captures, JSValueConst lexical_this, int flags,
     const char *name, int length);
 
+
+/* Opt in to the actual async_func_init argument layout: max(argc, formals)
+   owned slots, supplied values duplicated once and missing slots undefined.
+   formal_count is independent of observable length and bytecode vardefs.
+   Existing body argc remains the supplied count on every resume. Defaults,
+   destructuring and parameter-scope locals remain the native body's work. */
+JS_EXTERN JSValue JS_PiNewNativeAsyncFunctionWithArguments(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSPiAsyncFunctionStateClose *close,
+    JSValueConst captures, JSValueConst lexical_this, int flags,
+    const char *name, int length, uint16_t formal_count);
+typedef struct JSAsyncFunctionData JSPiNativeAsyncArguments;
+/* Borrow only while executing this actual opted-in body. The pointer must
+   never escape, be retained in state/captures, or cross a worker boundary.
+   Current returns NULL with the real pending reason on invalid/pending entry.
+   Get is a borrowed read; index must be below declared formal_count.
+   Set consumes value on every exit, publishes the replacement before retiring
+   the previous slot, and preserves the first actual pending failure. Use the
+   caller's ordinary guest-operation boundary around Set. Reentrant code sees
+   the same slots; supplied extra args remain owned through terminal cleanup.
+   All initialized slots retire before the state-close hook, including during
+   abandonment. This opt-in does not implement mutable parameter captures. */
+JS_EXTERN JSPiNativeAsyncArguments *JS_PiGetNativeAsyncArguments(JSContext *ctx);
+JS_EXTERN JSValueConst JS_PiAsyncArgumentGet(JSPiNativeAsyncArguments *arguments,
+                                            uint16_t index);
+JS_EXTERN int JS_PiAsyncArgumentSet(JSContext *ctx,
+    JSPiNativeAsyncArguments *arguments, uint16_t index, JSValue value);
+
 typedef enum JSPiAsyncGeneratorCompletion {
     JS_PI_AG_START, JS_PI_AG_NEXT, JS_PI_AG_RETURN_INPUT, JS_PI_AG_THROW_INPUT,
     JS_PI_AG_AWAIT_FULFILLED, JS_PI_AG_AWAIT_REJECTED,

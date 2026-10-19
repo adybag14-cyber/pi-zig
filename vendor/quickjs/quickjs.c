@@ -945,6 +945,8 @@ typedef struct JSFunctionBytecode {
     JSPiAsyncFunctionBody *native_async_body;
     JSPiAsyncFunctionStateClose *native_async_close;
     uint8_t native_async_flags;
+    bool native_async_arguments; /* explicit mutable-formal opt-in */
+    uint16_t native_async_formal_count; /* independent of .length/vardefs */
 } JSFunctionBytecode;
 
 typedef struct JSBoundFunction {
@@ -1035,7 +1037,8 @@ typedef struct JSAsyncFunctionData {
     JSPiAsyncFunctionStateClose *native_close;
     JSContext *native_ctx;
     JSValue native_function, native_this, native_receiver, native_state;
-    int native_argc;
+    int native_argc; /* initialized owned slots, including missing formals */
+    int native_supplied_argc; /* actual argc passed to every resumed body */
     JSValue *native_argv;
 } JSAsyncFunctionData;
 
@@ -22698,6 +22701,7 @@ static void js_async_function_terminate(JSRuntime *rt, JSAsyncFunctionData *s)
             js_free_rt(rt, s->native_argv);
             s->native_argv = NULL;
             s->native_argc = 0;
+            s->native_supplied_argc = 0;
             JS_FreeValueRT(rt, s->native_state);
             s->native_state = JS_UNDEFINED;
             JS_FreeValueRT(rt, s->native_this);
@@ -22867,7 +22871,7 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     frame.cur_gc_obj = &s->header;
     ctx->rt->current_stack_frame = &frame;
     output = s->native_body(ctx, b->cpool[0], s->native_this,
-        s->native_argc, vc(s->native_argv), completion, input,
+        s->native_supplied_argc, vc(s->native_argv), completion, input,
         &s->native_state, action);
     js_callsite_release_receiver(ctx, &frame);
     ctx->rt->current_stack_frame = frame.prev_frame;
@@ -22928,6 +22932,59 @@ static int js_pi_sync_store(JSContext *ctx, JSValue *slot, JSValue value)
         return -1;
     }
     return 0;
+}
+
+
+/* Only the current opted-in body may borrow its actual asynchronous formal
+   slots. No copy, owning wrapper or independent argument frame is created. */
+JSPiNativeAsyncArguments *JS_PiGetNativeAsyncArguments(JSContext *ctx)
+{
+    JSStackFrame *sf = ctx->rt->current_stack_frame;
+    JSAsyncFunctionData *s;
+    JSFunctionBytecode *b;
+
+    if (JS_HasException(ctx))
+        return NULL;
+    if (!sf || JS_GetClassID(sf->cur_func) != JS_CLASS_ASYNC_FUNCTION)
+        goto invalid;
+    b = JS_VALUE_GET_OBJ(sf->cur_func)->u.func.function_bytecode;
+    if (!b->native_async_body || !b->native_async_arguments ||
+        !sf->cur_gc_obj ||
+        JS_GC_TYPE(sf->cur_gc_obj) != JS_GC_OBJ_TYPE_ASYNC_FUNCTION)
+        goto invalid;
+    s = (JSAsyncFunctionData *)sf->cur_gc_obj;
+    if (!s->is_active || s->native_ctx != ctx ||
+        !JS_IsObject(s->native_function) ||
+        JS_VALUE_GET_OBJ(s->native_function) != JS_VALUE_GET_OBJ(sf->cur_func))
+        goto invalid;
+    return s;
+ invalid:
+    JS_ThrowInternalError(ctx, "Mutable async arguments require their current opted-in body");
+    return NULL;
+}
+
+JSValueConst JS_PiAsyncArgumentGet(JSPiNativeAsyncArguments *arguments,
+                                  uint16_t index)
+{
+    JSFunctionBytecode *b;
+    assert(arguments->is_active);
+    b = JS_VALUE_GET_OBJ(arguments->native_function)->u.func.function_bytecode;
+    assert(b->native_async_arguments &&
+           index < b->native_async_formal_count &&
+           index < arguments->native_argc);
+    return arguments->native_argv[index];
+}
+
+int JS_PiAsyncArgumentSet(JSContext *ctx, JSPiNativeAsyncArguments *arguments,
+                          uint16_t index, JSValue value)
+{
+    JSFunctionBytecode *b;
+    assert(arguments->is_active && arguments->native_ctx == ctx);
+    b = JS_VALUE_GET_OBJ(arguments->native_function)->u.func.function_bytecode;
+    assert(b->native_async_arguments &&
+           index < b->native_async_formal_count &&
+           index < arguments->native_argc);
+    return js_pi_sync_store(ctx, &arguments->native_argv[index], value);
 }
 
 JSValueConst JS_PiSyncArgumentGet(JSPiSyncArgumentFrame *frame, uint16_t index)
@@ -23119,7 +23176,7 @@ static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
     resolves[0] = s->resolving_funcs[0]; resolves[1] = s->resolving_funcs[1];
     s->native_state = s->native_this = s->native_function = JS_UNDEFINED;
     s->native_receiver = JS_UNDEFINED;
-    s->native_argv = NULL; s->native_argc = 0;
+    s->native_argv = NULL; s->native_argc = 0; s->native_supplied_argc = 0;
     s->resolving_funcs[0] = s->resolving_funcs[1] = JS_UNDEFINED;
     /* The suspended bytecode frame retires its argument slots before its
        local slots, then cur_func/captures, then receiver/this_val. */
@@ -23490,6 +23547,26 @@ JSValue JS_PiNewNativeAsyncFunctionWithClose(JSContext *ctx,
     return function;
 }
 
+
+JSValue JS_PiNewNativeAsyncFunctionWithArguments(JSContext *ctx,
+    JSPiAsyncFunctionBody *body, JSPiAsyncFunctionStateClose *close,
+    JSValueConst captures, JSValueConst lexical_this, int flags,
+    const char *name, int length, uint16_t formal_count)
+{
+    JSValue function;
+    JSFunctionBytecode *b;
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    function = JS_PiNewNativeAsyncFunctionWithClose(ctx, body, close,
+        captures, lexical_this, flags, name, length);
+    if (!JS_IsException(function)) {
+        b = JS_VALUE_GET_OBJ(function)->u.func.function_bytecode;
+        b->native_async_arguments = true;
+        b->native_async_formal_count = formal_count;
+    }
+    return function;
+}
+
 static JSValue js_native_async_function_call(JSContext *caller,
     JSValueConst func_obj, JSValueConst this_obj, int argc, JSValueConst *argv)
 {
@@ -23498,18 +23575,22 @@ static JSValue js_native_async_function_call(JSContext *caller,
     JSAsyncFunctionData *s;
     JSValue promise;
     JSNativeAsyncPending owned = { false, JS_UNDEFINED };
-    int i;
+    int i, count;
     (void)caller;
     if (JS_HasException(ctx))
         return JS_EXCEPTION;
     if (argc < 0 || (size_t)argc > SIZE_MAX / sizeof(JSValue))
         return JS_ThrowInternalError(ctx, "Invalid native async argument count");
+    count = b->native_async_arguments ? max_int(argc, b->native_async_formal_count) : argc;
+    if ((size_t)count > SIZE_MAX / sizeof(JSValue))
+        return JS_ThrowInternalError(ctx, "Invalid native async formal count");
     s = js_mallocz(ctx, sizeof(*s));
     if (!s)
         return JS_EXCEPTION;
     JS_REF_COUNT(s) = 1;
     add_gc_object(ctx->rt, &s->header, JS_GC_OBJ_TYPE_ASYNC_FUNCTION);
     s->native_body = b->native_async_body;
+    s->native_supplied_argc = argc;
     s->native_close = b->native_async_close;
     s->native_ctx = JS_DupContext(ctx);
     s->native_function = js_dup(func_obj);
@@ -23524,12 +23605,14 @@ static JSValue js_native_async_function_call(JSContext *caller,
     promise = JS_NewPromiseCapability(ctx, s->resolving_funcs);
     if (JS_IsException(promise))
         goto failed;
-    if (argc) {
-        s->native_argv = js_malloc(ctx, sizeof(JSValue) * (size_t)argc);
+    if (count) {
+        s->native_argv = js_malloc(ctx, sizeof(JSValue) * (size_t)count);
         if (!s->native_argv)
             goto failed;
         for (i = 0; i < argc; i++)
             s->native_argv[s->native_argc++] = js_dup(argv[i]);
+        for (; i < count; i++)
+            s->native_argv[s->native_argc++] = JS_UNDEFINED;
     }
     if (!js_native_async_function_resume(s, JS_PI_AF_START, JS_UNDEFINED))
         goto failed;

@@ -1951,6 +1951,19 @@ pub fn build(b: *std.Build) void {
         vm_sync_arguments_tests.root_module.linkSystemLibrary("userenv", .{});
     }
     b.step("build-native-vm-sync-arguments", "Install actual synchronous VM argument ownership controls without execution").dependOn(&b.addInstallArtifact(vm_sync_arguments_tests, .{}).step);
+    const vm_mutable_async_arguments_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_async_arguments_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM async arguments"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, vm_mutable_async_arguments_tests.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, vm_mutable_async_arguments_tests.root_module, typescript_parser);
+    linkSqlite(vm_mutable_async_arguments_tests.root_module, sqlite_lib_dir, sqlite_library);
+    vm_mutable_async_arguments_tests.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        vm_mutable_async_arguments_tests.root_module.linkSystemLibrary("advapi32", .{});
+        vm_mutable_async_arguments_tests.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-vm-async-arguments", "Install actual mutable async formal ownership controls without execution").dependOn(&b.addInstallArtifact(vm_mutable_async_arguments_tests, .{}).step);
     const public_rpc_mode_tests = b.addTest(.{
         .root_module = b.createModule(.{ .root_source_file = b.path("src/native_public_rpc_mode_test.zig"), .target = target, .optimize = optimize }),
         .filters = &.{"Public RPC actual"}, .use_llvm = use_llvm,

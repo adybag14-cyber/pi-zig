@@ -1,0 +1,99 @@
+{
+  "unit": "actual mutable native AsyncFunction formal storage",
+  "status": "SOURCE_ONLY_CONTROLS_UNEXECUTED",
+  "parent_commit": "d50cdef4f756ee6ae81bfe5987b33ff3a423e264",
+  "source_authority": {
+    "repository_vm": "vendor/quickjs/quickjs.c",
+    "actual_operations": [
+      "async_func_init",
+      "js_native_async_function_call",
+      "js_native_async_function_step",
+      "js_native_async_retire",
+      "js_async_function_terminate",
+      "js_pi_sync_store"
+    ],
+    "source_fixtures": "Literal strict AsyncFunction bodies retained directly in src/native_async_arguments_test.zig",
+    "required_consumer": "Node v24.13.0 lib/internal/fs/promises.js open(path,flags,mode) and read(handle,bufferOrParams,offset,length,position)",
+    "consumer_source_sha256": "1AB2633217913ED2157CC1026915A26DC6A09CC9B86931F5642491921C15CC22"
+  },
+  "target": "build-native-vm-async-arguments",
+  "filter": "VM async arguments",
+  "artifact": "test.exe on Windows; install-only b.addInstallArtifact",
+  "declared_test_count": 17,
+  "declared_test_names": [
+    "VM async arguments supplied count and initialized formals remain independent of observable length",
+    "VM async arguments assignments before and after real Await use the same original formal slots",
+    "VM async arguments missing fourth and fifth formals retain assignments through another actual Await and GC",
+    "VM async arguments unused supplied extras remain owned after overwritten formals and retire before locals",
+    "VM async arguments zero declared formals still retain every supplied argument through suspension",
+    "VM async arguments store publishes the replacement before the sole prior holder finalizer reads its actual slot",
+    "VM async arguments actual caught private Await rejection can initialize a missing formal and return after another Await",
+    "VM async arguments uncaught ordinary Await rejection preserves raw identity while expanded formals retire",
+    "VM async arguments genuine return adoption sees current formals alive before ordered terminal close",
+    "VM async arguments missing assigned formal is marked during live GC and retires on actual gate abandonment",
+    "VM async arguments real arrow keeps lexical this separate from the supplied receiver while formals mutate",
+    "VM async arguments current getter rejects absent and legacy invocations while preserving an entry exception",
+    "VM async arguments pending call entry leaves the original supplied slot and body untouched",
+    "VM async arguments pending store consumes its incoming owner without changing the selected formal",
+    "VM async arguments actual assignment finalizer fatal prevents the next body and guest catch after Await",
+    "VM async arguments actual body fatal wins later parameter and local cleanup events with every root retired",
+    "VM async arguments current fatal before the second resume retires all assigned missing slots without body entry"
+  ],
+  "actual_metadata_count": null,
+  "production": {
+    "vendor/quickjs/quickjs.c": "30E688B9C5FC91928CD3F42B255762676FC9DE8C2BDEF1DD78D5BDF71F318799",
+    "vendor/quickjs/quickjs.h": "211FFA072B28A9C13FD8B0B9F195FF5D3921B8A11E13FEC5200CE02E1A08A80A",
+    "src/extensions/native_async_arguments.zig": "EF4A4FC32DDF0564ADE5C45B65110ED4D93AE7F9F7558482F8E4238D4F2D482A",
+    "src/extensions/native_async_function.zig": "359C5C4AE2EC89AE5B446D728D902FAE6774CCBDEC8EDA91D54FE2431E2763FA"
+  },
+  "controls": {
+    "src/native_async_arguments_test.zig": "94EED011C1FC44428ABAB5129DD295DFA9029201E250AAD75B7151B953285EEF"
+  },
+  "build_delta": {
+    "path": "build.zig",
+    "sha256": "ACA8664FDF8B0D9035CD713A701F46D4809BCB76425FA93F6FFE23045C2A8662",
+    "added_lines": 13
+  },
+  "ownership_contract": [
+    "One invocation-owned allocation holds max(supplied argc,declared formal_count) initialized JSValue slots.",
+    "Actual supplied argc remains separate and reaches every START/resume callback.",
+    "Declared formals read and write those exact slots; argument adapters are borrowed only for the current callback.",
+    "A write consumes its incoming completion, publishes the new slot before prior retirement, and preserves actual pending/fatal precedence.",
+    "Existing expanded marking and terminal loops retain extras/missing assignments through Await/adoption and retire arguments before state close/locals.",
+    "Observable function length, formal count, default-parameter prologue slots and captured bindings are distinct contracts."
+  ],
+  "source_peers": {
+    "c_and_adapter": {
+      "reviewer": "sdk_owners",
+      "status": "CLOSED",
+      "reviewed_delta": "CB154E8F; exact eight edits rebased over independently peer-closed d50 retirement correction"
+    },
+    "factory": {
+      "reviewer": "modules_io",
+      "status": "CLOSED",
+      "pin": "359C5C4A"
+    },
+    "controls_1_through_11": {
+      "reviewer": "sdk_owners",
+      "status": "CLOSED",
+      "pin": "7184DF10; unchanged assigned slice in 94EED011"
+    },
+    "controls_12_through_17_and_probe": {
+      "reviewer": "modules_io",
+      "status": "CLOSED",
+      "pin": "94EED011; legacy null/pending causal correction verified"
+    }
+  },
+  "execution": {
+    "compile": false,
+    "metadata_query": false,
+    "runtime": false,
+    "grant": null
+  },
+  "remaining_qualification": [
+    "Exact source intake followed by newly granted compile/metadata/runtime under Root's immutable-source process controls.",
+    "Default-parameter prologues and mutable captured formal bindings require their own actual Source owners.",
+    "FileHandle class/Hub operations and backing-storage lifetime across native reads remain separately qualified dependencies.",
+    "Exact bytecode recursion and stack-budget equivalence remains outside this argument-storage unit."
+  ]
+}
