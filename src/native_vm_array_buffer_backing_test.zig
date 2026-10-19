@@ -492,10 +492,18 @@ test "VM backing allocation failure preserves exact fixed equal changed and zero
         const buffer = try f.eval("buffer"); defer c.JS_FreeValue(f.context.?, buffer);
         const transfer = try f.eval("ArrayBuffer.prototype.transfer"); defer c.JS_FreeValue(f.context.?, transfer);
         const arguments = [_]c.JSValue{c.JS_NewInt32(f.context.?, length)};
-        var budget = try Budget.fill(&f); defer budget.release();
+        // A reused fixed backing needs no new native allocation. Force the
+        // equal/zero target wrapper to fail at the actual VM heap guard; the
+        // changed-length case still exhausts the real native storage quota.
+        var budget: Budget = if (length == 16) try Budget.fill(&f) else
+            .{ .memory = f.memory, .bytes = 0 };
+        defer budget.release();
+        if (length != 16) c.JS_SetMemoryLimit(f.runtime.?, 1);
         const failure = c.JS_Call(f.context.?, transfer, buffer, 1, @constCast(&arguments));
-        const reason = try f.exception(failure);
+        defer c.JS_FreeValue(f.context.?, failure);
+        c.JS_SetMemoryLimit(f.runtime.?, 0);
         budget.release();
+        const reason = try f.exception(failure);
         defer c.JS_FreeValue(f.context.?, reason);
         try std.testing.expectEqual(@as(u8, 29), held.data[0]);
         if (length == 16) {
