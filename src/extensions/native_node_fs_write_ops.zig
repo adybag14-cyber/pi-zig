@@ -106,7 +106,9 @@ const Task = struct {
     fn destroy(base: *hub_mod.Task) void {
         const self: *Task = @fieldParentPtr("task", base); const engine = base.hub.engine;
         const incoming: anyerror!void = if (self.retirement_error) |err| err
-            else if (self.packet.failure == error.OutOfMemory) error.OutOfMemory else {};
+            else if (self.packet.failure) |err|
+                if (err == error.OutOfMemory) error.OutOfMemory else {}
+            else {};
         var retiring = completion.Completion.initVoid(engine, incoming);
         // Hub joins real workers before abandoned packet destruction.
         self.packet.retireUnadopted(); if (self.file) |file| file.release();
@@ -133,7 +135,9 @@ const Task = struct {
         const base = &self.task; const engine = base.hub.engine;
         try base.hub.assertOwner();
         try engine.checkNativeEntry();
-        if (self.packet.failure == error.OutOfMemory) return error.OutOfMemory;
+        if (self.packet.failure) |err| {
+            if (err == error.OutOfMemory) return error.OutOfMemory;
+        }
         self.packet.publishClose();
         var fd: u64 = 0;
         if (self.packet.opened) |file| {
@@ -209,7 +213,13 @@ fn dispatchBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue
         else return @as(anyerror!c.JSValue, @import("node_events.zig").codedError(engine, "TypeError", "ERR_INVALID_ARG_VALUE", "Unsupported native WriteStream file flag"));
         var mode: u32 = 0; if (c.JS_ToUint32(engine.context, &mode, core.arg(args, 2)) < 0) return @as(anyerror!c.JSValue, js.capture(engine));
         task.packet.mode = mode;
-        task.packet.create_options.permissions = if (@import("builtin").os.tag == .windows) std.Io.File.Permissions.default_file.setReadOnly(mode & 0o222 == 0) else .fromMode(@intCast(mode));
+        task.packet.create_options.permissions = if (@import("builtin").os.tag == .windows) permissions: {
+            // Use the pinned packed attribute ABI directly; its old generic
+            // setReadOnly helper still refers to a removed integer constant.
+            var attributes = std.Io.File.Permissions.default_file.toAttributes();
+            attributes.READONLY = mode & 0o222 == 0;
+            break :permissions @enumFromInt(@as(std.os.windows.DWORD, @bitCast(attributes)));
+        } else .fromMode(@intCast(mode));
     } else {
         const fd = try descriptor(scope, core.arg(args, 0)); const owned = find(task.registry, fd);
         if (@import("builtin").os.tag == .windows and fd <= std.math.maxInt(c_int)) task.packet.descriptor_value = @intCast(fd);
@@ -240,7 +250,7 @@ fn dispatchBody(scope: *Scope, args: []const c.JSValue, roots: []const c.JSValue
     // Packet.run must preserve the already-classified failure without touching IO.
     task.task.hub.submit(&task.task) catch |err| {
         if (method == .close) if (task.file) |file| { file.closing = false; file.file = task.packet.file; task.packet.file = null; };
-        return err;
+        return @as(anyerror!c.JSValue, err);
     };
     submitted = true; return c.pi_js_undefined();
 }

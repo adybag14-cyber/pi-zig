@@ -280,7 +280,8 @@ test "native actual filesystem writer canceled packet never enters physical open
     packet.cancel();
     packet.run();
     try std.testing.expect(packet.completed and !packet.ran);
-    try std.testing.expect(packet.failure == error.Canceled);
+    try std.testing.expect(packet.failure != null);
+    try std.testing.expect(packet.failure.? == error.Canceled);
     try std.testing.expect(packet.opened == null);
     try std.testing.expectEqual(count, uv.pi_uv_file_live_handles());
     if (temporary.dir.openFile(io, "never-opened.bin", .{})) |file| {

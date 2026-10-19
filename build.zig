@@ -3796,6 +3796,7 @@ pub fn build(b: *std.Build) void {
             .filters = &.{"native actual filesystem writer"}, .use_llvm = use_llvm,
         });
         linkQuickJs(b, node_fs_write_uv.root_module, quickjs, sqlite_lib_dir);
+        @import("tools/build_native_transform_compression.zig").link(b, node_fs_write_uv.root_module);
         node_fs_write_uv.root_module.addIncludePath(b.path("vendor/node-v24.13.0/uv/include"));
         linkTypeScriptParser(b, node_fs_write_uv.root_module, typescript_parser);
         linkSqlite(node_fs_write_uv.root_module, sqlite_lib_dir, sqlite_library);
