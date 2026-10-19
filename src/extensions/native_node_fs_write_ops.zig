@@ -129,7 +129,12 @@ const Task = struct {
     fn complete(base: *hub_mod.Task) !void {
         const self: *Task = @fieldParentPtr("task", base);
         var scope: Scope = .{ .engine = base.hub.engine };
-        return completion.finishVoid(&scope, self.completeBody(&scope));
+        return completion.finishVoid(&scope, self.completeBody(&scope)) catch |err| {
+            // Hub destroys the removed task while this failure escapes. Record
+            // that outcome before cleanup so its actual reason stays owned.
+            self.retirement_error = err;
+            return err;
+        };
     }
     fn completeBody(self: *Task, scope: *Scope) !void {
         const base = &self.task; const engine = base.hub.engine;
