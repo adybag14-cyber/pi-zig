@@ -64,6 +64,11 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io, environment: *const std.p
     defer engine.freeValue(args);
     for (arguments, 0..) |arg, index| if (c.JS_SetPropertyUint32(engine.context, args, @intCast(index), try engine.checked(c.JS_NewStringLen(engine.context, arg.ptr, arg.len))) < 0) return error.JavaScriptException;
     try put(engine, process, "argv", c.JS_DupValue(engine.context, args));
+    // Node's execPath is the actual executable, independent of guest argv[0].
+    const executable_path = try std.process.executablePathAlloc(io, engine.gpa);
+    defer engine.gpa.free(executable_path);
+    try put(engine, process, "execPath", try engine.checked(c.JS_NewStringLen(engine.context, executable_path.ptr, executable_path.len)));
+
     const global = c.JS_GetGlobalObject(engine.context);
     defer engine.freeValue(global);
     try put(engine, global, "process", c.JS_DupValue(engine.context, process));
