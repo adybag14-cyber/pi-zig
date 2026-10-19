@@ -1,0 +1,41 @@
+{
+  "source_only": true,
+  "base_sha256": "F650021E720BA46961B5A27145ECA734C858D01E20BDEDAB97BA6CDB816F94B0",
+  "owner": "native_node_request_state.zig",
+  "notes": [
+    "Proposed Root Environment integration only; Root source was not edited.",
+    "Actual environment contains one intrusive ReqWrap queue and signed C int request_waiting_.",
+    "Actual bootstrap must call markBootstrapComplete at its real completion; no default true.",
+    "I/O shutdown must run each admitted native completion/abandoned cleanup after join before cleanupRealmAfterIoJoin; the count cannot be cleared synthetically."
+  ],
+  "edits": [
+    {
+      "before": "const ChargedAllocator = @import(\"native_env_charged_allocator.zig\").ChargedAllocator;",
+      "after": "const ChargedAllocator = @import(\"native_env_charged_allocator.zig\").ChargedAllocator;\nconst RequestState = @import(\"native_node_request_state.zig\");"
+    },
+    {
+      "before": "    promise_property_settle,\n};",
+      "after": "    promise_property_settle,\n    request_before_bootstrap, negative_waiting_requests,\n    waiting_requests_after_io_join, request_queue_during_disarm,\n};"
+    },
+    {
+      "before": "    operations: Operations,\n    fields: Fields = .{},",
+      "after": "    operations: Operations,\n    requests: RequestState.Registry = .{},\n    has_run_bootstrapping_code: bool = false,\n    fields: Fields = .{},"
+    },
+    {
+      "before": "    pub fn field(self: *Environment, index: Field) *u32",
+      "after": "    /// Called by the genuine bootstrap only after its final completion.\n    pub fn markBootstrapComplete(self: *Environment) void {\n        self.assertOwner();\n        self.has_run_bootstrapping_code = true;\n    }\n    pub fn field(self: *Environment, index: Field) *u32"
+    },
+    {
+      "before": "        self.can_call_into_js = false;\n        _ = self.retain();\n        defer self.release();",
+      "after": "        self.can_call_into_js = false;\n        try self.requests.requireNoWaiting(self);\n        _ = self.retain();\n        defer self.release();"
+    },
+    {
+      "before": "        const ignored = try s.finish(if (result) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n        engine.freeValue(ignored);\n    }\n    pub fn installHooks",
+      "after": "        self.requests.requireEmpty(self) catch |err| {\n            s.boundary.escaping();\n            if (result == null) result = err;\n        };\n        const ignored = try s.finish(if (result) |err| @as(anyerror!c.JSValue, err) else c.pi_js_undefined());\n        engine.freeValue(ignored);\n    }\n    pub fn installHooks"
+    },
+    {
+      "before": "        if (self.callback_depth != 0 or self.callback_scope != null or self.cleanup_head != null)\n            return error.NativeNodeEnvironmentHasLiveOwners;\n        self.can_call_into_js = false;",
+      "after": "        if (self.callback_depth != 0 or self.callback_scope != null or self.cleanup_head != null)\n            return error.NativeNodeEnvironmentHasLiveOwners;\n        try self.requests.requireEmpty(self);\n        self.can_call_into_js = false;"
+    }
+  ]
+}

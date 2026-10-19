@@ -1,0 +1,58 @@
+{
+  "basis": "State157ED5E8; exact BaseObjectList FIFO Cleanup in FC04404F, Realm AddBindingData EDAEF1C5",
+  "status": "source-only, generic entry and native weak-store delta; no execution",
+  "edits": [
+    {
+      "before": "/// Independently retained native owner. One realm cleanup registration covers",
+      "after": "/// Every actual BaseObject, including fs::BindingData, enters the same FIFO.\n/// The callback is the compiled native DeleteMe implementation, never guest JS.\npub const BaseEntry = struct {\n    raw: *anyopaque,\n    delete_me: *const fn (*anyopaque) anyerror!void,\n    previous: ?*BaseEntry = null,\n    next: ?*BaseEntry = null,\n    linked: bool = false,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers"
+    },
+    {
+      "before": "    head: ?*State = null,\n    tail: ?*State = null,",
+      "after": "    head: ?*BaseEntry = null,\n    tail: ?*BaseEntry = null,"
+    },
+    {
+      "before": "    fn append(self: *Registry, state: *State) void {",
+      "after": "    pub fn append(self: *Registry, state: *BaseEntry) void {\n        std.debug.assert(!state.linked and state.previous == null and state.next == null);"
+    },
+    {
+      "before": "    fn unlink(self: *Registry, state: *State) void {",
+      "after": "    pub fn unlink(self: *Registry, state: *BaseEntry) void {"
+    },
+    {
+      "before": "        while (self.head) |state| {\n            // Realm's cleanup loop PopFront precedes BaseObject::DeleteMe.\n            self.unlink(state);\n            state.deleteMe() catch |err| {",
+      "after": "        while (self.head) |state| {\n            // Realm's cleanup loop PopFront precedes BaseObject::DeleteMe.\n            const delete_me = state.delete_me;\n            const object = state.raw;\n            self.unlink(state);\n            delete_me(object) catch |err| {"
+    },
+    {
+      "before": "    previous: ?*State = null,\n    next: ?*State = null,\n    linked: bool = false,",
+      "after": "    base_entry: BaseEntry,"
+    },
+    {
+      "before": "            .strong_wrapper = a.duplicate(s.engine, wrapper), .derived = derived,",
+      "after": "            .strong_wrapper = a.duplicate(s.engine, wrapper), .derived = derived,\n            .base_entry = .{ .raw = self, .delete_me = deleteBaseEntry },"
+    },
+    {
+      "before": "        registry.append(self);",
+      "after": "        registry.append(&self.base_entry);"
+    },
+    {
+      "before": "        registry.unlink(self);",
+      "after": "        registry.unlink(&self.base_entry);"
+    },
+    {
+      "before": "    pub fn retire(self: *State, from_gc: bool) !void {",
+      "after": "    fn deleteBaseEntry(raw: *anyopaque) !void {\n        const self: *State = @ptrCast(@alignCast(raw));\n        return self.deleteMe();\n    }\n    pub fn retire(self: *State, from_gc: bool) !void {"
+    },
+    {
+      "before": "/// Independently retained native owner. One realm cleanup registration covers",
+      "after": "/// Realm's selected BindingDataStore keeps a native weak pointer whose\n/// metadata can outlive the BaseObject. It never roots its JS wrapper.\npub const WeakBindingSlot = struct {\n    raw: *anyopaque,\n    get: *const fn (*anyopaque) ?*anyopaque,\n    release: *const fn (*anyopaque) void,\n};\n\n/// Independently retained native owner. One realm cleanup registration covers"
+    },
+    {
+      "before": "    tail: ?*BaseEntry = null,\n    cleanup: callbacks.RealmCleanup,",
+      "after": "    tail: ?*BaseEntry = null,\n    fs_binding_data: ?WeakBindingSlot = null,\n    cleanup: callbacks.RealmCleanup,"
+    },
+    {
+      "before": "        if (self.cleanup.environment != null) environment.unregisterRealmCleanup(&self.cleanup);\n        environment.allocator().destroy(self);",
+      "after": "        if (self.cleanup.environment != null) environment.unregisterRealmCleanup(&self.cleanup);\n        if (self.fs_binding_data) |slot| {\n            self.fs_binding_data = null;\n            slot.release(slot.raw);\n        }\n        environment.allocator().destroy(self);"
+    }
+  ]
+}

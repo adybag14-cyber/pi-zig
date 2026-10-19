@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "status": "source-only; all assigned finite production peers closed; no compilation or execution",
+  "purpose": "Two-file AsyncWrap/BaseObject and ReqWrap prerequisite for the actual shared callback Environment",
+  "files": [
+    {
+      "path": "src/extensions/native_node_async_wrap_state.zig",
+      "sha256": "DE34706EF1C09C584BB1878AA6CB68C69B517DEB9FEEA1FE4CF24CE0338138D5",
+      "bytes": 19937
+    },
+    {
+      "path": "src/extensions/native_node_request_state.zig",
+      "sha256": "01DA46DC010A3108D592172C6F65AAB8100560FC274228FE9F1B6643A70A755A",
+      "bytes": 4949
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/request-environment-proposed-delta.json",
+      "sha256": "3437855728DC4135A3F3FD582045A8246AE1DB8F910C731C50E52F76F49EA529",
+      "bytes": 3141
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/base-entry-successor.json",
+      "sha256": "C7DA995BAC567DDFDF2C549FCFB3ADAF599F2B4AFED51ADEC20C75ED63368869",
+      "bytes": 4095
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/async-wrap-base-object-template-source.json",
+      "sha256": "4EF8C9356EB012AD209827473494E9A00D848AE8F184B10E4A89F0784F96870B",
+      "bytes": 55873
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/request-waiting-source.json",
+      "sha256": "E01B6E3725514DEC9B73E091FB27412304DD06887B51714BF88F891CA3457D91",
+      "bytes": 26007
+    },
+    {
+      "path": "verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.cc.v24.13.txt",
+      "sha256": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC",
+      "bytes": 27043
+    }
+  ],
+  "dependency_contract": {
+    "callback_environment": {
+      "path": "src/extensions/native_node_callback_scope.zig",
+      "owner": "/root",
+      "reviewed_sha256": "B8F56BF5C61FDB879BB778AD19920C0C43B96449232BC028BF8353AAB4DB0C07",
+      "required": "Shared Environment, RealmCleanup, IDs/provider/context/hook operations, request registry, and native terminal operations; caller composition remains Root-owned."
+    },
+    "existing_imports": [
+      "std",
+      "native_node_argument_values.zig",
+      "native_node_module_callable.zig"
+    ],
+    "no_derived_imports": [
+      "native_node_async_wrap.zig",
+      "native_node_fs_binding_data.zig",
+      "native_node_fs_request_promise.zig",
+      "native_node_file_handle_io.zig"
+    ],
+    "actual_request_contract": "Append after base initialization; failed native Dispatch stays uncounted; successful admission ClearWeak then increment; real callback native retain/detach/decrement before original callback; removal before base destruction; actual count zero and queue empty before VM teardown."
+  },
+  "peer_receipts": [
+    {
+      "reviewer": "/root",
+      "scope": "RequestState01DA full intrusive/counter transition source against ReqWrap/Environment",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "scope": "State157ED strong/weak/native Global lifetime, then all thirteen B890 BaseEntry/weak-slot edits",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root",
+      "scope": "Complete Registry/State and general initialize/AsyncReset at DE34706E; actual native continuation after ordinary init-hook rethrow",
+      "status": "closed"
+    }
+  ],
+  "constructor_continuation_successor": {
+    "before": "        try environment.emitInit(self.async_id, provider_string, self.trigger_async_id, wrapper);\n        self.init_hook_ran = true;\n        return c.pi_js_undefined();",
+    "after": "        var init_failure: ?anyerror = null;\n        environment.emitInit(self.async_id, provider_string, self.trigger_async_id, wrapper) catch |err| {\n            s.boundary.escaping();\n            init_failure = err;\n        };\n        // AsyncReset is void in the native constructor. Its ordinary rethrow\n        // does not skip the following native initialization-state write.\n        self.init_hook_ran = true;\n        if (init_failure) |err| return err;\n        return c.pi_js_undefined();",
+    "base_sha256": "B890F30A9D490C277ED150C113D38EAAABD2E7D81A4DE287750849AF5AC7C327",
+    "authority": "71F03F8CC0B7ACD8F53F8D0654DD20046F2CAB4AF678F81FCC1DEAB12D4A9BAC"
+  },
+  "source_authority": {
+    "node_version": "v24.13.0",
+    "base_and_reqwrap_packet": "verification/native-node-file-handle-sourceonly-20261019/authority/async-wrap-base-object-template-source.json",
+    "waiting_packet": "verification/native-node-file-handle-sourceonly-20261019/authority/request-waiting-source.json",
+    "async_wrap_source": "verification/native-node-file-handle-sourceonly-20261019/authority/async_wrap.cc.v24.13.txt"
+  },
+  "limits": [
+    "No public template or derived request/FileHandle owner is selected by this unit.",
+    "No runtime test or native qualification is claimed; Root callback graph controls and later genuine derived controls are separate.",
+    "No synthetic shutdown reset, copied per-FileHandle counter, or replacement JS request is introduced.",
+    "Actual caller continuation after request construction failures, physical dispatch/completion/abandonment, and application/public wiring remain separate."
+  ]
+}
