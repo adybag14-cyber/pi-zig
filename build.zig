@@ -4636,6 +4636,12 @@ pub fn build(b: *std.Build) void {
     ai_radius_oauth_tests.root_module.addImport("catalog_tool", catalog_tool);
     if (target.result.os.tag == .windows) { ai_radius_oauth_tests.root_module.linkSystemLibrary("advapi32", .{}); ai_radius_oauth_tests.root_module.linkSystemLibrary("userenv", .{}); }
     b.step("build-native-ai-oauth-radius-genuine-af", "Install genuine Radius OAuth declaration and ownership controls without execution").dependOn(&b.addInstallArtifact(ai_radius_oauth_tests, .{ .dest_sub_path = b.fmt("native-ai-oauth-radius-genuine-af{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    const vm_private_property_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_private_property_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM private property"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, vm_private_property_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-private-property", "Install actual private property ownership controls without execution").dependOn(&b.addInstallArtifact(vm_private_property_tests, .{ .dest_sub_path = b.fmt("native-vm-private-property{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
     if (native_node_network != null) {
         const node_fs_write_uv = b.addTest(.{
