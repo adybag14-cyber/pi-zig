@@ -65,7 +65,11 @@ fn observe(native: bool, call: []const u8) ![]u8 {
     try prepare(engine, native);
     const tail = try std.fmt.allocPrint(engine.gpa, "globalThis.anthropicObservation=JSON.stringify(await {s});", .{call});
     defer engine.gpa.free(tail);
-    try run(engine, tail);
+    run(engine, tail) catch |err| {
+        std.debug.print("Anthropic observer native={any} call={s}: {s}; captured={s}\n",
+            .{native, call, @errorName(err), engine.last_error orelse "<no captured diagnostic>"});
+        return err;
+    };
     const value = try read(engine, "anthropicObservation");
     defer engine.freeValue(value);
     const result = try engine.toString(value);
@@ -88,7 +92,11 @@ fn both(comptime tail: []const u8) !void {
         const engine = try x.em.Engine.init(std.testing.allocator, .{ .interrupt_budget = 3_000_000 });
         defer engine.deinit();
         try prepare(engine, native);
-        try run(engine, tail);
+        run(engine, tail) catch |err| {
+            std.debug.print("Anthropic observer native={any} body={s}: {s}; captured={s}\n",
+                .{native, tail, @errorName(err), engine.last_error orelse "<no captured diagnostic>"});
+            return err;
+        };
         try clean(engine);
     }
 }
