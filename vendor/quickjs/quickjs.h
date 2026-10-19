@@ -795,6 +795,58 @@ typedef JSValue JSClassCall(JSContext *ctx, JSValueConst func_obj,
                             JSValueConst this_val, int argc,
                             JSValueConst *argv, int flags);
 
+
+/* Opt-in synchronous native Source argument activation. formal_count is the
+   number of declared parameter slots, independent of observable Function.length.
+   flags and argv must be the actual JSClassCall inputs, never synthesized:
+   direct calls with enough arguments alias caller slots, while COPY_ARGV or
+   missing formals use the same copied-formal rule as JS_CallBytecode.
+   body returns an owned value and may install one owned local-state object.
+   On every terminal path, captured parameter refs close first, detach then
+   closes local capture cells without retiring original local values, copied
+   formals retire, retire closes local values, state retires, receiver retires.
+   Both hooks borrow state and must complete all cleanup even after failure.
+   Existing ordinary callables need not opt in. No argument object, rest/default
+   initialization or guest body is manufactured by this activation. */
+typedef struct JSPiSyncArgumentFrame JSPiSyncArgumentFrame;
+typedef struct JSVarRef JSPiSyncArgumentRef;
+typedef JSValue JSPiSyncArgumentBody(JSContext *ctx, JSValueConst receiver,
+                                    int argc, JSValueConst *argv,
+                                    JSPiSyncArgumentFrame *frame, void *opaque);
+typedef void JSPiSyncArgumentStateHook(JSContext *ctx, JSValueConst state,
+                                      void *opaque);
+JS_EXTERN JSValue JS_PiCallSyncArguments(JSContext *ctx, JSValueConst function,
+                                        JSValueConst receiver, int argc,
+                                        JSValueConst *argv, int flags,
+                                        uint16_t formal_count, bool strict,
+                                        JSPiSyncArgumentBody *body,
+                                        JSPiSyncArgumentStateHook *detach,
+                                        JSPiSyncArgumentStateHook *retire,
+                                        void *opaque);
+/* Trusted body-only frame operations. Get returns a borrowed initialized formal
+   slot. Set consumes its value, stores before old-value retirement, and reports
+   actual pending failure. InstallState consumes a single state root exactly
+   once during body execution. No frame pointer may escape the synchronous body. */
+JS_EXTERN JSValueConst JS_PiSyncArgumentGet(JSPiSyncArgumentFrame *frame,
+                                           uint16_t index);
+JS_EXTERN int JS_PiSyncArgumentSet(JSContext *ctx, JSPiSyncArgumentFrame *frame,
+                                   uint16_t index, JSValue value);
+JS_EXTERN void JS_PiSyncArgumentInstallState(JSPiSyncArgumentFrame *frame,
+                                            JSValue state);
+/* Captures are actual counted JSVarRef owners. The frame lookup is borrowed.
+   A closure owner must release each successful Capture once and mark that ref
+   from its own gc_mark hook. Read returns an owned duplicate. Write consumes
+   its new value and uses the same store-before-retire rule before/after close. */
+JS_EXTERN JSPiSyncArgumentRef *JS_PiSyncArgumentCapture(JSContext *ctx,
+                                                       JSPiSyncArgumentFrame *frame,
+                                                       uint16_t index);
+JS_EXTERN JSValue JS_PiSyncArgumentRead(JSContext *ctx, JSPiSyncArgumentRef *ref);
+JS_EXTERN int JS_PiSyncArgumentWrite(JSContext *ctx, JSPiSyncArgumentRef *ref,
+                                     JSValue value);
+JS_EXTERN void JS_PiSyncArgumentRelease(JSRuntime *rt, JSPiSyncArgumentRef *ref);
+JS_EXTERN void JS_PiSyncArgumentMark(JSRuntime *rt, JSPiSyncArgumentRef *ref,
+                                     JS_MarkFunc *mark_func);
+
 typedef struct JSClassDef {
     const char *class_name; /* pure ASCII only! */
     JSClassFinalizer *finalizer;

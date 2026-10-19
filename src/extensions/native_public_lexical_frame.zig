@@ -14,6 +14,8 @@ pub fn Frame(comptime Names: type) type {
         captures: [@typeInfo(Names).@"enum".fields.len]c.JSValue,
         closed: bool = false,
         async_owner: bool = false,
+        sync_owner: bool = false,
+        captures_closed: bool = false,
         const Self = @This();
         const Cell = struct {
             engine: *Engine,
@@ -46,13 +48,22 @@ pub fn Frame(comptime Names: type) type {
             self.async_owner = true;
             return self;
         }
+        /// Opted-in synchronous activations use a borrowed capture lookup.
+        /// The C argument owner detaches captures before copied formals retire,
+        /// then closes original locals through its separate terminal hook.
+        pub fn createSync(s: *Scope) !*Self {
+            const self = try create(s);
+            self.sync_owner = true;
+            return self;
+        }
+        fn borrowedCaptures(self: *const Self) bool { return self.async_owner or self.sync_owner; }
         pub fn from(value: c.JSValue) *Self {
             return @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)).?));
         }
         fn finalizer(runtime: ?*c.JSRuntime, value: c.JSValue) callconv(.c) void {
             const self: *Self = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
             for (self.values) |root| c.JS_FreeValueRT(runtime, root);
-            if (!self.async_owner) {
+            if (!self.borrowedCaptures()) {
                 for (self.captures) |root| c.JS_FreeValueRT(runtime, root);
             }
             const engine = self.engine;
@@ -62,7 +73,7 @@ pub fn Frame(comptime Names: type) type {
         fn mark(runtime: ?*c.JSRuntime, value: c.JSValue, visit: ?*const c.JS_MarkFunc) callconv(.c) void {
             const self: *Self = @ptrCast(@alignCast(c.JS_GetOpaque(value, c.JS_GetClassID(value)) orelse return));
             for (self.values) |root| c.JS_MarkValue(runtime, root, visit);
-            if (!self.async_owner) {
+            if (!self.borrowedCaptures()) {
                 for (self.captures) |root| c.JS_MarkValue(runtime, root, visit);
             }
         }
@@ -114,7 +125,7 @@ pub fn Frame(comptime Names: type) type {
             const cell = try self.engine.gpa.create(Cell);
             cell.* = .{ .engine = self.engine, .activation = c.JS_DupValue(self.engine.context, self.owner), .lease = c.JS_DupValue(self.engine.context, lease), .value = if (immutable_argument) c.JS_DupValue(self.engine.context, value) else c.pi_js_undefined(), .ready = immutable_argument, .position = position, .name = source_name, .immutable_argument = immutable_argument };
             _ = c.JS_SetOpaque(owner, cell);
-            self.captures[position] = if (self.async_owner) owner else c.JS_DupValue(self.engine.context, owner);
+            self.captures[position] = if (self.borrowedCaptures()) owner else c.JS_DupValue(self.engine.context, owner);
             return owner;
         }
         fn retainAsyncActivation(s: *Scope, state: c.JSValue) !c.JSValue {
@@ -148,7 +159,7 @@ pub fn Frame(comptime Names: type) type {
             cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();
             if (c.JS_IsLiveObject(runtime, activation)) {
                 const parent = from(activation);
-                if (parent.async_owner and c.JS_IsStrictEqual(engine.context, parent.captures[cell.position], value))
+                if (parent.borrowedCaptures() and c.JS_IsStrictEqual(engine.context, parent.captures[cell.position], value))
                     parent.captures[cell.position] = c.pi_js_undefined();
             }
             c.JS_FreeValueRT(runtime, cell.value);
@@ -197,9 +208,9 @@ pub fn Frame(comptime Names: type) type {
         }
         /// No allocation or guest call is permitted while closing an activation.
         /// A cell retains just its binding after return, like a closed JSVarRef.
-        pub fn close(self: *Self, completion: *v.owned.Completion) void {
-            if (self.closed) return;
-            self.closed = true;
+        pub fn detachCaptures(self: *Self, completion: *v.owned.Completion) void {
+            if (self.captures_closed) return;
+            self.captures_closed = true;
             for (self.captures, 0..) |root, position| {
                 if (c.JS_IsUndefined(root) or !c.JS_IsLiveObject(self.engine.runtime, root)) continue;
                 const cell = cellFrom(root);
@@ -210,14 +221,19 @@ pub fn Frame(comptime Names: type) type {
                 const activation = cell.activation;
                 const lease = cell.lease;
                 cell.activation = c.pi_js_undefined(); cell.lease = c.pi_js_undefined();
-                if (self.async_owner) self.captures[position] = c.pi_js_undefined();
+                if (self.borrowedCaptures()) self.captures[position] = c.pi_js_undefined();
                 completion.release(activation);
                 completion.release(lease);
             }
             for (&self.captures) |*root| {
                 const value = root.*; root.* = c.pi_js_undefined();
-                if (!self.async_owner) completion.release(value);
+                if (!self.borrowedCaptures()) completion.release(value);
             }
+        }
+        pub fn close(self: *Self, completion: *v.owned.Completion) void {
+            if (self.closed) return;
+            self.closed = true;
+            self.detachCaptures(completion);
             // BCDF frees uncaptured function locals in declaration order.
             for (&self.values) |*root| { const value = root.*; root.* = c.pi_js_undefined(); completion.release(value); }
         }

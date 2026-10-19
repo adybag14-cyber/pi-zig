@@ -22846,6 +22846,206 @@ static void js_native_async_release(JSContext *ctx, JSValue value,
     js_native_async_take_pending(ctx, owned);
 }
 
+
+/* Synchronous opt-in counterpart to the real bytecode argument activation.
+   The native body keeps its own implementation state; this frame owns only the
+   VM-selected argument slots, borrowed var-ref table and actual call receiver. */
+struct JSPiSyncArgumentFrame {
+    JSStackFrame sf;
+    JSContext *ctx;
+    JSValue state;
+    uint16_t formal_count;
+    bool active;
+    bool state_installed;
+};
+
+static int js_pi_sync_store(JSContext *ctx, JSValue *slot, JSValue value)
+{
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    js_native_async_take_pending(ctx, &owned);
+    if (owned.present) {
+        js_native_async_release(ctx, value, &owned);
+    } else {
+        /* OP_put_arg / OP_set_arg use this same store-before-free primitive. */
+        set_value(ctx, slot, value);
+        js_native_async_take_pending(ctx, &owned);
+    }
+    if (owned.present) {
+        JS_Throw(ctx, owned.reason);
+        return -1;
+    }
+    return 0;
+}
+
+JSValueConst JS_PiSyncArgumentGet(JSPiSyncArgumentFrame *frame, uint16_t index)
+{
+    assert(frame->active && index < frame->formal_count);
+    return frame->sf.arg_buf[index];
+}
+
+int JS_PiSyncArgumentSet(JSContext *ctx, JSPiSyncArgumentFrame *frame,
+                         uint16_t index, JSValue value)
+{
+    assert(frame->active && frame->ctx == ctx && index < frame->formal_count);
+    return js_pi_sync_store(ctx, &frame->sf.arg_buf[index], value);
+}
+
+void JS_PiSyncArgumentInstallState(JSPiSyncArgumentFrame *frame, JSValue state)
+{
+    assert(frame->active && !frame->state_installed);
+    frame->state_installed = true;
+    frame->state = state;
+}
+
+JSPiSyncArgumentRef *JS_PiSyncArgumentCapture(JSContext *ctx,
+                                             JSPiSyncArgumentFrame *frame,
+                                             uint16_t index)
+{
+    JSVarRef *ref;
+    assert(frame->active && frame->ctx == ctx && index < frame->formal_count);
+    if (JS_HasException(ctx))
+        return NULL;
+    ref = frame->sf.var_refs[index];
+    if (ref) {
+        JS_REF_COUNT(ref)++;
+        return ref;
+    }
+    /* Same open, ordinary-stack reference as get_var_ref's captured path.
+       No bytecode descriptor is fabricated for this native function. */
+    ref = js_malloc(ctx, sizeof(*ref));
+    if (!ref)
+        return NULL;
+    JS_REF_COUNT(ref) = 1;
+    ref->is_detached = false;
+    ref->is_lexical = false;
+    ref->is_const = false;
+    ref->is_coro = false;
+    ref->var_ref_idx = index;
+    ref->stack_frame = &frame->sf;
+    ref->pvalue = &frame->sf.arg_buf[index];
+    frame->sf.var_refs[index] = ref;
+    return ref;
+}
+
+JSValue JS_PiSyncArgumentRead(JSContext *ctx, JSPiSyncArgumentRef *ref)
+{
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    return js_dup(*ref->pvalue);
+}
+
+int JS_PiSyncArgumentWrite(JSContext *ctx, JSPiSyncArgumentRef *ref, JSValue value)
+{
+    return js_pi_sync_store(ctx, ref->pvalue, value);
+}
+
+void JS_PiSyncArgumentRelease(JSRuntime *rt, JSPiSyncArgumentRef *ref)
+{
+    free_var_ref(rt, ref);
+}
+
+void JS_PiSyncArgumentMark(JSRuntime *rt, JSPiSyncArgumentRef *ref,
+                           JS_MarkFunc *mark_func)
+{
+    /* Open ordinary-stack references are rooted by that live activation, just
+       like ordinary bytecode closures. close_var_ref adds detached refs to GC. */
+    if (ref && (ref->is_detached || ref->is_coro))
+        mark_func(rt, &ref->header);
+}
+
+JSValue JS_PiCallSyncArguments(JSContext *ctx, JSValueConst function,
+                               JSValueConst receiver, int argc,
+                               JSValueConst *argv, int flags,
+                               uint16_t formal_count, bool strict,
+                               JSPiSyncArgumentBody *body,
+                               JSPiSyncArgumentStateHook *detach,
+                               JSPiSyncArgumentStateHook *retire,
+                               void *opaque)
+{
+    JSRuntime *rt = ctx->rt;
+    JSPiSyncArgumentFrame frame;
+    JSStackFrame *sf = &frame.sf;
+    JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+    JSValue *local_buf, result, state, bound_receiver;
+    int copied_count, i, n;
+    size_t alloca_size;
+
+    assert(argc >= 0 && argc <= 65535 && body);
+    if (JS_HasException(ctx))
+        return JS_EXCEPTION;
+    /* Match JS_CallBytecode even when formal_count is zero. */
+    copied_count = (argc < formal_count || (flags & JS_CALL_FLAG_COPY_ARGV))
+        ? formal_count : 0;
+    alloca_size = sizeof(JSValue) * copied_count +
+        sizeof(JSVarRef *) * formal_count;
+    if (js_check_stack_overflow(rt, alloca_size))
+        return JS_ThrowStackOverflow(ctx);
+    bound_receiver = js_callsite_bind_receiver(ctx, receiver, strict);
+    if (JS_IsException(bound_receiver))
+        return JS_EXCEPTION;
+
+    memset(&frame, 0, sizeof(frame));
+    frame.ctx = ctx;
+    frame.state = JS_UNDEFINED;
+    frame.formal_count = formal_count;
+    frame.active = true;
+    sf->receiver = bound_receiver;
+    sf->cur_func = unsafe_unconst(function);
+    sf->is_strict_mode = strict;
+    sf->is_constructor = (flags & JS_CALL_FLAG_CONSTRUCTOR) != 0;
+    sf->arg_buf = (JSValue *)argv;
+    sf->arg_count = argc;
+    local_buf = alloca(alloca_size);
+    if (copied_count) {
+        n = min_int(argc, formal_count);
+        sf->arg_buf = local_buf;
+        for (i = 0; i < n; i++)
+            sf->arg_buf[i] = js_dup(argv[i]);
+        for (; i < formal_count; i++)
+            sf->arg_buf[i] = JS_UNDEFINED;
+        sf->arg_count = formal_count;
+    }
+    sf->var_buf = local_buf + copied_count;
+    sf->var_refs = (JSVarRef **)(local_buf + copied_count);
+    sf->var_ref_count = formal_count;
+    for (i = 0; i < formal_count; i++)
+        sf->var_refs[i] = NULL;
+    sf->prev_frame = rt->current_stack_frame;
+    rt->current_stack_frame = sf;
+
+    result = body(ctx, bound_receiver, argc, argv, &frame, opaque);
+    js_native_async_take_pending(ctx, &owned);
+    /* Detach every terminal owner before cleanup can run native finalizers.
+       The actual var-ref table is borrowed, so dropped closures have already
+       removed their entries and add no hidden final parameter duplicate. */
+    frame.active = false;
+    state = frame.state; frame.state = JS_UNDEFINED;
+    close_var_refs(rt, sf);
+    sf->var_ref_count = 0;
+    if (detach) {
+        detach(ctx, state, opaque);
+        js_native_async_take_pending(ctx, &owned);
+    }
+    for (i = 0; i < copied_count; i++) {
+        JSValue value = sf->arg_buf[i];
+        sf->arg_buf[i] = JS_UNDEFINED;
+        js_native_async_release(ctx, value, &owned);
+    }
+    if (retire) {
+        retire(ctx, state, opaque);
+        js_native_async_take_pending(ctx, &owned);
+    }
+    js_native_async_release(ctx, state, &owned);
+    receiver = sf->receiver; sf->receiver = JS_UNDEFINED;
+    js_native_async_release(ctx, unsafe_unconst(receiver), &owned);
+    rt->current_stack_frame = sf->prev_frame;
+    if (owned.present) {
+        js_native_async_release(ctx, result, &owned);
+        return JS_Throw(ctx, owned.reason);
+    }
+    return result;
+}
+
 static void js_native_async_retire(JSContext *ctx, JSAsyncFunctionData *s,
                                    JSNativeAsyncPending *owned)
 {
