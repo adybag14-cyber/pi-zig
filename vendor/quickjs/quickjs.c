@@ -11656,6 +11656,70 @@ int JS_SetProperty(JSContext *ctx, JSValueConst this_obj, JSAtom prop, JSValue v
     return JS_SetPropertyInternal(ctx, this_obj, prop, val, JS_PROP_THROW);
 }
 
+/* Node's V8 Private keyed Set uses the receiver's own storage, including a
+   Proxy's wrapper, without prototype lookup or interceptor traps. This is
+   separate from ECMAScript class private-field initialization and ordinary
+   public-symbol assignment. Receiver/key are borrowed; val is consumed. */
+int JS_PiSetPrivateProperty(JSContext *ctx, JSValueConst receiver,
+                            JSValueConst private_symbol, JSValue val)
+{
+    JSObject *p;
+    JSShapeProperty *prs;
+    JSProperty *pr;
+    JSAtom prop;
+
+    if (unlikely(JS_VALUE_GET_TAG(receiver) != JS_TAG_OBJECT)) {
+        JS_ThrowTypeErrorNotAnObject(ctx);
+        goto fail;
+    }
+    if (unlikely(JS_VALUE_GET_TAG(private_symbol) != JS_TAG_SYMBOL)) {
+        JS_ThrowTypeErrorNotASymbol(ctx);
+        goto fail;
+    }
+    prop = js_symbol_to_atom(ctx, private_symbol);
+    if (unlikely(JS_AtomGetKind(ctx, prop) != JS_ATOM_KIND_PRIVATE)) {
+        JS_ThrowTypeError(ctx, "private symbol required");
+        goto fail;
+    }
+    p = JS_VALUE_GET_OBJ(receiver);
+ retry_own:
+    prs = find_own_property(&pr, p, prop);
+    if (prs) {
+        if ((prs->flags & (JS_PROP_TMASK | JS_PROP_WRITABLE |
+                           JS_PROP_LENGTH)) == JS_PROP_WRITABLE) {
+            set_value(ctx, &pr->u.value, val);
+            return true;
+        }
+        if ((prs->flags & JS_PROP_TMASK) == JS_PROP_GETSET)
+            return call_setter(ctx, pr->u.getset.setter, receiver, val,
+                               JS_PROP_THROW);
+        if ((prs->flags & JS_PROP_TMASK) == JS_PROP_VARREF &&
+            p->class_id != JS_CLASS_MODULE_NS) {
+            set_value(ctx, pr->u.var_ref->pvalue, val);
+            return true;
+        }
+        if ((prs->flags & JS_PROP_TMASK) == JS_PROP_AUTOINIT) {
+            if (JS_AutoInitProperty(ctx, p, prop, pr, prs))
+                goto fail;
+            goto retry_own;
+        }
+        JS_ThrowTypeErrorReadOnly(ctx, JS_PROP_THROW, prop);
+        goto fail;
+    }
+    /* V8 Private symbols may extend ordinary nonextensible receivers. The
+       new property is writable/configurable and explicitly nonenumerable.
+       add_property uses the wrapper's actual shape; no exotic method or
+       temporary change to the object's public extensibility is involved. */
+    pr = add_property(ctx, p, prop, JS_PROP_CONFIGURABLE | JS_PROP_WRITABLE);
+    if (unlikely(!pr))
+        goto fail;
+    pr->u.value = val;
+    return true;
+ fail:
+    JS_FreeValue(ctx, val);
+    return -1;
+}
+
 /* flags can be JS_PROP_THROW or JS_PROP_THROW_STRICT */
 int JS_SetPropertyValue(JSContext *ctx, JSValueConst this_obj,
                         JSValue prop, JSValue val, int flags)

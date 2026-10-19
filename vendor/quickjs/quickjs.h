@@ -1256,6 +1256,13 @@ JS_EXTERN JSValue JS_NewSettledPromise(JSContext *ctx, bool is_reject, JSValueCo
 JS_EXTERN JSValue JS_NewSymbol(JSContext *ctx, const char *description, bool is_global);
 // a symbol that is only visible to C code
 JS_EXTERN JSValue JS_NewPrivateSymbol(JSContext *ctx, const char *description);
+/* Own private-key Set for actual Node internal bindings. Receiver and key are
+   borrowed; val is consumed on every path. Only JS_NewPrivateSymbol keys are
+   admitted. Returns 1 on success or -1 with the actual pending exception.
+   New slots are nonenumerable, writable/configurable, ignore prototypes and
+   proxy traps, and may be added to ordinary nonextensible receivers. */
+JS_EXTERN int JS_PiSetPrivateProperty(JSContext *ctx, JSValueConst receiver,
+                                     JSValueConst private_symbol, JSValue val);
 
 typedef enum JSPromiseHookType {
     JS_PROMISE_HOOK_INIT,     // emitted when a new promise is created

@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "status": "source-only causal assertion correction; VM readback pending",
+  "utc": "2026-10-19T18:30:55.422744+00:00",
+  "path": "src/native_vm_private_property_test.zig",
+  "before_sha256": "A4A84B1A0D097788418FB12827615ADE069003CCFFF1854D787D162557DBA5F8",
+  "after_sha256": "FA9CD74302D54C8A0C368F134B2894AC31E16E17ED2EF0971E69E6C8223F0197",
+  "before": "test \"VM private property allocation failure consumes the new value and publishes no slot\" {\n    var f = try Fixture.init(); defer f.deinit();\n    const object = try f.checked(c.JS_NewObject(f.context)); defer c.JS_FreeValue(f.context, object);\n    var probe: Probe = .{};\n    const value = try f.sentinel(&probe);\n    c.JS_SetMemoryLimit(f.runtime, 0);\n    const result = c.JS_PiSetPrivateProperty(f.context, object, f.key, value);\n    c.JS_SetMemoryLimit(f.runtime, std.math.maxInt(usize));\n    try std.testing.expectEqual(@as(c_int, -1), result);\n    try std.testing.expectEqual(@as(usize, 1), probe.retired);\n    const reason = try f.takeReason(); defer c.JS_FreeValue(f.context, reason);\n    try std.testing.expect(c.JS_IsError(reason));\n    try std.testing.expect((try f.own(object, f.key)) == null);\n}\n",
+  "after": "test \"VM private property allocation failure consumes the new value and publishes no slot\" {\n    var f = try Fixture.init(); defer f.deinit();\n    const object = try f.checked(c.JS_NewObject(f.context)); defer c.JS_FreeValue(f.context, object);\n    var probe: Probe = .{};\n    const value = try f.sentinel(&probe);\n    c.JS_SetMemoryLimit(f.runtime, 0);\n    const result = c.JS_PiSetPrivateProperty(f.context, object, f.key, value);\n    c.JS_SetMemoryLimit(f.runtime, std.math.maxInt(usize));\n    try std.testing.expectEqual(@as(c_int, -1), result);\n    try std.testing.expectEqual(@as(usize, 1), probe.retired);\n    const reason = try f.takeReason(); defer c.JS_FreeValue(f.context, reason);\n    try std.testing.expect(c.JS_IsNull(reason));\n    try std.testing.expect((try f.own(object, f.key)) == null);\n}\n",
+  "reason": "Actual JS_SetMemoryLimit(rt,0) also prevents JS_MakeError allocation. The unchanged JS_ThrowError2 explicitly falls back to JS_NULL and throws that value; require the exact raw pending fallback while retaining consumed value retirement and absent slot checks.",
+  "native_execution": false
+}

@@ -1,0 +1,26 @@
+{
+  "status": "source-only controls and build draft",
+  "root": "src/native_vm_private_property_test.zig",
+  "root_sha256": "A4A84B1A0D097788418FB12827615ADE069003CCFFF1854D787D162557DBA5F8",
+  "root_bytes": 15662,
+  "declarations": [
+    "VM private property creates unique hidden writable configurable own slots",
+    "VM private property ignores an inherited setter and read only prototype slot",
+    "VM private property extends frozen ordinary objects without changing public extensibility",
+    "VM private property stores on the real proxy wrapper and survives revocation without traps",
+    "VM private property replacement retires its previous actual value exactly once",
+    "VM private property invalid receivers and keys consume values without coercion",
+    "VM private property respects an existing own read only descriptor and keeps the old value",
+    "VM private property own setter receives the exact receiver value and ordinary throw",
+    "VM private property allocation failure consumes the new value and publishes no slot"
+  ],
+  "build_before": "91B7DD3DE4E3F42D8760F3C8A26E90379ED348E8C1574F8FFAD98AD668B3CE30",
+  "build_after": "622BB58D9CBC6DF1C6907A8CAA1AA748C4A02DBF95860D58528C1C943C091A0B",
+  "addition": "    const vm_private_property_tests = b.addTest(.{\n        .root_module = b.createModule(.{ .root_source_file = b.path(\"src/native_vm_private_property_test.zig\"), .target = target, .optimize = optimize }),\n        .filters = &.{\"VM private property\"}, .use_llvm = use_llvm,\n    });\n    linkQuickJs(b, vm_private_property_tests.root_module, quickjs, sqlite_lib_dir);\n    b.step(\"build-native-vm-private-property\", \"Install actual private property ownership controls without execution\").dependOn(&b.addInstallArtifact(vm_private_property_tests, .{ .dest_sub_path = b.fmt(\"native-vm-private-property{s}\", .{if (target.result.os.tag == .windows) \".exe\" else \"\"}) }).step);\n",
+  "addition_sha256": "4E4CAA08CF03D6F7F95A562FDC64CB56311CE7F2A2EA37035D111774DDB33E31",
+  "install_only": true,
+  "target": "build-native-vm-private-property",
+  "filter": "VM private property",
+  "artifact": "native-vm-private-property.exe",
+  "execution": false
+}

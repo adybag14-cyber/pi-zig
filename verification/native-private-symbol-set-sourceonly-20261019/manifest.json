@@ -1,0 +1,149 @@
+{
+  "schema": 1,
+  "status": "source-reviewed actual private-key Set; build and runtime pending",
+  "updated_utc": "2026-10-19T18:32:16.152247+00:00",
+  "parent": "b937149c664640d738ccfb0f7bc41a2388cddde0",
+  "source_pins": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2291007,
+      "sha256": "E06464397F552AF04A38D5A1626DC242CB6514C623E8BF074C1A587DD1E32F41"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 81858,
+      "sha256": "0FD107FD26D813514E797533507B8988DAE0D2E5F187BDD145DF9DDE755A413B"
+    },
+    {
+      "path": "src/native_vm_private_property_test.zig",
+      "bytes": 15661,
+      "sha256": "FA9CD74302D54C8A0C368F134B2894AC31E16E17ED2EF0971E69E6C8223F0197"
+    }
+  ],
+  "authority": [
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/authority/private-transfer-symbol-source.json",
+      "bytes": 21185,
+      "sha256": "92AF162F8870B738215CDB741CE7C0003CF2EC610048D52EBC70EBC8E6B5531E",
+      "original_source_packet": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\private-transfer-symbol-source.json"
+    },
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/authority/private-transfer-constructor-source.json",
+      "bytes": 5427,
+      "sha256": "2B5A28E3EBBDA6743E090D1BD4B5C4A08AFCB81EA2C8A7F95E81A01DA92B746B",
+      "original_source_packet": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\private-transfer-constructor-source.json"
+    },
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/authority/private-transfer-keyed-lookup-source.json",
+      "bytes": 32073,
+      "sha256": "9D575817CBA4E0CAFC271394AD9E01997382B302BE99EDFC8A6EFD9FF71F00C7",
+      "original_source_packet": "C:\\Users\\adyba\\pi-zig\\worktrees\\sdk-owners-resume-20261018\\verification\\native-node-file-handle-sourceonly-20261019\\authority\\private-transfer-keyed-lookup-source.json"
+    }
+  ],
+  "selected_consumer": "Actual Node internal/worker/js_transferable markTransferMode keyed Set using V8 Private::New source",
+  "abi": {
+    "name": "JS_PiSetPrivateProperty",
+    "receiver": "borrowed actual object",
+    "key": "borrowed actual JS_NewPrivateSymbol value; no guest coercion",
+    "value": "consumed on every path",
+    "success": 1,
+    "failure": -1,
+    "exception": "actual pending value; raw allocator exhaustion may throw the unchanged VM null fallback",
+    "entry_precondition": "Existing guarded Node native callable enters with no pre-existing pending exception"
+  },
+  "semantics": [
+    "Actual own receiver storage including proxy wrapper, with no prototype or interceptor lookup.",
+    "New private slots are nonenumerable, writable and configurable, including on ordinary nonextensible receivers.",
+    "Existing writable value is published before old-value retirement; genuine own setter and readonly semantics are preserved.",
+    "Actual shape property marking and retirement own the value and atom; no substitute JS root or map.",
+    "Private keys remain absent from public own-key enumeration."
+  ],
+  "additional_get_has_api": false,
+  "build": {
+    "target": "build-native-vm-private-property",
+    "root": "src/native_vm_private_property_test.zig",
+    "filter": "VM private property",
+    "artifact": "native-vm-private-property.exe",
+    "install_only": true,
+    "declared_count": 9,
+    "declared_tests": [
+      "VM private property creates unique hidden writable configurable own slots",
+      "VM private property ignores an inherited setter and read only prototype slot",
+      "VM private property extends frozen ordinary objects without changing public extensibility",
+      "VM private property stores on the real proxy wrapper and survives revocation without traps",
+      "VM private property replacement retires its previous actual value exactly once",
+      "VM private property invalid receivers and keys consume values without coercion",
+      "VM private property respects an existing own read only descriptor and keeps the old value",
+      "VM private property own setter receives the exact receiver value and ordinary throw",
+      "VM private property allocation failure consumes the new value and publishes no slot"
+    ],
+    "addition_lines": 6,
+    "addition_sha256": "4E4CAA08CF03D6F7F95A562FDC64CB56311CE7F2A2EA37035D111774DDB33E31",
+    "owned_before_sha256": "91B7DD3DE4E3F42D8760F3C8A26E90379ED348E8C1574F8FFAD98AD668B3CE30",
+    "owned_after_sha256": "622BB58D9CBC6DF1C6907A8CAA1AA748C4A02DBF95860D58528C1C943C091A0B"
+  },
+  "reviewed_additions": {
+    "c": "4AEEEC2795405A5846F4737E4C509B19066286EFC9C2064BD172231A8A180F7F",
+    "h": "29F3D067A5C6E577E09D0EA9719C48F4E82F883027604D15A49AD78BBD63AE84"
+  },
+  "original_packets": [
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/draft-delta.json",
+      "bytes": 3981,
+      "sha256": "87F67E8386AE350E8A72D4C51C65302BC4B17F545035F3331D9B6775943534EF"
+    },
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/control-draft.json",
+      "bytes": 2195,
+      "sha256": "63B4812DB1E09989593EE6A7E11E4A2B8A1E189C7F6DB106620E63BE11698231"
+    },
+    {
+      "path": "verification/native-private-symbol-set-sourceonly-20261019/allocation-control-successor.json",
+      "bytes": 2349,
+      "sha256": "8656558B0559FE4F099BC3CAD29509925E26D8F88283E6F6FAB3DFDB43D702B6"
+    }
+  ],
+  "peer_reviews": [
+    {
+      "reviewer": "/root/sdk_owners",
+      "scope": "Exact selected V8 Private Source/keyed lookup and production ownership",
+      "pins": "87F67E83/4AEEEC27/29F3D067 with9D575817 authority",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/modules_io",
+      "scope": "Fixture, controls1-4 and6-8, exact six-line install-only target",
+      "pins": "A4A84B1A/63B4812D; assigned declarations unchanged inFA9CD743",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root/vm_foundation",
+      "scope": "Actual private C/API/atom/shape marking and retirement; Fixture and controls5/9; exact raw OOM null fallback correction",
+      "pins": "4AEEEC27/29F3D067/FA9CD743/8656558B",
+      "status": "closed"
+    },
+    {
+      "reviewer": "/root",
+      "scope": "Complete production and nine controls, actual raw OOM fallback readback, exact additive intake preservation",
+      "pins": "FA9CD743/8656558B",
+      "status": "closed"
+    }
+  ],
+  "verification": {
+    "source_diff_check": true,
+    "native_build": false,
+    "metadata": false,
+    "runtime": false,
+    "node_capture": false,
+    "qualification": false
+  },
+  "remaining": [
+    "Fresh frozen-head BuildQuery with complete metadata/artifact/current-input/process closure.",
+    "Separately granted unchanged strict RuntimeOnly.",
+    "Actual FileHandle/native SDK/application composition and platform release gates."
+  ],
+  "integration": {
+    "main_base_before_intake": "6788e8726befdd871fdc80c57e3f8c2c61d4d1ec",
+    "method": "Apply only exact C/H additions and six build lines over current Main; preserve backing changes and newer current source."
+  }
+}
