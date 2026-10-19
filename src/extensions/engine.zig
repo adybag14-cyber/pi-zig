@@ -19,6 +19,9 @@ pub const Options = struct {
     // original QuickJS comparison and does not inspect locale/options.
     node_locale_compare: bool = true,
     node_json_diagnostics: bool = true,
+    // Optional native execution-option input. Config.create copies every
+    // supplied string/list before Engine.init returns.
+    node_options: ?@import("native_node_options_config.zig").Input = null,
     memory_limit: usize = 64 * 1024 * 1024,
     stack_limit: usize = 1024 * 1024,
     interrupt_budget: u64 = 10_000,
@@ -55,6 +58,7 @@ pub const Engine = struct {
     native_memory_owner: *anyopaque,
     context: *c.JSContext,
     options: Options,
+    node_options: ?*@import("native_node_options_config.zig").Config = null,
     progress_probe: ?*ProgressProbe = null,
     interrupts: u64 = 0,
     cancelled: std.atomic.Value(bool) = .init(false),
@@ -293,11 +297,16 @@ pub const Engine = struct {
             if (self.captured_exception) |value| self.freeValue(value);
             if (self.native_allocation_exception) |value| self.freeValue(value);
             if (self.last_error) |value| gpa.free(value);
+            if (self.node_options) |config| config.destroy();
         }
         // Capture genuine symbols and error constructors before guest code can
         // replace globals or String.prototype. ICU bootstrap requires no Io.
         if (options.node_locale_compare) try @import("native_localecompare_binding.zig").install(self);
         if (options.node_json_diagnostics) try @import("native_json_host.zig").install(self);
+        if (options.node_options) |input| {
+            self.node_options = try @import("native_node_options_config.zig").Config.create(self, input);
+            self.options.node_options = self.node_options.?.original;
+        }
         // Capture pristine intrinsics before any extension input executes.
         // Lease affinity must not depend on mutable globals/prototypes.
         const global = c.JS_GetGlobalObject(context);
@@ -396,6 +405,7 @@ pub const Engine = struct {
         c.JS_FreeRuntime(self.runtime);
         @import("native_typebox_continuation.zig").deinitAfterRuntime(self);
         @import("native_durable_storage.zig").deinit(self);
+        if (self.node_options) |config| config.destroy();
         c.pi_js_release_memory_owner(self.native_memory_owner);
         if (self.last_error) |message| self.gpa.free(message);
         var modules = self.modules.iterator();

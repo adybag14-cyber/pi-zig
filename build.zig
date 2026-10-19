@@ -3807,6 +3807,22 @@ pub fn build(b: *std.Build) void {
         b.step("build-native-node-fs-write-uv", "Install twelve actual filesystem writer ownership controls without execution").dependOn(&b.addInstallArtifact(node_fs_write_uv, .{ .dest_sub_path = b.fmt("native-node-fs-write-uv{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
     }
 
+    if (native_node_network != null) {
+        const node_options = b.addTest(.{
+            .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_options_test.zig"), .target = target, .optimize = optimize }),
+            .filters = &.{"native actual Node options"}, .use_llvm = use_llvm,
+        });
+        linkQuickJs(b, node_options.root_module, quickjs, sqlite_lib_dir);
+        linkTypeScriptParser(b, node_options.root_module, typescript_parser);
+        linkSqlite(node_options.root_module, sqlite_lib_dir, sqlite_library);
+        node_options.root_module.addImport("catalog_tool", catalog_tool);
+        if (target.result.os.tag == .windows) {
+            node_options.root_module.linkSystemLibrary("advapi32", .{});
+            node_options.root_module.linkSystemLibrary("userenv", .{});
+        }
+        b.step("build-native-node-options", "Install twenty actual Node options ownership and Source controls without execution").dependOn(&b.addInstallArtifact(node_options, .{ .dest_sub_path = b.fmt("native-node-options{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+    }
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

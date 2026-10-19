@@ -1,0 +1,328 @@
+{
+  "unit": "native actual Node options selected startup owner and lazy declarations",
+  "date": "2026-10-19",
+  "status": "source-only; finite peers closed; no compile, metadata, runtime, or original Node execution",
+  "authority": {
+    "selected_node_version": "24.14.0",
+    "selected_node_commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+    "comparison_node_version": "24.13.0",
+    "comparison_node_commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "version_boundary": "CJS/options use the retained 24.14 source. FS/URL/FileHandle/libuv retain their separate 24.13 source. strip_types uses an explicitly admitted HAVE_AMARO value, not the 24.13 true default.",
+    "original_source_directory": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options",
+    "js_source": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/lib__internal__options.js.txt",
+    "native_continuation_packet_origin": "C:/Users/adyba/pi-zig/worktrees/sdk-owners-resume-20261018/verification/native-node-file-handle-sourceonly-20261019/authority/options-native-continuation-proof.json",
+    "native_continuation_copy_exact": true
+  },
+  "implementation": {
+    "native_config": "src/extensions/native_node_options_config.zig",
+    "actual_environment_admission": "src/extensions/native_node_options_environment.c",
+    "selected_native_binding": "src/extensions/native_node_options_binding.zig",
+    "completed_private_declarations": "src/extensions/native_node_options.zig",
+    "private_cache_key": "pi-native:private/node-options-values",
+    "exports": [
+      "getOptionValue",
+      "getEmbedderOptions",
+      "refreshOptions",
+      "getAllowUnauthorized"
+    ],
+    "selected_registration_count": 24,
+    "engine_input": "Engine.Options.node_options: ?native_node_options_config.Input",
+    "execution_tokens": "Input.exec_arguments is explicitly supplied separately from Pi/process argv",
+    "bootstrap_flag_correction": "GetCLIOptionsValues sets serialized after the actual bootstrap throw; GetEmbedderOptions does not. The original allocation tail is the next required implementation unit."
+  },
+  "build": {
+    "target": "build-native-node-options",
+    "filter": "native actual Node options",
+    "root": "src/native_node_options_test.zig",
+    "windows_artifact": "native-node-options.exe",
+    "non_windows_artifact": "native-node-options",
+    "install_only": true,
+    "declared_named_tests": 20,
+    "actual_metadata_count": null,
+    "runtime_result": null,
+    "canonical_cached_test_name_preserved": true,
+    "one_transitive_native_library": "pi-node-network",
+    "build_added_lines": 16,
+    "library_added_lines": 1,
+    "patch": "verification/node-options-sourceonly-20261019/build-intake.patch",
+    "owned_build_baseline_sha256": "17ccc0828c99f363db4e22d3a49a968c3cec040904115bae3f49ae19a8ea293c",
+    "owned_network_baseline_sha256": "8bfde80a83241c476f014300f0ac31b353b2e1e6e41214e43b0b19bc76498fd2",
+    "intake": "Merge the additive Engine/process/build/library changes into current Main; preserve unrelated newer Main owners."
+  },
+  "controls": [
+    {
+      "declaration": 1,
+      "name": "native actual Node options environment tokenizer preserves exact quoting and escapes",
+      "source_only_peer": "Root"
+    },
+    {
+      "declaration": 2,
+      "name": "native actual Node options Engine copies native input strings and execution token lists",
+      "source_only_peer": "VM Foundation"
+    },
+    {
+      "declaration": 3,
+      "name": "native actual Node options environment and exec parser preserve implication and Boolean semantics",
+      "source_only_peer": "Root"
+    },
+    {
+      "declaration": 4,
+      "name": "native actual Node options failed environment capture rolls back before a real retry",
+      "source_only_peer": "VM Foundation"
+    },
+    {
+      "declaration": 5,
+      "name": "native actual Node options separate empty argument differs from equals empty argument",
+      "source_only_peer": "Root"
+    },
+    {
+      "declaration": 6,
+      "name": "native actual Node options binding throws the actual bootstrap Error before serialization",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 7,
+      "name": "native actual Node options selected serializer defines fresh null prototype data records",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 8,
+      "name": "native actual Node options ordinary declaration shapes retain original construction behavior",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 9,
+      "name": "native actual Node options native selected values and embedder flags feed both declarations",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 10,
+      "name": "native actual Node options lazy caches and refresh preserve the actual startup snapshot",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 11,
+      "name": "native actual Node options computed key reentry retains its selected dictionary",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 12,
+      "name": "native actual Node options live unauthorized predicate is strict and warning occurs once",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 13,
+      "name": "native actual Node options warning flag precedes a failed live warning getter",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 14,
+      "name": "native actual Node options chained receivers and selected warning callee retire at Source boundaries",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 15,
+      "name": "native actual Node options private DATA remains ordinary through four fresh callback routes",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 16,
+      "name": "native actual Node options successful flagged warning return remains discarded DATA",
+      "source_only_peer": "SDK Owners"
+    },
+    {
+      "declaration": 17,
+      "name": "native actual Node options real warning getter fatal prevents guest continuation and catch",
+      "source_only_peer": "VM Foundation"
+    },
+    {
+      "declaration": 18,
+      "name": "native actual Node options process receiver retirement fatal prevents the next environment getter",
+      "source_only_peer": "VM Foundation"
+    },
+    {
+      "declaration": 19,
+      "name": "native actual Node options already current fatal prevents entry to the selected callable",
+      "source_only_peer": "VM Foundation"
+    },
+    {
+      "declaration": 20,
+      "name": "native actual Node options completed private owner preserves function and configuration identity",
+      "source_only_peer": "VM Foundation"
+    }
+  ],
+  "reviews": [
+    {
+      "reviewer": "Root",
+      "status": "closed",
+      "scope": "Tokenizer, parser, selected original defaults and 24 registrations; controls 1, 3, 5.",
+      "config_parser_pin": "bf25dc5ccf76425520fa5a91bb6853142adfc326a4b7a4ec77dc2a2d7f728560",
+      "successor_note": "31D2 changes only actual native environment admission; parser unchanged."
+    },
+    {
+      "reviewer": "VM Foundation",
+      "status": "closed",
+      "scope": "Config native ownership, Engine/process lifetime, credential admission, Fixture/Probe and controls 2, 4, 17-20; exact additive build and shared library membership.",
+      "current_config_pin": "31d231fb61a8c61aaa911a69f0d9c4889f211b9df9dd4da27d4c3dfb0b43b75b",
+      "root_successor_note": "Final declaration 6 change leaves this control slice unchanged."
+    },
+    {
+      "reviewer": "SDK Owners",
+      "status": "closed",
+      "scope": "Lazy/TLS declarations, native selected serializer and bootstrap flags-0 Set, controls 6-16, then exact final serialized flag/caller/control correction.",
+      "binding_pin": "80761deb3c40754d7c6d9a056347fd70b9a0477c154185f3bd2207d1996335ff",
+      "root_pin": "d46ae836eca50c8da76d683b65e72c461590de5d45cba3ab2317449bc1c6852a",
+      "continuation_packet_pin": "ee76deebd36a85b080bdc571fb254f5e1a0195038df7a676cce75fb1769fca00"
+    }
+  ],
+  "required_followups": [
+    "Execute the genuine original native output allocation/serialization tail after the bootstrap throw under a private pending-reason boundary; current flag-only correction omits that tail and does not qualify its allocation/OOM behavior.",
+    "Implement and qualify the original throwing-setter V8 Maybe::Check fatal assertion seam.",
+    "Complete CLI schema/metadata, unsupported parser inputs, admitted host feature defaults, warning owner integration and actual Module/ESM/TS/public composition.",
+    "Run independently authorized original Node reference capture, compiler/metadata qualification, and exact-artifact runtime controls."
+  ],
+  "files": [
+    {
+      "path": "build.zig",
+      "bytes": 390668,
+      "sha256": "02e61fc83a0904cdcf8ce16dc16671944349a996fb557c6cc1e61148757df75d"
+    },
+    {
+      "path": "src/extensions/engine.zig",
+      "bytes": 95237,
+      "sha256": "0ccb766cf55ede0b30574db0fea9fe80c1f759417e9d20091909a344932093ad"
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-options-observer.mjs",
+      "bytes": 11197,
+      "sha256": "fe75801ddd50d4bcc8b0354f198411a08e0f74678a6339e79916907a06b89ce9"
+    },
+    {
+      "path": "src/extensions/fixtures/native-node-options-source.mjs",
+      "bytes": 1368,
+      "sha256": "2f4e6455d023271c357db2113dba1e1946ec7eae2f6fe82665d3e48f2bf03dcd"
+    },
+    {
+      "path": "src/extensions/native_node_options_binding.zig",
+      "bytes": 6970,
+      "sha256": "80761deb3c40754d7c6d9a056347fd70b9a0477c154185f3bd2207d1996335ff"
+    },
+    {
+      "path": "src/extensions/native_node_options_config.zig",
+      "bytes": 17515,
+      "sha256": "31d231fb61a8c61aaa911a69f0d9c4889f211b9df9dd4da27d4c3dfb0b43b75b"
+    },
+    {
+      "path": "src/extensions/native_node_options_environment.c",
+      "bytes": 2012,
+      "sha256": "c50638d4037261a4f0c8f1afe11bfbb184eb60f7d10cf621e4cac0b77b8e2596"
+    },
+    {
+      "path": "src/extensions/native_node_options_environment.h",
+      "bytes": 442,
+      "sha256": "a110a8332a40afaebcfe17b0f7b5d2100e371b4ef729f78653f14c3d17b5ab64"
+    },
+    {
+      "path": "src/extensions/native_node_options.zig",
+      "bytes": 10128,
+      "sha256": "75d4a8e1ec93c7176409f521b47a82b7a002e92ba22194bf031286fac9aec82f"
+    },
+    {
+      "path": "src/extensions/native_process.zig",
+      "bytes": 6626,
+      "sha256": "6d2d7b13ceab0a6c73cb5128ec9f51ba21d0882886aaa1c7d2c0d707945b821b"
+    },
+    {
+      "path": "src/native_node_options_test.zig",
+      "bytes": 27384,
+      "sha256": "d46ae836eca50c8da76d683b65e72c461590de5d45cba3ab2317449bc1c6852a"
+    },
+    {
+      "path": "tools/build_native_node_network.zig",
+      "bytes": 4532,
+      "sha256": "e10d68f43fc53513651da53fde0369b9323c6a7f7c821ae7816c9e378ffa489e"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/lib__internal__options.js.txt",
+      "bytes": 4925,
+      "sha256": "ee76071588de93d417a7026479eda141e0921c4d1fc4881c6e8c665b4f350439"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/env-and-bootstrap-error-source.json",
+      "bytes": 18361,
+      "sha256": "532aa867218e93b394a7f1b3d1bd1644317a42804814a401630150752be3d0e4"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/full-http-source-receipt.json",
+      "bytes": 3992,
+      "sha256": "455c1d135e7f36e8ead5e2336fcca7cf1d7003db1d1fbebd005cea3d8b106de5"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.13-node_options-inl.h.txt",
+      "bytes": 18455,
+      "sha256": "35de28aa8fbd13992769003f4853684a3b276627c40d4ada5192d0a60713d134"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.13-node_options.cc.txt",
+      "bytes": 81775,
+      "sha256": "ab47df11ddb8c7067c9adcaceac70b75c0e053caeb0a8207b0ed7ed8d7423cc1"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.13-node_options.h.txt",
+      "bytes": 23107,
+      "sha256": "139e091cc66799a05758e45f1ebfe4a3a302c24216faaf35d036fc0547ebedae"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.14-node_options-inl.h.txt",
+      "bytes": 18455,
+      "sha256": "35de28aa8fbd13992769003f4853684a3b276627c40d4ada5192d0a60713d134"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.14-node_options.cc.txt",
+      "bytes": 81852,
+      "sha256": "c9d94cf1afd9258ec283d14071ce5e70d0833e23e93a16580cf1862266f5a6a4"
+    },
+    {
+      "path": "verification/node-commonjs-loader-chain-sourceonly-20261019/authority/options/v24.14-node_options.h.txt",
+      "bytes": 23113,
+      "sha256": "b7cf7f02259acaf2078561ccc9362a365b7b6773ed40da15ee9ec4085284e9e0"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/build-intake.patch",
+      "bytes": 2295,
+      "sha256": "205ce2bc3fd06839ce4ca47b985fb39be5deebd29976dcc43683670c47647269"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/native-lifecycle-draft.json",
+      "bytes": 4020,
+      "sha256": "5fd48025baec6e80ea419f10eb31da16437a1937bf2d3f08764bbec3fb32de1c"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/options-native-continuation-proof.json",
+      "bytes": 29891,
+      "sha256": "ee76deebd36a85b080bdc571fb254f5e1a0195038df7a676cce75fb1769fca00"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/README.md",
+      "bytes": 8666,
+      "sha256": "bdc3f20b170086acd414e774a4f606d6ff4436b6d44b3dd7e5b560400269f689"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/safe-environment-source-evidence.json",
+      "bytes": 23152,
+      "sha256": "422ad1669f0e1af4f43c9957c4eddcad488bb172b15cfcc733b6c0ffe6babfeb"
+    },
+    {
+      "path": "verification/node-options-sourceonly-20261019/selected-source-declarations.json",
+      "bytes": 1044,
+      "sha256": "20684dba747188992d65f77efbb13eb850a74869f850c70c943c5ae36f301296"
+    }
+  ],
+  "static_checks": {
+    "readback": "All 27 listed raw file byte counts and SHA-256 values verified before staging.",
+    "staged_paths": 28,
+    "source_and_json_diff_check": "passed",
+    "verbatim_patch_exception": "Full git diff --cached --check reports only three single-space unified-diff context lines (including terminal context blank) in the exact peer-reviewed build-intake.patch. The archived patch is preserved byte-for-byte; excluding that verbatim patch yields exit 0.",
+    "native_execution": "none"
+  }
+}

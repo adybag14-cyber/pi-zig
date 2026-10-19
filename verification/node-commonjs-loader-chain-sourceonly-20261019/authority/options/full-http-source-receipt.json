@@ -1,0 +1,60 @@
+{
+  "copied_source_only": true,
+  "executed_downloaded_content": false,
+  "sources": [
+    {
+      "version": "v24.14",
+      "commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.14-node_options.h.txt",
+      "bytes": 23113,
+      "sha256": "b7cf7f02259acaf2078561ccc9362a365b7b6773ed40da15ee9ec4085284e9e0"
+    },
+    {
+      "version": "v24.14",
+      "commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options.cc",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.14-node_options.cc.txt",
+      "bytes": 81852,
+      "sha256": "c9d94cf1afd9258ec283d14071ce5e70d0833e23e93a16580cf1862266f5a6a4"
+    },
+    {
+      "version": "v24.14",
+      "commit": "f657bb8ed86365ff3fdbe32e27563e778b41486a",
+      "url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options-inl.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/f657bb8ed86365ff3fdbe32e27563e778b41486a/src/node_options-inl.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.14-node_options-inl.h.txt",
+      "bytes": 18455,
+      "sha256": "35de28aa8fbd13992769003f4853684a3b276627c40d4ada5192d0a60713d134"
+    },
+    {
+      "version": "v24.13",
+      "commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.13-node_options.h.txt",
+      "bytes": 23107,
+      "sha256": "139e091cc66799a05758e45f1ebfe4a3a302c24216faaf35d036fc0547ebedae"
+    },
+    {
+      "version": "v24.13",
+      "commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options.cc",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options.cc",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.13-node_options.cc.txt",
+      "bytes": 81775,
+      "sha256": "ab47df11ddb8c7067c9adcaceac70b75c0e053caeb0a8207b0ed7ed8d7423cc1"
+    },
+    {
+      "version": "v24.13",
+      "commit": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+      "url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options-inl.h",
+      "final_url": "https://raw.githubusercontent.com/nodejs/node/def0bdf8abee441cfcbf793a8dc24a6f3b899573/src/node_options-inl.h",
+      "path": "C:\\Users\\adyba\\pi-zig\\worktrees\\modules-io-resume-20261018\\verification\\node-commonjs-loader-chain-sourceonly-20261019\\authority\\options\\v24.13-node_options-inl.h.txt",
+      "bytes": 18455,
+      "sha256": "35de28aa8fbd13992769003f4853684a3b276627c40d4ada5192d0a60713d134"
+    }
+  ]
+}
