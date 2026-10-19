@@ -84,7 +84,12 @@ fn both(comptime tail: []const u8) !void {
         const engine = try x.em.Engine.init(std.testing.allocator, .{ .interrupt_budget = 3_000_000 });
         defer engine.deinit();
         try prepare(engine, native);
-        try run(engine, tail);
+        run(engine, tail) catch |err| {
+            // Existing native diagnostic bytes only; no guest probe after failure.
+            std.debug.print("Actual Radius provider expected-success native={}: {s}; captured={s}\n",
+                .{ native, @errorName(err), engine.last_error orelse "no captured diagnostic" });
+            return err;
+        };
         try clean(engine);
     }
 }
