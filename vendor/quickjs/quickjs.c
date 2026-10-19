@@ -1450,6 +1450,16 @@ static void js_disposable_stack_mark(JSRuntime *rt, JSValueConst val,
 #define HINT_FORCE_ORDINARY (1 << 4) // don't try Symbol.toPrimitive
 static JSValue JS_ToPrimitiveFree(JSContext *ctx, JSValue val, int hint);
 static JSValue JS_ToStringFree(JSContext *ctx, JSValue val);
+/* Only actual pending exceptions enter this owner. A body action payload,
+   fulfilled/rejected input or retained diagnostic is DATA even if marked. */
+typedef struct JSNativeAsyncPending {
+    bool present;
+    JSValue reason;
+} JSNativeAsyncPending;
+
+static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned);
+static void js_native_async_release(JSContext *ctx, JSValue value,
+                                    JSNativeAsyncPending *owned);
 static int JS_ToBoolFree(JSContext *ctx, JSValue val);
 static int JS_ToInt32Free(JSContext *ctx, int32_t *pres, JSValue val);
 static int JS_ToFloat64Free(JSContext *ctx, double *pres, JSValue val);
@@ -21789,6 +21799,32 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
             }
             BREAK;
 
+        CASE(OP_to_string):
+            {
+                JSNativeAsyncPending owned = { false, JS_UNDEFINED };
+                JSValue input = sp[-1], converted = JS_UNDEFINED;
+                sf->cur_pc = pc;
+                js_native_async_take_pending(ctx, &owned);
+                if (!owned.present)
+                    converted = JS_ToString(ctx, input);
+                /* Select the actual conversion event before retiring its
+                   owned operand. A cleanup fatal still preempts an ordinary
+                   throw, but a later cleanup cannot replace the first fatal. */
+                sp[-1] = JS_UNDEFINED;
+                js_native_async_take_pending(ctx, &owned);
+                js_native_async_release(ctx, input, &owned);
+                if (owned.present) {
+                    if (!JS_IsException(converted))
+                        js_native_async_release(ctx, converted, &owned);
+                    JS_Throw(ctx, owned.reason);
+                    goto exception;
+                }
+                if (JS_IsException(converted))
+                    goto exception;
+                sp[-1] = converted;
+            }
+            BREAK;
+
         CASE(OP_to_object):
             if (JS_VALUE_GET_TAG(sp[-1]) != JS_TAG_OBJECT) {
                 sf->cur_pc = pc;
@@ -22729,13 +22765,6 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     ctx->rt->current_stack_frame = frame.prev_frame;
     return output;
 }
-
-/* Only actual pending exceptions enter this owner. A body action payload,
-   fulfilled/rejected input or retained diagnostic is DATA even if marked. */
-typedef struct JSNativeAsyncPending {
-    bool present;
-    JSValue reason;
-} JSNativeAsyncPending;
 
 static void js_native_async_take_pending(JSContext *ctx, JSNativeAsyncPending *owned)
 {
@@ -26959,8 +26988,10 @@ static __exception int js_parse_template(JSParseState *s, int call, int *argc)
                 if (depth == 0) {
                     if (s->token.u.str.sep == '`')
                         goto done1;
-                    emit_op(s, OP_get_field2);
-                    emit_atom(s, JS_ATOM_concat);
+                } else {
+                    /* Both operands are primitive strings: OP_add uses the
+                       intrinsic concatenation path without a guest lookup. */
+                    emit_op(s, OP_add);
                 }
                 depth++;
             } else {
@@ -26973,11 +27004,16 @@ static __exception int js_parse_template(JSParseState *s, int call, int *argc)
             return -1;
         if (js_parse_expr(s))
             return -1;
+        if (!call) {
+            /* ECMA-262 Template Evaluation converts this substitution before
+               evaluating any later TemplateSpans. Tagged values stay raw. */
+            emit_op(s, OP_to_string);
+            emit_op(s, OP_add);
+        }
         depth++;
         if (s->token.val != '}') {
             return js_parse_error(s, "expected '}' after template expression");
         }
-        /* XXX: should convert to string at this stage? */
         free_token(s, &s->token);
         /* Resume TOK_TEMPLATE parsing (s->token.line_num and
          * s->token.ptr are OK) */
@@ -26995,9 +27031,6 @@ static __exception int js_parse_template(JSParseState *s, int call, int *argc)
         seal_template_obj(ctx, raw_array);
         seal_template_obj(ctx, template_object);
         *argc = depth + 1;
-    } else {
-        emit_op(s, OP_call_method);
-        emit_u16(s, depth - 1);
     }
  done1:
     return next_token(s);
@@ -41383,7 +41416,7 @@ typedef enum BCTagEnum {
     BC_TAG_SYMBOL,
 } BCTagEnum;
 
-#define BC_VERSION 28
+#define BC_VERSION 29
 
 typedef struct BCWriterState {
     JSContext *ctx;
