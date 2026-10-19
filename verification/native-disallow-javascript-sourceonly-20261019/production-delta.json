@@ -1,0 +1,106 @@
+{
+  "status": "source-only; no native execution",
+  "basis": {
+    "native_promise_parent": "6427c1bf68ff9a315c620a9ec346210daa3fc463",
+    "quickjs_sha256": "C588EDB673D3963D871F5AF2775AF34C77D30A2BB9E912F9F1A1B4E49BA42331",
+    "node": "def0bdf8abee441cfcbf793a8dc24a6f3b899573",
+    "cleanup_authority": "88FB2CD84D8F56C63EA089563FC88302D1170EEDF3BBF117A1B4B39DE527804E"
+  },
+  "C_sha256": "40F8A35C96D09FFE079285DCB943C3DAC27CD1F8AF3AAF8504EE90E37B675764",
+  "H_sha256": "28C8E5586950D0802A47965B57CF1957E20D24F5BC4B859AEE2F535EF58191C9",
+  "edits": [
+    {
+      "label": "runtime scope roots",
+      "from": "    JSValue execution_context;\n    JSExecutionContextHook *execution_context_hook;",
+      "to": "    JSValue execution_context;\n    /* Distinct from embedder capability/continuation contexts. */\n    bool pi_javascript_execution_allowed;\n    JSValue pi_javascript_execution_error; /* owned preallocated ordinary string */\n    JSExecutionContextHook *execution_context_hook;"
+    },
+    {
+      "label": "explicit callable provenance bit",
+      "from": "    uint8_t is_HTMLDDA : 1; /* specific annex B IsHtmlDDA behavior */\n    uint16_t class_id;",
+      "to": "    uint8_t is_HTMLDDA : 1; /* specific annex B IsHtmlDDA behavior */\n    uint8_t pi_native_api_function : 1; /* host-admitted API callback, never inferred */\n    uint16_t class_id;"
+    },
+    {
+      "label": "runtime string allocator declaration",
+      "from": "static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len);",
+      "to": "static JSString *js_alloc_string_rt(JSRuntime *rt, int max_len, int is_wide_char);\nstatic JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len);"
+    },
+    {
+      "label": "runtime initializer local",
+      "from": "    JSMallocState ms;\n\n    memset(&ms, 0, sizeof(ms));",
+      "to": "    JSMallocState ms;\n    JSString *illegal_access;\n\n    memset(&ms, 0, sizeof(ms));"
+    },
+    {
+      "label": "runtime default scope state",
+      "from": "    rt->execution_context = JS_UNDEFINED;\n    rt->mf = *mf;",
+      "to": "    rt->execution_context = JS_UNDEFINED;\n    rt->pi_javascript_execution_allowed = true;\n    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    rt->mf = *mf;"
+    },
+    {
+      "label": "preallocated ordinary guard reason",
+      "from": "    rt->current_exception = JS_UNINITIALIZED;\n\n    return rt;\n fail:\n    JS_FreeRuntime(rt);",
+      "to": "    rt->current_exception = JS_UNINITIALIZED;\n\n    /* V8 THROW_ON_FAILURE throws its read-only illegal_access_string. Keep\n       one runtime-owned equivalent so a blocked entry never allocates. */\n    illegal_access = js_alloc_string_rt(rt, sizeof(\"illegal access\") - 1, 0);\n    if (!illegal_access)\n        goto fail;\n    memcpy(str8(illegal_access), \"illegal access\", sizeof(\"illegal access\"));\n    rt->pi_javascript_execution_error = JS_MKPTR(JS_TAG_STRING, illegal_access);\n\n    return rt;\n fail:\n    JS_FreeRuntime(rt);"
+    },
+    {
+      "label": "saved boolean exchange",
+      "from": "void JS_SetExecutionContextHook(JSRuntime *rt, JSExecutionContextHook *hook, void *opaque)\n{\n    rt->execution_context_hook = hook;\n    rt->execution_context_opaque = opaque;\n}\n",
+      "to": "void JS_SetExecutionContextHook(JSRuntime *rt, JSExecutionContextHook *hook, void *opaque)\n{\n    rt->execution_context_hook = hook;\n    rt->execution_context_opaque = opaque;\n}\n\nbool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed)\n{\n    bool previous = rt->pi_javascript_execution_allowed;\n    rt->pi_javascript_execution_allowed = allowed;\n    return previous;\n}\n"
+    },
+    {
+      "label": "job return contract",
+      "from": "/* return < 0 if exception, 0 if no job pending, 1 if a job was\n   executed successfully. the context of the job is stored in '*pctx' */",
+      "to": "/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),\n   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */"
+    },
+    {
+      "label": "pre-dequeue microtask gate",
+      "from": "    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);",
+      "to": "    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason\n       before JSEntry: no entry is consumed and the checkpoint reports zero.\n       Preserve an already pending native failure instead of swallowing it. */\n    if (unlikely(!rt->pi_javascript_execution_allowed)) {\n        e = list_entry(rt->job_list.next, JSJobEntry, link);\n        if (JS_HasException(e->ctx)) {\n            *pctx = e->ctx;\n            return -1;\n        }\n        *pctx = NULL;\n        return 0;\n    }\n\n    /* get the first pending job and execute it */\n    e = list_entry(rt->job_list.next, JSJobEntry, link);\n    list_del(&e->link);"
+    },
+    {
+      "label": "runtime guard root retirement",
+      "from": "    rt->in_free = true;\n    JS_FreeValueRT(rt, rt->execution_context);",
+      "to": "    rt->in_free = true;\n    JS_FreeValueRT(rt, rt->pi_javascript_execution_error);\n    rt->pi_javascript_execution_error = JS_UNDEFINED;\n    JS_FreeValueRT(rt, rt->execution_context);"
+    },
+    {
+      "label": "every object starts unmarked",
+      "from": "    p->is_HTMLDDA = 0;\n    p->is_prototype = 0;",
+      "to": "    p->is_HTMLDDA = 0;\n    p->pi_native_api_function = 0;\n    p->is_prototype = 0;"
+    },
+    {
+      "label": "checked host provenance admission",
+      "from": "bool JS_IsAsyncFunction(JSValueConst val)\n{",
+      "to": "\n/* Only the embedder can assert V8 API-function provenance. Source functions\n   implemented in C are deliberately unmarked. Wrapping an admitted callback\n   in a bound function or Proxy does not transfer this direct-entry exemption. */\nint JS_PiMarkNativeApiFunction(JSContext *ctx, JSValueConst function)\n{\n    JSObject *p;\n    if (JS_HasException(ctx))\n        return -1;\n    if (JS_VALUE_GET_TAG(function) != JS_TAG_OBJECT)\n        goto invalid;\n    p = JS_VALUE_GET_OBJ(function);\n    if (p->class_id != JS_CLASS_C_FUNCTION &&\n        p->class_id != JS_CLASS_C_FUNCTION_DATA &&\n        p->class_id != JS_CLASS_C_CLOSURE &&\n        p->class_id < JS_CLASS_INIT_COUNT)\n        goto invalid;\n    if (!ctx->rt->class_array[p->class_id].call)\n        goto invalid;\n    p->pi_native_api_function = 1;\n    return 0;\n invalid:\n    JS_ThrowTypeError(ctx, \"Native API marking requires an unwrapped native callback\");\n    return -1;\n}\n\nbool JS_IsAsyncFunction(JSValueConst val)\n{"
+    },
+    {
+      "label": "raw call dispatch guard",
+      "from": "static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,\n                               JSValueConst this_obj, JSValueConst new_target,\n                               int argc, JSValueConst *argv, int flags)\n{\n    if (js_poll_interrupts(caller_ctx))\n        return JS_EXCEPTION;\n    if (JS_VALUE_GET_TAG(func_obj) == JS_TAG_OBJECT) {\n        JSObject *p = JS_VALUE_GET_OBJ(func_obj);\n        if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {\n            JSClassCall *call_func = caller_ctx->rt->class_array[p->class_id].call;\n            if (!call_func)\n                return JS_ThrowTypeErrorNotAFunction(caller_ctx);\n            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);\n        }\n    }\n    return JS_CallBytecode(caller_ctx, func_obj, this_obj, new_target, argc, argv, flags);\n}",
+      "to": "\n/* Native API callbacks take V8's direct native path. All other callables,\n   including ordinary VM builtins and native Source bodies, enter JavaScript.\n   Do not consume or replace an existing ordinary/fatal pending reason. */\nstatic int js_pi_check_javascript_execution(JSContext *ctx, const JSObject *function)\n{\n    JSRuntime *rt = ctx->rt;\n    if (likely(rt->pi_javascript_execution_allowed))\n        return 0;\n    if (JS_HasException(ctx))\n        return -1;\n    if (function && function->pi_native_api_function)\n        return 0;\n    JS_Throw(ctx, js_dup(rt->pi_javascript_execution_error));\n    return -1;\n}\n\nstatic JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,\n                               JSValueConst this_obj, JSValueConst new_target,\n                               int argc, JSValueConst *argv, int flags)\n{\n    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&\n        JS_HasException(caller_ctx))\n        return JS_EXCEPTION;\n    if (js_poll_interrupts(caller_ctx))\n        return JS_EXCEPTION;\n    if (JS_VALUE_GET_TAG(func_obj) == JS_TAG_OBJECT) {\n        JSObject *p = JS_VALUE_GET_OBJ(func_obj);\n        if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {\n            JSClassCall *call_func = caller_ctx->rt->class_array[p->class_id].call;\n            if (!call_func)\n                return JS_ThrowTypeErrorNotAFunction(caller_ctx);\n            if (js_pi_check_javascript_execution(caller_ctx, p))\n                return JS_EXCEPTION;\n            return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);\n        }\n        if (js_pi_check_javascript_execution(caller_ctx, NULL))\n            return JS_EXCEPTION;\n    } else if ((flags & JS_CALL_FLAG_GENERATOR) &&\n               js_pi_check_javascript_execution(caller_ctx, NULL)) {\n        return JS_EXCEPTION;\n    }\n    return JS_CallBytecode(caller_ctx, func_obj, this_obj, new_target, argc, argv, flags);\n}"
+    },
+    {
+      "label": "constructor pending guard before existing poll",
+      "from": "    JSFunctionBytecode *b;\n\n    if (js_poll_interrupts(ctx))\n        return JS_EXCEPTION;\n    flags |= JS_CALL_FLAG_CONSTRUCTOR;",
+      "to": "    JSFunctionBytecode *b;\n\n    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))\n        return JS_EXCEPTION;\n    if (js_poll_interrupts(ctx))\n        return JS_EXCEPTION;\n    flags |= JS_CALL_FLAG_CONSTRUCTOR;"
+    },
+    {
+      "label": "constructor guard before callback or prototype",
+      "from": "    if (unlikely(!p->is_constructor))\n        return JS_ThrowTypeErrorNotAConstructor(ctx, func_obj);\n    if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {",
+      "to": "    if (unlikely(!p->is_constructor))\n        return JS_ThrowTypeErrorNotAConstructor(ctx, func_obj);\n    if (js_pi_check_javascript_execution(ctx, p))\n        return JS_EXCEPTION;\n    if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {"
+    },
+    {
+      "label": "native AF direct step guard",
+      "from": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    if (js_check_stack_overflow(ctx->rt, sizeof(frame)))",
+      "to": "    JSStackFrame frame = { 0 };\n    JSValue output;\n    if (js_pi_check_javascript_execution(ctx, NULL))\n        return JS_EXCEPTION;\n    if (js_check_stack_overflow(ctx->rt, sizeof(frame)))"
+    },
+    {
+      "label": "internal async call guard",
+      "from": "    JSValue promise, error;\n    JSAsyncFunctionData *s;\n\n    if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)",
+      "to": "    JSValue promise, error;\n    JSAsyncFunctionData *s;\n\n    if (js_pi_check_javascript_execution(ctx, NULL))\n        return JS_EXCEPTION;\n    if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)"
+    }
+  ],
+  "header": {
+    "before": "JS_EXTERN bool JS_IsJobPending(JSRuntime *rt);",
+    "after": "/* Host-only equivalent of a saved V8 THROW_ON_FAILURE execution scope.\n   Exchange returns the prior flag and cannot allocate, call guest code or\n   alter pending state; restore it unconditionally, including after failure.\n   The flag is runtime-wide and defaults to true. A blocked callable throws the\n   preallocated ordinary string \"illegal access\". Existing pending wins.\n   A disallowed job checkpoint returns zero/NULL before dequeue, preserving\n   the queue; a prior pending reason instead returns -1 with its context. */\nJS_EXTERN bool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed);\n/* Explicit provenance admission for a genuine host API callback only. Borrows\n   function; returns 0 or -1 with an ordinary pending reason. No guest property\n   is read and a valid mark allocates nothing. Accepts direct C callbacks and\n   callable embedder classes, rejecting bytecode/native-AF/bound/Proxy objects.\n   Never mark a ported Source NodeFunction/AsyncFunction body merely because\n   its implementation is native. The mark is private and is not inherited or\n   copied by bind/Proxy/serialization. Existing pending prevents admission. */\nJS_EXTERN int JS_PiMarkNativeApiFunction(JSContext *ctx, JSValueConst function);\n\nJS_EXTERN bool JS_IsJobPending(JSRuntime *rt);"
+  },
+  "review_slices": {
+    "sdk": "runtime reason allocation/lifetime, provenance marking, call/constructor/async dispatch",
+    "modules": "pre-dequeue job gate, pending/no-progress contract, header ABI"
+  }
+}

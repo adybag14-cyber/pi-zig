@@ -1985,6 +1985,12 @@ pub fn build(b: *std.Build) void {
     });
     linkQuickJs(b, existing_promise_settlement_tests.root_module, quickjs, sqlite_lib_dir);
     b.step("build-native-vm-existing-promise-settlement", "Install existing Promise native settlement controls without execution").dependOn(&b.addInstallArtifact(existing_promise_settlement_tests, .{}).step);
+    const disallow_javascript_tests = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_vm_disallow_javascript_test.zig"), .target = target, .optimize = optimize }),
+        .filters = &.{"VM DisallowJS"}, .use_llvm = use_llvm,
+    });
+    linkQuickJs(b, disallow_javascript_tests.root_module, quickjs, sqlite_lib_dir);
+    b.step("build-native-vm-disallow-javascript", "Install actual VM JavaScript execution scope controls without execution").dependOn(&b.addInstallArtifact(disallow_javascript_tests, .{}).step);
     if (native_node_network) |network| {
         const native_node_tcp_transport_tests = b.addTest(.{
             .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_tcp_transport_test.zig"), .target = target, .optimize = optimize }),

@@ -1,0 +1,151 @@
+{
+  "status": "source-only; all assigned production, 22-control and build peers closed; no compilation, metadata discovery or runtime execution",
+  "basis": {
+    "commit": "b520b9d0a17c495071a3c7392a3be3dec0866bed",
+    "quickjs_c": "C588EDB673D3963D871F5AF2775AF34C77D30A2BB9E912F9F1A1B4E49BA42331",
+    "quickjs_h": "7E3E5D7CA12EDD4520BC23A783D32855F2AC044B8E8630E7143DD23E6F55C287",
+    "build": "118EADBECBEEE32F225EA7ABC07F1152E29955E96B84BA006E77D425DC9BE745"
+  },
+  "files": [
+    {
+      "path": "vendor/quickjs/quickjs.c",
+      "bytes": 2329297,
+      "sha256": "40F8A35C96D09FFE079285DCB943C3DAC27CD1F8AF3AAF8504EE90E37B675764"
+    },
+    {
+      "path": "vendor/quickjs/quickjs.h",
+      "bytes": 95921,
+      "sha256": "28C8E5586950D0802A47965B57CF1957E20D24F5BC4B859AEE2F535EF58191C9"
+    },
+    {
+      "path": "src/native_vm_disallow_javascript_test.zig",
+      "bytes": 50549,
+      "sha256": "E38B689F102957D55E2FA9C5625C1B2914BC457AA73E8B2FA944F8DC62A4E48F"
+    },
+    {
+      "path": "build.zig",
+      "bytes": 413001,
+      "sha256": "34E9B04A458262CDDB5285B1B946AE226148A5A0F68C410FED367598151CBE87"
+    }
+  ],
+  "build": {
+    "target": "build-native-vm-disallow-javascript",
+    "filter": "VM DisallowJS",
+    "install_only": true,
+    "added_lines": 6,
+    "patch_sha256": "4A5F4C12B50189E6DD8B6206B3AA6081CF58B0721D11071DBFD7614B7926C37E"
+  },
+  "declarations": [
+    {
+      "declaration": 1,
+      "name": "VM DisallowJS saved nested flags restore without allocation or pending replacement"
+    },
+    {
+      "declaration": 2,
+      "name": "VM DisallowJS raw bytecode call throws its preallocated ordinary string before body"
+    },
+    {
+      "declaration": 3,
+      "name": "VM DisallowJS compilation stays native and precompiled execution is guarded"
+    },
+    {
+      "declaration": 4,
+      "name": "VM DisallowJS ordinary native implementations and VM builtins are not implicit APIs"
+    },
+    {
+      "declaration": 5,
+      "name": "VM DisallowJS direct API admission allocates nothing and preserves callable shape"
+    },
+    {
+      "declaration": 6,
+      "name": "VM DisallowJS API admission rejects wrappers bytecode async and noncallable brands without traps"
+    },
+    {
+      "declaration": 7,
+      "name": "VM DisallowJS callable embedder class admission is private to the actual marked object"
+    },
+    {
+      "declaration": 8,
+      "name": "VM DisallowJS admitted native callback reaches the genuine nested JavaScript guard"
+    },
+    {
+      "declaration": 9,
+      "name": "VM DisallowJS live defined accessors are guarded while native APIs and data remain available"
+    },
+    {
+      "declaration": 10,
+      "name": "VM DisallowJS proxy property operations distinguish absent native and JavaScript traps"
+    },
+    {
+      "declaration": 11,
+      "name": "VM DisallowJS bound and callable proxy API wrappers do not inherit the direct exemption"
+    },
+    {
+      "declaration": 12,
+      "name": "VM DisallowJS constructor guard precedes newTarget prototype while direct native construction remains real"
+    },
+    {
+      "declaration": 13,
+      "name": "VM DisallowJS scope is shared by genuine contexts in one runtime"
+    },
+    {
+      "declaration": 14,
+      "name": "VM DisallowJS genuine native AsyncFunction initial entry precedes body and capability creation"
+    },
+    {
+      "declaration": 15,
+      "name": "VM DisallowJS suspended native AsyncFunction keeps its actual Await queued until restoration"
+    },
+    {
+      "declaration": 16,
+      "name": "VM DisallowJS actual Promise jobs and capability context roots survive blocked checkpoints and GC"
+    },
+    {
+      "declaration": 17,
+      "name": "VM DisallowJS native jobs remain queued and empty checkpoints retain the zero contract"
+    },
+    {
+      "declaration": 18,
+      "name": "VM DisallowJS pending call constructor admission and job entries preserve the actual first reason"
+    },
+    {
+      "declaration": 19,
+      "name": "VM DisallowJS allowed native fatal preempts a later blocked entry and guest catch or finally"
+    },
+    {
+      "declaration": 20,
+      "name": "VM DisallowJS ordinary illegal access is catchable after exact native scope restoration"
+    },
+    {
+      "declaration": 21,
+      "name": "VM DisallowJS blocked entries borrow callable receiver and arguments without retiring or retaining them"
+    },
+    {
+      "declaration": 22,
+      "name": "VM DisallowJS actual generator and async generator continuations stay unentered until restoration"
+    }
+  ],
+  "proof": {
+    "source_design": "3152E275B9E0E62D1A3B966A62B387170B03530F2210D701AA0A5B42FB5AA161",
+    "exact_production_delta": "5864AA844008B5EA0CC1EC2B83611103B465EFA48ADCB9BC49E8FB744C9CEBCA",
+    "source_acquisition": "459B74B3F96180730C4FEA08B2B75B0876AD2F41D0F02057177799B3DC4B7934"
+  },
+  "peers": {
+    "sdk": {
+      "production": "closed: runtime error, callable provenance, raw dispatch/constructor/generator/native-AF entry",
+      "controls": "closed on E38B689F: declarations 1-13 and assigned nativeReturn/DataReturn/PrototypeTrap/Nested/Class/Constructor adapters"
+    },
+    "modules": {
+      "production": "closed: saved flag exchange, pre-dequeue job gate and header ABI",
+      "controls": "closed on E38B689F: Fixture/Scope/Probe, declarations 14-22; six-line build patch 4A5F4C12"
+    }
+  },
+  "scope_limits": [
+    "Only the THROW_ON_FAILURE scope needed by the actual CleanupHandles dependency; no crash/dump variant.",
+    "JS_PiMarkNativeApiFunction is an explicit host provenance assertion for a direct V8 JSFunction/FunctionTemplate API function. A custom QuickJS callable class may represent that genuine function; generic ObjectTemplate callable-instance delegates are not within this admission.",
+    "No inferred native API exemption from C implementation, prototype, wrappers or namespace. Source NodeFunction and native AsyncFunction algorithm bodies remain unmarked.",
+    "No actual Node CleanupHandles/Environment graph adoption, continuation slot, cancellation policy replacement, native execution or broader V8 coverage is claimed.",
+    "Blocked nonempty jobs return zero without consuming roots; callers must not loop solely on JS_IsJobPending while the execution scope remains disabled.",
+    "The existing private application capability execution_context/hook owner is unchanged."
+  ]
+}

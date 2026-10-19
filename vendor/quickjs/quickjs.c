@@ -390,6 +390,9 @@ struct JSRuntime {
     JSPromiseHook *promise_hook;
     void *promise_hook_opaque;
     JSValue execution_context;
+    /* Distinct from embedder capability/continuation contexts. */
+    bool pi_javascript_execution_allowed;
+    JSValue pi_javascript_execution_error; /* owned preallocated ordinary string */
     JSExecutionContextHook *execution_context_hook;
     void *execution_context_opaque;
     JSValue *kept_objects;
@@ -1211,6 +1214,7 @@ struct JSObject {
     uint8_t is_uncatchable_error : 1; /* if true, error is not catchable */
     uint8_t tmp_mark : 1; /* used in JS_WriteObjectRec() */
     uint8_t is_HTMLDDA : 1; /* specific annex B IsHtmlDDA behavior */
+    uint8_t pi_native_api_function : 1; /* host-admitted API callback, never inferred */
     uint16_t class_id; /* see JS_CLASS_x */
     /* byte offsets: 16/24 */
     JSShape *shape; /* prototype and property names + flag */
@@ -1473,6 +1477,7 @@ static int JS_ToFloat64Free(JSContext *ctx, double *pres, JSValue val);
 static int JS_ToUint8ClampFree(JSContext *ctx, int32_t *pres, JSValue val);
 static JSValue JS_ToPropertyKeyInternal(JSContext *ctx, JSValueConst val,
                                         int flags);
+static JSString *js_alloc_string_rt(JSRuntime *rt, int max_len, int is_wide_char);
 static JSValue js_new_string8_len(JSContext *ctx, const char *buf, int len);
 static JSValue js_compile_regexp(JSContext *ctx, JSValueConst pattern,
                                  JSValueConst flags);
@@ -2475,6 +2480,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
 {
     JSRuntime *rt;
     JSMallocState ms;
+    JSString *illegal_access;
 
     memset(&ms, 0, sizeof(ms));
     ms.opaque = opaque;
@@ -2484,6 +2490,8 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     if (!rt)
         return NULL;
     rt->execution_context = JS_UNDEFINED;
+    rt->pi_javascript_execution_allowed = true;
+    rt->pi_javascript_execution_error = JS_UNDEFINED;
     rt->mf = *mf;
     if (!rt->mf.js_malloc_usable_size) {
         /* use dummy function if none provided */
@@ -2533,6 +2541,14 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     JS_UpdateStackTop(rt);
 
     rt->current_exception = JS_UNINITIALIZED;
+
+    /* V8 THROW_ON_FAILURE throws its read-only illegal_access_string. Keep
+       one runtime-owned equivalent so a blocked entry never allocates. */
+    illegal_access = js_alloc_string_rt(rt, sizeof("illegal access") - 1, 0);
+    if (!illegal_access)
+        goto fail;
+    memcpy(str8(illegal_access), "illegal access", sizeof("illegal access"));
+    rt->pi_javascript_execution_error = JS_MKPTR(JS_TAG_STRING, illegal_access);
 
     return rt;
  fail:
@@ -2708,6 +2724,13 @@ void JS_SetExecutionContextHook(JSRuntime *rt, JSExecutionContextHook *hook, voi
     rt->execution_context_opaque = opaque;
 }
 
+bool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed)
+{
+    bool previous = rt->pi_javascript_execution_allowed;
+    rt->pi_javascript_execution_allowed = allowed;
+    return previous;
+}
+
 static int js_enqueue_job_context(JSContext *ctx, JSJobFunc *job_func,
                                   int argc, JSValueConst *argv, JSValueConst execution_context)
 {
@@ -2733,8 +2756,8 @@ JSContext *JS_GetPendingJobContext(JSRuntime *rt)
     return NULL;
 }
 
-/* return < 0 if exception, 0 if no job pending, 1 if a job was
-   executed successfully. the context of the job is stored in '*pctx' */
+/* return < 0 if exception, 0 if no job ran (empty or execution disallowed),
+   1 if a job was executed successfully. No-progress leaves '*pctx' NULL. */
 int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
 {
     JSContext *ctx;
@@ -2745,6 +2768,19 @@ int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx)
     void *context_opaque;
 
     if (list_empty(&rt->job_list)) {
+        *pctx = NULL;
+        return 0;
+    }
+
+    /* V8's nonverbose TryRunMicrotasks catches the ordinary disallow reason
+       before JSEntry: no entry is consumed and the checkpoint reports zero.
+       Preserve an already pending native failure instead of swallowing it. */
+    if (unlikely(!rt->pi_javascript_execution_allowed)) {
+        e = list_entry(rt->job_list.next, JSJobEntry, link);
+        if (JS_HasException(e->ctx)) {
+            *pctx = e->ctx;
+            return -1;
+        }
         *pctx = NULL;
         return 0;
     }
@@ -2865,6 +2901,8 @@ void JS_FreeRuntime(JSRuntime *rt)
     int i;
 
     rt->in_free = true;
+    JS_FreeValueRT(rt, rt->pi_javascript_execution_error);
+    rt->pi_javascript_execution_error = JS_UNDEFINED;
     JS_FreeValueRT(rt, rt->execution_context);
     JS_ClearKeptObjects(rt);
     js_free_rt(rt, rt->kept_objects);
@@ -6473,6 +6511,7 @@ static JSValue JS_NewObjectFromShape(JSContext *ctx, JSShape *sh, JSClassID clas
     p->is_uncatchable_error = 0;
     p->tmp_mark = 0;
     p->is_HTMLDDA = 0;
+    p->pi_native_api_function = 0;
     p->is_prototype = 0;
     p->first_weak_ref = NULL;
     p->u.opaque = NULL;
@@ -12920,6 +12959,32 @@ bool JS_IsFunction(JSContext *ctx, JSValueConst val)
     }
 }
 
+
+/* Only the embedder can assert V8 API-function provenance. Source functions
+   implemented in C are deliberately unmarked. Wrapping an admitted callback
+   in a bound function or Proxy does not transfer this direct-entry exemption. */
+int JS_PiMarkNativeApiFunction(JSContext *ctx, JSValueConst function)
+{
+    JSObject *p;
+    if (JS_HasException(ctx))
+        return -1;
+    if (JS_VALUE_GET_TAG(function) != JS_TAG_OBJECT)
+        goto invalid;
+    p = JS_VALUE_GET_OBJ(function);
+    if (p->class_id != JS_CLASS_C_FUNCTION &&
+        p->class_id != JS_CLASS_C_FUNCTION_DATA &&
+        p->class_id != JS_CLASS_C_CLOSURE &&
+        p->class_id < JS_CLASS_INIT_COUNT)
+        goto invalid;
+    if (!ctx->rt->class_array[p->class_id].call)
+        goto invalid;
+    p->pi_native_api_function = 1;
+    return 0;
+ invalid:
+    JS_ThrowTypeError(ctx, "Native API marking requires an unwrapped native callback");
+    return -1;
+}
+
 bool JS_IsAsyncFunction(JSValueConst val)
 {
     return JS_CLASS_ASYNC_FUNCTION == JS_GetClassID(val);
@@ -19246,10 +19311,30 @@ static no_inline JSValue JS_CallBytecode(JSContext *caller_ctx, JSValueConst fun
                                        JSValueConst this_obj, JSValueConst new_target,
                                        int argc, JSValueConst *argv, int flags);
 
+
+/* Native API callbacks take V8's direct native path. All other callables,
+   including ordinary VM builtins and native Source bodies, enter JavaScript.
+   Do not consume or replace an existing ordinary/fatal pending reason. */
+static int js_pi_check_javascript_execution(JSContext *ctx, const JSObject *function)
+{
+    JSRuntime *rt = ctx->rt;
+    if (likely(rt->pi_javascript_execution_allowed))
+        return 0;
+    if (JS_HasException(ctx))
+        return -1;
+    if (function && function->pi_native_api_function)
+        return 0;
+    JS_Throw(ctx, js_dup(rt->pi_javascript_execution_error));
+    return -1;
+}
+
 static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
                                JSValueConst this_obj, JSValueConst new_target,
                                int argc, JSValueConst *argv, int flags)
 {
+    if (unlikely(!caller_ctx->rt->pi_javascript_execution_allowed) &&
+        JS_HasException(caller_ctx))
+        return JS_EXCEPTION;
     if (js_poll_interrupts(caller_ctx))
         return JS_EXCEPTION;
     if (JS_VALUE_GET_TAG(func_obj) == JS_TAG_OBJECT) {
@@ -19258,8 +19343,15 @@ static JSValue JS_CallInternal(JSContext *caller_ctx, JSValueConst func_obj,
             JSClassCall *call_func = caller_ctx->rt->class_array[p->class_id].call;
             if (!call_func)
                 return JS_ThrowTypeErrorNotAFunction(caller_ctx);
+            if (js_pi_check_javascript_execution(caller_ctx, p))
+                return JS_EXCEPTION;
             return call_func(caller_ctx, func_obj, this_obj, argc, argv, flags);
         }
+        if (js_pi_check_javascript_execution(caller_ctx, NULL))
+            return JS_EXCEPTION;
+    } else if ((flags & JS_CALL_FLAG_GENERATOR) &&
+               js_pi_check_javascript_execution(caller_ctx, NULL)) {
+        return JS_EXCEPTION;
     }
     return JS_CallBytecode(caller_ctx, func_obj, this_obj, new_target, argc, argv, flags);
 }
@@ -22399,6 +22491,8 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
     JSObject *p;
     JSFunctionBytecode *b;
 
+    if (unlikely(!ctx->rt->pi_javascript_execution_allowed) && JS_HasException(ctx))
+        return JS_EXCEPTION;
     if (js_poll_interrupts(ctx))
         return JS_EXCEPTION;
     flags |= JS_CALL_FLAG_CONSTRUCTOR;
@@ -22407,6 +22501,8 @@ static JSValue JS_CallConstructorInternal(JSContext *ctx,
     p = JS_VALUE_GET_OBJ(func_obj);
     if (unlikely(!p->is_constructor))
         return JS_ThrowTypeErrorNotAConstructor(ctx, func_obj);
+    if (js_pi_check_javascript_execution(ctx, p))
+        return JS_EXCEPTION;
     if (unlikely(p->class_id != JS_CLASS_BYTECODE_FUNCTION)) {
         JSClassCall *call_func;
         call_func = ctx->rt->class_array[p->class_id].call;
@@ -22946,6 +23042,8 @@ static JSValue js_native_async_function_step(JSAsyncFunctionData *s,
     JSFunctionBytecode *b = JS_VALUE_GET_OBJ(s->native_function)->u.func.function_bytecode;
     JSStackFrame frame = { 0 };
     JSValue output;
+    if (js_pi_check_javascript_execution(ctx, NULL))
+        return JS_EXCEPTION;
     if (js_check_stack_overflow(ctx->rt, sizeof(frame)))
         return JS_ThrowStackOverflow(ctx);
     if (js_poll_interrupts(ctx))
@@ -23726,6 +23824,8 @@ static JSValue js_async_function_call_internal(JSContext *ctx, JSValueConst func
     JSValue promise, error;
     JSAsyncFunctionData *s;
 
+    if (js_pi_check_javascript_execution(ctx, NULL))
+        return JS_EXCEPTION;
     if (JS_VALUE_GET_OBJ(func_obj)->u.func.function_bytecode->native_async_body)
         return js_native_async_function_call(ctx, func_obj, this_obj, argc, argv);
 

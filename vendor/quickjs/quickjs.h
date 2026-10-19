@@ -1602,6 +1602,23 @@ JS_EXTERN void JS_SetExecutionContext(JSRuntime *rt, JSValueConst value);
 JS_EXTERN void JS_SetExecutionContextHook(JSRuntime *rt,
                                          JSExecutionContextHook *hook, void *opaque);
 
+/* Host-only equivalent of a saved V8 THROW_ON_FAILURE execution scope.
+   Exchange returns the prior flag and cannot allocate, call guest code or
+   alter pending state; restore it unconditionally, including after failure.
+   The flag is runtime-wide and defaults to true. A blocked callable throws the
+   preallocated ordinary string "illegal access". Existing pending wins.
+   A disallowed job checkpoint returns zero/NULL before dequeue, preserving
+   the queue; a prior pending reason instead returns -1 with its context. */
+JS_EXTERN bool JS_PiExchangeJavascriptExecutionAllowed(JSRuntime *rt, bool allowed);
+/* Explicit provenance admission for a genuine host API callback only. Borrows
+   function; returns 0 or -1 with an ordinary pending reason. No guest property
+   is read and a valid mark allocates nothing. Accepts direct C callbacks and
+   callable embedder classes, rejecting bytecode/native-AF/bound/Proxy objects.
+   Never mark a ported Source NodeFunction/AsyncFunction body merely because
+   its implementation is native. The mark is private and is not inherited or
+   copied by bind/Proxy/serialization. Existing pending prevents admission. */
+JS_EXTERN int JS_PiMarkNativeApiFunction(JSContext *ctx, JSValueConst function);
+
 JS_EXTERN bool JS_IsJobPending(JSRuntime *rt);
 JS_EXTERN JSContext *JS_GetPendingJobContext(JSRuntime *rt);
 JS_EXTERN int JS_ExecutePendingJob(JSRuntime *rt, JSContext **pctx);
