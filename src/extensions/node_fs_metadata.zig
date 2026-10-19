@@ -274,6 +274,10 @@ fn readStats(engine: *em.Engine, args: []const c.JSValue, roots: []const c.JSVal
         if (err == error.FileNotFound and !throw_missing) return c.pi_js_undefined();
         return throwFilesystem(engine, err, path, if (follow) "stat" else "lstat");
     };
+    // Node's public stat binding writes the same 36-slot record before creating
+    // Stats. A cache callback can reenter here while classic realpath retains
+    // that actual shared numeric array.
+    try @import("native_node_fs_stat_values.zig").updateIfInstalled(engine, big, info);
     const result = try scope.own(try engine.checked(c.JS_NewObjectProto(engine.context, roots[@intFromBool(big)])));
     const values = [_]i128{ info.dev, info.mode, info.nlink, info.uid, info.gid, info.rdev, info.blksize, info.ino, info.size, info.blocks };
     inline for (fields[0..10], 0..) |name, index| try scope.put(result, name, try scope.own(try integer(engine, values[index], big)));

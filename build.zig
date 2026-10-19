@@ -4435,6 +4435,21 @@ pub fn build(b: *std.Build) void {
     }
     b.step("build-native-node-file-url-paths", "Install nineteen declared genuine Node file URL controls without running").dependOn(&b.addInstallArtifact(node_file_url_paths, .{ .dest_sub_path = b.fmt("native-node-file-url-paths{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
 
+    const node_fs_realpath_classic = b.addTest(.{
+        .root_module = b.createModule(.{ .root_source_file = b.path("src/native_node_fs_realpath_classic_test.zig"), .target = target, .optimize = optimize }),
+        .use_llvm = use_llvm,
+        .filters = &.{"native actual classic realpath"},
+    });
+    linkQuickJs(b, node_fs_realpath_classic.root_module, quickjs, sqlite_lib_dir);
+    linkTypeScriptParser(b, node_fs_realpath_classic.root_module, typescript_parser);
+    linkSqlite(node_fs_realpath_classic.root_module, sqlite_lib_dir, sqlite_library);
+    node_fs_realpath_classic.root_module.addImport("catalog_tool", catalog_tool);
+    if (target.result.os.tag == .windows) {
+        node_fs_realpath_classic.root_module.linkSystemLibrary("advapi32", .{});
+        node_fs_realpath_classic.root_module.linkSystemLibrary("userenv", .{});
+    }
+    b.step("build-native-node-fs-realpath-classic", "Install twenty-one declared genuine Node classic realpath controls without running").dependOn(&b.addInstallArtifact(node_fs_realpath_classic, .{ .dest_sub_path = b.fmt("native-node-fs-realpath-classic{s}", .{if (target.result.os.tag == .windows) ".exe" else ""}) }).step);
+
 }
 
 fn addCompileOnlyGroup(b: *std.Build, name: []const u8, runtime_names: []const []const u8) void {

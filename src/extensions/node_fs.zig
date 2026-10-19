@@ -10,7 +10,7 @@ const Method = enum(c_int) { readFileSync, writeFileSync, existsSync, mkdirSync,
 const PromiseMethod = enum(c_int) { readFile, writeFile, mkdir, unlink, access, appendFile };
 
 pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
-    return installMode(engine, io, false);
+    return installMode(engine, io, false, null);
 }
 /// Explicit assembler seam: install genuine process/streams before freezing
 /// fs ESM exports. Existing filesystem-only callers retain their original path.
@@ -18,9 +18,14 @@ pub fn install(engine: *engine_mod.Engine, io: std.Io) !void {
 /// independent review; no HANDLE is substituted for a Node descriptor.
 pub fn installWithStreams(engine: *engine_mod.Engine, io: std.Io, actual_process: c.JSValue) !void {
     try @import("native_node_stream.zig").install(engine, actual_process);
-    return installMode(engine, io, true);
+    if (!engine.native_module_values.contains("node:path"))
+        try @import("node_path.zig").install(engine, io);
+    const actual_paths = (try engine.requireBuiltin("node:path")) orelse
+        return error.ActualFilesystemPathOwnerRequired;
+    defer engine.freeValue(actual_paths);
+    return installMode(engine, io, true, actual_paths);
 }
-fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool) !void {
+fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool, module_paths: ?c.JSValue) !void {
     engine.native_io = io;
     try node_buffer.install(engine);
     const exports = try engine.checked(c.JS_NewObject(engine.context));
@@ -48,6 +53,7 @@ fn installMode(engine: *engine_mod.Engine, io: std.Io, with_streams: bool) !void
     try @import("node_fs_metadata.zig").install(engine, exports);
     try @import("node_copy_file.zig").install(engine, exports);
     if (with_streams) try @import("native_node_fs_write_stream.zig").install(engine, exports);
+    if (module_paths) |paths| try @import("native_node_fs_realpath_classic.zig").install(engine, exports, paths);
     try engine.registerDefaultModule("node:fs", exports);
     try engine.registerDefaultModule("fs", exports);
     try engine.registerDefaultModule("node:fs/promises", promises);
