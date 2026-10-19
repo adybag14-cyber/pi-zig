@@ -1,5 +1,5 @@
-//! Twenty-four authored controls over the genuine Node v24.14 Module creation
-//! component. Seventeen observers have a separate pinned-Node runner; seven
+//! Twenty-six authored controls over the genuine Node v24.14 Module creation
+//! component. Seventeen observers have a separate pinned-Node runner; nine
 //! native controls observe actual retained values/producers. Install only.
 const std = @import("std");
 const a = @import("extensions/native_node_argument_values.zig");
@@ -310,4 +310,59 @@ test "native actual Module creation suffix primordial reuses completed argument 
         \\moduleAssert(captured.module().filename === actualModuleCreation.path.join(moduleFilename(actualModuleCreation,""),"noop.js"),"real createRequire uses earlier actual suffix primordial");
     );
     try fixture.engine.checkNativeEntry();
+}
+
+test "native actual Module creation original from argument retires before returned length getter" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.run(
+        \\const M = actualModuleCreation.Module, paths = actualModuleCreation.path;
+        \\const original = Object.getOwnPropertyDescriptor(paths,"resolve"), stopped = {};
+        \\let resolveVisits = 0, lengthVisits = 0;
+        \\try {
+        \\  Object.defineProperty(paths,"resolve",{configurable:true,value:function(input){
+        \\    resolveVisits++;
+        \\    return {get length(){
+        \\      lengthVisits++;
+        \\      moduleAssert(actualModuleFreedCount(0) === 1,"original from argument retired before length getter");
+        \\      throw stopped;
+        \\    }};
+        \\  }});
+        \\  moduleAssert(moduleThrown(() => M._nodeModulePaths({owned:actualModuleHolder(0)})) === stopped,"actual returned length throws its ordinary reason");
+        \\  moduleAssert(resolveVisits === 1 && lengthVisits === 1,"actual resolve and selected length each visited");
+        \\} finally { Object.defineProperty(paths,"resolve",original); }
+    );
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed[0]);
+    try fixture.engine.checkNativeEntry();
+}
+test "native actual Module creation original from retirement B prevents length getter and catch" {
+    var fixture: Fixture = undefined; try fixture.init(false); defer fixture.deinit();
+    try fixture.run("globalThis.actualModuleArgumentProgress = {resolve:0,length:0,caught:0};");
+    const progress = try fixture.value("actualModuleArgumentProgress");
+    defer fixture.engine.freeValue(progress);
+    fixture.probe.fatal_slot = 0;
+    const attempted = fixture.run(
+        \\Object.defineProperty(actualModuleCreation.path,"resolve",{configurable:true,value:function(input){
+        \\  actualModuleArgumentProgress.resolve++;
+        \\  return {get length(){ actualModuleArgumentProgress.length++; return 0; }};
+        \\}});
+        \\try { actualModuleCreation.Module._nodeModulePaths({owned:actualModuleHolder(0)}); }
+        \\catch { actualModuleArgumentProgress.caught++; }
+    );
+    try std.testing.expectError(error.JavaScriptException, attempted);
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed[0]);
+    const reason = fixture.engine.captured_exception orelse return error.MissingActualModuleArgumentFatalReason;
+    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, reason, fixture.probe.first));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(reason) != 0);
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+    // Retained before the call; all values are own primitive data. There is no
+    // guest callback after fatal selection, and each guest visit records first.
+    inline for (.{ .{ "resolve", @as(u32, 1) }, .{ "length", @as(u32, 0) }, .{ "caught", @as(u32, 0) } }) |field| {
+        const value = c.JS_GetPropertyStr(fixture.engine.context, progress, field[0]);
+        defer fixture.engine.freeValue(value);
+        try std.testing.expect(c.JS_IsNumber(value));
+        var count: u32 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToUint32(fixture.engine.context, &count, value));
+        try std.testing.expectEqual(field[1], count);
+    }
 }

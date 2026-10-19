@@ -7,6 +7,7 @@ const a = @import("native_node_argument_values.zig");
 const c = a.c;
 const Scope = a.Scope;
 const functions = @import("native_node_module_callable.zig");
+const sync = @import("native_sync_arguments.zig");
 const walk = @import("native_node_fs_realpath_cache.zig");
 const urls = @import("native_node_file_url_paths.zig");
 const collections = @import("native_node_fs_collections.zig");
@@ -64,10 +65,8 @@ fn imports(s: *Scope, owner: c.JSValue) !walk.Imports {
     inline for (std.meta.fields(walk.Imports)) |field| @field(result, field.name) = try s.get(owner, field.name);
     return result;
 }
-fn body(s: *Scope, frame: *walk.Activation, args: []const c.JSValue, owner: c.JSValue) !c.JSValue {
+fn body(s: *Scope, frame: *walk.Activation, owner: c.JSValue) !c.JSValue {
     const selected = try imports(s, owner);
-    try frame.copy(.p, a.arg(args, 0));
-    try frame.copy(.options, a.arg(args, 1));
     try frame.take(.options, a.expression(s.engine, optionBody, .{try s.get(owner, "get_options"), frame.get(.options)}));
     try frame.take(.p, urls.toPathValue(s.engine, try s.get(owner, "url_owner"), frame.get(.p)));
     if (!c.JS_IsString(frame.get(.p))) try frame.take(.p, a.expression(s.engine, addEmpty, .{frame.get(.p)}));
@@ -83,10 +82,13 @@ fn body(s: *Scope, frame: *walk.Activation, args: []const c.JSValue, owner: c.JS
     try s.pending();
     return encode(s.engine, try s.get(owner, "Buffer"), frame.get(.p), frame.get(.options));
 }
-fn called(engine: *a.v.em.Engine, _: c.JSValue, args: []const c.JSValue, roots: []const c.JSValue) !c.JSValue {
+fn called(engine: *a.v.em.Engine, _: c.JSValue, args: *sync.Arguments, roots: []const c.JSValue) !c.JSValue {
     var s = Scope.init(engine);
-    const frame = walk.Activation.create(&s.values) catch |err| return s.finish(err);
-    return a.finishFrame(&s, frame, body(&s, frame, args, roots[0]));
+    const locals = args.createFrame(&s.values, walk.Locals) catch |err| return s.finish(err);
+    var frame: walk.Activation = .{ .arguments = args, .locals = locals };
+    // Local retirement belongs to the actual C call terminal owner, after its
+    // copied formals. Each assignment to p/options writes that original slot.
+    return s.finish(body(&s, &frame, roots[0]));
 }
 fn verifyInputs(s: *Scope, function: c.JSValue, fs: c.JSValue, paths: c.JSValue) !void {
     const roots = try functions.capturedRoots(s.engine, function);
@@ -130,7 +132,8 @@ fn createBody(s: *Scope, fs: c.JSValue, paths: c.JSValue) !c.JSValue {
     try s.put(owner, "bigint_to_string", try s.get(try s.get(try s.get(global, "BigInt"), "prototype"), "toString"));
     try s.put(owner, "number", try s.get(global, "Number"));
     try s.put(owner, "root_regex", root_regex);
-    const function = try s.own(try functions.create(s.engine, "realpathSync", 2, true, called, &.{owner}));
+    const function = try s.own(try functions.createWithArguments(s.engine, "realpathSync", 2, true,
+        .{ .formal_count = 2, .callback = called, .hooks = sync.frameHooks(walk.Locals) }, &.{owner}));
     try s.define(function, "native", native, c.JS_PROP_C_W_E);
     return a.duplicate(s.engine, function);
 }

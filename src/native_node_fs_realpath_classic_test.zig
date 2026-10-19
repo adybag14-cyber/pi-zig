@@ -1,5 +1,5 @@
-//! Twenty-one authored controls over the genuine classic fs.realpathSync owner.
-//! Sixteen observers also target pinned Node v24.13. Five native controls use
+//! Twenty-three authored controls over the genuine classic fs.realpathSync owner.
+//! Sixteen observers also target pinned Node v24.13. Seven native controls use
 //! actual finalizers/DATA/stat buffers. This is an install-only test target;
 //! physical IO and reference capture require Root's separate runtime grants.
 const std = @import("std");
@@ -263,4 +263,67 @@ test "native actual classic realpath and public metadata share the actual stat b
     const value = try fixture.run("observeClassicSharedStatBuffers(actualClassic,actualClassicNumericStats,actualClassicBigintStats);");
     fixture.engine.freeValue(value);
     try fixture.clean();
+}
+
+test "native actual classic realpath original p argument retires before live resolve getter" {
+    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
+    const result = try fixture.run(
+        \\const paths = actualClassic.paths, file = paths.join(actualClassic.root,"dir","file.txt");
+        \\const original = Object.getOwnPropertyDescriptor(paths,"resolve");
+        \\let converted = 0, resolved = 0;
+        \\try {
+        \\  Object.defineProperty(paths,"resolve",{configurable:true,get(){
+        \\    resolved++;
+        \\    classicAssert(actualClassicFreed() === 1,"original p argument retired before live resolve getter");
+        \\    return original.value;
+        \\  }});
+        \\  const result = actualClassic.realpath({
+        \\    owned:actualClassicHolder(),
+        \\    [Symbol.toPrimitive]: function(hint){ converted++; classicAssert(hint === "default","actual p += empty-string default hint"); return file; }
+        \\  });
+        \\  classicAssert(result === file && converted === 1 && resolved === 1,"actual converted path reaches the physical owner");
+        \\} finally { Object.defineProperty(paths,"resolve",original); }
+    );
+    fixture.engine.freeValue(result);
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed);
+    try fixture.clean();
+}
+test "native actual classic realpath original p retirement B prevents resolve getter and catch" {
+    var fixture: Fixture = undefined; try fixture.init(); defer fixture.deinit();
+    const progress = try fixture.engine.eval(
+        "globalThis.actualClassicArgumentProgress = {convert:0,resolve:0,caught:0};",
+        "actual-classic-argument-progress.js", c.JS_EVAL_TYPE_GLOBAL);
+    defer fixture.engine.freeValue(progress);
+    fixture.probe.fatal_on_release = true;
+    const attempted = fixture.run(
+        \\const paths = actualClassic.paths, file = paths.join(actualClassic.root,"dir","file.txt");
+        \\Object.defineProperty(paths,"resolve",{configurable:true,get(){
+        \\  actualClassicArgumentProgress.resolve++;
+        \\  throw Error("unreachable actual resolve");
+        \\}});
+        \\try {
+        \\  actualClassic.realpath({
+        \\    owned:actualClassicHolder(),
+        \\    [Symbol.toPrimitive]: function(hint){ actualClassicArgumentProgress.convert++; return file; }
+        \\  });
+        \\} catch { actualClassicArgumentProgress.caught++; }
+    );
+    if (attempted) |value| {
+        fixture.engine.freeValue(value);
+        return error.ExpectedActualClassicArgumentRetirementFatal;
+    } else |err| try std.testing.expectEqual(error.JavaScriptException, err);
+    try std.testing.expectEqual(@as(u32, 1), fixture.probe.freed);
+    const reason = fixture.engine.captured_exception orelse return error.ExpectedActualClassicArgumentFatalReason;
+    try std.testing.expect(c.JS_IsStrictEqual(fixture.engine.context, reason, fixture.probe.first));
+    try std.testing.expect(c.JS_IsUncatchableError(reason));
+    try std.testing.expect(c.pi_js_native_allocation_error_generation(reason) != 0);
+    try std.testing.expect(fixture.engine.native_fatal_invocation == null);
+    inline for (.{ .{ "convert", @as(u32, 1) }, .{ "resolve", @as(u32, 0) }, .{ "caught", @as(u32, 0) } }) |field| {
+        const value = c.JS_GetPropertyStr(fixture.engine.context, progress, field[0]);
+        defer fixture.engine.freeValue(value);
+        try std.testing.expect(c.JS_IsNumber(value));
+        var count: u32 = 0;
+        try std.testing.expectEqual(@as(c_int, 0), c.JS_ToUint32(fixture.engine.context, &count, value));
+        try std.testing.expectEqual(field[1], count);
+    }
 }

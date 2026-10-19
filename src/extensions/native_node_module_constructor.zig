@@ -184,7 +184,7 @@ fn createBody(s: *Scope, inputs: Inputs) !c.JSValue {
     try s.put(constructor, "_cache", s.engine.commonjs_cache);
     try s.put(constructor, "_pathCache", try s.objectProto(c.pi_js_null()));
     try s.put(constructor, "_nodeModulePaths",
-        try s.own(try functions.create(s.engine, "", 1, true, @import("native_node_module_paths.zig").invoke, &.{owner})));
+        try s.own(try functions.createWithArguments(s.engine, "", 1, true, @import("native_node_module_paths.zig").definition, &.{owner})));
     try s.put(constructor, "createRequire", inputs.create_require);
     try s.put(constructor, "Module", constructor);
     const exports = try s.object();
