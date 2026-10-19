@@ -22,10 +22,10 @@ pub const Inputs = struct {
 };
 pub fn acquire(engine: *a.v.em.Engine, inputs: Inputs) !c.JSValue {
     try engine.checkNativeEntry();
-    if (engine.native_module_values.get(key)) |known| return a.duplicate(engine, known);
+    if (engine.native_module_values.get(key)) |cached| return a.duplicate(engine, cached);
     const candidate = try a.expression(engine, createBody, .{inputs});
-    if (engine.native_module_values.get(key)) |known| {
-        var selected = a.owned.Completion.initValue(engine, a.duplicate(engine, known));
+    if (engine.native_module_values.get(key)) |cached| {
+        var selected = a.owned.Completion.initValue(engine, a.duplicate(engine, cached));
         selected.release(candidate);
         return selected.finishValue();
     }
